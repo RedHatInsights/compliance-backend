@@ -675,7 +675,7 @@ fi
 
 # Create a list of audit *.rules files that should be inspected for presence and correctness
 # of a particular audit rule. The scheme is as follows:
-# 
+#
 # -----------------------------------------------------------------------------------------
 #  Tool used to load audit rules | Rule already defined  |  Audit rules file to inspect    |
 # -----------------------------------------------------------------------------------------
@@ -1036,7 +1036,7 @@ function die {
     <Value id="xccdf_org.ssgproject.content_value_function_populate" hidden="true" prohibitChanges="true" operator="equals" type="string">
       <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Remediation function populate</title>
       <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Shared bash remediation function. Not intended to be changed by tailoring.</description>
-      <value># The populate function isn't directly used by SSG at the moment but it can be 
+      <value># The populate function isn't directly used by SSG at the moment but it can be
 # used for testing purposes and will be used in SSG Testsuite in the future.
 
 function populate {
@@ -1074,7 +1074,7 @@ then
   echo "Usage: service_command 'enable/disable' 'service_name.service'"
   echo
   echo "To enable or disable xinetd services add \'xinetd=service_name\'"
-  echo "as the last argument"  
+  echo "as the last argument"
   echo "Aborting."
   exit 1
 fi
@@ -1203,7 +1203,7 @@ fi
 
 # Create a list of audit *.rules files that should be inspected for presence and correctness
 # of a particular audit rule. The scheme is as follows:
-# 
+#
 # -----------------------------------------------------------------------------------------
 #  Tool used to load audit rules | Rule already defined  |  Audit rules file to inspect    |
 # -----------------------------------------------------------------------------------------
@@ -1477,7 +1477,7 @@ do
 		#   can contain multiple -F path= elements covering multiple SUID/SGID binaries)
 		# * existing rule contains all arguments from expected rule form (though can contain
 		#   them in arbitrary order)
-	
+
 		base_search=$(sed -e '/-a always,exit/!d' -e '/-F path='"${sbinary_esc}"'/!d' \
 				-e '/-F path=[^[:space:]]\+/!d'   -e '/-F perm=.*/!d'                 \
 				-e '/-F auid&gt;='"${min_auid}"'/!d' -e '/-F auid!=4294967295/!d'        \
@@ -1907,7 +1907,7 @@ fi
 
 # Create a list of audit *.rules files that should be inspected for presence and correctness
 # of a particular audit rule. The scheme is as follows:
-# 
+#
 # -----------------------------------------------------------------------------------------
 #  Tool used to load audit rules | Rule already defined  |  Audit rules file to inspect    |
 # -----------------------------------------------------------------------------------------
@@ -2363,7 +2363,7 @@ The <html:code xmlns:html="http://www.w3.org/1999/xhtml">alternatives</html:code
 (such as Sendmail), but Postfix is the default and is preferred.
 Postfix was coded with security in mind and can also be more effectively contained by
 SELinux as its modular design has resulted in separate processes performing specific actions.
-More information is available on its website, 
+More information is available on its website,
     <html:a xmlns:html="http://www.w3.org/1999/xhtml" href="http://www.postfix.org">http://www.postfix.org</html:a>.</description>
       <Group id="xccdf_org.ssgproject.content_group_postfix_client">
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Configure SMTP For Mail Clients</title>
@@ -2438,7 +2438,7 @@ trusted to relay unconditionally, configure SMTP AUTH with SSL support.</descrip
 authentication and encrypted sessions. An encrypted session protects the
 information that is transmitted with SMTP mail or with SASL authentication.
 To configure Postfix to protect all SMTP AUTH transactions
-using TLS, see 
+using TLS, see
     <html:a xmlns:html="http://www.w3.org/1999/xhtml" href="http://www.postfix.org/TLS_README.html">http://www.postfix.org/TLS_README.html</html:a>.</description>
             </Group>
             <Group id="xccdf_org.ssgproject.content_group_postfix_server_relay_smtp_auth_for_untrusted">
@@ -2522,7 +2522,7 @@ for lines with the daemon name postfix/anvil.</warning>
     <Group id="xccdf_org.ssgproject.content_group_routing">
       <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Network Routing</title>
       <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">A router is a very desirable target for a
-potential adversary because they fulfill a variety of 
+potential adversary because they fulfill a variety of
 infrastructure networking roles such as access to network segments,
 gateways to other networks, filtering, etc. Therefore, if one is
 required, the system acting as a router should be dedicated
@@ -3004,7 +3004,7 @@ should prevent users from being able to assign themselves empty passwords.</desc
           <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">CM-6(b)</reference>
           <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000480-GPOS-00229</reference>
           <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Configuring this setting for the SSH daemon provides additional assurance that
-remote login via SSH will require a password, even in the event of 
+remote login via SSH will require a password, even in the event of
 misconfiguration elsewhere.</rationale>
           <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" id="sshd_disable_empty_passwords" system="urn:xccdf:fix:script:sh"><sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproject.content_value_function_replace_or_append" use="legacy"/>
 replace_or_append '/etc/ssh/sshd_config' '^PermitEmptyPasswords' 'no' '' '%s %s'
@@ -3316,7 +3316,7 @@ system from an unauthenticated connection, potentially wih root privileges.</rat
   lineinfile:
     create: yes
     dest: /etc/ssh/sshd_config
-    regexp: (?i)^#?compression 
+    regexp: (?i)^#?compression
     line: Compression delayed
     validate: sshd -t -f %s
   #notify: restart sshd
@@ -3708,7 +3708,7 @@ the unprivileged section.</rationale>
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use Only FIPS 140-2 Validated Ciphers</title>
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Limit the ciphers to those algorithms which are FIPS-approved.
 Counter (CTR) mode is also preferred over cipher-block chaining (CBC) mode.
-The following line in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/ssh/sshd_config</html:code> demonstrates use of 
+The following line in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/ssh/sshd_config</html:code> demonstrates use of
 FIPS 140-2 validated ciphers:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">Ciphers aes128-ctr,aes192-ctr,aes256-ctr</html:pre>
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
@@ -3722,7 +3722,7 @@ The following ciphers are FIPS 140-2 certified on RHEL 7:
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/>- 3des-cbc
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/>- rijndael-cbc@lysator.liu.se
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-Any combination of the above ciphers will pass this check. Official FIPS 140-2 paperwork for 
+Any combination of the above ciphers will pass this check. Official FIPS 140-2 paperwork for
 RHEL7 can be found at http://csrc.nist.gov/groups/STM/cmvp/documents/140-1/140sp/140sp2630.pdf.</description>
           <reference href="">5.2.10</reference>
           <reference href="https://www.fbi.gov/file-repository/cjis-security-policy-v5_5_20160601-2-1.pdf">5.5.6</reference>
@@ -3831,7 +3831,7 @@ access restriction in some configurations.</rationale>
         <Rule id="xccdf_org.ssgproject.content_rule_sshd_use_approved_macs" selected="false" severity="medium">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use Only FIPS 140-2 Validated MACs</title>
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Limit the MACs to those hash algorithms which are FIPS-approved.
-The following line in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/ssh/sshd_config</html:code> demonstrates use 
+The following line in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/ssh/sshd_config</html:code> demonstrates use
 of FIPS-approved MACs:
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">MACs hmac-sha2-512,hmac-sha2-256</html:pre>
@@ -4009,7 +4009,7 @@ class ssh_private_key_perms {
       </Rule>
       <Rule id="xccdf_org.ssgproject.content_rule_iptables_sshd_disabled" selected="false" severity="unknown">
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Remove SSH Server iptables Firewall exception (Unusual)</title>
-        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">By default, inbound connections to SSH's port are allowed. If 
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">By default, inbound connections to SSH's port are allowed. If
 the SSH server is not being used, this exception should be removed from the
 firewall configuration.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
@@ -4018,7 +4018,7 @@ Edit the files <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/sysconf
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT</html:pre>
 This is unusual, as SSH is a common method for encrypted and authenticated
 remote access.</description>
-        <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">If inbound SSH connections are not expected, disallowing access to the SSH port will 
+        <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">If inbound SSH connections are not expected, disallowing access to the SSH port will
 avoid possible exploitation of the port by an attacker.</rationale>
       </Rule>
     </Group>
@@ -4089,14 +4089,14 @@ for systems which are normally kept permanently on. Systems which are required
 to use broadcast or multicast IP, or to perform authentication of packets with
 the <html:code xmlns:html="http://www.w3.org/1999/xhtml">Autokey</html:code> protocol, should consider using <html:code xmlns:html="http://www.w3.org/1999/xhtml">ntpd</html:code>.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-Refer to 
+Refer to
     <html:a xmlns:html="http://www.w3.org/1999/xhtml" href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/ch-Configuring_NTP_Using_the_chrony_Suite.html">https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/ch-Configuring_NTP_Using_the_chrony_Suite.html</html:a> for more detailed comparison of features of <html:code xmlns:html="http://www.w3.org/1999/xhtml">chronyd</html:code>
 and <html:code xmlns:html="http://www.w3.org/1999/xhtml">ntpd</html:code> daemon features respectively, and for further guidance how to
 choose between the two NTP daemons.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-The upstream manual pages at 
+The upstream manual pages at
     <html:a xmlns:html="http://www.w3.org/1999/xhtml" href="http://chrony.tuxfamily.org/manual.html">http://chrony.tuxfamily.org/manual.html</html:a> for
-<html:code xmlns:html="http://www.w3.org/1999/xhtml">chronyd</html:code> and 
+<html:code xmlns:html="http://www.w3.org/1999/xhtml">chronyd</html:code> and
     <html:a xmlns:html="http://www.w3.org/1999/xhtml" href="http://www.ntp.org">http://www.ntp.org</html:a> for <html:code xmlns:html="http://www.w3.org/1999/xhtml">ntpd</html:code> provide additional
 information on the capabilities and configuration of each of the NTP daemons.</description>
       <Value id="xccdf_org.ssgproject.content_value_var_time_service_set_maxpoll" type="number">
@@ -4291,7 +4291,7 @@ configured acceptable allowance (drift) may be inaccurate.</rationale>
     <Group id="xccdf_org.ssgproject.content_group_imap">
       <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">IMAP and POP3 Server</title>
       <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Dovecot provides IMAP and POP3 services. It is not
-installed by default. The project page at 
+installed by default. The project page at
     <html:a xmlns:html="http://www.w3.org/1999/xhtml" href="http://www.dovecot.org">http://www.dovecot.org</html:a>
 contains more detailed information about Dovecot
 configuration.</description>
@@ -4319,27 +4319,27 @@ Add the following line, ensuring that it appears before the final LOG and DROP l
         </Group>
         <Group id="xccdf_org.ssgproject.content_group_dovecot_enabling_ssl">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Enable SSL Support</title>
-          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSL should be used to encrypt network traffic between the 
-Dovecot server and its clients. Users must authenticate to the Dovecot 
-server in order to read their mail, and passwords should never be 
-transmitted in clear text. In addition, protecting mail as it is 
-downloaded is a privacy measure, and clients may use SSL certificates 
-to authenticate the server, preventing another system from impersonating 
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSL should be used to encrypt network traffic between the
+Dovecot server and its clients. Users must authenticate to the Dovecot
+server in order to read their mail, and passwords should never be
+transmitted in clear text. In addition, protecting mail as it is
+downloaded is a privacy measure, and clients may use SSL certificates
+to authenticate the server, preventing another system from impersonating
 the server.</description>
         </Group>
         <Group id="xccdf_org.ssgproject.content_group_dovecot_support_necessary_protocols">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Support Only the Necessary Protocols</title>
-          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Dovecot supports the IMAP and POP3 protocols, as well as 
-SSL-protected versions of those protocols. Configure the Dovecot server 
-to support only the protocols needed by your site. Edit <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/dovecot/dovecot.conf</html:code>. 
-Add or correct the following lines, replacing <html:code xmlns:html="http://www.w3.org/1999/xhtml">PROTOCOL</html:code> with 
-only the subset of protocols (<html:code xmlns:html="http://www.w3.org/1999/xhtml">imap</html:code>, <html:code xmlns:html="http://www.w3.org/1999/xhtml">imaps</html:code>, 
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Dovecot supports the IMAP and POP3 protocols, as well as
+SSL-protected versions of those protocols. Configure the Dovecot server
+to support only the protocols needed by your site. Edit <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/dovecot/dovecot.conf</html:code>.
+Add or correct the following lines, replacing <html:code xmlns:html="http://www.w3.org/1999/xhtml">PROTOCOL</html:code> with
+only the subset of protocols (<html:code xmlns:html="http://www.w3.org/1999/xhtml">imap</html:code>, <html:code xmlns:html="http://www.w3.org/1999/xhtml">imaps</html:code>,
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">pop3</html:code>, <html:code xmlns:html="http://www.w3.org/1999/xhtml">pop3s</html:code>) required:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">protocols = PROTOCOL</html:pre>
-If possible, require SSL protection for all transactions. The SSL 
-protocol variants listen on alternate ports (995 instead of 110 for 
-pop3s, and 993 instead of 143 for imaps), and require SSL-aware clients. 
-An alternate approach is to listen on the standard port and require the 
+If possible, require SSL protection for all transactions. The SSL
+protocol variants listen on alternate ports (995 instead of 110 for
+pop3s, and 993 instead of 143 for imaps), and require SSL-aware clients.
+An alternate approach is to listen on the standard port and require the
 client to use the STARTTLS command before authenticating.</description>
         </Group>
       </Group>
@@ -4366,7 +4366,7 @@ stations</html:li><html:li>ensure that permissions on the <html:code>snmpd.conf<
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Edit <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/snmp/snmpd.conf</html:code>, removing any references to <html:code xmlns:html="http://www.w3.org/1999/xhtml">rocommunity</html:code>, <html:code xmlns:html="http://www.w3.org/1999/xhtml">rwcommunity</html:code>, or <html:code xmlns:html="http://www.w3.org/1999/xhtml">com2sec</html:code>.
 Upon doing that, restart the SNMP service:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">$ sudo service snmpd restart</html:pre></description>
-          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Earlier versions of SNMP are considered insecure, as they potentially allow 
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Earlier versions of SNMP are considered insecure, as they potentially allow
 unauthorized access to detailed system management information.</rationale>
           <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
             <check-content-ref name="oval:ssg-snmpd_use_newer_protocol:def:1" href="ssg-fedora-oval.xml"/>
@@ -4620,7 +4620,7 @@ Following its installation with the base ruleset, specific configuration advice 
 the web applications. Usage of <html:code xmlns:html="http://www.w3.org/1999/xhtml">mod_security</html:code> is highly recommended for some environments,
 but it should be noted this module does not ship with Red Hat Enterprise Linux itself,
 and instead is provided via Extra Packages for Enterprise Linux (EPEL).
-For more information on EPEL please refer to 
+For more information on EPEL please refer to
     <html:a xmlns:html="http://www.w3.org/1999/xhtml" href="http://fedoraproject.org/wiki/EPEL">http://fedoraproject.org/wiki/EPEL</html:a>.</description>
           </Group>
         </Group>
@@ -4890,9 +4890,9 @@ systems to request and obtain an IP address and other configuration
 parameters from a server.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 This guide recommends configuring networking on clients by manually editing
-the appropriate files under <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/sysconfig</html:code>.  Use of DHCP can make client 
-systems vulnerable to compromise by rogue DHCP servers, and should be avoided 
-unless necessary.  If using DHCP is necessary, however, there are best practices 
+the appropriate files under <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/sysconfig</html:code>.  Use of DHCP can make client
+systems vulnerable to compromise by rogue DHCP servers, and should be avoided
+unless necessary.  If using DHCP is necessary, however, there are best practices
 that should be followed to minimize security risk.</description>
       <Group id="xccdf_org.ssgproject.content_group_dhcp_client_configuration">
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Configure DHCP Client if Necessary</title>
@@ -5470,7 +5470,7 @@ client to only be able to lock world-readable files. To get around this, the
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">insecure_locks</html:code> option can be used so these clients can access the
 desired export. This poses a security risk by potentially allowing the client
 access to data for which it does not have authorization.
-Remove any instances of the 
+Remove any instances of the
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">insecure_locks</html:code> option from the file <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/exports</html:code>.</description>
           <reference href="http://iase.disa.mil/stigs/cci/Pages/index.aspx">CCI-000764</reference>
           <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Allowing insecure file locking could allow for sensitive data to be
@@ -6181,15 +6181,15 @@ the following commands (and analogously for <html:code xmlns:html="http://www.w3
 The default iptables rules are:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">Chain INPUT (policy ACCEPT)
 num  target     prot opt source       destination
-1    ACCEPT     all  --  0.0.0.0/0    0.0.0.0/0    state RELATED,ESTABLISHED 
+1    ACCEPT     all  --  0.0.0.0/0    0.0.0.0/0    state RELATED,ESTABLISHED
 2    ACCEPT     icmp --  0.0.0.0/0    0.0.0.0/0
 3    ACCEPT     all  --  0.0.0.0/0    0.0.0.0/0
-4    ACCEPT     tcp  --  0.0.0.0/0    0.0.0.0/0    state NEW tcp dpt:22 
-5    REJECT     all  --  0.0.0.0/0    0.0.0.0/0    reject-with icmp-host-prohibited 
+4    ACCEPT     tcp  --  0.0.0.0/0    0.0.0.0/0    state NEW tcp dpt:22
+5    REJECT     all  --  0.0.0.0/0    0.0.0.0/0    reject-with icmp-host-prohibited
 
 Chain FORWARD (policy ACCEPT)
 num  target     prot opt source       destination
-1    REJECT     all  --  0.0.0.0/0    0.0.0.0/0    reject-with icmp-host-prohibited 
+1    REJECT     all  --  0.0.0.0/0    0.0.0.0/0    reject-with icmp-host-prohibited
 
 Chain OUTPUT (policy ACCEPT)
 num  target     prot opt source       destination</html:pre>
@@ -6401,11 +6401,11 @@ If this is not the system default value, add the following line to <html:code xm
             <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">SC-5</reference>
             <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000480-GPOS-00227</reference>
             <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">ICMP redirect messages are used by routers to inform hosts that a more direct
-route exists for a particular destination. These messages modify the host's route table 
+route exists for a particular destination. These messages modify the host's route table
 and are unauthenticated. An illicit ICMP redirect message could result in a man-in-the-middle
 attack.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-This feature of the IPv4 protocol has few legitimate uses. It should be disabled unless 
+This feature of the IPv4 protocol has few legitimate uses. It should be disabled unless
 absolutely required.</rationale>
             <check system="http://scap.nist.gov/schema/ocil/2">
               <check-content-ref name="ocil:ssg-sysctl_net_ipv4_conf_all_accept_redirects_ocil:questionnaire:1" href="ssg-fedora-ocil.xml"/>
@@ -6444,7 +6444,7 @@ If this is not the system default value, add the following line to <html:code xm
             <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">SC-7</reference>
             <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000480-GPOS-00227</reference>
             <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Source-routed packets allow the source of the packet to suggest routers
-forward the packet along a different path than configured on the router, which can 
+forward the packet along a different path than configured on the router, which can
 be used to bypass network security measures.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Accepting source-routed packets in the IPv4 protocol has few legitimate
@@ -6568,7 +6568,7 @@ If this is not the system default value, add the following line to <html:code xm
             <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Source-routed packets allow the source of the packet to suggest routers
 forward the packet along a different path than configured on the router, which can
 be used to bypass network security measures. This requirement applies only to the
-forwarding of source-routerd traffic, such as when IPv4 forwarding is enabled and 
+forwarding of source-routerd traffic, such as when IPv4 forwarding is enabled and
 the system is functioning as a router.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Accepting source-routed packets in the IPv4 protocol has few legitimate
@@ -6613,7 +6613,7 @@ route exists for a particular destination. These messages modify the host's rout
 and are unauthenticated. An illicit ICMP redirect message could result in a man-in-the-middle
 attack.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-This feature of the IPv4 protocol has few legitimate uses. It should be disabled unless 
+This feature of the IPv4 protocol has few legitimate uses. It should be disabled unless
 absolutely required.</rationale>
             <check system="http://scap.nist.gov/schema/ocil/2">
               <check-content-ref name="ocil:ssg-sysctl_net_ipv4_conf_default_accept_redirects_ocil:questionnaire:1" href="ssg-fedora-ocil.xml"/>
@@ -6691,8 +6691,8 @@ the network.</rationale>
       </Group>
       <Group id="xccdf_org.ssgproject.content_group_network_disable_unused_interfaces">
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Disable Unused Interfaces</title>
-        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Network interfaces expand the attack surface of the 
-system.  Unused interfaces are not monitored or controlled, and 
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Network interfaces expand the attack surface of the
+system.  Unused interfaces are not monitored or controlled, and
 should be disabled.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 If the system does not require network communications but still
@@ -6710,7 +6710,7 @@ communication over the loopback device, then disable this service.
 (WiFi) and Bluetooth, can present a security risk to sensitive or
 classified systems and networks. Wireless networking hardware is
 much more likely to be included in laptop or portable systems than
-in desktops or servers. 
+in desktops or servers.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Removal of hardware provides the greatest assurance that the wireless
 capability remains disabled. Acquisition policies often include provisions to
@@ -6986,7 +6986,7 @@ exists is an approved organizational connection.</description>
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Install libreswan Package</title>
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The Libreswan package provides an implementation of IPsec
 and IKE, which permits the creation of secure tunnels over
-untrusted networks. 
+untrusted networks.
 The <html:code xmlns:html="http://www.w3.org/1999/xhtml">libreswan</html:code> package can be installed with the following command:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">$ sudo dnf install libreswan</html:pre></description>
           <reference href="http://iase.disa.mil/stigs/cci/Pages/index.aspx">CCI-001130</reference>
@@ -7416,7 +7416,7 @@ after pam_cracklib.so to prevent a run of (<sub xmlns="http://checklists.nist.go
               <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set Password Retry Prompts Permitted Per-Session</title>
               <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To configure the number of retry prompts that are permitted per-session:
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-Edit the <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_cracklib.so</html:code> statement in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/pam.d/system-auth</html:code> to 
+Edit the <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_cracklib.so</html:code> statement in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/pam.d/system-auth</html:code> to
 show <html:code xmlns:html="http://www.w3.org/1999/xhtml" xmlns:ns0="http://checklists.nist.gov/xccdf/1.1" xmlns="http://checklists.nist.gov/xccdf/1.2">retry=<sub idref="xccdf_org.ssgproject.content_value_var_password_pam_retry" use="legacy"/></html:code>, or a lower value if site policy is more restrictive.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 The DoD requirement is a maximum of 3 prompts per session.</description>
@@ -7483,7 +7483,7 @@ more difficult by ensuring a larger search space.</rationale>
               <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The pam_cracklib module's <html:code xmlns:html="http://www.w3.org/1999/xhtml">dcredit</html:code> parameter controls requirements for
 usage of digits in a password. When set to a negative number, any password will be required to
 contain that many digits. When set to a positive number, pam_cracklib will grant +1 additional
-length credit for each digit.  
+length credit for each digit.
 Add <html:code xmlns:html="http://www.w3.org/1999/xhtml">dcredit=-1</html:code> after pam_cracklib.so to require use of a digit in passwords.</description>
               <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-5(b)</reference>
               <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-5(c)</reference>
@@ -7670,7 +7670,7 @@ password</description>
               <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The pam_pwquality module's <html:code xmlns:html="http://www.w3.org/1999/xhtml">dcredit</html:code> parameter controls requirements for
 usage of digits in a password. When set to a negative number, any password will be required to
 contain that many digits. When set to a positive number, pam_pwquality will grant +1 additional
-length credit for each digit. Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">dcredit</html:code> setting in 
+length credit for each digit. Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">dcredit</html:code> setting in
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/security/pwquality.conf</html:code> to require the use of a digit in passwords.</description>
               <reference href="">6.3.2</reference>
               <reference href="http://iase.disa.mil/stigs/cci/Pages/index.aspx">CCI-000194</reference>
@@ -7683,10 +7683,10 @@ length credit for each digit. Modify the <html:code xmlns:html="http://www.w3.or
               <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use of a complex password helps to increase the time and resources required
 to compromise the password. Password complexity, or strength, is a measure of
 the effectiveness of a password in resisting attempts at guessing and brute-force
-attacks. 
+attacks.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Password complexity is one factor of several that determines how long it takes
-to crack a password. The more complex the password, the greater the number of 
+to crack a password. The more complex the password, the greater the number of
 possble combinations that need to be tested before the password is compromised.
 Requiring digits makes password guessing attacks more difficult by ensuring a larger
 search space.</rationale>
@@ -7733,11 +7733,11 @@ after pam_pwquality to set minimum password length requirements.</description>
               <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The shorter the password, the lower the number of possible combinations
 that need to be tested before the password is compromised.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-Password complexity, or strength, is a measure of the effectiveness of a 
-password in resisting attempts at guessing and brute-force attacks. 
+Password complexity, or strength, is a measure of the effectiveness of a
+password in resisting attempts at guessing and brute-force attacks.
 Password length is one factor of several that helps to determine strength
 and how long it takes to crack a password. Use of more characters in a password
-helps to exponentially increase the time and/or resources required to 
+helps to exponentially increase the time and/or resources required to
 compromose the password.</rationale>
               <check system="http://scap.nist.gov/schema/ocil/2">
                 <check-content-ref name="ocil:ssg-accounts_password_pam_minlen_ocil:questionnaire:1" href="ssg-fedora-ocil.xml"/>
@@ -7746,10 +7746,10 @@ compromose the password.</rationale>
             <Rule id="xccdf_org.ssgproject.content_rule_accounts_password_pam_difok" selected="false" severity="medium">
               <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set Password Strength Minimum Different Characters</title>
               <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The pam_pwquality module's <html:code xmlns:html="http://www.w3.org/1999/xhtml">difok</html:code> parameter sets the number of characters
-in a password that must not be present in and old password during a password change. 
+in a password that must not be present in and old password during a password change.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">difok</html:code> setting in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/security/pwquality.conf</html:code>
-to equal <sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproject.content_value_var_password_pam_difok" use="legacy"/> to require differing characters 
+to equal <sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproject.content_value_var_password_pam_difok" use="legacy"/> to require differing characters
 when changing passwords.</description>
               <reference href="https://www.fbi.gov/file-repository/cjis-security-policy-v5_5_20160601-2-1.pdf">5.6.2.1.1</reference>
               <reference href="http://iase.disa.mil/stigs/cci/Pages/index.aspx">CCI-000195</reference>
@@ -7757,14 +7757,14 @@ when changing passwords.</description>
               <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-5(c)</reference>
               <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-5(1)(b)</reference>
               <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000072-GPOS-00040</reference>
-              <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use of a complex password helps to increase the time and resources 
-required to compromise the password. Password complexity, or strength, 
-is a measure of the effectiveness of a password in resisting attempts 
+              <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use of a complex password helps to increase the time and resources
+required to compromise the password. Password complexity, or strength,
+is a measure of the effectiveness of a password in resisting attempts
 at guessing and brute–force attacks.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-Password complexity is one factor of several that determines how long 
-it takes to crack a password. The more complex the password, the 
-greater the number of possible combinations that need to be tested 
+Password complexity is one factor of several that determines how long
+it takes to crack a password. The more complex the password, the
+greater the number of possible combinations that need to be tested
 before the password is compromised.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Requiring a minimum number of different characters during password changes ensures that
@@ -7778,8 +7778,8 @@ Note that passwords which are changed on compromised systems will still be compr
               <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set Password Strength Minimum Special Characters</title>
               <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The pam_pwquality module's <html:code xmlns:html="http://www.w3.org/1999/xhtml">ocredit=</html:code> parameter controls requirements for
 usage of special (or "other") characters in a password. When set to a negative number, any password will be
-required to contain that many special characters. When set to a positive number, pam_pwquality will grant +1 
-additional length credit for each special character. Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">ocredit</html:code> setting in 
+required to contain that many special characters. When set to a positive number, pam_pwquality will grant +1
+additional length credit for each special character. Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">ocredit</html:code> setting in
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/security/pwquality.conf</html:code> to equal <sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproject.content_value_var_password_pam_ocredit" use="legacy"/> to require use of a special character in passwords.</description>
               <reference href="http://iase.disa.mil/stigs/cci/Pages/index.aspx">CCI-001619</reference>
               <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-5(b)</reference>
@@ -7789,10 +7789,10 @@ additional length credit for each special character. Modify the <html:code xmlns
               <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use of a complex password helps to increase the time and resources required
 to compromise the password. Password complexity, or strength, is a measure of
 the effectiveness of a password in resisting attempts at guessing and brute-force
-attacks. 
+attacks.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Password complexity is one factor of several that determines how long it takes
-to crack a password. The more complex the password, the greater the number of 
+to crack a password. The more complex the password, the greater the number of
 possble combinations that need to be tested before the password is compromised.
 Requiring a minimum number of special characters makes password guessing attacks
 more difficult by ensuring a larger search space.</rationale>
@@ -7805,14 +7805,14 @@ more difficult by ensuring a larger search space.</rationale>
               <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The pam_pwquality module's <html:code xmlns:html="http://www.w3.org/1999/xhtml">maxrepeat</html:code> parameter controls requirements for
 consecutive repeating characters. When set to a positive number, it will reject passwords
 which contain more than that number of consecutive characters. Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">maxrepeat</html:code> setting
-in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/security/pwquality.conf</html:code> to equal <sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproject.content_value_var_password_pam_maxrepeat" use="legacy"/> to prevent a 
+in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/security/pwquality.conf</html:code> to equal <sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproject.content_value_var_password_pam_maxrepeat" use="legacy"/> to prevent a
 run of (<sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproject.content_value_var_password_pam_maxrepeat" use="legacy"/> + 1) or more identical characters.</description>
               <reference href="http://iase.disa.mil/stigs/cci/Pages/index.aspx">CCI-000195</reference>
               <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-5</reference>
               <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-5(c)</reference>
               <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000072-GPOS-00040</reference>
-              <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use of a complex password helps to increase the time and resources required to compromise the password. 
-Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at 
+              <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use of a complex password helps to increase the time and resources required to compromise the password.
+Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at
 guessing and brute-force attacks.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Password complexity is one factor of several that determines how long it takes to crack a password. The more
@@ -7828,7 +7828,7 @@ Passwords with excessive repeating characters may be more vulnerable to password
               <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set Password Retry Prompts Permitted Per-Session</title>
               <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To configure the number of retry prompts that are permitted per-session:
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-Edit the <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_pwquality.so</html:code> statement in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/pam.d/system-auth</html:code> to 
+Edit the <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_pwquality.so</html:code> statement in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/pam.d/system-auth</html:code> to
 show <html:code xmlns:html="http://www.w3.org/1999/xhtml" xmlns:ns0="http://checklists.nist.gov/xccdf/1.1" xmlns="http://checklists.nist.gov/xccdf/1.2">retry=<sub idref="xccdf_org.ssgproject.content_value_var_password_pam_retry" use="legacy"/></html:code>, or a lower value if site policy is more restrictive.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 The DoD requirement is a maximum of 3 prompts per session.</description>
@@ -7904,20 +7904,20 @@ categories available:
 * Digits
 * Special characters (for example, punctuation)
 </html:pre>
-Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">minclass</html:code> setting in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/security/pwquality.conf</html:code> entry to require <sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproject.content_value_var_password_pam_minclass" use="legacy"/> 
+Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">minclass</html:code> setting in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/security/pwquality.conf</html:code> entry to require <sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproject.content_value_var_password_pam_minclass" use="legacy"/>
 differing categories of characters when changing passwords.</description>
               <reference href="http://iase.disa.mil/stigs/cci/Pages/index.aspx">CCI-000195</reference>
               <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-5</reference>
               <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000072-GPOS-00040</reference>
               <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use of a complex password helps to increase the time and resources required to compromise the password.
-Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts 
+Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts
 at guessing and brute-force attacks.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Password complexity is one factor of several that determines how long it takes to crack a password. The
 more complex the password, the greater the number of possible combinations that need to be tested before
 the password is compromised.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-Requiring a minimum number of character categories makes password guessing attacks more difficult 
+Requiring a minimum number of character categories makes password guessing attacks more difficult
 by ensuring a larger search space.</rationale>
               <check system="http://scap.nist.gov/schema/ocil/2">
                 <check-content-ref name="ocil:ssg-accounts_password_pam_minclass_ocil:questionnaire:1" href="ssg-fedora-ocil.xml"/>
@@ -7928,7 +7928,7 @@ by ensuring a larger search space.</rationale>
               <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The pam_pwquality module's <html:code xmlns:html="http://www.w3.org/1999/xhtml">lcredit</html:code> parameter controls requirements for
 usage of lowercase letters in a password. When set to a negative number, any password will be required to
 contain that many lowercase characters. When set to a positive number, pam_pwquality will grant +1 additional
-length credit for each lowercase character. Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">lcredit</html:code> setting in 
+length credit for each lowercase character. Modify the <html:code xmlns:html="http://www.w3.org/1999/xhtml">lcredit</html:code> setting in
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/security/pwquality.conf</html:code> to require the use of a lowercase character in passwords.</description>
               <reference href="http://iase.disa.mil/stigs/cci/Pages/index.aspx">CCI-000193</reference>
               <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-5(b)</reference>
@@ -7939,10 +7939,10 @@ length credit for each lowercase character. Modify the <html:code xmlns:html="ht
               <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Use of a complex password helps to increase the time and resources required
 to compromise the password. Password complexity, or strength, is a measure of
 the effectiveness of a password in resisting attempts at guessing and brute-force
-attacks. 
+attacks.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Password complexity is one factor of several that determines how long it takes
-to crack a password. The more complex the password, the greater the number of 
+to crack a password. The more complex the password, the greater the number of
 possble combinations that need to be tested before the password is compromised.
 Requiring a minimum number of lowercase characters makes password guessing attacks
 more difficult by ensuring a larger search space.</rationale>
@@ -7996,7 +7996,7 @@ algorithm for password hashing:
             <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000073-GPOS-00041</reference>
             <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Passwords need to be protected at all times, and encryption is the standard method for protecting
 passwords. If passwords are not encrypted, they can be plainly read (i.e., clear text) and easily
-compromised. Passwords that are encrypted with a weak algorithm are no more protected than if they 
+compromised. Passwords that are encrypted with a weak algorithm are no more protected than if they
 are kepy in plain text.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 This setting ensures user and group account administration utilities are configured to store only
@@ -8077,8 +8077,8 @@ Using a stronger hashing algorithm makes password cracking attacks more difficul
           <Rule id="xccdf_org.ssgproject.content_rule_set_password_hashing_algorithm_systemauth" selected="false" severity="medium">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set PAM's Password Hashing Algorithm</title>
             <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The PAM system service can be configured to only store encrypted representations of passwords.
-In <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/pam.d/system-auth</html:code>, the <html:code xmlns:html="http://www.w3.org/1999/xhtml">password</html:code> section of the file controls 
-which PAM modules execute during a password change. Set the <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_unix.so</html:code> 
+In <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/pam.d/system-auth</html:code>, the <html:code xmlns:html="http://www.w3.org/1999/xhtml">password</html:code> section of the file controls
+which PAM modules execute during a password change. Set the <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_unix.so</html:code>
 module in the <html:code xmlns:html="http://www.w3.org/1999/xhtml">password</html:code> section to include the argument <html:code xmlns:html="http://www.w3.org/1999/xhtml">sha512</html:code>, as shown below:
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">password    sufficient    pam_unix.so sha512 <html:i>other arguments...</html:i></html:pre>
@@ -8097,7 +8097,7 @@ passwords will be generated using the SHA-512 algorithm. This is the default.</d
             <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000073-GPOS-00041</reference>
             <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Passwords need to be protected at all times, and encryption is the standard method for protecting
 passwords. If passwords are not encrypted, they can be plainly read (i.e., clear text) and easily
-compromised. Passwords that are encrypted with a weak algorithm are no more protected than if they 
+compromised. Passwords that are encrypted with a weak algorithm are no more protected than if they
 are kepy in plain text.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 This setting ensures user and group account administration utilities are configured to store only
@@ -8244,7 +8244,7 @@ prevents direct password guessing attacks.</rationale>
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Limit Password Reuse</title>
             <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Do not allow users to reuse recent passwords. This can be
 accomplished by using the <html:code xmlns:html="http://www.w3.org/1999/xhtml">remember</html:code> option for the <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_unix</html:code>
-or <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_pwhistory</html:code> PAM modules. 
+or <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_pwhistory</html:code> PAM modules.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 In the file <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/pam.d/system-auth</html:code>, append <html:code xmlns:html="http://www.w3.org/1999/xhtml" xmlns:ns0="http://checklists.nist.gov/xccdf/1.1" xmlns="http://checklists.nist.gov/xccdf/1.2">remember=<sub idref="xccdf_org.ssgproject.content_value_var_password_pam_unix_remember" use="legacy"/></html:code>
 to the line which refers to the <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_unix.so</html:code> or <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_pwhistory.so</html:code>module, as shown below:
@@ -8316,9 +8316,9 @@ The DoD STIG requirement is 5 passwords.</description>
           </Rule>
           <Rule id="xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_interval" selected="false" severity="medium">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set Interval For Counting Failed Password Attempts</title>
-            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Utilizing <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_faillock.so</html:code>, the <html:code xmlns:html="http://www.w3.org/1999/xhtml">fail_interval</html:code> directive 
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Utilizing <html:code xmlns:html="http://www.w3.org/1999/xhtml">pam_faillock.so</html:code>, the <html:code xmlns:html="http://www.w3.org/1999/xhtml">fail_interval</html:code> directive
 configures the system to lock out an accounts after a number of incorrect login
-attempts within a specified time period. Modify the content of both 
+attempts within a specified time period. Modify the content of both
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/pam.d/system-auth</html:code> and <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/pam.d/password-auth</html:code> as follows:
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 <html:ul xmlns:html="http://www.w3.org/1999/xhtml" xmlns:ns0="http://checklists.nist.gov/xccdf/1.1" xmlns="http://checklists.nist.gov/xccdf/1.2"><html:li>Add the following line immediately <html:code>before</html:code> the <html:code>pam_unix.so</html:code> statement in the <html:code>AUTH</html:code> section:
@@ -8516,8 +8516,8 @@ contain only absolute paths.</rationale>
           </Rule>
           <Rule id="xccdf_org.ssgproject.content_rule_accounts_no_uid_except_zero" selected="false" severity="high">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Verify Only Root Has UID 0</title>
-            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">If any account other than root has a UID of 0, this misconfiguration should 
-be investigated and the accounts other than root should be removed or 
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">If any account other than root has a UID of 0, this misconfiguration should
+be investigated and the accounts other than root should be removed or
 have their UID changed.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 If the account is associated with system commands or applications the UID should be changed
@@ -8867,8 +8867,8 @@ normal command line utilities.</description>
           <Rule id="xccdf_org.ssgproject.content_rule_account_temp_expire_date" selected="false" severity="unknown">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Assign Expiration Date to Temporary Accounts</title>
             <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Temporary accounts are established as part of normal account activation procedures
-when there is a need for short-term accounts. In the event temporary 
-or emergency accounts are required, configure the system to terminate 
+when there is a need for short-term accounts. In the event temporary
+or emergency accounts are required, configure the system to terminate
 them after a documented time period. For every temporary and
 emergency account, run the following command to set an expiration date on it,
 substituting <html:code xmlns:html="http://www.w3.org/1999/xhtml"><html:i>USER</html:i></html:code> and <html:code xmlns:html="http://www.w3.org/1999/xhtml"><html:i>YYYY-MM-DD</html:i></html:code> appropriately:
@@ -9059,7 +9059,7 @@ age, and 7 day warning period with the following command:
 edit the file <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/login.defs</html:code>
 and add or correct the following line:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml" xmlns:ns0="http://checklists.nist.gov/xccdf/1.1" xmlns="http://checklists.nist.gov/xccdf/1.2">PASS_MAX_DAYS <sub idref="xccdf_org.ssgproject.content_value_var_accounts_maximum_age_login_defs" use="legacy"/></html:pre>
-A value of 180 days is sufficient for many environments. 
+A value of 180 days is sufficient for many environments.
 The DoD requirement is 60.
 The profile requirement is <html:code xmlns:html="http://www.w3.org/1999/xhtml" xmlns:ns0="http://checklists.nist.gov/xccdf/1.1" xmlns="http://checklists.nist.gov/xccdf/1.2"><sub idref="xccdf_org.ssgproject.content_value_var_accounts_maximum_age_login_defs" use="legacy"/></html:code>.</description>
             <reference href="">5.4.1.1</reference>
@@ -9074,7 +9074,7 @@ The profile requirement is <html:code xmlns:html="http://www.w3.org/1999/xhtml" 
             <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Any password, no matter how complex, can eventually be cracked. Therefore, passwords
 need to be changed periodically. If the operating system does not limit the lifetime
 of passwords and force users to change their passwords, there is the risk that the
-operating system passwords could be compromised. 
+operating system passwords could be compromised.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Setting the password maximum age ensures users are required to
 periodically change their passwords. Requiring shorter password lifetimes
@@ -9188,7 +9188,7 @@ edit the file <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/login.de
 line:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml" xmlns:ns0="http://checklists.nist.gov/xccdf/1.1" xmlns="http://checklists.nist.gov/xccdf/1.2">PASS_MIN_LEN <sub idref="xccdf_org.ssgproject.content_value_var_accounts_password_minlen_login_defs" use="legacy"/></html:pre>
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-The DoD requirement is <html:code xmlns:html="http://www.w3.org/1999/xhtml">15</html:code>. 
+The DoD requirement is <html:code xmlns:html="http://www.w3.org/1999/xhtml">15</html:code>.
 The FISMA requirement is <html:code xmlns:html="http://www.w3.org/1999/xhtml">12</html:code>.
 The profile requirement is <html:code xmlns:html="http://www.w3.org/1999/xhtml" xmlns:ns0="http://checklists.nist.gov/xccdf/1.1" xmlns="http://checklists.nist.gov/xccdf/1.2"><sub idref="xccdf_org.ssgproject.content_value_var_accounts_password_minlen_login_defs" use="legacy"/></html:code>.
 If a program consults <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/login.defs</html:code> and also another PAM module
@@ -9264,7 +9264,7 @@ The profile requirement is <html:code xmlns:html="http://www.w3.org/1999/xhtml" 
             <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000075-GPOS-00043</reference>
             <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Enforcing a minimum password lifetime helps to prevent repeated password changes to defeat
 the password reuse or history enforcement requirement. If users are allowed to immediately
-and continually change their password, then the password could be repeatedly changed in a 
+and continually change their password, then the password could be repeatedly changed in a
 short period of time to defeat the organization's policy regarding password reuse.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Setting the minimum password age protects against users cycling back to a favorite password
@@ -9596,25 +9596,25 @@ process and facilitates possible legal action against attackers.</rationale>
         </Group>
         <Rule id="xccdf_org.ssgproject.content_rule_banner_etc_issue" selected="false" severity="medium">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Modify the System Login Banner</title>
-          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To configure the system login banner edit <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/issue</html:code>. Replace 
-the default text with a message compliant with the local site policy 
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To configure the system login banner edit <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/issue</html:code>. Replace
+the default text with a message compliant with the local site policy
 or a legal disclaimer.
 
 The DoD required text is either:
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">You are accessing a U.S. Government (USG) Information System (IS) that is
 provided for USG-authorized use only. By using this IS (which includes any
-device attached to this IS), you consent to the following conditions: 
+device attached to this IS), you consent to the following conditions:
 <html:br/>-The USG routinely intercepts and monitors communications on this IS for purposes
 including, but not limited to, penetration testing, COMSEC monitoring, network
 operations and defense, personnel misconduct (PM), law enforcement (LE), and
-counterintelligence (CI) investigations. 
-<html:br/>-At any time, the USG may inspect and seize data stored on this IS. 
-<html:br/>-Communications using, or data stored on, this IS are not private, are subject 
-to routine monitoring, interception, and search, and may be disclosed or used 
-for any USG-authorized purpose. 
-<html:br/>-This IS includes security measures (e.g., authentication and access controls) 
-to protect USG interests -- not for your personal benefit or privacy. 
+counterintelligence (CI) investigations.
+<html:br/>-At any time, the USG may inspect and seize data stored on this IS.
+<html:br/>-Communications using, or data stored on, this IS are not private, are subject
+to routine monitoring, interception, and search, and may be disclosed or used
+for any USG-authorized purpose.
+<html:br/>-This IS includes security measures (e.g., authentication and access controls)
+to protect USG interests -- not for your personal benefit or privacy.
 <html:br/>-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative
 searching or monitoring of the content of privileged communications, or work
 product, related to personal representation or services by attorneys,
@@ -9636,7 +9636,7 @@ OR:
           <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000024-GPOS-00007</reference>
           <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Display of a standardized and approved use notification before granting access to the operating system
 ensures privacy and security notification verbiage used is consistent with applicable federal laws,
-Executive Orders, directives, policies, regulations, standards, and guidance. 
+Executive Orders, directives, policies, regulations, standards, and guidance.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 System use notifications are required only for access via login interfaces with human users and
 are not required when such human interfaces do not exist.</rationale>
@@ -13077,7 +13077,7 @@ package --remove=mcstrans
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Ensure No Device Files are Unlabeled by SELinux</title>
         <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Device files, which are used for communication with important
 system resources, should be labeled with proper SELinux types. If any device
-files do not carry the SELinux type <html:code xmlns:html="http://www.w3.org/1999/xhtml">device_t</html:code>, report the bug so 
+files do not carry the SELinux type <html:code xmlns:html="http://www.w3.org/1999/xhtml">device_t</html:code>, report the bug so
 that policy can be corrected. Supply information about what the device is
 and what programs use it.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
@@ -13368,7 +13368,7 @@ For more information on <html:code xmlns:html="http://www.w3.org/1999/xhtml">Sud
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The sudo <html:code xmlns:html="http://www.w3.org/1999/xhtml">NOPASSWD</html:code> and <html:code xmlns:html="http://www.w3.org/1999/xhtml">!authenticate</html:code> option, when specified, allows a
 user to execute commands using sudo without having to authenticate. This should be
 disabled by making sure that <html:code xmlns:html="http://www.w3.org/1999/xhtml">NOPASSWD</html:code> and/or <html:code xmlns:html="http://www.w3.org/1999/xhtml">!authenticate</html:code> do not exist
-in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/sudoers</html:code> configuration file or 
+in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/sudoers</html:code> configuration file or
 any sudo configuration snippets in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/sudoers.d/</html:code>.</description>
           <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">IA-11</reference>
           <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Without re-authentication, users may access resources or perform tasks for which they
@@ -13421,7 +13421,7 @@ any repos, remove any lines from files in <html:code xmlns:html="http://www.w3.o
           <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Verifying the authenticity of the software prior to installation
 validates the integrity of the patch or upgrade received from
 a vendor. This ensures the software has not been tampered with and
-that it has been provided by a trusted vendor. Self-signed 
+that it has been provided by a trusted vendor. Self-signed
 certificates are disallowed by this requirement. Certificates
 used to verify the software must be from an approved Certificate
 Authority (CA).</rationale>
@@ -13454,7 +13454,7 @@ the <html:code xmlns:html="http://www.w3.org/1999/xhtml">[main]</html:code> sect
           <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">MA-1(b)</reference>
           <reference href="https://www.pcisecuritystandards.org/documents/PCI_DSS_v3-1.pdf">Req-6.2</reference>
           <reference href="http://iase.disa.mil/stigs/os/general/Pages/index.aspx">SRG-OS-000366-GPOS-00153</reference>
-          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Changes to any software components can have significant effects on the overall security 
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Changes to any software components can have significant effects on the overall security
 of the operating system. This requirement ensures the software has not been tampered with
 and that it has been provided by a trusted vendor.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
@@ -13650,7 +13650,7 @@ directly into the system are greeted with a login screen that displays
 all known users. This functionality should be disabled by setting
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">disable-user-list</html:code> to <html:code xmlns:html="http://www.w3.org/1999/xhtml">true</html:code>.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-To disable, add or edit <html:code xmlns:html="http://www.w3.org/1999/xhtml">disable-user-list</html:code> to 
+To disable, add or edit <html:code xmlns:html="http://www.w3.org/1999/xhtml">disable-user-list</html:code> to
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/dconf/db/gdm.d/00-security-settings</html:code>. For example:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">[org/gnome/login-screen]
 disable-user-list=true</html:pre>
@@ -13743,7 +13743,7 @@ system security.</rationale>
             <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">In the default graphical environment, users logging
 directly into the system are greeted with a login screen that allows
 any user, known or unknown, the ability the ability to shutdown or restart
-the system. This functionality should be disabled by setting 
+the system. This functionality should be disabled by setting
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">disable-restart-buttons</html:code> to <html:code xmlns:html="http://www.w3.org/1999/xhtml">true</html:code>.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 To disable, add or edit <html:code xmlns:html="http://www.w3.org/1999/xhtml">disable-restart-buttons</html:code> to
@@ -13802,8 +13802,8 @@ due to reboot.</rationale>
           </Rule>
           <Rule id="xccdf_org.ssgproject.content_rule_dconf_gnome_login_retries" selected="false" severity="medium">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set the GNOME3 Login Number of Failures</title>
-            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">In the default graphical environment, the GNOME3 login 
-screen and be configured to restart the authentication process after 
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">In the default graphical environment, the GNOME3 login
+screen and be configured to restart the authentication process after
 a configured number of attempts. This can be configured by setting
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">allowed-failures</html:code> to <html:code xmlns:html="http://www.w3.org/1999/xhtml">3</html:code> or less.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
@@ -14101,7 +14101,7 @@ changes by users from taking place.</description>
 key sequence is pressed.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 To configure the system to ignore the <html:code xmlns:html="http://www.w3.org/1999/xhtml">Ctrl-Alt-Del</html:code> key sequence from the
-Graphical User Interface (GUI) instead of rebooting the system, add or set 
+Graphical User Interface (GUI) instead of rebooting the system, add or set
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">logout</html:code> to <html:code xmlns:html="http://www.w3.org/1999/xhtml">string ''</html:code> in
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/dconf/db/local.d/00-security-settings</html:code>. For example:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">[org/gnome/settings-daemon/plugins/media-keys]
@@ -14267,7 +14267,7 @@ changes such as adding new accounts, etc.</rationale>
           </Rule>
           <Rule id="xccdf_org.ssgproject.content_rule_dconf_gnome_disable_geolocation" selected="false" severity="medium">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Disable Geolocation in GNOME3</title>
-            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US"><html:code xmlns:html="http://www.w3.org/1999/xhtml">GNOME</html:code> allows the clock and applications to track and access location 
+            <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US"><html:code xmlns:html="http://www.w3.org/1999/xhtml">GNOME</html:code> allows the clock and applications to track and access location
 information. This setting should be disabled as applications should not track
 system location. To configure the system to disable location tracking, add or set
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">enabled</html:code> to <html:code xmlns:html="http://www.w3.org/1999/xhtml">false</html:code> in
@@ -14562,7 +14562,7 @@ contents of the display from passersby.</rationale>
           <Rule id="xccdf_org.ssgproject.content_rule_gconf_gnome_screen_locking_keybindings" selected="false" severity="low">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set GNOME Screen Locking Keybindings</title>
             <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Run the following command to prevent changes to the screensaver
-lock keybindings: 
+lock keybindings:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">$ sudo gconftool-2 --direct \
   --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
   --type string \
@@ -14793,7 +14793,7 @@ of the information system but does not want to logout because of the temporary n
           <Rule id="xccdf_org.ssgproject.content_rule_dconf_gnome_screensaver_idle_activation_enabled" selected="false" severity="medium">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Enable GNOME3 Screensaver Idle Activation</title>
             <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To activate the screensaver in the GNOME3 desktop after a period of inactivity,
-add or set <html:code xmlns:html="http://www.w3.org/1999/xhtml">idle-activation-enabled</html:code> to <html:code xmlns:html="http://www.w3.org/1999/xhtml">true</html:code> in 
+add or set <html:code xmlns:html="http://www.w3.org/1999/xhtml">idle-activation-enabled</html:code> to <html:code xmlns:html="http://www.w3.org/1999/xhtml">true</html:code> in
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/dconf/db/local.d/00-security-settings</html:code>. For example:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">[org/gnome/desktop/screensaver]
 idle_activation_enabled=true</html:pre>
@@ -15152,7 +15152,7 @@ is best to disable these thumbnailer applications unless they are explicitly req
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">By default, DConf provides a standard user profile. This profile contains a list
 of DConf configuration databases. The user profile and database always take the
 highest priority. As such the DConf User profile should always exist and be
-configured correctly. 
+configured correctly.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 To make sure that the user profile is configured correctly, the <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/dconf/profile/user</html:code> should be set as follows:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">user-db:user
@@ -15191,7 +15191,7 @@ partitioning
 scheme was used, it is possible but nontrivial to
 modify it to create separate logical volumes for the directories
 listed above. The Logical Volume Manager (LVM) makes this possible.
-See the LVM HOWTO at 
+See the LVM HOWTO at
     <html:a xmlns:html="http://www.w3.org/1999/xhtml" href="http://tldp.org/HOWTO/LVM-HOWTO/">http://tldp.org/HOWTO/LVM-HOWTO/</html:a>
 for more detailed information on LVM.</description>
       </Group>
@@ -15882,7 +15882,7 @@ disable_prelink
     - NIST-800-53-SI-7
     - NIST-800-171-3.13.11
     - PCI-DSS-Req-11.5
-    - CJIS-5.10.1.3  
+    - CJIS-5.10.1.3
 
 - name: disable prelinking
   lineinfile:
@@ -15952,9 +15952,9 @@ rotated more often than once a day, some other mechanism must be
 used.</description>
         <Rule id="xccdf_org.ssgproject.content_rule_ensure_logrotate_activated" selected="false" severity="unknown">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Ensure Logrotate Runs Periodically</title>
-          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <html:code xmlns:html="http://www.w3.org/1999/xhtml">logrotate</html:code> utility allows for the automatic rotation of 
-log files.  The frequency of rotation is specified in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/logrotate.conf</html:code>, 
-which triggers a cron task.  To configure logrotate to run daily, add or correct 
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <html:code xmlns:html="http://www.w3.org/1999/xhtml">logrotate</html:code> utility allows for the automatic rotation of
+log files.  The frequency of rotation is specified in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/logrotate.conf</html:code>,
+which triggers a cron task.  To configure logrotate to run daily, add or correct
 the following line in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/logrotate.conf</html:code>:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml"># rotate log files <html:i>frequency</html:i>
 daily</html:pre></description>
@@ -15987,7 +15987,7 @@ uucp,news.crit                                          /var/log/spooler
 local7.*                                                /var/log/boot.log</html:pre>
 See the man page <html:code xmlns:html="http://www.w3.org/1999/xhtml">rsyslog.conf(5)</html:code> for more information.
 <html:i xmlns:html="http://www.w3.org/1999/xhtml">Note that the <html:code>rsyslog</html:code> daemon can be configured to use a timestamp format that
-some log processing programs may not understand. If this occurs, 
+some log processing programs may not understand. If this occurs,
 edit the file <html:code>/etc/rsyslog.conf</html:code> and add or edit the following line:</html:i>
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">$ ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat</html:pre></description>
         <Value id="xccdf_org.ssgproject.content_value_file_groupowner_logfiles_value" type="string">
@@ -16034,7 +16034,7 @@ protected from unauthorized access.</rationale>
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The file permissions for all log files written by
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">rsyslog</html:code> should be set to 600, or more restrictive.
 These log files are determined by the second part of each Rule line in
-<html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/rsyslog.conf</html:code> and typically all appear in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/var/log</html:code>. 
+<html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/rsyslog.conf</html:code> and typically all appear in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/var/log</html:code>.
 For each log file <html:i xmlns:html="http://www.w3.org/1999/xhtml">LOGFILE</html:i> referenced in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/rsyslog.conf</html:code>,
 run the following command to inspect the file's permissions:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">$ ls -l <html:i>LOGFILE</html:i></html:pre>
@@ -16106,16 +16106,16 @@ facility by unauthorized and malicious users.</rationale>
         <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Is this system the central log server? If so, edit the file <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/logwatch/conf/logwatch.conf</html:code> as shown below.</description>
         <Rule id="xccdf_org.ssgproject.content_rule_logwatch_configured_hostlimit" selected="false" severity="unknown">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Configure Logwatch HostLimit Line</title>
-          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">On a central logserver, you want Logwatch to summarize all syslog entries, including those which did not originate 
-on the logserver itself. The <html:code xmlns:html="http://www.w3.org/1999/xhtml">HostLimit</html:code> setting tells Logwatch to report on all hosts, not just the one on which it 
-is running. 
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">On a central logserver, you want Logwatch to summarize all syslog entries, including those which did not originate
+on the logserver itself. The <html:code xmlns:html="http://www.w3.org/1999/xhtml">HostLimit</html:code> setting tells Logwatch to report on all hosts, not just the one on which it
+is running.
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml"> HostLimit = no </html:pre></description>
           <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US"/>
         </Rule>
         <Rule id="xccdf_org.ssgproject.content_rule_logwatch_configured_splithosts" selected="false" severity="unknown">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Configure Logwatch SplitHosts Line</title>
-          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">If <html:code xmlns:html="http://www.w3.org/1999/xhtml">SplitHosts</html:code> is set, Logwatch will separate entries by hostname. This makes the report longer but significantly 
-more usable. If it is not set, then Logwatch will not report which host generated a given log entry, and that 
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">If <html:code xmlns:html="http://www.w3.org/1999/xhtml">SplitHosts</html:code> is set, Logwatch will separate entries by hostname. This makes the report longer but significantly
+more usable. If it is not set, then Logwatch will not report which host generated a given log entry, and that
 information is almost always necessary
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml"> SplitHosts = yes </html:pre></description>
           <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US"/>
@@ -16315,13 +16315,13 @@ logging services, which are essential to system administration.</rationale>
       </Rule>
       <Rule id="xccdf_org.ssgproject.content_rule_disable_logwatch_for_logserver" selected="false" severity="unknown">
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Disable Logwatch on Clients if a Logserver Exists</title>
-        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Does your site have a central logserver which has been configured to report on logs received from all systems? 
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Does your site have a central logserver which has been configured to report on logs received from all systems?
 If so:
-<html:pre xmlns:html="http://www.w3.org/1999/xhtml"> 
-$ sudo rm /etc/cron.daily/0logwatch 
+<html:pre xmlns:html="http://www.w3.org/1999/xhtml">
+$ sudo rm /etc/cron.daily/0logwatch
 </html:pre>
-If no logserver exists, it will be necessary for each system to run Logwatch individually. Using a central 
-logserver provides the security and reliability benefits discussed earlier, and also makes monitoring logs easier 
+If no logserver exists, it will be necessary for each system to run Logwatch individually. Using a central
+logserver provides the security and reliability benefits discussed earlier, and also makes monitoring logs easier
 and less time-intensive for administrators.</description>
         <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US"/>
       </Rule>
@@ -17858,7 +17858,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the setxattr rule in /etc/audit/audit.rules when on x86
@@ -18061,7 +18061,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the lchown rule in /etc/audit/audit.rules when on x86
@@ -18263,7 +18263,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the fsetxattr rule in /etc/audit/audit.rules when on x86
@@ -18469,7 +18469,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the lremovexattr rule in /etc/audit/audit.rules when on x86
@@ -18671,7 +18671,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the fchmod rule in /etc/audit/audit.rules when on x86
@@ -18874,7 +18874,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the fchown rule in /etc/audit/audit.rules when on x86
@@ -19076,7 +19076,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the chmod rule in /etc/audit/audit.rules when on x86
@@ -19278,7 +19278,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the fchmodat rule in /etc/audit/audit.rules when on x86
@@ -19483,7 +19483,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the removexattr rule in /etc/audit/audit.rules when on x86
@@ -19686,7 +19686,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the chown rule in /etc/audit/audit.rules when on x86
@@ -19889,7 +19889,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the lsetxattr rule in /etc/audit/audit.rules when on x86
@@ -20095,7 +20095,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the fremovexattr rule in /etc/audit/audit.rules when on x86
@@ -20298,7 +20298,7 @@ done
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.5.5
     - CJIS-5.4.1.1
-#   
+#
 # Inserts/replaces the rule in /etc/audit/audit.rules
 #
 - name: Inserts/replaces the fchownat rule in /etc/audit/audit.rules when on x86
@@ -20597,7 +20597,7 @@ unusual activity.</rationale>
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.2.2
     - CJIS-5.4.1.1
-  
+
 - name: Overwrites the rule in rules.d
   lineinfile:
     path: "{{ item.1.path }}"
@@ -20626,7 +20626,7 @@ unusual activity.</rationale>
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.2.2
     - CJIS-5.4.1.1
-    
+
 - name: Adds the rule in rules.d
   lineinfile:
     path: /etc/audit/rules.d/privileged.rules
@@ -20654,7 +20654,7 @@ unusual activity.</rationale>
     - NIST-800-171-3.1.7
     - PCI-DSS-Req-10.2.2
     - CJIS-5.4.1.1
-  
+
 # Adds/overwrites the rule in /etc/audit/audit.rules
 
 - name: Inserts/replaces the rule in audit.rules
@@ -21346,7 +21346,7 @@ process during boot.</rationale>
       <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">File Permissions and Masks</title>
       <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Traditional Unix security relies heavily on file and
 directory permissions to prevent unauthorized users from reading or
-modifying files to which they should not have access. 
+modifying files to which they should not have access.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
 Several of the commands in this section search filesystems
 for files or directories with certain characteristics, and are
@@ -21564,7 +21564,7 @@ runtime. Proper ownership is necessary to protect the integrity of the system.</
 do
   if [ -d $LIBDIR ]
   then
-    find -L $LIBDIR \! -user root -exec chown root {} \; 
+    find -L $LIBDIR \! -user root -exec chown root {} \;
   fi
 done
 </fix>
@@ -22174,9 +22174,9 @@ following command:
           <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">AC-6</reference>
           <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Failing to set the sticky bit on public directories allows unauthorized users to delete files in the directory structure.
 <html:br xmlns:html="http://www.w3.org/1999/xhtml"/><html:br xmlns:html="http://www.w3.org/1999/xhtml"/>
-The only authorized public directories are those temporary directories supplied with the system, 
-or those designed to be temporary file repositories.  The setting is normally reserved for directories 
-used by the system, by users for temporary file storage (such as <html:code xmlns:html="http://www.w3.org/1999/xhtml">/tmp</html:code>), and for directories 
+The only authorized public directories are those temporary directories supplied with the system,
+or those designed to be temporary file repositories.  The setting is normally reserved for directories
+used by the system, by users for temporary file storage (such as <html:code xmlns:html="http://www.w3.org/1999/xhtml">/tmp</html:code>), and for directories
 requiring global read/write access.</rationale>
           <check system="http://scap.nist.gov/schema/ocil/2">
             <check-content-ref name="ocil:ssg-dir_perms_world_writable_sticky_bits_ocil:questionnaire:1" href="ssg-fedora-ocil.xml"/>
@@ -22200,7 +22200,7 @@ partitions that are required on the local system.</description>
         <Rule id="xccdf_org.ssgproject.content_rule_mount_option_nodev_nonroot_local_partitions" selected="false" severity="unknown">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Add nodev Option to Non-Root Local Partitions</title>
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <html:code xmlns:html="http://www.w3.org/1999/xhtml">nodev</html:code> mount option prevents files from being
-interpreted as character or block devices. 
+interpreted as character or block devices.
 Legitimate character and block devices should exist only in
 the <html:code xmlns:html="http://www.w3.org/1999/xhtml">/dev</html:code> directory on the root partition or within chroot
 jails built for system services.
@@ -22523,7 +22523,7 @@ part /tmp --mountoptions="noexec"
         </Rule>
         <Rule id="xccdf_org.ssgproject.content_rule_mount_option_var_tmp_bind" selected="false" severity="unknown">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Bind Mount /var/tmp To /tmp</title>
-          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <html:code xmlns:html="http://www.w3.org/1999/xhtml">/var/tmp</html:code> directory is a world-writable directory.  
+          <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <html:code xmlns:html="http://www.w3.org/1999/xhtml">/var/tmp</html:code> directory is a world-writable directory.
 Bind-mount it to <html:code xmlns:html="http://www.w3.org/1999/xhtml">/tmp</html:code> in order to consolidate temporary storage into
 one location protected by the same techniques as <html:code xmlns:html="http://www.w3.org/1999/xhtml">/tmp</html:code>.  To do so, edit
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/fstab</html:code> and add the following line:
@@ -22613,7 +22613,7 @@ part /var/tmp --mountoptions="bind"
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <html:code xmlns:html="http://www.w3.org/1999/xhtml">nodev</html:code> mount option can be used to prevent creation
 of device files in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/dev/shm</html:code>.
 Legitimate character and block devices should not exist
-within temporary directories like <html:code xmlns:html="http://www.w3.org/1999/xhtml">/dev/shm</html:code>. 
+within temporary directories like <html:code xmlns:html="http://www.w3.org/1999/xhtml">/dev/shm</html:code>.
 Add the <html:code xmlns:html="http://www.w3.org/1999/xhtml">nodev</html:code> option to the fourth column of <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/fstab</html:code> for the line which controls mounting of <html:code xmlns:html="http://www.w3.org/1999/xhtml">/dev/shm</html:code>.</description>
           <reference href="">1.1.15</reference>
           <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">CM-7</reference>
@@ -22701,7 +22701,7 @@ part /dev/shm --mountoptions="nodev"
         <Rule id="xccdf_org.ssgproject.content_rule_mount_option_noexec_removable_partitions" selected="false" severity="unknown">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Add noexec Option to Removable Media Partitions</title>
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <html:code xmlns:html="http://www.w3.org/1999/xhtml">noexec</html:code> mount option prevents the direct
-execution of binaries on the mounted filesystem. 
+execution of binaries on the mounted filesystem.
 Preventing the direct execution of binaries from removable media (such as a USB
 key) provides a defense against malicious software that may be present on such
 untrusted media.
@@ -23133,7 +23133,7 @@ part <sub xmlns="http://checklists.nist.gov/xccdf/1.2" idref="xccdf_org.ssgproje
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The <html:code xmlns:html="http://www.w3.org/1999/xhtml">nodev</html:code> mount option can be used to prevent device files from
 being created in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/tmp</html:code>.
 Legitimate character and block devices should not exist
-within temporary directories like <html:code xmlns:html="http://www.w3.org/1999/xhtml">/tmp</html:code>. 
+within temporary directories like <html:code xmlns:html="http://www.w3.org/1999/xhtml">/tmp</html:code>.
 Add the <html:code xmlns:html="http://www.w3.org/1999/xhtml">nodev</html:code> option to the fourth column of <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/fstab</html:code> for the line which controls mounting of <html:code xmlns:html="http://www.w3.org/1999/xhtml">/tmp</html:code>.</description>
           <reference href="">1.1.3</reference>
           <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">CM-7</reference>
@@ -23326,9 +23326,9 @@ protection against exploitation of memory corruption errors such as buffer
 overflows. These features include random placement of the stack and other
 memory regions, prevention of execution in memory that should only hold data,
 and special handling of text buffers. These protections are enabled by default
-on 32-bit systems and controlled through <html:code xmlns:html="http://www.w3.org/1999/xhtml">sysctl</html:code> variables 
+on 32-bit systems and controlled through <html:code xmlns:html="http://www.w3.org/1999/xhtml">sysctl</html:code> variables
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">kernel.exec-shield</html:code> and <html:code xmlns:html="http://www.w3.org/1999/xhtml">kernel.randomize_va_space</html:code>. On the latest
-64-bit systems, <html:code xmlns:html="http://www.w3.org/1999/xhtml">kernel.exec-shield</html:code> cannot be enabled or disabled with 
+64-bit systems, <html:code xmlns:html="http://www.w3.org/1999/xhtml">kernel.exec-shield</html:code> cannot be enabled or disabled with
 <html:code xmlns:html="http://www.w3.org/1999/xhtml">sysctl</html:code>.</description>
           <Rule id="xccdf_org.ssgproject.content_rule_sysctl_kernel_randomize_va_space" selected="false" severity="medium">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Enable Randomized Layout of Virtual Address Space</title>
@@ -23349,7 +23349,7 @@ If this is not the system default value, add the following line to <html:code xm
             <reference href="http://iase.disa.mil/stigs/os/unix-linux/Pages/index.aspx">040201</reference>
             <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Address space layout randomization (ASLR) makes it more difficult
 for an attacker to predict the location of attack code they have introduced
-into a process's address space during an attempt at exploitation.  Additionally, ASLR 
+into a process's address space during an attempt at exploitation.  Additionally, ASLR
 makes it more difficult for an attacker to know the location of existing code
 in order to re-purpose it using return oriented programming (ROP) techniques.</rationale>
             <fix xmlns:xhtml="http://www.w3.org/1999/xhtml" id="sysctl_kernel_randomize_va_space" system="urn:xccdf:fix:script:ansible" reboot="true" complexity="low" disruption="medium" strategy="disable">- name: Ensure sysctl kernel.randomize_va_space is set to 2
@@ -23379,7 +23379,7 @@ in order to re-purpose it using return oriented programming (ROP) techniques.</r
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Enable ExecShield via sysctl</title>
             <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">By default on Red Hat Enterprise Linux 7 64-bit systems, ExecShield
 is enabled and can only be disabled if the hardware does not support ExecShield
-or is disabled in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/default/grub</html:code>. For Red Hat Enterprise Linux 7 
+or is disabled in <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/default/grub</html:code>. For Red Hat Enterprise Linux 7
 32-bit systems, <html:code xmlns:html="http://www.w3.org/1999/xhtml">sysctl</html:code> can be used to enable ExecShield.</description>
             <reference href="">1.5.2</reference>
             <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-171.pdf">3.1.7</reference>
@@ -23398,7 +23398,7 @@ writes an address as a limit in the code segment descriptor, to
 control where code can be executed, on a per-process basis. When
 the kernel places a process's memory regions such as the stack and
 heap higher than this address, the hardware prevents execution in that
-address range. This is enabled by default on the latest Red Hat and Fedora 
+address range. This is enabled by default on the latest Red Hat and Fedora
 systems if supported by the hardware.</rationale>
             <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
               <check-content-ref name="oval:ssg-sysctl_kernel_exec_shield:def:1" href="ssg-fedora-oval.xml"/>
@@ -23421,7 +23421,7 @@ Extra steps must be taken to ensure that this protection is
 enabled, particularly on 32-bit x86 systems. Other processors, such
 as Itanium and POWER, have included such support since inception
 and the standard kernel for those platforms supports the
-feature. This is enabled by default on the latest Red Hat and 
+feature. This is enabled by default on the latest Red Hat and
 Fedora systems if supported by the hardware.</description>
           <Rule id="xccdf_org.ssgproject.content_rule_install_PAE_kernel_on_x86-32" selected="false" severity="unknown">
             <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Install PAE Kernel on Supported 32-bit x86 Systems</title>
@@ -23473,7 +23473,7 @@ If this is not the system default value, add the following line to <html:code xm
           <reference href="https://www.gpo.gov/fdsys/pkg/CFR-2007-title45-vol1/pdf/CFR-2007-title45-vol1-chapA-subchapC.pdf">164.312(a)</reference>
           <reference href="https://www.gpo.gov/fdsys/pkg/CFR-2007-title45-vol1/pdf/CFR-2007-title45-vol1-chapA-subchapC.pdf">164.312(e)</reference>
           <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">SI-11</reference>
-          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Unprivileged access to the kernel syslog can expose sensitive kernel 
+          <rationale xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Unprivileged access to the kernel syslog can expose sensitive kernel
 address information.</rationale>
           <check system="http://scap.nist.gov/schema/ocil/2">
             <check-content-ref name="ocil:ssg-sysctl_kernel_dmesg_restrict_ocil:questionnaire:1" href="ssg-fedora-ocil.xml"/>
@@ -24021,8 +24021,8 @@ chmod 600 /boot/grub/grub.conf
       </Rule>
       <Rule id="xccdf_org.ssgproject.content_rule_file_groupowner_grub_conf" selected="false" severity="medium">
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Verify /etc/grub.conf Group Ownership</title>
-        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The file <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/grub.conf</html:code> should 
-be group-owned by the <html:code xmlns:html="http://www.w3.org/1999/xhtml">root</html:code> group to prevent 
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The file <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/grub.conf</html:code> should
+be group-owned by the <html:code xmlns:html="http://www.w3.org/1999/xhtml">root</html:code> group to prevent
 destruction or modification of the file.
  To properly set the group owner of <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/grub.conf</html:code>, run the command: <html:pre xmlns:html="http://www.w3.org/1999/xhtml">$ sudo chgrp root /etc/grub.conf</html:pre></description>
         <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">AC-6(7)</reference>
@@ -24056,8 +24056,8 @@ chgrp 0 /boot/grub/grub.conf
       </Rule>
       <Rule id="xccdf_org.ssgproject.content_rule_file_owner_grub_conf" selected="false" severity="medium">
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Verify /etc/grub.conf User Ownership</title>
-        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The file <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/grub.conf</html:code> should 
-be owned by the <html:code xmlns:html="http://www.w3.org/1999/xhtml">root</html:code> user to prevent destruction 
+        <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The file <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/grub.conf</html:code> should
+be owned by the <html:code xmlns:html="http://www.w3.org/1999/xhtml">root</html:code> user to prevent destruction
 or modification of the file.
  To properly set the owner of <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/grub.conf</html:code>, run the command: <html:pre xmlns:html="http://www.w3.org/1999/xhtml">$ sudo chown root /etc/grub.conf </html:pre></description>
         <reference href="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf">AC-6(7)</reference>
@@ -24345,7 +24345,7 @@ fi
 
 # Create a list of audit *.rules files that should be inspected for presence and correctness
 # of a particular audit rule. The scheme is as follows:
-# 
+#
 # -----------------------------------------------------------------------------------------
 #  Tool used to load audit rules | Rule already defined  |  Audit rules file to inspect    |
 # -----------------------------------------------------------------------------------------
@@ -24690,7 +24690,7 @@ function die {
 	exit "$_rc"
 }
 </set-value>
-    <set-value idref="xccdf_org.ssgproject.content_value_function_populate"># The populate function isn't directly used by SSG at the moment but it can be 
+    <set-value idref="xccdf_org.ssgproject.content_value_function_populate"># The populate function isn't directly used by SSG at the moment but it can be
 # used for testing purposes and will be used in SSG Testsuite in the future.
 
 function populate {
@@ -24724,7 +24724,7 @@ then
   echo "Usage: service_command 'enable/disable' 'service_name.service'"
   echo
   echo "To enable or disable xinetd services add \'xinetd=service_name\'"
-  echo "as the last argument"  
+  echo "as the last argument"
   echo "Aborting."
   exit 1
 fi
@@ -24845,7 +24845,7 @@ fi
 
 # Create a list of audit *.rules files that should be inspected for presence and correctness
 # of a particular audit rule. The scheme is as follows:
-# 
+#
 # -----------------------------------------------------------------------------------------
 #  Tool used to load audit rules | Rule already defined  |  Audit rules file to inspect    |
 # -----------------------------------------------------------------------------------------
@@ -25115,7 +25115,7 @@ do
 		#   can contain multiple -F path= elements covering multiple SUID/SGID binaries)
 		# * existing rule contains all arguments from expected rule form (though can contain
 		#   them in arbitrary order)
-	
+
 		base_search=$(sed -e '/-a always,exit/!d' -e '/-F path='"${sbinary_esc}"'/!d' \
 				-e '/-F path=[^[:space:]]\+/!d'   -e '/-F perm=.*/!d'                 \
 				-e '/-F auid&gt;='"${min_auid}"'/!d' -e '/-F auid!=4294967295/!d'        \
@@ -25517,7 +25517,7 @@ fi
 
 # Create a list of audit *.rules files that should be inspected for presence and correctness
 # of a particular audit rule. The scheme is as follows:
-# 
+#
 # -----------------------------------------------------------------------------------------
 #  Tool used to load audit rules | Rule already defined  |  Audit rules file to inspect    |
 # -----------------------------------------------------------------------------------------
