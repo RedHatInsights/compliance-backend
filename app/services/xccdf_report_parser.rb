@@ -57,6 +57,27 @@ class XCCDFReportParser
     test_result.rr.keys
   end
 
+  def save_rules
+    new_rules = []
+    rules = @benchmark.items.find_all { |k,v| v.is_a?(OpenSCAP::Xccdf::Rule) }
+    rules.each do |rule|
+      ref_id = rule[0]
+      rule_object = rule[1]
+      rationale = rule_object.rationale
+      description = rule_object.description
+      title = rule_object.title
+      severity = rule_object.severity
+      new_rules << Rule.create(
+        :ref_id => ref_id,
+        :rationale => rationale,
+        :description => description,
+        :title => title,
+        :severity => severity
+      )
+    end
+    new_rules
+  end
+
   private
 
   def find_namespace(report_xml)

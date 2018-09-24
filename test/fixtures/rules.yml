@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ref_id: MyString
+  supported: false
+  title: MyString
+  description: MyText
+  rationale: MyText
+
+two:
+  ref_id: MyString
+  supported: false
+  title: MyString
+  description: MyText
+  rationale: MyText

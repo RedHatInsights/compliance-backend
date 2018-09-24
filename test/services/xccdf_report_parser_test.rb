@@ -36,13 +36,26 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     assert_equal(16.220237731933594, @report_parser.score)
   end
 
-  test 'rules can be listed' do
-    arbitrary_rules = [
-      'xccdf_org.ssgproject.content_rule_dir_perms_world_writable_system_owned',
-      'xccdf_org.ssgproject.content_rule_bios_enable_execution_restrictions',
-      'xccdf_org.ssgproject.content_rule_gconf_gnome_screensaver_lock_enabled',
-      'xccdf_org.ssgproject.content_rule_selinux_all_devicefiles_labeled'
-    ]
-    assert_empty(arbitrary_rules - @report_parser.rule_ids)
+  context 'rules' do
+    setup do
+      @arbitrary_rules = [
+        'xccdf_org.ssgproject.content_rule_dir_perms_world_writable_system_owned',
+        'xccdf_org.ssgproject.content_rule_bios_enable_execution_restrictions',
+        'xccdf_org.ssgproject.content_rule_gconf_gnome_screensaver_lock_enabled',
+        'xccdf_org.ssgproject.content_rule_selinux_all_devicefiles_labeled'
+      ]
+    end
+
+    should 'rules can be listed' do
+      assert_empty(@arbitrary_rules - @report_parser.rule_ids)
+    end
+
+    should 'new rules are saved in the database, old rules are ignored' do
+      Rule.create(:ref_id => @arbitrary_rules[0])
+      Rule.create(:ref_id => @arbitrary_rules[1])
+      assert_difference('Rule.count', 2) do
+        @report_parser.save_rules
+      end
+    end
   end
 end
