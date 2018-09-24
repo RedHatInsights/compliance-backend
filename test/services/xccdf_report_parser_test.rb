@@ -35,4 +35,14 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
   test 'score can be parsed' do
     assert_equal(16.220237731933594, @report_parser.score)
   end
+
+  test 'rules can be listed' do
+    arbitrary_rules = [
+      'xccdf_org.ssgproject.content_rule_dir_perms_world_writable_system_owned',
+      'xccdf_org.ssgproject.content_rule_bios_enable_execution_restrictions',
+      'xccdf_org.ssgproject.content_rule_gconf_gnome_screensaver_lock_enabled',
+      'xccdf_org.ssgproject.content_rule_selinux_all_devicefiles_labeled'
+    ]
+    assert_empty(arbitrary_rules - @report_parser.rule_ids)
+  end
 end

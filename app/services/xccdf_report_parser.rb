@@ -53,6 +53,10 @@ class XCCDFReportParser
     created
   end
 
+  def rule_ids
+    test_result.rr.keys
+  end
+
   private
 
   def find_namespace(report_xml)
