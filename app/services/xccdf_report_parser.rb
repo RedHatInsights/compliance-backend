@@ -34,7 +34,23 @@ class XCCDFReportParser
   end
 
   def profiles
-    @benchmark.profiles.map { |id, oscap_profile| [id, oscap_profile.title] }
+    result = {}
+    @benchmark.profiles.each do |id, oscap_profile|
+      result[id] = oscap_profile.title
+    end
+    result
+  end
+
+  def save_profiles
+    created = []
+    profiles.each do |ref_id, name|
+      if (profile = Profile.find_by(:name => name, :ref_id => ref_id))
+        created << profile
+        next
+      end
+      created << Profile.create(:name => name, :ref_id => ref_id)
+    end
+    created
   end
 
   private
