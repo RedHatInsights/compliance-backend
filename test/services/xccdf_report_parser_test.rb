@@ -6,9 +6,9 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
   setup do
     fake_report = file_fixture('xccdf_report.xml').to_path
     @profile = {
-        'xccdf_org.ssgproject.content_profile_standard' =>
-        'Standard System Security Profile for Fedora'
-      }
+      'xccdf_org.ssgproject.content_profile_standard' =>
+      'Standard System Security Profile for Fedora'
+    }
     @report_parser = ::XCCDFReportParser.new(fake_report)
   end
 
@@ -24,8 +24,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
 
   test 'save_profile does not save a new profile if it existed before' do
     Profile.create(
-      :ref_id => 'xccdf_org.ssgproject.content_profile_standard',
-      :name => @profile['xccdf_org.ssgproject.content_profile_standard']
+      ref_id: 'xccdf_org.ssgproject.content_profile_standard',
+      name: @profile['xccdf_org.ssgproject.content_profile_standard']
     )
     assert_difference('Profile.count', 0) do
       @report_parser.save_profiles
@@ -39,10 +39,12 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
   context 'rules' do
     setup do
       @arbitrary_rules = [
+        # rubocop:disable Metrics/LineLength
         'xccdf_org.ssgproject.content_rule_dir_perms_world_writable_system_owned',
         'xccdf_org.ssgproject.content_rule_bios_enable_execution_restrictions',
         'xccdf_org.ssgproject.content_rule_gconf_gnome_screensaver_lock_enabled',
         'xccdf_org.ssgproject.content_rule_selinux_all_devicefiles_labeled'
+        # rubocop:enable Metrics/LineLength
       ]
     end
 
@@ -51,10 +53,14 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     end
 
     should 'new rules are saved in the database, old rules are ignored' do
-      Rule.create(:ref_id => @arbitrary_rules[0])
-      Rule.create(:ref_id => @arbitrary_rules[1])
-      assert_difference('Rule.count', 2) do
-        @report_parser.save_rules
+      rule1 = Rule.create(ref_id: @arbitrary_rules[0])
+      rule2 = Rule.create(ref_id: @arbitrary_rules[1])
+      assert_difference('Rule.count', 365) do
+        new_rules = @report_parser.save_rules
+        old_rules_found = new_rules.find_all do |rule|
+          [rule1.ref_id, rule2.ref_id].include?(rule.ref_id)
+        end
+        assert_empty old_rules_found
       end
     end
   end

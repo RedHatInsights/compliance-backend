@@ -44,11 +44,11 @@ class XCCDFReportParser
   def save_profiles
     created = []
     profiles.each do |ref_id, name|
-      if (profile = Profile.find_by(:name => name, :ref_id => ref_id))
+      if (profile = Profile.find_by(name: name, ref_id: ref_id))
         created << profile
         next
       end
-      created << Profile.create(:name => name, :ref_id => ref_id)
+      created << Profile.create(name: name, ref_id: ref_id)
     end
     created
   end
@@ -57,25 +57,20 @@ class XCCDFReportParser
     test_result.rr.keys
   end
 
+  def rule_objects
+    @rule_objects ||= @benchmark.items.select do |_, v|
+      v.is_a?(OpenSCAP::Xccdf::Rule)
+    end
+  end
+
   def save_rules
     new_rules = []
-    rules = @benchmark.items.find_all { |k,v| v.is_a?(OpenSCAP::Xccdf::Rule) }
-    rules.each do |rule|
+    rule_objects.each do |rule|
       ref_id = rule[0]
       rule_object = rule[1]
-      rationale = rule_object.rationale
-      description = rule_object.description
-      title = rule_object.title
-      severity = rule_object.severity
-      new_rules << Rule.create(
-        :ref_id => ref_id,
-        :rationale => rationale,
-        :description => description,
-        :title => title,
-        :severity => severity
-      )
+      Rule.create(ref_id: ref_id).from_oscap_object(rule_object)
     end
-    new_rules
+    new_rules.compact
   end
 
   private

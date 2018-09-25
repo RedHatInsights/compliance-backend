@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Data model for storing rules
 class CreateRules < ActiveRecord::Migration[5.2]
   def change
     create_table :rules, id: :uuid do |t|
