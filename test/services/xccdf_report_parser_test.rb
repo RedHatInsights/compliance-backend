@@ -36,6 +36,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     assert_equal(16.220237731933594, @report_parser.score)
   end
 
+  # rubocop:disable Metrics/BlockLength
   context 'rules' do
     setup do
       @arbitrary_rules = [
@@ -48,11 +49,17 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       ]
     end
 
-    should 'rules can be listed' do
+    should 'list all rules' do
       assert_empty(@arbitrary_rules - @report_parser.rule_ids)
     end
 
-    should 'new rules are saved in the database, old rules are ignored' do
+    should 'link the rules with the profile' do
+      @report_parser.save_profiles
+      new_rules = @report_parser.save_rules
+      assert_equal @profile.keys.first, new_rules.sample.profiles.first.ref_id
+    end
+
+    should 'save new rules in the database, ignore old rules' do
       rule1 = Rule.create(ref_id: @arbitrary_rules[0])
       rule2 = Rule.create(ref_id: @arbitrary_rules[1])
       assert_difference('Rule.count', 365) do
@@ -64,4 +71,5 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 end

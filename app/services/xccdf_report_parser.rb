@@ -64,13 +64,16 @@ class XCCDFReportParser
   end
 
   def save_rules
-    new_rules = []
-    rule_objects.each do |rule|
-      ref_id = rule[0]
+    rule_objects.each_with_object([]) do |rule, new_rules|
       rule_object = rule[1]
-      Rule.create(ref_id: ref_id).from_oscap_object(rule_object)
+      next if Rule.find_by(ref_id: rule_object.id)
+
+      new_rule = Rule.new(
+        profiles: Profile.where(ref_id: profiles.keys)
+      ).from_oscap_object(rule_object)
+      new_rule.save
+      new_rules << new_rule
     end
-    new_rules.compact
   end
 
   private
