@@ -83,6 +83,23 @@ class XCCDFReportParser
     end
   end
 
+  def rule_results
+    test_result.rr.map { |_, v| v }
+  end
+
+  def save_rule_results
+    save_profiles
+    save_rules
+    save_host
+    rule_results.each_with_object([]) do |rule_result, rule_results|
+      rule_results << RuleResult.create(
+        host: Host.find_by(name: host),
+        rule: Rule.find_by(ref_id: rule_result.id),
+        result: rule_result.result
+      )
+    end
+  end
+
   private
 
   def find_namespace(report_xml)

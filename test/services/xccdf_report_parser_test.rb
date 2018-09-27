@@ -59,6 +59,12 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
 
   context 'rule results' do
     should 'save them, associate them with a rule and a host' do
+      assert_difference('RuleResult.count', 367) do
+        rule_results = @report_parser.save_rule_results
+        assert_equal @report_parser.host, rule_results.sample.host.name
+        rule_names = rule_results.map { |rule_result| rule_result.rule.ref_id }
+        assert rule_names.include?(@report_parser.rule_ids.sample)
+      end
     end
   end
 
