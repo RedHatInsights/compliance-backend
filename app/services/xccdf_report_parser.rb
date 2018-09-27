@@ -18,15 +18,22 @@ class XCCDFReportParser
   def test_result
     return @test_result if @test_result.present?
 
-    xccdf_report = File.open(@report_path) { |f| Nokogiri::XML(f) }
     source = ::OpenSCAP::Source.new(
-      content: create_test_result(xccdf_report).to_xml
+      content: create_test_result(report_xml).to_xml
     )
     begin
       @test_result = ::OpenSCAP::Xccdf::TestResult.new(source)
     rescue ::OpenSCAP::OpenSCAPError => e
       Rails.logger.error('Error: ', e)
     end
+  end
+
+  def host
+    report_xml.search('target').text
+  end
+
+  def save_host
+    Host.find_or_create_by(name: host)
   end
 
   def score
@@ -88,5 +95,9 @@ class XCCDFReportParser
     test_result_doc.root.default_namespace = find_namespace(report_xml)
     test_result_doc.namespace = test_result_doc.root.namespace
     test_result_doc
+  end
+
+  def report_xml
+    @report_xml ||= File.open(@report_path) { |f| Nokogiri::XML(f) }
   end
 end

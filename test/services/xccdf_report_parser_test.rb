@@ -12,23 +12,53 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     @report_parser = ::XCCDFReportParser.new(fake_report)
   end
 
-  test 'profile can be parsed' do
-    assert_equal(@profile, @report_parser.profiles)
-  end
+  context 'profile' do
+    should 'be able to parse it' do
+      assert_equal(@profile, @report_parser.profiles)
+    end
 
-  test 'save_profile saves a new profile if it did not exist before' do
-    assert_difference('Profile.count', 1) do
-      @report_parser.save_profiles
+    should 'save a new profile if it did not exist before' do
+      assert_difference('Profile.count', 1) do
+        @report_parser.save_profiles
+      end
+    end
+
+    should 'not save a new profile if it existed before' do
+      Profile.create(
+        ref_id: 'xccdf_org.ssgproject.content_profile_standard',
+        name: @profile['xccdf_org.ssgproject.content_profile_standard']
+      )
+      assert_difference('Profile.count', 0) do
+        @report_parser.save_profiles
+      end
     end
   end
 
-  test 'save_profile does not save a new profile if it existed before' do
-    Profile.create(
-      ref_id: 'xccdf_org.ssgproject.content_profile_standard',
-      name: @profile['xccdf_org.ssgproject.content_profile_standard']
-    )
-    assert_difference('Profile.count', 0) do
-      @report_parser.save_profiles
+  context 'host' do
+    should 'be able to parse host name' do
+      assert_equal 'lenovolobato.lobatolan.home', @report_parser.host
+    end
+
+    should 'save the hostname in db' do
+      assert_difference('Host.count', 1) do
+        @report_parser.save_host
+        assert Host.find_by(name: @report_parser.host)
+      end
+    end
+
+    should 'return the host object even if it already existed' do
+      Host.create(name: @report_parser.host)
+      assert_difference('Host.count', 0) do
+        new_host = @report_parser.save_host
+        assert_equal(
+          new_host, Host.find_by(name: @report_parser.host)
+        )
+      end
+    end
+  end
+
+  context 'rule results' do
+    should 'save them, associate them with a rule and a host' do
     end
   end
 
