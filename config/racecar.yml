@@ -1,0 +1,22 @@
+# These config values will be shared by all environments but can be overridden.
+common: &common
+  client_id: "compliance_backend"
+
+# By default, kafka's container port 9092 is proxied to 2902
+# in insights-upload
+development:
+  <<: *common
+  brokers:
+    - localhost:29092
+
+test:
+  <<: *common
+  brokers:
+    - localhost:9092
+
+production:
+  <<: *common
+  brokers:
+    - kafka1.myapp.com:9092
+    - kafka2.myapp.com:9092
+    - kafka3.myapp.com:9092
