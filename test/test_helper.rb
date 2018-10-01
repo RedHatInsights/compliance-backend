@@ -5,6 +5,7 @@ require_relative '../config/environment'
 require 'rails/test_help'
 
 require 'minitest/reporters'
+require 'minitest/mock'
 Minitest::Reporters.use!(
   Minitest::Reporters::ProgressReporter.new,
   ENV,
