@@ -2,11 +2,9 @@
 
 # Saves all of the information we can parse from a XCCDF report into db
 class ParseReportJob < ApplicationJob
-  def perform(message)
+  def perform(filepath)
     # Handle URL differently if it looks like HTTPS URL vs filepath
-    parser = XCCDFReportParser.new(message['url'])
-    parser.save_host
-    parser.save_profiles
+    parser = XCCDFReportParser.new(filepath)
     parser.save_rule_results
   end
 

@@ -39,6 +39,7 @@ group :development, :test do
   gem 'shoulda-context'
   gem 'shoulda-matchers'
   gem 'minitest-reporters'
+  gem 'mocha'
 end
 
 group :development do
