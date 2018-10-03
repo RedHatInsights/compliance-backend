@@ -6,6 +6,7 @@ require 'rails/test_help'
 
 require 'minitest/reporters'
 require 'minitest/mock'
+require 'mocha/minitest'
 Minitest::Reporters.use!(
   Minitest::Reporters::ProgressReporter.new,
   ENV,

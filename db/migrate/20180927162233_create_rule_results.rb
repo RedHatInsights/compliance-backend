@@ -5,8 +5,8 @@
 class CreateRuleResults < ActiveRecord::Migration[5.2]
   def change
     create_table :rule_results, id: :uuid do |t|
-      t.references :host
-      t.references :rule
+      t.references :host, type: :uuid, index: true
+      t.references :rule, type: :uuid, index: true
       t.string :result
 
       t.timestamps

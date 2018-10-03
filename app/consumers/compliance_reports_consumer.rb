@@ -6,10 +6,18 @@ class ComplianceReportsConsumer < Racecar::Consumer
   subscribes_to 'compliance'
 
   def process(message)
-    value = JSON.parse(message.value)
-    Rails.logger.info "Received message, enqueueing: #{value['hash']}"
-    job = ParseReportJob.perform_later(value)
-    Rails.logger.info "Message enqueued: #{value['hash']} as #{job.job_id} "\
-      "in queue #{job.queue_name}"
+    logger.info "Received message, enqueueing: #{message.value}"
+    job = ParseReportJob.perform_later(
+      SafeDownloader.new.download(
+        JSON.parse(message.value)['url']
+      ).path
+    )
+    logger.info "Message enqueued: #{message.value} as #{job.job_id}"
+  end
+
+  private
+
+  def logger
+    Rails.logger
   end
 end
