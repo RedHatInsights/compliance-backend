@@ -16,11 +16,13 @@ class SafeDownloader
     DownloadError
   ].freeze
 
-  def download(url, max_size: nil)
+  def download(url, path, max_size: nil)
     url = encode_url(url)
     options = create_options(max_size)
     downloaded_file = url.open(options)
     patch_if_less_than_10k(downloaded_file)
+    IO.copy_stream(downloaded_file, path)
+    downloaded_file
   rescue *DOWNLOAD_ERRORS => error
     raise if error.instance_of?(RuntimeError) && error.message !~ /redirection/
 
