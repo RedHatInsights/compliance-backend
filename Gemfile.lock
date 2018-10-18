@@ -103,6 +103,7 @@ GEM
       king_konf (~> 0.3.6)
       ruby-kafka (~> 0.6)
     rack (2.0.5)
+    rack-cors (1.0.2)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.1)
@@ -185,6 +186,7 @@ DEPENDENCIES
   pg
   puma (~> 3.11)
   racecar
+  rack-cors
   rails (~> 5.2.1)
   rubocop
   shoulda-context
