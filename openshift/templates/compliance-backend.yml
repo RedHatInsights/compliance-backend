@@ -109,10 +109,11 @@ objects:
           failurePolicy: Abort
           execNewPod:
             command:
-            - bundle
-            - exec
-            - rake
-            - db:migrate
+            - bash
+            - -c
+            - |
+              set -e
+              RAILS_ENV=production bundle exec rake db:migrate
             containerName: "${NAME}"
     triggers:
     - type: ImageChange
