@@ -349,7 +349,7 @@ parameters:
 - name: DATABASE_SERVICE_NAME
   required: true
   displayName: Database Service Name
-  value: postgresql
+  value: compliance-db
 - name: DATABASE_USER
   displayName: Database Username
   generate: expression

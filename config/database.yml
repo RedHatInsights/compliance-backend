@@ -1,6 +1,6 @@
 <% user = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? "postgres" : ENV["POSTGRESQL_USER"] %>
 <% password = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? ENV["POSTGRESQL_ADMIN_PASSWORD"] : ENV["POSTGRESQL_PASSWORD"] %>
-<% db_service = ENV.fetch("DATABASE_SERVICE_NAME","").upcase %>
+<% db_service = ENV.fetch("DATABASE_SERVICE_NAME","").upcase.sub("-", "_") %>
 
 
 default: &default
