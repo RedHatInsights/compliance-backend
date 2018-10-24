@@ -3,7 +3,7 @@
 require 'test_helper'
 
 class ProfileTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  should validate_uniqueness_of :ref_id
+  should validate_presence_of :ref_id
+  should validate_presence_of :name
 end
