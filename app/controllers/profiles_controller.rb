@@ -1,6 +1,5 @@
 class ProfilesController < ApplicationController
   def index
-    profiles = Profile.all
-    render json: profiles
+    render json: ProfileSerializer.new(Profile.all.to_a)
   end
 end
