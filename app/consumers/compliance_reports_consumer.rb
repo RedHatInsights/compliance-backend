@@ -3,7 +3,7 @@
 # Receives messages from the Kafka topic, converts them into jobs
 # for processing
 class ComplianceReportsConsumer < Racecar::Consumer
-  subscribes_to 'compliance'
+  subscribes_to 'platform.upload.compliance'
 
   def process(message)
     value = JSON.parse(message.value)
@@ -14,7 +14,7 @@ class ComplianceReportsConsumer < Racecar::Consumer
     enqueue_job(path, value['hash'], validation)
     produce(
       validation_payload(value['hash'], validation),
-      topic: 'uploadvalidation'
+      topic: 'platform.upload.uploadvalidation'
     )
   end
 
