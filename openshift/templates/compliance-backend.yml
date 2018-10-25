@@ -23,8 +23,6 @@ objects:
     database-user: "${DATABASE_USER}"
     database-password: "${DATABASE_PASSWORD}"
     database-admin-password: "${DATABASE_ADMIN_PASSWORD}"
-    application-user: "${APPLICATION_USER}"
-    application-password: "${APPLICATION_PASSWORD}"
     keybase: "${SECRET_KEY_BASE}"
 - kind: Service
   apiVersion: v1
@@ -39,15 +37,6 @@ objects:
       port: 8080
       targetPort: 8080
     selector:
-      name: "${NAME}"
-- kind: Route
-  apiVersion: v1
-  metadata:
-    name: "${NAME}"
-  spec:
-    host: "${APPLICATION_DOMAIN}"
-    to:
-      kind: Service
       name: "${NAME}"
 - kind: ImageStream
   apiVersion: v1
@@ -65,7 +54,7 @@ objects:
   spec:
     resources:
       limits:
-        memory: "2Gi" 
+        memory: "${MEMORY_LIMIT}"
     source:
       type: Git
       git:
@@ -113,7 +102,7 @@ objects:
             - -c
             - |
               set -e
-              RAILS_ENV=production bundle exec rake db:migrate
+              RAILS_ENV="${RAILS_ENV}" bundle exec rake db:migrate
             containerName: "${NAME}"
     triggers:
     - type: ImageChange
@@ -137,8 +126,6 @@ objects:
         containers:
         - name: "${NAME}"
           image: " "
-          ports:
-          - containerPort: 8080
           env:
           - name: DATABASE_SERVICE_NAME
             value: "${DATABASE_SERVICE_NAME}"
@@ -168,20 +155,10 @@ objects:
             value: "${POSTGRESQL_MAX_CONNECTIONS}"
           - name: POSTGRESQL_SHARED_BUFFERS
             value: "${POSTGRESQL_SHARED_BUFFERS}"
-          - name: APPLICATION_DOMAIN
-            value: "${APPLICATION_DOMAIN}"
-          - name: APPLICATION_USER
-            valueFrom:
-              secretKeyRef:
-                name: "${NAME}"
-                key: application-user
-          - name: APPLICATION_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: "${NAME}"
-                key: application-password
           - name: RAILS_ENV
             value: "${RAILS_ENV}"
+          - name: KAFKAMQ
+            value: kafka-1.${NAMESPACE}.svc:29092
           resources:
             limits:
               memory: "${MEMORY_LIMIT}"
@@ -206,6 +183,7 @@ objects:
       description: Defines how to deploy the database
       template.alpha.openshift.io/wait-for-ready: 'true'
   spec:
+
     strategy:
       type: Recreate
     triggers:
@@ -302,21 +280,18 @@ parameters:
   displayName: Git Repository URL
   required: true
   description: The URL of the repository with your application source code.
-  value: https://github.com/RedHatInsights/compliance-backend
+  # value: https://github.com/RedHatInsights/compliance-backend
+  value: https://github.com/quarckster/compliance-backend
 - name: SOURCE_REPOSITORY_REF
   displayName: Git Reference
   description: Set this to a branch name, tag or other ref of your repository if you
     are not using the default branch.
-  value:
+  # value:
+  value: openshift
 - name: CONTEXT_DIR
   displayName: Context Directory
   description: Set this to the relative path to your project if it is not in the root
     of your repository.
-- name: APPLICATION_DOMAIN
-  displayName: Application Hostname
-  description: The exposed hostname that will route to the Rails service, if left
-    blank a value will be defaulted.
-  value: ''
 - name: GITHUB_WEBHOOK_SECRET
   displayName: GitHub Webhook Secret
   description: Github trigger secret.  A difficult to guess string encoded as part
@@ -328,18 +303,6 @@ parameters:
   description: Your secret key for verifying the integrity of signed cookies.
   generate: expression
   from: "[a-z0-9]{127}"
-- name: APPLICATION_USER
-  displayName: Application Username
-  required: true
-  description: The application user that is used within the sample application to
-    authorize access on pages.
-  value: openshift
-- name: APPLICATION_PASSWORD
-  displayName: Application Password
-  required: true
-  description: The application password that is used within the sample application
-    to authorize access on pages.
-  value: secret
 - name: RAILS_ENV
   displayName: Rails Environment
   required: true
