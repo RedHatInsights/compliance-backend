@@ -183,7 +183,6 @@ objects:
       description: Defines how to deploy the database
       template.alpha.openshift.io/wait-for-ready: 'true'
   spec:
-
     strategy:
       type: Recreate
     triggers:
@@ -280,14 +279,12 @@ parameters:
   displayName: Git Repository URL
   required: true
   description: The URL of the repository with your application source code.
-  # value: https://github.com/RedHatInsights/compliance-backend
-  value: https://github.com/quarckster/compliance-backend
+  value: https://github.com/RedHatInsights/compliance-backend
 - name: SOURCE_REPOSITORY_REF
   displayName: Git Reference
   description: Set this to a branch name, tag or other ref of your repository if you
     are not using the default branch.
-  # value:
-  value: openshift
+  value:
 - name: CONTEXT_DIR
   displayName: Context Directory
   description: Set this to the relative path to your project if it is not in the root

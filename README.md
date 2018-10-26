@@ -18,8 +18,18 @@ Let's examine how to run the project:
 ### Option 1: [OpenShift](https://www.openshift.com/)
 
 You may use the templates in `openshift/templates/` and upload them to
-Openshift to run the project without any further configuration.
+Openshift to run the project without any further configuration. The template uses two docker images:
+[`quarck/ruby25-openscap`](https://hub.docker.com/r/quarck/ruby25-openscap/) and [`centos/postgresql-96-centos7`](https://hub.docker.com/r/centos/postgresql-96-centos7/). 
 
+#### Prerequisites
+
+* [`ocdeployer`](https://github.com/bsquizz/ocdeployer)
+
+#### Deploy
+
+```shell
+ocdeployer -s compliance your_openshift_project
+```
 
 ### Option 2: Development setup
 
