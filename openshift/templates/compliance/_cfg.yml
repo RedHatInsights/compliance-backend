@@ -1,0 +1,9 @@
+images:
+  postgresql-96-centos7: "centos/postgresql-96-centos7"
+  ruby25-openscap: "quarck/ruby25-openscap"
+
+deploy_order:
+  stage0:
+    timeout: 600
+    components:
+      - "compliance-backend"
