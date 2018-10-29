@@ -37,6 +37,9 @@ gem 'rack-cors'
 gem 'rswag-api'
 gem 'rswag-ui'
 
+# Config YAML files for all environments
+gem 'config'
+
 # JSON API serializer
 gem 'fast_jsonapi'
 

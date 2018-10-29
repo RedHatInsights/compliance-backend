@@ -3,7 +3,7 @@
 # Receives messages from the Kafka topic, converts them into jobs
 # for processing
 class ComplianceReportsConsumer < Racecar::Consumer
-  subscribes_to 'platform.upload.compliance'
+  subscribes_to Settings.platform_kafka_topic
 
   def process(message)
     value = JSON.parse(message.value)
