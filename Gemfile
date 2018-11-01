@@ -56,6 +56,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rswag-specs'
   gem 'capybara-webkit'
+  gem 'coveralls', require: false
 end
 
 group :development do
