@@ -9,8 +9,9 @@ require 'openscap/xccdf/testresult'
 # Takes in a path to an XCCDF file, returns all kinds of properties about it
 # and saves it in our database
 class XCCDFReportParser
-  def initialize(report_path)
+  def initialize(report_path, user)
     @report_path = report_path
+    @user = user
     @source = ::OpenSCAP::Source.new(report_path)
     @benchmark = ::OpenSCAP::Xccdf::Benchmark.new(@source)
   end
@@ -28,12 +29,17 @@ class XCCDFReportParser
     end
   end
 
-  def host
+  def report_host
     report_xml.search('target').text
   end
 
   def save_host
-    Host.find_or_create_by(name: host)
+    host = Host.find_or_initialize_by(name: report_host)
+    HostInventoryAPI.new(
+      host,
+      @user,
+      Settings.host_inventory_url
+    ).sync
   end
 
   def score
@@ -93,7 +99,7 @@ class XCCDFReportParser
     save_host
     rule_results.each_with_object([]) do |rule_result, rule_results|
       rule_results << RuleResult.create(
-        host: Host.find_by(name: host),
+        host: Host.find_by(name: report_host),
         rule: Rule.find_by(ref_id: rule_result.id),
         result: rule_result.result
       )

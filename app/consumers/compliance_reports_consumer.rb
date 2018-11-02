@@ -2,7 +2,7 @@
 
 # Receives messages from the Kafka topic, converts them into jobs
 # for processing
-class ComplianceReportsConsumer < Racecar::Consumer
+class ComplianceReportsConsumer < ApplicationConsumer
   subscribes_to Settings.platform_kafka_topic
 
   def process(message)
@@ -22,7 +22,7 @@ class ComplianceReportsConsumer < Racecar::Consumer
 
   def enqueue_job(path, hash, validation)
     if validation == 'success'
-      job = ParseReportJob.perform_later(path)
+      job = ParseReportJob.perform_later(path, current_user)
       logger.info "Message enqueued: #{hash} as #{job.job_id}"
     else
       logger.error("Error parsing report: #{hash}")
@@ -30,7 +30,7 @@ class ComplianceReportsConsumer < Racecar::Consumer
   end
 
   def validation_message(path)
-    XCCDFReportParser.new(path)
+    XCCDFReportParser.new(path, current_user)
     'success'
   rescue StandardError
     'failure'
