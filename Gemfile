@@ -43,6 +43,8 @@ gem 'config'
 # JSON API serializer
 gem 'fast_jsonapi'
 
+gem 'faraday'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]

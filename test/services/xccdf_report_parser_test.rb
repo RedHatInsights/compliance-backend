@@ -9,7 +9,9 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       'xccdf_org.ssgproject.content_profile_standard' =>
       'Standard System Security Profile for Fedora'
     }
-    @report_parser = ::XCCDFReportParser.new(fake_report)
+    @report_parser = ::XCCDFReportParser.new(fake_report, users(:test))
+    # A hack to skip API calls in the test env for the time being
+    HostInventoryAPI.stubs(:host_already_in_inventory).returns(true)
   end
 
   context 'profile' do
@@ -36,22 +38,22 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
 
   context 'host' do
     should 'be able to parse host name' do
-      assert_equal 'lenovolobato.lobatolan.home', @report_parser.host
+      assert_equal 'lenovolobato.lobatolan.home', @report_parser.report_host
     end
 
     should 'save the hostname in db' do
       assert_difference('Host.count', 1) do
         @report_parser.save_host
-        assert Host.find_by(name: @report_parser.host)
+        assert Host.find_by(name: @report_parser.report_host)
       end
     end
 
     should 'return the host object even if it already existed' do
-      Host.create(name: @report_parser.host)
+      Host.create(name: @report_parser.report_host)
       assert_difference('Host.count', 0) do
         new_host = @report_parser.save_host
         assert_equal(
-          new_host, Host.find_by(name: @report_parser.host)
+          new_host, Host.find_by(name: @report_parser.report_host)
         )
       end
     end
@@ -61,7 +63,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     should 'save them, associate them with a rule and a host' do
       assert_difference('RuleResult.count', 367) do
         rule_results = @report_parser.save_rule_results
-        assert_equal @report_parser.host, rule_results.sample.host.name
+        assert_equal @report_parser.report_host, rule_results.sample.host.name
         rule_names = rule_results.map { |rule_result| rule_result.rule.ref_id }
         assert rule_names.include?(@report_parser.rule_ids.sample)
       end
