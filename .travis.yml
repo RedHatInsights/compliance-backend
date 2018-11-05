@@ -16,7 +16,7 @@ before_install:
 services:
   - postgresql
 
-script: 'bundle exec rake test'
+script: 'bundle exec rake lib:validate'
 
 language: ruby
 rvm:
