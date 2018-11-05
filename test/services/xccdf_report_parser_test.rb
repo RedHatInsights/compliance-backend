@@ -73,8 +73,6 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
   test 'score can be parsed' do
     assert_equal(16.220237731933594, @report_parser.score)
   end
-
-  # rubocop:disable Metrics/BlockLength
   context 'rules' do
     setup do
       @arbitrary_rules = [
@@ -109,5 +107,4 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       end
     end
   end
-  # rubocop:enable Metrics/BlockLength
 end

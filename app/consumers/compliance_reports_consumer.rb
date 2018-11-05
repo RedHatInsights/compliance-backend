@@ -12,9 +12,13 @@ class ComplianceReportsConsumer < ApplicationConsumer
     SafeDownloader.new.download(value['url'], path)
     validation = validation_message(path)
     enqueue_job(path, value['hash'], validation)
+    validate(value, validation)
+  end
+
+  def validate(value, validation)
     produce(
       validation_payload(value['hash'], validation),
-      topic: 'platform.upload.uploadvalidation'
+      topic: Settings.platform_kafka_topic
     )
   end
 

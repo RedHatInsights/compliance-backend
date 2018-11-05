@@ -5,7 +5,7 @@ AllCops:
   TargetRubyVersion: 2.4
   TargetRailsVersion: 5.2
   Exclude:
-    - 'db/schema.rb'
+    - 'db/**/*'
     - 'bin/**/*'
     - 'config/**/*'
     - 'test/fixtures/**/*'
@@ -18,3 +18,9 @@ Rails:
 Metrics/ClassLength:
   Exclude:
     - 'test/**/*'
+    - 'spec/**/*'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'test/**/*'
+    - 'spec/**/*'
