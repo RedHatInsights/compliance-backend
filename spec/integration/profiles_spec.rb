@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'swagger_helper'
 
 describe 'Profiles API' do
@@ -11,20 +13,20 @@ describe 'Profiles API' do
 
       response '200', 'lists all profiles requested' do
         schema type: :object,
-          properties: {
-          meta: { '$ref' => '#/definitions/metadata' },
-          links: { '$ref' => '#/definitions/links' },
-          data: {
-            type: :array,
-            items: {
-              properties: {
-                type: { type: :string },
-                id: { type: :string, format: :uuid },
-                attributes: { '$ref' => '#/definitions/profile' }
-              }
-            }
-          }
-        }
+               properties: {
+                 meta: { '$ref' => '#/definitions/metadata' },
+                 links: { '$ref' => '#/definitions/links' },
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: { type: :string, format: :uuid },
+                       attributes: { '$ref' => '#/definitions/profile' }
+                     }
+                   }
+                 }
+               }
         examples 'application/vnd.api+json' => {
           meta: { filter: 'name=Standard System Security Profile for Fedora' },
           data: [
