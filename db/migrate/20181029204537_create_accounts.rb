@@ -16,7 +16,6 @@ class CreateAccounts < ActiveRecord::Migration[5.2]
       t.string :redhat_id
       t.string :redhat_org_id
       t.string :lang
-      t.string :login
       t.string :locale
       t.string :username
       t.boolean :internal

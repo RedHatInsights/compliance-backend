@@ -19,6 +19,15 @@
         "produces": [
           "application/vnd.api+json"
         ],
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "lists all profiles requested",

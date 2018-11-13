@@ -4,6 +4,7 @@ desc 'Run tests and rubocop'
 task :validate do
   Rake::Task['rubocop'].invoke
   Rake::Task['test'].invoke
+  Rake::Task['spec'].invoke
 end
 
 task :rubocop do

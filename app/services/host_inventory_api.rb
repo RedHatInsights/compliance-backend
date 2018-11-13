@@ -30,7 +30,8 @@ class HostInventoryAPI
   def create_host_in_inventory
     response = Faraday.post("#{@url}/api/hosts/") do |req|
       req.headers['Content-Type'] = 'application/json'
-      req.headers['X_RH_IDENTITY'] = @user
+      # Should this be base64 encoded?
+      req.headers['X_RH_IDENTITY'] = @user.to_json
       req.body = create_host_body
     end
     return false unless response.success?
