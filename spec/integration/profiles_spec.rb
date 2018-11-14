@@ -7,22 +7,25 @@ require 'swagger_helper'
 def encoded_header
   Base64.encode64(
     {
-      'account_number': '1234',
-      'id': '1234',
-      'org_id': '29329',
-      'email': 'a@b.com',
-      'username': 'a@b.com',
-      'first_name': 'a',
-      'last_name': 'b',
-      'is_active': true,
-      'locale': 'en_US'
+      'identity':
+      {
+        'account_number': '1234',
+        'id': '1234',
+        'org_id': '29329',
+        'email': 'a@b.com',
+        'username': 'a@b.com',
+        'first_name': 'a',
+        'last_name': 'b',
+        'is_active': true,
+        'locale': 'en_US'
+      }
     }.to_json
   )
 end
 # rubocop:enable Metrics/MethodLength
 
 describe 'Profiles API' do
-  path '/profiles' do
+  path '/r/insights/platform/compliance/profiles' do
     get 'List all profiles' do
       fixtures :profiles
       tags 'profile'

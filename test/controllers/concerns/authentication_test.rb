@@ -19,7 +19,10 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
 
   test 'account number not found, creates a new account' do
     encoded_header = Base64.encode64(
-      { 'account_number': '1234', 'id': users(:test).redhat_id }.to_json
+      {
+        'identity':
+        { 'account_number': '1234', 'id': users(:test).redhat_id }
+      }.to_json
     )
     get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
     assert_response :success
@@ -34,15 +37,18 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
   test 'user not found, creates a new user' do
     encoded_header = Base64.encode64(
       {
-        'account_number': '1234',
-        'id': '1234',
-        'org_id': '29329',
-        'email': 'a@b.com',
-        'username': 'a@b.com',
-        'first_name': 'a',
-        'last_name': 'b',
-        'is_active': true,
-        'locale': 'en_US'
+        'identity':
+        {
+          'account_number': '1234',
+          'id': '1234',
+          'org_id': '29329',
+          'email': 'a@b.com',
+          'username': 'a@b.com',
+          'first_name': 'a',
+          'last_name': 'b',
+          'is_active': true,
+          'locale': 'en_US'
+        }
       }.to_json
     )
     get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
@@ -53,14 +59,17 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
   test 'user not found, creates a new account, username missing' do
     encoded_header = Base64.encode64(
       {
-        'account_number': '1234',
-        'id': '1234',
-        'org_id': '29329',
-        'email': 'a@b.com',
-        'first_name': 'a',
-        'last_name': 'b',
-        'is_active': true,
-        'locale': 'en_US'
+        'identity':
+        {
+          'account_number': '1234',
+          'id': '1234',
+          'org_id': '29329',
+          'email': 'a@b.com',
+          'first_name': 'a',
+          'last_name': 'b',
+          'is_active': true,
+          'locale': 'en_US'
+        }
       }.to_json
     )
     get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
@@ -70,7 +79,10 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
 
   test 'successful authentication sets User.current' do
     encoded_header = Base64.encode64(
-      { 'account_number': '1234', 'id': users(:test).redhat_id }.to_json
+      {
+        'identity':
+        { 'account_number': '1234', 'id': users(:test).redhat_id }
+      }.to_json
     )
     get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
     assert_response :success

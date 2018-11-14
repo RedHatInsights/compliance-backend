@@ -36,17 +36,17 @@ module Authentication
   end
 
   def identity_header_content
-    JSON.parse(Base64.decode64(identity_header))
+    JSON.parse(Base64.decode64(identity_header))['identity']
   end
 
   def find_or_create_user(redhat_id, account)
     user = User.find_by(redhat_id: redhat_id)
     if user.present?
       user.update account: account
+      logger.info "User authentication SUCCESS: #{identity_header_content}"
     else
       user = create_user
     end
-    logger.info "User authentication SUCCESS: #{user}"
     user
   end
 
@@ -54,11 +54,11 @@ module Authentication
 
   def create_user
     if (user = User.from_x_rh_identity(identity_header_content)).save
-      logger.info "User authentication SUCCESS - creating user: #{user}"
+      logger.info 'User authentication SUCCESS - creating user: '\
+        "#{identity_header_content}"
     else
-      logger.info(
-        "User authentication FAILED - could not create user: #{user.errors}"
-      )
+      logger.info 'User authentication FAILED - could not create user: '\
+        "#{user.errors.full_messages}"
       unauthenticated('Could not create user with X-RH-IDENTITY contents')
     end
     user
