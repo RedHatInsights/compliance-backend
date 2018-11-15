@@ -9,7 +9,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       'xccdf_org.ssgproject.content_profile_standard' =>
       'Standard System Security Profile for Fedora'
     }
-    @report_parser = ::XCCDFReportParser.new(fake_report, users(:test))
+    @report_parser = ::XCCDFReportParser.new(fake_report,
+                                             accounts(:test).account_number)
     # A hack to skip API calls in the test env for the time being
     HostInventoryAPI.stubs(:host_already_in_inventory).returns(true)
   end
@@ -49,7 +50,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     end
 
     should 'return the host object even if it already existed' do
-      Host.create(name: @report_parser.report_host)
+      Host.create(name: @report_parser.report_host, account: accounts(:test))
+
       assert_difference('Host.count', 0) do
         new_host = @report_parser.save_host
         assert_equal(

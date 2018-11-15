@@ -15,7 +15,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
       "/insights-upload-quarantine/036738d6f4e541c4aa8cfc9f46f5a140\"}"
     ).at_least_once
     # rubocop:enable Style/StringLiterals
-    SafeDownloader.any_instance.expects(:download)
+    SafeDownloader.expects(:download)
     consumer = ComplianceReportsConsumer.new
     consumer.expects(:validation_message).with(
       'tmp/storage/036738d6f4e541c4aa8cfc9f46f5a140'
@@ -23,7 +23,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
     consumer.expects(:produce).with(
       { 'hash': '036738d6f4e541c4aa8cfc9f46f5a140',
         'validation': 'success' }.to_json,
-      topic: Settings.platform_kafka_topic
+      topic: Settings.platform_kafka_validation_topic
     )
     assert_enqueued_jobs 1 do
       consumer.process(message)
