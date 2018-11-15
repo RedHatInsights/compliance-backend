@@ -1,2 +1,2 @@
 platform_kafka_topic: 'platform.upload.compliance'
-
+platform_kafka_validation_topic: 'platform.upload.validation'
