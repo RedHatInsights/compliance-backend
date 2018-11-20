@@ -14,7 +14,7 @@ node {
 
 
 def runStages() {
-    openShift.withNode(image: "docker-registry.default.svc:5000/jenkins/jenkins-slave-base-centos7-ruby25-openscap:latest") {
+    openShift.withNode(image: "docker-registry.default.svc:5000/jenkins/jenkins-slave-base-centos7-ruby25-openscap:latest", resourceLimitMemory: "2Gi") {
 
         scmVars = checkout scm
         

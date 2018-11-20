@@ -8,7 +8,7 @@ ENV RUBY_VERSION="${RUBY_MAJOR_VERSION}.${RUBY_MINOR_VERSION}" \
 
 ENV RUBY_SCL="rh-ruby${RUBY_SCL_NAME_VERSION}"
 
-RUN yum install -y centos-release-scl-rh && \
+RUN yum install -y centos-release-scl-rh epel-release && \
     yum-config-manager --add-repo https://cbs.centos.org/repos/sclo7-rh-ruby25-rh-candidate/x86_64/os/ && \
     echo gpgcheck=0 >> /etc/yum.repos.d/cbs.centos.org_repos_sclo7-rh-ruby25-rh-candidate_x86_64_os_.repo && \
     INSTALL_PKGS=" \
@@ -37,7 +37,8 @@ sqlite-devel \
 unzip \
 wget \
 which \
-zlib-devel" && \
+zlib-devel \
+qt5-qtwebkit-devel" && \
     yum install -y --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
     yum clean all -y && \
     rpm -V ${INSTALL_PKGS}
@@ -61,8 +62,7 @@ ENV LC_ALL="en_US.UTF-8" \
     MANPATH="$MANPATH:/opt/rh/$RUBY_SCL/root/usr/share/man" \
     PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/opt/rh/$RUBY_SCL/root/usr/lib64/pkgconfig" \
     XDG_DATA_DIRS="$XDG_DATA_DIRS:/opt/rh/$RUBY_SCL/root/usr/share" \
-    X_SCLS="$RUBY_SCL"
-
-RUN source scl_source enable rh-ruby25
+    X_SCLS="$RUBY_SCL" \
+    QMAKE="/usr/lib64/qt5/bin/qmake"
 
 USER 1001

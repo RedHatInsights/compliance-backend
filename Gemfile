@@ -55,7 +55,7 @@ group :development, :test do
   gem 'capybara'
   gem 'rspec-rails'
   gem 'rswag-specs'
-  # gem 'capybara-webkit'
+  gem 'capybara-webkit'
   gem 'codecov', :require => false
 end
 
