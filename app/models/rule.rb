@@ -20,4 +20,12 @@ class Rule < ApplicationRecord
     self.severity = oscap_rule.severity
     self
   end
+
+  def compliant?(host)
+    latest_result = rule_results.where(host: host)
+                                .order(:updated_at).last
+    return false if latest_result.blank?
+
+    %w[pass notapplicable notselected].include? latest_result.result
+  end
 end

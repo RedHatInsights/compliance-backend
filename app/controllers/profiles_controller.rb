@@ -3,6 +3,6 @@
 # API for Profiles
 class ProfilesController < ApplicationController
   def index
-    render json: ProfileSerializer.new(Profile.all.to_a)
+    render json: ProfileSerializer.new(Profile.includes(:rules, :hosts).all.to_a)
   end
 end
