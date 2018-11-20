@@ -19,12 +19,8 @@ def runStages() {
         scmVars = checkout scm
         
         stage('Install gems') {
-            sh "bundle install --path ./bundle"
+            sh "bundle install --path /tmp"
         }
-
-        // stage('Lint') {
-        //     sh "bundle exec rake validate"
-        // }
 
         stage('Prepare the db') {
             sh "bundle exec rake db:migrate --trace"
@@ -33,7 +29,7 @@ def runStages() {
 
         stage('UnitTest') {
             withStatusContext.unitTest {
-                sh "bundle exec rake test"
+                sh "bundle exec rake validate"
             }
         }
 
