@@ -4,7 +4,7 @@
 class ProfileSerializer
   include FastJsonapi::ObjectSerializer
   set_type :profile
-  attributes :name, :ref_id
+  attributes :name, :ref_id, :description
   attribute :total_host_count do |profile|
     profile.hosts.count
   end

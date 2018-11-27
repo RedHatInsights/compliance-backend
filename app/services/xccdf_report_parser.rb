@@ -9,6 +9,8 @@ require 'openscap/xccdf/testresult'
 # Takes in a path to an XCCDF file, returns all kinds of properties about it
 # and saves it in our database
 class XCCDFReportParser
+  include ::XMLReport
+
   def initialize(report_path, account)
     @report_path = report_path
     @account = Account.find_or_create_by(account_number: account)
@@ -29,15 +31,12 @@ class XCCDFReportParser
     end
   end
 
-  def report_host
-    report_xml.search('target').text
-  end
-
   def save_host
     @host = Host.find_or_initialize_by(
       name: report_host,
       account: @account
     )
+    @host.profiles << save_profiles
     HostInventoryAPI.new(
       @host,
       @account,
@@ -64,7 +63,8 @@ class XCCDFReportParser
         created << profile
         next
       end
-      created << Profile.create(name: name, ref_id: ref_id)
+      created << Profile.create(name: name, ref_id: ref_id,
+                                description: report_description)
     end
     created
   end
@@ -111,19 +111,11 @@ class XCCDFReportParser
 
   private
 
-  def find_namespace(report_xml)
-    report_xml.namespaces['xmlns']
-  end
-
   def create_test_result(report_xml)
     test_result_node = report_xml.search('TestResult')
     test_result_doc = Nokogiri::XML::Document.parse(test_result_node.to_xml)
     test_result_doc.root.default_namespace = find_namespace(report_xml)
     test_result_doc.namespace = test_result_doc.root.namespace
     test_result_doc
-  end
-
-  def report_xml
-    @report_xml ||= File.open(@report_path) { |f| Nokogiri::XML(f) }
   end
 end
