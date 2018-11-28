@@ -17,31 +17,17 @@ ${RUBY_SCL}-ruby-devel \
 ${RUBY_SCL}-rubygem-rake \
 ${RUBY_SCL}-rubygem-bundler \
 openscap \
-autoconf \
-automake \
-bzip2 \
 gcc-c++ \
-gd-devel \
-gdb \
-git \
-libcurl-devel \
-libxml2-devel \
-libxslt-devel \
-lsof \
 make \
-openssl-devel \
+libxml2-devel \
 patch \
 postgresql-devel \
-procps-ng \
-sqlite-devel \
-unzip \
-wget \
-which \
-zlib-devel \
 qt5-qtwebkit-devel" && \
     yum install -y --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
     yum clean all -y && \
     rpm -V ${INSTALL_PKGS}
+
+COPY Gemfile Gemfile.lock ./
 
 RUN chown -R 1001:0 $HOME && \
     chmod -R g+rw $HOME
@@ -64,5 +50,8 @@ ENV LC_ALL="en_US.UTF-8" \
     XDG_DATA_DIRS="$XDG_DATA_DIRS:/opt/rh/$RUBY_SCL/root/usr/share" \
     X_SCLS="$RUBY_SCL" \
     QMAKE="/usr/lib64/qt5/bin/qmake"
+
+RUN bundle install && \
+    rm Gemfile Gemfile.lock
 
 USER 1001
