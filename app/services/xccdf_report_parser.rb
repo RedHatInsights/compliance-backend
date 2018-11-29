@@ -9,7 +9,8 @@ require 'openscap/xccdf/testresult'
 # Takes in a path to an XCCDF file, returns all kinds of properties about it
 # and saves it in our database
 class XCCDFReportParser
-  include ::XMLReport
+  include ::XCCDFReport::XMLReport
+  include ::XCCDFReport::Profiles
 
   def initialize(report_path, account)
     @report_path = report_path
@@ -31,42 +32,30 @@ class XCCDFReportParser
     end
   end
 
+  def report_host
+    report_xml.search('target').text
+  end
+
+  def inventory_api
+    HostInventoryAPI.new(
+      @host,
+      @account,
+      Settings.host_inventory_url
+    )
+  end
+
   def save_host
     @host = Host.find_or_initialize_by(
       name: report_host,
       account: @account
     )
-    @host.profiles << save_profiles
-    HostInventoryAPI.new(
-      @host,
-      @account,
-      Settings.host_inventory_url
-    ).sync
+    new_profiles = new_profiles
+    @host.profiles << new_profiles if new_profiles.present?
+    inventory_api.sync
   end
 
   def score
     test_result.score['urn:xccdf:scoring:default'][:value]
-  end
-
-  def profiles
-    result = {}
-    @benchmark.profiles.each do |id, oscap_profile|
-      result[id] = oscap_profile.title
-    end
-    result
-  end
-
-  def save_profiles
-    created = []
-    profiles.each do |ref_id, name|
-      if (profile = Profile.find_by(name: name, ref_id: ref_id))
-        created << profile
-        next
-      end
-      created << Profile.create(name: name, ref_id: ref_id,
-                                description: report_description)
-    end
-    created
   end
 
   def rule_ids
@@ -80,6 +69,7 @@ class XCCDFReportParser
   end
 
   def save_rules
+    save_profiles
     rule_objects.each_with_object([]) do |rule, new_rules|
       rule_object = rule[1]
       next if Rule.find_by(ref_id: rule_object.id)
@@ -97,7 +87,6 @@ class XCCDFReportParser
   end
 
   def save_rule_results
-    save_profiles
     save_rules
     save_host
     rule_results.each_with_object([]) do |rule_result, rule_results|
