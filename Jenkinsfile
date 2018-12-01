@@ -12,49 +12,53 @@ node {
     }
 }
 
-def filesChanged() {
-    def affectedFiles = []
-    currentBuild.changeSets.each { changeSet ->
-        changeSet.items.each { entry ->
-            entry.affectedFiles.each { file ->
-                affectedFiles.add(file.path)
-            }
-        }
-    }
-    "Gemfile" in affectedFiles || "openshift/Jenkins/Dockerfile" in affectedFiles
-}
-
 def runStages() {
-    openShift.withNode(image: "docker-registry.default.svc:5000/jenkins/jenkins-slave-base-centos7-ruby25-openscap:latest") {
-        
-        checkout scm
 
-        if (filesChanged()) {
-            stage("Bundle install") {
-                runBundleInstall()
-            }            
-        }
+    label = "test-${UUID.randomUUID().toString()}"
 
-        stage("Prepare the db") {
-            withStatusContext.dbMigrate {
-                sh "bundle exec rake db:migrate --trace"
-                sh "bundle exec rake db:test:prepare"
+    podTemplate(
+        label: label,
+        slaveConnectTimeout: 120,
+        serviceAccount: pipelineVars.jenkinsSvcAccount,
+        cloud: "openshift",
+        namespace: pipelineVars.defaultNameSpace,
+        yaml: readTrusted("openshift/Jenkins/slave_pod_template.yaml")
+    ) {
+        node(label) {
+
+            checkout scm
+
+            changedFiles = changedFiles()
+
+            if ("Gemfile" in changedFiles) {
+                stage("Bundle install") {
+                    runBundleInstall()
+                }            
             }
-        }
 
-        stage("Unit tests") {
-            withStatusContext.unitTest {
-                sh "bundle exec rake validate"
+            stage("Prepare the db") {
+                withStatusContext.dbMigrate {
+                    sh "bundle exec rake db:migrate --trace"
+                    sh "bundle exec rake db:test:prepare"
+                }
             }
-        }
 
-        if (currentBuild.currentResult == "SUCCESS" && env.BRANCH_NAME == "master" && filesChanged()) {
-            // If Gemfiles or Jenknis slave's Dockerfile changed we need to rebuild the jenkins slave image
-            stage("Rebuild the image") {
-                openshiftBuild(
-                    bldCfg: "jenkins-slave-base-centos7-ruby25-openscap",
-                    namespace: "jenkins",
-                )
+            stage("Unit tests") {
+                withStatusContext.unitTest {
+                    sh "bundle exec rake validate"
+                }
+            }
+
+            if (currentBuild.currentResult == "SUCCESS" &&
+                env.BRANCH_NAME == "master" &&
+                ("Gemfile" in changedFiles || "openshift/Jenkins/Dockerfile" in changedFiles)) {
+                // If Gemfiles or Jenknis slave's Dockerfile changed we need to rebuild the jenkins slave image
+                stage("Rebuild the image") {
+                    openshiftBuild(
+                        bldCfg: "jenkins-slave-base-centos7-ruby25-openscap",
+                        namespace: "jenkins",
+                    )
+                }
             }
         }
     }

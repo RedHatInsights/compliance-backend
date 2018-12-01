@@ -34,15 +34,6 @@ RUN chown -R 1001:0 $HOME && \
 
 ENV LC_ALL="en_US.UTF-8" \
     LANG="en_US.UTF-8" \
-    DATABASE_SERVICE_NAME="compliance-db" \
-    COMPLIANCE_DB_SERVICE_HOST="compliance-db.compliance-ci.svc" \
-    POSTGRESQL_USER="compliance_user" \
-    POSTGRESQL_PASSWORD="compliance_password" \
-    POSTGRESQL_ADMIN_PASSWORD="db_admin_password" \
-    POSTGRESQL_DATABASE="compliance" \
-    POSTGRESQL_MAX_CONNECTIONS="100" \
-    POSTGRESQL_SHARED_BUFFERS="12MB" \
-    RAILS_ENV="test" \
     PATH="$PATH:/opt/rh/$RUBY_SCL/root/usr/bin" \
     LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/rh/$RUBY_SCL/root/usr/lib64" \
     MANPATH="$MANPATH:/opt/rh/$RUBY_SCL/root/usr/share/man" \
