@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: compliance-backend-jenkins-slave
+spec:
+  containers:
+  - env:
+    - name: POSTGRESQL_USER
+      value: compliance_user
+    - name: POSTGRESQL_PASSWORD
+      value: compliance_password
+    - name: POSTGRESQL_ADMIN_PASSWORD
+      value: db_admin_password
+    - name: POSTGRESQL_DATABASE
+      value: compliance
+    - name: POSTGRESQL_MAX_CONNECTIONS
+      value: "100"
+    - name: POSTGRESQL_SHARED_BUFFERS
+      value: 12MB
+    image: centos/postgresql-96-centos7:latest
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      exec:
+        command:
+        - /usr/libexec/check-container
+        - --live
+      failureThreshold: 3
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 10
+    name: postgresql
+    readinessProbe:
+      exec:
+        command:
+        - /usr/libexec/check-container
+      failureThreshold: 3
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources:
+      limits:
+        cpu: 300m
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    volumeMounts:
+    - mountPath: /var/lib/pgsql/data
+      name: shared
+      subPath: data
+    - mountPath: /var/run/postgresql
+      name: shared
+      subPath: sockets
+  - env:
+    - name: DATABASE_SERVICE_NAME
+      value: compliance-db
+    - name: COMPLIANCE_DB_SERVICE_HOST
+      value: /var/run/sockets
+    - name: POSTGRESQL_USER
+      value: compliance_user
+    - name: POSTGRESQL_PASSWORD
+      value: compliance_password
+    - name: POSTGRESQL_ADMIN_PASSWORD
+      value: db_admin_password
+    - name: POSTGRESQL_DATABASE
+      value: compliance
+    - name: SECRET_KEY_BASE
+      value: secret_key_base
+    - name: POSTGRESQL_MAX_CONNECTIONS
+      value: "100"
+    - name: POSTGRESQL_SHARED_BUFFERS
+      value: 12MB
+    - name: RAILS_ENV
+      value: test
+    image: docker-registry.default.svc:5000/jenkins/jenkins-slave-base-centos7-ruby25-openscap:latest
+    imagePullPolicy: Always
+    name: jnlp
+    args:
+      - "$(JENKINS_SECRET)"
+      - "$(JENKINS_NAME)"
+    resources:
+      limits:
+        cpu: 300m
+        memory: 1Gi
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    volumeMounts:
+    - mountPath: /var/run/sockets
+      name: shared
+      subPath: sockets
+  dnsPolicy: ClusterFirst
+  volumes:
+  - emptyDir: {}
+    name: shared
