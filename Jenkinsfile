@@ -44,8 +44,10 @@ def runStages() {
             }
 
             stage("Unit tests") {
-                withStatusContext.unitTest {
-                    sh "bundle exec rake validate"
+                withCredentials([string(credentialsId: "codecov_token", variable: "CODECOV_TOKEN")]) {
+                    withStatusContext.unitTest {
+                        sh "bundle exec rake validate"
+                    }
                 }
             }
 

@@ -1,3 +1,6 @@
+[![codecov](https://codecov.io/gh/RedHatInsights/compliance-backend/branch/master/graph/badge.svg)](https://codecov.io/gh/RedHatInsights/compliance-backend)
+
+
 # Insights Compliance Backend
 
 compliance-backend is a project meant to parse OpenSCAP reports into a database,
