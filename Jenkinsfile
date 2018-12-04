@@ -30,11 +30,9 @@ def runStages() {
 
             changedFiles = changedFiles()
 
-            if ("Gemfile" in changedFiles) {
-                stage("Bundle install") {
-                    runBundleInstall()
-                }            
-            }
+            stage("Bundle install") {
+                runBundleInstall()
+            } 
 
             stage("Prepare the db") {
                 withStatusContext.dbMigrate {

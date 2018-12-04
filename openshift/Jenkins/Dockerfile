@@ -29,9 +29,6 @@ qt5-qtwebkit-devel" && \
 
 COPY Gemfile Gemfile.lock ./
 
-RUN chown -R 1001:0 $HOME && \
-    chmod -R g+rw $HOME
-
 ENV LC_ALL="en_US.UTF-8" \
     LANG="en_US.UTF-8" \
     PATH="$PATH:/opt/rh/$RUBY_SCL/root/usr/bin" \
@@ -44,5 +41,3 @@ ENV LC_ALL="en_US.UTF-8" \
 
 RUN bundle install && \
     rm Gemfile Gemfile.lock
-
-USER 1001
