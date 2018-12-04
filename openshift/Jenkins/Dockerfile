@@ -37,7 +37,13 @@ ENV LC_ALL="en_US.UTF-8" \
     PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/opt/rh/$RUBY_SCL/root/usr/lib64/pkgconfig" \
     XDG_DATA_DIRS="$XDG_DATA_DIRS:/opt/rh/$RUBY_SCL/root/usr/share" \
     X_SCLS="$RUBY_SCL" \
-    QMAKE="/usr/lib64/qt5/bin/qmake"
+    QMAKE="/usr/lib64/qt5/bin/qmake" \
+    BUNDLE_PATH="/tmp/bundle" \
+    BUNDLE_BIN="/tmp/bundle/bin"
 
 RUN bundle install && \
-    rm Gemfile Gemfile.lock
+    rm Gemfile Gemfile.lock && \
+    chown -R 1001:0 $BUNDLE_PATH && \
+    chmod -R g+rw $BUNDLE_PATH
+
+USER 1001
