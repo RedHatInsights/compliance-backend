@@ -43,6 +43,11 @@ gem 'config'
 # JSON API serializer
 gem 'fast_jsonapi'
 
+# GraphQL support
+#
+gem 'graphql'
+gem 'graphiql-rails'
+
 gem 'faraday'
 
 group :development, :test do

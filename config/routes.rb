@@ -8,5 +8,9 @@ Rails.application.routes.draw do
     mount Rswag::Api::Engine => '/api-docs'
     mount Rswag::Ui::Engine => '/api-docs'
     mount ActionCable.server => '/cable'
+    post 'graphql' => 'graphql#query'
+    if Rails.env.development?
+      mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/r/insights/platform/compliance/graphql"
+    end
   end
 end
