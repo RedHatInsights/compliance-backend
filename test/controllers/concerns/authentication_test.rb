@@ -74,7 +74,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
     )
     get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
     assert_response :unauthorized
-    assert_not_equal User.current, User.find_by(redhat_id: '1234')
+    assert_not User.current
   end
 
   test 'successful authentication sets User.current' do

@@ -47,7 +47,7 @@ class XCCDFReportParser
   def save_host
     @host = Host.find_or_initialize_by(
       name: report_host,
-      account: @account
+      account_id: @account.id
     )
     new_profiles = new_profiles
     @host.profiles << new_profiles if new_profiles.present?

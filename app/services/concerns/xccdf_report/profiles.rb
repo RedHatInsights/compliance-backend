@@ -18,12 +18,11 @@ module XCCDFReport
       def save_profiles
         created = []
         profiles.each do |ref_id, name|
-          if (profile = Profile.find_by(name: name, ref_id: ref_id))
-            created << profile
-            next
-          end
-          created << Profile.create(name: name, ref_id: ref_id,
-                                    description: report_description)
+          profile = Profile.find_or_initialize_by(name: name, ref_id: ref_id,
+                                                  account_id: @account.id)
+          profile.description = report_description
+          profile.save
+          created << profile
         end
         created
       end
