@@ -3,6 +3,6 @@
 # API for RuleResults
 class RuleResultsController < ApplicationController
   def index
-    render json: RuleResultSerializer.new(RuleResult.all.to_a)
+    render json: RuleResultSerializer.new(policy_scope(RuleResult).to_a)
   end
 end

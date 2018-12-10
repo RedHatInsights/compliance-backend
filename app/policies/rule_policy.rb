@@ -14,8 +14,10 @@ class RulePolicy < ApplicationPolicy
   # (profile account ID = rule account ID)
   class Scope < ::ApplicationPolicy::Scope
     def resolve
-      ids = scope.profiles.pluck(:account_id).select { |_rule| user.account_id }
-      where(id: ids)
+      ids = scope.all.select do |rule|
+        rule.profiles.pluck(:account_id).include? user.account_id
+      end
+      scope.where(id: ids)
     end
   end
 end
