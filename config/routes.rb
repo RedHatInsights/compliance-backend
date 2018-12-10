@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :profiles, only: [:index, :show]
     resources :rule_results, only: [:index]
     resources :systems, only: [:index]
+    resources :rules, only: [:index, :show]
     mount Rswag::Api::Engine => '/api-docs'
     mount Rswag::Ui::Engine => '/api-docs'
     mount ActionCable.server => '/cable'

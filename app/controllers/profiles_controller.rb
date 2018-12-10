@@ -4,11 +4,13 @@
 class ProfilesController < ApplicationController
   def index
     render json: ProfileSerializer.new(
-      Profile.includes(:rules, :hosts).all.to_a
+      policy_scope(Profile.includes(:rules, :hosts)).to_a
     )
   end
 
   def show
-    render json: ProfileSerializer.new(Profile.find(params[:id]))
+    profile = Profile.find(params[:id])
+    authorize profile
+    render json: ProfileSerializer.new(profile)
   end
 end
