@@ -14,7 +14,7 @@ your auditors, get alerts, and create playbooks to fix your hosts.
 This project does two main things:
 
 1 - Connect to a Kafka message queue [provided by the Insights Platform](https://github.com/RedHatInsights/insights-upload)
-2 - Serve as the backend API for the web UI [compliance-frontend](https://github.com/RedHatInsights/compliance-frontend)
+2 - Serve as the API backend for the web UI [compliance-frontend](https://github.com/RedHatInsights/compliance-frontend) and for other consumers.
 
 Let's examine how to run the project:
 
@@ -22,7 +22,7 @@ Let's examine how to run the project:
 
 You may use the templates in `openshift/templates/` and upload them to
 Openshift to run the project without any further configuration. The template uses two docker images:
-[`quarck/ruby25-openscap`](https://hub.docker.com/r/quarck/ruby25-openscap/) and [`centos/postgresql-96-centos7`](https://hub.docker.com/r/centos/postgresql-96-centos7/). 
+[`quarck/ruby25-openscap`](https://hub.docker.com/r/quarck/ruby25-openscap/) and [`centos/postgresql-96-centos7`](https://hub.docker.com/r/centos/postgresql-96-centos7/).
 
 #### Prerequisites
 
@@ -55,7 +55,7 @@ bundle install
 bundle exec rake db:create db:migrate
 ```
 
-#### Kafka consumers
+#### Kafka consumers (XCCDF report consumers)
 
 At this point you can launch as many ['racecar'](https://github.com/zendesk/racecar)
 processes as you want. These processes will become part of a *consumer group*
@@ -64,7 +64,7 @@ in Kafka, so by default the system is highly available.
 To run a Reports consumer:
 
 ```shell
-bundle exec racecar ComplianceReportsConsumer
+KAFKAMQ=localhost:29092 bundle exec racecar ComplianceReportsConsumer
 ```
 
 #### Web server
@@ -78,6 +78,13 @@ bundle exec rails server
 Notice there's no CORS protection by default. If you want your requests to be
 CORS-protected, check out `config/initializers/cors.rb` and change it to only
 allow a certain domain.
+
+After this, make sure you can redirect your requests to your the backend's port 3000
+using insights-proxy. You may run the proxy using the SPANDX config provided here:
+
+```ruby
+SPANDX_CONFIG=$(pwd)/compliance-backend.js ../insights-proxy/scripts/run.sh
+```
 
 ## Contributing
 

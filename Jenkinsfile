@@ -32,7 +32,7 @@ def runStages() {
 
             stage("Bundle install") {
                 runBundleInstall()
-            } 
+            }
 
             stage("Prepare the db") {
                 withStatusContext.dbMigrate {
@@ -44,7 +44,7 @@ def runStages() {
             stage("Unit tests") {
                 withCredentials([string(credentialsId: "codecov_token", variable: "CODECOV_TOKEN")]) {
                     withStatusContext.unitTest {
-                        sh "bundle exec rake validate"
+                        sh "bundle exec rake test:validate"
                     }
                 }
             }
