@@ -16,7 +16,8 @@ module Authentication
     account = Account.find_or_create_by(
       account_number: identity_header_content['account_number']
     )
-    user = find_or_create_user(identity_header_content['id'], account)
+    user = find_or_create_user(identity_header_content['user']['username'],
+                               account)
     return if performed? || !user.persisted?
 
     User.current = user
@@ -44,10 +45,9 @@ module Authentication
     JSON.parse(Base64.decode64(identity_header))['identity']
   end
 
-  def find_or_create_user(redhat_id, account)
-    user = User.find_by(redhat_id: redhat_id)
+  def find_or_create_user(username, account)
+    user = User.find_by(username: username, account: account)
     if user.present?
-      user.update(account: account) if user.account != account
       logger.info "User authentication SUCCESS: #{identity_header_content}"
     else
       user = create_user
