@@ -5,7 +5,7 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   should validate_uniqueness_of :redhat_id
   should validate_uniqueness_of :username
-  should validate_presence_of :redhat_id
+  # should validate_presence_of :redhat_id
   should validate_presence_of :username
   should belong_to :account
 
@@ -15,18 +15,18 @@ class UserTest < ActiveSupport::TestCase
       JSON.parse(
         <<~X_RH_IDENTITY
           {
-            "user_id":"7222222",
-            "id":"7222222",
-            "username":"foobar@redhat.com",
-            "account_id":"9000432",
             "account_number":"1333331",
-            "email":"foobar@redhat.com",
-            "firstName":"Foo",
-            "lastName":"Bar",
-            "lang":"en_US",
-            "region":"US",
-            "login":"foobar@redhat.com",
-            "internal":true
+            "type": "User",
+            "user":  {
+              "username":"foobar@redhat.com",
+              "email":"foobar@redhat.com",
+              "first_name":"Foo",
+              "last_name":"Bar",
+              "locale":"en_US"
+            },
+            "internal": {
+              "org_id": "29329"
+            }
           }
         X_RH_IDENTITY
       )
