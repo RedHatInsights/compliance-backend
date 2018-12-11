@@ -25,4 +25,10 @@ class Profile < ApplicationRecord
       rule.compliant?(host)
     end
   end
+
+  def score
+    return 1 if hosts.blank?
+
+    (hosts.count { |host| compliant?(host) }) / hosts.count
+  end
 end
