@@ -28,8 +28,8 @@ module XCCDFReport
       end
 
       def new_profiles
-        save_profiles.reject do |profile|
-          profile.hosts.map(&:id).include? @host.id
+        save_profiles.select do |profile| # rubocop:disable Style/InverseMethods
+          !profile.hosts.map(&:id).include? @host.id
         end
       end
     end

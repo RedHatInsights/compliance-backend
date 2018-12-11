@@ -11,4 +11,9 @@ class ProfileSerializer
   attribute :compliant_host_count do |profile|
     profile.hosts.count { |host| profile.compliant?(host) }
   end
+
+  attribute :score do |profile|
+    (profile.hosts.count { |host| profile.compliant?(host) }) /
+      profile.hosts.count
+  end
 end

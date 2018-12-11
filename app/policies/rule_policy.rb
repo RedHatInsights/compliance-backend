@@ -3,11 +3,11 @@
 # Policies for accessing Rules
 class RulePolicy < ApplicationPolicy
   def index?
-    record.profiles.pluck(:account_id).include? user.id
+    record.profiles.pluck(:account_id).include? user.account_id
   end
 
   def show?
-    record.profiles.pluck(:account_id).include? user.id
+    record.profiles.pluck(:account_id).include? user.account_id
   end
 
   # Only select Rules belonging to profiles visible by the current user
