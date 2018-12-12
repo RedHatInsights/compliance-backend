@@ -51,6 +51,7 @@ gem 'graphiql-rails'
 gem 'pundit'
 
 gem 'faraday'
+gem 'friendly_id', '~> 5.2.4'
 
 gem 'will_paginate'
 

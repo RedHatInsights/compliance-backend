@@ -7,7 +7,7 @@ class RulesController < ApplicationController
   end
 
   def show
-    rule = Rule.find(params[:id])
+    rule = Rule.friendly.find(params[:id])
     authorize rule
     render json: RuleSerializer.new(rule)
   end
