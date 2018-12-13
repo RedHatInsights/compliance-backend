@@ -2,7 +2,6 @@
 
 # Represents an individual Insights-Compliance user
 class User < ApplicationRecord
-  validates :redhat_id, uniqueness: true # , presence: true
   validates :username, uniqueness: true, presence: true
   validates_associated :account
 
