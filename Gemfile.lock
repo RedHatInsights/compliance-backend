@@ -250,6 +250,8 @@ GEM
       digest-crc
     ruby-progressbar (1.10.0)
     ruby_dep (1.5.0)
+    scoped_search (4.1.5)
+      activerecord (>= 4.2.0)
     shoulda-context (1.2.2)
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
@@ -317,6 +319,7 @@ DEPENDENCIES
   rswag-specs
   rswag-ui
   rubocop
+  scoped_search
   shoulda-context
   shoulda-matchers
   spring
