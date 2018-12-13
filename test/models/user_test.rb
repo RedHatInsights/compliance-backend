@@ -3,7 +3,7 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  should validate_uniqueness_of :username
+  should validate_uniqueness_of(:username).scoped_to(:account_id)
   should validate_presence_of :username
   should belong_to :account
 

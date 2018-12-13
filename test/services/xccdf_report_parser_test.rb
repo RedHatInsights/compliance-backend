@@ -29,7 +29,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     should 'not save a new profile if it existed before' do
       Profile.create(
         ref_id: 'xccdf_org.ssgproject.content_profile_standard',
-        name: @profile['xccdf_org.ssgproject.content_profile_standard']
+        name: @profile['xccdf_org.ssgproject.content_profile_standard'],
+        account: accounts(:test)
       )
       assert_difference('Profile.count', 0) do
         @report_parser.save_profiles

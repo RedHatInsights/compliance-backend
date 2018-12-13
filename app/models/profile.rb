@@ -9,7 +9,7 @@ class Profile < ApplicationRecord
   belongs_to :policy, optional: true
   belongs_to :account, optional: true
 
-  validates :ref_id, uniqueness: true, presence: true
+  validates :ref_id, uniqueness: { scope: :account_id }, presence: true
   validates :name, presence: true
 
   def compliance_score(host)

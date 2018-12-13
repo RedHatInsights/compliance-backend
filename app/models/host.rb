@@ -10,5 +10,5 @@ class Host < ApplicationRecord
   has_many :profiles, through: :profile_hosts, source: :profile
   belongs_to :account, optional: true
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: { scope: :account_id }
 end
