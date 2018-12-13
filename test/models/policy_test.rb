@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class PolicyTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test 'host is compliant if all profiles are compliant' do
+  end
 end
