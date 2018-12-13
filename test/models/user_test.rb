@@ -3,9 +3,7 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  should validate_uniqueness_of :redhat_id
   should validate_uniqueness_of :username
-  # should validate_presence_of :redhat_id
   should validate_presence_of :username
   should belong_to :account
 
