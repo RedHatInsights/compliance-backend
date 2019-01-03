@@ -1,5 +1,24 @@
 # frozen_string_literal: true
 
+RuleType = GraphQL::ObjectType.define do
+  name 'Rule'
+  description 'A Rule registered in Insights Compliance'
+
+  field :id, !types.ID
+  field :title, !types.String
+  field :ref_id, !types.String
+  field :rationale, types.String
+  field :description, !types.String
+  field :severity, !types.String
+  field :compliant do
+    type !types.Boolean
+    argument :system_id, !types.String, 'Is a system compliant?'
+    resolve lambda { |rule, args, _ctx|
+      rule.compliant?(Host.find(args['system_id']))
+    }
+  end
+end
+
 ProfileType = GraphQL::ObjectType.define do
   name 'Profile'
   description 'A Profile registered in Insights Compliance'
@@ -8,6 +27,7 @@ ProfileType = GraphQL::ObjectType.define do
   field :name, !types.String
   field :description, types.String
   field :ref_id, !types.String
+  field :rules, -> { types[RuleType] }
   field :total_host_count do
     type !types.Int
     resolve ->(obj, _args, _ctx) { obj.hosts.count }
@@ -16,6 +36,41 @@ ProfileType = GraphQL::ObjectType.define do
     type !types.Int
     resolve lambda { |obj, _args, _ctx|
       obj.hosts.count { |host| obj.compliant?(host) }
+    }
+  end
+  field :compliant do
+    type !types.Boolean
+    argument :system_id, !types.String, 'Is a system compliant?'
+    resolve lambda { |profile, args, _ctx|
+      profile.compliant?(Host.find(args['system_id']))
+    }
+  end
+  field :rules_passed do
+    type !types.Int
+    argument :system_id, !types.String,
+             'Rules passed for a system and a profile'
+    resolve lambda { |profile, args, _ctx|
+      profile.results(Host.find(args['system_id'])).count { |result| result }
+    }
+  end
+  field :rules_failed do
+    type !types.Int
+    argument :system_id, !types.String,
+             'Rules failed for a system and a profile'
+    resolve lambda { |profile, args, _ctx|
+      profile.results(Host.find(args['system_id'])).count(&:!)
+    }
+  end
+
+  field :last_scanned do
+    type !types.String
+    argument :system_id, !types.String,
+             'Last time this profile was scanned for a system'
+    resolve lambda { |profile, args, _ctx|
+      rule_ids = profile.rules.map(&:id)
+      rule_results = RuleResult.where(rule_id: rule_ids,
+                                      host_id: Host.find(args['system_id']).id)
+      rule_results.maximum(:updated_at) || 'Never'
     }
   end
 end
@@ -77,6 +132,18 @@ SystemType = GraphQL::ObjectType.define do
       profile_results.count(&:!)
     }
   end
+
+  field :rule_objects_failed do
+    type types[RuleType]
+    description 'Rules failed by a system'
+    resolve lambda { |_obj, _args, _ctx|
+      RuleResult.includes(:rule).where(
+        host: Host.first,
+        result: %w[error fail notchecked]
+      ).map(&:rule)
+    }
+  end
+
   field :last_scanned do
     type types.String
     argument :profile_id, types.String, 'Filter results by profile ID'
@@ -102,8 +169,18 @@ QueryType = GraphQL::ObjectType.define do
   field :allSystems do
     type types[SystemType]
     description 'All systems visible by the user'
-    resolve lambda { |_obj, _args, ctx|
-      Pundit.policy_scope(ctx[:current_user], Host)
+    argument :search, types.String, 'Search query'
+    resolve lambda { |_obj, args, ctx|
+      Pundit.policy_scope(ctx[:current_user], Host).search_for(args[:search])
+    }
+  end
+
+  field :system do
+    type SystemType
+    argument :id, types.String
+    description 'Details for a system'
+    resolve lambda { |_obj, args, ctx|
+      Pundit.authorize(ctx[:current_user], Host.find(args[:id]), :show?)
     }
   end
 
