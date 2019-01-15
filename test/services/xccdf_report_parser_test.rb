@@ -36,6 +36,17 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
         @report_parser.save_profiles
       end
     end
+
+    should 'not save more than one profile when there are no test results' do
+      fake_report = file_fixture('rhel-xccdf-report.xml').to_path
+      @profile = {
+        'xccdf_org.ssgproject.content_profile_rht-ccp' =>
+        'Red Hat Corporate Profile for Certified Cloud Providers (RH CCP)'
+      }
+      @report_parser = ::XCCDFReportParser.new(fake_report,
+                                               accounts(:test).account_number)
+      assert_equal 1, @report_parser.profiles.count
+    end
   end
 
   context 'host' do

@@ -49,7 +49,7 @@ class XCCDFReportParser
       name: report_host,
       account_id: @account.id
     )
-    new_profiles = new_profiles
+    new_profiles = host_new_profiles
     @host.profiles << new_profiles if new_profiles.present?
     inventory_api.sync
   end
