@@ -17,14 +17,34 @@ class Profile < ApplicationRecord
   end
 
   def compliant?(host)
-    results(host).all? true
+    host_results = results(host)
+    host_results.present? && host_results.all?(true)
   end
 
+  # Disabling MethodLength because it measures things wrong
+  # for a multi-line string SQL query.
+  # rubocop:disable Metrics/MethodLength
   def results(host)
-    rules.map do |rule|
-      rule.compliant?(host)
+    rule_results = RuleResult.find_by_sql(
+      ['SELECT rule_results.* FROM (
+          SELECT rr2.*,
+             rank() OVER (
+                    PARTITION BY rule_id, host_id
+                    ORDER BY created_at DESC
+             )
+          FROM rule_results rr2
+          WHERE rr2.host_id = ? AND rr2.rule_id IN
+             (SELECT rules.id FROM rules
+              INNER JOIN profile_rules
+              ON rules.id = profile_rules.rule_id
+              WHERE profile_rules.profile_id = ?)
+       ) rule_results WHERE RANK = 1', host.id, id]
+    )
+    rule_results.map do |rule_result|
+      %w[pass notapplicable notselected].include? rule_result.result
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def score
     return 1 if hosts.blank?
