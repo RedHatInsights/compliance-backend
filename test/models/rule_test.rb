@@ -8,7 +8,7 @@ class RuleTest < ActiveSupport::TestCase
 
   setup do
     fake_report = file_fixture('xccdf_report.xml').to_path
-    @report_parser = ::XCCDFReportParser.new(fake_report, users(:test))
+    @report_parser = ::XCCDFReportParser.new(fake_report, users(:test), 'foo')
     @rule_objects = @report_parser.rule_objects
     @selinux_rule_id = 'xccdf_org.ssgproject.content_rule'\
       '_selinux_all_devicefiles_labeled'

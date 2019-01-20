@@ -10,7 +10,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       'Standard System Security Profile for Fedora'
     }
     @report_parser = ::XCCDFReportParser.new(fake_report,
-                                             accounts(:test).account_number)
+                                             accounts(:test).account_number,
+                                             'b64_fake_identity')
     # A hack to skip API calls in the test env for the time being
     HostInventoryAPI.stubs(:host_already_in_inventory).returns(true)
   end
@@ -44,7 +45,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
         'Red Hat Corporate Profile for Certified Cloud Providers (RH CCP)'
       }
       @report_parser = ::XCCDFReportParser.new(fake_report,
-                                               accounts(:test).account_number)
+                                               accounts(:test).account_number,
+                                               'b64_fake_identity')
       assert_equal 1, @report_parser.profiles.count
     end
   end

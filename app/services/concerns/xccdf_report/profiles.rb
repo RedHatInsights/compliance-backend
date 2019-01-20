@@ -17,8 +17,8 @@ module XCCDFReport
 
       def save_profiles
         created = []
-        # Only save profiles with an associated TestResult. Otherwise there could be
-        # profiles saved w/o results.
+        # Only save profiles with an associated TestResult. Otherwise there
+        # could be profiles saved w/o results.
         profiles.each do |ref_id, name|
           profile = Profile.find_or_initialize_by(name: name, ref_id: ref_id,
                                                   account_id: @account.id)

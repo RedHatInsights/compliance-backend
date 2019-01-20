@@ -9,8 +9,8 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
     message = stub(:message)
     # rubocop:disable Style/StringLiterals
     message.expects(:value).returns(
-      "{\"rh_account\": \"000001\", \"principal\": \"default_principal\", "\
-      "\"validation\": 1, \"hash\": \"036738d6f4e541c4aa8cfc9f46f5a140\", "\
+      "{\"account\": \"000001\", \"principal\": \"default_principal\", "\
+      "\"validation\":1,\"payload_id\":\"036738d6f4e541c4aa8cfc9f46f5a140\","\
       "\"size\": 327, \"service\": \"compliance\", \"url\": \"/tmp/uploads"\
       "/insights-upload-quarantine/036738d6f4e541c4aa8cfc9f46f5a140\"}"
     ).at_least_once
@@ -21,8 +21,11 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
       'tmp/storage/036738d6f4e541c4aa8cfc9f46f5a140'
     ).returns('success')
     consumer.expects(:produce).with(
-      { 'hash': '036738d6f4e541c4aa8cfc9f46f5a140',
-        'validation': 'success' }.to_json,
+      {
+        'payload_id': '036738d6f4e541c4aa8cfc9f46f5a140',
+        'service': 'compliance',
+        'validation': 'success'
+      }.to_json,
       topic: Settings.platform_kafka_validation_topic
     )
     assert_enqueued_jobs 1 do
