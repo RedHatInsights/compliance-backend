@@ -12,8 +12,9 @@ class XCCDFReportParser
   include ::XCCDFReport::XMLReport
   include ::XCCDFReport::Profiles
 
-  def initialize(report_path, account)
+  def initialize(report_path, account, b64_identity)
     @report_path = report_path
+    @b64_identity = b64_identity
     @account = Account.find_or_create_by(account_number: account)
     @source = ::OpenSCAP::Source.new(report_path)
     @benchmark = ::OpenSCAP::Xccdf::Benchmark.new(@source)
@@ -40,7 +41,8 @@ class XCCDFReportParser
     HostInventoryAPI.new(
       @host,
       @account,
-      Settings.host_inventory_url
+      Settings.host_inventory_url,
+      @b64_identity
     )
   end
 

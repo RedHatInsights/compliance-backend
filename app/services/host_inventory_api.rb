@@ -7,31 +7,29 @@ require 'json'
 # Interact with the Insights Host Inventory. Usually HTTP calls
 # are all that's needed.
 class HostInventoryAPI
-  def initialize(host, account, url)
+  def initialize(host, account, url, b64_identity)
     @host = host
-    @url = URI.parse(url)
+    @url = "#{URI.parse(url)}/r/insights/platform/inventory/api/v1/hosts"
     @account = account
+    @b64_identity = b64_identity
   end
 
   def host_already_in_inventory
-    response = Faraday.get(
-      "#{@url}/api/hosts/?format=json", {}, 'X_RH_IDENTITY' => @account.to_s
-    )
+    response = Faraday.get(@url, {}, 'X_RH_IDENTITY' => @b64_identity)
     body = JSON.parse(response.body)
     return nil unless body.key? 'results'
 
     body['results'].find do |host|
-      host['display_name'] == @host.name && host['account'] == @account
+      host['id'] == @host.id && host['account'] == @account.account_number
     end
   rescue Faraday::ClientError => e
     Rails.logger.error e
   end
 
   def create_host_in_inventory
-    response = Faraday.post("#{@url}/api/hosts/") do |req|
+    response = Faraday.post(@url) do |req|
       req.headers['Content-Type'] = 'application/json'
-      # Should this be base64 encoded?
-      req.headers['X_RH_IDENTITY'] = @account.to_json
+      req.headers['X_RH_IDENTITY'] = @b64_identity
       req.body = create_host_body
     end
     return false unless response.success?
@@ -41,13 +39,12 @@ class HostInventoryAPI
     Rails.logger.error e
   end
 
-  def import_host
-    @host.save
-  end
-
   def sync
-    create_host_in_inventory unless host_already_in_inventory
-    import_host
+    unless host_already_in_inventory
+      new_host = create_host_in_inventory
+      @host.id = new_host['id']
+    end
+    @host.save
     @host
   end
 
@@ -55,7 +52,8 @@ class HostInventoryAPI
 
   def create_host_body
     {
-      'canonical_facts': {},
+      'facts': [{ 'facts': { 'fqdn': @host.name }, 'namespace': 'inventory' }],
+      'fqdn': @host.name,
       'display_name': @host.name,
       'account': @account.account_number
     }.to_json
