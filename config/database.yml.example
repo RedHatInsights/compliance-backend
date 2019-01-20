@@ -14,9 +14,19 @@ default: &default
 
 test:
   <<: *default
+  # use this config with docker-compose
+  #host: db
+  #username: postgres
+  #password:
+  #database: compliance_test
 
 production:
   <<: *default
 
 development:
   <<: *default
+  # use this config with docker-compose
+  #host: db
+  #username: postgres
+  #password:
+  #database: compliance_dev
