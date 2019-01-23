@@ -86,6 +86,26 @@ using insights-proxy. You may run the proxy using the SPANDX config provided her
 SPANDX_CONFIG=$(pwd)/compliance-backend.js ../insights-proxy/scripts/run.sh
 ```
 
+### Option 3: Docker Development setup
+
+Bring up the DB, rails, and racecar:
+
+```shell
+docker-compose up
+```
+
+Access the rails console:
+
+```shell
+docker-compose exec rails bundle exec rails console
+```
+
+Debug with pry-remote:
+
+```shell
+docker-compose exec rails pry-remote -w
+```
+
 ## Contributing
 
 If you'd like to contribute, please fork the repository and use a feature

@@ -1,0 +1,25 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    restart: on-failure
+    volumes:
+      - /tmp/insights-compliance-db:/var/lib/postgresql/data:Z
+  rails:
+    build: .
+    restart: on-failure
+    entrypoint: ./entrypoint.sh
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app:Z
+    depends_on:
+      - db
+  racecar:
+    build: .
+    restart: on-failure
+    entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar ComplianceReportsConsumer'
+networks:
+  default:
+    external:
+      name: docker_default # should match insights-upload's network name
