@@ -24,11 +24,24 @@ class Rule < ApplicationRecord
     self
   end
 
+  # Disabling MethodLength because it measures things wrong
+  # for a multi-line string SQL query.
+  # rubocop:disable Metrics/MethodLength
   def compliant?(host)
-    latest_result = rule_results.where(host: host)
-                                .order(:updated_at).last
+    latest_result = RuleResult.find_by_sql(
+      ['SELECT rule_results.* FROM (
+          SELECT rr2.*,
+             rank() OVER (
+                    PARTITION BY rule_id, host_id
+                    ORDER BY created_at DESC
+             )
+          FROM rule_results rr2
+          WHERE rr2.host_id = ? AND rr2.rule_id = ?
+       ) rule_results WHERE RANK = 1', host.id, id]
+    ).last
     return false if latest_result.blank?
 
     %w[pass notapplicable notselected].include? latest_result.result
   end
+  # rubocop:enable Metrics/MethodLength
 end

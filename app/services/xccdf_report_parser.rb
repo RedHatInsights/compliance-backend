@@ -70,15 +70,22 @@ class XCCDFReportParser
     end
   end
 
+  def rule_already_saved(rule, profiles)
+    found_rule = Rule.find_by(ref_id: rule.id)
+    return false if found_rule.blank?
+
+    found_rule.profiles << profiles
+    found_rule.save
+  end
+
   def save_rules
     save_profiles
+    new_profiles = Profile.where(ref_id: profiles.keys)
     rule_objects.each_with_object([]) do |rule, new_rules|
       rule_object = rule[1]
-      next if Rule.find_by(ref_id: rule_object.id)
+      next if rule_already_saved(rule_object, new_profiles)
 
-      new_rule = Rule.new(
-        profiles: Profile.where(ref_id: profiles.keys)
-      ).from_oscap_object(rule_object)
+      new_rule = Rule.new(profiles: new_profiles).from_oscap_object(rule_object)
       new_rule.save
       new_rules << new_rule
     end

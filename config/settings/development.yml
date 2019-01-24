@@ -1,1 +1,1 @@
-host_inventory_url: http://localhost:8000
+host_inventory_url: https://insights-inventory-platform-ci.5a9f.insights-dev.openshiftapps.com

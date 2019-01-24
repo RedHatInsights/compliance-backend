@@ -149,7 +149,7 @@ SystemType = GraphQL::ObjectType.define do
     argument :profile_id, types.String, 'Filter results by profile ID'
     resolve lambda { |obj, args, _ctx|
       if args['profile_id'].present?
-        rule_ids = Profile.find(args['profile_id']).rules.map(&:id)
+        rule_ids = Profile.find(args['profile_id']).rules.pluck(:id)
         rule_results = RuleResult.where(rule_id: rule_ids, host: obj.id)
       else
         rule_results = obj.rule_results
@@ -188,7 +188,7 @@ QueryType = GraphQL::ObjectType.define do
     type types[ProfileType]
     description 'All profiles visible by the user'
     resolve lambda { |_obj, _args, ctx|
-      Pundit.policy_scope(ctx[:current_user], Profile)
+      Pundit.policy_scope(ctx[:current_user], Profile).includes(:hosts)
     }
   end
 
@@ -196,7 +196,11 @@ QueryType = GraphQL::ObjectType.define do
     type ProfileType
     argument :id, types.String
     resolve lambda { |_obj, args, ctx|
-      Pundit.authorize(ctx[:current_user], Profile.find(args[:id]), :show?)
+      Pundit.authorize(
+        ctx[:current_user],
+        Profile.includes(:profile_hosts, :hosts).find(args[:id]),
+        :show?
+      )
     }
   end
 end
