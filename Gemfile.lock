@@ -170,6 +170,9 @@ GEM
     pry-byebug (3.6.0)
       byebug (~> 10.0)
       pry (~> 0.10)
+    pry-remote (0.1.8)
+      pry (~> 0.9)
+      slop (~> 3.0)
     public_suffix (3.0.3)
     puma (3.12.0)
     pundit (2.0.0)
@@ -260,6 +263,7 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    slop (3.6.0)
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-watcher-listen (2.0.1)
@@ -308,6 +312,7 @@ DEPENDENCIES
   openscap
   pg
   pry-byebug
+  pry-remote
   puma (~> 3.11)
   pundit
   racecar

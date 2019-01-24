@@ -13,7 +13,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                                              accounts(:test).account_number,
                                              'b64_fake_identity')
     # A hack to skip API calls in the test env for the time being
-    HostInventoryAPI.stubs(:host_already_in_inventory).returns(true)
+    HostInventoryAPI.any_instance.stubs(:host_already_in_inventory)
+                    .returns(true)
   end
 
   context 'profile' do
