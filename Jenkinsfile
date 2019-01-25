@@ -26,7 +26,6 @@ def runStages() {
 
         stage("Prepare the db") {
             withStatusContext.dbMigrate {
-                sh "cp config/database.yml.example config/database.yml"
                 sh "bundle exec rake db:migrate --trace"
                 sh "bundle exec rake db:test:prepare"
             }
