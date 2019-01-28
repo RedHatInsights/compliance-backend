@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'prometheus_exporter/client'
 
 RuleType = GraphQL::ObjectType.define do
   name 'Rule'
@@ -206,5 +207,6 @@ QueryType = GraphQL::ObjectType.define do
 end
 
 Schema = GraphQL::Schema.define do
+  use(GraphQL::Tracing::PrometheusTracing)
   query QueryType
 end

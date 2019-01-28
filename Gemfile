@@ -53,8 +53,8 @@ gem 'pundit'
 gem 'faraday'
 gem 'friendly_id', '~> 5.2.4'
 gem 'scoped_search'
-
 gem 'will_paginate'
+gem 'prometheus_exporter'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
