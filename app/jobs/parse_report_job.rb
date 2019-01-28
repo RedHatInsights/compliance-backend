@@ -2,9 +2,11 @@
 
 # Saves all of the information we can parse from a XCCDF report into db
 class ParseReportJob < ApplicationJob
-  def perform(filepath, account, b64_identity)
-    parser = XCCDFReportParser.new(filepath, account, b64_identity)
+  def perform(file, account, b64_identity)
+    parser = XCCDFReportParser.new(file, account, b64_identity)
     parser.save_rule_results
+  ensure
+    File.delete(file)
   end
 
   rescue_from(OpenSCAP::OpenSCAPError) do |e|

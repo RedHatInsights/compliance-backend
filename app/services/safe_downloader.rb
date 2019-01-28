@@ -18,12 +18,11 @@ class SafeDownloader
 
   class << self
     def download(url, path, max_size: nil)
-      url = encode_url(url)
-      options = create_options(max_size)
-      downloaded_file = url.open(options)
-      patch_if_less_than_10k(downloaded_file)
-      IO.copy_stream(downloaded_file, path) if path.present?
-      downloaded_file
+      downloaded_file = open_url(encode_url(url), create_options(max_size))
+      tempfile = Tempfile.create(path)
+      patch_if_less_than_10k(downloaded_file, tempfile)
+      IO.copy_stream(downloaded_file, tempfile.path)
+      tempfile
     rescue *DOWNLOAD_ERRORS => error
       raise DownloadError if error.instance_of?(RuntimeError) &&
                              error.message !~ /redirection/
@@ -32,6 +31,10 @@ class SafeDownloader
     end
 
     private
+
+    def open_url(url, options)
+      url.open(options)
+    end
 
     def encode_url(url)
       url = URI(url)
@@ -42,7 +45,7 @@ class SafeDownloader
       raise DownloadError, 'url was invalid'
     end
 
-    def patch_if_less_than_10k(downloaded_file)
+    def patch_if_less_than_10k(downloaded_file, tempfile)
       return downloaded_file unless downloaded_file.is_a?(StringIO)
 
       IO.copy_stream(downloaded_file, tempfile.path)

@@ -8,8 +8,8 @@ class ComplianceReportsConsumer < ApplicationConsumer
   def process(message)
     @value = JSON.parse(message.value)
     logger.info "Received message, enqueueing: #{message.value}"
-    path = "tmp/storage/#{@value['payload_id']}"
-    enqueue_job(path)
+    @file = SafeDownloader.download(@value['url'], @value['payload_id'])
+    enqueue_job
   rescue SafeDownloader::DownloadError => error
     logger.error "Error parsing report: #{@value['payload_id']}"\
       " - #{error.message}"
@@ -25,10 +25,10 @@ class ComplianceReportsConsumer < ApplicationConsumer
 
   private
 
-  def enqueue_job(path)
-    if validate(path) == 'success'
+  def enqueue_job
+    if validate == 'success'
       job = ParseReportJob.perform_later(
-        path,
+        @file.path,
         @value['account'],
         @value['b64_identity']
       )
@@ -38,15 +38,14 @@ class ComplianceReportsConsumer < ApplicationConsumer
     end
   end
 
-  def validate(path)
-    SafeDownloader.download(@value['url'], path)
-    message = validation_message(path)
+  def validate
+    message = validation_message
     send_validation(message)
     message
   end
 
-  def validation_message(path)
-    XCCDFReportParser.new(path, @value['account'], @value['b64_identity'])
+  def validation_message
+    XCCDFReportParser.new(@file.path, @value['account'], @value['b64_identity'])
     'success'
   rescue StandardError => error
     logger.error "Error validating report: #{@value['payload_id']}"\
