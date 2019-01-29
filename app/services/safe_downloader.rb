@@ -48,6 +48,7 @@ class SafeDownloader
     def patch_if_less_than_10k(downloaded_file, tempfile)
       return downloaded_file unless downloaded_file.is_a?(StringIO)
 
+      tempfile = Tempfile.new
       IO.copy_stream(downloaded_file, tempfile.path)
       downloaded_file = tempfile
       OpenURI::Meta.init downloaded_file, stringio
