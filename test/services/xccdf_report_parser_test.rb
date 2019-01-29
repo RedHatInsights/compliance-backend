@@ -124,5 +124,15 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
         assert_empty old_rules_found
       end
     end
+
+    should 'not try to append already assigned profiles to a rule' do
+      rule = Rule.create(ref_id: @arbitrary_rules[0])
+      rule.profiles << profiles(:one)
+      assert_nothing_raised do
+        @report_parser.rule_already_saved(rule, [profiles])
+      end
+      assert_equal 1, rule.profiles.count
+      assert_equal profiles(:one), rule.profiles.first
+    end
   end
 end

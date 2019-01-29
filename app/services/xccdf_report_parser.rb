@@ -74,7 +74,12 @@ class XCCDFReportParser
     found_rule = Rule.find_by(ref_id: rule.id)
     return false if found_rule.blank?
 
-    found_rule.profiles << profiles
+    new_profiles = []
+    profiles.each do |profile|
+      new_profiles.append(profile) unless found_rule.profiles.include?(profile)
+    end
+
+    found_rule.profiles << new_profiles
     found_rule.save
   end
 
