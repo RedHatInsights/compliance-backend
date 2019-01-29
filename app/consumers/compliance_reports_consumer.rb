@@ -50,6 +50,8 @@ class ComplianceReportsConsumer < ApplicationConsumer
   rescue StandardError => error
     logger.error "Error validating report: #{@value['payload_id']}"\
       " - #{error.message}"
+    @file.close
+    @file.unlink
     'failure'
   end
 
