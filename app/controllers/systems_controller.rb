@@ -19,7 +19,7 @@ class SystemsController < ApplicationController
   private
 
   def csv_params
-    [scope_search, Host.column_names - %w[created_at updated_at]]
+    [scope_search, Host.column_names - %w[created_at updated_at] << 'compliant']
   end
 
   def scope_search

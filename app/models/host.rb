@@ -11,4 +11,12 @@ class Host < ApplicationRecord
   belongs_to :account, optional: true
 
   validates :name, presence: true, uniqueness: { scope: :account_id }
+
+  def compliant
+    result = {}
+    profiles.map do |profile|
+      result[profile.ref_id] = profile.compliant?(self)
+    end
+    result
+  end
 end
