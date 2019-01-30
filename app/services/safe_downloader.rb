@@ -20,7 +20,6 @@ class SafeDownloader
     def download(url, path, max_size: nil)
       downloaded_file = open_url(encode_url(url), create_options(max_size))
       tempfile = Tempfile.create(path)
-      patch_if_less_than_10k(downloaded_file, tempfile)
       IO.copy_stream(downloaded_file, tempfile.path)
       tempfile
     rescue *DOWNLOAD_ERRORS => error
@@ -43,15 +42,6 @@ class SafeDownloader
       url
     rescue ArgumentError
       raise DownloadError, 'url was invalid'
-    end
-
-    def patch_if_less_than_10k(downloaded_file, tempfile)
-      return downloaded_file unless downloaded_file.is_a?(StringIO)
-
-      IO.copy_stream(downloaded_file, tempfile.path)
-      downloaded_file = tempfile
-      OpenURI::Meta.init downloaded_file, stringio
-      downloaded_file
     end
 
     def create_options(max_size)

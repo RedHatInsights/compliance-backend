@@ -51,7 +51,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
     logger.error "Error validating report: #{@value['payload_id']}"\
       " - #{error.message}"
     @file.close
-    @file.unlink
+    File.delete(@file.path)
     'failure'
   end
 

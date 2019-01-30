@@ -43,7 +43,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
     @tempfile.expects(:close)
     # After calling .close, @tempfile changes its internal object id, so we
     # need to expect any tempfile to close.
-    Tempfile.any_instance.expects(:unlink)
+    File.expects(:delete).with(@tempfile.path)
     # Mock the actual 'sending the validation' to Kafka
     @consumer.expects(:send_validation).with('failure').returns(true)
     assert_enqueued_jobs 0 do
