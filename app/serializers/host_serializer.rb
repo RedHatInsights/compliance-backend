@@ -4,5 +4,5 @@
 class HostSerializer
   include FastJsonapi::ObjectSerializer
   set_type :host
-  attributes :name, :profiles
+  attributes :name, :profiles, :compliant
 end
