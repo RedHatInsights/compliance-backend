@@ -97,13 +97,13 @@ objects:
             value: "${RAILS_ENV}"
           livenessProbe:
             httpGet:
-              path: /
+              path: /r/insights/platform/compliance/api-docs/index.html
               port: 8080
             initialDelaySeconds: 120
             timeoutSeconds: 1
           readinessProbe:
             httpGet:
-              path: /
+              path: /r/insights/platform/compliance/api-docs/index.html
               port: 8080
             initialDelaySeconds: 120
             timeoutSeconds: 1
