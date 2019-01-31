@@ -28,6 +28,7 @@ ProfileType = GraphQL::ObjectType.define do
   field :description, types.String
   field :ref_id, !types.String
   field :rules, -> { types[RuleType] }
+  field :hosts, -> { types[SystemType] }
   field :total_host_count do
     type !types.Int
     resolve ->(obj, _args, _ctx) { obj.hosts.count }
