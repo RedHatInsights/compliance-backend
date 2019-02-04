@@ -1,0 +1,93 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: compliance-prometheus-exporter
+  annotations:
+    openshift.io/display-name: Compliance prometheus_exporter
+    description: Red Hat Insights Compliance prometheus_exporter
+    tags: ruby,rails,prometheus
+    iconClass: icon-ruby
+    openshift.io/documentation-url: https://github.com/RedHatInsights/compliance-backend
+labels:
+  app: compliance-prometheus-exporter
+  template: compliance-prometheus-exporter-template
+
+objects:
+
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "${NAME}"
+    annotations:
+      description: Defines how to deploy the application server
+      template.alpha.openshift.io/wait-for-ready: 'true'
+  spec:
+    ports:
+    - name: aggregator
+      port: 9394
+      targetPort: 9394
+    - name: metrics
+      port: 8080
+      targetPort: 8080
+    selector:
+      name: "${NAME}"
+    strategy:
+      type: Recreate
+      recreateParams:
+        pre:
+          failurePolicy: Abort
+          execNewPod:
+            containerName: "${NAME}"
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - "${NAME}"
+        from:
+          kind: ImageStreamTag
+          name: compliance-backend:latest
+          namespace: ${IMAGE_NAMESPACE}
+    - type: ConfigChange
+    replicas: 1
+    selector:
+      name: "${NAME}"
+    template:
+      metadata:
+        name: "${NAME}"
+        labels:
+          name: "${NAME}"
+      spec:
+        containers:
+        - name: "${NAME}"
+          image: " "
+          env:
+          - name: APPLICATION_TYPE
+            value: "${NAME}"
+          - name: RAILS_ENV
+            value: "${RAILS_ENV}"
+          resources:
+            limits:
+              memory: "${MEMORY_LIMIT}"
+
+parameters:
+- name: NAMESPACE
+- name: IMAGE_NAMESPACE
+  description: Name of the namespace app images are pulled from (if not buildfactory)
+  value: buildfactory
+- name: NAME
+  displayName: Name
+  description: The name assigned to all of the frontend objects defined in this template.
+  required: true
+  value: compliance-prometheus-exporter
+- name: MEMORY_LIMIT
+  displayName: Memory Limit
+  required: true
+  description: Maximum amount of memory the Rails container can use.
+  value: 2Gi
+- name: RAILS_ENV
+  displayName: Rails Environment
+  required: true
+  description: Environment under which the sample application will run. Could be set
+    to production, development or test.
+  value: production

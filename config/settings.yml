@@ -1,3 +1,5 @@
 platform_kafka_topic: 'platform.upload.compliance'
 platform_kafka_validation_topic: 'platform.upload.validation'
 host_inventory_url: http://insights-inventory.platform-ci.svc.cluster.local:8080
+prometheus_exporter_host: compliance-prometheus-exporter.compliance-ci.svc
+prometheus_exporter_port: 9394

@@ -1,1 +1,3 @@
 host_inventory_url: http://insights-inventory.platform-prod.svc:8080
+prometheus_exporter_host: compliance-prometheus-exporter.compliance-prod.svc
+prometheus_exporter_port: 9394
