@@ -14,6 +14,20 @@ labels:
 
 objects:
 
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${NAME}"
+    annotations:
+      description: Exposes the prometheus exporter
+  spec:
+    ports:
+    - name: metrics
+      port: 9394
+      targetPort: 9394
+    selector:
+      name: "${NAME}"
+
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -22,22 +36,10 @@ objects:
       description: Defines how to deploy the application server
       template.alpha.openshift.io/wait-for-ready: 'true'
   spec:
-    ports:
-    - name: aggregator
-      port: 9394
-      targetPort: 9394
-    - name: metrics
-      port: 8080
-      targetPort: 8080
     selector:
       name: "${NAME}"
     strategy:
       type: Recreate
-      recreateParams:
-        pre:
-          failurePolicy: Abort
-          execNewPod:
-            containerName: "${NAME}"
     triggers:
     - type: ImageChange
       imageChangeParams:
