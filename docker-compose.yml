@@ -4,21 +4,34 @@ services:
     image: postgres
     restart: on-failure
     volumes:
-      - /tmp/insights-compliance-db:/var/lib/postgresql/data:Z
+      - /tmp/insights-compliance-db:/var/lib/postgresql/data:z
   rails:
     build: .
+    image: compliance-backend-rails
     restart: on-failure
     entrypoint: ./entrypoint.sh
     ports:
       - '3000:3000'
     volumes:
-      - .:/app:Z
+      - .:/app:z
     depends_on:
       - db
+      - prometheus
   racecar:
-    build: .
+    image: compliance-backend-rails
     restart: on-failure
-    entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar ComplianceReportsConsumer'
+    entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar -l log/racecar.log ComplianceReportsConsumer'
+    volumes:
+      - .:/app:z
+    depends_on:
+      - db
+      - prometheus
+  prometheus:
+    image: compliance-backend-rails
+    restart: on-failure
+    volumes:
+      - .:/app:z
+    entrypoint: bash -c 'bundle exec prometheus_exporter -c lib/graphql_collector.rb'
 networks:
   default:
     external:
