@@ -20,6 +20,9 @@ objects:
     name: "${NAME}"
     annotations:
       description: Exposes the prometheus exporter
+      prometheus.io/path: /metrics
+      prometheus.io/port: '9394'
+      prometheus.io/scrape: 'true'
   spec:
     ports:
     - name: metrics
