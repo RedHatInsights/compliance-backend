@@ -5,7 +5,9 @@ if Rails.env != "test"
   client = PrometheusExporter::Client.new(
     host: Settings.prometheus_exporter_host,
     port: Settings.prometheus_exporter_port
+    # Add custom_labels for app_name here (consumer and webserver)
   )
+  PrometheusExporter::Metric::Base.default_prefix = 'compliance'
   PrometheusExporter::Client.default = client
 
   # This reports stats per request like HTTP status and timings
