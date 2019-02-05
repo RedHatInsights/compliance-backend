@@ -110,6 +110,11 @@ parameters:
   description: Environment under which the sample application will run. Could be set
     to production, development or test.
   value: production
+- name: RAILS_LOG_TO_STDOUT
+  displayName: Rails log to stdout
+  required: true
+  description: Whether to log to stdout or to a log file
+  value: true
 - name: DATABASE_SERVICE_NAME
   required: true
   displayName: Database Service Name
