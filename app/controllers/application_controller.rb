@@ -10,4 +10,10 @@ class ApplicationController < ActionController::API
     render json: { errors: 'You are not authorized to access this action.' },
            status: :forbidden
   end
+
+  rescue_from ActiveRecord::RecordNotFound do |error|
+    logger.info "#{error.message} (#{error.class})"
+    render json: { errors: 'Resource not found' },
+           status: :not_found
+  end
 end

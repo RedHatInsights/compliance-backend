@@ -6,7 +6,7 @@
     "description": "This is the API for Insights Compliance. You can find out more about Red Hat Insights at [https://access.redhat.com/products/red-hat-insights/](https://access.redhat.com/products/red-hat-insights/)"
   },
   "paths": {
-    "/profiles": {
+    "/r/insights/platform/compliance/profiles": {
       "get": {
         "summary": "List all profiles",
         "tags": [
@@ -71,6 +71,162 @@
                     "attributes": {
                       "name": "Standard System Security Profile for Fedora",
                       "ref_id": "xccdf_org.ssgproject.content_profile_standard"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/r/insights/platform/compliance/profiles/{id}": {
+      "get": {
+        "summary": "Retrieve a profile",
+        "tags": [
+          "profile"
+        ],
+        "description": "Retrieves data for a profile",
+        "consumes": [
+          "application/vnd.api+json"
+        ],
+        "produces": [
+          "application/vnd.api+json"
+        ],
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "profile not found",
+            "examples": {
+              "application/vnd.api+json": {
+                "errors": "Resource not found"
+              }
+            }
+          },
+          "200": {
+            "description": "retrieves a profile",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "meta": {
+                  "$ref": "#/definitions/metadata"
+                },
+                "links": {
+                  "$ref": "#/definitions/links"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "attributes": {
+                      "$ref": "#/definitions/profile"
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "type": "Profile",
+                  "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                  "attributes": {
+                    "name": "Standard System Security Profile for Fedora",
+                    "ref_id": "xccdf_org.ssgproject.content_profile_standard",
+                    "description": "Set of rules for Fedora",
+                    "score": 1,
+                    "total_host_count": 1,
+                    "compliant_host_count": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/r/insights/platform/compliance/systems": {
+      "get": {
+        "summary": "List all hosts",
+        "tags": [
+          "host"
+        ],
+        "description": "Lists all hosts requested",
+        "consumes": [
+          "application/vnd.api+json"
+        ],
+        "produces": [
+          "application/vnd.api+json"
+        ],
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "lists all hosts requested",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "meta": {
+                  "$ref": "#/definitions/metadata"
+                },
+                "links": {
+                  "$ref": "#/definitions/links"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "attributes": {
+                        "$ref": "#/definitions/host"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/vnd.api+json": {
+                "data": [
+                  {
+                    "type": "Host",
+                    "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                    "attributes": {
+                      "name": "Standard System Security Profile for Fedora",
+                      "ref_id": "xccdf_org.ssgproject.content_host_standard"
                     }
                   }
                 ]

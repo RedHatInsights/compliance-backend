@@ -86,3 +86,31 @@ RSpec.configure do |config|
     }
   }
 end
+
+def encoded_header
+  Base64.encode64(x_rh_identity.to_json)
+end
+
+# Justification: It's mostly hash test data
+# rubocop:disable Metrics/MethodLength
+def x_rh_identity
+  {
+    'identity':
+    {
+      'account_number': '1234',
+      'type': 'User',
+      'user': {
+        'email': 'a@b.com',
+        'username': 'a@b.com',
+        'first_name': 'a',
+        'last_name': 'b',
+        'is_active': true,
+        'locale': 'en_US'
+      },
+      'internal': {
+        'org_id': '29329'
+      }
+    }
+  }.with_indifferent_access
+end
+# rubocop:enable Metrics/MethodLength

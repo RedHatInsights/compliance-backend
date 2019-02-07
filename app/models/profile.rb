@@ -2,6 +2,9 @@
 
 # OpenSCAP profile
 class Profile < ApplicationRecord
+  extend FriendlyId
+  friendly_id :ref_id, use: :slugged
+
   has_many :profile_rules, dependent: :destroy
   has_many :rules, through: :profile_rules, source: :rule
   has_many :profile_hosts, dependent: :destroy
