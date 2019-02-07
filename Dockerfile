@@ -1,4 +1,4 @@
-from ruby
+from ruby:2.5
 
 workdir /app
 
@@ -9,7 +9,3 @@ run apt-get update && apt-get install -y qt5-default libqt5webkit5-dev \
       postgresql-client
 
 run bundle
-
-add entrypoint.sh /app/
-
-expose 3000
