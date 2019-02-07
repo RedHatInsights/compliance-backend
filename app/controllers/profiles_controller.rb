@@ -11,7 +11,7 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    profile = Profile.find(params[:id])
+    profile = Profile.friendly.find(params[:id])
     authorize profile
     render json: ProfileSerializer.new(profile)
   end
