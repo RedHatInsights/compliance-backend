@@ -32,6 +32,16 @@ services:
     volumes:
       - .:/app:z
     entrypoint: bash -c 'bundle exec prometheus_exporter -c lib/graphql_collector.rb'
+  sidekiq:
+    image: compliance-backend-rails
+    restart: on-failure
+    volumes:
+      - .:/app:z
+    depends_on:
+      - redis
+    entrypoint: bash -c 'bundle exec sidekiq'
+  redis:
+    image: redis:latest
 networks:
   default:
     external:
