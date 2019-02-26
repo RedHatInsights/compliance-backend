@@ -14,7 +14,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
       '"size": 327, "service": "compliance", "url": "/tmp/uploads'\
       '/insights-upload-quarantine/036738d6f4e541c4aa8cfc9f46f5a140"}'
     ).at_least_once
-    @tempfile = Tempfile.new
+    @tempfile = Tempfile.new('', Settings.tmp_file_directory)
     SafeDownloader.expects(:download).returns(@tempfile)
   end
 

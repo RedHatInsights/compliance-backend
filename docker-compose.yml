@@ -23,6 +23,7 @@ services:
     entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar -l log/racecar.log ComplianceReportsConsumer'
     volumes:
       - .:/app:z
+      - /tmp/compliance:/tmp/compliance:z
     depends_on:
       - db
       - prometheus
@@ -37,6 +38,7 @@ services:
     restart: on-failure
     volumes:
       - .:/app:z
+      - /tmp/compliance:/tmp/compliance:z
     depends_on:
       - redis
     entrypoint: bash -c 'bundle exec sidekiq'

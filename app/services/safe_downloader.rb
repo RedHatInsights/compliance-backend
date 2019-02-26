@@ -19,7 +19,7 @@ class SafeDownloader
   class << self
     def download(url, path, max_size: nil)
       downloaded_file = open_url(encode_url(url), create_options(max_size))
-      tempfile = Tempfile.create(path)
+      tempfile = Tempfile.create(path, Settings.tmp_file_directory)
       IO.copy_stream(downloaded_file, tempfile.path)
       tempfile
     rescue *DOWNLOAD_ERRORS => error
