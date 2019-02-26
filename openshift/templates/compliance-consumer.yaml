@@ -22,19 +22,6 @@ objects:
       description: Defines how to deploy the application server
       template.alpha.openshift.io/wait-for-ready: 'true'
   spec:
-    strategy:
-      type: Recreate
-      recreateParams:
-        pre:
-          failurePolicy: Abort
-          execNewPod:
-            command:
-            - bash
-            - -c
-            - |
-              set -e
-              RAILS_ENV="${RAILS_ENV}" bundle exec rake db:migrate
-            containerName: "${NAME}"
     triggers:
     - type: ImageChange
       imageChangeParams:
