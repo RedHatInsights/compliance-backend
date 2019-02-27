@@ -1,0 +1,4 @@
+---
+ignore:
+  - app/models/schema.rb # don't test the schema! https://github.com/rmosolgo/graphql-ruby/blob/master/guides/schema/testing.md#dont-test-the-schema
+...
