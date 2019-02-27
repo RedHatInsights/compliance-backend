@@ -91,9 +91,6 @@ spec:
     - mountPath: /var/run/sockets
       name: shared
       subPath: sockets
-    - mountPath: /tmp/compliance
-      name: shared
-      subPath: compliance-tmp
   dnsPolicy: ClusterFirst
   volumes:
   - emptyDir: {}

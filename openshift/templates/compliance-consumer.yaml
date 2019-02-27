@@ -42,15 +42,9 @@ objects:
         labels:
           name: "${NAME}"
       spec:
-        volumes:
-        - name: compliance-tmp
-          emptyDir: {}
         containers:
         - name: "${NAME}"
           image: " "
-          volumeMounts:
-          - name: compliance-tmp
-            mountPath: "/tmp/compliance"
           env:
           - name: APPLICATION_TYPE
             value: "${NAME}"
