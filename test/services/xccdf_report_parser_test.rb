@@ -4,7 +4,7 @@ require 'test_helper'
 
 class XCCDFReportParserTest < ActiveSupport::TestCase
   setup do
-    fake_report = file_fixture('xccdf_report.xml').to_path
+    fake_report = file_fixture('xccdf_report.xml').read
     @profile = {
       'xccdf_org.ssgproject.content_profile_standard' =>
       'Standard System Security Profile for Fedora'
@@ -40,7 +40,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     end
 
     should 'not save more than one profile when there are no test results' do
-      fake_report = file_fixture('rhel-xccdf-report.xml').to_path
+      fake_report = file_fixture('rhel-xccdf-report.xml').read
       @profile = {
         'xccdf_org.ssgproject.content_profile_rht-ccp' =>
         'Red Hat Corporate Profile for Certified Cloud Providers (RH CCP)'

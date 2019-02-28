@@ -7,7 +7,7 @@ class RuleTest < ActiveSupport::TestCase
   should validate_presence_of :ref_id
 
   setup do
-    fake_report = file_fixture('xccdf_report.xml').to_path
+    fake_report = file_fixture('xccdf_report.xml').read
     @report_parser = ::XCCDFReportParser.new(fake_report, users(:test), 'foo')
     @rule_objects = @report_parser.rule_objects
     @selinux_rule_id = 'xccdf_org.ssgproject.content_rule'\

@@ -16,10 +16,11 @@ class SystemsControllerTest < ActionDispatch::IntegrationTest
 
   test 'index accepts search' do
     scope = mock('scope')
-    SystemsController.any_instance.expects(:policy_scope).with(Host).returns(scope)
+    SystemsController.any_instance.expects(:policy_scope).with(Host)
+                     .returns(scope)
     scope.expects(:search_for).with('foo=bar')
 
-    get systems_url, params: {search: 'foo=bar'}
+    get systems_url, params: { search: 'foo=bar' }
 
     assert_response :success
   end
