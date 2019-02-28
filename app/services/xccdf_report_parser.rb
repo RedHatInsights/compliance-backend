@@ -12,11 +12,15 @@ class XCCDFReportParser
   include ::XCCDFReport::XMLReport
   include ::XCCDFReport::Profiles
 
-  def initialize(report_path, account, b64_identity)
-    @report_path = report_path
+  attr_reader :report_path
+
+  def initialize(report_contents, account, b64_identity)
+    file = Tempfile.new(SecureRandom.uuid)
+    file.write(report_contents)
+    @report_path = file.path
     @b64_identity = b64_identity
     @account = Account.find_or_create_by(account_number: account)
-    @source = ::OpenSCAP::Source.new(report_path)
+    @source = ::OpenSCAP::Source.new(@report_path)
     @benchmark = ::OpenSCAP::Xccdf::Benchmark.new(@source)
   end
 
