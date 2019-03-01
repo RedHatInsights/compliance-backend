@@ -14,23 +14,34 @@ node {
 
 def runStages() {
 
-    openShift.withNode(cloud: "cmqe", yaml: "openshift/Jenkins/slave_pod_template.yaml") {
+    def label = "test-${UUID.randomUUID().toString()}"
+    def yaml = readTrusted("openshift/Jenkins/slave_pod_template.yaml")
+    println(yaml)
 
-        stage("Bundle install") {
-            runBundleInstall()
-        }
-
-        stage("Prepare the db") {
-            withStatusContext.dbMigrate {
-                sh "bundle exec rake db:migrate --trace"
-                sh "bundle exec rake db:test:prepare"
+    podTemplate(
+        cloud: "cmqe",
+        label: label,
+        yaml: yaml,
+        namespace: pipelineVars.defaultNameSpace,
+        serviceAccount: pipelineVars.jenkinsSvcAccount
+    ) {
+        node(label) {
+            stage("Bundle install") {
+                runBundleInstall()
             }
-        }
 
-        stage("Unit tests") {
-            withCredentials([string(credentialsId: "codecov_token", variable: "CODECOV_TOKEN")]) {
-                withStatusContext.unitTest {
-                    sh "bundle exec rake test:validate"
+            stage("Prepare the db") {
+                withStatusContext.dbMigrate {
+                    sh "bundle exec rake db:migrate --trace"
+                    sh "bundle exec rake db:test:prepare"
+                }
+            }
+
+            stage("Unit tests") {
+                withCredentials([string(credentialsId: "codecov_token", variable: "CODECOV_TOKEN")]) {
+                    withStatusContext.unitTest {
+                        sh "bundle exec rake test:validate"
+                    }
                 }
             }
         }
