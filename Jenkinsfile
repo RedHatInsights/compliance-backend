@@ -15,17 +15,18 @@ node {
 def runStages() {
 
     def label = "test-${UUID.randomUUID().toString()}"
-    def yaml = readTrusted("openshift/Jenkins/slave_pod_template.yaml")
-    println(yaml)
 
     podTemplate(
         cloud: "cmqe",
+        name: "compliance-backend-test",
         label: label,
-        yaml: yaml,
-        namespace: pipelineVars.defaultNameSpace,
+        inheritFrom: "compliance-backend-test",
         serviceAccount: pipelineVars.jenkinsSvcAccount
     ) {
         node(label) {
+
+            checkout scm
+
             stage("Bundle install") {
                 runBundleInstall()
             }
@@ -52,6 +53,15 @@ def runStages() {
     changedFiles = changedFiles()
 
     if (currentBuild.currentResult == "SUCCESS" && env.BRANCH_NAME == "master") {
+
+        if ("Gemfile.lock" in changedFiles || "Gemfile" in changedFiles || "openshift/Jenkins/Dockerfile" in changedFiles) {
+            // If Gemfiles or Jenknis slave's Dockerfile changed we need to rebuild the jenkins slave image
+            stage("Rebuild the jenkins slave ruby image") {
+                openshift.withCluster("cmqe") {
+                    openshift.startBuild("jenkins-slave-base-centos7-ruby25-openscap")
+                }
+            }
+        }
 
         stage("Wait until deployed") {
             openshift.withCluster("dev_cluster") {
@@ -97,15 +107,6 @@ def runStages() {
                     withEnv(["ENV_FOR_DYNACONF=ci"]) {
                        sh "iqe tests plugin compliance -v -s -k 'test_validate_compliance_report or test_graphql_smoke'"    
                     }
-                }
-            }
-        }
-
-        if ("Gemfile.lock" in changedFiles || "Gemfile" in changedFiles || "openshift/Jenkins/Dockerfile" in changedFiles) {
-            // If Gemfiles or Jenknis slave's Dockerfile changed we need to rebuild the jenkins slave image
-            stage("Rebuild the jenkins slave ruby image") {
-                openshift.withCluster("cmqe") {
-                    openshift.startBuild("jenkins-slave-base-centos7-ruby25-openscap")
                 }
             }
         }
