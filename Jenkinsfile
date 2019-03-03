@@ -63,28 +63,44 @@ def runStages() {
             }
         }
 
-        stage("Wait until deployed") {
-            openshift.withCluster("dev_cluster") {
-                openshift.withCredentials("compliance-token") {
-                    openshift.withProject("compliance-ci") {
-                        def expectedDeploymentVersion = openshift.selector("dc", "compliance-consumer").object().status.latestVersion + 1
-                        start = System.currentTimeMillis()
-                        while(System.currentTimeMillis() - start < 600000) {
-                            if (openshift.selector("rc", "compliance-consumer${expectedDeploymentVersion}").exists()) {
-                                break
+
+        openshift.withCluster("dev_cluster") {
+            openshift.withCredentials("compliance-token") {
+                openshift.withProject("compliance-ci") {
+                    stage("Wait until deployed") {
+                        parallel(
+                            "Consumer": {
+                                def expectedDeploymentVersion = openshift.selector("dc", "compliance-consumer").object().status.latestVersion + 1
+                                def rc = openshift.selector("rc", "compliance-consumer-${expectedDeploymentVersion}")
+                                timeout(15) {
+                                    rc.untilEach(1) {
+                                        return true
+                                    }
+                                    rc.untilEach(1) {
+                                        def rcMap = it.object()
+                                        return (rcMap.status.replicas.equals(rcMap.status.readyReplicas))
+                                    }
+                                }
+                            },
+                            "API": {
+                                def expectedDeploymentVersion = openshift.selector("dc", "compliance-backend").object().status.latestVersion + 1
+                                def rc = openshift.selector("rc", "compliance-backend-${expectedDeploymentVersion}")
+                                timeout(15) {
+                                    rc.untilEach(1) {
+                                        return true
+                                    }
+                                    rc.untilEach(1) {
+                                        def rcMap = it.object()
+                                        return (rcMap.status.replicas.equals(rcMap.status.readyReplicas))
+                                    }
+                                }
                             }
-                        }
-                        timeout(10) {
-                            def rc = openshift.selector("rc", "compliance-consumer-${expectedDeploymentVersion}")
-                            rc.untilEach(1) {
-                                def rcMap = it.object()
-                                return (rcMap.status.replicas.equals(rcMap.status.readyReplicas))
-                            }
-                        }
+                        )
                     }
                 }
             }
         }
+
 
         openShift.withNode(cloud: "cmqe", image: pipelineVars.jenkinsSlaveIqeImage) {
             stage("Install integration tests env") {
