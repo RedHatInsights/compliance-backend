@@ -48,11 +48,11 @@ def runStages() {
         }
     }
 
-    checkout scm
-
-    changedFiles = changedFiles()
+    scmVars = checkout scm
 
     if (currentBuild.currentResult == "SUCCESS" && env.BRANCH_NAME == "master") {
+
+        changedFiles = changedFiles()
 
         if ("Gemfile.lock" in changedFiles || "Gemfile" in changedFiles || "openshift/Jenkins/Dockerfile" in changedFiles) {
             // If Gemfiles or Jenknis slave's Dockerfile changed we need to rebuild the jenkins slave image
@@ -67,44 +67,90 @@ def runStages() {
         openshift.withCluster("dev_cluster") {
             openshift.withCredentials("compliance-token") {
                 openshift.withProject("compliance-ci") {
-                    stage("Wait until backend deployed") {
-                        def expectedDeploymentVersion = openshift.selector("dc", "compliance-backend").object().status.latestVersion + 1
-                        def rc = openshift.selector("rc", "compliance-backend-${expectedDeploymentVersion}")
-                        timeout(20) {
-                            rc.untilEach(1) {
-                                return true
+                    stage("Wait until deployed") {
+                        parallel(
+                            "API": {
+                                timeout(20) {
+                                    def finished = false
+                                    waitUntil {
+                                        try {
+                                            def pod = openshift.selector("pod", [name : "compliance-backend"]).name()
+                                            if (openshift.rsh("${pod} git rev-parse HEAD").out.trim() == scmVars.GIT_COMMIT) {
+                                                waitUntil {
+                                                    def lastRc = openshift.selector("rc", [app : "compliance-backend"]).objects()[-1]
+                                                    finished = lastRc.status.replicas == lastRc.status.readyReplicas
+                                                    return finished
+                                                }
+                                            }
+                                            return finished
+                                        } catch(e) {
+                                            return false
+                                        }
+                                    }
+                                }
+                            },
+                            "Consumer": {
+                                timeout(20) {
+                                    def finished = false
+                                    waitUntil {
+                                        try {
+                                            def pod = openshift.selector("pod", [name : "compliance-consumer"]).name()
+                                            if (openshift.rsh("${pod} git rev-parse HEAD").out.trim() == scmVars.GIT_COMMIT) {
+                                                waitUntil {
+                                                    def lastRc = openshift.selector("rc", [app : "compliance-consumer"]).objects()[-1]
+                                                    finished = lastRc.status.replicas == lastRc.status.readyReplicas
+                                                    return finished
+                                                }
+                                            }
+                                            return finished
+                                        } catch(e) {
+                                            return false
+                                        }
+                                    }
+                                }
                             }
-                            rc.untilEach(1) {
-                                def rcMap = it.object()
-                                return (rcMap.status.replicas.equals(rcMap.status.readyReplicas))
-                            }
-                        }
+                        )
                     }
                 }
             }
         }
 
+        def iqeLabel = "test-${UUID.randomUUID().toString()}"
 
-        openShift.withNode(cloud: "cmqe", image: pipelineVars.jenkinsSlaveIqeImage) {
-            stage("Install integration tests env") {
-                sh "iqe plugin install iqe-compliance-plugin"
-                sh "iqe plugin install iqe-red-hat-internal-envs-plugin"
-            }
-
-            stage("Inject credentials and settings") {
-                withCredentials([
-                    file(credentialsId: "compliance-settings-credentials-yaml", variable: "creds"),
-                    file(credentialsId: "compliance-settings-local-yaml", variable: "settings")]
-                ) {
-                    sh "cp \$creds \$IQE_VENV/lib/python3.6/site-packages/iqe_compliance/conf"
-                    sh "cp \$settings \$IQE_VENV/lib/python3.6/site-packages/iqe_compliance/conf"
+        podTemplate(
+            cloud: "cmqe",
+            name: "compliance-backend-integration-tests",
+            label: iqeLabel,
+            serviceAccount: pipelineVars.jenkinsSvcAccount,
+            containers: [
+                containerTemplate(
+                    name: "jnlp",
+                    image: pipelineVars.jenkinsSlaveIqeImage,
+                    workingDir: ""
+                )
+            ]
+        ) {
+            node(iqeLabel) {
+                stage("Install integration tests env") {
+                    sh "iqe plugin install iqe-compliance-plugin"
+                    sh "iqe plugin install iqe-red-hat-internal-envs-plugin"
                 }
-            }
 
-            stage("Run integration tests") {
-                withStatusContext.integrationTest {
-                    withEnv(["ENV_FOR_DYNACONF=ci"]) {
-                       sh "iqe tests plugin compliance -v -s -k 'test_validate_compliance_report or test_graphql_smoke'"    
+                stage("Inject credentials and settings") {
+                    withCredentials([
+                        file(credentialsId: "compliance-settings-credentials-yaml", variable: "creds"),
+                        file(credentialsId: "compliance-settings-local-yaml", variable: "settings")]
+                    ) {
+                        sh "cp \$creds \$IQE_VENV/lib/python3.6/site-packages/iqe_compliance/conf"
+                        sh "cp \$settings \$IQE_VENV/lib/python3.6/site-packages/iqe_compliance/conf"
+                    }
+                }
+
+                stage("Run integration tests") {
+                    withStatusContext.integrationTest {
+                        withEnv(["ENV_FOR_DYNACONF=ci"]) {
+                           sh "iqe tests plugin compliance -v -s -k 'test_validate_compliance_report or test_graphql_smoke'"    
+                        }
                     }
                 }
             }
