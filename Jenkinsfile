@@ -70,7 +70,7 @@ def runStages() {
                     stage("Wait until backend deployed") {
                         def expectedDeploymentVersion = openshift.selector("dc", "compliance-backend").object().status.latestVersion + 1
                         def rc = openshift.selector("rc", "compliance-backend-${expectedDeploymentVersion}")
-                        timeout(15) {
+                        timeout(20) {
                             rc.untilEach(1) {
                                 return true
                             }
