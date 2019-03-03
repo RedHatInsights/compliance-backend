@@ -1,4 +1,5 @@
-FROM openshift/jenkins-slave-base-centos7
+# FROM openshift/jenkins-slave-base-centos7\
+FROM docker-registry.engineering.redhat.com/centralci/jnlp-slave-base:1.5
 
 ENV RUBY_MAJOR_VERSION=2 \
     RUBY_MINOR_VERSION=5

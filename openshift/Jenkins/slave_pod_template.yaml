@@ -14,11 +14,7 @@ spec:
       value: db_admin_password
     - name: POSTGRESQL_DATABASE
       value: compliance
-    - name: POSTGRESQL_MAX_CONNECTIONS
-      value: "100"
-    - name: POSTGRESQL_SHARED_BUFFERS
-      value: 12MB
-    image: centos/postgresql-96-centos7:latest
+    image: centos/postgresql-10-centos7:latest
     imagePullPolicy: IfNotPresent
     livenessProbe:
       exec:
@@ -46,18 +42,11 @@ spec:
       requests:
         cpu: 200m
         memory: 512Mi
-    volumeMounts:
-    - mountPath: /var/lib/pgsql/data
-      name: shared
-      subPath: data
-    - mountPath: /var/run/postgresql
-      name: shared
-      subPath: sockets
   - env:
     - name: DATABASE_SERVICE_NAME
       value: compliance-db
     - name: COMPLIANCE_DB_SERVICE_HOST
-      value: /var/run/sockets
+      value: localhost
     - name: POSTGRESQL_USER
       value: compliance_user
     - name: POSTGRESQL_PASSWORD
@@ -68,14 +57,10 @@ spec:
       value: compliance
     - name: SECRET_KEY_BASE
       value: secret_key_base
-    - name: POSTGRESQL_MAX_CONNECTIONS
-      value: "100"
-    - name: POSTGRESQL_SHARED_BUFFERS
-      value: 12MB
     - name: RAILS_ENV
       value: test
     image: docker-registry.default.svc:5000/jenkins/jenkins-slave-base-centos7-ruby25-openscap:latest
-    imagePullPolicy: Always
+    imagePullPolicy: IfNotPresent
     name: jnlp
     args:
       - "$(JENKINS_SECRET)"
@@ -87,11 +72,4 @@ spec:
       requests:
         cpu: 200m
         memory: 512Mi
-    volumeMounts:
-    - mountPath: /var/run/sockets
-      name: shared
-      subPath: sockets
   dnsPolicy: ClusterFirst
-  volumes:
-  - emptyDir: {}
-    name: shared
