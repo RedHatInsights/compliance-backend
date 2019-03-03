@@ -67,35 +67,18 @@ def runStages() {
         openshift.withCluster("dev_cluster") {
             openshift.withCredentials("compliance-token") {
                 openshift.withProject("compliance-ci") {
-                    stage("Wait until deployed") {
-                        parallel(
-                            "Consumer": {
-                                def expectedDeploymentVersion = openshift.selector("dc", "compliance-consumer").object().status.latestVersion + 1
-                                def rc = openshift.selector("rc", "compliance-consumer-${expectedDeploymentVersion}")
-                                timeout(15) {
-                                    rc.untilEach(1) {
-                                        return true
-                                    }
-                                    rc.untilEach(1) {
-                                        def rcMap = it.object()
-                                        return (rcMap.status.replicas.equals(rcMap.status.readyReplicas))
-                                    }
-                                }
-                            },
-                            "API": {
-                                def expectedDeploymentVersion = openshift.selector("dc", "compliance-backend").object().status.latestVersion + 1
-                                def rc = openshift.selector("rc", "compliance-backend-${expectedDeploymentVersion}")
-                                timeout(15) {
-                                    rc.untilEach(1) {
-                                        return true
-                                    }
-                                    rc.untilEach(1) {
-                                        def rcMap = it.object()
-                                        return (rcMap.status.replicas.equals(rcMap.status.readyReplicas))
-                                    }
-                                }
+                    stage("Wait until backend deployed") {
+                        def expectedDeploymentVersion = openshift.selector("dc", "compliance-backend").object().status.latestVersion + 1
+                        def rc = openshift.selector("rc", "compliance-backend-${expectedDeploymentVersion}")
+                        timeout(15) {
+                            rc.untilEach(1) {
+                                return true
                             }
-                        )
+                            rc.untilEach(1) {
+                                def rcMap = it.object()
+                                return (rcMap.status.replicas.equals(rcMap.status.readyReplicas))
+                            }
+                        }
                     }
                 }
             }
