@@ -1,4 +1,5 @@
 ---
 ignore:
   - app/models/schema.rb # don't test the schema! https://github.com/rmosolgo/graphql-ruby/blob/master/guides/schema/testing.md#dont-test-the-schema
+  - app/serializers # these just contain the description of the attributes of the API responses, no code (https://github.com/Netflix/fast_jsonapi)
 ...
