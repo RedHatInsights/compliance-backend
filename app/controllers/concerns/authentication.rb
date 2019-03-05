@@ -21,7 +21,7 @@ module Authentication
     return if performed? || !user.persisted?
 
     User.current = user
-  rescue JSON::ParserError
+  rescue JSON::ParserError, NoMethodError
     unauthenticated 'Error parsing the X-RH-IDENTITY header'
   end
 
