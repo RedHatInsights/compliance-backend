@@ -67,40 +67,14 @@ def runStages() {
 
         stage("Wait_until_deployed") {
             withStatusContext.custom(env.STAGE_NAME, true) {
-                parallel(
-                    "API": {
-                        waitForDeployment(
-                            cluster: "dev_cluster",
-                            credentials: "compliance-token",
-                            project: "compliance-ci",
-                            label: "app",
-                            value: "compliance-backend",
-                            gitCommit: scmVars.GIT_COMMIT,
-                            minutes: 20
-                        )
-                    },
-                    "Consumer": {
-                        waitForDeployment(
-                            cluster: "dev_cluster",
-                            credentials: "compliance-token",
-                            project: "compliance-ci",
-                            label: "app",
-                            value: "compliance-consumer",
-                            gitCommit: scmVars.GIT_COMMIT,
-                            minutes: 20
-                        )
-                    },
-                    "Sidekiq": {
-                        waitForDeployment(
-                            cluster: "dev_cluster",
-                            credentials: "compliance-token",
-                            project: "compliance-ci",
-                            label: "app",
-                            value: "compliance-sidekiq",
-                            gitCommit: scmVars.GIT_COMMIT,
-                            minutes: 20
-                        )
-                    }
+                waitForDeployment(
+                    cluster: "dev_cluster",
+                    credentials: "compliance-token",
+                    project: "compliance-ci",
+                    label: "app",
+                    value: "compliance-backend",
+                    gitCommit: scmVars.GIT_COMMIT,
+                    minutes: 20
                 )
             }
         }
@@ -108,8 +82,8 @@ def runStages() {
         openShift.withNode(cloud: "cmqe", image: pipelineVars.jenkinsSlaveIqeImage, workingDir: "") {
             stage("Install_integration_tests") {
                 withStatusContext.custom(env.STAGE_NAME, true) {
-                    sh "iqe plugin install iqe-compliance-plugin"
-                    sh "iqe plugin install iqe-red-hat-internal-envs-plugin"
+                    sh "iqe plugin install compliance"
+                    sh "iqe plugin install red-hat-internal-envs"
                 }
             }
 
