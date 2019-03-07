@@ -41,6 +41,7 @@ objects:
         name: "${NAME}"
         labels:
           name: "${NAME}"
+          app: "${NAME}"
       spec:
         containers:
         - name: "${NAME}"
