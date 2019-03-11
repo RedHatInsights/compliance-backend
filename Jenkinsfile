@@ -102,7 +102,7 @@ def runStages() {
             stage("Run_integration_tests") {
                 withStatusContext.custom(env.STAGE_NAME, true) {
                     withEnv(["ENV_FOR_DYNACONF=ci"]) {
-                       sh "iqe tests plugin compliance -v -s -k 'test_validate_compliance_report or test_graphql_smoke'"    
+                       sh "iqe tests plugin compliance -v -s -m tier0"
                     }
                 }
             }
