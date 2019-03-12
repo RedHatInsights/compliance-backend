@@ -189,6 +189,15 @@ QueryType = GraphQL::ObjectType.define do
     }
   end
 
+  field :allImageStreams do
+    type types[SystemType]
+    description 'All image streams visible by the user'
+    argument :search, types.String, 'Search query'
+    resolve lambda { |_obj, _args, _ctx|
+      []
+    }
+  end
+
   field :allProfiles do
     type types[ProfileType]
     description 'All profiles visible by the user'

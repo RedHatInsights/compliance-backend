@@ -55,6 +55,12 @@ gem 'slack-notifier'
 # Sidekiq
 gem 'sidekiq'
 
+gem 'tty-command'
+
+gem 'attr_encrypted'
+
+gem 'docker-api'
+
 gem 'faraday'
 gem 'friendly_id', '~> 5.2.4'
 gem 'scoped_search'

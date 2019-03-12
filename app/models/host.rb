@@ -7,16 +7,9 @@ class Host < ApplicationRecord
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results, source: :rule
   has_many :profile_hosts, dependent: :delete_all
+  include SystemLike
+
   has_many :profiles, through: :profile_hosts, source: :profile
-  belongs_to :account, optional: true
 
   validates :name, presence: true, uniqueness: { scope: :account_id }
-
-  def compliant
-    result = {}
-    profiles.map do |profile|
-      result[profile.ref_id] = profile.compliant?(self)
-    end
-    result
-  end
 end

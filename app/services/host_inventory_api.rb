@@ -19,7 +19,8 @@ class HostInventoryAPI
     body = JSON.parse(response.body)
 
     body['results'].find do |host|
-      host['id'] == @host.id && host['account'] == @account.account_number
+      (host['id'] == @host.id || host['fqdn'] == @host.name) &&
+        host['account'] == @account.account_number
     end
   end
 

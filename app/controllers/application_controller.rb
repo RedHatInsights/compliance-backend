@@ -20,4 +20,10 @@ class ApplicationController < ActionController::API
     render json: { errors: 'Resource not found' },
            status: :not_found
   end
+
+  rescue_from ActionController::ParameterMissing do |error|
+    logger.info "#{error.message} (#{error.class})"
+    render json: { errors: "Parameter missing: #{error.message}" },
+           status: :unprocessable_entity
+  end
 end
