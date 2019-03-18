@@ -3,15 +3,24 @@
 require 'test_helper'
 
 class RulesControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    RulesController.any_instance.stubs(:authenticate_user)
+  end
+
   test 'index lists all rules' do
+    RulesController.any_instance.expects(:policy_scope).with(Rule)
+    get rules_url
+
+    assert_response :success
   end
 
-  test 'shows critical attributes of a rule' do
-  end
+  test 'shows a rule' do
+    RulesController.any_instance.expects(:authorize)
+    relation = mock('relation')
+    relation.expects(:find).with('1')
+    Rule.expects(:friendly).returns(relation)
+    get rule_url(1)
 
-  test 'show works with rule names and ref_ids' do
-  end
-
-  test 'systems displays all systems affected by a rule' do
+    assert_response :success
   end
 end

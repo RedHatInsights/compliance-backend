@@ -37,7 +37,8 @@ class CsvExporterTest < ActiveSupport::TestCase
     profile.update(account: accounts(:test))
     result = CsvExporter.export(Profile, [:ref_id, 'account.account_number'])
     assert_equal "Ref,Account.Account Number\n", result.next
-    assert_equal "#{profile.ref_id},#{profile.account.account_number}\n", result.next
+    assert_equal "#{profile.ref_id},#{profile.account.account_number}\n",
+                 result.next
   end
 
   test 'accepts custom column headers' do
