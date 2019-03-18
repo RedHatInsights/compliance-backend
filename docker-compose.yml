@@ -8,6 +8,8 @@ services:
   rails:
     build: .
     image: compliance-backend-rails
+    tty: true
+    stdin_open: true
     restart: on-failure
     entrypoint: ./entrypoint.sh
     ports:
