@@ -3,7 +3,7 @@
 require 'swagger_helper'
 
 describe 'Profiles API' do
-  path '/r/insights/platform/compliance/profiles' do
+  path '/api/compliance/profiles' do
     get 'List all profiles' do
       fixtures :profiles
       tags 'profile'
@@ -47,7 +47,7 @@ describe 'Profiles API' do
     end
   end
 
-  path '/r/insights/platform/compliance/profiles/{id}' do
+  path '/api/compliance/profiles/{id}' do
     get 'Retrieve a profile' do
       fixtures :profiles
       tags 'profile'

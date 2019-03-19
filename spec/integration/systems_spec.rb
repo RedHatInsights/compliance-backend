@@ -3,7 +3,7 @@
 require 'swagger_helper'
 
 describe 'Systems API' do
-  path '/r/insights/platform/compliance/systems' do
+  path '/api/compliance/systems' do
     get 'List all hosts' do
       fixtures :hosts
       tags 'host'
