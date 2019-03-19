@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  scope '/r/insights/platform/compliance/' do
+  scope '/api/compliance/' do
     resources :profiles, only: [:index, :show]
     resources :rule_results, only: [:index]
     resources :systems, only: [:index]
