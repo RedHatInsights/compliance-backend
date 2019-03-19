@@ -34,7 +34,7 @@ class HostInventoryAPI
     end
     return false unless response.success?
 
-    JSON.parse(response.body)
+    JSON.parse(response.body).dig('data')&.first&.dig('host')
   rescue Faraday::ClientError => e
     Rails.logger.error e
   end
@@ -51,11 +51,11 @@ class HostInventoryAPI
   private
 
   def create_host_body
-    {
+    [{
       'facts': [{ 'facts': { 'fqdn': @host.name }, 'namespace': 'inventory' }],
       'fqdn': @host.name,
       'display_name': @host.name,
       'account': @account.account_number
-    }.to_json
+    }].to_json
   end
 end
