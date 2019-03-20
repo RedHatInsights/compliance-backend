@@ -33,6 +33,8 @@ GEM
       activemodel (= 5.2.2)
       activesupport (= 5.2.2)
       arel (>= 9.0)
+    activerecord-import (1.0.1)
+      activerecord (>= 3.2)
     activestorage (5.2.2)
       actionpack (= 5.2.2)
       activerecord (= 5.2.2)
@@ -309,6 +311,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-import
   bootsnap (>= 1.1.0)
   bullet
   byebug

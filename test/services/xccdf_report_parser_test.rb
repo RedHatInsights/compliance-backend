@@ -79,9 +79,11 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
   context 'rule results' do
     should 'save them, associate them with a rule and a host' do
       assert_difference('RuleResult.count', 367) do
-        rule_results = @report_parser.save_rule_results
-        assert_equal @report_parser.report_host, rule_results.sample.host.name
-        rule_names = rule_results.map { |rule_result| rule_result.rule.ref_id }
+        rule_results = @report_parser.save_all
+        assert_equal @report_parser.report_host,
+                     RuleResult.find(rule_results.ids.sample).host.name
+        rule_names = RuleResult.where(id: rule_results.ids).map(&:rule)
+                               .pluck(:ref_id)
         assert rule_names.include?(@report_parser.rule_ids.sample)
       end
     end
@@ -110,7 +112,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     should 'link the rules with the profile' do
       @report_parser.save_profiles
       new_rules = @report_parser.save_rules
-      assert_equal @profile.keys.first, new_rules.sample.profiles.first.ref_id
+      assert_equal @profile.keys.first,
+                   Rule.find(new_rules.ids.sample).profiles.first.ref_id
     end
 
     should 'save new rules in the database, ignore old rules' do
@@ -118,7 +121,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       rule2 = Rule.create(ref_id: @arbitrary_rules[1])
       assert_difference('Rule.count', 365) do
         new_rules = @report_parser.save_rules
-        old_rules_found = new_rules.find_all do |rule|
+        old_rules_found = Rule.where(id: new_rules.ids).find_all do |rule|
           [rule1.ref_id, rule2.ref_id].include?(rule.ref_id)
         end
         assert_empty old_rules_found
@@ -129,10 +132,10 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       rule = Rule.create(ref_id: @arbitrary_rules[0])
       rule.profiles << profiles(:one)
       assert_nothing_raised do
-        @report_parser.rule_already_saved(rule, [profiles])
+        @report_parser.add_profiles_to_old_rules([rule], profiles)
       end
-      assert_equal 1, rule.profiles.count
-      assert_equal profiles(:one), rule.profiles.first
+      assert_equal 2, rule.profiles.count
+      assert_includes rule.profiles, profiles(:one)
     end
   end
 end

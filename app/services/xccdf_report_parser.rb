@@ -11,6 +11,7 @@ require 'openscap/xccdf/testresult'
 class XCCDFReportParser
   include ::XCCDFReport::XMLReport
   include ::XCCDFReport::Profiles
+  include ::XCCDFReport::Rules
 
   attr_reader :report_path
 
@@ -37,10 +38,6 @@ class XCCDFReportParser
     end
   end
 
-  def report_host
-    report_xml.search('target').text
-  end
-
   def inventory_api
     HostInventoryAPI.new(
       @host,
@@ -64,56 +61,27 @@ class XCCDFReportParser
     test_result.score['urn:xccdf:scoring:default'][:value]
   end
 
-  def rule_ids
-    test_result.rr.keys
-  end
-
-  def rule_objects
-    @rule_objects ||= @benchmark.items.select do |_, v|
-      v.is_a?(OpenSCAP::Xccdf::Rule)
-    end
-  end
-
-  def rule_already_saved(rule, profiles)
-    found_rule = Rule.find_by(ref_id: rule.id)
-    return false if found_rule.blank?
-
-    new_profiles = []
-    profiles.each do |profile|
-      new_profiles.append(profile) unless found_rule.profiles.include?(profile)
-    end
-
-    found_rule.profiles << new_profiles
-    found_rule.save
-  end
-
-  def save_rules
-    save_profiles
-    new_profiles = Profile.where(ref_id: profiles.keys)
-    rule_objects.each_with_object([]) do |rule, new_rules|
-      rule_object = rule[1]
-      next if rule_already_saved(rule_object, new_profiles)
-
-      new_rule = Rule.new(profiles: new_profiles).from_oscap_object(rule_object)
-      new_rule.save
-      new_rules << new_rule
-    end
-  end
-
   def rule_results
     test_result.rr.map { |_, v| v }
   end
 
-  def save_rule_results
+  def save_all
+    save_profiles
     save_rules
     save_host
-    rule_results.each_with_object([]) do |rule_result, rule_results|
-      rule_results << RuleResult.create(
-        host: Host.find_by(name: report_host),
-        rule: Rule.find_by(ref_id: rule_result.id),
-        result: rule_result.result
-      )
-    end
+    save_rule_results
+  end
+
+  def save_rule_results
+    host_object = Host.find_by(name: report_host)
+    rules = Rule.where(ref_id: rule_results.map(&:id))
+    results = rule_results.map(&:result)
+    RuleResult.import(
+      rules.zip(results).each_with_object([]) do |rule_result, rule_results|
+        rule_results << RuleResult.new(host: host_object, rule: rule_result[0],
+                                       result: rule_result[1])
+      end
+    )
   end
 
   private

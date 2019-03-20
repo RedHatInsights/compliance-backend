@@ -8,11 +8,13 @@ module XCCDFReport
 
     included do
       def profiles
+        return @profiles if @profiles.present?
+
         result = {}
         @benchmark.profiles.each do |id, oscap_profile|
           result[id] = oscap_profile.title if test_result.id.include?(id)
         end
-        result
+        @profiles = result
       end
 
       def save_profiles
