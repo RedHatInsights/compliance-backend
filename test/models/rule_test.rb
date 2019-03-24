@@ -10,11 +10,9 @@ class RuleTest < ActiveSupport::TestCase
     fake_report = file_fixture('xccdf_report.xml').read
     @report_parser = ::XCCDFReportParser.new(fake_report, users(:test), 'foo')
     @rule_objects = @report_parser.rule_objects
-    @selinux_rule_id = 'xccdf_org.ssgproject.content_rule'\
-      '_selinux_all_devicefiles_labeled'
   end
 
   test 'creates rules from ruby-openscap Rule object' do
-    Rule.new.from_oscap_object(@rule_objects[@selinux_rule_id])
+    Rule.new.from_oscap_object(@rule_objects.first)
   end
 end
