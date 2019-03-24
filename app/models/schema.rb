@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'prometheus_exporter/client'
 
 RuleType = GraphQL::ObjectType.define do
@@ -28,6 +29,7 @@ ProfileType = GraphQL::ObjectType.define do
   field :name, !types.String
   field :description, types.String
   field :ref_id, !types.String
+  field :compliance_threshold, !types.Float
   field :rules, -> { types[RuleType] }
   field :hosts, -> { types[SystemType] }
   field :total_host_count do
@@ -207,7 +209,35 @@ QueryType = GraphQL::ObjectType.define do
   end
 end
 
+module ProfileMutations
+  Edit = GraphQL::Relay::Mutation.define do
+    name 'UpdateProfile'
+
+    input_field :id, types.ID
+    input_field :compliance_threshold, types.Float
+    return_field :profile, ProfileType
+
+    resolve lambda { |_obj, args, ctx|
+      profile = Pundit.authorize(
+        ctx[:current_user],
+        Profile.find(args[:id]),
+        :edit?
+      )
+      profile.update(args.to_h)
+      { profile: profile }
+    }
+  end
+end
+
+MutationType = GraphQL::ObjectType.define do
+  name 'Mutation'
+  description 'The mutation root of this schema'
+
+  field :UpdateProfile, field: ProfileMutations::Edit.field
+end
+
 Schema = GraphQL::Schema.define do
   use(GraphQL::Tracing::PrometheusTracing)
   query QueryType
+  mutation MutationType
 end

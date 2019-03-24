@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     mount ActionCable.server => '/cable'
     post 'graphql' => 'graphql#query'
     if Rails.env.development?
-      mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/r/insights/platform/compliance/graphql"
+      mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/api/compliance/graphql"
     end
   end
 end
