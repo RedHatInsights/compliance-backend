@@ -39,4 +39,22 @@ class ProfileTest < ActiveSupport::TestCase
     RuleResult.create(rule: rules(:two), host: hosts(:one), result: 'fail')
     assert 0.5, profiles(:one).compliance_score(hosts(:one))
   end
+
+  context 'threshold' do
+    setup do
+      RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+      RuleResult.create(rule: rules(:two), host: hosts(:one),
+                        result: 'notchecked')
+    end
+
+    should 'host is compliant if 50% of rules pass with a threshold of 50' do
+      profiles(:one).update(compliance_threshold: 50)
+      assert profiles(:one).compliant?(hosts(:one))
+    end
+
+    should 'host is not compliant if 50% rules pass with a threshold of 51' do
+      profiles(:one).update(compliance_threshold: 51)
+      assert_not profiles(:one).compliant?(hosts(:one))
+    end
+  end
 end

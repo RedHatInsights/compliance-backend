@@ -10,6 +10,10 @@ class ProfilePolicy < ApplicationPolicy
     match_account?
   end
 
+  def update?
+    match_account?
+  end
+
   # Only show hosts in our user account
   class Scope < ::ApplicationPolicy::Scope
     def resolve

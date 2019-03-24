@@ -14,6 +14,7 @@ class Profile < ApplicationRecord
 
   validates :ref_id, uniqueness: { scope: :account_id }, presence: true
   validates :name, presence: true
+  validates :compliance_threshold, numericality: true
 
   def compliance_score(host)
     (results(host).count { |result| result == true }) / results(host).count
@@ -21,7 +22,9 @@ class Profile < ApplicationRecord
 
   def compliant?(host)
     host_results = results(host)
-    host_results.present? && host_results.all?(true)
+    host_results.present? &&
+      (host_results.count(true) / host_results.count.to_f) >=
+        (compliance_threshold / 100.0)
   end
 
   # Disabling MethodLength because it measures things wrong
