@@ -65,29 +65,28 @@ gem 'prometheus_exporter'
 gem 'activerecord-import'
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'pry-byebug'
-  gem 'pry-remote'
-  gem 'shoulda-context'
-  gem 'shoulda-matchers'
-  gem 'minitest-reporters'
-  gem 'mocha'
   gem 'capybara'
-  gem 'rspec-rails'
-  gem 'rswag-specs'
   gem 'capybara-webkit'
   gem 'codecov', :require => false
+  gem 'minitest-reporters'
+  gem 'mocha'
+  gem 'pry-byebug'
+  gem 'pry-remote'
+  gem 'rspec-rails'
+  gem 'rswag-specs'
+  gem 'shoulda-context'
+  gem 'shoulda-matchers'
 end
 
 group :development do
+  gem 'bullet'
   gem 'listen', '>= 3.0.5', '< 3.2'
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'pry-rails'
   gem 'rubocop', require: false
   gem 'spring'
-  gem 'bullet'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'pry-rails'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
