@@ -12,6 +12,7 @@ RuleType = GraphQL::ObjectType.define do
   field :rationale, types.String
   field :description, !types.String
   field :severity, !types.String
+  field :profiles, -> { types[ProfileType] }
   field :compliant do
     type !types.Boolean
     argument :system_id, !types.String, 'Is a system compliant?'
@@ -144,7 +145,7 @@ SystemType = GraphQL::ObjectType.define do
       RuleResult.includes(:rule).where(
         host: host,
         result: %w[error fail notchecked]
-      ).map(&:rule)
+      ).map(&:rule).uniq
     }
   end
 
