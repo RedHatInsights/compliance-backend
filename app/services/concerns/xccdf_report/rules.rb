@@ -35,8 +35,9 @@ module XCCDFReport
       end
 
       def new_rules
+        ref_ids = rules_already_saved.map(&:ref_id)
         rule_objects.reject do |rule|
-          rules_already_saved.map(&:ref_id).include? rule.id
+          ref_ids.include? rule.id
         end
       end
 
