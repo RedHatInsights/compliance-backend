@@ -45,7 +45,6 @@ gem 'fast_jsonapi'
 
 # GraphQL support
 gem 'graphql'
-gem 'graphiql-rails'
 
 # Pundit
 gem 'pundit'
@@ -81,6 +80,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'graphiql-rails'
   gem 'bullet'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'pry-rails'
