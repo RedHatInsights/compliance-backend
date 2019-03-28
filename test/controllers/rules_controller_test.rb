@@ -9,6 +9,7 @@ class RulesControllerTest < ActionDispatch::IntegrationTest
 
   test 'index lists all rules' do
     RulesController.any_instance.expects(:policy_scope).with(Rule)
+                   .returns(Rule.all).at_least_once
     get rules_url
 
     assert_response :success

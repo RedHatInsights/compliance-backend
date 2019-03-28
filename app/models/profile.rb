@@ -3,6 +3,7 @@
 # OpenSCAP profile
 class Profile < ApplicationRecord
   extend FriendlyId
+  scoped_search on: %i[id name ref_id account_id]
   friendly_id :ref_id, use: :slugged
 
   has_many :profile_rules, dependent: :destroy

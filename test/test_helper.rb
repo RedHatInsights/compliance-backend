@@ -35,3 +35,12 @@ module ActiveSupport
     self.use_transactional_tests = true
   end
 end
+
+module ActionDispatch
+  class IntegrationTest
+    def json_body
+      JSON.parse(response.body)
+    end
+  end
+end
+

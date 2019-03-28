@@ -6,6 +6,9 @@ class ApplicationController < ActionController::API
   include Pundit
   include Authentication
   include ExceptionNotifier
+  include Metadata
+  include Pagination
+  include Search
 
   rescue_from Pundit::NotAuthorizedError do
     render json: { errors: 'You are not authorized to access this action.' },
