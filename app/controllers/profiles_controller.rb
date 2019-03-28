@@ -3,10 +3,10 @@
 # API for Profiles
 class ProfilesController < ApplicationController
   def index
+    profiles = scope_search.sort_by(&:score)
     render json: ProfileSerializer.new(
-      policy_scope(Profile.includes(:rules, :hosts))
-      .paginate(page: params[:page], per_page: params[:per_page])
-      .sort_by(&:score)
+      profiles,
+      metadata(total: profiles.count)
     )
   end
 
@@ -14,5 +14,11 @@ class ProfilesController < ApplicationController
     profile = Profile.friendly.find(params[:id])
     authorize profile
     render json: ProfileSerializer.new(profile)
+  end
+
+  private
+
+  def resource
+    Profile
   end
 end

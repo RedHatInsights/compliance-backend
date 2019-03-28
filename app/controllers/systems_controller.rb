@@ -8,7 +8,9 @@ class SystemsController < ApplicationController
   def index
     respond_to do |format|
       format.any do
-        render json: HostSerializer.new(scope_search.to_a)
+        render json: HostSerializer.new(
+          scope_search, metadata(total: scope_search.count)
+        )
       end
       format.csv do
         csv_response(*csv_params)
@@ -22,9 +24,7 @@ class SystemsController < ApplicationController
     [scope_search, Host.column_names - %w[created_at updated_at] << 'compliant']
   end
 
-  def scope_search
-    return policy_scope(Host) unless params[:search]
-
-    policy_scope(Host).search_for(params[:search])
+  def resource
+    Host
   end
 end
