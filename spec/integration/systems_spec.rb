@@ -3,13 +3,14 @@
 require 'swagger_helper'
 
 describe 'Systems API' do
-  path '/api/compliance/systems' do
+  path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/systems" do
     get 'List all hosts' do
       fixtures :hosts
       tags 'host'
       description 'Lists all hosts requested'
       consumes 'application/vnd.api+json'
       produces 'application/vnd.api+json'
+      operationId 'ListHosts'
       parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
 
       response '200', 'lists all hosts requested' do

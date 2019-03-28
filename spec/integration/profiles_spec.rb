@@ -3,13 +3,14 @@
 require 'swagger_helper'
 
 describe 'Profiles API' do
-  path '/api/compliance/profiles' do
+  path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/profiles" do
     get 'List all profiles' do
       fixtures :profiles
       tags 'profile'
       description 'Lists all profiles requested'
       consumes 'application/vnd.api+json'
       produces 'application/vnd.api+json'
+      operationId 'ListProfiles'
       parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
 
       response '200', 'lists all profiles requested' do
@@ -47,13 +48,14 @@ describe 'Profiles API' do
     end
   end
 
-  path '/api/compliance/profiles/{id}' do
+  path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/profiles/{id}" do
     get 'Retrieve a profile' do
       fixtures :profiles
       tags 'profile'
       description 'Retrieves data for a profile'
       consumes 'application/vnd.api+json'
       produces 'application/vnd.api+json'
+      operationId 'ListProfiles'
       parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
       parameter name: :id, in: :path, type: :string
 

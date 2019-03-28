@@ -76,6 +76,8 @@ objects:
         - name: "${NAME}"
           image: " "
           env:
+          - name: APP_NAME
+            value: "${APP_NAME}"
           - name: APPLICATION_TYPE
             value: "${NAME}"
           - name: DATABASE_SERVICE_NAME
@@ -96,15 +98,17 @@ objects:
             value: "${POSTGRESQL_SHARED_BUFFERS}"
           - name: RAILS_ENV
             value: "${RAILS_ENV}"
+          - name: PATH_PREFIX
+            value: "${PATH_PREFIX}"
           livenessProbe:
             httpGet:
-              path: /r/insights/platform/compliance/api-docs/index.html
+              path: /api/compliance/api-docs/index.html
               port: 8080
             initialDelaySeconds: 120
             timeoutSeconds: 1
           readinessProbe:
             httpGet:
-              path: /r/insights/platform/compliance/api-docs/index.html
+              path: /api/compliance/api-docs/index.html
               port: 8080
             initialDelaySeconds: 120
             timeoutSeconds: 1
@@ -165,3 +169,9 @@ parameters:
 - name: POSTGRESQL_SHARED_BUFFERS
   displayName: Shared Buffer Amount
   value: 12MB
+- name: PATH_PREFIX
+  displayName: Prefix for the API paths
+  value: '/api'
+- name: APP_NAME
+  displayName: Name of the API app
+  value: '/compliance'
