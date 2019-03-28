@@ -55,7 +55,7 @@ describe 'Profiles API' do
       description 'Retrieves data for a profile'
       consumes 'application/vnd.api+json'
       produces 'application/vnd.api+json'
-      operationId 'ListProfiles'
+      operationId 'ShowProfile'
       parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
       parameter name: :id, in: :path, type: :string
 
