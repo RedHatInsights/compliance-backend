@@ -6,15 +6,15 @@ RSpec.configure do |config|
   config.swagger_root = Rails.root.to_s + '/swagger'
 
   config.swagger_docs = {
-    'v1/swagger.json' => {
+    'v1/openapi.json' => {
       swagger: '2.0',
       info: {
-        title: 'Insights Compliance API V1',
+        title: 'Cloud Services for RHEL Compliance API V1',
         version: 'v1',
-        description: 'This is the API for Insights Compliance. '\
-        'You can find out more about Red Hat Insights at '\
-        '[https://access.redhat.com/products/red-hat-insights/]'\
-        '(https://access.redhat.com/products/red-hat-insights/)'
+        description: 'This is the API for Cloud Services for RHEL Compliance. '\
+        'You can find out more about Red Hat Cloud Services for RHEL at '\
+        '[https://cloud.redhat.com/]'\
+        '(https://cloud.redhat.com/)'
       },
       paths: {},
       definitions: {

@@ -9,7 +9,7 @@ require 'json'
 class HostInventoryAPI
   def initialize(host, account, url, b64_identity)
     @host = host
-    @url = "#{URI.parse(url)}/r/insights/platform/inventory/api/v1/hosts"
+    @url = "#{URI.parse(url)}/#{ENV['PATH_PREFIX']}/inventory/api/v1/hosts"
     @account = account
     @b64_identity = b64_identity
   end

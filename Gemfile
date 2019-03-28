@@ -78,6 +78,7 @@ group :development, :test do
   gem 'rswag-specs'
   gem 'shoulda-context'
   gem 'shoulda-matchers'
+  gem 'dotenv-rails'
 end
 
 group :development do
