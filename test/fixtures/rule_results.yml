@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  host_id: 
-  rule_id: 
-  result: MyString
+  host_id: one
+  rule_id: one
+  result: passed
 
 two:
-  host_id: 
-  rule_id: 
-  result: MyString
+  host_id: two
+  rule_id: two
+  result: failed

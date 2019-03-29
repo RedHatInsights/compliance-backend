@@ -94,7 +94,7 @@
         "produces": [
           "application/vnd.api+json"
         ],
-        "operationId": "ListProfiles",
+        "operationId": "ShowProfile",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -159,6 +159,257 @@
                     "score": 1,
                     "total_host_count": 1,
                     "compliant_host_count": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compliance/rule_results": {
+      "get": {
+        "summary": "List all rule_results",
+        "tags": [
+          "rule_result"
+        ],
+        "description": "Lists all rule_results requested",
+        "consumes": [
+          "application/vnd.api+json"
+        ],
+        "produces": [
+          "application/vnd.api+json"
+        ],
+        "operationId": "ListRuleResults",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "lists all rule_results requested",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "meta": {
+                  "$ref": "#/definitions/metadata"
+                },
+                "links": {
+                  "$ref": "#/definitions/links"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "attributes": {
+                        "$ref": "#/definitions/rule_result"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/vnd.api+json": {
+                "meta": {
+                  "filter": "result=notselected"
+                },
+                "data": [
+                  {
+                    "type": "Rule Result",
+                    "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                    "attributes": {
+                      "result": "notselected"
+                    },
+                    "relationships": {
+                      "host": {
+                        "data": {
+                          "id": "6b97bc3a-3614-411f-9a9d-4a8a5b041687",
+                          "type": "host"
+                        }
+                      },
+                      "rule": {
+                        "data": {
+                          "id": "9bi7bc3a-2314-4929-9a9d-4a8a5b041687",
+                          "type": "rule"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compliance/rules": {
+      "get": {
+        "summary": "List all rules",
+        "tags": [
+          "rule"
+        ],
+        "description": "Lists all rules requested",
+        "consumes": [
+          "application/vnd.api+json"
+        ],
+        "produces": [
+          "application/vnd.api+json"
+        ],
+        "operationId": "ListRules",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "lists all rules requested",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "meta": {
+                  "$ref": "#/definitions/metadata"
+                },
+                "links": {
+                  "$ref": "#/definitions/links"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "attributes": {
+                        "$ref": "#/definitions/rule"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/vnd.api+json": {
+                "meta": {
+                  "filter": "title=Record Access Events to Audit Log directory"
+                },
+                "data": [
+                  {
+                    "type": "Rule",
+                    "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                    "attributes": {
+                      "title": "Record Access Events to Audit Log directory",
+                      "ref_id": "xccdf_org.ssgproject.content_rule_directory_access_var_log_audit",
+                      "severity": "Low",
+                      "description": "The audit system should collect access events to read audit log directory.\\nThe following audit rule will assure that access to audit log directory are\\ncollected.\\n-a always,exit -F dir=/var/log/audit/ -F perm=r -F auid>=1000-F auid!=unset -F key=access-audit-trail\\nIf the auditd daemon is configured to use the augenrules\\nprogram to read audit rules during daemon startup (the default), add the\\nrule to a file with suffix .rules in the directory\\n/etc/audit/rules.d.\\nIf the auditd daemon is configured to use the auditctl\\nutility to read audit rules during daemon startup, add the rule to\\n/etc/audit/audit.rules file.",
+                      "rationale": "Attempts to read the logs should be recorded, suspicious access to audit log files could be an indicator of malicious activity on a system.\\nAuditing these events could serve as evidence of potential system compromise."
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compliance/rules/{id}": {
+      "get": {
+        "summary": "Retrieve a rule",
+        "tags": [
+          "rule"
+        ],
+        "description": "Retrieves data for a rule",
+        "consumes": [
+          "application/vnd.api+json"
+        ],
+        "produces": [
+          "application/vnd.api+json"
+        ],
+        "operationId": "ShowRule",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "rule not found",
+            "examples": {
+              "application/vnd.api+json": {
+                "errors": "Resource not found"
+              }
+            }
+          },
+          "200": {
+            "description": "retrieves a rule",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "meta": {
+                  "$ref": "#/definitions/metadata"
+                },
+                "links": {
+                  "$ref": "#/definitions/links"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "attributes": {
+                      "$ref": "#/definitions/rule"
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "type": "Rule",
+                  "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                  "attributes": {
+                    "title": "Record Access Events to Audit Log directory",
+                    "ref_id": "xccdf_org.ssgproject.content_rule_directory_access_var_log_audit",
+                    "severity": "Low",
+                    "description": "The audit system should collect access events to read audit log directory.\\nThe following audit rule will assure that access to audit log directory are\\ncollected.\\n-a always,exit -F dir=/var/log/audit/ -F perm=r -F auid>=1000-F auid!=unset -F key=access-audit-trail\\nIf the auditd daemonis configured to use the augenrules\\nprogram to read audit rules during daemon startup (the default), add the\\nrule to a file with suffix .rules in the directory\\n/etc/audit/rules.d.\\nIf the auditd daemon is configured to use the auditctl\\nutility to read audit rules during daemon startup, add the rule to\\n/etc/audit/audit.rules file.",
+                    "rationale": "Attempts to read the logs should be recorded, suspicious access to audit log files could be an indicator of malicious activity on a system.\\nAuditing these events could serve as evidence of potential system compromise."
                   }
                 }
               }
@@ -302,6 +553,47 @@
         "ref_id": {
           "type": "string",
           "example": "xccdf_org.ssgproject.content_profile_standard"
+        }
+      }
+    },
+    "rule_result": {
+      "type": "object",
+      "required": [
+        "result"
+      ],
+      "properties": {
+        "result": {
+          "type": "string",
+          "example": "passed"
+        }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "required": [
+        "title",
+        "ref_id"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Record Access Events to Audit Log directory"
+        },
+        "ref_id": {
+          "type": "string",
+          "example": "xccdf_org.ssgproject.content_rule_directory_access_var_log_audit"
+        },
+        "severity": {
+          "type": "string",
+          "example": "Low"
+        },
+        "description": {
+          "type": "string",
+          "example": "The audit system should collect access events to read audit log directory.\\nThe following audit rule will assure that access to audit log directory are\\ncollected.\\n-a always,exit -F dir=/var/log/audit/ -F perm=r -F auid>=1000-F auid!=unset -F key=access-audit-trail\\nIf the auditd daemonis configured to use the augenrules\\nprogram to read audit rules during daemon startup (the default), add the\\nrule to a file with suffix .rules in the directory\\n/etc/audit/rules.d.\\nIf the auditd daemon is configured to use the auditctl\\nutility to read audit rules during daemon startup, add the rule to\\n/etc/audit/audit.rules file."
+        },
+        "rationale": {
+          "type": "string",
+          "example": "Attempts to read the logs should be recorded, suspicious access to audit log files could be an indicator of malicious activity on a system.\\nAuditing these events could serve as evidence of potential system compromise."
         }
       }
     }
