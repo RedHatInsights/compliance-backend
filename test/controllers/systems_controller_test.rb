@@ -22,4 +22,24 @@ class SystemsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test 'destroy hosts with authorized user' do
+    User.current = users(:test)
+    users(:test).update(account: accounts(:test))
+    hosts(:one).update(account: accounts(:test))
+    assert_difference('Host.count', -1) do
+      delete "#{systems_url}/#{hosts(:one).id}"
+    end
+    assert_response :success
+  end
+
+  test 'does not destroy hosts that do not belong to the user' do
+    User.current = users(:test)
+    users(:test).update(account: accounts(:test))
+    hosts(:one).update(account: nil)
+    assert_difference('Host.count', 0) do
+      delete "#{systems_url}/#{hosts(:one).id}"
+    end
+    assert_response :forbidden
+  end
 end

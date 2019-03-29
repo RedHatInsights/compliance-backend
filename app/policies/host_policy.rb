@@ -10,6 +10,10 @@ class HostPolicy < ApplicationPolicy
     match_account?
   end
 
+  def destroy?
+    match_account?
+  end
+
   # Only show hosts in our user account
   class Scope < ::ApplicationPolicy::Scope
     def resolve
