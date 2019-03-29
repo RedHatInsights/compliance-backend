@@ -18,6 +18,13 @@ class SystemsController < ApplicationController
     end
   end
 
+  def destroy
+    host = Host.find(params[:id])
+    authorize host
+    host.destroy
+    render HostSerializer.new(host)
+  end
+
   private
 
   def csv_params

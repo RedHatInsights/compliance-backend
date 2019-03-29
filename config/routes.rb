@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   scope "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}" do
     resources :profiles, only: [:index, :show]
     resources :rule_results, only: [:index]
-    resources :systems, only: [:index]
+    resources :systems, only: [:index, :destroy]
     resources :rules, only: [:index, :show]
     mount Rswag::Api::Engine => '/'
     mount Rswag::Ui::Engine => '/'
