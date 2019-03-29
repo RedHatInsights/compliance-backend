@@ -106,6 +106,11 @@ Debug with pry-remote:
 docker-compose exec rails pry-remote -w
 ```
 
+## API documentation
+
+The API documentation can be found at `ENV['PATH_PREFIX']/ENV['APP_NAME']`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `ENV['PATH_PREFIX']/ENV['APP_NAME']/openapi.json`
+
+
 ## Contributing
 
 If you'd like to contribute, please fork the repository and use a feature
