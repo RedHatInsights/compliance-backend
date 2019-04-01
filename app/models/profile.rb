@@ -6,9 +6,9 @@ class Profile < ApplicationRecord
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
   friendly_id :ref_id, use: :slugged
 
-  has_many :profile_rules, dependent: :destroy
+  has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
-  has_many :profile_hosts, dependent: :destroy
+  has_many :profile_hosts, dependent: :delete_all
   has_many :hosts, through: :profile_hosts, source: :host
   belongs_to :policy, optional: true
   belongs_to :account, optional: true

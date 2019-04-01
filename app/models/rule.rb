@@ -6,9 +6,9 @@ class Rule < ApplicationRecord
   extend FriendlyId
   friendly_id :ref_id, use: :slugged
 
-  has_many :profile_rules, dependent: :destroy
+  has_many :profile_rules, dependent: :delete_all
   has_many :profiles, through: :profile_rules, source: :profile
-  has_many :rule_results, dependent: :destroy
+  has_many :rule_results, dependent: :delete_all
   has_many :hosts, through: :rule_results, source: :host
 
   validates :ref_id, uniqueness: true, presence: true
