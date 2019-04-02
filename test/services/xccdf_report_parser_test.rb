@@ -13,8 +13,14 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                                              accounts(:test).account_number,
                                              'b64_fake_identity')
     # A hack to skip API calls in the test env for the time being
-    HostInventoryAPI.any_instance.stubs(:host_already_in_inventory)
-                    .returns(true)
+    connection = mock('faraday_connection')
+    HostInventoryAPI.any_instance.stubs(:connection).returns(connection)
+    get_body = { 'results' => [{ 'id' => '1', 'account' => accounts(:test) }] }
+    connection.stubs(:get).returns(OpenStruct.new(body: get_body.to_json))
+    post_body = {
+      'data' => [{ 'host' => { 'name' => @report_parser.report_host } }]
+    }
+    connection.stubs(:post).returns(OpenStruct.new(body: post_body.to_json))
   end
 
   context 'profile' do
@@ -65,6 +71,9 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     end
 
     should 'return the host object even if it already existed' do
+      HostInventoryAPI.any_instance
+                      .stubs(:host_already_in_inventory)
+                      .returns(true)
       Host.create(name: @report_parser.report_host, account: accounts(:test))
 
       assert_difference('Host.count', 0) do

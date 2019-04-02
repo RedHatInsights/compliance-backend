@@ -10,24 +10,26 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     @url = 'http://localhost'
     @b64_identity = '1234abcd'
     @api = HostInventoryAPI.new(@host, @account, @url, @b64_identity)
+    @connection = mock('faraday_connection')
+    HostInventoryAPI.any_instance.stubs(:connection).returns(@connection)
   end
 
   test 'host_already_in_inventory no host' do
     response = OpenStruct.new(body: { results: [] }.to_json)
-    Faraday.expects(:get).returns(response)
+    @connection.expects(:get).returns(response)
     assert_nil @api.host_already_in_inventory
   end
 
   test 'host_already_in_inventory host exists' do
     response = OpenStruct.new(body: { results: [@host.to_h] }.to_json)
-    Faraday.expects(:get).returns(response)
+    @connection.expects(:get).returns(response)
     assert_equal @host.id, @api.host_already_in_inventory['id']
   end
 
   test 'create_host_in_inventory' do
     response = OpenStruct.new(body: { data: [{ host: @host.to_h }] }.to_json,
                               success?: true)
-    Faraday.expects(:post).returns(response)
+    @connection.expects(:post).returns(response)
     assert_equal @host.id, @api.create_host_in_inventory['id']
   end
 

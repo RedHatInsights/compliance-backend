@@ -15,36 +15,30 @@ class HostInventoryAPI
   end
 
   def host_already_in_inventory
-    response = Faraday.get(@url, {}, 'X_RH_IDENTITY' => @b64_identity)
+    response = connection.get(@url, {}, 'X_RH_IDENTITY' => @b64_identity)
     body = JSON.parse(response.body)
-    return nil unless body.key? 'results'
 
     body['results'].find do |host|
       host['id'] == @host.id && host['account'] == @account.account_number
     end
-  rescue Faraday::ClientError => e
-    Rails.logger.error e
   end
 
   def create_host_in_inventory
-    response = Faraday.post(@url) do |req|
+    response = connection.post(@url) do |req|
       req.headers['Content-Type'] = 'application/json'
       req.headers['X_RH_IDENTITY'] = @b64_identity
       req.body = create_host_body
     end
-    return false unless response.success?
 
     JSON.parse(response.body).dig('data')&.first&.dig('host')
-  rescue Faraday::ClientError => e
-    Rails.logger.error e
   end
 
   def sync
     unless host_already_in_inventory
       new_host = create_host_in_inventory
-      @host.id = new_host['id']
+      @host.id = new_host.dig('id')
+      @host.save
     end
-    @host.save
     @host
   end
 
@@ -57,5 +51,12 @@ class HostInventoryAPI
       'display_name': @host.name,
       'account': @account.account_number
     }].to_json
+  end
+
+  def connection
+    Faraday.new do |f|
+      f.response :raise_error
+      f.adapter Faraday.default_adapter # this must be the last middleware
+    end
   end
 end

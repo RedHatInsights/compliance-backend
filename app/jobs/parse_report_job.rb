@@ -10,6 +10,6 @@ class ParseReportJob < ApplicationJob
   end
 
   rescue_from(OpenSCAP::OpenSCAPError) do |e|
-    Rails.logger.error "Failed to process message #{e}"
+    Sidekiq.logger.error "Failed to process message #{e}"
   end
 end
