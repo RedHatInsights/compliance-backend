@@ -34,7 +34,7 @@ class XCCDFReportParser
     begin
       @test_result = ::OpenSCAP::Xccdf::TestResult.new(source)
     rescue ::OpenSCAP::OpenSCAPError => e
-      Rails.logger.error('Error: ', e)
+      Sidekiq.logger.error('Error: ', e)
     end
   end
 
@@ -66,10 +66,12 @@ class XCCDFReportParser
   end
 
   def save_all
-    save_profiles
-    save_rules
-    save_host
-    save_rule_results
+    Host.transaction do
+      save_profiles
+      save_rules
+      save_host
+      save_rule_results
+    end
   end
 
   def save_rule_results
