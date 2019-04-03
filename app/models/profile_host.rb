@@ -8,4 +8,10 @@ class ProfileHost < ApplicationRecord
 
   validates :profile, presence: true
   validates :host, presence: true, uniqueness: { scope: :profile }
+
+  before_destroy :delete_orphaned_profiles
+
+  def delete_orphaned_profiles
+    profile.destroy unless (profile.hosts - [host]).any?
+  end
 end
