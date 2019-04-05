@@ -38,8 +38,8 @@ class HostInventoryAPI
     unless host_already_in_inventory
       new_host = create_host_in_inventory
       @host.id = new_host.dig('id')
-      @host.save
     end
+    @host.save
     @host
   end
 
