@@ -19,4 +19,39 @@ module SystemLike
     end
     result
   end
+
+  def last_scanned(profile = nil)
+    rule_ids = if profile.present?
+                 profile.rules.map(&:id)
+               else
+                 rule_results.pluck(:rule_id).uniq
+               end
+    rule_results = RuleResult.where(rule_id: rule_ids, host_id: id)
+    rule_results.maximum(:updated_at) || 'Never'
+  end
+
+  def last_scan_results(profile = nil)
+    return profile.results(self) if profile.present?
+
+    profiles.flat_map do |p|
+      p.results(self)
+    end
+  end
+
+  def rules_passed(profile = nil)
+    last_scan_results(profile).count { |result| result }
+  end
+
+  def rules_failed(profile = nil)
+    last_scan_results(profile).count(&:!)
+  end
+
+  def compliance_score
+    score = (100 * (rules_passed.to_f / (rules_passed + rules_failed)))
+    score.nan? ? nil : score
+  end
+
+  def profile_names
+    profiles.map(&:name).join(';') # Commas are used to separate CSV columns
+  end
 end

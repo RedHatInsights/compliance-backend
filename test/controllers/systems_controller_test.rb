@@ -42,4 +42,50 @@ class SystemsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_response :forbidden
   end
+
+  context 'csv' do
+    setup do
+      User.current = users(:test)
+    end
+
+    should 'include default fields without columns parameter' do
+      get "#{systems_url}.csv?search=name=#{hosts(:one).name}"
+      csv_response = CSV.parse(@response.body)
+      assert_equal(
+        ['Name', 'Profile Names', 'Rules Failed', 'Compliance Score',
+         'Last Scanned'],
+        csv_response[0]
+      )
+      expected_response = [
+        hosts(:one).name, hosts(:one).profile_names,
+        hosts(:one).rules_failed.to_s,
+        hosts(:one).compliance_score, hosts(:one).last_scanned
+      ]
+      assert_equal expected_response, csv_response[1]
+    end
+
+    should 'include specific fields from columns parameter' do
+      get "#{systems_url}.csv?search=name=#{hosts(:one).name}&"\
+        'columns=rules_passed,compliance_score'
+      csv_response = CSV.parse(@response.body)
+      assert_equal(['Rules Passed', 'Compliance Score'], csv_response[0])
+      expected_response = [
+        hosts(:one).rules_passed.to_s, hosts(:one).compliance_score
+      ]
+      assert_equal expected_response, csv_response[1]
+    end
+
+    should 'translate certain column params to the right attributes' do
+      get "#{systems_url}.csv?search=name=#{hosts(:one).name}&"\
+        'columns=profile,profiles,compliant'
+      csv_response = CSV.parse(@response.body)
+      assert_equal(['Profile Names', 'Profile Names', 'Compliance Score'],
+                   csv_response[0])
+      expected_response = [
+        hosts(:one).profile_names, hosts(:one).profile_names,
+        hosts(:one).compliance_score
+      ]
+      assert_equal expected_response, csv_response[1]
+    end
+  end
 end

@@ -72,10 +72,8 @@ ProfileType = GraphQL::ObjectType.define do
     argument :system_id, !types.String,
              'Last time this profile was scanned for a system'
     resolve lambda { |profile, args, _ctx|
-      rule_ids = profile.rules.map(&:id)
-      rule_results = RuleResult.where(rule_id: rule_ids,
-                                      host_id: Host.find(args['system_id']).id)
-      rule_results.maximum(:updated_at) || 'Never'
+      Pundit.authorize(ctx[:current_user], Host.find(args['system_id']), :show?)
+      host.last_scanned(profile)
     }
   end
 end
@@ -112,29 +110,14 @@ SystemType = GraphQL::ObjectType.define do
     type !types.Int
     argument :profile_id, types.String, 'Filter results by profile ID'
     resolve lambda { |obj, args, _ctx|
-      profile_results = if args['profile_id'].present?
-                          Profile.find(args['profile_id']).results(obj)
-                        else
-                          obj.profiles.map do |profile|
-                            profile.results(obj)
-                          end.flatten
-                        end
-      profile_results.count { |result| result }
+      obj.rules_passed(Profile.find(args['profile_id']))
     }
   end
   field :rules_failed do
     type !types.Int
     argument :profile_id, types.String, 'Filter results by profile ID'
     resolve lambda { |obj, args, _ctx|
-      profile_results = if args['profile_id'].present?
-                          Profile.find(args['profile_id']).results(obj)
-                        else
-                          obj.profiles.map do |profile|
-                            profile.results(obj)
-                          end.flatten
-                        end
-
-      profile_results.count(&:!)
+      obj.rules_failed(Profile.find(args['profile_id']))
     }
   end
 
