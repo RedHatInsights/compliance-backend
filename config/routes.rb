@@ -8,9 +8,8 @@ Rails.application.routes.draw do
     resources :rules, only: [:index, :show]
     resources :openshift_connections, only: [:create]
     resources :imagestreams, only: [:create]
-    mount Rswag::Api::Engine => '/api-docs'
-    mount Rswag::Ui::Engine => '/api-docs'
-    mount ActionCable.server => '/cable'
+    mount Rswag::Api::Engine => '/'
+    mount Rswag::Ui::Engine => '/'
     post 'graphql' => 'graphql#query'
     if Rails.env.development?
       mount GraphiQL::Rails::Engine, at: "/graphiql",
