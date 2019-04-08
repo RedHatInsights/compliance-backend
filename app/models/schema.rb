@@ -112,29 +112,14 @@ SystemType = GraphQL::ObjectType.define do
     type !types.Int
     argument :profile_id, types.String, 'Filter results by profile ID'
     resolve lambda { |obj, args, _ctx|
-      profile_results = if args['profile_id'].present?
-                          Profile.find(args['profile_id']).results(obj)
-                        else
-                          obj.profiles.map do |profile|
-                            profile.results(obj)
-                          end.flatten
-                        end
-      profile_results.count { |result| result }
+      obj.rules_passed(Profile.find(args['profile_id']))
     }
   end
   field :rules_failed do
     type !types.Int
     argument :profile_id, types.String, 'Filter results by profile ID'
     resolve lambda { |obj, args, _ctx|
-      profile_results = if args['profile_id'].present?
-                          Profile.find(args['profile_id']).results(obj)
-                        else
-                          obj.profiles.map do |profile|
-                            profile.results(obj)
-                          end.flatten
-                        end
-
-      profile_results.count(&:!)
+      obj.rules_failed(Profile.find(args['profile_id']))
     }
   end
 

@@ -19,4 +19,25 @@ module SystemLike
     end
     result
   end
+
+  def last_scan_results(profile = nil)
+    return profile.results(self) if profile.present?
+
+    profiles.flat_map do |p|
+      p.results(self)
+    end
+  end
+
+  def rules_passed(profile = nil)
+    @rules_passed ||= last_scan_results(profile).count { |result| result }
+  end
+
+  def rules_failed(profile = nil)
+    @rules_failed ||= last_scan_results(profile).count(&:!)
+  end
+
+  def compliance_score
+    score = (100 * (rules_passed.to_f / (rules_passed + rules_failed)))
+    score.nan? ? 0.0 : score
+  end
 end
