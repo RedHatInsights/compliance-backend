@@ -35,10 +35,8 @@ class HostInventoryAPI
   end
 
   def sync
-    unless host_already_in_inventory
-      new_host = create_host_in_inventory
-      @host.id = new_host.dig('id')
-    end
+    inventory_host = host_already_in_inventory || create_host_in_inventory
+    @host.id ||= inventory_host.dig('id')
     @host.save
     @host
   end

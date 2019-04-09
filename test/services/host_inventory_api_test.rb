@@ -7,9 +7,10 @@ class HostInventoryApiTest < ActiveSupport::TestCase
   setup do
     @account = OpenStruct.new(account_number: 'account_number')
     @host = OpenStruct.new(id: 'hostid', account: 'account_number')
+    @new_host = OpenStruct.new(account: 'account_number')
     @url = 'http://localhost'
     @b64_identity = '1234abcd'
-    @api = HostInventoryAPI.new(@host, @account, @url, @b64_identity)
+    @api = HostInventoryAPI.new(@new_host, @account, @url, @b64_identity)
     @connection = mock('faraday_connection')
     HostInventoryAPI.any_instance.stubs(:connection).returns(@connection)
   end
@@ -34,7 +35,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
   end
 
   test 'sync for host already in inventory' do
-    @api.expects(:host_already_in_inventory).returns(true)
+    @api.expects(:host_already_in_inventory).returns(@host)
     @api.expects(:create_host_in_inventory).never
     assert_equal @host, @api.sync
   end
