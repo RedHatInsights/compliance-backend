@@ -7,7 +7,7 @@ class XMLReportTest < ActiveSupport::TestCase
   include XCCDFReport::XMLReport
 
   setup do
-    @report_path = 'test/fixtures/files/xccdf_report.xml'
+    report_xml(File.read('test/fixtures/files/xccdf_report.xml'))
   end
 
   test 'report_xml parses the XML report' do

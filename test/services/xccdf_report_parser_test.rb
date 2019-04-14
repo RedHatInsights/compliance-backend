@@ -141,7 +141,9 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       rule = Rule.create(ref_id: @arbitrary_rules[0])
       rule.profiles << profiles(:one)
       assert_nothing_raised do
-        @report_parser.add_profiles_to_old_rules([rule], profiles)
+        @report_parser.add_profiles_to_old_rules(
+          Rule.where(ref_id: rule.ref_id), profiles
+        )
       end
       assert_equal 2, rule.profiles.count
       assert_includes rule.profiles, profiles(:one)

@@ -5,8 +5,7 @@ class ParseReportJob < ApplicationJob
   def perform(file, account, b64_identity)
     parser = XCCDFReportParser.new(file, account, b64_identity)
     parser.save_all
-  ensure
-    File.delete(parser.report_path) if File.exist? parser.report_path
+    GC.start
   end
 
   rescue_from(OpenSCAP::OpenSCAPError) do |e|

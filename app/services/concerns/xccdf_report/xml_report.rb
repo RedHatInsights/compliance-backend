@@ -19,8 +19,8 @@ module XCCDFReport
         report_xml.namespaces['xmlns']
       end
 
-      def report_xml
-        @report_xml ||= File.open(@report_path) { |f| Nokogiri::XML(f) }
+      def report_xml(report_contents = '')
+        @report_xml ||= Nokogiri::XML.parse(report_contents)
       end
     end
   end
