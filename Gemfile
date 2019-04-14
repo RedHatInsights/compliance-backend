@@ -68,6 +68,7 @@ gem 'will_paginate'
 gem 'prometheus_exporter'
 
 gem 'activerecord-import'
+gem 'oj'
 
 group :development, :test do
   gem 'brakeman'
