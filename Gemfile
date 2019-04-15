@@ -69,6 +69,7 @@ gem 'prometheus_exporter'
 
 gem 'activerecord-import'
 gem 'oj'
+gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'brakeman'
