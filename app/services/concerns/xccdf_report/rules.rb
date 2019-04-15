@@ -31,13 +31,13 @@ module XCCDFReport
         preexisting_profiles = ProfileRule.select(:profile_id)
                                           .where(rule_id: rules.pluck(:id))
                                           .pluck(:profile_id).uniq
-        rules.find_each do |rule|
+        ProfileRule.import(rules.find_each do |rule|
           new_profiles.each do |profile|
             unless preexisting_profiles.include?(profile.id)
               ProfileRule.create(rule_id: rule.id, profile_id: profile.id)
             end
           end
-        end
+        end)
       end
 
       def new_rules
