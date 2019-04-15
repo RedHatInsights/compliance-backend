@@ -16,12 +16,11 @@ class XCCDFReportParser
   attr_reader :report_path
 
   def initialize(report_contents, account, b64_identity)
-    file = Tempfile.new(SecureRandom.uuid)
-    file.write(report_contents)
-    @report_path = file.path
+    report_xml(report_contents)
     @b64_identity = b64_identity
     @account = Account.find_or_create_by(account_number: account)
-    @source = ::OpenSCAP::Source.new(@report_path)
+    @source = ::OpenSCAP::Source.new(content: report_contents,
+                                     length: report_contents.bytes.count)
     @benchmark = ::OpenSCAP::Xccdf::Benchmark.new(@source)
   end
 
@@ -62,7 +61,7 @@ class XCCDFReportParser
   end
 
   def rule_results
-    test_result.rr.map { |_, v| v }
+    @rule_results ||= test_result.rr.values
   end
 
   def save_all
@@ -75,18 +74,27 @@ class XCCDFReportParser
   end
 
   def save_rule_results
-    host_object = Host.find_by(name: report_host)
-    rules = Rule.where(ref_id: rule_results.map(&:id))
     results = rule_results.map(&:result)
     RuleResult.import(
-      rules.zip(results).each_with_object([]) do |rule_result, rule_results|
-        rule_results << RuleResult.new(host: host_object, rule: rule_result[0],
+      rule_results_rule_ids.zip(results)
+      .each_with_object([]) do |rule_result, rule_results|
+        rule_results << RuleResult.new(host: host_id, rule_id: rule_result[0],
                                        result: rule_result[1])
       end
     )
   end
 
   private
+
+  def rule_results_rule_ids
+    @rule_results_rule_ids ||= Rule.select(:id).where(
+      ref_id: rule_results.map(&:id)
+    ).pluck(:id)
+  end
+
+  def host_id
+    @host_id ||= Host.select(:id).find_by(name: report_host)
+  end
 
   def create_test_result(report_xml)
     test_result_node = report_xml.search('TestResult')

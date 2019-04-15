@@ -5,9 +5,9 @@
 class Host < ApplicationRecord
   scoped_search on: %i[id name account_id]
   scoped_search on: :compliant, ext_method: 'filter_by_compliance',
-    only_explicit: true
+                only_explicit: true
   scoped_search on: :compliance_score, ext_method: 'filter_by_compliance_score',
-    only_explicit: true
+                only_explicit: true
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results, source: :rule
   has_many :profile_hosts, dependent: :delete_all

@@ -22,20 +22,26 @@ module XCCDFReport
       def rules_already_saved
         return @rules_already_saved if @rules_already_saved.present?
 
-        @rules_already_saved = Rule.where(ref_id: rule_objects.map(&:id))
+        @rules_already_saved = Rule.select(:id, :ref_id)
+                                   .where(ref_id: rule_objects.map(&:id))
                                    .includes(:profiles)
       end
 
       def add_profiles_to_old_rules(rules, new_profiles)
-        rules.each do |rule|
+        preexisting_profiles = ProfileRule.select(:profile_id)
+                                          .where(rule_id: rules.pluck(:id))
+                                          .pluck(:profile_id).uniq
+        rules.find_each do |rule|
           new_profiles.each do |profile|
-            rule.profiles << profile unless rule.profiles.include?(profile)
+            unless preexisting_profiles.include?(profile.id)
+              ProfileRule.create(rule_id: rule.id, profile_id: profile.id)
+            end
           end
         end
       end
 
       def new_rules
-        ref_ids = rules_already_saved.map(&:ref_id)
+        ref_ids = rules_already_saved.pluck(:ref_id)
         rule_objects.reject do |rule|
           ref_ids.include? rule.id
         end
