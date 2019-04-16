@@ -7,6 +7,7 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
+  Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   config.redis = {
     url: "redis://#{Settings.redis_url}",
     network_timeout: 5
