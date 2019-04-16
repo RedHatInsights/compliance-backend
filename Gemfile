@@ -70,6 +70,7 @@ gem 'prometheus_exporter'
 gem 'activerecord-import'
 gem 'oj'
 gem 'newrelic_rpm'
+gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
 group :development, :test do
   gem 'brakeman'
