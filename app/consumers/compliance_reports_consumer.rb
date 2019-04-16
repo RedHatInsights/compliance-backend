@@ -32,12 +32,12 @@ class ComplianceReportsConsumer < ApplicationConsumer
 
   def enqueue_job
     if validate == 'success'
-      job = ParseReportJob.perform_later(
+      job = ParseReportJob.perform_async(
         @file_contents,
         @value['account'],
         @value['b64_identity']
       )
-      logger.info "Message enqueued: #{@value['payload_id']} as #{job.job_id}"
+      logger.info "Message enqueued: #{@value['payload_id']} as #{job}"
     else
       logger.error "Error parsing report: #{@value['payload_id']}"
     end

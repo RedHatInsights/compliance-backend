@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'sidekiq/testing'
 
 class ComplianceReportsConsumerTest < ActiveSupport::TestCase
-  include ActiveJob::TestHelper
-
   setup do
     @message = stub(:message)
     @consumer = ComplianceReportsConsumer.new
@@ -16,6 +15,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
     ).at_least_once
     @tempfile = Tempfile.new
     SafeDownloader.expects(:download).returns(@tempfile)
+    ParseReportJob.clear
   end
 
   test 'report message is parsed and job is enqueued' do
@@ -29,12 +29,8 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
         }.to_json,
         topic: Settings.platform_kafka_validation_topic
       )
-      assert_enqueued_jobs 1 do
-        @consumer.process(@message)
-      end
-    ensure
-      @tempfile.close
-      @tempfile.unlink
+      @consumer.process(@message)
+      assert_equal 1, ParseReportJob.jobs.size
     end
   end
 
@@ -46,8 +42,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
     File.expects(:delete).with(@tempfile.path)
     # Mock the actual 'sending the validation' to Kafka
     @consumer.expects(:send_validation).with('failure').returns(true)
-    assert_enqueued_jobs 0 do
-      @consumer.process(@message)
-    end
+    @consumer.process(@message)
+    assert_equal 0, ParseReportJob.jobs.size
   end
 end
