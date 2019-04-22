@@ -5,7 +5,8 @@ class ParseReportJob
   include Sidekiq::Worker
 
   def perform(file, account, b64_identity)
-    parser = XCCDFReportParser.new(file, account, b64_identity)
+    parser = XCCDFReportParser.new(ActiveSupport::Gzip.decompress(file),
+                                   account, b64_identity)
     parser.save_all
     GC.start
   rescue OpenSCAP::OpenSCAPError => e
