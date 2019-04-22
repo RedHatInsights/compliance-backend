@@ -33,7 +33,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
   def enqueue_job
     if validate == 'success'
       job = ParseReportJob.perform_async(
-        @file_contents,
+        ActiveSupport::Gzip.compress(@file_contents),
         @value['account'],
         @value['b64_identity']
       )
