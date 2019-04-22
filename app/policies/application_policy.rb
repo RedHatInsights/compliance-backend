@@ -54,6 +54,8 @@ class ApplicationPolicy
     end
 
     def only_matching_account
+      return scope.where('1=0') if user.account_id.blank?
+
       scope.where(account_id: user.account_id)
     end
 

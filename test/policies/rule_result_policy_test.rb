@@ -15,6 +15,8 @@ class RuleResultPolicyTest < ActiveSupport::TestCase
     rule_results(:one).save
     assert_includes Pundit.policy_scope(users(:test), RuleResult),
                     rule_results(:one)
+    assert Pundit.authorize(users(:test), rule_results(:one), :index?)
+    assert Pundit.authorize(users(:test), rule_results(:one), :show?)
     assert_not_includes Pundit.policy_scope(users(:test), RuleResult),
                         rule_results(:two)
   end
