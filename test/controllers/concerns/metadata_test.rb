@@ -10,11 +10,13 @@ require 'securerandom'
 class MetadataTest < ActionDispatch::IntegrationTest
   def authenticate
     ProfilesController.any_instance.expects(:authenticate_user)
+    users(:test).account = accounts(:test)
     User.current = users(:test)
   end
 
   test 'meta adds total and search to JSON response' do
     authenticate
+    profiles(:one).update(account: accounts(:test))
     search_query = 'name=profile1'
     get profiles_url, params: { search: search_query }
     assert_response :success
@@ -26,11 +28,13 @@ class MetadataTest < ActionDispatch::IntegrationTest
   context 'pagination' do
     setup do
       authenticate
+      Profile.update_all(account_id: accounts(:test).id)
     end
 
     should 'return correct pagination links' do
       3.times do
-        Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid)
+        Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
+                       account: accounts(:test))
       end
       get profiles_url, params: { limit: 1, offset: 3 }
       assert_response :success
@@ -71,7 +75,8 @@ class MetadataTest < ActionDispatch::IntegrationTest
     end
 
     should 'return correct pagination links when there are three pages' do
-      Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid)
+      Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
+                     account: accounts(:test))
       get profiles_url, params: { limit: 1, offset: 2 }
       assert_response :success
       assert_match(/limit=1/, json_body['links']['first'])
