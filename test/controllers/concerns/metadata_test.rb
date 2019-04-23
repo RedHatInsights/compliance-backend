@@ -28,7 +28,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
   context 'pagination' do
     setup do
       authenticate
-      Profile.update_all(account_id: accounts(:test).id)
+      Profile.all.find_each { |p| p.update(account_id: accounts(:test).id) }
     end
 
     should 'return correct pagination links' do

@@ -22,11 +22,11 @@ class SafeDownloader
       tempfile = Tempfile.create(path)
       IO.copy_stream(downloaded_file, tempfile.path)
       tempfile
-    rescue *DOWNLOAD_ERRORS => error
-      raise DownloadError if error.instance_of?(RuntimeError) &&
-                             error.message !~ /redirection/
+    rescue *DOWNLOAD_ERRORS => e
+      raise DownloadError if e.instance_of?(RuntimeError) &&
+                             e.message !~ /redirection/
 
-      raise DownloadError, "download failed (#{url}): #{error.message}"
+      raise DownloadError, "download failed (#{url}): #{e.message}"
     end
 
     private

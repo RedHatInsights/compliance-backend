@@ -28,8 +28,9 @@ class Rule < ApplicationRecord
   # for a multi-line string SQL query.
   # rubocop:disable Metrics/MethodLength
   def compliant?(host)
-    latest_result = RuleResult.find_by_sql(
-      ['SELECT rule_results.* FROM (
+    Rails.cache.fetch("#{id}/#{host.id}/compliant", expires_in: 1.week) do
+      latest_result = RuleResult.find_by_sql(
+        ['SELECT rule_results.* FROM (
           SELECT rr2.*,
              rank() OVER (
                     PARTITION BY rule_id, host_id
@@ -38,10 +39,11 @@ class Rule < ApplicationRecord
           FROM rule_results rr2
           WHERE rr2.host_id = ? AND rr2.rule_id = ?
        ) rule_results WHERE RANK = 1', host.id, id]
-    ).last
-    return false if latest_result.blank?
+      ).last
+      return false if latest_result.blank?
 
-    %w[pass notapplicable notselected].include? latest_result.result
+      %w[pass notapplicable notselected].include? latest_result.result
+    end
   end
   # rubocop:enable Metrics/MethodLength
 end

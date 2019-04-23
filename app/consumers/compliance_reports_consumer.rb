@@ -10,9 +10,9 @@ class ComplianceReportsConsumer < ApplicationConsumer
     logger.info "Received message, enqueueing: #{message.value}"
     download_file
     enqueue_job
-  rescue SafeDownloader::DownloadError => error
+  rescue SafeDownloader::DownloadError => e
     logger.error "Error parsing report: #{@value['payload_id']}"\
-      " - #{error.message}"
+      " - #{e.message}"
     send_validation('failure')
   end
 

@@ -34,8 +34,9 @@ class Profile < ApplicationRecord
   # for a multi-line string SQL query.
   # rubocop:disable Metrics/MethodLength
   def results(host)
-    rule_results = RuleResult.find_by_sql(
-      ['SELECT rule_results.* FROM (
+    Rails.cache.fetch("#{id}/#{host.id}/results", expires_in: 1.week) do
+      rule_results = RuleResult.find_by_sql(
+        ['SELECT rule_results.* FROM (
           SELECT rr2.*,
              rank() OVER (
                     PARTITION BY rule_id, host_id
@@ -48,9 +49,10 @@ class Profile < ApplicationRecord
               ON rules.id = profile_rules.rule_id
               WHERE profile_rules.profile_id = ?)
        ) rule_results WHERE RANK = 1', host.id, id]
-    )
-    rule_results.map do |rule_result|
-      %w[pass notapplicable notselected].include? rule_result.result
+      )
+      rule_results.map do |rule_result|
+        %w[pass notapplicable notselected].include? rule_result.result
+      end
     end
   end
   # rubocop:enable Metrics/MethodLength

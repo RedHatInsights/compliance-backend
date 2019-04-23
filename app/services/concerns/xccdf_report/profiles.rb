@@ -33,6 +33,7 @@ module XCCDFReport
 
       def host_new_profiles
         save_profiles.select do |profile| # rubocop:disable Style/InverseMethods
+          Rails.cache.delete("#{profile.id}/#{@host.id}/results")
           !profile.hosts.map(&:id).include? @host.id
         end
       end
