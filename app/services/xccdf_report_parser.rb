@@ -33,7 +33,7 @@ class XCCDFReportParser
     begin
       @test_result = ::OpenSCAP::Xccdf::TestResult.new(source)
     rescue ::OpenSCAP::OpenSCAPError => e
-      Sidekiq.logger.error('Error: ', e)
+      Sidekiq.logger.error("Error: #{e}")
     end
   end
 
@@ -61,11 +61,11 @@ class XCCDFReportParser
   end
 
   def start_time
-    @start_time ||= DateTime.parse(test_result_node['start-time'])
+    @start_time ||= DateTime.parse(test_result_node['start-time']).in_time_zone
   end
 
   def end_time
-    @end_time ||= DateTime.parse(test_result_node['end-time'])
+    @end_time ||= DateTime.parse(test_result_node['end-time']).in_time_zone
   end
 
   def rule_results

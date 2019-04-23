@@ -41,7 +41,7 @@ class ImageScanner
       "#{image_name}:latest xccdf eval --fetch-remote-resources"\
       " --results #{report_filepath} --profile #{@profile} #{policy}"
     )
-    Sidekiq.logger.error('Error running oscap-docker: ', err)
-    Sidekiq.logger.info('Output from oscap-docker: ', out)
+    Sidekiq.logger.error("Error running oscap-docker: #{err}")
+    Sidekiq.logger.info("Output from oscap-docker: #{out}")
   end
 end
