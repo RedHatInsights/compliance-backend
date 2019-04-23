@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Scanner JOb for Openshift Images
 class ImageScanner
   def initialize(imagestream, profile, b64_identity)
     @imagestream = imagestream

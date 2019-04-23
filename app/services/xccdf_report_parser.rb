@@ -69,6 +69,9 @@ class XCCDFReportParser
       save_profiles
       save_rules
       save_host
+      rules_already_saved.each do |rule|
+        Rails.cache.delete("#{rule.id}/#{@host.id}/compliant")
+      end
       save_rule_results
     end
   end
