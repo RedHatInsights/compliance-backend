@@ -75,7 +75,7 @@ ProfileType = GraphQL::ObjectType.define do
       rule_ids = profile.rules.map(&:id)
       rule_results = RuleResult.where(rule_id: rule_ids,
                                       host_id: Host.find(args['system_id']).id)
-      rule_results.maximum(:updated_at) || 'Never'
+      rule_results.maximum(:end_time) || 'Never'
     }
   end
 end
@@ -145,7 +145,7 @@ SystemType = GraphQL::ObjectType.define do
         rule_results = obj.rule_results
       end
 
-      rule_results.maximum(:updated_at) || 'Never'
+      rule_results.maximum(:end_time) || 'Never'
     }
   end
 end
