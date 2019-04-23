@@ -2,7 +2,7 @@
  * Requires: https://github.com/RedHatInsights/insights-pipeline-lib
  */
 
-@Library("github.com/quarckster/insights-pipeline-lib@fix") _
+@Library("github.com/RedHatInsights/insights-pipeline-lib") _
 
 node {
     cancelPriorBuilds()
@@ -79,11 +79,10 @@ def runStages() {
             }
         }
 
-        openShift.withNode(cloud: "cmqe", image: pipelineVars.jenkinsSlaveIqeImage, workingDir: "") {
+        openShift.withNode(cloud: "cmqe", image: pipelineVars.jenkinsSlaveIqeImage, workingDir: "/tmp") {
             stage("Install_integration_tests") {
                 withStatusContext.custom(env.STAGE_NAME, true) {
                     sh "iqe plugin install compliance"
-                    sh "iqe plugin install red-hat-internal-envs"
                 }
             }
 
