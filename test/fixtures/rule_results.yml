@@ -3,9 +3,9 @@
 one:
   host_id: one
   rule_id: one
-  result: passed
+  result: pass
 
 two:
   host_id: two
   rule_id: two
-  result: failed
+  result: fail

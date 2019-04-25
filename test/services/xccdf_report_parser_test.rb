@@ -102,6 +102,11 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     assert_equal(16.220237731933594, @report_parser.score)
   end
 
+  test 'handles parsing errors' do
+    OpenSCAP::Xccdf::TestResult.expects(:new).raises(OpenSCAP::OpenSCAPError)
+    @report_parser.test_result
+  end
+
   context 'rules' do
     setup do
       @arbitrary_rules = [

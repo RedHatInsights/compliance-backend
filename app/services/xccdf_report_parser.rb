@@ -33,7 +33,7 @@ class XCCDFReportParser
     begin
       @test_result = ::OpenSCAP::Xccdf::TestResult.new(source)
     rescue ::OpenSCAP::OpenSCAPError => e
-      Sidekiq.logger.error('Error: ', e)
+      Sidekiq.logger.error("Error: #{e}")
     end
   end
 
@@ -60,6 +60,14 @@ class XCCDFReportParser
     test_result.score['urn:xccdf:scoring:default'][:value]
   end
 
+  def start_time
+    @start_time ||= DateTime.parse(test_result_node['start-time']).in_time_zone
+  end
+
+  def end_time
+    @end_time ||= DateTime.parse(test_result_node['end-time']).in_time_zone
+  end
+
   def rule_results
     @rule_results ||= test_result.rr.values
   end
@@ -82,12 +90,19 @@ class XCCDFReportParser
       rule_results_rule_ids.zip(results)
       .each_with_object([]) do |rule_result, rule_results|
         rule_results << RuleResult.new(host: host_id, rule_id: rule_result[0],
-                                       result: rule_result[1])
+                                       result: rule_result[1],
+                                       start_time: start_time,
+                                       end_time: end_time)
       end
     )
   end
 
   private
+
+  def test_result_node
+    test_result = report_xml.search('TestResult')
+    test_result.first if test_result.one?
+  end
 
   def rule_results_rule_ids
     @rule_results_rule_ids ||= Rule.select(:id).where(
@@ -100,7 +115,6 @@ class XCCDFReportParser
   end
 
   def create_test_result(report_xml)
-    test_result_node = report_xml.search('TestResult')
     test_result_doc = Nokogiri::XML::Document.parse(test_result_node.to_xml)
     test_result_doc.root.default_namespace = find_namespace(report_xml)
     test_result_doc.namespace = test_result_doc.root.namespace

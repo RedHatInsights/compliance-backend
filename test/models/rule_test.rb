@@ -15,4 +15,14 @@ class RuleTest < ActiveSupport::TestCase
   test 'creates rules from ruby-openscap Rule object' do
     Rule.new.from_oscap_object(@rule_objects.first)
   end
+
+  test 'host one is not compliant?' do
+    assert_not rules(:one).compliant?(hosts(:one))
+  end
+
+  test 'host one is compliant?' do
+    rule_result = rule_results(:one)
+    RuleResult.expects(:find_by_sql).returns([rule_result])
+    assert rules(:one).compliant?(hosts(:one))
+  end
 end

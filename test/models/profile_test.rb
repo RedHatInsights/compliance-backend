@@ -10,6 +10,7 @@ class ProfileTest < ActiveSupport::TestCase
   setup do
     hosts(:one).profiles << profiles(:one)
     profiles(:one).update(rules: [rules(:one), rules(:two)])
+    profiles(:one).stubs(:hosts).returns([hosts(:one)])
   end
 
   test 'host is not compliant there are no results for all rules' do
@@ -38,6 +39,10 @@ class ProfileTest < ActiveSupport::TestCase
     RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
     RuleResult.create(rule: rules(:two), host: hosts(:one), result: 'fail')
     assert 0.5, profiles(:one).compliance_score(hosts(:one))
+  end
+
+  test 'score with non-blank hosts' do
+    assert_equal 0, profiles(:one).score
   end
 
   context 'threshold' do

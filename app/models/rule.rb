@@ -34,7 +34,7 @@ class Rule < ApplicationRecord
           SELECT rr2.*,
              rank() OVER (
                     PARTITION BY rule_id, host_id
-                    ORDER BY created_at DESC
+                    ORDER BY end_time DESC, created_at DESC
              )
           FROM rule_results rr2
           WHERE rr2.host_id = ? AND rr2.rule_id = ?
