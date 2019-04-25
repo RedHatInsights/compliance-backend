@@ -8,7 +8,7 @@ class ImageScanner
     @b64_identity = b64_identity
     @image_name = imagestream.name
     @registry_url = imagestream.openshift_connection.registry_api_url
-    @namespace, @image_name = image_name.split('/')
+    @namespace, @image_name = @image_name.split('/')
   end
 
   def parse_job
@@ -39,10 +39,10 @@ class ImageScanner
     cmd = TTY::Command.new
     out, err = cmd.run(
       "sudo oscap-docker image #{@registry_url}/#{@namespace}/"\
-      "#{image_name}:latest xccdf eval --fetch-remote-resources"\
+      "#{@image_name}:latest xccdf eval --fetch-remote-resources"\
       " --results #{report_filepath} --profile #{@profile} #{policy}"
     )
-    Sidekiq.logger.error('Error running oscap-docker: ', err)
-    Sidekiq.logger.info('Output from oscap-docker: ', out)
+    Sidekiq.logger.error("Error running oscap-docker: #{err}")
+    Sidekiq.logger.info("Output from oscap-docker: #{out}")
   end
 end
