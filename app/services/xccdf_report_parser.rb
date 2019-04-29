@@ -88,8 +88,7 @@ class XCCDFReportParser
   private
 
   def test_result_node
-    test_result = @report_xml.search('TestResult')
-    test_result.first if test_result.one?
+    @test_result_node ||= @report_xml.at_css('TestResult')
   end
 
   def rule_results_rule_ids

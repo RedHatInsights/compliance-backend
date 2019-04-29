@@ -2,7 +2,29 @@
 
 # Mimics openscap-ruby Rule interface
 class RuleOscapObject
-  attr_accessor :id, :title, :rationale, :description, :severity
+  def initialize(rule_xml: nil)
+    @rule_xml = rule_xml
+  end
+
+  def id
+    @id ||= @rule_xml['id']
+  end
+
+  def severity
+    @severity ||= @rule_xml['severity']
+  end
+
+  def title
+    @title ||= @rule_xml.at_css('title').children.first.text
+  end
+
+  def description
+    @description ||= @rule_xml.at_css('description').text.delete!("\n")
+  end
+
+  def rationale
+    @rationale ||= @rule_xml.at_css('rationale').children.text.delete!("\n")
+  end
 end
 
 module XCCDFReport
@@ -12,26 +34,14 @@ module XCCDFReport
 
     included do
       def rule_ids
-        test_result_node.search('rule-result').map { |rr| rr.attributes['idref'].value }
-      end
-
-      def create_rule_oscap_object(rule)
-        rule_oscap = RuleOscapObject.new
-        rule_oscap.id = rule.attributes['id'].value
-        rule_oscap.severity = rule.attributes['severity'].value
-        rule_oscap.title = rule.search('title').first.children.first.text
-        rule_oscap.description = rule.search('description').first
-                                     .children.map(&:text).join.delete!("\n")
-        rule_oscap.rationale = rule.search('rationale').first
-                                   .children.map(&:text).join.delete!("\n")
-        rule_oscap
+        test_result_node.xpath('.//xmlns:rule-result/@idref').map(&:value)
       end
 
       def rule_objects
         return @rule_objects if @rule_objects.present?
 
         @rule_objects ||= @report_xml.search('Rule').map do |rule|
-          create_rule_oscap_object(rule)
+          RuleOscapObject.new(rule_xml: rule)
         end
       end
 

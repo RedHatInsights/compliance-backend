@@ -8,18 +8,9 @@ module XCCDFReport
 
     included do
       def profiles
-        return @profiles if @profiles.present?
-
-        result = {}
-        @report_xml.search('Profile').each do |profile|
-          next unless test_result_node.attributes['id'].value.include?(
-            profile.attributes['id'].value
-          )
-
-          result[profile.attributes['id'].value] = profile.search('title')
-                                                          .children.text
-        end
-        @profiles = result
+        @profiles ||= {
+          profile_node['id'] => profile_node.at_css('title').text
+        }
       end
 
       def save_profiles
@@ -41,6 +32,17 @@ module XCCDFReport
           Rails.cache.delete("#{profile.id}/#{@host.id}/results")
           !profile.hosts.map(&:id).include? @host.id
         end
+      end
+
+      private
+
+      def profile_node
+        @report_xml.at_xpath(".//xmlns:Profile\
+                             [contains('#{test_result_node['id']}', @id)]")
+      end
+
+      def test_result_node
+        @test_result_node ||= @report_xml.at_css('TestResult')
       end
     end
   end
