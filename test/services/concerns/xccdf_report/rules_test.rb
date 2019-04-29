@@ -2,12 +2,11 @@
 
 require 'test_helper'
 require 'xccdf_report/rules'
-require 'openscap/source'
-require 'openscap/xccdf/benchmark'
 
 class RulesTest < ActiveSupport::TestCase
   include XCCDFReport::Rules
   include XCCDFReport::Profiles
+  include XCCDFReport::XMLReport
 
   def test_result
     OpenStruct.new(id: ['xccdf_org.ssgproject.content_profile_standard'])
@@ -15,8 +14,7 @@ class RulesTest < ActiveSupport::TestCase
 
   setup do
     @report_path = 'test/fixtures/files/xccdf_report.xml'
-    @source = ::OpenSCAP::Source.new(@report_path)
-    @benchmark = ::OpenSCAP::Xccdf::Benchmark.new(@source)
+    report_xml(File.read(@report_path))
   end
 
   test 'save all rules as new' do

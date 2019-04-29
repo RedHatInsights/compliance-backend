@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# Mimics openscap-ruby Rule interface
+class RuleOscapObject
+  attr_accessor :id, :title, :rationale, :description, :severity
+end
+
 module XCCDFReport
   # Methods related to parsing rules
   module Rules
@@ -7,16 +12,27 @@ module XCCDFReport
 
     included do
       def rule_ids
-        test_result.rr.keys
+        test_result_node.search('rule-result').map { |rr| rr.attributes['idref'].value }
+      end
+
+      def create_rule_oscap_object(rule)
+        rule_oscap = RuleOscapObject.new
+        rule_oscap.id = rule.attributes['id'].value
+        rule_oscap.severity = rule.attributes['severity'].value
+        rule_oscap.title = rule.search('title').first.children.first.text
+        rule_oscap.description = rule.search('description').first
+                                     .children.map(&:text).join.delete!("\n")
+        rule_oscap.rationale = rule.search('rationale').first
+                                   .children.map(&:text).join.delete!("\n")
+        rule_oscap
       end
 
       def rule_objects
         return @rule_objects if @rule_objects.present?
 
-        @rule_objects ||= @benchmark.items.select do |_, v|
-          v.is_a?(OpenSCAP::Xccdf::Rule)
+        @rule_objects ||= @report_xml.search('Rule').map do |rule|
+          create_rule_oscap_object(rule)
         end
-        @rule_objects = @rule_objects.map { |rule| rule[1] }
       end
 
       def rules_already_saved

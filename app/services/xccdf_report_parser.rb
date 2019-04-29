@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require 'openscap'
-require 'openscap/source'
-require 'openscap/xccdf'
-require 'openscap/xccdf/benchmark'
-require 'openscap/xccdf/testresult'
+# Mimics openscap-ruby RuleResult interface
+class RuleResultOscapObject
+  attr_accessor :id, :result
+end
 
 # Takes in a path to an XCCDF file, returns all kinds of properties about it
 # and saves it in our database
@@ -19,22 +18,6 @@ class XCCDFReportParser
     report_xml(report_contents)
     @b64_identity = b64_identity
     @account = Account.find_or_create_by(account_number: account)
-    @source = ::OpenSCAP::Source.new(content: report_contents,
-                                     length: report_contents.bytes.count)
-    @benchmark = ::OpenSCAP::Xccdf::Benchmark.new(@source)
-  end
-
-  def test_result
-    return @test_result if @test_result.present?
-
-    source = ::OpenSCAP::Source.new(
-      content: create_test_result(report_xml).to_xml
-    )
-    begin
-      @test_result = ::OpenSCAP::Xccdf::TestResult.new(source)
-    rescue ::OpenSCAP::OpenSCAPError => e
-      Sidekiq.logger.error("Error: #{e}")
-    end
   end
 
   def inventory_api
@@ -57,7 +40,7 @@ class XCCDFReportParser
   end
 
   def score
-    test_result.score['urn:xccdf:scoring:default'][:value]
+    test_result_node.search('score').text.to_f
   end
 
   def start_time
@@ -69,7 +52,12 @@ class XCCDFReportParser
   end
 
   def rule_results
-    @rule_results ||= test_result.rr.values
+    @rule_results ||= test_result_node.search('rule-result').map do |rr|
+      rule_result_oscap = RuleResultOscapObject.new
+      rule_result_oscap.id = rr.attributes['idref'].value
+      rule_result_oscap.result = rr.search('result').first.text
+      rule_result_oscap
+    end
   end
 
   def save_all
@@ -100,7 +88,7 @@ class XCCDFReportParser
   private
 
   def test_result_node
-    test_result = report_xml.search('TestResult')
+    test_result = @report_xml.search('TestResult')
     test_result.first if test_result.one?
   end
 

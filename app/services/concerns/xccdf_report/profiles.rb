@@ -11,8 +11,13 @@ module XCCDFReport
         return @profiles if @profiles.present?
 
         result = {}
-        @benchmark.profiles.each do |id, oscap_profile|
-          result[id] = oscap_profile.title if test_result.id.include?(id)
+        @report_xml.search('Profile').each do |profile|
+          next unless test_result_node.attributes['id'].value.include?(
+            profile.attributes['id'].value
+          )
+
+          result[profile.attributes['id'].value] = profile.search('title')
+                                                          .children.text
         end
         @profiles = result
       end
