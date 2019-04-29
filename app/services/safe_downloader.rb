@@ -49,7 +49,7 @@ class SafeDownloader
       options['User-Agent'] = 'Red Hat Insights: Compliance'
       options[:content_length_proc] = lambda do |size|
         if max_size && size && size > max_size
-          raise Error, "file is too big (max is #{max_size})"
+          raise DownloadError, "file is too big (max is #{max_size})"
         end
       end
       options
