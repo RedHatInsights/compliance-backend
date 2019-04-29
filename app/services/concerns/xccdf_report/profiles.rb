@@ -8,13 +8,9 @@ module XCCDFReport
 
     included do
       def profiles
-        return @profiles if @profiles.present?
-
-        result = {}
-        @benchmark.profiles.each do |id, oscap_profile|
-          result[id] = oscap_profile.title if test_result.id.include?(id)
-        end
-        @profiles = result
+        @profiles ||= {
+          profile_node['id'] => profile_node.at_css('title').text
+        }
       end
 
       def save_profiles
@@ -36,6 +32,17 @@ module XCCDFReport
           Rails.cache.delete("#{profile.id}/#{@host.id}/results")
           !profile.hosts.map(&:id).include? @host.id
         end
+      end
+
+      private
+
+      def profile_node
+        @report_xml.at_xpath(".//xmlns:Profile\
+                             [contains('#{test_result_node['id']}', @id)]")
+      end
+
+      def test_result_node
+        @test_result_node ||= @report_xml.at_css('TestResult')
       end
     end
   end
