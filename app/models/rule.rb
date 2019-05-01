@@ -11,7 +11,10 @@ class Rule < ApplicationRecord
   has_many :rule_results, dependent: :delete_all
   has_many :hosts, through: :rule_results, source: :host
 
+  validates :title, presence: true
   validates :ref_id, uniqueness: true, presence: true
+  validates :description, presence: true
+  validates :severity, presence: true
   validates_associated :profile_rules
   validates_associated :rule_results
 

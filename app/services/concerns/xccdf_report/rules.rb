@@ -19,11 +19,11 @@ class RuleOscapObject
   end
 
   def description
-    @description ||= @rule_xml.at_css('description').text.delete!("\n")
+    @description ||= @rule_xml.at_css('description').text.delete("\n")
   end
 
   def rationale
-    @rationale ||= @rule_xml.at_css('rationale').children.text.delete!("\n")
+    @rationale ||= @rule_xml.at_css('rationale').children.text.delete("\n")
   end
 end
 
@@ -76,7 +76,7 @@ module XCCDFReport
       def save_rules
         new_profiles = Profile.where(ref_id: profiles.keys)
         add_profiles_to_old_rules(rules_already_saved, new_profiles)
-        Rule.import(
+        Rule.import!(
           new_rules.each_with_object([]) do |rule, new_rules|
             new_rule = Rule.new(profiles: new_profiles).from_oscap_object(rule)
             new_rules << new_rule

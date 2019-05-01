@@ -74,7 +74,7 @@ class XCCDFReportParser
 
   def save_rule_results
     results = rule_results.map(&:result)
-    RuleResult.import(
+    RuleResult.import!(
       rule_results_rule_ids.zip(results)
       .each_with_object([]) do |rule_result, rule_results|
         rule_results << RuleResult.new(host: host_id, rule_id: rule_result[0],
