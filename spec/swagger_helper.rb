@@ -160,7 +160,13 @@ def x_rh_identity
       'internal': {
         'org_id': '29329'
       }
-    }
+    },
+    'entitlements':
+      {
+        'smart_management': {
+          'is_entitled': true
+        }
+      }
   }.with_indifferent_access
 end
 # rubocop:enable Metrics/MethodLength

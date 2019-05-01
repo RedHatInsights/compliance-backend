@@ -29,6 +29,12 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           'user': {
             'username': 'testuser'
           }
+        },
+        'entitlements':
+        {
+          'smart_management': {
+            'is_entitled': true
+          }
         }
       }.to_json
     )
@@ -60,6 +66,12 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           'internal': {
             'org_id': '29329'
           }
+        },
+        'entitlements':
+        {
+          'smart_management': {
+            'is_entitled': true
+          }
         }
       }.to_json
     )
@@ -69,6 +81,68 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
   end
 
   test 'user not found, creates a new account, username missing' do
+    encoded_header = Base64.encode64(
+      {
+        'identity':
+        {
+          'account_number': '1234',
+          'type': 'User',
+          'user': {
+            'email': 'a@b.com',
+            'first_name': 'a',
+            'last_name': 'b',
+            'is_active': true,
+            'locale': 'en_US'
+          },
+          'internal': {
+            'org_id': '29329'
+          }
+        },
+        'entitlements':
+        {
+          'smart_management': {
+            'is_entitled': true
+          }
+        }
+      }.to_json
+    )
+    get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+    assert_response :unauthorized
+    assert_not User.current
+  end
+
+  test 'missing smart_management entitlement' do
+    encoded_header = Base64.encode64(
+      {
+        'identity':
+        {
+          'account_number': '1234',
+          'type': 'User',
+          'user': {
+            'email': 'a@b.com',
+            'first_name': 'a',
+            'last_name': 'b',
+            'is_active': true,
+            'locale': 'en_US'
+          },
+          'internal': {
+            'org_id': '29329'
+          }
+        },
+        'entitlements':
+        {
+          'smart_management': {
+            'is_entitled': false
+          }
+        }
+      }.to_json
+    )
+    get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+    assert_response :unauthorized
+    assert_not User.current
+  end
+
+  test 'missing entitlement info completely' do
     encoded_header = Base64.encode64(
       {
         'identity':
@@ -101,6 +175,12 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           'account_number': '1234',
           'user': {
             'username': 'fakeuser'
+          }
+        },
+        'entitlements':
+        {
+          'smart_management': {
+            'is_entitled': true
           }
         }
       }.to_json
