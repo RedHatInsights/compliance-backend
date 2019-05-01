@@ -8,12 +8,12 @@ class CsvExporterTest < ActiveSupport::TestCase
     assert_equal "Id\n", result.next
     assert_equal result.count, Rule.count + 1
     assert_difference('CsvExporter.export(Rule, [:id]).count') do
-      Rule.create(ref_id: SecureRandom.uuid)
+      Rule.new(ref_id: SecureRandom.uuid).save(validate: false)
     end
   end
 
   test 'ignore limit' do
-    10.times { Rule.create(ref_id: SecureRandom.uuid) }
+    10.times { Rule.new(ref_id: SecureRandom.uuid).save(validate: false) }
     result = CsvExporter.export(Rule.all.limit(5), [:id])
     assert result.count > 5
   end

@@ -126,8 +126,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     end
 
     should 'save new rules in the database, ignore old rules' do
-      rule1 = Rule.create(ref_id: @arbitrary_rules[0])
-      rule2 = Rule.create(ref_id: @arbitrary_rules[1])
+      (rule1 = Rule.new(ref_id: @arbitrary_rules[0])).save(validate: false)
+      (rule2 = Rule.new(ref_id: @arbitrary_rules[1])).save(validate: false)
       assert_difference('Rule.count', 365) do
         new_rules = @report_parser.save_rules
         old_rules_found = Rule.where(id: new_rules.ids).find_all do |rule|
@@ -138,7 +138,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     end
 
     should 'not try to append already assigned profiles to a rule' do
-      rule = Rule.create(ref_id: @arbitrary_rules[0])
+      (rule = Rule.new(ref_id: @arbitrary_rules[0])).save(validate: false)
       rule.profiles << profiles(:one)
       assert_nothing_raised do
         @report_parser.add_profiles_to_old_rules(
