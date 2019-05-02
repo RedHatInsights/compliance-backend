@@ -7,7 +7,7 @@ require 'test_helper'
 # ActionDispatch::IntegrationTest, it is testing the Profiles controller
 # instead for the time being
 class AuthenticationTest < ActionDispatch::IntegrationTest
-  teardown do
+  setup do
     User.current = nil
   end
 
