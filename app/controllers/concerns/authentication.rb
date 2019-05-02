@@ -12,12 +12,9 @@ module Authentication
 
   def authenticate_user
     return unauthenticated unless identity_header
+    return unauthenticated unless entitled?
 
-    account = Account.find_or_create_by(
-      account_number: identity_header_content['account_number']
-    )
-    user = find_or_create_user(identity_header_content['user']['username'],
-                               account)
+    user = find_or_create_user(identity_header_identity['user']['username'])
     return if performed? || !user.persisted?
 
     User.current = user
@@ -42,13 +39,25 @@ module Authentication
   end
 
   def identity_header_content
-    JSON.parse(Base64.decode64(identity_header))['identity']
+    JSON.parse(Base64.decode64(identity_header))
   end
 
-  def find_or_create_user(username, account)
-    user = User.find_by(username: username, account: account)
+  def identity_header_identity
+    identity_header_content['identity']
+  end
+
+  def identity_header_entitlements
+    identity_header_content['entitlements']
+  end
+
+  def entitled?
+    identity_header_entitlements&.dig('smart_management', 'is_entitled')
+  end
+
+  def find_or_create_user(username)
+    user = User.find_by(username: username, account: account_from_header)
     if user.present?
-      logger.info "User authentication SUCCESS: #{identity_header_content}"
+      logger.info "User authentication SUCCESS: #{identity_header_identity}"
     else
       user = create_user
     end
@@ -57,10 +66,16 @@ module Authentication
 
   private
 
+  def account_from_header
+    Account.find_or_create_by(
+      account_number: identity_header_identity['account_number']
+    )
+  end
+
   def create_user
-    if (user = User.from_x_rh_identity(identity_header_content)).save
+    if (user = User.from_x_rh_identity(identity_header_identity)).save
       logger.info 'User authentication SUCCESS - creating user: '\
-        "#{identity_header_content}"
+        "#{identity_header_identity}"
     else
       logger.info 'User authentication FAILED - could not create user: '\
         "#{user.errors.full_messages}"
