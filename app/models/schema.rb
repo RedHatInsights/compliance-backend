@@ -162,9 +162,10 @@ QueryType = GraphQL::ObjectType.define do
     argument :search, types.String, 'Search query'
     argument :per_page, types.Int, 'Page'
     argument :page, types.Int, 'Per page'
+    argument :profile_id, types.String, 'Profile Id'
     resolve lambda { |_obj, args, ctx|
-      Pundit.policy_scope(ctx[:current_user], Host).search_for(args[:search]).
-        paginate(page: args[:page], per_page: args[:per_page])
+      Pundit.policy_scope(ctx[:current_user], Host).search_for(args[:search])
+            .paginate(page: args[:page], per_page: args[:per_page])
     }
   end
 

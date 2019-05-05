@@ -8,6 +8,7 @@ class Host < ApplicationRecord
                 only_explicit: true
   scoped_search on: :compliance_score, ext_method: 'filter_by_compliance_score',
                 only_explicit: true
+  scoped_search relation: :profile_hosts, on: :profile_id
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results, source: :rule
   has_many :profile_hosts, dependent: :destroy
