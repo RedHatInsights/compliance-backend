@@ -10,7 +10,7 @@ RuleType = GraphQL::ObjectType.define do
   field :title, !types.String
   field :ref_id, !types.String
   field :rationale, types.String
-  field :description, !types.String
+  field :description, types.String
   field :severity, !types.String
   field :profiles, -> { types[ProfileType] }
   field :compliant do
