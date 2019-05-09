@@ -61,6 +61,7 @@ gem 'docker-api'
 gem 'faraday'
 gem 'friendly_id', '~> 5.2.4'
 gem 'scoped_search'
+gem 'sinatra'
 gem 'will_paginate'
 gem 'prometheus_exporter'
 

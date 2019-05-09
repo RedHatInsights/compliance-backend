@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+ping = Thread.new do
+  require 'sinatra'
+
+  get '/' do
+  end
+
+  Sinatra::Application.run!
+end
+
 # Receives messages from the Kafka topic, converts them into jobs
 # for processing
 class ComplianceReportsConsumer < ApplicationConsumer

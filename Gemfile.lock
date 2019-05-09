@@ -178,6 +178,7 @@ GEM
     msgpack (1.2.10)
     multi_json (1.13.1)
     multipart-post (2.0.0)
+    mustermann (1.0.3)
     newrelic_rpm (6.2.0.354)
     nio4r (2.3.1)
     nokogiri (1.10.3)
@@ -300,6 +301,11 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    sinatra (2.0.5)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.5)
+      tilt (~> 2.0)
     slack-notifier (2.3.2)
     slop (3.6.0)
     spring (2.0.2)
@@ -316,6 +322,7 @@ GEM
       sprockets (>= 3.0.0)
     thor (0.20.3)
     thread_safe (0.3.6)
+    tilt (2.0.9)
     tty-color (0.4.3)
     tty-command (0.8.2)
       pastel (~> 0.7.0)
@@ -380,6 +387,7 @@ DEPENDENCIES
   shoulda-context
   shoulda-matchers
   sidekiq
+  sinatra
   slack-notifier
   spring
   spring-watcher-listen (~> 2.0.0)
