@@ -6,19 +6,19 @@ class ComplianceReportsConsumer < ApplicationConsumer
   subscribes_to Settings.platform_kafka_topic
 
   def process(message)
-    @value = JSON.parse(message.value)
+    @msg_value = JSON.parse(message.value)
     logger.info "Received message, enqueueing: #{message.value}"
     download_file
     enqueue_job
   rescue SafeDownloader::DownloadError => e
-    logger.error "Error parsing report: #{@value['payload_id']}"\
+    logger.error "Error parsing report: #{@msg_value['payload_id']}"\
       " - #{e.message}"
     send_validation('failure')
   end
 
   def send_validation(validation)
     produce(
-      validation_payload(@value['payload_id'], validation),
+      validation_payload(@msg_value['payload_id'], validation),
       topic: Settings.platform_kafka_validation_topic
     )
   end
@@ -26,20 +26,18 @@ class ComplianceReportsConsumer < ApplicationConsumer
   private
 
   def download_file
-    @file = SafeDownloader.download(@value['url'], @value['payload_id'])
+    @file = SafeDownloader.download(@msg_value['url'], @msg_value['payload_id'])
     @file_contents = @file.read
   end
 
   def enqueue_job
     if validate == 'success'
       job = ParseReportJob.perform_async(
-        ActiveSupport::Gzip.compress(@file_contents),
-        @value['account'],
-        @value['b64_identity']
+        ActiveSupport::Gzip.compress(@file_contents), @msg_value
       )
-      logger.info "Message enqueued: #{@value['payload_id']} as #{job}"
+      logger.info "Message enqueued: #{@msg_value['payload_id']} as #{job}"
     else
-      logger.error "Error parsing report: #{@value['payload_id']}"
+      logger.error "Error parsing report: #{@msg_value['payload_id']}"
     end
   end
 
@@ -50,11 +48,10 @@ class ComplianceReportsConsumer < ApplicationConsumer
   end
 
   def validation_message
-    XCCDFReportParser.new(@file_contents, @value['account'],
-                          @value['b64_identity'])
+    XCCDFReportParser.new(@file_contents, @msg_value)
     'success'
   rescue StandardError => e
-    logger.error "Error validating report: #{@value['payload_id']}"\
+    logger.error "Error validating report: #{@msg_value['payload_id']}"\
       " - #{e.message}"
     @file.close
     File.delete(@file.path)

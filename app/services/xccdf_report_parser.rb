@@ -14,10 +14,11 @@ class XCCDFReportParser
 
   attr_reader :report_path
 
-  def initialize(report_contents, account, b64_identity)
+  def initialize(report_contents, message)
     report_xml(report_contents)
-    @b64_identity = b64_identity
-    @account = Account.find_or_create_by(account_number: account)
+    @b64_identity = message['b64_identity']
+    @account = Account.find_or_create_by(account_number: message['account'])
+    @metadata = message['metadata']
   end
 
   def inventory_api
@@ -31,6 +32,7 @@ class XCCDFReportParser
 
   def save_host
     @host = Host.find_or_initialize_by(
+      id: @metadata&.dig('insights_id'),
       name: report_host,
       account_id: @account.id
     )
