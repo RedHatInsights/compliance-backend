@@ -8,8 +8,5 @@ class ParseReportJob
     parser = XCCDFReportParser.new(ActiveSupport::Gzip.decompress(file),
                                    account, b64_identity)
     parser.save_all
-  ensure
-    GC.start
-    MallocTrim.trim
   end
 end
