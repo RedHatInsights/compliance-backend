@@ -18,7 +18,9 @@ if $0.include?('sidekiq')
       PrometheusExporter::Client.default.stop(wait_timeout_seconds: 10)
     end
   end
+end
 
+if $0.include?('sidekiq') || $0.include?('racecar')
   Sidekiq.configure_client do |config|
     config.redis = {
       url: "redis://#{Settings.redis_url}",
