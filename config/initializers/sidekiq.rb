@@ -20,7 +20,7 @@ if $0.include?('sidekiq')
   end
 end
 
-if $0.include?('sidekiq') || $0.include?('racecar')
+if $0.include?('sidekiq') || $0.include?('racecar') || $0.include?('rails')
   Sidekiq.configure_client do |config|
     config.redis = {
       url: "redis://#{Settings.redis_url}",
