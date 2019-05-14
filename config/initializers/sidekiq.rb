@@ -1,4 +1,4 @@
-if $0.include?('sidekiq')
+if $0.include?('sidekiq') || $0.include?('racecar')
   Sidekiq.configure_server do |config|
     config.redis = {
       url: "redis://#{Settings.redis_url}",
