@@ -127,10 +127,12 @@ SystemType = GraphQL::ObjectType.define do
     type types[RuleType]
     description 'Rules failed by a system'
     resolve lambda { |host, _args, _ctx|
-      RuleResult.includes(:rule).where(
-        host: host,
-        result: %w[error fail notchecked]
-      ).map(&:rule).uniq
+      Rule.where(
+        id: RuleResult.includes(:rule).where(
+          host: host,
+          result: %w[error fail notchecked]
+        ).pluck(:rule_id).uniq
+      )
     }
   end
 
