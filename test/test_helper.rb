@@ -2,9 +2,15 @@
 
 require 'simplecov'
 SimpleCov.start 'rails' do
-  add_filter 'app/models/schema.rb' # don't test the schema! https://github.com/rmosolgo/graphql-ruby/blob/master/guides/schema/testing.md#dont-test-the-schema
-  add_filter 'app/serializers' # these just contain the description of the attributes of the API responses, no code (https://github.com/Netflix/fast_jsonapi)
-  add_filter 'lib/graphql_collector.rb' # empty class that has to be there for prometheus integration
+  # don't test the schema!
+  # https://github.com/rmosolgo/graphql-ruby/blob/master/guides/schema/
+  # testing.md#dont-test-the-schema
+  add_filter 'app/models/schema.rb'
+  # these just contain the description of the attributes of the
+  # API responses, no code (https://github.com/Netflix/fast_jsonapi)
+  add_filter 'app/serializers'
+  # empty class that has to be there for prometheus integration
+  add_filter 'lib/graphql_collector.rb'
 end
 
 if ENV['CODECOV_TOKEN']
