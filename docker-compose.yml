@@ -33,6 +33,8 @@ services:
     restart: on-failure
     volumes:
       - .:/app:z
+    ports:
+      - '9394:9394'
     entrypoint: bash -c 'bundle exec prometheus_exporter -c lib/graphql_collector.rb'
   sidekiq:
     image: compliance-backend-rails
@@ -42,6 +44,8 @@ services:
     depends_on:
       - redis
     entrypoint: bash -c 'bundle exec sidekiq'
+    environment:
+      - MALLOC_ARENA_MAX=2
   redis:
     image: redis:latest
 networks:
