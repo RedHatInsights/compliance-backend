@@ -53,9 +53,9 @@ class ComplianceReportsConsumer < ApplicationConsumer
     XCCDFReportParser.new(@file_contents, @value['account'],
                           @value['b64_identity'])
     'success'
-  rescue StandardError => error
+  rescue StandardError => e
     logger.error "Error validating report: #{@value['payload_id']}"\
-      " - #{error.message}"
+      " - #{e.message}"
     @file.close
     File.delete(@file.path)
     'failure'
