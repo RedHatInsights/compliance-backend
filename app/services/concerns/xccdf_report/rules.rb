@@ -25,6 +25,12 @@ class RuleOscapObject
   def rationale
     @rationale ||= @rule_xml.at_css('rationale').children.text.delete("\n")
   end
+
+  def references
+    @references ||= @rule_xml.css('reference').map do |node|
+      {'href' => node['href'], 'text' => node.text }
+    end
+  end
 end
 
 module XCCDFReport
@@ -33,10 +39,6 @@ module XCCDFReport
     extend ActiveSupport::Concern
 
     included do
-      def rule_ids
-        test_result_node.xpath('.//xmlns:rule-result/@idref').map(&:value)
-      end
-
       def rule_objects
         return @rule_objects if @rule_objects.present?
 

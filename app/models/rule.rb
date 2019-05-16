@@ -24,6 +24,7 @@ class Rule < ApplicationRecord
     self.rationale = oscap_rule.rationale
     self.description = oscap_rule.description
     self.severity = oscap_rule.severity
+    self.references = oscap_rule.references
     self
   end
 
