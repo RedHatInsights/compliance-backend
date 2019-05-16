@@ -8,7 +8,7 @@ module XCCDFReport
 
     included do
       def report_host
-        report_xml.search('target').text
+        @metadata&.dig('fqdn') || report_xml.search('target').text
       end
 
       def report_description

@@ -4,9 +4,9 @@
 class ParseReportJob
   include Sidekiq::Worker
 
-  def perform(file, account, b64_identity)
+  def perform(file, message)
     parser = XCCDFReportParser.new(ActiveSupport::Gzip.decompress(file),
-                                   account, b64_identity)
+                                   message)
     parser.save_all
   end
 end
