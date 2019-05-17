@@ -10,6 +10,11 @@ class Rule < ApplicationRecord
   has_many :profiles, through: :profile_rules, source: :profile
   has_many :rule_results, dependent: :delete_all
   has_many :hosts, through: :rule_results, source: :host
+  has_many :rule_references_rules
+  has_many :rule_references, through: :rule_references_rules
+  alias references rule_references
+  has_one :rule_identifier
+  alias identifier rule_identifier
 
   validates :title, presence: true
   validates :ref_id, uniqueness: true, presence: true
@@ -24,7 +29,6 @@ class Rule < ApplicationRecord
     self.rationale = oscap_rule.rationale
     self.description = oscap_rule.description
     self.severity = oscap_rule.severity
-    self.references = oscap_rule.references
     self
   end
 

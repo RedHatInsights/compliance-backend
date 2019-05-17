@@ -107,7 +107,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                      RuleResult.find(rule_results.ids.sample).host.name
         rule_names = RuleResult.where(id: rule_results.ids).map(&:rule)
                                .pluck(:ref_id)
-        assert rule_names.include?(@report_parser.rule_ids.sample)
+        assert rule_names.include?(@report_parser.rule_results.map(&:id).sample)
       end
     end
   end
@@ -129,7 +129,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     end
 
     should 'list all rules' do
-      assert_empty(@arbitrary_rules - @report_parser.rule_ids)
+      assert_empty(@arbitrary_rules - @report_parser.rule_results.map(&:id))
     end
 
     should 'link the rules with the profile' do

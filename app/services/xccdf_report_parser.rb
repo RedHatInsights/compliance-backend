@@ -59,7 +59,6 @@ class XCCDFReportParser
       rule_result_oscap = RuleResultOscapObject.new
       rule_result_oscap.id = rr['idref']
       rule_result_oscap.result = rr.at_css('result').text
-      rule_result_oscap.ident = rr.at_css('ident')&.text
       rule_result_oscap
     end
   end
@@ -67,6 +66,7 @@ class XCCDFReportParser
   def save_all
     Host.transaction do
       save_profiles
+      save_rule_references
       save_rules
       save_host
       rules_already_saved.each do |rule|

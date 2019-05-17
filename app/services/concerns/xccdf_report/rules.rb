@@ -28,8 +28,17 @@ class RuleOscapObject
 
   def references
     @references ||= @rule_xml.css('reference').map do |node|
-      {'href' => node['href'], 'text' => node.text }
+      { href: node['href'], label: node.text }
     end
+  end
+
+  def identifier
+    @identifier ||= @rule_xml.at_css('ident')&.text
+  end
+
+  def identifier_system
+    @identifier_system ||= (ident = @rule_xml.at_css('ident')) &&
+                           ident['system']
   end
 end
 
@@ -75,15 +84,40 @@ module XCCDFReport
         end
       end
 
+      def save_rule_references
+        return @rule_references if @rule_references
+
+        @rule_references = []
+        new_rules.map do |rule|
+          @rule_references << RuleReference.from_oscap_objects(rule.references)
+        end
+        RuleReference.import(@rule_references.flatten,
+                             columns: %i[href label],
+                             ignore: true)
+      end
+
       def save_rules
         new_profiles = Profile.where(ref_id: profiles.keys)
         add_profiles_to_old_rules(rules_already_saved, new_profiles)
-        Rule.import!(
-          new_rules.each_with_object([]) do |rule, new_rules|
-            new_rule = Rule.new(profiles: new_profiles).from_oscap_object(rule)
-            new_rules << new_rule
-          end, recursive: true
-        )
+        new_rule_records = new_rules
+                           .each_with_object([]).map do |oscap_rule, _new_rules|
+          rule_object = Rule.new(profiles: new_profiles).from_oscap_object(oscap_rule)
+          if oscap_rule.identifier
+            rule_object.rule_identifier = RuleIdentifier
+                                          .new(label: oscap_rule.identifier, system: oscap_rule.identifier_system)
+          end
+          rule_object
+        end
+        rule_import = Rule.import!(new_rule_records, recursive: true)
+        associate_rule_references(new_rule_records)
+        rule_import
+      end
+
+      def associate_rule_references(rules)
+        @rule_references ||= []
+        rules.zip(@rule_references).each do |rule, references|
+          rule.update(rule_references: references) if references
+        end
       end
     end
   end
