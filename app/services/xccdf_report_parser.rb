@@ -32,7 +32,6 @@ class XCCDFReportParser
 
   def save_host
     @host = Host.find_or_initialize_by(
-      id: @metadata&.dig('insights_id'),
       name: report_host,
       account_id: @account.id
     )
