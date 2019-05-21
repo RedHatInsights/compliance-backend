@@ -4,7 +4,6 @@ require 'test_helper'
 
 class HostTest < ActiveSupport::TestCase
   should validate_presence_of :name
-  should validate_uniqueness_of(:name).scoped_to(:account_id)
 
   test 'compliant returns a hash with all compliance statuses' do
     host = hosts(:one)
