@@ -16,7 +16,7 @@ class Host < ApplicationRecord
 
   has_many :profiles, through: :profile_hosts, source: :profile
 
-  validates :name, presence: true, uniqueness: { scope: :account_id }
+  validates :name, presence: true
 
   class << self
     def filter_by_compliance(_filter, operator, value)
