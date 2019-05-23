@@ -60,6 +60,6 @@ class Profile < ApplicationRecord
   def score
     return 1 if hosts.blank?
 
-    (hosts.count { |host| compliant?(host) }) / hosts.count
+    (hosts.count { |host| compliant?(host) }).to_f / hosts.count
   end
 end
