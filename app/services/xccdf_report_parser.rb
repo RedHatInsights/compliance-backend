@@ -19,6 +19,7 @@ class XCCDFReportParser
     @b64_identity = message['b64_identity']
     @account = Account.find_or_create_by(account_number: message['account'])
     @metadata = message['metadata']
+    @host_inventory_id = message['id']
   end
 
   def inventory_api
@@ -32,6 +33,7 @@ class XCCDFReportParser
 
   def save_host
     @host = Host.find_or_initialize_by(
+      id: @host_inventory_id,
       name: report_host,
       account_id: @account.id
     )
@@ -78,7 +80,7 @@ class XCCDFReportParser
     RuleResult.import!(
       rule_results_rule_ids.zip(results)
       .each_with_object([]) do |rule_result, rule_results|
-        rule_results << RuleResult.new(host: host_id, rule_id: rule_result[0],
+        rule_results << RuleResult.new(host: @host, rule_id: rule_result[0],
                                        result: rule_result[1],
                                        start_time: start_time,
                                        end_time: end_time)
@@ -96,10 +98,6 @@ class XCCDFReportParser
     @rule_results_rule_ids ||= Rule.select(:id).where(
       ref_id: rule_results.map(&:id)
     ).pluck(:id)
-  end
-
-  def host_id
-    @host_id ||= Host.select(:id).find_by(name: report_host)
   end
 
   def create_test_result(report_xml)
