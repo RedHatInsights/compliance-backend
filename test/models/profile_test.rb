@@ -42,7 +42,13 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'score with non-blank hosts' do
-    assert_equal 0, profiles(:one).score
+    assert_equal 0.0, profiles(:one).score
+  end
+
+  test 'score returns at least one decimal' do
+    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+    profiles(:one).hosts << hosts(:two)
+    assert_equal 0.5, profiles(:one).score
   end
 
   context 'threshold' do

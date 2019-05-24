@@ -14,14 +14,16 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                      .new(fake_report,
                           'account' => accounts(:test).account_number,
                           'b64_identity' => 'b64_fake_identity',
+                          'id' => @host_id,
                           'metadata' => {
                             'fqdn' => 'lenovolobato.lobatolan.home',
-                            'insights_id' => @host_id
                           })
     # A hack to skip API calls in the test env for the time being
     connection = mock('faraday_connection')
     HostInventoryAPI.any_instance.stubs(:connection).returns(connection)
-    get_body = { 'results' => [{ 'id' => @host_id, 'account' => accounts(:test) }] }
+    get_body = {
+      'results' => [{ 'id' => @host_id, 'account' => accounts(:test) }]
+    }
     connection.stubs(:get).returns(OpenStruct.new(body: get_body.to_json))
     post_body = {
       'data' => [{ 'host' => { 'name' => @report_parser.report_host } }]
@@ -60,10 +62,10 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       @report_parser = ::XCCDFReportParser
                        .new(fake_report,
                             'account' => accounts(:test).account_number,
+                            'id' => @host_id,
                             'b64_identity' => 'b64_fake_identity',
                             'metadata' => {
                               'fqdn' => 'lenovolobato.lobatolan.home',
-                              'insights_id' => @host_id
                             })
       assert_equal 1, @report_parser.profiles.count
     end
@@ -85,7 +87,8 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       HostInventoryAPI.any_instance
                       .stubs(:host_already_in_inventory)
                       .returns('id' => @host_id)
-      Host.create(id: @host_id, name: @report_parser.report_host, account: accounts(:test))
+      Host.create(id: @host_id, name: @report_parser.report_host,
+                  account: accounts(:test))
 
       assert_difference('Host.count', 0) do
         new_host = @report_parser.save_host
