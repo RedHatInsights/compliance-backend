@@ -98,10 +98,23 @@ def runStages() {
                 }
             }
 
-            stage("Run_integration_tests") {
+            stage("Run_smoke_tests") {
                 withStatusContext.custom(env.STAGE_NAME, true) {
                     withEnv(["ENV_FOR_DYNACONF=ci"]) {
-                       sh "iqe tests plugin compliance -v -s -m tier0"
+                       sh "iqe tests plugin compliance -v -s -m compliance_smoke --junitxml=junit.xml"
+                    }
+                }
+                junit "junit.xml"
+            }
+        }
+
+        stage("Tag_image") {
+            withStatusContext.custom(env.STAGE_NAME, true) {
+                openshift.withCluster("dev_cluster") {
+                    openshift.withCredentials("jenkins-sa-dev-cluster") {
+                        openshift.withProject("buildfactory") {
+                            openshift.tag("compliance-backend:latest", "compliance-backend:stable")
+                        }
                     }
                 }
             }
