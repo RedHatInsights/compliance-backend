@@ -108,12 +108,14 @@ def runStages() {
             }
         }
 
-        stage("Tag_image") {
-            withStatusContext.custom(env.STAGE_NAME, true) {
-                openshift.withCluster("dev_cluster") {
-                    openshift.withCredentials("jenkins-sa-dev-cluster") {
-                        openshift.withProject("buildfactory") {
-                            openshift.tag("compliance-backend:latest", "compliance-backend:stable")
+        if (currentBuild.currentResult == "SUCCESS") {
+            stage("Tag_image") {
+                withStatusContext.custom(env.STAGE_NAME, true) {
+                    openshift.withCluster("dev_cluster") {
+                        openshift.withCredentials("jenkins-sa-dev-cluster") {
+                            openshift.withProject("buildfactory") {
+                                openshift.tag("compliance-backend:latest", "compliance-backend:stable")
+                            }
                         }
                     }
                 }
