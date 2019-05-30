@@ -7,8 +7,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
   setup do
     @message = stub(:message)
     @consumer = ComplianceReportsConsumer.new
-    @tempfile = Tempfile.new
-    SafeDownloader.expects(:download).returns(@tempfile)
+    SafeDownloader.expects(:download).returns('report')
     ParseReportJob.clear
   end
 
@@ -66,10 +65,6 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
       '/insights-upload-quarantine/036738d6f4e541c4aa8cfc9f46f5a140"}'
     ).at_least_once
     XCCDFReportParser.expects(:new).raises(StandardError, 'something broke')
-    @tempfile.expects(:close)
-    # After calling .close, @tempfile changes its internal object id, so we
-    # need to expect any tempfile to close.
-    File.expects(:delete).with(@tempfile.path)
     # Mock the actual 'sending the validation' to Kafka
     @consumer.expects(:send_validation).with('failure').returns(true)
     @consumer.process(@message)

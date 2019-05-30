@@ -30,14 +30,13 @@ class ComplianceReportsConsumer < ApplicationConsumer
   end
 
   def download_file
-    @file = SafeDownloader.download(@msg_value['url'], message_id)
-    @file_contents = @file.read
+    @report_contents = SafeDownloader.download(@msg_value['url'])
   end
 
   def enqueue_job
     if validate == 'success'
       job = ParseReportJob.perform_async(
-        ActiveSupport::Gzip.compress(@file_contents), @msg_value
+        ActiveSupport::Gzip.compress(@report_contents), @msg_value
       )
       logger.info "Message enqueued: #{message_id} as #{job}"
     else
@@ -52,13 +51,11 @@ class ComplianceReportsConsumer < ApplicationConsumer
   end
 
   def validation_message
-    XCCDFReportParser.new(@file_contents, @msg_value)
+    XCCDFReportParser.new(@report_contents, @msg_value)
     'success'
   rescue StandardError => e
     logger.error "Error validating report: #{message_id}"\
       " - #{e.message}"
-    @file.close
-    File.delete(@file.path)
     'failure'
   end
 
