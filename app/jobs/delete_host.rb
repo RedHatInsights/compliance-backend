@@ -9,5 +9,11 @@ class DeleteHost
       RuleResult.where(host_id: message['id']).delete_all
       Host.find(message['id']).destroy
     end
+
+  rescue ActiveRecord::RecordNotFound => error
+    Sidekiq.logger.info(
+      "#{error.message} (#{error.class}) "\
+      "- this host ID was not registered in Compliance"
+    )
   end
 end
