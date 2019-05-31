@@ -11,22 +11,26 @@ class ComplianceReportsConsumer < ApplicationConsumer
     download_file
     enqueue_job
   rescue SafeDownloader::DownloadError => e
-    logger.error "Error parsing report: #{@msg_value['request_id']}"\
+    logger.error "Error parsing report: #{message_id}"\
       " - #{e.message}"
     send_validation('failure')
   end
 
   def send_validation(validation)
     produce(
-      validation_payload(@msg_value['request_id'], validation),
+      validation_payload(message_id, validation),
       topic: Settings.platform_kafka_validation_topic
     )
   end
 
   private
 
+  def message_id
+    @msg_value.fetch('request_id', @msg_value.dig('payload_id'))
+  end
+
   def download_file
-    @file = SafeDownloader.download(@msg_value['url'], @msg_value['request_id'])
+    @file = SafeDownloader.download(@msg_value['url'], message_id)
     @file_contents = @file.read
   end
 
@@ -35,9 +39,9 @@ class ComplianceReportsConsumer < ApplicationConsumer
       job = ParseReportJob.perform_async(
         ActiveSupport::Gzip.compress(@file_contents), @msg_value
       )
-      logger.info "Message enqueued: #{@msg_value['request_id']} as #{job}"
+      logger.info "Message enqueued: #{message_id} as #{job}"
     else
-      logger.error "Error parsing report: #{@msg_value['request_id']}"
+      logger.error "Error parsing report: #{message_id}"
     end
   end
 
@@ -51,7 +55,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
     XCCDFReportParser.new(@file_contents, @msg_value)
     'success'
   rescue StandardError => e
-    logger.error "Error validating report: #{@msg_value['request_id']}"\
+    logger.error "Error validating report: #{message_id}"\
       " - #{e.message}"
     @file.close
     File.delete(@file.path)
@@ -60,6 +64,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
 
   def validation_payload(request_id, result)
     {
+      'payload_id': request_id,
       'request_id': request_id,
       'service': 'compliance',
       'validation': result

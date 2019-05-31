@@ -23,6 +23,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
       @consumer.expects(:validation_message).returns('success')
       @consumer.expects(:produce).with(
         {
+          'payload_id': '036738d6f4e541c4aa8cfc9f46f5a140',
           'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
           'service': 'compliance',
           'validation': 'success'
