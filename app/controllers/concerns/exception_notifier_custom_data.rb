@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Module to add any info to ExceptionNotifier
-module ExceptionNotifier
+module ExceptionNotifierCustomData
   extend ActiveSupport::Concern
 
   included do
