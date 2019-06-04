@@ -5,7 +5,7 @@ class ApplicationController < ActionController::API
   include ActionController::Helpers
   include Pundit
   include Authentication
-  include ExceptionNotifier
+  include ExceptionNotifierCustomData
   include Metadata
   include Pagination
   include Search
