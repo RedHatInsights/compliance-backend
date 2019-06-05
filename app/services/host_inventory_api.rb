@@ -16,12 +16,7 @@ class HostInventoryAPI
 
   def host_already_in_inventory
     response = connection.get(@url, {}, 'X_RH_IDENTITY' => @b64_identity)
-    body = JSON.parse(response.body)
-
-    body['results'].find do |host|
-      (host['id'] == @host.id || host['fqdn'] == @host.name) &&
-        host['account'] == @account.account_number
-    end
+    find_results(JSON.parse(response.body))
   end
 
   def create_host_in_inventory
@@ -42,6 +37,13 @@ class HostInventoryAPI
   end
 
   private
+
+  def find_results(body)
+    body['results'].find do |host|
+      (host['id'] == @host.id || host['fqdn'] == @host.name) &&
+        host['account'] == @account.account_number
+    end
+  end
 
   def create_host_body
     [{
