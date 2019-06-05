@@ -127,7 +127,8 @@ SystemType = GraphQL::ObjectType.define do
     type types[RuleType]
     description 'Rules failed by a system'
     resolve lambda { |host, _args, _ctx|
-      Rails.cache.fetch("#{host.id}/failed_rule_objects_result", expires_in: 1.week) do
+      Rails.cache.fetch("#{host.id}/failed_rule_objects_result",
+                        expires_in: 1.week) do
         Rule.where(
           id: RuleResult.includes(:rule).where(
             host: host,
