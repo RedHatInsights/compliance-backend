@@ -6,15 +6,15 @@ require 'xccdf_report/rules'
 class RulesTest < ActiveSupport::TestCase
   include XCCDFReport::Rules
   include XCCDFReport::Profiles
-  include XCCDFReport::XMLReport
 
   def test_result
     OpenStruct.new(id: ['xccdf_org.ssgproject.content_profile_standard'])
   end
 
   setup do
-    @report_path = 'test/fixtures/files/xccdf_report.xml'
-    report_xml(File.read(@report_path))
+    @oscap_parser = OpenscapParser::Base.new(
+      file_fixture('xccdf_report.xml').read
+    )
   end
 
   test 'save all rules as new' do
@@ -24,15 +24,15 @@ class RulesTest < ActiveSupport::TestCase
   end
 
   test 'returns rules already saved in the report' do
-    rule = Rule.new.from_oscap_object(rule_objects.first)
+    rule = Rule.new.from_oscap_object(@oscap_parser.rule_objects.first)
     rule.save
     assert_includes rules_already_saved, rule
   end
 
   test 'save all rules and add profiles to pre existing one' do
-    profile = Profile.create(ref_id: profiles.keys.first,
-                             name: profiles.keys.first)
-    rule = Rule.new.from_oscap_object(rule_objects.first)
+    profile = Profile.create(ref_id: @oscap_parser.profiles.keys.first,
+                             name: @oscap_parser.profiles.keys.first)
+    rule = Rule.new.from_oscap_object(@oscap_parser.rule_objects.first)
     rule.save
     assert_difference('Rule.count', 366) do
       save_rules
