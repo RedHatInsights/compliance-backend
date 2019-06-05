@@ -16,7 +16,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                           'b64_identity' => 'b64_fake_identity',
                           'id' => @host_id,
                           'metadata' => {
-                            'fqdn' => 'lenovolobato.lobatolan.home',
+                            'fqdn' => 'lenovolobato.lobatolan.home'
                           })
     # A hack to skip API calls in the test env for the time being
     connection = mock('faraday_connection')
@@ -65,7 +65,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                             'id' => @host_id,
                             'b64_identity' => 'b64_fake_identity',
                             'metadata' => {
-                              'fqdn' => 'lenovolobato.lobatolan.home',
+                              'fqdn' => 'lenovolobato.lobatolan.home'
                             })
       assert_equal 1, @report_parser.profiles.count
     end
