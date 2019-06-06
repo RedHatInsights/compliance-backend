@@ -2,7 +2,7 @@
 
 # Mimics openscap-ruby RuleResult interface
 class RuleResultOscapObject
-  attr_accessor :id, :result
+  attr_accessor :id, :result, :ident
 end
 
 # Takes in a path to an XCCDF file, returns all kinds of properties about it
@@ -55,10 +55,10 @@ class XCCDFReportParser
   end
 
   def rule_results
-    @rule_results ||= test_result_node.search('rule-result').map do |rr|
+    @rule_results ||= test_result_node.css('rule-result').map do |rr|
       rule_result_oscap = RuleResultOscapObject.new
-      rule_result_oscap.id = rr.attributes['idref'].value
-      rule_result_oscap.result = rr.search('result').first.text
+      rule_result_oscap.id = rr['idref']
+      rule_result_oscap.result = rr.at_css('result').text
       rule_result_oscap
     end
   end
@@ -66,6 +66,7 @@ class XCCDFReportParser
   def save_all
     Host.transaction do
       save_profiles
+      save_rule_references
       save_rules
       save_host
       rules_already_saved.each do |rule|
