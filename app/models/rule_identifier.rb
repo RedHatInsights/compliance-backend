@@ -6,4 +6,8 @@ class RuleIdentifier < ApplicationRecord
 
   validates :label, presence: true
   validates :system, presence: true
+
+  def self.from_oscap_rule(oscap_rule)
+    new(oscap_rule.identifier) if oscap_rule.identifier.dig(:label)
+  end
 end
