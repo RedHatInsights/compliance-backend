@@ -69,10 +69,7 @@ class XCCDFReportParser
       save_rule_references
       save_rules
       save_host
-      rules_already_saved.each do |rule|
-        Rails.cache.delete("#{rule.id}/#{@host.id}/compliant")
-      end
-      Rails.cache.delete("#{@host.id}/failed_rule_objects_result")
+      invalidate_cache
       save_rule_results
     end
   end
@@ -91,6 +88,13 @@ class XCCDFReportParser
   end
 
   private
+
+  def invalidate_cache
+    rules_already_saved.each do |rule|
+      Rails.cache.delete("#{rule.id}/#{@host.id}/compliant")
+    end
+    Rails.cache.delete("#{@host.id}/failed_rule_objects_result")
+  end
 
   def test_result_node
     @test_result_node ||= @report_xml.at_css('TestResult')

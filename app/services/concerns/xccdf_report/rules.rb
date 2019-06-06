@@ -33,12 +33,10 @@ class RuleOscapObject
   end
 
   def identifier
-    @identifier ||= @rule_xml.at_css('ident')&.text
-  end
-
-  def identifier_system
-    @identifier_system ||= (ident = @rule_xml.at_css('ident')) &&
-                           ident['system']
+    @identifier ||= {
+      label: @rule_xml.at_css('ident')&.text,
+      system: (ident = @rule_xml.at_css('ident')) && ident['system']
+    }
   end
 end
 
@@ -97,17 +95,7 @@ module XCCDFReport
       end
 
       def save_rules
-        new_profiles = Profile.where(ref_id: profiles.keys)
         add_profiles_to_old_rules(rules_already_saved, new_profiles)
-        new_rule_records = new_rules
-                           .each_with_object([]).map do |oscap_rule, _new_rules|
-          rule_object = Rule.new(profiles: new_profiles).from_oscap_object(oscap_rule)
-          if oscap_rule.identifier
-            rule_object.rule_identifier = RuleIdentifier
-                                          .new(label: oscap_rule.identifier, system: oscap_rule.identifier_system)
-          end
-          rule_object
-        end
         rule_import = Rule.import!(new_rule_records, recursive: true)
         associate_rule_references(new_rule_records)
         rule_import
@@ -117,6 +105,23 @@ module XCCDFReport
         @rule_references ||= []
         rules.zip(@rule_references).each do |rule, references|
           rule.update(rule_references: references) if references
+        end
+      end
+
+      private
+
+      def new_profiles
+        @new_profiles ||= Profile.where(ref_id: profiles.keys)
+      end
+
+      def new_rule_records
+        @new_rule_records ||= new_rules.each_with_object([])
+                                       .map do |oscap_rule, _new_rules|
+          rule_object = Rule.new(profiles: new_profiles)
+                            .from_oscap_object(oscap_rule)
+          rule_object.rule_identifier = RuleIdentifier
+                                        .from_oscap_rule(oscap_rule)
+          rule_object
         end
       end
     end
