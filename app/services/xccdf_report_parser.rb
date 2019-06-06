@@ -71,7 +71,7 @@ class XCCDFReportParser
       rules_already_saved.each do |rule|
         Rails.cache.delete("#{rule.id}/#{@host.id}/compliant")
       end
-      Rails.cache.delete("#{host.id}/failed_rule_objects_result")
+      Rails.cache.delete("#{@host.id}/failed_rule_objects_result")
       save_rule_results
     end
   end
