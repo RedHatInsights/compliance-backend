@@ -7,7 +7,7 @@ class DeleteHost
   def perform(message)
     Host.transaction do
       RuleResult.where(host_id: message['id']).delete_all
-      Host.find(message['id']).destroy
+      Host.find_by(id: message['id'])&.destroy
     end
   rescue ActiveRecord::RecordNotFound => e
     Sidekiq.logger.info(
