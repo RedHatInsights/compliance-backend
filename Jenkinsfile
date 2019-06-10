@@ -14,36 +14,27 @@ node {
 
 def runStages() {
 
-    def label = "test-${UUID.randomUUID().toString()}"
-
-    podTemplate(
-        cloud: "cmqe",
-        name: "compliance-backend-test",
-        label: label,
-        inheritFrom: "compliance-backend-test",
-        serviceAccount: pipelineVars.jenkinsSvcAccount
+    openShift.withNode(
+        cloud: "upshift",
+        namespace: "insights-qe-ci",
+        yaml: "openshift/Jenkins/slave_pod_template.yaml",
+        image: "jenkins-slave-base-centos7-ruby25-openscap:latest",
+        limitMemory: "2Gi"
     ) {
-        node(label) {
+        checkout scm
 
-            checkout scm
+        stageWithContext("Bundle_install") {
+            sh "bundle install"
+        }
 
-            stage("Bundle_install") {
-                runBundleInstall()
-            }
+        stageWithContext("Prepare_db") {
+            sh "bundle exec rake db:migrate --trace"
+            sh "bundle exec rake db:test:prepare"
+        }
 
-            stage("Prepare_db") {
-                withStatusContext.custom(env.STAGE_NAME, true) {
-                    sh "bundle exec rake db:migrate --trace"
-                    sh "bundle exec rake db:test:prepare"
-                }
-            }
-
-            stage("Unit_tests") {
-                withCredentials([string(credentialsId: "codecov_token", variable: "CODECOV_TOKEN")]) {
-                    withStatusContext.custom(env.STAGE_NAME, true) {
-                        sh "bundle exec rake test:validate"
-                    }
-                }
+        stageWithContext("Unit_tests") {
+            withCredentials([string(credentialsId: "codecov_token", variable: "CODECOV_TOKEN")]) {
+                sh "bundle exec rake test:validate"
             }
         }
     }
@@ -56,66 +47,59 @@ def runStages() {
 
         if ("Gemfile.lock" in changedFiles || "Gemfile" in changedFiles || "openshift/Jenkins/Dockerfile" in changedFiles) {
             // If Gemfiles or Jenknis slave's Dockerfile changed we need to rebuild the jenkins slave image
-            stage("Rebuild_jenkins_slave") {
-                openshift.withCluster("cmqe") {
-                    withStatusContext.custom(env.STAGE_NAME, true) {
-                        openshift.startBuild("jenkins-slave-base-centos7-ruby25-openscap")
-                    }
+            stageWithContext("Rebuild_jenkins_slave") {
+                openshift.withCluster("upshift") {
+                    openshift.startBuild("jenkins-slave-base-centos7-ruby25-openscap")
                 }
             }
         }
 
-        stage("Wait_until_deployed") {
-            withStatusContext.custom(env.STAGE_NAME, true) {
-                waitForDeployment(
-                    cluster: "dev_cluster",
-                    credentials: "compliance-token",
-                    project: "compliance-ci",
-                    label: "app",
-                    value: "compliance-backend",
-                    gitCommit: scmVars.GIT_COMMIT,
-                    minutes: 20
-                )
-            }
+        stageWithContext("Wait_until_deployed") {
+            waitForDeployment(
+                cluster: "dev_cluster",
+                credentials: "compliance-token",
+                project: "compliance-ci",
+                label: "app",
+                value: "compliance-backend",
+                gitCommit: scmVars.GIT_COMMIT,
+                minutes: 20
+            )
         }
 
-        openShift.withNode(cloud: "cmqe", image: pipelineVars.jenkinsSlaveIqeImage, workingDir: "/tmp") {
-            stage("Install_integration_tests") {
-                withStatusContext.custom(env.STAGE_NAME, true) {
-                    sh "iqe plugin install compliance"
-                }
+        openShift.withNode(
+            cloud: "upshift",
+            image: pipelineVars.jenkinsSlaveIqeImage,
+            workingDir: "/tmp",
+            namespace: "insights-qe-ci",
+        ) {
+            stageWithContext("Install_integration_tests") {
+                sh "iqe plugin install compliance"
             }
 
-            stage("Inject_credentials_and_settings") {
+            stageWithContext("Inject_credentials_and_settings") {
                 withCredentials([
                     file(credentialsId: "compliance-settings-credentials-yaml", variable: "creds"),
                     file(credentialsId: "compliance-settings-local-yaml", variable: "settings")]
                 ) {
-                    withStatusContext.custom(env.STAGE_NAME, true) {
-                        sh "cp \$creds \$IQE_VENV/lib/python3.6/site-packages/iqe_compliance/conf"
-                        sh "cp \$settings \$IQE_VENV/lib/python3.6/site-packages/iqe_compliance/conf"
-                    }
+                    sh "cp \$creds \$IQE_VENV/lib/python3.6/site-packages/iqe_compliance/conf"
+                    sh "cp \$settings \$IQE_VENV/lib/python3.6/site-packages/iqe_compliance/conf"
                 }
             }
 
-            stage("Run_smoke_tests") {
-                withStatusContext.custom(env.STAGE_NAME, true) {
-                    withEnv(["ENV_FOR_DYNACONF=ci"]) {
-                       sh "iqe tests plugin compliance -v -s -m compliance_smoke --junitxml=junit.xml"
-                    }
+            stageWithContext("Run_smoke_tests") {
+                withEnv(["ENV_FOR_DYNACONF=ci"]) {
+                   sh "iqe tests plugin compliance -v -s -m compliance_smoke --junitxml=junit.xml"
                 }
                 junit "junit.xml"
             }
         }
 
         if (currentBuild.currentResult == "SUCCESS") {
-            stage("Tag_image") {
-                withStatusContext.custom(env.STAGE_NAME, true) {
-                    openshift.withCluster("dev_cluster") {
-                        openshift.withCredentials("jenkins-sa-dev-cluster") {
-                            openshift.withProject("buildfactory") {
-                                openshift.tag("compliance-backend:latest", "compliance-backend:stable")
-                            }
+            stageWithContext("Tag_image") {
+                openshift.withCluster("dev_cluster") {
+                    openshift.withCredentials("jenkins-sa-dev-cluster") {
+                        openshift.withProject("buildfactory") {
+                            openshift.tag("compliance-backend:latest", "compliance-backend:stable")
                         }
                     }
                 }

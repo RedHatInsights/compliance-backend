@@ -14,7 +14,7 @@ spec:
       value: db_admin_password
     - name: POSTGRESQL_DATABASE
       value: compliance
-    image: centos/postgresql-10-centos7:latest
+    image: registry.access.redhat.com/rhscl/postgresql-10-rhel7
     imagePullPolicy: IfNotPresent
     livenessProbe:
       exec:
@@ -59,17 +59,16 @@ spec:
       value: secret_key_base
     - name: RAILS_ENV
       value: test
-    image: docker-registry.default.svc:5000/jenkins/jenkins-slave-base-centos7-ruby25-openscap:latest
-    imagePullPolicy: IfNotPresent
+    image: jenkins-slave-base-centos7-ruby25-openscap:latest
     name: jnlp
     args:
       - "$(JENKINS_SECRET)"
       - "$(JENKINS_NAME)"
     resources:
       limits:
-        cpu: 300m
+        cpu: 1
         memory: 1Gi
       requests:
-        cpu: 200m
+        cpu: 500m
         memory: 512Mi
   dnsPolicy: ClusterFirst
