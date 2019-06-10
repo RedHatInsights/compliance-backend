@@ -19,15 +19,24 @@ services:
     depends_on:
       - db
       - prometheus
-  racecar:
+  reports-consumer:
     image: compliance-backend-rails
     restart: on-failure
-    entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar -l log/racecar.log ComplianceReportsConsumer'
+    entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar -l log/consumer.log ComplianceReportsConsumer'
     volumes:
       - .:/app:z
     depends_on:
       - db
       - prometheus
+  # inventory-consumer:
+  #   image: compliance-backend-rails
+  #   restart: on-failure
+  #   entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar -l log/inventory-consumer.log InventoryEventsConsumer'
+  #   volumes:
+  #     - .:/app:z
+  #   depends_on:
+  #     - db
+  #     - prometheus
   prometheus:
     image: compliance-backend-rails
     restart: on-failure
