@@ -3,11 +3,7 @@
 # API for Profiles
 class ProfilesController < ApplicationController
   def index
-    profiles = scope_search.sort_by(&:score)
-    render json: ProfileSerializer.new(
-      profiles,
-      metadata(total: profiles.count)
-    )
+    render json: ProfileSerializer.new(scope_search.sort_by(&:score), metadata)
   end
 
   def show

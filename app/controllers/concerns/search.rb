@@ -6,11 +6,9 @@ module Search
 
   included do
     def scope_search
-      return policy_scope(resource) unless params[:search]
-
-      policy_scope(resource).search_for(params[:search])
-                            .paginate(page: pagination_offset,
-                                      per_page: pagination_limit)
+      result = policy_scope(resource)
+      result = result.search_for(params[:search]) if params[:search].present?
+      result.paginate(page: pagination_offset, per_page: pagination_limit)
     end
   end
 end

@@ -13,7 +13,8 @@ class RuleResultPolicy < ApplicationPolicy
   # Only show RuleResults belonging to hosts visible by the current user
   class Scope < ::ApplicationPolicy::Scope
     def resolve
-      scope.select { |rule_result| Pundit.policy(user, rule_result.host) }
+      available_hosts = HostPolicy::Scope.new(user, Host).resolve.pluck(:id)
+      scope.where(host_id: available_hosts)
     end
   end
 end

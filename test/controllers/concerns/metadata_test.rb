@@ -88,5 +88,12 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_match(/limit=1/, json_body['links']['last'])
       assert_match(/offset=#{Profile.count}/, json_body['links']['last'])
     end
+
+    should 'return passed limit and offset' do
+      get profiles_url, params: { limit: 1, offset: 2 }
+      assert_response :success
+      assert_equal(1, json_body['meta']['limit'])
+      assert_equal(2, json_body['meta']['offset'])
+    end
   end
 end

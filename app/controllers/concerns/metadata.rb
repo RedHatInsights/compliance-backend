@@ -12,9 +12,11 @@ module Metadata
       response.headers['Content-Type'] = 'application/vnd.api+json'
     end
 
-    def metadata(opts)
+    def metadata(opts = {})
+      opts[:total] ||= policy_scope(resource).count
       options = {}
-      options[:meta] = { total: opts[:total], search: params[:search] }
+      options[:meta] = { total: opts[:total], search: params[:search],
+                         limit: pagination_limit, offset: pagination_offset }
       options[:links] = links(opts[:total])
       options
     end
