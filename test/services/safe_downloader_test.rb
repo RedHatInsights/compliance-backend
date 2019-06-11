@@ -8,10 +8,17 @@ class SafeDownloaderTest < ActiveSupport::TestCase
   end
 
   test 'download success' do
-    URI::HTTP.any_instance.expects(:open)
+    URI::HTTP.any_instance.expects(:open).returns(StringIO.new('a'))
     IO.expects(:read)
 
     SafeDownloader.download(@url)
+  end
+
+  test 'download with empty file fails' do
+    URI::HTTP.any_instance.expects(:open).returns(StringIO.new)
+    assert_raises(SafeDownloader::DownloadError) do
+      SafeDownloader.download(@url)
+    end
   end
 
   test 'download with url parse failure' do

@@ -7,18 +7,27 @@ require 'net/http'
 # protection against the infamous open('| ls')
 class SafeDownloader
   DownloadError = Class.new(StandardError)
+  # Exception class to handle empty reports
+  class EmptyReportError < StandardError
+    def initialize(message = 'report is empty')
+      super(message)
+    end
+  end
 
   DOWNLOAD_ERRORS = [
     SocketError,
     OpenURI::HTTPError,
     RuntimeError,
     URI::InvalidURIError,
-    DownloadError
+    DownloadError,
+    EmptyReportError
   ].freeze
 
   class << self
     def download(url, max_size: nil)
       downloaded_file = open_url(encode_url(url), create_options(max_size))
+      raise EmptyReportError if downloaded_file.size.zero?
+
       IO.read(downloaded_file)
     rescue *DOWNLOAD_ERRORS => e
       raise DownloadError if e.instance_of?(RuntimeError) &&
