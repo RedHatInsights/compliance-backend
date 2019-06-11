@@ -3,9 +3,7 @@
 # API for RuleResults
 class RuleResultsController < ApplicationController
   def index
-    render json: RuleResultSerializer.new(
-      scope_search, metadata(total: scope_search.count)
-    )
+    render json: RuleResultSerializer.new(scope_search, metadata)
   end
 
   private
