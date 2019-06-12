@@ -22,6 +22,13 @@ RuleType = GraphQL::ObjectType.define do
   end
 end
 
+BusinessObjectiveType = GraphQL::ObjectType.define do
+  name 'BusinessObjective'
+  description 'A Business Objective created in Insights Compliance'
+
+  field :title, !types.String
+end
+
 ProfileType = GraphQL::ObjectType.define do
   name 'Profile'
   description 'A Profile registered in Insights Compliance'
@@ -33,6 +40,7 @@ ProfileType = GraphQL::ObjectType.define do
   field :compliance_threshold, !types.Float
   field :rules, -> { types[RuleType] }
   field :hosts, -> { types[SystemType] }
+  field :business_objective, BusinessObjectiveType
   field :total_host_count do
     type !types.Int
     resolve ->(obj, _args, _ctx) { obj.hosts.count }

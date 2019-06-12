@@ -14,6 +14,7 @@ class Profile < ApplicationRecord
   has_many :imagestreams, through: :profile_imagestreams, source: :imagestream
   belongs_to :policy, optional: true
   belongs_to :account, optional: true
+  belongs_to :business_objective, optional: true
 
   validates :ref_id, uniqueness: { scope: :account_id }, presence: true
   validates :name, presence: true
