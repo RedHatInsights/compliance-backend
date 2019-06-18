@@ -1,64 +1,17 @@
 # frozen_string_literal: true
 
-# Mimics openscap-ruby Rule interface
-class RuleOscapObject
-  def initialize(rule_xml: nil)
-    @rule_xml = rule_xml
-  end
-
-  def id
-    @id ||= @rule_xml['id']
-  end
-
-  def severity
-    @severity ||= @rule_xml['severity']
-  end
-
-  def title
-    @title ||= @rule_xml.at_css('title').children.first.text
-  end
-
-  def description
-    @description ||= @rule_xml.at_css('description').text.delete("\n")
-  end
-
-  def rationale
-    @rationale ||= @rule_xml.at_css('rationale').children.text.delete("\n")
-  end
-
-  def references
-    @references ||= @rule_xml.css('reference').map do |node|
-      { href: node['href'], label: node.text }
-    end
-  end
-
-  def identifier
-    @identifier ||= {
-      label: @rule_xml.at_css('ident')&.text,
-      system: (ident = @rule_xml.at_css('ident')) && ident['system']
-    }
-  end
-end
-
 module XCCDFReport
   # Methods related to parsing rules
   module Rules
     extend ActiveSupport::Concern
 
     included do
-      def rule_objects
-        return @rule_objects if @rule_objects.present?
-
-        @rule_objects ||= @report_xml.search('Rule').map do |rule|
-          RuleOscapObject.new(rule_xml: rule)
-        end
-      end
-
       def rules_already_saved
         return @rules_already_saved if @rules_already_saved.present?
 
+        rule_ref_ids = @oscap_parser.rule_objects.map(&:id)
         @rules_already_saved = Rule.select(:id, :ref_id)
-                                   .where(ref_id: rule_objects.map(&:id))
+                                   .where(ref_id: rule_ref_ids)
                                    .includes(:profiles)
       end
 
@@ -77,7 +30,7 @@ module XCCDFReport
 
       def new_rules
         ref_ids = rules_already_saved.pluck(:ref_id)
-        rule_objects.reject do |rule|
+        @oscap_parser.rule_objects.reject do |rule|
           ref_ids.include? rule.id
         end
       end
@@ -95,6 +48,7 @@ module XCCDFReport
       end
 
       def save_rules
+        new_profiles = Profile.where(ref_id: @oscap_parser.profiles.keys)
         add_profiles_to_old_rules(rules_already_saved, new_profiles)
         rule_import = Rule.import!(new_rule_records, recursive: true)
         associate_rule_references(new_rule_records)
@@ -104,14 +58,14 @@ module XCCDFReport
       def associate_rule_references(rules)
         @rule_references ||= []
         rules.zip(@rule_references).each do |rule, references|
-          rule.update(rule_references: references) if references
+          rule.update(rule_references: references) if references.present?
         end
       end
 
       private
 
       def new_profiles
-        @new_profiles ||= Profile.where(ref_id: profiles.keys)
+        @new_profiles ||= Profile.where(ref_id: @oscap_parser.profiles.keys)
       end
 
       def new_rule_records

@@ -2,7 +2,6 @@
 
 require 'test_helper'
 require 'xccdf_report/profiles'
-require 'xccdf_report/xml_report'
 
 class ProfilesTest < ActiveSupport::TestCase
   def test_result
@@ -14,21 +13,13 @@ class ProfilesTest < ActiveSupport::TestCase
   end
 
   include XCCDFReport::Profiles
-  include XCCDFReport::XMLReport
 
   setup do
     @account = OpenStruct.new(id: 1)
     @host = OpenStruct.new(id: 2)
-    @report_path = 'test/fixtures/files/xccdf_report.xml'
-    report_xml(File.read(@report_path))
-  end
-
-  test 'profiles' do
-    expected = {
-      'xccdf_org.ssgproject.content_profile_standard' => \
-      'Standard System Security Profile for Fedora'
-    }
-    assert_equal expected, profiles
+    @oscap_parser = OpenscapParser::Base.new(
+      file_fixture('xccdf_report.xml').read
+    )
   end
 
   test 'save_profiles' do

@@ -8,11 +8,7 @@ class RuleTest < ActiveSupport::TestCase
 
   setup do
     fake_report = file_fixture('xccdf_report.xml').read
-    @report_parser = ::XCCDFReportParser
-                     .new(fake_report,
-                          'account' => users(:test),
-                          'b64_identity' => 'foo')
-    @rule_objects = @report_parser.rule_objects
+    @rule_objects = OpenscapParser::Base.new(fake_report).rule_objects
   end
 
   test 'creates rules from ruby-openscap Rule object' do

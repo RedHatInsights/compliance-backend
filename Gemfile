@@ -69,6 +69,8 @@ gem 'oj'
 gem 'newrelic_rpm'
 gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
+gem 'openscap_parser'
+
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]

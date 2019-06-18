@@ -32,10 +32,6 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
   end
 
   context 'profile' do
-    should 'be able to parse it' do
-      assert_equal(@profile, @report_parser.profiles)
-    end
-
     should 'save a new profile if it did not exist before' do
       assert_difference('Profile.count', 1) do
         @report_parser.save_profiles
@@ -67,7 +63,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                             'metadata' => {
                               'fqdn' => 'lenovolobato.lobatolan.home'
                             })
-      assert_equal 1, @report_parser.profiles.count
+      assert_equal 1, @report_parser.oscap_parser.profiles.count
     end
   end
 
@@ -107,13 +103,9 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                      RuleResult.find(rule_results.ids.sample).host.name
         rule_names = RuleResult.where(id: rule_results.ids).map(&:rule)
                                .pluck(:ref_id)
-        assert rule_names.include?(@report_parser.rule_results.map(&:id).sample)
+        assert rule_names.include?(@report_parser.oscap_parser.rule_ids.sample)
       end
     end
-  end
-
-  test 'score can be parsed' do
-    assert_equal(16.220238, @report_parser.score)
   end
 
   context 'rules' do
@@ -126,10 +118,6 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
         'xccdf_org.ssgproject.content_rule_selinux_all_devicefiles_labeled'
         # rubocop:enable Metrics/LineLength
       ]
-    end
-
-    should 'list all rules' do
-      assert_empty(@arbitrary_rules - @report_parser.rule_results.map(&:id))
     end
 
     should 'link the rules with the profile' do
@@ -154,9 +142,10 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     should 'not try to append already assigned profiles to a rule' do
       (rule = Rule.new(ref_id: @arbitrary_rules[0])).save(validate: false)
       rule.profiles << profiles(:one)
+      Profile.create(ref_id: @profile.keys[0], name: @profile.values[0])
       assert_nothing_raised do
         @report_parser.add_profiles_to_old_rules(
-          Rule.where(ref_id: rule.ref_id), profiles
+          Rule.where(ref_id: rule.ref_id), Profile.where(ref_id: @profile.keys)
         )
       end
       assert_equal 2, rule.profiles.count
