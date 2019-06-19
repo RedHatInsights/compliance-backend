@@ -4,7 +4,7 @@ if Rails.env != "test"
   require 'prometheus_exporter/middleware'
   require 'prometheus_exporter/instrumentation'
   client = PrometheusExporter::Client.new(
-    host: Settings.prometheus_exporter_host,
+    host: ENV['PROMETHEUS_EXPORTER_HOST'] || Settings.prometheus_exporter_host,
     port: Settings.prometheus_exporter_port
     # Add custom_labels for app_name here (consumer and webserver)
   )

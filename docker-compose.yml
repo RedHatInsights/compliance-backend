@@ -3,8 +3,8 @@ services:
   db:
     image: postgres
     restart: on-failure
-    volumes:
-      - /tmp/insights-compliance-db:/var/lib/postgresql/data:z
+    ports:
+      - '5432:5432'
   rails:
     build: .
     image: compliance-backend-rails
@@ -12,22 +12,36 @@ services:
     stdin_open: true
     restart: on-failure
     entrypoint: ./entrypoint.sh
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_SERVICE_NAME=postgres
+      - POSTGRES_SERVICE_HOST=db
+      - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_USER=postgres
+      - REDIS_URL=redis://redis:6379
+      - PROMETHEUS_EXPORTER_HOST=prometheus
     ports:
       - '3000:3000'
     volumes:
       - .:/app:z
     depends_on:
+      - redis
       - db
       - prometheus
+    command: bundle exec rails s -b 0.0.0.0
   reports-consumer:
     image: compliance-backend-rails
     restart: on-failure
     entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar -l log/consumer.log ComplianceReportsConsumer'
     volumes:
       - .:/app:z
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PROMETHEUS_EXPORTER_HOST=prometheus
     depends_on:
       - db
       - prometheus
+      - kafka
   # inventory-consumer:
   #   image: compliance-backend-rails
   #   restart: on-failure
@@ -52,11 +66,33 @@ services:
       - .:/app:z
     depends_on:
       - redis
-    entrypoint: bash -c 'bundle exec sidekiq'
+    command: bundle exec sidekiq
     environment:
       - MALLOC_ARENA_MAX=2
+      - REDIS_URL=redis://redis:6379
+      - PROMETHEUS_EXPORTER_HOST=prometheus
   redis:
     image: redis:latest
+    ports:
+      - '6379:6379'
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=32181
+      - ZOOKEEPER_SERVER_ID=1
+  kafka:
+    image: confluentinc/cp-kafka
+    ports:
+      - 29092:29092
+    expose:
+      - 29092
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092
+      - KAFKA_BROKER_ID=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:32181
 networks:
   default:
     external:

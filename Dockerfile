@@ -1,11 +1,11 @@
-from ruby:2.5
+FROM ruby:2.5
 
-workdir /app
+WORKDIR /app
 
-run apt-get update && apt-get install -y qt5-default libqt5webkit5-dev \
+RUN apt-get update && apt-get install -y qt5-default libqt5webkit5-dev \
       gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x libopenscap-dev \
-      postgresql-client
+      postgresql-client netcat
 
-add Gemfile Gemfile.lock ./
+COPY Gemfile* ./
 
-run bundle -j4
+RUN bundle -j4

@@ -1,7 +1,7 @@
 if $0.include?('sidekiq')
   Sidekiq.configure_server do |config|
     config.redis = {
-      url: "redis://#{Settings.redis_url}",
+      url: ENV['REDIS_URL'] || "redis://#{Settings.redis_url}",
       network_timeout: 5 # Default is 1 second, let's be more lenient
     }
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
@@ -23,7 +23,7 @@ end
 if $0.include?('sidekiq') || $0.include?('racecar')
   Sidekiq.configure_client do |config|
     config.redis = {
-      url: "redis://#{Settings.redis_url}",
+      url: ENV['REDIS_URL'] || "redis://#{Settings.redis_url}",
       network_timeout: 5
     }
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)

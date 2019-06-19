@@ -4,6 +4,11 @@ set -e
 # Remove a potentially pre-existing server.pid for Rails.
 rm -f /app/tmp/pids/server.pid
 
-bundle exec rake db:migrate
+while ! nc -z redis 6379;
+do
+  echo "Waiting for redis";
+  sleep 1;
+done;
+echo Ready!;
 
-bundle exec rails s -b 0.0.0.0
+exec "$@"
