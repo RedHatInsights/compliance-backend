@@ -89,6 +89,24 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_match(/offset=#{Profile.count}/, json_body['links']['last'])
     end
 
+    should 'return correct pagination links with a partially filled last page' do
+      3.times do
+        Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
+                       account: accounts(:test))
+      end
+      get profiles_url, params: { limit: 2, offset: 1 }
+      assert_response :success
+      assert_match(/limit=2/, json_body['links']['first'])
+      assert_match(/offset=1/, json_body['links']['first'])
+      assert_match(/limit=2/, json_body['links']['previous'])
+      assert_match(/offset=1/, json_body['links']['previous'])
+      assert_match(/limit=2/, json_body['links']['next'])
+      assert_match(/offset=2/, json_body['links']['next'])
+      assert_match(/limit=2/, json_body['links']['last'])
+      assert_match(/offset=#{(Profile.count / 2.0).ceil}/,
+                   json_body['links']['last'])
+    end
+
     should 'return passed limit and offset' do
       get profiles_url, params: { limit: 1, offset: 2 }
       assert_response :success

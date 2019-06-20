@@ -24,7 +24,7 @@ module Metadata
     def links(count)
       base_url = "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}"\
         "/#{controller_name}"
-      last_offset = count / pagination_limit
+      last_offset = (count / pagination_limit.to_f).ceil
       {
         first: "#{base_url}?limit=#{pagination_limit}&offset=1",
         last: "#{base_url}?limit=#{pagination_limit}&offset=#{last_offset}",
