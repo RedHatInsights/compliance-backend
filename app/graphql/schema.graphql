@@ -39,7 +39,17 @@ type Profile {
   ): String!
   name: String!
   refId: String!
-  rules: [Rule!]
+  rules(
+    """
+    Rule identifier to filter by
+    """
+    identifier: String
+
+    """
+    Rule references to filter by
+    """
+    references: [String!]
+  ): [Rule!]
   rulesFailed(
     """
     Rules failed for a system and a profile
@@ -123,11 +133,33 @@ type Rule {
   ): Boolean!
   description: String
   id: ID!
+  identifier: RuleIdentifier
   profiles: [Profile!]
   rationale: String
   refId: String!
+  references: [RuleReference!]
   severity: String!
   title: String!
+}
+
+"""
+A Rule Identifier
+"""
+type RuleIdentifier {
+  id: ID!
+  label: String!
+  rule: Rule
+  system: String!
+}
+
+"""
+An OpenSCAP Rule Reference
+"""
+type RuleReference {
+  href: String!
+  id: ID!
+  label: String!
+  rules: [Rule!]
 }
 
 """
