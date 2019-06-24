@@ -7,9 +7,20 @@ class SafeDownloaderTest < ActiveSupport::TestCase
     @url = 'http://example.com'
   end
 
-  test 'download success' do
-    URI::HTTP.any_instance.expects(:open).returns(StringIO.new('a'))
-    IO.expects(:read)
+  test 'download success with small file' do
+    strio = StringIO.new('a')
+    URI::HTTP.any_instance.expects(:open).returns(strio)
+    IO.expects(:read).never
+    strio.expects(:string)
+
+    SafeDownloader.download(@url)
+  end
+
+  test 'download success with large file' do
+    tempfile = Tempfile.new
+    tempfile.write('foo')
+    URI::HTTP.any_instance.expects(:open).returns(tempfile)
+    IO.expects(:read).with(tempfile)
 
     SafeDownloader.download(@url)
   end
