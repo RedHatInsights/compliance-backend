@@ -28,7 +28,7 @@ class SafeDownloader
       downloaded_file = open_url(encode_url(url), create_options(max_size))
       raise EmptyReportError if downloaded_file.size.zero?
 
-      IO.read(downloaded_file)
+      report_contents(downloaded_file)
     rescue *DOWNLOAD_ERRORS => e
       raise DownloadError if e.instance_of?(RuntimeError) &&
                              e.message !~ /redirection/
@@ -37,6 +37,15 @@ class SafeDownloader
     end
 
     private
+
+    def report_contents(downloaded_file)
+      case downloaded_file
+      when StringIO
+        downloaded_file.string
+      else
+        IO.read(downloaded_file)
+      end
+    end
 
     def open_url(url, options)
       url.open(options)
