@@ -89,7 +89,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_match(/offset=#{Profile.count}/, json_body['links']['last'])
     end
 
-    should 'return correct pagination links with a partially filled last page' do
+    should 'return correct pagination links with partially filled last page' do
       3.times do
         Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
                        account: accounts(:test))
