@@ -44,12 +44,12 @@ module Types
       object.profiles.map(&:name).join(', ')
     end
 
-    def rules_passed(profile_id:)
-      object.rules_passed(::Profile.find_by(id: profile_id))
+    def rules_passed(args = {})
+      object.rules_passed(::Profile.find_by(id: args[:profile_id]))
     end
 
-    def rules_failed(profile_id:)
-      object.rules_failed(::Profile.find_by(id: profile_id))
+    def rules_failed(args = {})
+      object.rules_failed(::Profile.find_by(id: args[:profile_id]))
     end
 
     def rule_objects_failed
