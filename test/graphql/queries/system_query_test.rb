@@ -55,6 +55,8 @@ class SystemQueryTest < ActiveSupport::TestCase
             name
             profileNames
             compliant
+            rulesPassed
+            rulesFailed
             lastScanned
         }
     }
