@@ -17,7 +17,10 @@ module Mutations
           ::Profile.find(args[:id]),
           :edit?
         )
-        profile.update(args.to_h)
+        profile.update(
+          compliance_threshold: args[:compliance_threshold],
+          business_objective_id: args[:business_objective_id]
+        )
         { profile: profile }
       end
     end

@@ -8,5 +8,7 @@ module Types
     description 'The mutation root of this schema'
 
     field :updateProfile, mutation: Mutations::Profile::Edit
+    field :createBusinessObjective,
+          mutation: Mutations::BusinessObjective::Create
   end
 end
