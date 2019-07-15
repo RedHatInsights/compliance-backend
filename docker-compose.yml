@@ -57,6 +57,11 @@ services:
       - MALLOC_ARENA_MAX=2
   redis:
     image: redis:latest
+  util:
+    image: compliance-backend-rails
+    volumes:
+      - .:/app:z
+    entrypoint: bash -c 'sleep infinity'
 networks:
   default:
     external:
