@@ -69,4 +69,13 @@ class ProfileTest < ActiveSupport::TestCase
       assert_not profiles(:one).compliant?(hosts(:one))
     end
   end
+
+  test 'orphaned business objectives' do
+    bo = BusinessObjective.new(title: 'abcd')
+    bo.save
+    profiles(:one).update(business_objective: bo)
+    assert profiles(:one).business_objective, bo
+    profiles(:one).update(business_objective: nil)
+    assert_empty BusinessObjective.where(title: 'abcd')
+  end
 end

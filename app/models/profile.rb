@@ -20,6 +20,18 @@ class Profile < ApplicationRecord
   validates :name, presence: true
   validates :compliance_threshold, numericality: true
 
+  after_update :destroy_orphaned_business_objective
+
+  def destroy_orphaned_business_objective
+    return unless previous_changes.include?(:business_objective_id) &&
+      previous_changes[:business_objective_id].first.present?
+
+    business_objective = BusinessObjective.find(
+      previous_changes[:business_objective_id].first
+    )
+    business_objective.destroy if business_objective.profiles.empty?
+  end
+
   def compliance_score(host)
     (results(host).count { |result| result == true }) / results(host).count
   end
