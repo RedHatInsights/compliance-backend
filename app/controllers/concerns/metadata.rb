@@ -17,27 +17,30 @@ module Metadata
       options = {}
       options[:meta] = { total: opts[:total], search: params[:search],
                          limit: pagination_limit, offset: pagination_offset }
-      options[:links] = links(opts[:total])
+      options[:links] = links(last_offset(opts[:total]))
       options
     end
 
-    def links(count)
+    def links(last_offset)
       base_url = "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}"\
         "/#{controller_name}"
-      last_offset = (count / pagination_limit.to_f).ceil
       {
         first: "#{base_url}?limit=#{pagination_limit}&offset=1",
         last: "#{base_url}?limit=#{pagination_limit}&offset=#{last_offset}",
-        previous: previous_link(base_url),
+        previous: previous_link(base_url, last_offset),
         next: next_link(base_url, last_offset)
-      }
+      }.compact
     end
 
-    def previous_link(base_url)
+    def previous_link(base_url, last_offset)
+      return unless pagination_offset > 1 && pagination_offset <= last_offset
+
       "#{base_url}?limit=#{pagination_limit}&offset=#{previous_offset}"
     end
 
     def next_link(base_url, last_offset)
+      return unless pagination_offset < last_offset
+
       "#{base_url}?limit=#{pagination_limit}&offset=#{next_offset(last_offset)}"
     end
 
@@ -49,6 +52,10 @@ module Metadata
       return last_offset if (pagination_offset + 1) >= last_offset
 
       pagination_offset + 1
+    end
+
+    def last_offset(total)
+      (total / pagination_limit.to_f).ceil
     end
   end
 end

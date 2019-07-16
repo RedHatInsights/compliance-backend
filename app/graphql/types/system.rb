@@ -54,7 +54,7 @@ module Types
 
     def rule_objects_failed
       ::Rails.cache.fetch("#{object.id}/failed_rule_objects_result",
-                        expires_in: 1.week) do
+                          expires_in: 1.week) do
         ::Rule.where(
           id: ::RuleResult.includes(:rule).where(
             host: object,
@@ -68,7 +68,7 @@ module Types
       if args[:profile_id].present?
         rule_ids = ::Profile.find(args[:profile_id]).rules.pluck(:id)
         rule_results = ::RuleResult.where(rule_id: rule_ids,
-                                        host: object.id)
+                                          host: object.id)
       else
         rule_results = object.rule_results
       end
