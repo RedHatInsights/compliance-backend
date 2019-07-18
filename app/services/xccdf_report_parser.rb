@@ -58,10 +58,11 @@ class XCCDFReportParser
 
   def save_rule_results
     RuleResult.import!(
-      rule_results_rule_ids.zip(@oscap_parser.rule_results.map(&:result))
-      .each_with_object([]) do |rule_result, rule_results|
+      @oscap_parser.rule_results.each_with_object([]) do |rule_result, rule_results|
         rule_results << RuleResult.new(
-          host: @host, rule_id: rule_result[0], result: rule_result[1],
+          host: @host,
+          rule_id: rule_results_rule_ids[rule_result.id],
+          result: rule_result.result,
           start_time: @oscap_parser.start_time.in_time_zone,
           end_time: @oscap_parser.end_time.in_time_zone
         )
@@ -79,8 +80,8 @@ class XCCDFReportParser
   end
 
   def rule_results_rule_ids
-    @rule_results_rule_ids ||= Rule.select(:id).where(
+    @rule_results_rule_ids ||= Rule.where(
       ref_id: @oscap_parser.rule_results.map(&:id)
-    ).pluck(:id)
+    ).pluck(:ref_id, :id).to_h
   end
 end
