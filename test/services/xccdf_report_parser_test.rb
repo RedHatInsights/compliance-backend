@@ -104,6 +104,9 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
         rule_names = RuleResult.where(id: rule_results.ids).map(&:rule)
                                .pluck(:ref_id)
         assert rule_names.include?(@report_parser.oscap_parser.rule_ids.sample)
+        @report_parser.oscap_parser.rule_results.each do |rule_result|
+          assert_equal rule_result.result, RuleResult.joins(:rule).find_by(rules: {ref_id: rule_result.id}).result
+        end
       end
     end
   end
