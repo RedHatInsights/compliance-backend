@@ -12,8 +12,5 @@ namespace :test do
   end
 end
 
-task :rubocop do
-  require 'rubocop'
-  cli = RuboCop::CLI.new
-  cli.run(%w[--rails --auto-correct])
-end
+require 'rubocop/rake_task'
+RuboCop::RakeTask.new
