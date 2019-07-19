@@ -24,7 +24,7 @@ class Profile < ApplicationRecord
 
   def destroy_orphaned_business_objective
     return unless previous_changes.include?(:business_objective_id) &&
-      previous_changes[:business_objective_id].first.present?
+                  previous_changes[:business_objective_id].first.present?
 
     business_objective = BusinessObjective.find(
       previous_changes[:business_objective_id].first

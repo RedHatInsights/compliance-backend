@@ -53,8 +53,6 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_match(/limit=1/, json_body['links']['first'])
       assert_match(/offset=1/, json_body['links']['first'])
-      assert_match(/limit=1/, json_body['links']['previous'])
-      assert_match(/offset=1/, json_body['links']['previous'])
       assert_match(/limit=1/, json_body['links']['next'])
       assert_match(/offset=2/, json_body['links']['next'])
       assert_match(/limit=1/, json_body['links']['last'])
@@ -66,10 +64,6 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_match(/limit=#{Profile.count}/, json_body['links']['first'])
       assert_match(/offset=1/, json_body['links']['first'])
-      assert_match(/limit=#{Profile.count}/, json_body['links']['previous'])
-      assert_match(/offset=1/, json_body['links']['previous'])
-      assert_match(/limit=#{Profile.count}/, json_body['links']['next'])
-      assert_match(/offset=1/, json_body['links']['next'])
       assert_match(/limit=#{Profile.count}/, json_body['links']['last'])
       assert_match(/offset=1/, json_body['links']['last'])
     end
@@ -98,8 +92,6 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_match(/limit=2/, json_body['links']['first'])
       assert_match(/offset=1/, json_body['links']['first'])
-      assert_match(/limit=2/, json_body['links']['previous'])
-      assert_match(/offset=1/, json_body['links']['previous'])
       assert_match(/limit=2/, json_body['links']['next'])
       assert_match(/offset=2/, json_body['links']['next'])
       assert_match(/limit=2/, json_body['links']['last'])
@@ -112,6 +104,32 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_equal(1, json_body['meta']['limit'])
       assert_equal(2, json_body['meta']['offset'])
+    end
+
+    should 'not include previous if on first page' do
+      get profiles_url, params: { limit: 1, offset: 1 }
+      assert_response :success
+      assert_match(/limit=1/, json_body['links']['first'])
+      assert_match(/offset=1/, json_body['links']['first'])
+      assert_not json_body['links']['previous']
+    end
+
+    should 'not include next if on last page' do
+      get profiles_url, params: { limit: 1, offset: 2 }
+      assert_response :success
+      assert_match(/limit=1/, json_body['links']['last'])
+      assert_match(/offset=2/, json_body['links']['last'])
+      assert_not json_body['links']['next']
+    end
+
+    should 'not return invalid previous link if passed wrong params' do
+      get profiles_url, params: { limit: 1, offset: 1203 }
+      assert_response :success
+      assert_equal(1, json_body['meta']['limit'])
+      assert_equal(1203, json_body['meta']['offset'])
+      assert_not json_body['links']['previous']
+      assert_match(/offset=1/, json_body['links']['first'])
+      assert_match(/offset=#{Profile.count}/, json_body['links']['last'])
     end
   end
 end
