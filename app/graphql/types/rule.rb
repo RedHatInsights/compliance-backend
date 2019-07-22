@@ -13,6 +13,8 @@ module Types
     field :description, String, null: true
     field :severity, String, null: false
     field :profiles, [::Types::Profile], null: true
+    field :identifier, ::Types::RuleIdentifier, null: true
+    field :references, [::Types::RuleReference], null: true
     field :compliant, Boolean, null: false do
       argument :system_id, String, 'Is a system compliant?', required: true
     end

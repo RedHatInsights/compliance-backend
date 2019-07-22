@@ -24,4 +24,18 @@ class RuleTest < ActiveSupport::TestCase
     RuleResult.expects(:find_by_sql).returns([rule_result])
     assert rules(:one).compliant?(hosts(:one))
   end
+
+  test 'rule is found with_references' do
+    rules(:one).update(rule_references: [rule_references(:one)])
+    assert Rule.with_references(rule_references(:one).label)
+               .include?(rules(:one)),
+           'Expected rule not found by references'
+  end
+
+  test 'rule is found with_identifier' do
+    rules(:one).update(rule_identifier: rule_identifiers(:one))
+    assert Rule.with_identifier(rule_identifiers(:one).label)
+               .include?(rules(:one)),
+           'Expected rule not found by identifier'
+  end
 end

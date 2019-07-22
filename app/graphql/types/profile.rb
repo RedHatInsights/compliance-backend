@@ -11,7 +11,22 @@ module Types
     field :description, String, null: true
     field :ref_id, String, null: false
     field :compliance_threshold, Float, null: false
-    field :rules, [::Types::Rule], null: true
+    field :rules, [::Types::Rule], null: true do
+      argument :identifier, String,
+               'Rule identifier to filter by', required: false
+      argument :references, [String],
+               'Rule references to filter by', required: false
+    end
+
+    def rules(args = {})
+      rules = object.rules
+
+      rules = rules.with_identifier(args[:identifier]) if args.dig(:identifier)
+      rules = rules.with_references(args[:references]) if args.dig(:references)
+
+      rules
+    end
+
     field :hosts, [::Types::System], null: true
     field :business_objective, ::Types::BusinessObjective, null: true
     field :business_objective_id, ID, null: true

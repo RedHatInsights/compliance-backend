@@ -23,6 +23,14 @@ class Rule < ApplicationRecord
   validates_associated :profile_rules
   validates_associated :rule_results
 
+  scope :with_references, lambda { |reference_labels|
+    joins(:rule_references).where(rule_references: { label: reference_labels })
+  }
+
+  scope :with_identifier, lambda { |identifier_label|
+    joins(:rule_identifier).where(rule_identifiers: { label: identifier_label })
+  }
+
   def from_oscap_object(oscap_rule)
     self.ref_id = oscap_rule.id
     self.title = oscap_rule.title
