@@ -57,20 +57,24 @@ class XCCDFReportParser
   end
 
   def save_rule_results
-    RuleResult.import!(
-      @oscap_parser.rule_results.each_with_object([]) do |rule_result, rule_results|
-        rule_results << RuleResult.new(
-          host: @host,
-          rule_id: rule_results_rule_ids[rule_result.id],
-          result: rule_result.result,
-          start_time: @oscap_parser.start_time.in_time_zone,
-          end_time: @oscap_parser.end_time.in_time_zone
-        )
-      end
-    )
+    results = @oscap_parser.rule_results
+                           .each_with_object([]) do |rule_result, rule_results|
+      rule_results << RuleResult.new(rule_result_attrs(rule_result))
+    end
+    RuleResult.import!(results)
   end
 
   private
+
+  def rule_result_attrs(rule_result)
+    {
+      host: @host,
+      rule_id: rule_results_rule_ids[rule_result.id],
+      result: rule_result.result,
+      start_time: @oscap_parser.start_time.in_time_zone,
+      end_time: @oscap_parser.end_time.in_time_zone
+    }
+  end
 
   def invalidate_cache
     rules_already_saved.each do |rule|
