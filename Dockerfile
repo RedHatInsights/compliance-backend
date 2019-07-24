@@ -7,5 +7,7 @@ RUN apt-get update && apt-get install -y qt5-default libqt5webkit5-dev \
       postgresql-client netcat
 
 COPY Gemfile* ./
+COPY entrypoint.sh ./
+RUN chmod a+x ./entrypoint.sh
 
 RUN bundle -j4
