@@ -71,8 +71,9 @@ class Profile < ApplicationRecord
   # rubocop:enable Metrics/MethodLength
 
   def score
-    return 1 if hosts.blank?
+    return 1 if hosts.in_inventory.blank?
 
-    (hosts.count { |host| compliant?(host) }).to_f / hosts.count
+    (hosts.in_inventory.count { |host| compliant?(host) }).to_f /
+      hosts.in_inventory.count
   end
 end

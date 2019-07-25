@@ -17,6 +17,7 @@ class Host < ApplicationRecord
   has_many :profiles, through: :profile_hosts, source: :profile
 
   validates :name, presence: true
+  scope :in_inventory, -> { where(disabled: false) }
 
   class << self
     def filter_by_compliance(_filter, operator, value)

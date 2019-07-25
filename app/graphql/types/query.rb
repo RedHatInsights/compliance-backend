@@ -38,7 +38,7 @@ module Types
 
     def all_systems(args = {})
       Pundit.policy_scope(context[:current_user], ::Host)
-            .search_for(args[:search])
+            .search_for(args[:search]).in_inventory
             .paginate(page: args[:page], per_page: args[:per_page])
     end
 

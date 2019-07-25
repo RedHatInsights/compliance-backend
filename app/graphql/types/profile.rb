@@ -38,30 +38,32 @@ module Types
 
     field :compliant_host_count, Int, null: false
     def compliant_host_count
-      object.hosts.count { |host| object.compliant?(host) }
+      object.hosts.in_inventory.count { |host| object.compliant?(host) }
     end
 
     def total_host_count
-      object.hosts.count
+      object.hosts.in_inventory.count
     end
 
     def compliant(system_id:)
-      object.compliant?(Host.find(system_id))
+      object.compliant?(Host.in_inventory.find(system_id))
     end
 
     def rules_passed(system_id:)
-      object.results(Host.find(system_id)).count { |result| result }
+      object.results(
+        Host.in_inventory.find(system_id)
+      ).count { |result| result }
     end
 
     def rules_failed(system_id:)
-      object.results(Host.find(system_id)).count(&:!)
+      object.results(Host.in_inventory.find(system_id)).count(&:!)
     end
 
     def last_scanned(system_id:)
       rule_ids = object.rules.map(&:id)
       rule_results = RuleResult.where(
         rule_id: rule_ids,
-        host_id: Host.find(system_id).id
+        host_id: Host.in_inventory.find(system_id).id
       )
       rule_results.maximum(:end_time)&.iso8601 || 'Never'
     end

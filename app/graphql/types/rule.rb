@@ -18,7 +18,7 @@ module Types
     end
 
     def compliant(system_id:)
-      object.compliant?(Host.find(system_id))
+      object.compliant?(Host.in_inventory.find(system_id))
     end
   end
 end

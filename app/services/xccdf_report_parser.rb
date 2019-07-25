@@ -23,7 +23,6 @@ class XCCDFReportParser
 
   def inventory_api
     HostInventoryAPI.new(
-      @host,
       @account,
       Settings.host_inventory_url,
       @b64_identity
@@ -38,7 +37,7 @@ class XCCDFReportParser
     )
     new_profiles = host_new_profiles
     @host.profiles << new_profiles if new_profiles.present?
-    inventory_api.sync
+    inventory_api.sync(@host)
   end
 
   def report_host

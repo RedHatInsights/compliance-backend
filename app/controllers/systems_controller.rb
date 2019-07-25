@@ -8,7 +8,7 @@ class SystemsController < ApplicationController
   def index
     respond_to do |format|
       format.any do
-        render json: HostSerializer.new(scope_search, metadata)
+        render json: HostSerializer.new(scope_search.in_inventory, metadata)
       end
       format.csv do
         csv_response(*csv_params)
