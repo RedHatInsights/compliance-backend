@@ -2,6 +2,7 @@
 
 # Models rule references
 class RuleReference < ApplicationRecord
+  default_scope { order(:label) }
   scoped_search on: %i[href label]
   has_many :rule_references_rules, dependent: :delete_all
   has_many :rules, through: :rule_references_rules
