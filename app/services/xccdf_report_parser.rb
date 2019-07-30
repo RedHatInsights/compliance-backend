@@ -14,7 +14,6 @@ class XCCDFReportParser
   attr_reader :report_path, :oscap_parser
 
   def initialize(report_contents, message)
-    @b64_identity = message['b64_identity']
     @account = Account.find_or_create_by(account_number: message['account'])
     @metadata = message['metadata']
     @host_inventory_id = message['id']
@@ -24,8 +23,7 @@ class XCCDFReportParser
   def inventory_api
     HostInventoryAPI.new(
       @account,
-      Settings.host_inventory_url,
-      @b64_identity
+      Settings.host_inventory_url
     )
   end
 

@@ -7,20 +7,16 @@ require 'json'
 # Interact with the Insights Host Inventory. Usually HTTP calls
 # are all that's needed.
 class HostInventoryAPI
-  def initialize(account, url, b64_identity)
+  def initialize(account, url = Settings.host_inventory_url)
     @url = "#{URI.parse(url)}#{ENV['PATH_PREFIX']}/inventory/v1/hosts"
     @account = account
-    @b64_identity = b64_identity
-  end
-
-  def host_already_in_inventory
-    response = connection.get(@url, {}, 'X_RH_IDENTITY' => @b64_identity)
-    find_one_host(JSON.parse(response.body))
+    @b64_identity = Base64.strict_encode64(account.to_identity_header.to_json)
   end
 
   def hosts_already_in_inventory(hosts)
     response = connection.get(
-      "#{@url}/#{hosts.join('%2C')}", {}, 'X_RH_IDENTITY' => @b64_identity
+      "#{@url}/#{hosts.map(&:id).join('%2C')}", {},
+      'X_RH_IDENTITY' => @b64_identity
     )
     find_results(JSON.parse(response.body), hosts)
   end
@@ -37,26 +33,21 @@ class HostInventoryAPI
 
   def sync(host)
     @host = host
-    # inventory_host = host_already_in_inventory || create_host_in_inventory
-    @host.id ||= SecureRandom.uuid
-    # @host.id ||= inventory_host.dig('id')
+    inventory_host = hosts_already_in_inventory([host])[:found].present? ||
+                     create_host_in_inventory
+    # @host.id ||= SecureRandom.uuid
+    @host.id ||= inventory_host.dig('id')
     @host.save
     @host
   end
 
   private
 
-  def find_one_host(body)
-    body['results'].find do |host|
-      host['id'] == @host.id && host['account'] == @account.account_number
-    end
-  end
-
   def find_results(body, hosts)
     inventory_ids = body['results'].map { |host| host['id'] }
     {
-      found: hosts.pluck(:id) - inventory_ids,
-      not_found: inventory_ids - hosts.pluck(:id)
+      found: inventory_ids - hosts.pluck(:id),
+      not_found: hosts.pluck(:id) - inventory_ids
     }
   end
 

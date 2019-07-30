@@ -1,0 +1,15 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sweep-unsynced-hosts
+  spec:
+    schedule: "*/15 * * * *"
+    jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: compliance-backend-cronjob-sweep
+            image: compliance-backend
+            command: ["bundle", "exec", "rake", "sweep"]
+          restartPolicy: OnFailure

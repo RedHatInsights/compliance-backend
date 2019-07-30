@@ -1,0 +1,15 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mark-unsynced-hosts
+  spec:
+    schedule: "*/10 * * * *"
+    jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: compliance-backend-cronjob-mark
+            image: compliance-backend
+            command: ["bundle", "exec", "rake", "mark"]
+          restartPolicy: OnFailure

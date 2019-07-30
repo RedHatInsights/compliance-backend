@@ -19,6 +19,19 @@ class Host < ApplicationRecord
   validates :name, presence: true
   scope :in_inventory, -> { where(disabled: false) }
 
+  def mark_as_seen
+    update(disabled: false, last_seen_in_inventory: Time.zone.now)
+  end
+
+  def disable
+    # Host is not in the inventory? Do not destroy as API could be
+    # broken. Mark it as disabled so it does not show up on the UI
+    # - it will be enabled only if in a future run it's in the
+    #   inventory
+    logger.warn "Warning: disabling - #{id}"
+    update(disabled: true)
+  end
+
   class << self
     def filter_by_compliance(_filter, operator, value)
       ids = Host.includes(:profiles).select do |host|

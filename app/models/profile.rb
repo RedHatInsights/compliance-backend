@@ -71,9 +71,18 @@ class Profile < ApplicationRecord
   # rubocop:enable Metrics/MethodLength
 
   def score
-    return 1 if hosts.in_inventory.blank?
+    return 1 if hosts_in_inventory.blank?
 
-    (hosts.in_inventory.count { |host| compliant?(host) }).to_f /
-      hosts.in_inventory.count
+    (hosts_in_inventory.count { |host| compliant?(host) }).to_f /
+      hosts_in_inventory.count
+  end
+
+  # Apparently fixtures relations are set using Array instead of
+  # ActiveRecord associations, so scopes do not work on tests with fixtures
+  # This method is meant to fix such cases.
+  def hosts_in_inventory
+    return hosts.reject(&:disabled) if hosts.is_a? Array
+
+    hosts.in_inventory
   end
 end
