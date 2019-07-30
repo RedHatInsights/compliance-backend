@@ -33,9 +33,9 @@ class XCCDFReportParser
   def save_host
     @host = Host.find_or_initialize_by(
       id: @host_inventory_id,
-      name: report_host,
       account_id: @account.id
     )
+    @host.update(name: report_host) unless @host.name == report_host
     new_profiles = host_new_profiles
     @host.profiles << new_profiles if new_profiles.present?
     inventory_api.sync

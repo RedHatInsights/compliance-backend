@@ -93,6 +93,21 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
         )
       end
     end
+
+    should 'update the name of an existing host' do
+      HostInventoryAPI.any_instance
+                      .stubs(:host_already_in_inventory)
+                      .returns('id' => @host_id)
+      Host.create(id: @host_id, name: 'some.other.hostname',
+                  account: accounts(:test))
+
+      assert_difference('Host.count', 0) do
+        new_host = @report_parser.save_host
+        assert_equal(
+          new_host, Host.find_by(name: @report_parser.report_host)
+        )
+      end
+    end
   end
 
   context 'rule results' do
