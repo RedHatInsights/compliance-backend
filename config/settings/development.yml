@@ -2,4 +2,4 @@ host_inventory_url: https://insights-inventory-platform-ci.ask-on-slack-for-the-
 openshift_tokens_secret: MTwXl7kVp4inTho3N6aiw/7fr8iBJv49HwodiPHIdaw=
 #prometheus_exporter_host: prometheus
 #prometheus_exporter_port: 9394
-redis_url: redis:6379
+redis_url: 127.0.0.1:6379

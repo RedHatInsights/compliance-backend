@@ -5,13 +5,14 @@ services:
     restart: on-failure
     ports:
       - '5432:5432'
+    volumes:
+      - /tmp/insights-compliance-db:/var/lib/postgresql/data:z
   rails:
     build: .
     image: compliance-backend-rails
     tty: true
     stdin_open: true
-    # restart: on-failure
-    entrypoint: ./entrypoint.sh
+    restart: on-failure
     environment:
       - RAILS_ENV=development
       - DATABASE_SERVICE_NAME=postgres
@@ -22,20 +23,25 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - .:/app:Z
+      - .:/app:z
     depends_on:
       - db
       - prometheus
-    command: bundle exec rails s -b 0.0.0.0
   reports-consumer:
     image: compliance-backend-rails
-    # restart: on-failure
-    entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar -l log/consumer.log ComplianceReportsConsumer'
+    restart: on-failure
+    command: bundle exec racecar -l log/consumer.log ComplianceReportsConsumer
     volumes:
       - .:/app:z
     environment:
       - REDIS_URL=redis://redis:6379
       - PROMETHEUS_EXPORTER_HOST=prometheus
+      - RAILS_ENV=development
+      - DATABASE_SERVICE_NAME=postgres
+      - POSTGRES_SERVICE_HOST=db
+      - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_USER=postgres
+      - KAFKAMQ=kafka:29092
     depends_on:
       - db
       - prometheus
@@ -50,15 +56,15 @@ services:
   #     - prometheus
   prometheus:
     image: compliance-backend-rails
-    # restart: on-failure
+    restart: on-failure
     volumes:
-      - .:/app:Z
+      - .:/app:z
     ports:
       - '9394:9394'
-    entrypoint: bash -c 'bundle exec prometheus_exporter -c lib/graphql_collector.rb'
+    command: bundle exec prometheus_exporter -c lib/graphql_collector.rb
   sidekiq:
     image: compliance-backend-rails
-    # restart: on-failure
+    restart: on-failure
     volumes:
       - .:/app:z
     depends_on:
@@ -68,6 +74,11 @@ services:
       - MALLOC_ARENA_MAX=2
       - REDIS_URL=redis://redis:6379
       - PROMETHEUS_EXPORTER_HOST=prometheus
+      - RAILS_ENV=development
+      - DATABASE_SERVICE_NAME=postgres
+      - POSTGRES_SERVICE_HOST=db
+      - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_USER=postgres
   redis:
     image: redis:latest
     ports:
