@@ -129,6 +129,29 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
     end
   end
 
+  context 'no metadata' do
+    should 'raise error if the message does not contain metadata' do
+      assert_raises(::EmptyMetadataError) do
+        ::XCCDFReportParser.new(
+          'fakereport',
+          'account' => accounts(:test).account_number,
+          'b64_identity' => 'b64_fake_identity',
+          'id' => @host_id,
+          'metadata' => {}
+        )
+      end
+
+      assert_raises(::EmptyMetadataError) do
+        ::XCCDFReportParser.new(
+          'fakereport',
+          'account' => accounts(:test).account_number,
+          'b64_identity' => 'b64_fake_identity',
+          'id' => @host_id
+        )
+      end
+    end
+  end
+
   context 'rules' do
     setup do
       @arbitrary_rules = [

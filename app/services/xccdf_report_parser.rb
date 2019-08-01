@@ -5,6 +5,9 @@ class RuleResultOscapObject
   attr_accessor :id, :result, :ident
 end
 
+# Error to raise if no metadata is available
+class EmptyMetadataError < StandardError; end
+
 # Takes in a path to an XCCDF file, returns all kinds of properties about it
 # and saves it in our database
 class XCCDFReportParser
@@ -14,6 +17,8 @@ class XCCDFReportParser
   attr_reader :report_path, :oscap_parser
 
   def initialize(report_contents, message)
+    raise ::EmptyMetadataError if message['metadata'].blank?
+
     @b64_identity = message['b64_identity']
     @account = Account.find_or_create_by(account_number: message['account'])
     @metadata = message['metadata']
