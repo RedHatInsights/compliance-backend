@@ -8,5 +8,9 @@ class ParseReportJob
     parser = XCCDFReportParser.new(ActiveSupport::Gzip.decompress(file),
                                    message)
     parser.save_all
+  rescue ::EmptyMetadataError
+    Sidekiq.logger.error(
+      "Cannot parse report, no metadata available: #{message}"
+    )
   end
 end
