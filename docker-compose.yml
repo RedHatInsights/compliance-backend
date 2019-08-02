@@ -3,8 +3,6 @@ services:
   db:
     image: postgres
     restart: on-failure
-    ports:
-      - '5432:5432'
     volumes:
       - /tmp/insights-compliance-db:/var/lib/postgresql/data:z
   rails:
@@ -14,12 +12,11 @@ services:
     stdin_open: true
     restart: on-failure
     environment:
-      - RAILS_ENV=development
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_USER=postgres
-      - PROMETHEUS_EXPORTER_HOST=prometheus
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
     ports:
       - '3000:3000'
     volumes:
@@ -34,9 +31,8 @@ services:
     volumes:
       - .:/app:z
     environment:
-      - REDIS_URL=redis://redis:6379
-      - PROMETHEUS_EXPORTER_HOST=prometheus
-      - RAILS_ENV=development
+      - SETTINGS__REDIS_URL=redis://redis:6379
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
@@ -72,17 +68,14 @@ services:
     command: bundle exec sidekiq
     environment:
       - MALLOC_ARENA_MAX=2
-      - REDIS_URL=redis://redis:6379
-      - PROMETHEUS_EXPORTER_HOST=prometheus
-      - RAILS_ENV=development
+      - SETTINGS__REDIS_URL=redis://redis:6379
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_USER=postgres
   redis:
     image: redis:latest
-    ports:
-      - '6379:6379'
 
 networks:
   default:
