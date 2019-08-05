@@ -40,4 +40,24 @@ class RulesTest < ActiveSupport::TestCase
 
     assert_includes rule.profiles, profile
   end
+
+  test 'only new rule references are saved' do
+    stubs(:new_rules).returns(
+      [OpenStruct.new(references: [{ label: 'foo', href: '' }])]
+    )
+
+    assert_difference('RuleReference.count', 1) do
+      save_rule_references
+    end
+
+    @rule_references = nil # un-cache it from ||=
+    stubs(:new_rules).returns(
+      [OpenStruct.new(references: [{ label: 'foo', href: '' },
+                                   { label: 'bar', href: '' }])]
+    )
+
+    assert_difference('RuleReference.count', 1) do
+      save_rule_references
+    end
+  end
 end
