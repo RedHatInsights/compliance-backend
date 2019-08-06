@@ -15,20 +15,21 @@ class ProfilesTest < ActiveSupport::TestCase
   include XCCDFReport::Profiles
 
   setup do
-    @account = OpenStruct.new(id: 1)
-    @host = OpenStruct.new(id: 2)
+    @account = accounts(:test)
+    @host = hosts(:one)
     @oscap_parser = OpenscapParser::Base.new(
       file_fixture('xccdf_report.xml').read
     )
   end
 
   test 'save_profiles' do
-    before = Profile.count
-    save_profiles
-    now = Profile.count
-    assert_equal before + 1, now
-    save_profiles
-    assert_equal now, Profile.count
+    assert_difference('Profile.count', 1) do
+      save_profiles
+    end
+
+    assert_no_difference('Profile.count') do
+      save_profiles
+    end
   end
 
   test 'host_new_profiles' do
