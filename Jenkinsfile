@@ -41,7 +41,7 @@ def runStages() {
 
     scmVars = checkout scm
 
-    if (currentBuild.currentResult == "SUCCESS" && env.BRANCH_NAME == "master") {
+    if (currentBuild.currentResult == "SUCCESS" && env.BRANCH_NAME == "master" && !env.CHANGE_ID) {
 
         changedFiles = changedFiles()
 
