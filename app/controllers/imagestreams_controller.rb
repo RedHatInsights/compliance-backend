@@ -25,7 +25,7 @@ class ImagestreamsController < ApplicationController
 
   def trigger_scans
     params['policy'].keys.each do |profile|
-      ScanImageJob.perform_later(@imagestream, profile, identity_header)
+      ScanImageJob.perform_later(@imagestream, profile, @identity_header)
     end
   end
 

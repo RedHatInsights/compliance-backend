@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Raise an error if entitlement is not available
+class EntitlementError < StandardError; end
+
 # Receives messages from the Kafka topic, converts them into jobs
 # for processing
 class ComplianceReportsConsumer < ApplicationConsumer
@@ -7,10 +10,11 @@ class ComplianceReportsConsumer < ApplicationConsumer
 
   def process(message)
     @msg_value = JSON.parse(message.value)
-    logger.info "Received message, enqueueing: #{message.value}"
+    raise EntitlementError unless identity.valid?
+
     download_file
     enqueue_job
-  rescue SafeDownloader::DownloadError => e
+  rescue EntitlementError, SafeDownloader::DownloadError => e
     logger.error "Error parsing report: #{message_id}"\
       " - #{e.message}"
     send_validation('failure')
@@ -25,6 +29,10 @@ class ComplianceReportsConsumer < ApplicationConsumer
 
   private
 
+  def identity
+    IdentityHeader.new(@msg_value['b64_identity'])
+  end
+
   def message_id
     @msg_value.fetch('request_id', @msg_value.dig('payload_id'))
   end
@@ -35,6 +43,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
 
   def enqueue_job
     if validate == 'success'
+      logger.info "Received message, enqueueing: #{@msg_value}"
       job = ParseReportJob.perform_async(
         ActiveSupport::Gzip.compress(@report_contents), @msg_value
       )
