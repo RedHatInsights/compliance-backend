@@ -16,7 +16,7 @@ class Profile < ApplicationRecord
   belongs_to :account, optional: true
   belongs_to :business_objective, optional: true
 
-  validates :ref_id, uniqueness: { scope: :account_id }, presence: true
+  validates :ref_id, uniqueness: { scope: %i[account_id name] }, presence: true
   validates :name, presence: true
   validates :compliance_threshold, numericality: true
 
