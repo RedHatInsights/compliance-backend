@@ -51,7 +51,6 @@ module XCCDFReport
       end
 
       def save_rules
-        new_profiles = Profile.where(ref_id: @oscap_parser.profiles.keys)
         add_profiles_to_old_rules(rules_already_saved, new_profiles)
         rule_import = Rule.import!(new_rule_records, recursive: true)
         associate_rule_references(new_rule_records)
@@ -74,7 +73,8 @@ module XCCDFReport
       end
 
       def new_profiles
-        @new_profiles ||= Profile.where(ref_id: @oscap_parser.profiles.keys)
+        @new_profiles ||= Profile.where(ref_id: @oscap_parser.profiles.keys,
+                                        account_id: @account.id)
       end
 
       def new_rule_records
