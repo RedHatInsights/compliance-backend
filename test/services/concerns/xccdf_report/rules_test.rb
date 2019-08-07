@@ -15,6 +15,7 @@ class RulesTest < ActiveSupport::TestCase
     @oscap_parser = OpenscapParser::Base.new(
       file_fixture('xccdf_report.xml').read
     )
+    @account = accounts(:test)
   end
 
   test 'save all rules as new' do
@@ -31,7 +32,8 @@ class RulesTest < ActiveSupport::TestCase
 
   test 'save all rules and add profiles to pre existing one' do
     profile = Profile.create(ref_id: @oscap_parser.profiles.keys.first,
-                             name: @oscap_parser.profiles.keys.first)
+                             name: @oscap_parser.profiles.keys.first,
+                             account_id: accounts(:test).id)
     rule = Rule.new.from_oscap_object(@oscap_parser.rule_objects.first)
     rule.save
     assert_difference('Rule.count', 366) do

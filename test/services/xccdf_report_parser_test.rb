@@ -196,5 +196,24 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       assert_equal 2, rule.profiles.count
       assert_includes rule.profiles, profiles(:one)
     end
+
+    should 'not add rules to profiles not related to the current account' do
+      profile1 = Profile.create(
+        ref_id: 'xccdf_org.ssgproject.content_profile_standard',
+        name: @profile['xccdf_org.ssgproject.content_profile_standard']
+      )
+      profile2 = Profile.create(
+        ref_id: 'xccdf_org.ssgproject.content_profile_standard',
+        name: @profile['xccdf_org.ssgproject.content_profile_standard'],
+        account: accounts(:test)
+      )
+
+      assert_difference(
+        -> { profile1.rules.count } => 0,
+        -> { profile2.rules.count } => 367
+      ) do
+        @report_parser.save_rules
+      end
+    end
   end
 end
