@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'base64'
-
 # Authentication logic for all controllers
 module Authentication
   extend ActiveSupport::Concern
@@ -11,10 +9,9 @@ module Authentication
   end
 
   def authenticate_user
-    return unauthenticated unless identity_header
-    return unauthenticated unless entitled?
+    return unauthenticated unless identity_header.valid?
 
-    user = find_or_create_user(identity_header_identity['user']['username'])
+    user = find_or_create_user(identity_header.identity['user']['username'])
     return if performed? || !user.persisted?
 
     User.current = user
@@ -34,30 +31,10 @@ module Authentication
     false
   end
 
-  def identity_header
-    request.headers['X-RH-IDENTITY']
-  end
-
-  def identity_header_content
-    JSON.parse(Base64.decode64(identity_header))
-  end
-
-  def identity_header_identity
-    identity_header_content['identity']
-  end
-
-  def identity_header_entitlements
-    identity_header_content['entitlements']
-  end
-
-  def entitled?
-    identity_header_entitlements&.dig('smart_management', 'is_entitled')
-  end
-
   def find_or_create_user(username)
     user = User.find_by(username: username, account: account_from_header)
     if user.present?
-      logger.info "User authentication SUCCESS: #{identity_header_identity}"
+      logger.info "User authentication SUCCESS: #{identity_header.identity}"
     else
       user = create_user
     end
@@ -66,16 +43,20 @@ module Authentication
 
   private
 
+  def identity_header
+    @identity_header ||= IdentityHeader.new(request.headers['X-RH-IDENTITY'])
+  end
+
   def account_from_header
     Account.find_or_create_by(
-      account_number: identity_header_identity['account_number']
+      account_number: identity_header.identity['account_number']
     )
   end
 
   def create_user
-    if (user = User.from_x_rh_identity(identity_header_identity)).save
+    if (user = User.from_x_rh_identity(identity_header.identity)).save
       logger.info 'User authentication SUCCESS - creating user: '\
-        "#{identity_header_identity}"
+        "#{identity_header.identity}"
     else
       logger.info 'User authentication FAILED - could not create user: '\
         "#{user.errors.full_messages}"

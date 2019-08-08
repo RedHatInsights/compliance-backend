@@ -11,7 +11,12 @@ services:
     tty: true
     stdin_open: true
     restart: on-failure
-    entrypoint: ./entrypoint.sh
+    environment:
+      - DATABASE_SERVICE_NAME=postgres
+      - POSTGRES_SERVICE_HOST=db
+      - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_USER=postgres
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
     ports:
       - '3000:3000'
     volumes:
@@ -22,9 +27,17 @@ services:
   reports-consumer:
     image: compliance-backend-rails
     restart: on-failure
-    entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar -l log/consumer.log ComplianceReportsConsumer'
+    command: bundle exec racecar -l log/consumer.log ComplianceReportsConsumer
     volumes:
       - .:/app:z
+    environment:
+      - SETTINGS__REDIS_URL=redis://redis:6379
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+      - DATABASE_SERVICE_NAME=postgres
+      - POSTGRES_SERVICE_HOST=db
+      - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_USER=postgres
+      - KAFKAMQ=kafka:29092
     depends_on:
       - db
       - prometheus
@@ -44,7 +57,7 @@ services:
       - .:/app:z
     ports:
       - '9394:9394'
-    entrypoint: bash -c 'bundle exec prometheus_exporter -c lib/graphql_collector.rb'
+    command: bundle exec prometheus_exporter -c lib/graphql_collector.rb
   sidekiq:
     image: compliance-backend-rails
     restart: on-failure
@@ -52,11 +65,18 @@ services:
       - .:/app:z
     depends_on:
       - redis
-    entrypoint: bash -c 'bundle exec sidekiq'
+    command: bundle exec sidekiq
     environment:
       - MALLOC_ARENA_MAX=2
+      - SETTINGS__REDIS_URL=redis://redis:6379
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+      - DATABASE_SERVICE_NAME=postgres
+      - POSTGRES_SERVICE_HOST=db
+      - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_USER=postgres
   redis:
     image: redis:latest
+
 networks:
   default:
     external:

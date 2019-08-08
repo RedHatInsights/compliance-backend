@@ -83,6 +83,8 @@ group :development, :test do
   gem 'pry-remote'
   gem 'rspec-rails'
   gem 'rswag-specs'
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
   gem 'shoulda-context'
   gem 'shoulda-matchers'
   gem 'dotenv-rails'
@@ -93,7 +95,6 @@ group :development do
   gem 'bullet'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'pry-rails'
-  gem 'rubocop', require: false
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end

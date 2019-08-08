@@ -93,10 +93,26 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
         )
       end
     end
+
+    should 'update the name of an existing host' do
+      HostInventoryAPI.any_instance
+                      .stubs(:host_already_in_inventory)
+                      .returns('id' => @host_id)
+      Host.create(id: @host_id, name: 'some.other.hostname',
+                  account: accounts(:test))
+
+      assert_difference('Host.count', 0) do
+        new_host = @report_parser.save_host
+        assert_equal(
+          new_host, Host.find_by(name: @report_parser.report_host)
+        )
+      end
+    end
   end
 
   context 'rule results' do
     should 'save them, associate them with a rule and a host' do
+      @report_parser.stubs(:save_rule_references)
       assert_difference('RuleResult.count', 367) do
         rule_results = @report_parser.save_all
         assert_equal @report_parser.report_host,
@@ -105,8 +121,34 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                                .pluck(:ref_id)
         assert rule_names.include?(@report_parser.oscap_parser.rule_ids.sample)
         @report_parser.oscap_parser.rule_results.each do |rule_result|
-          assert_equal rule_result.result, RuleResult.joins(:rule).find_by(rules: {ref_id: rule_result.id}).result
+          assert_equal rule_result.result,
+                       RuleResult.joins(:rule)
+                                 .find_by(rules: { ref_id: rule_result.id })
+                                 .result
         end
+      end
+    end
+  end
+
+  context 'no metadata' do
+    should 'raise error if the message does not contain metadata' do
+      assert_raises(::EmptyMetadataError) do
+        ::XCCDFReportParser.new(
+          'fakereport',
+          'account' => accounts(:test).account_number,
+          'b64_identity' => 'b64_fake_identity',
+          'id' => @host_id,
+          'metadata' => {}
+        )
+      end
+
+      assert_raises(::EmptyMetadataError) do
+        ::XCCDFReportParser.new(
+          'fakereport',
+          'account' => accounts(:test).account_number,
+          'b64_identity' => 'b64_fake_identity',
+          'id' => @host_id
+        )
       end
     end
   end
@@ -153,6 +195,25 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       end
       assert_equal 2, rule.profiles.count
       assert_includes rule.profiles, profiles(:one)
+    end
+
+    should 'not add rules to profiles not related to the current account' do
+      profile1 = Profile.create(
+        ref_id: 'xccdf_org.ssgproject.content_profile_standard',
+        name: @profile['xccdf_org.ssgproject.content_profile_standard']
+      )
+      profile2 = Profile.create(
+        ref_id: 'xccdf_org.ssgproject.content_profile_standard',
+        name: @profile['xccdf_org.ssgproject.content_profile_standard'],
+        account: accounts(:test)
+      )
+
+      assert_difference(
+        -> { profile1.rules.count } => 0,
+        -> { profile2.rules.count } => 367
+      ) do
+        @report_parser.save_rules
+      end
     end
   end
 end
