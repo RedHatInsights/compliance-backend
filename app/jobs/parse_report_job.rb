@@ -5,6 +5,8 @@ class ParseReportJob
   include Sidekiq::Worker
 
   def perform(file, message)
+    return if cancelled?
+
     parser = XCCDFReportParser.new(ActiveSupport::Gzip.decompress(file),
                                    message)
     parser.save_all
@@ -12,5 +14,13 @@ class ParseReportJob
     Sidekiq.logger.error(
       "Cannot parse report, no metadata available: #{message}"
     )
+  end
+
+  def cancelled?
+    Sidekiq.redis { |c| c.exists("cancelled-#{jid}") }
+  end
+
+  def self.cancel!(jid)
+    Sidekiq.redis { |c| c.setex("cancelled-#{jid}", 86_400, 1) }
   end
 end
