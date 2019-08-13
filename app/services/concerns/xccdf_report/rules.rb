@@ -36,40 +36,46 @@ module XCCDFReport
       end
 
       def rule_references
-        return @rule_references if @rule_references
-
-        @rule_references = []
-        new_rules.map do |rule|
-          @rule_references << RuleReference.from_oscap_objects(rule.references)
-        end
+        references = oscap_report_references
+        RuleReference.where(
+          href: references.map { |r| r[:href] },
+          label: references.map { |r| r[:label] }
+        )
       end
 
       def save_rule_references
-        RuleReference.import(new_rule_references,
-                             columns: %i[href label],
-                             ignore: true)
+        RuleReferencesRule.import(new_rule_references, recursive: true)
       end
 
       def save_rules
         add_profiles_to_old_rules(rules_already_saved, new_profiles)
-        rule_import = Rule.import!(new_rule_records, recursive: true)
-        associate_rule_references(new_rule_records)
-        rule_import
-      end
-
-      def associate_rule_references(rules)
-        @rule_references ||= []
-        rules.zip(@rule_references).each do |rule, references|
-          rule.update(rule_references: references) if references.present?
-        end
+        Rule.import!(new_rule_records, recursive: true)
       end
 
       private
 
       def new_rule_references
-        rule_references.flatten.keep_if do |rule|
-          rule.id.nil?
-        end
+        report_labels = oscap_report_references.map { |r| r[:label] }
+        new_labels = report_labels - rule_references.pluck(:label)
+        oscap_report_references.map do |r|
+          next unless new_labels.include?(r[:label])
+
+          RuleReferencesRule.new(
+            rule_id: r[:rule_id],
+            rule_reference: RuleReference.new(r.except(:rule_id))
+          )
+        end.compact
+      end
+
+      def oscap_report_references
+        return @oscap_report_references if @oscap_report_references.present?
+
+        rule_ref_ids = {}
+        new_rule_objects = Rule.where(ref_id: new_rules.map(&:id))
+        new_rule_objects.each { |rule| rule_ref_ids[rule.ref_id] = rule.id }
+        @oscap_report_references = new_rules.map do |rule|
+          rule.references.map { |rr| rr.merge(rule_id: rule_ref_ids[rule.id]) }
+        end.flatten
       end
 
       def new_profiles

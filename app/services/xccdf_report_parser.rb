@@ -53,8 +53,8 @@ class XCCDFReportParser
   def save_all
     Host.transaction do
       save_profiles
-      save_rule_references
       save_rules
+      save_rule_references
       save_host
       invalidate_cache
       save_rule_results
