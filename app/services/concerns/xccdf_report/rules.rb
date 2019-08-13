@@ -29,48 +29,22 @@ module XCCDFReport
       end
 
       def new_rules
+        return @new_rules if @new_rules
+
         ref_ids = rules_already_saved.pluck(:ref_id)
-        @oscap_parser.rule_objects.reject do |rule|
+        @new_rules = @oscap_parser.rule_objects.reject do |rule|
           ref_ids.include? rule.id
         end
-      end
-
-      def rule_references
-        return @rule_references if @rule_references
-
-        @rule_references = []
-        new_rules.map do |rule|
-          @rule_references << RuleReference.from_oscap_objects(rule.references)
-        end
-      end
-
-      def save_rule_references
-        RuleReference.import(new_rule_references,
-                             columns: %i[href label],
-                             ignore: true)
       end
 
       def save_rules
         add_profiles_to_old_rules(rules_already_saved, new_profiles)
         rule_import = Rule.import!(new_rule_records, recursive: true)
-        associate_rule_references(new_rule_records)
+        associate_rule_references
         rule_import
       end
 
-      def associate_rule_references(rules)
-        @rule_references ||= []
-        rules.zip(@rule_references).each do |rule, references|
-          rule.update(rule_references: references) if references.present?
-        end
-      end
-
       private
-
-      def new_rule_references
-        rule_references.flatten.keep_if do |rule|
-          rule.id.nil?
-        end
-      end
 
       def new_profiles
         @new_profiles ||= Profile.where(ref_id: @oscap_parser.profiles.keys,

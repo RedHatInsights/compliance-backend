@@ -13,6 +13,7 @@ class EmptyMetadataError < StandardError; end
 class XCCDFReportParser
   include ::XCCDFReport::Profiles
   include ::XCCDFReport::Rules
+  include ::XCCDFReport::RuleReferences
 
   attr_reader :report_path, :oscap_parser
 

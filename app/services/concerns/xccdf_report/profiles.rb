@@ -8,17 +8,17 @@ module XCCDFReport
 
     included do
       def save_profiles
-        created = []
-        # Only save profiles with an associated TestResult. Otherwise there
-        # could be profiles saved w/o results.
-        @oscap_parser.profiles.each do |ref_id, name|
+        @oscap_parser.profiles.map do |ref_id, name|
           profile = Profile.find_or_initialize_by(name: name, ref_id: ref_id,
                                                   account_id: @account.id)
-          profile.description = @oscap_parser.description
-          profile.save
-          created << profile
+          unless profile.persisted?
+            profile.update!(
+              description: @oscap_parser.description
+            )
+          end
+
+          profile
         end
-        created
       end
 
       def host_new_profiles

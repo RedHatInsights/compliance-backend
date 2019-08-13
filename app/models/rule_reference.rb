@@ -14,9 +14,9 @@ class RuleReference < ApplicationRecord
                     }
   validates :href, presence: true, allow_blank: true
 
-  def self.from_oscap_objects(oscap_references)
-    oscap_references.map do |oscap_reference|
-      find_or_initialize_by(oscap_reference)
+  def self.find_from_oscap(oscap_references)
+    oscap_references.inject(where('1=0')) do |rel, reference|
+      rel.or(where(reference))
     end
   end
 end
