@@ -8,8 +8,9 @@ module XCCDFReport
 
     included do
       def rule_references
-        @rule_references ||= new_rules.map do |rule|
-          RuleReference.from_oscap_objects(rule.references)
+        @rule_references ||= new_rules.flat_map(&:references).uniq
+                                      .map do |reference|
+          RuleReference.new(reference)
         end
       end
 
@@ -19,18 +20,18 @@ module XCCDFReport
                              ignore: true)
       end
 
-      def associate_rule_references(new_rules)
-        new_rules.zip(@rule_references || []).each do |rule, references|
-          rule.update(rule_references: references) if references.present?
+      def associate_rule_references
+        # new_rules.map(&:id) == new_rule_records.pluck(:ref_id)
+        new_rule_records.zip(new_rules).each do |rule_record, oscap_rule|
+          references = RuleReference.find_from_oscap(oscap_rule.references)
+          rule_record.update(rule_references: references)
         end
       end
 
       private
 
       def new_rule_references
-        rule_references.flatten.keep_if do |rule|
-          rule.id.nil?
-        end
+        rule_references.keep_if(&:valid?)
       end
     end
   end

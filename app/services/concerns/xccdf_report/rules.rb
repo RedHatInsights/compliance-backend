@@ -29,8 +29,10 @@ module XCCDFReport
       end
 
       def new_rules
+        return @new_rules if @new_rules
+
         ref_ids = rules_already_saved.pluck(:ref_id)
-        @oscap_parser.rule_objects.reject do |rule|
+        @new_rules = @oscap_parser.rule_objects.reject do |rule|
           ref_ids.include? rule.id
         end
       end
@@ -38,7 +40,7 @@ module XCCDFReport
       def save_rules
         add_profiles_to_old_rules(rules_already_saved, new_profiles)
         rule_import = Rule.import!(new_rule_records, recursive: true)
-        associate_rule_references(new_rule_records)
+        associate_rule_references
         rule_import
       end
 
