@@ -39,9 +39,8 @@ module XCCDFReport
 
       def save_rules
         add_profiles_to_old_rules(rules_already_saved, new_profiles)
-        rule_import = Rule.import!(new_rule_records, recursive: true)
         associate_rule_references
-        rule_import
+        Rule.import!(new_rule_records, recursive: true)
       end
 
       private
