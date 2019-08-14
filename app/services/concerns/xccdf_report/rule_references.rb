@@ -24,7 +24,7 @@ module XCCDFReport
         # new_rules.map(&:id) == new_rule_records.pluck(:ref_id)
         new_rule_records.zip(new_rules).each do |rule_record, oscap_rule|
           references = RuleReference.find_from_oscap(oscap_rule.references)
-          rule_record.update(rule_references: references)
+          rule_record.rule_references = references
         end
       end
 
