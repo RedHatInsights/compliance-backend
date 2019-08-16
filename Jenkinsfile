@@ -59,7 +59,7 @@ def runStages() {
             // If Gemfiles or Jenknis slave's Dockerfile changed we need to rebuild the jenkins slave image
             stageWithContext("Rebuild-jenkins-slave", shortenURL = false) {
                 openshift.withCluster("openshift") {
-                    openshift.startBuild("jenkins-slave-base-centos7-ruby25-openscap")
+                    openshift.startBuild("jenkins-slave-rhel7-ruby25-openscap")
                 }
             }
         }
