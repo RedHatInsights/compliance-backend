@@ -23,16 +23,16 @@ def runStages() {
     ) {
         checkout scm
 
-        stageWithContext("Bundle-install") {
+        stageWithContext("Bundle-install", shortenURL = false) {
             sh "bundle install"
         }
 
-        stageWithContext("Prepare-db") {
+        stageWithContext("Prepare-db", shortenURL = false) {
             sh "bundle exec rake db:migrate --trace"
             sh "bundle exec rake db:test:prepare"
         }
 
-        stageWithContext("Unit-tests") {
+        stageWithContext("Unit-tests", shortenURL = false) {
             withCredentials([string(credentialsId: "codecov_token", variable: "CODECOV_TOKEN")]) {
                 sh "bundle exec rake test:validate"
             }
@@ -57,14 +57,14 @@ def runStages() {
 
         if ("Gemfile.lock" in changedFiles || "Gemfile" in changedFiles || "openshift/Jenkins/Dockerfile" in changedFiles) {
             // If Gemfiles or Jenknis slave's Dockerfile changed we need to rebuild the jenkins slave image
-            stageWithContext("Rebuild-jenkins-slave") {
+            stageWithContext("Rebuild-jenkins-slave", shortenURL = false) {
                 openshift.withCluster("openshift") {
                     openshift.startBuild("jenkins-slave-base-centos7-ruby25-openscap")
                 }
             }
         }
 
-        stageWithContext("Wait-until-deployed") {
+        stageWithContext("Wait-until-deployed", shortenURL = false) {
             waitForDeployment(
                 cluster: "openshift",
                 credentials: "compliance-token",
@@ -82,11 +82,11 @@ def runStages() {
             workingDir: "/tmp",
             namespace: "jenkins",
         ) {
-            stageWithContext("Install-integration-tests") {
+            stageWithContext("Install-integration-tests", shortenURL = false) {
                 sh "iqe plugin install compliance"
             }
 
-            stageWithContext("Inject-settings") {
+            stageWithContext("Inject-settings", shortenURL = false) {
                 withCredentials([
                     file(credentialsId: "compliance-settings-credentials-yaml", variable: "creds"),
                     file(credentialsId: "compliance-settings-local-yaml", variable: "settings")]
@@ -96,7 +96,7 @@ def runStages() {
                 }
             }
 
-            stageWithContext("Run-smoke-tests") {
+            stageWithContext("Run-smoke-tests", shortenURL = false) {
                 withEnv(["ENV_FOR_DYNACONF=ci"]) {
                    sh "iqe tests plugin compliance -v -s -m compliance_smoke --junitxml=junit.xml"
                 }

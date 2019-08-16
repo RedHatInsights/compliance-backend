@@ -59,7 +59,7 @@ spec:
       value: secret_key_base
     - name: RAILS_ENV
       value: test
-    image: jenkins-slave-base-centos7-ruby25-openscap:latest
+    image: jenkins-slave-rhel7-ruby25-openscap:latest
     name: jnlp
     args:
       - "$(JENKINS_SECRET)"
