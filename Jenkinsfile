@@ -15,8 +15,8 @@ node {
 def runStages() {
 
     openShift.withNode(
-        cloud: "upshift",
-        namespace: "insights-qe-ci",
+        cloud: "openshift",
+        namespace: "jenkins",
         yaml: "openshift/Jenkins/slave_pod_template.yaml",
         image: "jenkins-slave-base-centos7-ruby25-openscap:latest",
         limitMemory: "2Gi"
@@ -41,6 +41,16 @@ def runStages() {
 
     scmVars = checkout scm
 
+    if (currentBuild.currentResult == "SUCCESS" && env.BRANCH_NAME == "stable" && env.CHANGE_ID) {
+        runSmokeTest (
+            ocDeployerBuilderPath: "compliance/compliance-backend",
+            ocDeployerComponentPath: "compliance/compliance-backend",
+            ocDeployerServiceSets: "compliance,platform,platform-mq",
+            iqePlugins: ["iqe-compliance-plugin"],
+            pytestMarker: "compliance_smoke",
+        )
+    }
+
     if (currentBuild.currentResult == "SUCCESS" && env.BRANCH_NAME == "master" && !env.CHANGE_ID) {
 
         changedFiles = changedFiles()
@@ -48,7 +58,7 @@ def runStages() {
         if ("Gemfile.lock" in changedFiles || "Gemfile" in changedFiles || "openshift/Jenkins/Dockerfile" in changedFiles) {
             // If Gemfiles or Jenknis slave's Dockerfile changed we need to rebuild the jenkins slave image
             stageWithContext("Rebuild-jenkins-slave") {
-                openshift.withCluster("upshift") {
+                openshift.withCluster("openshift") {
                     openshift.startBuild("jenkins-slave-base-centos7-ruby25-openscap")
                 }
             }
@@ -56,7 +66,7 @@ def runStages() {
 
         stageWithContext("Wait-until-deployed") {
             waitForDeployment(
-                cluster: "dev_cluster",
+                cluster: "openshift",
                 credentials: "compliance-token",
                 project: "compliance-ci",
                 label: "app",
@@ -67,10 +77,10 @@ def runStages() {
         }
 
         openShift.withNode(
-            cloud: "upshift",
+            cloud: "openshift",
             image: pipelineVars.jenkinsSlaveIqeImage,
             workingDir: "/tmp",
-            namespace: "insights-qe-ci",
+            namespace: "jenkins",
         ) {
             stageWithContext("Install-integration-tests") {
                 sh "iqe plugin install compliance"
