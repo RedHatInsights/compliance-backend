@@ -1,5 +1,4 @@
-# FROM openshift/jenkins-slave-base-centos7\
-FROM docker-registry.engineering.redhat.com/centralci/jnlp-slave-base:1.5
+FROM registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7
 
 ENV RUBY_MAJOR_VERSION=2 \
     RUBY_MINOR_VERSION=5
@@ -9,9 +8,9 @@ ENV RUBY_VERSION="${RUBY_MAJOR_VERSION}.${RUBY_MINOR_VERSION}" \
 
 ENV RUBY_SCL="rh-ruby${RUBY_SCL_NAME_VERSION}"
 
-RUN yum install -y centos-release-scl-rh epel-release && \
-    yum-config-manager --add-repo https://cbs.centos.org/repos/sclo7-rh-ruby25-rh-candidate/x86_64/os/ && \
-    echo gpgcheck=0 >> /etc/yum.repos.d/cbs.centos.org_repos_sclo7-rh-ruby25-rh-candidate_x86_64_os_.repo && \
+RUN yum install -y yum-utils https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    yum-config-manager --enable rhel-7-server-extras-rpms rhel-7-server-rpms rhel-7-server-optional-rpms rhel-server-rhscl-7-rpms && \
+    yum install -y dnf && \
     INSTALL_PKGS=" \
 ${RUBY_SCL} \
 ${RUBY_SCL}-ruby-devel \
@@ -24,7 +23,8 @@ libxml2-devel \
 patch \
 postgresql-devel \
 qt5-qtwebkit-devel" && \
-    yum install -y --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
+    dnf install -y --setopt=tsflags=nodocs ${INSTALL_PKGS} && \
+    dnf clean all -y && \
     yum clean all -y && \
     rpm -V ${INSTALL_PKGS}
 
