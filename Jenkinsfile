@@ -18,7 +18,7 @@ def runStages() {
         cloud: "openshift",
         namespace: "jenkins",
         yaml: "openshift/Jenkins/slave_pod_template.yaml",
-        image: "jenkins-slave-base-centos7-ruby25-openscap:latest",
+        image: "jenkins-slave-rhel7-ruby25-openscap:latest",
         limitMemory: "2Gi"
     ) {
         checkout scm
