@@ -11,7 +11,7 @@ module Types
     field :description, String, null: true
     field :ref_id, String, null: false
     field :compliance_threshold, Float, null: false
-    field :rules, [::Types::Rule], null: true do
+    field :rules, [::Types::Rule], null: true, extras: [:lookahead] do
       argument :identifier, String,
                'Rule identifier to filter by', required: false
       argument :references, [String],
@@ -23,6 +23,11 @@ module Types
 
       rules = rules.with_identifier(args[:identifier]) if args.dig(:identifier)
       rules = rules.with_references(args[:references]) if args.dig(:references)
+
+      rules = lookahead_includes(args[:lookahead], rules,
+                                 compliant: :rule_results,
+                                 identifier: :rule_identifier,
+                                 references: :rule_references)
 
       rules
     end
