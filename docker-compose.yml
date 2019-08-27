@@ -16,14 +16,12 @@ services:
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_USER=postgres
-      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
     ports:
       - '3000:3000'
     volumes:
       - .:/app:z
     depends_on:
       - db
-      - prometheus
   reports-consumer:
     image: compliance-backend-rails
     restart: on-failure
@@ -32,7 +30,6 @@ services:
       - .:/app:z
     environment:
       - SETTINGS__REDIS_URL=redis://redis:6379
-      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
@@ -40,7 +37,6 @@ services:
       - KAFKAMQ=kafka:29092
     depends_on:
       - db
-      - prometheus
   # inventory-consumer:
   #   image: compliance-backend-rails
   #   restart: on-failure
@@ -49,15 +45,6 @@ services:
   #     - .:/app:z
   #   depends_on:
   #     - db
-  #     - prometheus
-  prometheus:
-    image: compliance-backend-rails
-    restart: on-failure
-    volumes:
-      - .:/app:z
-    ports:
-      - '9394:9394'
-    command: bundle exec prometheus_exporter -c lib/graphql_collector.rb
   sidekiq:
     image: compliance-backend-rails
     restart: on-failure
@@ -69,7 +56,6 @@ services:
     environment:
       - MALLOC_ARENA_MAX=2
       - SETTINGS__REDIS_URL=redis://redis:6379
-      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
