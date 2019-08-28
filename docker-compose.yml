@@ -57,7 +57,7 @@ services:
       - .:/app:z
     ports:
       - '9394:9394'
-    command: bundle exec prometheus_exporter -c lib/graphql_collector.rb
+    command: bundle exec prometheus_exporter -a lib/graphql_collector.rb
   sidekiq:
     image: compliance-backend-rails
     restart: on-failure
