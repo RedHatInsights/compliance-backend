@@ -18,18 +18,21 @@ module Types
                'Rule references to filter by', required: false
     end
 
+    # rubocop:disable AbcSize
     def rules(args = {})
-      rules = object.rules
+      selected_columns = args[:lookahead].selections.map(&:name) &
+                         ::Rule.column_names.map(&:to_sym)
+      rules = object.rules.select(selected_columns)
 
       rules = rules.with_identifier(args[:identifier]) if args.dig(:identifier)
       rules = rules.with_references(args[:references]) if args.dig(:references)
 
       rules = lookahead_includes(args[:lookahead], rules,
-                                 identifier: :rule_identifier,
-                                 references: :rule_references)
+                                 identifier: :rule_identifier)
 
       rules
     end
+    # rubocop:enable AbcSize
 
     field :hosts, [::Types::System], null: true
     field :business_objective, ::Types::BusinessObjective, null: true
@@ -77,7 +80,7 @@ module Types
     end
 
     def last_scanned(system_id:)
-      rule_ids = object.rules.map(&:id)
+      rule_ids = object.rules.pluck(:id)
       rule_results = RuleResult.where(
         rule_id: rule_ids,
         host_id: Host.find(system_id).id

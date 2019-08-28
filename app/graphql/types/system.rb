@@ -41,7 +41,7 @@ module Types
     end
 
     def profile_names
-      object.profiles.map(&:name).join(', ')
+      object.profiles.pluck(:name).join(', ')
     end
 
     def rules_passed(args = {})
@@ -67,8 +67,7 @@ module Types
     def last_scanned(args = {})
       if args[:profile_id].present?
         rule_ids = ::Profile.find(args[:profile_id]).rules.pluck(:id)
-        rule_results = ::RuleResult.where(rule_id: rule_ids,
-                                          host: object.id)
+        rule_results = object.rule_results.where(rule_id: rule_ids)
       else
         rule_results = object.rule_results
       end
