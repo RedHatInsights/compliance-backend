@@ -25,7 +25,6 @@ module Types
       rules = rules.with_references(args[:references]) if args.dig(:references)
 
       rules = lookahead_includes(args[:lookahead], rules,
-                                 compliant: :rule_results,
                                  identifier: :rule_identifier,
                                  references: :rule_references)
 
