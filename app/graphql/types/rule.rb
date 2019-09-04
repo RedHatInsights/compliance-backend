@@ -14,13 +14,22 @@ module Types
     field :severity, String, null: false
     field :profiles, [::Types::Profile], null: true
     field :identifier, ::Types::RuleIdentifier, null: true
-    field :references, [::Types::RuleReference], null: true
+    field :references, [::Types::RuleReference], null: true,
+                                                 extras: [:lookahead]
     field :compliant, Boolean, null: false do
       argument :system_id, String, 'Is a system compliant?', required: true
     end
 
     def compliant(system_id:)
       object.compliant?(Host.find(system_id))
+    end
+
+    def references(lookahead:)
+      selected_columns = lookahead.selections.map(&:name) &
+                         ::RuleReference.column_names.map(&:to_sym)
+      object.references.pluck(selected_columns).map do |reference|
+        selected_columns.zip([reference].flatten).to_h
+      end
     end
   end
 end
