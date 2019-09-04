@@ -15,6 +15,7 @@ services:
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_TEST_DATABASE=compliance_test
       - POSTGRESQL_USER=postgres
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
     ports:
@@ -36,6 +37,7 @@ services:
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_TEST_DATABASE=compliance_test
       - POSTGRESQL_USER=postgres
       - KAFKAMQ=kafka:29092
     depends_on:
@@ -73,6 +75,7 @@ services:
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_TEST_DATABASE=compliance_test
       - POSTGRESQL_USER=postgres
   redis:
     image: redis:latest
