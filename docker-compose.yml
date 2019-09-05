@@ -74,6 +74,7 @@ services:
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_USER=postgres
+      - SIDEKIQ_CONCURRENCY=5
   redis:
     image: redis:latest
 
