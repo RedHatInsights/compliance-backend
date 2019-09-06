@@ -5,7 +5,7 @@
 @Library("github.com/RedHatInsights/insights-pipeline-lib") _
 
 node {
-    cancelPriorBuilds()
+    //cancelPriorBuilds()
 
     runIfMasterOrPullReq {
         runStages()
