@@ -1,0 +1,2 @@
+---
+:concurrency: <%= ENV["SIDEKIQ_CONCURRENCY"] || ENV["POSTGRESQL_MAX_CONNECTIONS"] || 10 %>
