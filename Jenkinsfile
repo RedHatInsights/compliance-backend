@@ -5,7 +5,7 @@
 @Library("github.com/RedHatInsights/insights-pipeline-lib") _
 
 node {
-    cancelPriorBuilds()
+    //cancelPriorBuilds()
 
     runIfMasterOrPullReq {
         runStages()
@@ -41,7 +41,7 @@ def runStages() {
 
     scmVars = checkout scm
 
-    if (currentBuild.currentResult == "SUCCESS" && env.BRANCH_NAME == "stable" && env.CHANGE_ID) {
+    if (currentBuild.currentResult == "SUCCESS" && env.CHANGE_TARGET == "stable" && env.CHANGE_ID) {
         runSmokeTest (
             ocDeployerBuilderPath: "compliance/compliance-backend",
             ocDeployerComponentPath: "compliance/compliance-backend",
@@ -51,7 +51,7 @@ def runStages() {
         )
     }
 
-    if (currentBuild.currentResult == "SUCCESS" && env.BRANCH_NAME == "master" && !env.CHANGE_ID) {
+    if (currentBuild.currentResult == "SUCCESS" && env.CHANGE_TARGET == "master" && !env.CHANGE_ID) {
 
         changedFiles = changedFiles()
 
