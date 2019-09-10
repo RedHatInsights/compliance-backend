@@ -31,6 +31,8 @@ class Rule < ApplicationRecord
     joins(:rule_identifier).where(rule_identifiers: { label: identifier_label })
   }
 
+  default_scope { where(id: RuleResult.pluck(:rule_id)) }
+
   def from_oscap_object(oscap_rule)
     self.ref_id = oscap_rule.id
     self.title = oscap_rule.title

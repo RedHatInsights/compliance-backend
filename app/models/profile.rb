@@ -60,7 +60,7 @@ class Profile < ApplicationRecord
               ON rules.id = profile_rules.rule_id
               WHERE profile_rules.profile_id = ?)
        ) rule_results WHERE RANK = 1', host.id, id]
-      )
+      ).select { |rr| %w(pass fail notapplicable error unknown).include?(rr.result) }
       rule_results.map do |rule_result|
         %w[pass notapplicable notselected].include? rule_result.result
       end

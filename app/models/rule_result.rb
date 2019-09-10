@@ -10,4 +10,6 @@ class RuleResult < ApplicationRecord
 
   validates :host, presence: true
   validates :rule, presence: true
+
+  default_scope { where(result: %w(pass fail notapplicable error unknown)) }
 end
