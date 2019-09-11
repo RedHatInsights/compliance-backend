@@ -20,7 +20,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                           })
     # A hack to skip API calls in the test env for the time being
     connection = mock('faraday_connection')
-    HostInventoryAPI.any_instance.stubs(:connection).returns(connection)
+    Platform.stubs(:connection).returns(connection)
     get_body = {
       'results' => [{ 'id' => @host_id, 'account' => accounts(:test) }]
     }
