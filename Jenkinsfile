@@ -7,6 +7,9 @@
 node {
     cancelPriorBuilds()
 
+    echo "here"
+    milestone()
+
     runIfMasterOrPullReq {
         runStages()
     }
