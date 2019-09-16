@@ -9,6 +9,7 @@ class RuleQueryTest < ActiveSupport::TestCase
     profiles(:one).update rules: [rules(:one)]
     rules(:one).update rule_identifier: rule_identifiers(:one)
     rules(:one).update rule_references: [rule_references(:one)]
+    rule_results(:one).update rule: rules(:one), host: hosts(:one)
   end
 
   test 'rules are filtered by identifier' do

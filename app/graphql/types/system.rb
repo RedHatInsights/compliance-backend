@@ -56,10 +56,8 @@ module Types
       ::Rails.cache.fetch("#{object.id}/failed_rule_objects_result",
                           expires_in: 1.week) do
         ::Rule.where(
-          id: ::RuleResult.includes(:rule).where(
-            host: object,
-            result: %w[error fail notchecked]
-          ).pluck(:rule_id).uniq
+          id: ::RuleResult.failed.for_system(object.id)
+              .includes(:rule).pluck(:rule_id).uniq
         )
       end
     end
