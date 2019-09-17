@@ -25,10 +25,10 @@ class ProfileTest < ActiveSupport::TestCase
     assert profiles(:one).compliant?(hosts(:one))
   end
 
-  test 'host is not compliant if some rules are "fail" or "notselected"' do
+  test 'host is not compliant if some rules are "fail" or "error"' do
     RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
     RuleResult.create(rule: rules(:two), host: hosts(:one),
-                      result: 'notchecked')
+                      result: 'error')
     assert_not profiles(:one).compliant?(hosts(:one))
 
     RuleResult.find_by(rule: rules(:two), host: hosts(:one))
@@ -56,7 +56,7 @@ class ProfileTest < ActiveSupport::TestCase
     setup do
       RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
       RuleResult.create(rule: rules(:two), host: hosts(:one),
-                        result: 'notchecked')
+                        result: 'fail')
     end
 
     should 'host is compliant if 50% of rules pass with a threshold of 50' do

@@ -53,8 +53,8 @@ class Rule < ApplicationRecord
                     ORDER BY end_time DESC, created_at DESC
              )
           FROM rule_results rr2
-          WHERE rr2.host_id = ? AND rr2.rule_id = ?
-       ) rule_results WHERE RANK = 1', host.id, id]
+          WHERE rr2.host_id = ? AND rr2.result IN (?) AND rr2.rule_id = ?
+       ) rule_results WHERE RANK = 1', host.id, RuleResult::SELECTED, id]
       ).last
       return false if latest_result.blank?
 
