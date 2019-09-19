@@ -4,7 +4,7 @@ services:
     image: postgres
     restart: on-failure
     volumes:
-      - /tmp/insights-compliance-db:/var/lib/postgresql/data:z
+      - ./tmp/insights-compliance-db:/var/lib/postgresql/data:z
   rails:
     build: .
     image: compliance-backend-rails
