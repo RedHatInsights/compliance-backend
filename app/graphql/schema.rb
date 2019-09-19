@@ -8,7 +8,7 @@ require 'compliance_timeout'
 # remove here.
 class Schema < GraphQL::Schema
   use GraphQL::Tracing::PrometheusTracing unless Rails.env.test?
-  use ComplianceTimeout, max_seconds: 10
+  use ComplianceTimeout, max_seconds: 20
   query Types::Query
   mutation Types::Mutation
 end
