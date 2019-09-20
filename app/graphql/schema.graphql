@@ -138,6 +138,7 @@ type Rule {
   rationale: String
   refId: String!
   references: [RuleReference!]
+  remediationAvailable: Boolean!
   severity: String!
   title: String!
 }
