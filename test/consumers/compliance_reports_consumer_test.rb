@@ -72,7 +72,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
       '"size": 327, "service": "compliance", "url": "/tmp/uploads'\
       '/insights-upload-quarantine/036738d6f4e541c4aa8cfc9f46f5a140"}'
     ).at_least_once
-    XCCDFReportParser.expects(:new).raises(StandardError, 'something broke')
+    XccdfReportParser.expects(:new).raises(StandardError, 'something broke')
     # Mock the actual 'sending the validation' to Kafka
     @consumer.expects(:send_validation).with('failure').returns(true)
     @consumer.process(@message)

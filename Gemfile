@@ -69,7 +69,7 @@ gem 'oj'
 gem 'newrelic_rpm'
 gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
-gem 'openscap_parser'
+gem 'openscap_parser', '~> 1.0.0'
 
 group :development, :test do
   gem 'brakeman'

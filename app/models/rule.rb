@@ -15,11 +15,13 @@ class Rule < ApplicationRecord
   alias references rule_references
   has_one :rule_identifier, dependent: :destroy
   alias identifier rule_identifier
+  belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
 
   validates :title, presence: true
-  validates :ref_id, uniqueness: true, presence: true
+  validates :ref_id, uniqueness: { scope: %i[benchmark_id] }, presence: true
   validates :description, presence: true
   validates :severity, presence: true
+  validates :benchmark_id, presence: true
   validates_associated :profile_rules
   validates_associated :rule_results
 
@@ -31,13 +33,16 @@ class Rule < ApplicationRecord
     joins(:rule_identifier).where(rule_identifiers: { label: identifier_label })
   }
 
-  def from_oscap_object(oscap_rule)
-    self.ref_id = oscap_rule.id
-    self.title = oscap_rule.title
-    self.rationale = oscap_rule.rationale
-    self.description = oscap_rule.description
-    self.severity = oscap_rule.severity
-    self
+  def self.from_openscap_parser(op_rule, benchmark_id: nil)
+    rule = find_or_initialize_by(ref_id: op_rule.id,
+                                 benchmark_id: benchmark_id)
+
+    rule.assign_attributes(title: op_rule.title,
+                           description: op_rule.description,
+                           rationale: op_rule.rationale,
+                           severity: op_rule.severity)
+
+    rule
   end
 
   # Disabling MethodLength because it measures things wrong

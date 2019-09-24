@@ -16,7 +16,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
 
   test 'meta adds total and search to JSON response' do
     authenticate
-    profiles(:one).update(account: accounts(:test))
+    profiles(:one).update(account: accounts(:test), hosts: [hosts(:one)])
     search_query = 'name=profile1'
     get profiles_url, params: { search: search_query }
     assert_response :success
@@ -28,12 +28,15 @@ class MetadataTest < ActionDispatch::IntegrationTest
   context 'pagination' do
     setup do
       authenticate
-      Profile.all.find_each { |p| p.update(account_id: accounts(:test).id) }
+      Profile.all.find_each do |p|
+        p.update!(account_id: accounts(:test).id, hosts: [hosts(:one)])
+      end
     end
 
     should 'return correct pagination links' do
       3.times do
         Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
+                       benchmark: benchmarks(:one), hosts: [hosts(:one)],
                        account: accounts(:test))
       end
       get profiles_url, params: { limit: 1, offset: 3 }
@@ -70,7 +73,8 @@ class MetadataTest < ActionDispatch::IntegrationTest
 
     should 'return correct pagination links when there are three pages' do
       Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
-                     account: accounts(:test))
+                     benchmark: benchmarks(:one),
+                     account: accounts(:test), hosts: [hosts(:one)])
       get profiles_url, params: { limit: 1, offset: 2 }
       assert_response :success
       assert_match(/limit=1/, json_body['links']['first'])
@@ -86,7 +90,8 @@ class MetadataTest < ActionDispatch::IntegrationTest
     should 'return correct pagination links with partially filled last page' do
       3.times do
         Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
-                       account: accounts(:test))
+                       benchmark: benchmarks(:one),
+                       account: accounts(:test), hosts: [hosts(:one)])
       end
       get profiles_url, params: { limit: 2, offset: 1 }
       assert_response :success

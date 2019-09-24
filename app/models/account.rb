@@ -5,6 +5,7 @@ class Account < ApplicationRecord
   has_many :users, dependent: :nullify
   has_many :hosts, dependent: :nullify
   has_many :openshift_connections, dependent: :nullify
+  has_many :profiles, dependent: :destroy
 
   validates :account_number, presence: true
 

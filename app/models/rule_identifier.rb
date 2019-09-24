@@ -7,7 +7,10 @@ class RuleIdentifier < ApplicationRecord
   validates :label, presence: true
   validates :system, presence: true
 
-  def self.from_oscap_rule(oscap_rule)
-    new(oscap_rule.identifier) if oscap_rule.identifier.dig(:label)
+  def self.from_openscap_parser(op_rule_identifier)
+    if op_rule_identifier.label # rubocop:disable Style/GuardClause
+      new(label: op_rule_identifier.label,
+          system: op_rule_identifier.system)
+    end
   end
 end

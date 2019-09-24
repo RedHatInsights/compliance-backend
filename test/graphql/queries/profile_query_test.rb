@@ -5,7 +5,7 @@ require 'test_helper'
 class ProfileQueryTest < ActiveSupport::TestCase
   setup do
     users(:test).update account: accounts(:test)
-    profiles(:one).update account: accounts(:test)
+    profiles(:one).update account: accounts(:test), hosts: [hosts(:one)]
   end
 
   test 'query profile owned by the user' do
@@ -71,8 +71,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
     rule_results(:two).update host: hosts(:two), rule: rules(:two)
     profiles(:one).rules << rules(:one)
     profiles(:one).rules << rules(:two)
-    hosts(:one).profiles << profiles(:one)
-    hosts(:two).profiles << profiles(:one)
+    profiles(:one).update(account: accounts(:test),
+                          hosts: [hosts(:one), hosts(:two)])
 
     result = Schema.execute(
       query,

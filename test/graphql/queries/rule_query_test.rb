@@ -5,7 +5,7 @@ require 'test_helper'
 class RuleQueryTest < ActiveSupport::TestCase
   setup do
     users(:test).update account: accounts(:test)
-    profiles(:one).update account: accounts(:test)
+    profiles(:one).update(account: accounts(:test), hosts: [hosts(:one)])
     profiles(:one).update rules: [rules(:one)]
     rules(:one).update rule_identifier: rule_identifiers(:one)
     rules(:one).update rule_references: [rule_references(:one)]

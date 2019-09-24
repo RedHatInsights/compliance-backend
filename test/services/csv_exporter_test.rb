@@ -8,12 +8,16 @@ class CsvExporterTest < ActiveSupport::TestCase
     assert_equal "Id\n", result.next
     assert_equal result.count, Rule.count + 1
     assert_difference('CsvExporter.export(Rule, [:id]).count') do
-      Rule.new(ref_id: SecureRandom.uuid).save(validate: false)
+      Rule.new(ref_id: SecureRandom.uuid,
+               benchmark: benchmarks(:one)).save(validate: false)
     end
   end
 
   test 'ignore limit' do
-    10.times { Rule.new(ref_id: SecureRandom.uuid).save(validate: false) }
+    10.times do
+      Rule.new(ref_id: SecureRandom.uuid,
+               benchmark: benchmarks(:one)).save(validate: false)
+    end
     result = CsvExporter.export(Rule.all.limit(5), [:id])
     assert result.count > 5
   end
@@ -34,7 +38,7 @@ class CsvExporterTest < ActiveSupport::TestCase
 
   test 'calls nested methods on records' do
     profile = Profile.first
-    profile.update(account: accounts(:test))
+    profile.update(account: accounts(:test), hosts: [hosts(:one)])
     result = CsvExporter.export(Profile, [:ref_id, 'account.account_number'])
     assert_equal "Ref,Account.Account Number\n", result.next
     assert_equal "#{profile.ref_id},#{profile.account.account_number}\n",

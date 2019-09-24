@@ -14,7 +14,7 @@ class BusinessObjectiveTest < ActiveSupport::TestCase
     GRAPHQL
 
     users(:test).update account: accounts(:test)
-    profiles(:one).update(account: accounts(:test),
+    profiles(:one).update(account: accounts(:test), hosts: [hosts(:one)],
                           business_objective: business_objectives(:one))
 
     result = Schema.execute(

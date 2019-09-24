@@ -67,7 +67,8 @@ describe 'Rules API' do
 
   path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/rules/{id}" do
     get 'Retrieve a rule' do
-      fixtures :rules, :profiles
+      set_fixture_class benchmarks: Xccdf::Benchmark
+      fixtures :hosts, :benchmarks, :rules, :profiles
       tags 'rule'
       description 'Retrieves data for a rule'
       consumes 'application/vnd.api+json'
@@ -93,7 +94,7 @@ describe 'Rules API' do
           )
           user = User.from_x_rh_identity(x_rh_identity[:identity])
           user.save
-          profiles(:one).update(account: user.account)
+          profiles(:one).update(account: user.account, hosts: [hosts(:one)])
           rules(:one).update(profiles: [profiles(:one)])
           rules(:one).id
         end
