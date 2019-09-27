@@ -1,7 +1,7 @@
 [![codecov](https://codecov.io/gh/RedHatInsights/compliance-backend/branch/master/graph/badge.svg)](https://codecov.io/gh/RedHatInsights/compliance-backend)
 
 
-# Insights Compliance Backend
+# Cloud Services for RHEL: Compliance Backend
 
 compliance-backend is a project meant to parse OpenSCAP reports into a database,
 and perform all kind of actions that will make your systems more compliant with
@@ -108,8 +108,8 @@ docker-compose exec rails pry-remote -w
 
 ## API documentation
 
-The API documentation can be found at `ENV['PATH_PREFIX']/ENV['APP_NAME']`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `ENV['PATH_PREFIX']/ENV['APP_NAME']/openapi.json`
-
+The API documentation can be found at `ENV['PATH_PREFIX']/ENV['APP_NAME']`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `ENV['PATH_PREFIX']/ENV['APP_NAME']/v1/openapi.json`
+The OpenAPI version 3.0 description can be found at `ENV['PATH_PREFIX']/ENV['APP_NAME']/openapi`. You can build this API by converting the JSON representation (OpenAPI 2.x) using [swagger2openapi](https://github.com/Mermade/oas-kit/blob/master/packages/swagger2openapi).
 
 ## Contributing
 
