@@ -10,6 +10,10 @@ class ApplicationController < ActionController::API
   include Pagination
   include Search
 
+  def openapi
+    send_file Rails.root.join('swagger', 'v1', 'openapi.v3.yaml')
+  end
+
   rescue_from Pundit::NotAuthorizedError do
     render json: { errors: 'You are not authorized to access this action.' },
            status: :forbidden

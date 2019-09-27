@@ -58,6 +58,20 @@ RSpec.configure do |config|
             }
           }
         },
+        host: {
+          type: 'object',
+          required: %w[name account_id],
+          properties: {
+            name: {
+              name: 'string',
+              example: 'cloud.redhat.com'
+            },
+            account_id: {
+              type: 'string',
+              example: '649cf080-ccce-4c02-ba60-21d046983c7f'
+            }
+          }
+        },
         links:
         {
           type: 'object',

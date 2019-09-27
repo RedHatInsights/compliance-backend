@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :imagestreams, only: [:create]
     mount Rswag::Api::Engine => '/'
     mount Rswag::Ui::Engine => '/'
+    get 'openapi' => 'application#openapi'
     post 'graphql' => 'graphql#query'
     if Rails.env.development?
       mount GraphiQL::Rails::Engine, at: "/graphiql",
