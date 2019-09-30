@@ -216,4 +216,21 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context 'datastream-based reports only' do
+    should 'raise an error if the report is not coming from a datastream' do
+      fake_report = file_fixture('rhel-xccdf-report-wrong.xml').read
+      assert_raises(::WrongFormatError) do
+        ::XCCDFReportParser.new(
+          fake_report,
+          'account' => accounts(:test).account_number,
+          'id' => @host_id,
+          'b64_identity' => 'b64_fake_identity',
+          'metadata' => {
+            'fqdn' => 'lenovolobato.lobatolan.home'
+          }
+        )
+      end
+    end
+  end
 end
