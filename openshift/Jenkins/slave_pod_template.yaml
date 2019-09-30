@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    name: compliance-backend-jenkins-slave
+    name: compliance-unit-test-pod
 spec:
   containers:
   - env:
@@ -36,11 +36,11 @@ spec:
       successThreshold: 1
       timeoutSeconds: 1
     resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
       limits:
         cpu: 300m
-        memory: 512Mi
-      requests:
-        cpu: 200m
         memory: 512Mi
   - env:
     - name: DATABASE_SERVICE_NAME
@@ -59,16 +59,46 @@ spec:
       value: secret_key_base
     - name: RAILS_ENV
       value: test
-    image: jenkins-slave-rhel7-ruby25-openscap:latest
-    name: jnlp
+    - name: QMAKE
+      value: /usr/lib64/qt5/bin/qmake
+    - name: LC_ALL
+      value: en_US.UTF-8
+    - name: LANG
+      value: en_US.UTF-8
+    - name: PATH
+      value: /opt/rh/rh-nodejs10/root/usr/bin:/opt/rh/rh-ruby25/root/usr/local/bin:/opt/rh/rh-ruby25/root/usr/bin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    - name: LD_LIBRARY_PATH
+      value: /opt/rh/rh-nodejs10/root/usr/lib64:/opt/rh/rh-ruby25/root/usr/local/lib64:/opt/rh/rh-ruby25/root/usr/lib64
+    - name: MANPATH
+      value: /opt/rh/rh-nodejs10/root/usr/share/man:/opt/rh/rh-ruby25/root/usr/local/share/man:/opt/rh/rh-ruby25/root/usr/share/man
+    - name: PKG_CONFIG_PATH
+      value: /opt/rh/rh-ruby25/root/usr/local/lib64/pkgconfig:/opt/rh/rh-ruby25/root/usr/lib64/pkgconfig
+    - name: XDG_DATA_DIRS
+      value: /opt/rh/rh-ruby25/root/usr/local/share:/opt/rh/rh-ruby25/root/usr/share:/usr/local/share:/usr/share
+    - name: X_SCLS
+      value: rh-ruby25
+    image: docker-registry.default.svc:5000/buildfactory/s2i-insights-compliance
+    name: builder
+    tty: True
+    command:
+      - cat
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 1
+        memory: 2Gi
+  - name: jnlp
+    image: registry.access.redhat.com/openshift3/jenkins-slave-base-rhel7:v3.11
     args:
       - "$(JENKINS_SECRET)"
       - "$(JENKINS_NAME)"
     resources:
-      limits:
-        cpu: 1
-        memory: 1Gi
       requests:
-        cpu: 500m
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 300m
         memory: 512Mi
   dnsPolicy: ClusterFirst
