@@ -3,7 +3,7 @@
 # This class is meant to contain all calls to the Remediations API.
 class RemediationsAPI
   def initialize(account)
-    @url = URI.parse("#{URI.parse(Settings.host_inventory_url)}"\
+    @url = URI.parse("#{URI.parse(Settings.remediations_url)}"\
                      "#{ENV['PATH_PREFIX']}/remediations/v1/resolutions")
     @b64_identity = Base64.strict_encode64(account.fake_identity_header.to_json)
   end
@@ -11,7 +11,7 @@ class RemediationsAPI
   def import_remediations
     Rule.find_in_batches(batch_size: 100).each do |rules|
       response = Platform.connection.post(@url) do |req|
-        req.headers['X_RH_IDENTITY'] = @b64_identity
+        req.headers['X-RH-IDENTITY'] = @b64_identity
         req.headers['Content-Type'] = 'application/json'
         req.body = { 'issues': build_issues_list(rules) }.to_json
       end
