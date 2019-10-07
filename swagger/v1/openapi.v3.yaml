@@ -6,7 +6,7 @@ info:
     more about Red Hat Cloud Services for RHEL at
     [https://cloud.redhat.com/](https://cloud.redhat.com/)
 paths:
-  /api/compliance/openapi:
+  /openapi:
     get:
       summary: Get the OpenAPI YAML description
       tags:
@@ -14,7 +14,7 @@ paths:
       responses:
         "200":
           description: returns this document
-  /api/compliance/profiles:
+  /profiles:
     get:
       summary: List all profiles
       tags:
@@ -24,6 +24,29 @@ paths:
       parameters:
         - name: X-RH-IDENTITY
           in: header
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The number of items to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: offset
+          in: query
+          description: The number of items to skip before starting to collect the result set.
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: search
+          in: query
+          description: "query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language"
+          required: false
           schema:
             type: string
       responses:
@@ -41,6 +64,7 @@ paths:
                   data:
                     type: array
                     items:
+                      type: object
                       properties:
                         type:
                           type: string
@@ -60,7 +84,7 @@ paths:
                         attributes:
                           name: Standard System Security Profile for Fedora
                           ref_id: xccdf_org.ssgproject.content_profile_standard
-  "/api/compliance/profiles/{id}":
+  "/profiles/{id}":
     get:
       summary: Retrieve a profile
       tags:
@@ -120,7 +144,7 @@ paths:
                 response:
                   value:
                     errors: Resource not found
-  /api/compliance/rule_results:
+  /rule_results:
     get:
       summary: List all rule_results
       tags:
@@ -174,7 +198,7 @@ paths:
                             data:
                               id: 9bi7bc3a-2314-4929-9a9d-4a8a5b041687
                               type: rule
-  /api/compliance/rules:
+  /rules:
     get:
       summary: List all rules
       tags:
@@ -239,7 +263,7 @@ paths:
                             indicator of malicious activity on a
                             system.\nAuditing these events could serve as
                             evidence of potential system compromise.
-  "/api/compliance/rules/{id}":
+  "/rules/{id}":
     get:
       summary: Retrieve a rule
       tags:
@@ -314,7 +338,7 @@ paths:
                 response:
                   value:
                     errors: Resource not found
-  /api/compliance/systems:
+  /systems:
     get:
       summary: List all hosts
       tags:
