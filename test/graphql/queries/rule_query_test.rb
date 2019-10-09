@@ -12,6 +12,33 @@ class RuleQueryTest < ActiveSupport::TestCase
     rule_results(:one).update rule: rules(:one), host: hosts(:one)
   end
 
+  test 'rules are filtered by system ID' do
+    query = <<-GRAPHQL
+      query Profile($id: String!, $systemId: String){
+          profile(id: $id) {
+              id
+              name
+              refId
+              rules(systemId: $systemId) {
+                id
+              }
+          }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: {
+        id: profiles(:one).id,
+        systemId: hosts(:one).id
+      },
+      context: { current_user: users(:test) }
+    )
+    assert_not result.dig('errors'),
+               "Query was unsuccessful: #{result.dig('errors')}"
+    assert result.dig('data', 'profile', 'rules').any?, 'No rules returned!'
+  end
+
   test 'rules are filtered by identifier' do
     query = <<-GRAPHQL
       query Profile($id: String!, $identifier: String){

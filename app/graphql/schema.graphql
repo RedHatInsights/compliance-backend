@@ -49,6 +49,11 @@ type Profile {
     Rule references to filter by
     """
     references: [String!]
+
+    """
+    System ID to filter by
+    """
+    systemId: String
   ): [Rule!]
   rulesFailed(
     """
