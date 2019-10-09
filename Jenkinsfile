@@ -2,7 +2,7 @@
  * Requires: https://github.com/RedHatInsights/insights-pipeline-lib
  */
 
-@Library("github.com/RedHatInsights/insights-pipeline-lib") _
+@Library("github.com/RedHatInsights/insights-pipeline-lib@v1.3") _
 
 node {
     cancelPriorBuilds()
@@ -14,11 +14,11 @@ node {
 
 def runStages() {
 
-    openShift.withNode(yaml: "openshift/Jenkins/slave_pod_template.yaml") {
+    openShift.withNode {
         checkout scm
 
         stageWithContext("Bundle-install", shortenURL = false) {
-            sh "bundle install --path /tmp/bundle" 
+            sh "bundle install --path /tmp/bundle"
         }
 
         stageWithContext("Prepare-db", shortenURL = false) {
