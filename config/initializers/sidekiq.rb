@@ -20,7 +20,8 @@ if $0.include?('sidekiq')
   end
 end
 
-if $0.include?('sidekiq') || $0.include?('racecar')
+if Rails.env != 'test' && ($0.include?('sidekiq') || $0.include?('racecar') ||
+    $0.include?('rake'))
   Sidekiq.configure_client do |config|
     config.redis = {
       url: "redis://#{Settings.redis_url}",
