@@ -156,6 +156,29 @@ paths:
           in: header
           schema:
             type: string
+        - name: limit
+          in: query
+          description: The number of items to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: offset
+          in: query
+          description: The number of items to skip before starting to collect the result set.
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: search
+          in: query
+          description: "query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language"
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: lists all rule_results requested
@@ -171,6 +194,7 @@ paths:
                   data:
                     type: array
                     items:
+                      type: object
                       properties:
                         type:
                           type: string
@@ -210,6 +234,29 @@ paths:
           in: header
           schema:
             type: string
+        - name: limit
+          in: query
+          description: The number of items to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: offset
+          in: query
+          description: The number of items to skip before starting to collect the result set.
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: search
+          in: query
+          description: "query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language"
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: lists all rules requested
@@ -225,6 +272,7 @@ paths:
                   data:
                     type: array
                     items:
+                      type: object
                       properties:
                         type:
                           type: string
@@ -348,6 +396,29 @@ paths:
       parameters:
         - name: X-RH-IDENTITY
           in: header
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The number of items to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: offset
+          in: query
+          description: The number of items to skip before starting to collect the result set.
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: search
+          in: query
+          description: "query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language"
+          required: false
           schema:
             type: string
       responses:
