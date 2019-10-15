@@ -57,3 +57,5 @@ config/settings/*.local.yml
 config/environments/*.local.yml
 
 brakeman_output.markdown
+
+Gemfile.local
