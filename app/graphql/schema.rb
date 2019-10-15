@@ -2,6 +2,8 @@
 
 require 'prometheus_exporter/client' unless Rails.env.test?
 require 'compliance_timeout'
+require_relative 'types/query'
+require_relative 'types/mutation'
 
 # Definition for the GraphQL schema - read the
 # GraphQL-ruby documentation to find out what to add or
