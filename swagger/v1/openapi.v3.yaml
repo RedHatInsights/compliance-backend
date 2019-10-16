@@ -1,0 +1,490 @@
+openapi: 3.0.0
+info:
+  title: Cloud Services for RHEL Compliance API V1
+  version: v1
+  description: This is the API for Cloud Services for RHEL Compliance. You can find out
+    more about Red Hat Cloud Services for RHEL at
+    [https://cloud.redhat.com/](https://cloud.redhat.com/)
+paths:
+  /openapi:
+    get:
+      summary: Get the OpenAPI YAML description
+      tags:
+        - meta
+      responses:
+        "200":
+          description: returns this document
+  /profiles:
+    get:
+      summary: List all profiles
+      tags:
+        - profile
+      description: Lists all profiles requested
+      operationId: ListProfiles
+      parameters:
+        - name: X-RH-IDENTITY
+          in: header
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The number of items to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: offset
+          in: query
+          description: The number of items to skip before starting to collect the result set.
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: search
+          in: query
+          description: "query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language"
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: lists all profiles requested
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/metadata"
+                  links:
+                    $ref: "#/components/schemas/links"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: string
+                          format: uuid
+                        attributes:
+                          $ref: "#/components/schemas/profile"
+              examples:
+                response:
+                  value:
+                    meta:
+                      filter: name=Standard System Security Profile for Fedora
+                    data:
+                      - type: Profile
+                        id: d9654ad0-7cb5-4f61-b57c-0d22e3341dcc
+                        attributes:
+                          name: Standard System Security Profile for Fedora
+                          ref_id: xccdf_org.ssgproject.content_profile_standard
+  "/profiles/{id}":
+    get:
+      summary: Retrieve a profile
+      tags:
+        - profile
+      description: Retrieves data for a profile
+      operationId: ShowProfile
+      parameters:
+        - name: X-RH-IDENTITY
+          in: header
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: retrieves a profile
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/metadata"
+                  links:
+                    $ref: "#/components/schemas/links"
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      id:
+                        type: string
+                        format: uuid
+                      attributes:
+                        $ref: "#/components/schemas/profile"
+              examples:
+                response:
+                  value:
+                    data:
+                      type: Profile
+                      id: d9654ad0-7cb5-4f61-b57c-0d22e3341dcc
+                      attributes:
+                        name: Standard System Security Profile for Fedora
+                        ref_id: xccdf_org.ssgproject.content_profile_standard
+                        description: Set of rules for Fedora
+                        score: 1
+                        total_host_count: 1
+                        compliant_host_count: 1
+        "404":
+          description: profile not found
+          content:
+            application/vnd.api+json:
+              examples:
+                response:
+                  value:
+                    errors: Resource not found
+  /rule_results:
+    get:
+      summary: List all rule_results
+      tags:
+        - rule_result
+      description: Lists all rule_results requested
+      operationId: ListRuleResults
+      parameters:
+        - name: X-RH-IDENTITY
+          in: header
+          schema:
+            type: string
+      responses:
+        "200":
+          description: lists all rule_results requested
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/metadata"
+                  links:
+                    $ref: "#/components/schemas/links"
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: string
+                          format: uuid
+                        attributes:
+                          $ref: "#/components/schemas/rule_result"
+              examples:
+                response:
+                  value:
+                    meta:
+                      filter: result=notselected
+                    data:
+                      - type: Rule Result
+                        id: d9654ad0-7cb5-4f61-b57c-0d22e3341dcc
+                        attributes:
+                          result: notselected
+                        relationships:
+                          host:
+                            data:
+                              id: 6b97bc3a-3614-411f-9a9d-4a8a5b041687
+                              type: host
+                          rule:
+                            data:
+                              id: 9bi7bc3a-2314-4929-9a9d-4a8a5b041687
+                              type: rule
+  /rules:
+    get:
+      summary: List all rules
+      tags:
+        - rule
+      description: Lists all rules requested
+      operationId: ListRules
+      parameters:
+        - name: X-RH-IDENTITY
+          in: header
+          schema:
+            type: string
+      responses:
+        "200":
+          description: lists all rules requested
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/metadata"
+                  links:
+                    $ref: "#/components/schemas/links"
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: string
+                          format: uuid
+                        attributes:
+                          $ref: "#/components/schemas/rule"
+              examples:
+                response:
+                  value:
+                    meta:
+                      filter: title=Record Access Events to Audit Log directory
+                    data:
+                      - type: Rule
+                        id: d9654ad0-7cb5-4f61-b57c-0d22e3341dcc
+                        attributes:
+                          title: Record Access Events to Audit Log directory
+                          ref_id: xccdf_org.ssgproject.content_rule_directory_access_var_log_audit
+                          severity: Low
+                          description: The audit system should collect access events to
+                            read audit log directory.\nThe following audit rule
+                            will assure that access to audit log directory
+                            are\ncollected.\n-a always,exit -F
+                            dir=/var/log/audit/ -F perm=r -F auid>=1000-F
+                            auid!=unset -F key=access-audit-trail\nIf the auditd
+                            daemon is configured to use the augenrules\nprogram
+                            to read audit rules during daemon startup (the
+                            default), add the\nrule to a file with suffix .rules
+                            in the directory\n/etc/audit/rules.d.\nIf the auditd
+                            daemon is configured to use the auditctl\nutility to
+                            read audit rules during daemon startup, add the rule
+                            to\n/etc/audit/audit.rules file.
+                          rationale: Attempts to read the logs should be recorded,
+                            suspicious access to audit log files could be an
+                            indicator of malicious activity on a
+                            system.\nAuditing these events could serve as
+                            evidence of potential system compromise.
+  "/rules/{id}":
+    get:
+      summary: Retrieve a rule
+      tags:
+        - rule
+      description: Retrieves data for a rule
+      operationId: ShowRule
+      parameters:
+        - name: X-RH-IDENTITY
+          in: header
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: retrieves a rule
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/metadata"
+                  links:
+                    $ref: "#/components/schemas/links"
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      id:
+                        type: string
+                        format: uuid
+                      attributes:
+                        $ref: "#/components/schemas/rule"
+              examples:
+                response:
+                  value:
+                    data:
+                      type: Rule
+                      id: d9654ad0-7cb5-4f61-b57c-0d22e3341dcc
+                      attributes:
+                        title: Record Access Events to Audit Log directory
+                        ref_id: xccdf_org.ssgproject.content_rule_directory_access_var_log_audit
+                        severity: Low
+                        description: The audit system should collect access events to read
+                          audit log directory.\nThe following audit rule will
+                          assure that access to audit log directory
+                          are\ncollected.\n-a always,exit -F dir=/var/log/audit/
+                          -F perm=r -F auid>=1000-F auid!=unset -F
+                          key=access-audit-trail\nIf the auditd daemonis
+                          configured to use the augenrules\nprogram to read
+                          audit rules during daemon startup (the default), add
+                          the\nrule to a file with suffix .rules in the
+                          directory\n/etc/audit/rules.d.\nIf the auditd daemon
+                          is configured to use the auditctl\nutility to read
+                          audit rules during daemon startup, add the rule
+                          to\n/etc/audit/audit.rules file.
+                        rationale: Attempts to read the logs should be recorded,
+                          suspicious access to audit log files could be an
+                          indicator of malicious activity on a system.\nAuditing
+                          these events could serve as evidence of potential
+                          system compromise.
+        "404":
+          description: rule not found
+          content:
+            application/vnd.api+json:
+              examples:
+                response:
+                  value:
+                    errors: Resource not found
+  /systems:
+    get:
+      summary: List all hosts
+      tags:
+        - host
+      description: Lists all hosts requested
+      operationId: ListHosts
+      parameters:
+        - name: X-RH-IDENTITY
+          in: header
+          schema:
+            type: string
+      responses:
+        "200":
+          description: lists all hosts requested
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/metadata"
+                  links:
+                    $ref: "#/components/schemas/links"
+                  data:
+                    type: array
+                    items:
+                      properties:
+                        type:
+                          type: string
+                        id:
+                          type: string
+                          format: uuid
+                        attributes:
+                          $ref: "#/components/schemas/host"
+              examples:
+                response:
+                  value:
+                    data:
+                      - type: Host
+                        id: d9654ad0-7cb5-4f61-b57c-0d22e3341dcc
+                        attributes:
+                          name: Standard System Security Profile for Fedora
+                          ref_id: xccdf_org.ssgproject.content_host_standard
+components:
+  schemas:
+    error:
+      type: object
+      required:
+        - code
+        - detail
+        - status
+        - title
+      properties:
+        status:
+          type: integer
+          description: the HTTP status code applicable to this problem, expressed as a
+            string value.
+          minimum: 100
+          maximum: 600
+        code:
+          type: string
+          description: an application-specific error code, expressed as a string value.
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that SHOULD NOT
+            change from occurrence to occurrence of the problem, except for
+            purposes of localization.
+        detail:
+          type: string
+          description: a human-readable explanation specific to this occurrence of the
+            problem. Like title, this field’s value can be localized.
+    metadata:
+      type: object
+      properties:
+        filter:
+          type: string
+          example: name='Standard System Security Profile for Fedora'
+    host:
+      type: object
+      required:
+        - name
+        - account_id
+      properties:
+        name:
+          type: string
+          example: cloud.redhat.com
+        account_id:
+          type: string
+          example: 649cf080-ccce-4c02-ba60-21d046983c7f
+    links:
+      type: object
+      properties:
+        self:
+          type: string
+          example: https://compliance.insights.openshift.org/profiles
+    profile:
+      type: object
+      required:
+        - name
+        - ref_id
+      properties:
+        name:
+          type: string
+          example: Standard System Security Profile for Fedora
+        ref_id:
+          type: string
+          example: xccdf_org.ssgproject.content_profile_standard
+    rule_result:
+      type: object
+      required:
+        - result
+      properties:
+        result:
+          type: string
+          example: passed
+    rule:
+      type: object
+      required:
+        - title
+        - ref_id
+      properties:
+        title:
+          type: string
+          example: Record Access Events to Audit Log directory
+        ref_id:
+          type: string
+          example: xccdf_org.ssgproject.content_rule_directory_access_var_log_audit
+        severity:
+          type: string
+          example: Low
+        description:
+          type: string
+          example: The audit system should collect access events to read audit log
+            directory.\nThe following audit rule will assure that access to
+            audit log directory are\ncollected.\n-a always,exit -F
+            dir=/var/log/audit/ -F perm=r -F auid>=1000-F auid!=unset -F
+            key=access-audit-trail\nIf the auditd daemonis configured to use the
+            augenrules\nprogram to read audit rules during daemon startup (the
+            default), add the\nrule to a file with suffix .rules in the
+            directory\n/etc/audit/rules.d.\nIf the auditd daemon is configured
+            to use the auditctl\nutility to read audit rules during daemon
+            startup, add the rule to\n/etc/audit/audit.rules file.
+        rationale:
+          type: string
+          example: Attempts to read the logs should be recorded, suspicious access to
+            audit log files could be an indicator of malicious activity on a
+            system.\nAuditing these events could serve as evidence of potential
+            system compromise.
+

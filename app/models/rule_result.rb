@@ -10,4 +10,11 @@ class RuleResult < ApplicationRecord
 
   validates :host, presence: true
   validates :rule, presence: true
+
+  SELECTED = %w[pass fail notapplicable error unknown].freeze
+  FAIL = %w[fail error unknown notchecked].freeze
+
+  scope :selected, -> { where(result: SELECTED) }
+  scope :failed, -> { where(result: FAIL) }
+  scope :for_system, ->(host_id) { where(host_id: host_id) }
 end

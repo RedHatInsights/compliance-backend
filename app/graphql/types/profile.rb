@@ -22,14 +22,13 @@ module Types
     def rules(args = {})
       selected_columns = args[:lookahead].selections.map(&:name) &
                          ::Rule.column_names.map(&:to_sym)
-      rules = object.rules.select(selected_columns)
-
+      rules = object.rules.select(selected_columns << :id).where(
+        id: RuleResult.selected.pluck(:rule_id)
+      )
       rules = rules.with_identifier(args[:identifier]) if args.dig(:identifier)
       rules = rules.with_references(args[:references]) if args.dig(:references)
-
       rules = lookahead_includes(args[:lookahead], rules,
                                  identifier: :rule_identifier)
-
       rules
     end
     # rubocop:enable AbcSize

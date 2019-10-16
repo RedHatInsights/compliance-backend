@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'faraday'
 require 'uri'
 require 'json'
 
@@ -15,12 +14,14 @@ class HostInventoryAPI
   end
 
   def host_already_in_inventory
-    response = connection.get(@url, {}, 'X_RH_IDENTITY' => @b64_identity)
+    response = Platform.connection.get(
+      @url, {}, 'X_RH_IDENTITY' => @b64_identity
+    )
     find_results(JSON.parse(response.body))
   end
 
   def create_host_in_inventory
-    response = connection.post(@url) do |req|
+    response = Platform.connection.post(@url) do |req|
       req.headers['Content-Type'] = 'application/json'
       req.headers['X_RH_IDENTITY'] = @b64_identity
       req.body = create_host_body
@@ -52,12 +53,5 @@ class HostInventoryAPI
       'display_name': @host.name,
       'account': @account.account_number
     }].to_json
-  end
-
-  def connection
-    Faraday.new do |f|
-      f.response :raise_error
-      f.adapter Faraday.default_adapter # this must be the last middleware
-    end
   end
 end

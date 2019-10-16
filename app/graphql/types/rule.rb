@@ -12,6 +12,7 @@ module Types
     field :rationale, String, null: true
     field :description, String, null: true
     field :severity, String, null: false
+    field :remediation_available, Boolean, null: false
     field :profiles, [::Types::Profile], null: true
     field :identifier, ::Types::RuleIdentifier, null: true
     field :references, [::Types::RuleReference], null: true,

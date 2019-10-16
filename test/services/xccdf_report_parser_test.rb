@@ -20,7 +20,7 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
                           })
     # A hack to skip API calls in the test env for the time being
     connection = mock('faraday_connection')
-    HostInventoryAPI.any_instance.stubs(:connection).returns(connection)
+    Platform.stubs(:connection).returns(connection)
     get_body = {
       'results' => [{ 'id' => @host_id, 'account' => accounts(:test) }]
     }
@@ -213,6 +213,23 @@ class XCCDFReportParserTest < ActiveSupport::TestCase
         -> { profile2.rules.count } => 367
       ) do
         @report_parser.save_rules
+      end
+    end
+  end
+
+  context 'datastream-based reports only' do
+    should 'raise an error if the report is not coming from a datastream' do
+      fake_report = file_fixture('rhel-xccdf-report-wrong.xml').read
+      assert_raises(::WrongFormatError) do
+        ::XCCDFReportParser.new(
+          fake_report,
+          'account' => accounts(:test).account_number,
+          'id' => @host_id,
+          'b64_identity' => 'b64_fake_identity',
+          'metadata' => {
+            'fqdn' => 'lenovolobato.lobatolan.home'
+          }
+        )
       end
     end
   end

@@ -12,7 +12,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     @b64_identity = '1234abcd'
     @api = HostInventoryAPI.new(@new_host, @account, @url, @b64_identity)
     @connection = mock('faraday_connection')
-    HostInventoryAPI.any_instance.stubs(:connection).returns(@connection)
+    Platform.stubs(:connection).returns(@connection)
   end
 
   test 'host_already_in_inventory no host' do

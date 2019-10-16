@@ -7,6 +7,8 @@ end
 
 # Error to raise if no metadata is available
 class EmptyMetadataError < StandardError; end
+# Error to raise if the format of the report is wrong
+class WrongFormatError < StandardError; end
 
 # Takes in a path to an XCCDF file, returns all kinds of properties about it
 # and saves it in our database
@@ -25,6 +27,13 @@ class XCCDFReportParser
     @metadata = message['metadata']
     @host_inventory_id = message['id']
     @oscap_parser = OpenscapParser::Base.new(report_contents)
+    check_report_format
+  end
+
+  def check_report_format
+    raise WrongFormatError unless @oscap_parser.report_xml.at_xpath(
+      './/TestResult/benchmark/@href'
+    ).value.match?('.*-ds.xml')
   end
 
   def inventory_api

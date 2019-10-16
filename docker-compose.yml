@@ -4,7 +4,7 @@ services:
     image: postgres
     restart: on-failure
     volumes:
-      - /tmp/insights-compliance-db:/var/lib/postgresql/data:z
+      - ./tmp/insights-compliance-db:/var/lib/postgresql/data:z
   rails:
     build: .
     image: compliance-backend-rails
@@ -32,7 +32,7 @@ services:
     volumes:
       - .:/app:z
     environment:
-      - SETTINGS__REDIS_URL=redis://redis:6379
+      - SETTINGS__REDIS_URL=redis:6379
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
@@ -70,7 +70,7 @@ services:
     command: bundle exec sidekiq
     environment:
       - MALLOC_ARENA_MAX=2
-      - SETTINGS__REDIS_URL=redis://redis:6379
+      - SETTINGS__REDIS_URL=redis:6379
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
