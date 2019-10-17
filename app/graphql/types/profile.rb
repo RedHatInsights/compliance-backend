@@ -12,6 +12,8 @@ module Types
     field :ref_id, String, null: false
     field :compliance_threshold, Float, null: false
     field :rules, [::Types::Rule], null: true, extras: [:lookahead] do
+      argument :system_id, String,
+               'System ID to filter by', required: false
       argument :identifier, String,
                'Rule identifier to filter by', required: false
       argument :references, [String],
@@ -20,11 +22,11 @@ module Types
 
     # rubocop:disable AbcSize
     def rules(args = {})
-      selected_columns = args[:lookahead].selections.map(&:name) &
-                         ::Rule.column_names.map(&:to_sym)
-      rules = object.rules.select(selected_columns << :id).where(
-        id: RuleResult.selected.pluck(:rule_id)
-      )
+      selected_columns = (args[:lookahead].selections.map(&:name) &
+                         ::Rule.column_names.map(&:to_sym)) << :id
+      host = Host.find(args[:system_id]) if args[:system_id].present?
+      rules = object.rules_for_system(host, selected_columns) if host.present?
+      rules = object.rules.select(selected_columns) if host.blank?
       rules = rules.with_identifier(args[:identifier]) if args.dig(:identifier)
       rules = rules.with_references(args[:references]) if args.dig(:references)
       rules = lookahead_includes(args[:lookahead], rules,
@@ -71,11 +73,11 @@ module Types
     end
 
     def rules_passed(system_id:)
-      object.results(Host.find(system_id)).count { |result| result }
+      Host.find(system_id).rules_passed(object)
     end
 
     def rules_failed(system_id:)
-      object.results(Host.find(system_id)).count(&:!)
+      Host.find(system_id).rules_failed(object)
     end
 
     def last_scanned(system_id:)
