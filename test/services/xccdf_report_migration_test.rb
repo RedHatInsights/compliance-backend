@@ -49,7 +49,7 @@ class XCCDFReportMigrationTest < ActiveSupport::TestCase
     conflict_profile = Profile.create!(
       account: accounts(:test),
       hosts: [hosts(:one)],
-      name: 'footitle',
+      name: 'footitle2',
       benchmark: benchmarks(:one),
       ref_id: "xccdf_org.ssgproject.content_profile_#{@profile.ref_id}"
     )
