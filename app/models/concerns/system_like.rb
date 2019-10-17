@@ -43,12 +43,12 @@ module SystemLike
 
   def selected_rules(profile = nil, selected_columns = [])
     rules_for_system = profile.present? ? profile.rules : rules
-
+    selected_rule_ids = RuleResult.selected.where(
+      host_id: id
+    ).pluck(:rule_id)
     rules_for_system.select(selected_columns).yield_self do |temp_rules|
       temp_rules.where(
-        id: RuleResult.selected.where(
-          host_id: id
-        ).pluck(:rule_id)
+        id: selected_rule_ids
       )
     end
   end
