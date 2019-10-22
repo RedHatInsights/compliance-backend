@@ -12,6 +12,8 @@ module Types
     field :ref_id, String, null: false
     field :compliance_threshold, Float, null: false
     field :rules, [::Types::Rule], null: true, extras: [:lookahead] do
+      argument :system_id, String,
+               'System ID to filter by', required: false
       argument :identifier, String,
                'Rule identifier to filter by', required: false
       argument :references, [String],
@@ -71,11 +73,11 @@ module Types
     end
 
     def rules_passed(system_id:)
-      object.results(Host.find(system_id)).count { |result| result }
+      Host.find(system_id).rules_passed(object)
     end
 
     def rules_failed(system_id:)
-      object.results(Host.find(system_id)).count(&:!)
+      Host.find(system_id).rules_failed(object)
     end
 
     def last_scanned(system_id:)

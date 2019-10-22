@@ -41,6 +41,10 @@ class Profile < ApplicationRecord
         (compliance_threshold / 100.0)
   end
 
+  def rules_for_system(host, selected_columns = [:id])
+    host.selected_rules(self, selected_columns)
+  end
+
   # Disabling MethodLength because it measures things wrong
   # for a multi-line string SQL query.
   # rubocop:disable Metrics/MethodLength
