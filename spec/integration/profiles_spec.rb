@@ -50,7 +50,8 @@ describe 'Profiles API' do
 
   path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/profiles/{id}" do
     get 'Retrieve a profile' do
-      fixtures :profiles
+      set_fixture_class benchmarks: Xccdf::Benchmark
+      fixtures :hosts, :benchmarks, :profiles
       tags 'profile'
       description 'Retrieves data for a profile'
       consumes 'application/vnd.api+json'
@@ -76,7 +77,7 @@ describe 'Profiles API' do
           )
           user = User.from_x_rh_identity(x_rh_identity[:identity])
           user.save
-          profiles(:one).update(account: user.account)
+          profiles(:one).update(account: user.account, hosts: [hosts(:one)])
           profiles(:one).id
         end
         schema type: :object,

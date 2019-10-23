@@ -5,13 +5,14 @@ require 'test_helper'
 class XCCDFReportMigrationTest < ActiveSupport::TestCase
   setup do
     @profile = Profile.create(
-      account: accounts(:test),
       name: 'footitle',
+      benchmark: benchmarks(:one),
       ref_id: 'foorefid'
     )
     @rules = 10.times.map do |i|
       rule = Rule.create(title: "bar#{i}", ref_id: "ruleref#{i}",
                          description: 'baz',
+                         benchmark: benchmarks(:one),
                          severity: 'low')
       @profile.rules << rule
       rule
@@ -24,7 +25,7 @@ class XCCDFReportMigrationTest < ActiveSupport::TestCase
 
   test 'migration should just rename rules/profiles if no conflict' do
     original_profile_ref_id = @profile.ref_id
-    XCCDFReportMigration.new(accounts(:test), false).run
+    XCCDFReportMigration.new(Account.new, false).run
     @profile.reload
     @rules.map(&:reload)
     @rule_results.map(&:reload)
@@ -44,16 +45,20 @@ class XCCDFReportMigrationTest < ActiveSupport::TestCase
   end
 
   test 'migration should reassign results if conflict' do
-    conflict_profile = Profile.create(
+    @profile.update!(account: accounts(:test), hosts: [hosts(:one)])
+    conflict_profile = Profile.create!(
       account: accounts(:test),
+      hosts: [hosts(:one)],
       name: 'footitle',
+      benchmark: benchmarks(:one),
       ref_id: "xccdf_org.ssgproject.content_profile_#{@profile.ref_id}"
     )
     conflict_rules = 10.times.map do |i|
-      rule = Rule.create(
+      rule = Rule.create!(
         title: "bar#{i}",
         ref_id: "xccdf_org.ssgproject.content_rule_ruleref#{i}",
         description: 'baz',
+        benchmark: benchmarks(:one),
         severity: 'low'
       )
       conflict_profile.rules << rule
@@ -61,10 +66,9 @@ class XCCDFReportMigrationTest < ActiveSupport::TestCase
     end
     original_profile_ref_id = @profile.ref_id
     XCCDFReportMigration.new(accounts(:test), false).run
-    assert Profile.where(ref_id: original_profile_ref_id).empty?
-    @rules.each do |rule|
-      assert Rule.where(ref_id: rule.ref_id).empty?
-    end
+    assert_empty Profile.where(ref_id: original_profile_ref_id,
+                               account: accounts(:test))
+    assert_empty Rule.where(ref_id: @rules.map(&:ref_id))
     @rule_results.map(&:reload).each_with_index do |rule_result, i|
       assert_equal conflict_rules[i].id, rule_result.rule_id
     end

@@ -184,8 +184,8 @@ GEM
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     oj (3.8.0)
-    openscap_parser (0.1.2)
-      nokogiri
+    openscap_parser (1.0.0)
+      nokogiri (~> 1.6)
     parallel (1.17.0)
     parser (2.6.3.0)
       ast (~> 2.4.0)
@@ -362,7 +362,7 @@ DEPENDENCIES
   mocha
   newrelic_rpm
   oj
-  openscap_parser
+  openscap_parser (~> 1.0.0)
   pg
   prometheus_exporter
   pry-byebug
@@ -392,4 +392,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.16.1
+   1.17.3
