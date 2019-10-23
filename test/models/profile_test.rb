@@ -3,15 +3,15 @@
 require 'test_helper'
 
 class ProfileTest < ActiveSupport::TestCase
-  should validate_uniqueness_of(:ref_id).scoped_to(%i[account_id name])
+  should validate_uniqueness_of(:ref_id)
+    .scoped_to(%i[account_id benchmark_id])
   should validate_presence_of :ref_id
   should validate_presence_of :name
   should belong_to(:business_objective).optional
 
   setup do
-    hosts(:one).profiles << profiles(:one)
-    profiles(:one).update(rules: [rules(:one), rules(:two)])
-    profiles(:one).stubs(:hosts).returns([hosts(:one)])
+    profiles(:one).update!(rules: [rules(:one), rules(:two)],
+                           hosts: [hosts(:one)], account: accounts(:one))
   end
 
   test 'host is not compliant there are no results for all rules' do
@@ -48,7 +48,8 @@ class ProfileTest < ActiveSupport::TestCase
 
   test 'score returns at least one decimal' do
     RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
-    profiles(:one).hosts << hosts(:two)
+    profiles(:one).update(hosts: profiles(:one).hosts + [hosts(:two)],
+                          account: accounts(:test))
     assert_equal 0.5, profiles(:one).score
   end
 

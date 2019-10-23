@@ -7,6 +7,7 @@ one:
   severity: high
   description: MyText
   rationale: MyText
+  benchmark: one
 
 two:
   ref_id: MyStringTwo
@@ -15,3 +16,4 @@ two:
   severity: low
   description: MyText
   rationale: MyText
+  benchmark: one

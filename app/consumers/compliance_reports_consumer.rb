@@ -60,7 +60,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
   end
 
   def validation_message
-    XCCDFReportParser.new(@report_contents, @msg_value)
+    XccdfReportParser.new(@report_contents, @msg_value)
     'success'
   rescue StandardError => e
     logger.error "Error validating report: #{message_id}"\

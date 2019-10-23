@@ -3,16 +3,17 @@
 require 'test_helper'
 
 class RuleTest < ActiveSupport::TestCase
-  should validate_uniqueness_of :ref_id
+  should validate_uniqueness_of(:ref_id).scoped_to(:benchmark_id)
   should validate_presence_of :ref_id
 
   setup do
     fake_report = file_fixture('xccdf_report.xml').read
-    @rule_objects = OpenscapParser::Base.new(fake_report).rule_objects
+    @op_rules = OpenscapParser::TestResultFile.new(fake_report).benchmark.rules
   end
 
-  test 'creates rules from ruby-openscap Rule object' do
-    Rule.new.from_oscap_object(@rule_objects.first)
+  test 'creates rules from openscap_parser Rule object' do
+    assert Rule.from_openscap_parser(@op_rules.first,
+                                     benchmark_id: benchmarks(:one).id).save
   end
 
   test 'host one is not compliant?' do

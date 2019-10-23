@@ -10,15 +10,34 @@ class Profile < ApplicationRecord
   has_many :hosts, through: :profile_hosts, source: :host
   has_many :profile_imagestreams, dependent: :destroy
   has_many :imagestreams, through: :profile_imagestreams, source: :imagestream
-  belongs_to :policy, optional: true
   belongs_to :account, optional: true
   belongs_to :business_objective, optional: true
+  belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
 
-  validates :ref_id, uniqueness: { scope: %i[account_id name] }, presence: true
+  validates :ref_id, uniqueness: { scope: %i[account_id benchmark_id] },
+                     presence: true
   validates :name, presence: true
+  validates :benchmark_id, presence: true
   validates :compliance_threshold, numericality: true
+  validates :account, absence: true, unless: -> { hosts.any? }
+  validates :account, presence: true, if: -> { hosts.any? }
 
   after_update :destroy_orphaned_business_objective
+
+  def self.from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
+    profile = find_or_initialize_by(
+      ref_id: op_profile.id,
+      benchmark_id: benchmark_id,
+      account_id: account_id
+    )
+
+    profile.assign_attributes(
+      name: op_profile.title,
+      description: op_profile.description
+    )
+
+    profile
+  end
 
   def destroy_orphaned_business_objective
     return unless previous_changes.include?(:business_objective_id) &&
@@ -31,6 +50,8 @@ class Profile < ApplicationRecord
   end
 
   def compliance_score(host)
+    return 1 if results(host).count.zero?
+
     (results(host).count { |result| result == true }) / results(host).count
   end
 
@@ -79,5 +100,28 @@ class Profile < ApplicationRecord
     return 1 if hosts.blank?
 
     (hosts.count { |host| compliant?(host) }).to_f / hosts.count
+  end
+
+  def clone_to(account: nil, host: nil)
+    new_profile = in_account(account)
+    if new_profile.nil?
+      (new_profile = dup).update!(account: account, hosts: [host])
+    end
+    new_profile.add_rules_from(profile: self)
+    new_profile
+  end
+
+  def in_account(account)
+    Profile.find_by(account: account, ref_id: ref_id,
+                    benchmark_id: benchmark_id)
+  end
+
+  def add_rules_from(profile: nil)
+    new_profile_rules = profile.profile_rules - profile_rules
+    ProfileRule.import!(new_profile_rules.map do |profile_rule|
+      new_profile_rule = profile_rule.dup
+      new_profile_rule.profile = self
+      new_profile_rule
+    end, ignore: true)
   end
 end

@@ -3,7 +3,9 @@
 one:
   name: profile1
   ref_id: xccdf_org.ssgproject.profile1
+  benchmark: one
 
 two:
   name: profile2
   ref_id: xccdf_org.ssgproject.profile2
+  benchmark: one

@@ -7,6 +7,7 @@ class RulePolicyTest < ActiveSupport::TestCase
     assert_empty Pundit.policy_scope(users(:test), Rule)
     users(:test).account = accounts(:test)
     Profile.create(name: 'test', ref_id: 'test',
+                   benchmark: benchmarks(:one), hosts: [hosts(:one)],
                    account: accounts(:test), rules: [rules(:one)])
     assert_includes Pundit.policy_scope(users(:test), Rule), rules(:one)
     assert Pundit.authorize(users(:test), rules(:one), :index?)
