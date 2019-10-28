@@ -43,6 +43,14 @@ module Types
       description 'All profiles visible by the user'
     end
 
+    field :all_benchmarks, [Types::Benchmark], null: true do
+      description 'All benchmarks visible by the user'
+    end
+
+    field :benchmark, Types::Benchmark, null: true do
+      argument :id, String, required: true
+    end
+
     field :profile, Types::Profile, null: true do
       argument :id, String, required: true
     end
@@ -79,6 +87,18 @@ module Types
 
     def business_objectives
       Pundit.policy_scope(context[:current_user], ::BusinessObjective)
+    end
+
+    def all_benchmarks
+      Pundit.policy_scope(context[:current_user], ::Xccdf::Benchmark)
+    end
+
+    def benchmark(id:)
+      Pundit.authorize(
+        context[:current_user],
+        ::Xccdf::Benchmark.find(id),
+        :show?
+      )
     end
   end
 end

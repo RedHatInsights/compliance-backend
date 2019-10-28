@@ -3,11 +3,11 @@
 # Policies for accessing Profiles
 class ProfilePolicy < ApplicationPolicy
   def index?
-    match_account?
+    match_account? || record.account_id.blank?
   end
 
   def show?
-    match_account?
+    match_account? || record.account_id.blank?
   end
 
   def update?
@@ -17,7 +17,9 @@ class ProfilePolicy < ApplicationPolicy
   # Only show hosts in our user account
   class Scope < ::ApplicationPolicy::Scope
     def resolve
-      only_matching_account
+      return scope.where('1=0') if user&.account_id.blank?
+
+      scope.where(account_id: user.account_id)
     end
   end
 end
