@@ -11,6 +11,8 @@ module Types
     field :description, String, null: true
     field :ref_id, String, null: false
     field :compliance_threshold, Float, null: false
+    field :benchmark_id, ID, null: false
+    field :account_id, ID, null: false
     field :rules, [::Types::Rule], null: true, extras: [:lookahead] do
       argument :system_id, String,
                'System ID to filter by', required: false
