@@ -11,18 +11,24 @@ module Xccdf
     validates :ref_id, uniqueness: { scope: %i[version] }, presence: true
     validates :version, presence: true
 
-    def self.from_openscap_parser(op_benchmark)
-      benchmark = find_or_initialize_by(
-        ref_id: op_benchmark.id,
-        version: op_benchmark.version
-      )
+    class << self
+      def from_openscap_parser(op_benchmark)
+        benchmark = find_or_initialize_by(
+          ref_id: op_benchmark.id,
+          version: op_benchmark.version
+        )
 
-      benchmark.assign_attributes(
-        title: op_benchmark.title,
-        description: op_benchmark.description
-      )
+        benchmark.assign_attributes(
+          title: op_benchmark.title,
+          description: op_benchmark.description
+        )
 
-      benchmark
+        benchmark
+      end
+
+      def policy_class
+        BenchmarkPolicy
+      end
     end
   end
 end

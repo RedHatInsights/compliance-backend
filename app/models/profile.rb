@@ -17,7 +17,6 @@ class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validates :name, presence: true
   validates :benchmark_id, presence: true
   validates :compliance_threshold, numericality: true
-  validates :account, absence: true, unless: -> { hosts.any? }
   validates :account, presence: true, if: -> { hosts.any? }
 
   after_update :destroy_orphaned_business_objective
