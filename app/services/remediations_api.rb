@@ -9,19 +9,22 @@ class RemediationsAPI
   end
 
   def import_remediations
-    Rule.find_in_batches(batch_size: 100).each do |rules|
-      response = Platform.connection.post(@url) do |req|
-        req.headers['X-RH-IDENTITY'] = @b64_identity
-        req.headers['Content-Type'] = 'application/json'
-        req.body = { 'issues': build_issues_list(rules) }.to_json
-      end
-      update_rules(remediations_available(response))
+    ::Rule.with_profiles.find_in_batches(batch_size: 100) do |rules|
+      update_rules(remediations_available(remediations_response(rules)))
     end
   rescue Faraday::ClientError => e
     Rails.logger.info("#{e.message} #{e.response}")
   end
 
   private
+
+  def remediations_response(rules)
+    Platform.connection.post(@url) do |req|
+      req.headers['X-RH-IDENTITY'] = @b64_identity
+      req.headers['Content-Type'] = 'application/json'
+      req.body = { 'issues': build_issues_list(rules) }.to_json
+    end
+  end
 
   def remove_ref_id_prefix(ref_id)
     short_ref_id = ref_id.downcase.split(
