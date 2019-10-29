@@ -29,7 +29,9 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     connection = mock('faraday_connection')
     Platform.stubs(:connection).returns(connection)
     get_body = {
-      'results' => [{ 'id' => @host_id, 'account' => accounts(:test) }]
+      'results' => [{ 'id' => @host_id,
+                      'account' => accounts(:test).account_number,
+                      'fqdn' => @report_parser.report_host }]
     }
     connection.stubs(:get).returns(OpenStruct.new(body: get_body.to_json))
     post_body = {
@@ -110,9 +112,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
 
     should 'return the host object even if it already existed' do
-      HostInventoryAPI.any_instance
-                      .stubs(:host_already_in_inventory)
-                      .returns('id' => @host_id)
       Host.create(id: @host_id, name: @report_parser.report_host,
                   account: accounts(:test))
 
@@ -125,9 +124,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
 
     should 'update the name of an existing host' do
-      HostInventoryAPI.any_instance
-                      .stubs(:host_already_in_inventory)
-                      .returns('id' => @host_id)
       Host.create(id: @host_id, name: 'some.other.hostname',
                   account: accounts(:test))
 
