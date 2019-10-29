@@ -6,6 +6,7 @@ require 'remediations_api'
 class RemediationsAPITest < ActiveSupport::TestCase
   setup do
     @rule = rules(:one)
+    @rule.profiles << profiles(:one)
     @connection = mock('faraday_connection')
     Platform.stubs(:connection).returns(@connection)
   end
