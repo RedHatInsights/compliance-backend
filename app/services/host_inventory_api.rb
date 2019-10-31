@@ -6,16 +6,20 @@ require 'json'
 # Interact with the Insights Host Inventory. Usually HTTP calls
 # are all that's needed.
 class HostInventoryAPI
-  def initialize(host, account, url, b64_identity)
-    @host = host
+  def initialize(id, hostname, account, url, b64_identity)
+    @id = id
+    @hostname = hostname
     @url = "#{URI.parse(url)}#{ENV['PATH_PREFIX']}/inventory/v1/hosts"
     @account = account
     @b64_identity = b64_identity
   end
 
-  def host_already_in_inventory
+  def host_already_in_inventory(hostname_or_id)
     response = Platform.connection.get(
-      @url, {}, 'X_RH_IDENTITY' => @b64_identity
+      @url, {
+        hostname_or_id: hostname_or_id
+      },
+      X_RH_IDENTITY: @b64_identity
     )
     find_results(JSON.parse(response.body))
   end
@@ -30,27 +34,28 @@ class HostInventoryAPI
     JSON.parse(response.body).dig('data')&.first&.dig('host')
   end
 
-  def sync
-    inventory_host = host_already_in_inventory || create_host_in_inventory
-    @host.id ||= inventory_host.dig('id')
-    @host.save
-    @host
+  def inventory_host
+    @inventory_host ||= host_already_in_inventory(@id) ||
+                        host_already_in_inventory(@hostname) ||
+                        create_host_in_inventory
   end
 
   private
 
   def find_results(body)
     body['results'].find do |host|
-      (host['id'] == @host.id || host['fqdn'] == @host.name) &&
-        host['account'] == @account.account_number
+      host['account'] == @account.account_number && (
+        host['id'] == @host_inventory_id ||
+        host['fqdn'] == @hostname
+      )
     end
   end
 
   def create_host_body
     [{
-      'facts': [{ 'facts': { 'fqdn': @host.name }, 'namespace': 'inventory' }],
-      'fqdn': @host.name,
-      'display_name': @host.name,
+      'facts': [{ 'facts': { 'fqdn': @hostname }, 'namespace': 'inventory' }],
+      'fqdn': @hostname,
+      'display_name': @hostname,
       'account': @account.account_number
     }].to_json
   end
