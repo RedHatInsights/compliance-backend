@@ -40,15 +40,6 @@ class XccdfReportParser
     ).value.match?('.*-ds.xml')
   end
 
-  def inventory_api
-    HostInventoryAPI.new(
-      @host,
-      @account,
-      Settings.host_inventory_url,
-      @b64_identity
-    )
-  end
-
   def save_all
     Host.transaction do
       save_all_benchmark_info
