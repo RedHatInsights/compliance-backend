@@ -2,31 +2,31 @@
  * Requires: https://github.com/RedHatInsights/insights-pipeline-lib
  */
 
-@Library("github.com/RedHatInsights/insights-pipeline-lib") _
+@Library("github.com/RedHatInsights/insights-pipeline-lib@v3") _
 
 node {
-    cancelPriorBuilds()
+    pipelineUtils.cancelPriorBuilds()
 
-    runIfMasterOrPullReq {
+    pipelineUtils.runIfMasterOrPullReq {
         runStages()
     }
 }
 
 def runStages() {
 
-    openShift.withNode(yaml: "openshift/Jenkins/slave_pod_template.yaml") {
+    openShiftUtils.withNode(yaml: "openshift/Jenkins/slave_pod_template.yaml") {
         checkout scm
 
-        stageWithContext("Bundle-install", shortenURL = false) {
-            sh "bundle install --path /tmp/bundle" 
+        gitUtils.stageWithContext("Bundle-install", shortenURL = false) {
+            sh "bundle install --path /tmp/bundle"
         }
 
-        stageWithContext("Prepare-db", shortenURL = false) {
+        gitUtils.stageWithContext("Prepare-db", shortenURL = false) {
             sh "bundle exec rake db:migrate --trace"
             sh "bundle exec rake db:test:prepare"
         }
 
-        stageWithContext("Unit-tests", shortenURL = false) {
+        gitUtils.stageWithContext("Unit-tests", shortenURL = false) {
             withCredentials([string(credentialsId: "codecov_token", variable: "CODECOV_TOKEN")]) {
                 sh "bundle exec rake test:validate"
             }
@@ -36,7 +36,7 @@ def runStages() {
     scmVars = checkout scm
 
     if (currentBuild.currentResult == "SUCCESS" && env.CHANGE_TARGET == "stable" && env.CHANGE_ID) {
-        runSmokeTest (
+        execSmokeTest (
             ocDeployerBuilderPath: "compliance/compliance-backend",
             ocDeployerComponentPath: "compliance/compliance-backend",
             ocDeployerServiceSets: "compliance,platform,platform-mq",
