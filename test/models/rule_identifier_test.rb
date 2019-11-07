@@ -13,11 +13,12 @@ class RuleIdentifierTest < ActiveSupport::TestCase
 
   test 'builds a RuleIdentifier from_openscap_parser' \
     'OpenscapParser::RuleIdentifier' do
-    rule_identifier = RuleIdentifier.from_openscap_parser(OP_RULE_IDENTIFIER)
+    rule_identifier = RuleIdentifier.from_openscap_parser(OP_RULE_IDENTIFIER,
+                                                          rules(:one).id)
     assert_equal OP_RULE_IDENTIFIER.system, rule_identifier.system
     assert_equal OP_RULE_IDENTIFIER.label, rule_identifier.label
-    rule_identifier.rule = rules(:one)
     assert rule_identifier.save
-    assert_nil RuleIdentifier.from_openscap_parser(OP_RULE_IDENTIFIER).id
+    assert_equal rule_identifier.id, RuleIdentifier
+      .from_openscap_parser(OP_RULE_IDENTIFIER, rules(:one).id).id
   end
 end

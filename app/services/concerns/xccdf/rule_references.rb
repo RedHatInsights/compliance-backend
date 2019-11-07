@@ -11,22 +11,13 @@ module Xccdf
           ::RuleReference.from_openscap_parser(op_reference)
         end
 
-        ::RuleReference.import!(@rule_references.select(&:new_record?),
-                                ignore: true)
-      end
-
-      def associate_rule_references
-        # new_rules.map(&:id) == new_rule_records.pluck(:ref_id)
-        new_rule_records.zip(new_rules).each do |rule_record, op_rule|
-          references = ::RuleReference.find_from_oscap(op_rule.references)
-          rule_record.rule_references = references
-        end
+        ::RuleReference.import!(new_rule_references, ignore: true)
       end
 
       private
 
       def new_rule_references
-        @new_rule_references ||= rule_references.reject(&:persisted?)
+        @new_rule_references ||= @rule_references.select(&:new_record?)
       end
     end
   end
