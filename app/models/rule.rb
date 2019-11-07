@@ -5,6 +5,7 @@
 class Rule < ApplicationRecord
   extend FriendlyId
   friendly_id :ref_id, use: :slugged
+  include OpenscapParserDerived
 
   has_many :profile_rules, dependent: :delete_all
   has_many :profiles, through: :profile_rules, source: :profile
@@ -40,6 +41,8 @@ class Rule < ApplicationRecord
   def self.from_openscap_parser(op_rule, benchmark_id: nil)
     rule = find_or_initialize_by(ref_id: op_rule.id,
                                  benchmark_id: benchmark_id)
+
+    rule.op_source = op_rule
 
     rule.assign_attributes(title: op_rule.title,
                            description: op_rule.description,
