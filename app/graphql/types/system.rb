@@ -8,7 +8,7 @@ module Types
 
     field :id, ID, null: false
     field :name, String, null: false
-    field :profiles, [::Types::Profile], null: true
+    field :profiles, [::Types::Profile], null: true, extras: [:lookahead]
     field :compliant, Boolean, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
@@ -28,6 +28,13 @@ module Types
     field :last_scanned, String, null: true do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
+    end
+
+    def profiles(lookahead:)
+      if [:rulesPassed, :rulesFailed, :compliant, :lastScanned].any? { |option| lookahead.selects?(option) }
+        context[:parent_system_id] = object.id
+      end
+      object.profiles
     end
 
     def compliant(args = {})

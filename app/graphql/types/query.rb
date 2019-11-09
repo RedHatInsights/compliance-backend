@@ -6,6 +6,19 @@ module Types
     graphql_name 'Query'
     description 'The root of all queries'
 
+    class << self
+      def record_field(name, type)
+        field name, type, resolver: Resolvers::Generic.for(type).record
+      end
+
+      def collection_field(name, type)
+        field name, type.connection_type, resolver: Resolvers::Generic.for(type).collection
+      end
+    end
+
+    collection_field :systems, Types::System
+    collection_field :profiles, Types::Profile
+
     field :all_systems, [Types::System], null: true do
       description 'All systems visible by the user'
       argument :search, String, 'Search query', required: false
