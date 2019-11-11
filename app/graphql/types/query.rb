@@ -12,12 +12,14 @@ module Types
       end
 
       def collection_field(name, type)
-        field name, type.connection_type, resolver: Resolvers::Generic.for(type).collection
+        field name, type.connection_type,
+              null: false, resolver: Resolvers::Generic.for(type).collection
       end
     end
 
     collection_field :systems, Types::System
     collection_field :profiles, Types::Profile
+    record_field :profile, Types::Profile
 
     field :all_systems, [Types::System], null: true do
       description 'All systems visible by the user'

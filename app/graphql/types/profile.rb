@@ -56,10 +56,12 @@ module Types
 
     field :last_scanned, String, null: false do
       argument :system_id, String,
-               'Last time this profile was scanned for a system', required: false
+               'Last time this profile was scanned for a system',
+               required: false
     end
 
     field :compliant_host_count, Int, null: false
+
     def compliant_host_count
       object.hosts.count { |host| object.compliant?(host) }
     end
@@ -68,29 +70,31 @@ module Types
       object.hosts.count
     end
 
-    def compliant(args={})
-      system_id = args[:system_id] || context[:parent_system_id]
-      object.compliant?(Host.find(system_id))
+    def compliant(args = {})
+      object.compliant?(Host.find(system_id(args)))
     end
 
-    def rules_passed(args={})
-      system_id = args[:system_id] || context[:parent_system_id]
-      Host.find(system_id).rules_passed(object)
+    def rules_passed(args = {})
+      Host.find(system_id(args)).rules_passed(object)
     end
 
-    def rules_failed(args={})
-      system_id = args[:system_id] || context[:parent_system_id]
-      Host.find(system_id).rules_failed(object)
+    def rules_failed(args = {})
+      Host.find(system_id(args)).rules_failed(object)
     end
 
-    def last_scanned(args={})
-      system_id = args[:system_id] || context[:parent_system_id]
+    def last_scanned(args = {})
       rule_ids = object.rules.pluck(:id)
       rule_results = RuleResult.where(
         rule_id: rule_ids,
-        host_id: Host.find(system_id).id
+        host_id: Host.find(system_id(args)).id
       )
       rule_results.maximum(:end_time)&.iso8601 || 'Never'
+    end
+
+    private
+
+    def system_id(args)
+      args[:system_id] || context[:parent_system_id]
     end
   end
 end

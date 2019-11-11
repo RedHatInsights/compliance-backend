@@ -1,23 +1,105 @@
 """
 A Business Objective registered in Insights Compliance
 """
-type BusinessObjective {
+type BusinessObjective implements Node {
+  globalId: ID!
   id: ID!
+
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Fetches a list of objects given a list of IDs.
+  """
+  nodes(
+    """
+    IDs of the objects.
+    """
+    ids: [ID!]!
+  ): [Node]!
   title: String!
 }
 
 """
 The mutation root of this schema
 """
-type Mutation {
+type Mutation implements Node {
   createBusinessObjective(input: createBusinessObjectiveInput!): createBusinessObjectivePayload
+  globalId: ID!
+
+  """
+  ID of the object.
+  """
+  id: ID!
+
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Fetches a list of objects given a list of IDs.
+  """
+  nodes(
+    """
+    IDs of the objects.
+    """
+    ids: [ID!]!
+  ): [Node]!
   updateProfile(input: UpdateProfileInput!): UpdateProfilePayload
+}
+
+"""
+An object with an ID.
+"""
+interface Node {
+  """
+  ID of the object.
+  """
+  id: ID!
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo {
+  """
+  When paginating forwards, the cursor to continue.
+  """
+  endCursor: String
+
+  """
+  When paginating forwards, are there more items?
+  """
+  hasNextPage: Boolean!
+
+  """
+  When paginating backwards, are there more items?
+  """
+  hasPreviousPage: Boolean!
+
+  """
+  When paginating backwards, the cursor to continue.
+  """
+  startCursor: String
 }
 
 """
 A Profile registered in Insights Compliance
 """
-type Profile {
+type Profile implements Node {
   businessObjective: BusinessObjective
   businessObjectiveId: ID
   complianceThreshold: Float!
@@ -25,19 +107,40 @@ type Profile {
     """
     Is a system compliant?
     """
-    systemId: String!
+    systemId: String
   ): Boolean!
   compliantHostCount: Int!
   description: String
+  globalId: ID!
   hosts: [System!]
   id: ID!
   lastScanned(
     """
     Last time this profile was scanned for a system
     """
-    systemId: String!
+    systemId: String
   ): String!
   name: String!
+
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Fetches a list of objects given a list of IDs.
+  """
+  nodes(
+    """
+    IDs of the objects.
+    """
+    ids: [ID!]!
+  ): [Node]!
   refId: String!
   rules(
     """
@@ -59,21 +162,57 @@ type Profile {
     """
     Rules failed for a system and a profile
     """
-    systemId: String!
+    systemId: String
   ): Int!
   rulesPassed(
     """
     Rules passed for a system and a profile
     """
-    systemId: String!
+    systemId: String
   ): Int!
   totalHostCount: Int!
 }
 
 """
+The connection type for Profile.
+"""
+type ProfileConnection {
+  """
+  A list of edges.
+  """
+  edges: [ProfileEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Profile]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type ProfileEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Profile
+}
+
+"""
 The root of all queries
 """
-type Query {
+type Query implements Node {
   """
   All image streams visible by the user
   """
@@ -118,18 +257,116 @@ type Query {
   All business objectives visible by the user
   """
   businessObjectives: [BusinessObjective!]
+  globalId: ID!
+
+  """
+  ID of the object.
+  """
+  id: ID!
+
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Fetches a list of objects given a list of IDs.
+  """
+  nodes(
+    """
+    IDs of the objects.
+    """
+    ids: [ID!]!
+  ): [Node]!
   profile(id: String!): Profile
+  profiles(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Pagination limit
+    """
+    limit: Int
+
+    """
+    Pagination offset
+    """
+    offset: Int
+
+    """
+    Search query
+    """
+    search: String
+  ): ProfileConnection!
 
   """
   Details for a system
   """
   system(id: String!): System
+  systems(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Pagination limit
+    """
+    limit: Int
+
+    """
+    Pagination offset
+    """
+    offset: Int
+
+    """
+    Search query
+    """
+    search: String
+  ): SystemConnection!
 }
 
 """
 A Rule registered in Insights Compliance
 """
-type Rule {
+type Rule implements Node {
   compliant(
     """
     Is a system compliant?
@@ -137,8 +374,29 @@ type Rule {
     systemId: String!
   ): Boolean!
   description: String
+  globalId: ID!
   id: ID!
   identifier: RuleIdentifier
+
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Fetches a list of objects given a list of IDs.
+  """
+  nodes(
+    """
+    IDs of the objects.
+    """
+    ids: [ID!]!
+  ): [Node]!
   profiles: [Profile!]
   rationale: String
   refId: String!
@@ -151,9 +409,30 @@ type Rule {
 """
 A Rule Identifier
 """
-type RuleIdentifier {
+type RuleIdentifier implements Node {
+  globalId: ID!
   id: ID!
   label: String!
+
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Fetches a list of objects given a list of IDs.
+  """
+  nodes(
+    """
+    IDs of the objects.
+    """
+    ids: [ID!]!
+  ): [Node]!
   rule: Rule
   system: String!
 }
@@ -161,23 +440,45 @@ type RuleIdentifier {
 """
 An OpenSCAP Rule Reference
 """
-type RuleReference {
+type RuleReference implements Node {
+  globalId: ID!
   href: String!
   id: ID!
   label: String!
+
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Fetches a list of objects given a list of IDs.
+  """
+  nodes(
+    """
+    IDs of the objects.
+    """
+    ids: [ID!]!
+  ): [Node]!
   rules: [Rule!]
 }
 
 """
 A System registered in Insights Compliance
 """
-type System {
+type System implements Node {
   compliant(
     """
     Filter results by profile ID
     """
     profileId: String
   ): Boolean!
+  globalId: ID!
   id: ID!
   lastScanned(
     """
@@ -186,6 +487,26 @@ type System {
     profileId: String
   ): String
   name: String!
+
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Fetches a list of objects given a list of IDs.
+  """
+  nodes(
+    """
+    IDs of the objects.
+    """
+    ids: [ID!]!
+  ): [Node]!
   profileNames: String!
   profiles: [Profile!]
 
@@ -205,6 +526,42 @@ type System {
     """
     profileId: String
   ): Int!
+}
+
+"""
+The connection type for System.
+"""
+type SystemConnection {
+  """
+  A list of edges.
+  """
+  edges: [SystemEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [System]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type SystemEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: System
 }
 
 """

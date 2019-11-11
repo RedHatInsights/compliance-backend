@@ -1,5 +1,10 @@
+# frozen_string_literal: true
+
 module Resolvers
+  # Base class for resolvers
   class Generic
+    attr_reader :type
+
     def initialize(type)
       @type = type
     end
@@ -8,14 +13,20 @@ module Resolvers
       new(type)
     end
 
+    def record
+      return unless model_class
+
+      base_class.include(Resolvers::Concerns::Record)
+    end
+
     def collection
       return unless model_class
+
       base_class.include(Resolvers::Concerns::Collection)
     end
 
     private
 
-    attr_reader :type
     delegate :model_class, to: :type
 
     def base_class

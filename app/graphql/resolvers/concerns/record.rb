@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Resolvers
   module Concerns
+    # Contains fields and methods related with GraphQL Relay record field
     module Record
       extend ActiveSupport::Concern
 
@@ -10,7 +13,7 @@ module Resolvers
       end
 
       def resolve(id:)
-        RecordLoader.for(self.class::MODEL_CLASS).load_by_global_id(id)
+        ::RecordLoader.for(self.class::MODEL_CLASS).load_by_global_id(id)
       end
     end
   end

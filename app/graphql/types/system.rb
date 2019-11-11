@@ -3,6 +3,7 @@
 module Types
   # Definition of the System GraphQL type
   class System < Types::BaseObject
+    model_class ::Host
     graphql_name 'System'
     description 'A System registered in Insights Compliance'
 
@@ -31,9 +32,7 @@ module Types
     end
 
     def profiles(lookahead:)
-      if [:rulesPassed, :rulesFailed, :compliant, :lastScanned].any? { |option| lookahead.selects?(option) }
-        context[:parent_system_id] = object.id
-      end
+      context_parent(lookahead)
       object.profiles
     end
 
@@ -78,6 +77,15 @@ module Types
       end
 
       rule_results.maximum(:end_time)&.iso8601 || 'Never'
+    end
+
+    private
+
+    def context_parent(lookahead)
+      profile_fields = %i[rulesPassed rulesFailed compliant lastScanned]
+      return unless profile_fields.any? { |field| lookahead.selects?(field) }
+
+      context[:parent_system_id] = object.id
     end
   end
 end
