@@ -3,12 +3,13 @@
 module Types
   # Definition of the System GraphQL type
   class System < Types::BaseObject
+    model_class ::Host
     graphql_name 'System'
     description 'A System registered in Insights Compliance'
 
     field :id, ID, null: false
     field :name, String, null: false
-    field :profiles, [::Types::Profile], null: true
+    field :profiles, [::Types::Profile], null: true, extras: [:lookahead]
     field :compliant, Boolean, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
@@ -28,6 +29,11 @@ module Types
     field :last_scanned, String, null: true do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
+    end
+
+    def profiles(lookahead:)
+      context_parent(lookahead)
+      object.profiles
     end
 
     def compliant(args = {})
@@ -71,6 +77,15 @@ module Types
       end
 
       rule_results.maximum(:end_time)&.iso8601 || 'Never'
+    end
+
+    private
+
+    def context_parent(lookahead)
+      profile_fields = %i[rulesPassed rulesFailed compliant lastScanned]
+      return unless profile_fields.any? { |field| lookahead.selects?(field) }
+
+      context[:parent_system_id] = object.id
     end
   end
 end
