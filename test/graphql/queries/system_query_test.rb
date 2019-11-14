@@ -110,4 +110,145 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert result['data']['allSystems'].first['lastScanned']
     assert result['data']['allSystems'].first['compliant']
   end
+
+  test 'query children profile only returns profiles owned by host' do
+    query = <<-GRAPHQL
+    query getSystems {
+        systems {
+            edges {
+                node {
+                    id
+                    name
+                    profiles {
+                        id
+                        name
+                        rulesPassed
+                        rulesFailed
+                        lastScanned
+                        compliant
+                    }
+                }
+            }
+        }
+    }
+    GRAPHQL
+
+    setup_two_hosts
+    result = Schema.execute(
+      query,
+      context: { current_user: users(:test) }
+    )
+
+    hosts = result['data']['systems']['edges']
+    assert_equal 2, hosts.count
+    hosts.each do |graphql_host|
+      host = Host.find(graphql_host['node']['id'])
+      graphql_host['node']['profiles'].each do |graphql_profile|
+        assert host.profiles.map(&:name).include? graphql_profile['name']
+        profile = Profile.find(graphql_profile['id'])
+        assert_equal host.rules_passed(profile), graphql_profile['rulesPassed']
+        assert_equal host.rules_failed(profile), graphql_profile['rulesFailed']
+      end
+    end
+  end
+
+  test 'page info can be obtained on system query' do
+    query = <<-GRAPHQL
+    query getSystems($first: Int) {
+        systems(first: $first) {
+            totalCount,
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+            }
+            edges {
+                node {
+                    id
+                    name
+                }
+            }
+        }
+    }
+    GRAPHQL
+
+    setup_two_hosts
+    result = Schema.execute(
+      query,
+      variables: { first: 1 },
+      context: { current_user: users(:test) }
+    )['data']
+
+    assert_equal false, result['systems']['pageInfo']['hasPreviousPage']
+    assert_equal true, result['systems']['pageInfo']['hasNextPage']
+  end
+
+  test 'limit and offset paginate the query' do
+    query = <<-GRAPHQL
+    query getSystems($perPage: Int, $page: Int) {
+        systems(limit: $perPage, offset: $page) {
+            totalCount,
+            edges {
+                node {
+                    id
+                    name
+                }
+            }
+        }
+    }
+    GRAPHQL
+
+    setup_two_hosts
+    result = Schema.execute(
+      query,
+      variables: { perPage: 1, page: 1 },
+      context: { current_user: users(:test) }
+    )['data']
+
+    assert_equal users(:test).account.hosts.count,
+                 result['systems']['totalCount']
+    assert_equal 1, result['systems']['edges'].count
+  end
+
+  test 'search is applied to results and total count refers to search' do
+    query = <<-GRAPHQL
+    query getSystems($search: String) {
+        systems(search: $search) {
+            totalCount
+            edges {
+                node {
+                    id
+                    name
+                }
+            }
+        }
+    }
+    GRAPHQL
+    setup_two_hosts
+    result = Schema.execute(
+      query,
+      variables: { search: "profile_id = #{profiles(:one).id}" },
+      context: { current_user: users(:test) }
+    )['data']
+    graphql_host = Host.find(result['systems']['edges'].first['node']['id'])
+    assert_not_equal users(:test).account.hosts.count,
+                     result['systems']['totalCount']
+    assert_equal 1, result['systems']['totalCount']
+    assert graphql_host.profiles.pluck(:id).include?(profiles(:one).id)
+  end
+
+  private
+
+  # rubocop:disable AbcSize
+  def setup_two_hosts
+    hosts(:one).profiles << profiles(:one)
+    hosts(:two).profiles << profiles(:two)
+    rule_results(:one).update host: hosts(:one), rule: rules(:one)
+    rule_results(:two).update host: hosts(:one), rule: rules(:two)
+    profiles(:one).rules << rules(:one)
+    profiles(:two).rules << rules(:two)
+    hosts(:two).update(account: accounts(:test))
+  end
+  # rubocop:enable AbcSize
 end
