@@ -5,7 +5,7 @@ module Xccdf
   module RuleResults
     def save_rule_results
       @rule_results = selected_rule_results.map do |op_rule_result|
-        RuleResult.from_openscap_parser(
+        ::RuleResult.from_openscap_parser(
           op_rule_result,
           rule_ids: rule_ids, host_id: @host.id,
           start_time: @op_test_result.start_time.in_time_zone,
@@ -13,7 +13,7 @@ module Xccdf
         )
       end
 
-      RuleResult.import!(@rule_results.select(&:new_record?), ignore: true)
+      ::RuleResult.import!(@rule_results.select(&:new_record?), ignore: true)
     end
 
     private
