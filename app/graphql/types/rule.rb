@@ -28,7 +28,8 @@ module Types
     def references(lookahead:)
       selected_columns = lookahead.selections.map(&:name) &
                          ::RuleReference.column_names.map(&:to_sym)
-      object.references.pluck(selected_columns).map do |reference|
+      object.references.distinct.reorder('')
+            .pluck(selected_columns).map do |reference|
         selected_columns.zip([reference].flatten).to_h
       end
     end
