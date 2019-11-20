@@ -8,8 +8,6 @@ class Profile < ApplicationRecord
   has_many :rules, through: :profile_rules, source: :rule
   has_many :profile_hosts, dependent: :delete_all
   has_many :hosts, through: :profile_hosts, source: :host
-  has_many :profile_imagestreams, dependent: :destroy
-  has_many :imagestreams, through: :profile_imagestreams, source: :imagestream
   belongs_to :account, optional: true
   belongs_to :business_objective, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
