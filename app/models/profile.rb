@@ -104,6 +104,8 @@ class Profile < ApplicationRecord
     new_profile = in_account(account)
     if new_profile.nil?
       (new_profile = dup).update!(account: account, hosts: [host])
+    else
+      new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
     new_profile.add_rules_from(profile: self)
     new_profile
