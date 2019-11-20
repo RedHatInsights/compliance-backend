@@ -79,4 +79,33 @@ class ProfileTest < ActiveSupport::TestCase
     profiles(:one).update(business_objective: nil)
     assert_empty BusinessObjective.where(title: 'abcd')
   end
+
+  context 'cloning profile to account' do
+    should 'create host relation when the profile is created' do
+      assert_difference('ProfileHost.count', 1) do
+        cloned_profile = profiles(:one).clone_to(
+          account: accounts(:one), host: hosts(:two)
+        )
+        assert hosts(:one).profiles.include?(cloned_profile)
+      end
+    end
+
+    should 'create host relation even if profile is already created' do
+      assert_difference('ProfileHost.count', 1) do
+        cloned_profile = profiles(:two).clone_to(
+          account: accounts(:one), host: hosts(:one)
+        )
+        assert hosts(:one).profiles.include?(cloned_profile)
+      end
+    end
+
+    should 'not create host relation if host is already in profile' do
+      assert_difference('ProfileHost.count', 0) do
+        cloned_profile = profiles(:one).clone_to(
+          account: accounts(:one), host: hosts(:one)
+        )
+        assert hosts(:one).profiles.include?(cloned_profile)
+      end
+    end
+  end
 end
