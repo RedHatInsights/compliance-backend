@@ -6,8 +6,6 @@ Rails.application.routes.draw do
     resources :rule_results, only: [:index]
     resources :systems, only: [:index, :destroy]
     resources :rules, only: [:index, :show]
-    resources :openshift_connections, only: [:create]
-    resources :imagestreams, only: [:create]
     mount Rswag::Api::Engine => '/'
     mount Rswag::Ui::Engine => '/'
     get 'openapi' => 'application#openapi'
