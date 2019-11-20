@@ -1,6 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  api_url: api.example.com
-  registry_api_url: registry.example.com
-  username: testuser
