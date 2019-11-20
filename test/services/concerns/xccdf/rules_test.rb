@@ -4,7 +4,7 @@ require 'test_helper'
 require 'xccdf/rules'
 
 class RulesTest < ActiveSupport::TestCase
-  class Mock
+  class MockParser
     include Xccdf::Profiles
     include Xccdf::Rules
     include Xccdf::ProfileRules
@@ -22,7 +22,7 @@ class RulesTest < ActiveSupport::TestCase
   end
 
   setup do
-    @mock = Mock.new(file_fixture('xccdf_report.xml').read)
+    @mock = MockParser.new(file_fixture('xccdf_report.xml').read)
     @mock.benchmark = benchmarks(:one)
     @mock.account = accounts(:test)
   end
@@ -33,12 +33,19 @@ class RulesTest < ActiveSupport::TestCase
     end
   end
 
-  test 'returns rules saved in the report' do
+  test 'returns only rules saved with the report' do
+    original_rule = ::Rule.from_openscap_parser(@mock.op_rules.sample)
+    @mock.save_rules
+    assert(@mock.rules.select { |rule| rule.id == original_rule.ref_id })
+    assert ::Rule.where(ref_id: original_rule.ref_id).present?
+  end
+
+  test 'does not return rules in the report that were saved previously' do
     rule = Rule.from_openscap_parser(@mock.op_rules.sample,
                                      benchmark_id: @mock.benchmark.id)
     assert rule.save
     @mock.save_rules
-    assert_includes @mock.rules, rule
+    assert_not_includes @mock.rules, rule
   end
 
   test 'save all rules and add profiles to pre existing one' do
@@ -56,6 +63,7 @@ class RulesTest < ActiveSupport::TestCase
       @mock.save_rules
     end
 
+    @mock.rules << rule
     assert_difference('ProfileRule.count', 74) do
       @mock.save_profile_rules
     end

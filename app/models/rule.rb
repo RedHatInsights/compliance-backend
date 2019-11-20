@@ -38,18 +38,27 @@ class Rule < ApplicationRecord
     joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
   }
 
-  def self.from_openscap_parser(op_rule, benchmark_id: nil)
-    rule = find_or_initialize_by(ref_id: op_rule.id,
-                                 benchmark_id: benchmark_id)
+  class << self
+    def from_openscap_parser(op_rule, benchmark_id: nil)
+      rule = find_or_initialize_by(ref_id: op_rule.id,
+                                   benchmark_id: benchmark_id)
 
-    rule.op_source = op_rule
+      rule.op_source = op_rule
 
-    rule.assign_attributes(title: op_rule.title,
-                           description: op_rule.description,
-                           rationale: op_rule.rationale,
-                           severity: op_rule.severity)
+      rule.assign_attributes(title: op_rule.title,
+                             description: op_rule.description,
+                             rationale: op_rule.rationale,
+                             severity: op_rule.severity)
 
-    rule
+      rule
+    end
+
+    def new_from_openscap_parser(op_rules, benchmark_id: nil)
+      preexisting_rules = ::Rule.where(
+        ref_id: op_rules.map(&:id), benchmark_id: benchmark_id
+      ).pluck(:ref_id)
+      op_rules.reject { |rule| preexisting_rules.include?(rule.id) }
+    end
   end
 
   # Disabling MethodLength because it measures things wrong

@@ -7,7 +7,9 @@ module Xccdf
 
     included do
       def save_rule_references
-        @rule_references ||= @op_rule_references.map do |op_reference|
+        @rule_references ||= RuleReference.new_from_openscap_parser(
+          @op_rule_references
+        ).map do |op_reference|
           ::RuleReference.from_openscap_parser(op_reference)
         end
 
@@ -17,7 +19,7 @@ module Xccdf
       private
 
       def new_rule_references
-        @new_rule_references ||= @rule_references.select(&:new_record?)
+        @rule_references.select(&:new_record?)
       end
     end
   end

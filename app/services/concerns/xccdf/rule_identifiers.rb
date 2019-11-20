@@ -7,7 +7,7 @@ module Xccdf
 
     included do
       def save_rule_identifiers
-        @rule_identifiers ||= @new_rules.map do |rule|
+        @rule_identifiers ||= new_rules_with_new_identifiers.map do |rule|
           ::RuleIdentifier.from_openscap_parser(rule.op_source.identifier,
                                                 rule.id)
         end.compact
@@ -15,10 +15,19 @@ module Xccdf
         ::RuleIdentifier.import!(new_rule_identifiers, ignore: true)
       end
 
+      def new_rules_with_new_identifiers
+        preexisting_identifiers = RuleIdentifier
+                                  .preexisting_from_oscap_parser(@new_rules)
+                                  .pluck(:label)
+        @new_rules.reject do |rule|
+          preexisting_identifiers.include?(rule.op_source.identifier.label)
+        end
+      end
+
       private
 
       def new_rule_identifiers
-        @new_rule_identifiers ||= @rule_identifiers.select(&:new_record?)
+        @rule_identifiers.select(&:new_record?)
       end
     end
   end

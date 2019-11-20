@@ -7,7 +7,9 @@ module Xccdf
 
     included do
       def save_rules
-        @rules ||= @op_rules.map do |op_rule|
+        @rules ||= Rule.new_from_openscap_parser(
+          @op_rules, benchmark_id: @benchmark&.id
+        ).map do |op_rule|
           ::Rule.from_openscap_parser(op_rule, benchmark_id: @benchmark&.id)
         end
 

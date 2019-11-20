@@ -28,6 +28,8 @@ services:
   reports-consumer:
     image: compliance-backend-rails
     restart: on-failure
+    tty: true
+    stdin_open: true
     command: bundle exec racecar -l log/consumer.log ComplianceReportsConsumer
     volumes:
       - .:/app:z
@@ -35,6 +37,7 @@ services:
       - SETTINGS__REDIS_URL=redis:6379
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DATABASE_SERVICE_NAME=postgres
+      - RAILS_LOG_TO_STDOUT=true
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_TEST_DATABASE=compliance_test
@@ -63,6 +66,8 @@ services:
   sidekiq:
     image: compliance-backend-rails
     restart: on-failure
+    tty: true
+    stdin_open: true
     volumes:
       - .:/app:z
     depends_on:

@@ -211,6 +211,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
 
     should 'save new rules in the database, ignore old rules' do
+      # 2 pre-existing rules
       Rule.new(
         ref_id: @arbitrary_rules[0],
         benchmark: @report_parser.benchmark
@@ -220,17 +221,19 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         benchmark: @report_parser.benchmark
       ).save(validate: false)
 
+      assert_equal 367, @report_parser.op_rules.count
       assert_difference('Rule.count', 365) do
         @report_parser.save_rules
       end
+      assert_equal @report_parser.op_rules.count - 2, @report_parser.rules.count
 
       @report_parser.rules = nil
-
+      # All rules already exist so none are saved
       assert_difference('Rule.count', 0) do
         @report_parser.save_rules
       end
 
-      assert_equal @report_parser.op_rules.count, @report_parser.rules.count
+      assert_equal 0, @report_parser.rules.count
     end
 
     should 'not try to append already assigned profiles to a rule' do
