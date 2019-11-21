@@ -22,6 +22,8 @@ class Profile < ApplicationRecord
 
   after_update :destroy_orphaned_business_objective
 
+  scope :canonical, lambda { where(account_id: nil) }
+
   def self.from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
     profile = find_or_initialize_by(
       ref_id: op_profile.id,
