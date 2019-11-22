@@ -18,6 +18,7 @@ module Xccdf
 
       def save_all_benchmark_info
         return if benchmark_saved?
+
         save_benchmark
         save_profiles
         save_rules
