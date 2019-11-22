@@ -20,9 +20,9 @@ module Xccdf
     private
 
     def test_result_profile
-      @profiles.find do |profile|
-        profile.ref_id == @test_result_file.test_result.profile_id
-      end
+      ::Profile.canonical
+               .find_by(ref_id: @test_result_file.test_result.profile_id,
+                        benchmark: @benchmark)
     end
 
     def inventory_host

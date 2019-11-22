@@ -19,7 +19,9 @@ module Xccdf
     private
 
     def rule_ids
-      @rule_ids ||= @rules.map { |r| [r.ref_id, r.id] }.to_h
+      @rule_ids ||= Rule.where(
+        benchmark: @benchmark, ref_id: selected_rule_results.map(&:id)
+      ).pluck(:ref_id, :id).to_h
     end
 
     def selected_rule_results

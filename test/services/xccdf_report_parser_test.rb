@@ -6,7 +6,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   class TestParser < ::XccdfReportParser
     attr_accessor :op_benchmark, :op_test_result, :op_profiles, :op_rules,
                   :op_rule_results, :rules
-    attr_reader :benchmark, :test_result_file, :host, :rule_results, :profiles
+    attr_reader :test_result_file, :host, :rule_results, :profiles
   end
 
   setup do
