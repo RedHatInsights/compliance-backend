@@ -17,15 +17,14 @@ module Xccdf
       include ::Xccdf::RuleResults
 
       def save_all_benchmark_info
-        unless benchmark_saved? # rubocop:disable Style/GuardClause
-          save_benchmark
-          save_profiles
-          save_rules
-          save_rule_identifiers
-          save_profile_rules
-          save_rule_references
-          save_rule_references_rules
-        end
+        return if benchmark_saved?
+        save_benchmark
+        save_profiles
+        save_rules
+        save_rule_identifiers
+        save_profile_rules
+        save_rule_references
+        save_rule_references_rules
       end
 
       def save_all_test_result_info
