@@ -12,8 +12,6 @@ module Xccdf
     class Mock
       include Xccdf::Benchmarks
 
-      attr_accessor :benchmark
-
       def initialize(op_benchmark)
         @op_benchmark = op_benchmark
       end
@@ -22,7 +20,7 @@ module Xccdf
     test 'save_benchmark' do
       mock = Mock.new(OP_BENCHMARK)
       mock.save_benchmark
-      assert mock.benchmark.persisted?
+      assert mock.benchmark_saved?
     end
   end
 end
