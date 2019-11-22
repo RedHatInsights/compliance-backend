@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # OpenSCAP profile
-class Profile < ApplicationRecord
+class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
 
   has_many :profile_rules, dependent: :delete_all
@@ -22,7 +22,7 @@ class Profile < ApplicationRecord
 
   after_update :destroy_orphaned_business_objective
 
-  scope :canonical, lambda { where(account_id: nil) }
+  scope :canonical, -> { where(account_id: nil) }
 
   def self.from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
     profile = find_or_initialize_by(

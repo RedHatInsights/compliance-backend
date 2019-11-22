@@ -21,8 +21,8 @@ module Xccdf
 
     def test_result_profile
       ::Profile.canonical
-        .find_by(ref_id: @test_result_file.test_result.profile_id,
-                 benchmark: @benchmark)
+               .find_by(ref_id: @test_result_file.test_result.profile_id,
+                        benchmark: @benchmark)
     end
 
     def inventory_host
