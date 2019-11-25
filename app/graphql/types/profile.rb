@@ -60,6 +60,13 @@ module Types
                required: false
     end
 
+    field :rules_batch,
+      Types::Rule.connection_type,
+      null: false,
+      resolve: proc { |object|
+        CollectionLoader.for(object.class, :rules).load(object)
+      }
+
     field :compliant_host_count, Int, null: false
 
     def compliant_host_count

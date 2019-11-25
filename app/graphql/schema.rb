@@ -13,4 +13,6 @@ class Schema < GraphQL::Schema
   use ComplianceTimeout, max_seconds: 20
   query Types::Query
   mutation Types::Mutation
+  lazy_resolve(Promise, :sync)
+  use GraphQL::Batch
 end

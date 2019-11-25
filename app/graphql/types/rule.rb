@@ -21,6 +21,11 @@ module Types
       argument :system_id, String, 'Is a system compliant?', required: true
     end
 
+    field :references_batch,
+      Types::RuleReference.connection_type,
+      null: false,
+      resolve: proc { |object| CollectionLoader.for(object.class, :rule_references).load(object) }
+
     def compliant(system_id:)
       object.compliant?(Host.find(system_id))
     end

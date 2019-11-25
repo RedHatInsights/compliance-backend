@@ -42,6 +42,7 @@ gem 'fast_jsonapi'
 
 # GraphQL support
 gem 'graphql'
+gem 'graphql-batch'
 
 # Pundit
 gem 'pundit'
