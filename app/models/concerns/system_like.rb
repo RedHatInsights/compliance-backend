@@ -29,11 +29,11 @@ module SystemLike
   end
 
   def rules_passed(profile = nil)
-    @rules_passed ||= last_scan_results(profile).count { |result| result }
+    last_scan_results(profile).count { |result| result }
   end
 
   def rules_failed(profile = nil)
-    @rules_failed ||= last_scan_results(profile).count(&:!)
+    last_scan_results(profile).count(&:!)
   end
 
   def compliance_score
