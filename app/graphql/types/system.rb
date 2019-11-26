@@ -33,29 +33,41 @@ module Types
 
     def profiles(lookahead:)
       context_parent(lookahead)
-      object.profiles
+      CollectionLoader.for(object.class, :profiles).load(object).then do |profiles|
+        profiles
+      end
     end
 
     def compliant(args = {})
-      profiles = if args[:profile_id].present?
-                   [::Profile.find(args[:profile_id])]
-                 else
-                   object.profiles
-                 end
-
-      profiles.map { |profile| profile.compliant?(object) }.flatten.all? true
+      if args[:profile_id].present?
+        RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+          [profile].map { |prof| prof.compliant?(object) }.flatten.all? true
+        end
+      else
+        CollectionLoader.for(object.class, :profiles).load(object).then do |profiles|
+          profiles.map { |profile| profile.compliant?(object) }.flatten.all? true
+        end
+      end
     end
 
     def profile_names
-      object.profiles.pluck(:name).join(', ')
+      CollectionLoader.for(object.class, :profiles).load(object).then do |profiles|
+        profiles.pluck(:name).join(', ')
+      end
     end
 
     def rules_passed(args = {})
-      object.rules_passed(::Profile.find_by(id: args[:profile_id]))
+      return object.rules_passed unless args[:profile_id].present?
+      RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+        object.rules_passed(profile)
+      end
     end
 
     def rules_failed(args = {})
-      object.rules_failed(::Profile.find_by(id: args[:profile_id]))
+      return object.rules_failed unless args[:profile_id].present?
+      RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+        object.rules_failed(profile)
+      end
     end
 
     def rule_objects_failed
@@ -70,13 +82,18 @@ module Types
 
     def last_scanned(args = {})
       if args[:profile_id].present?
-        rule_ids = ::Profile.find(args[:profile_id]).rules.pluck(:id)
-        rule_results = object.rule_results.where(rule_id: rule_ids)
+        RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+          rule_ids = profile.rules.pluck(:id)
+          # How to pass rule_ids to this collection loader
+          CollectionLoader.for(object.class, :rule_results).load(object).then do |rule_results|
+            rule_results.where(rule_id: rule_ids).maximum(:end_time)&.iso8601 || 'Never'
+          end
+        end
       else
-        rule_results = object.rule_results
+        CollectionLoader.for(object.class, :rule_results).load(object).then do |rule_results|
+          rule_results.maximum(:end_time)&.iso8601 || 'Never'
+        end
       end
-
-      rule_results.maximum(:end_time)&.iso8601 || 'Never'
     end
 
     private

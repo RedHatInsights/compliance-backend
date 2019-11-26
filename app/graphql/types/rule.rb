@@ -18,25 +18,30 @@ module Types
     field :references, [::Types::RuleReference], null: true,
                                                  extras: [:lookahead]
     field :compliant, Boolean, null: false do
-      argument :system_id, String, 'Is a system compliant?', required: true
+      argument :system_id, String, 'Is a system compliant?', required: false
     end
 
-    field :references_batch,
-      Types::RuleReference.connection_type,
-      null: false,
-      resolve: proc { |object| CollectionLoader.for(object.class, :rule_references).load(object) }
 
-    def compliant(system_id:)
-      object.compliant?(Host.find(system_id))
+    def compliant(args = {})
+      RecordLoader.for(Host).load(system_id(args)).then do |host|
+        object.compliant?(host)
+      end
     end
 
     def references(lookahead:)
       selected_columns = lookahead.selections.map(&:name) &
                          ::RuleReference.column_names.map(&:to_sym)
+
       object.references.distinct.reorder('')
-            .pluck(selected_columns).map do |reference|
+        .pluck(selected_columns).map do |reference|
         selected_columns.zip([reference].flatten).to_h
       end
+    end
+
+    private
+
+    def system_id(args)
+      args[:system_id] || context[:parent_system_id]
     end
   end
 end

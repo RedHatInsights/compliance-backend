@@ -23,7 +23,7 @@ module Types
     # rubocop:disable AbcSize
     def rules(args = {})
       selected_columns = (args[:lookahead].selections.map(&:name) &
-                         ::Rule.column_names.map(&:to_sym)) << :id
+                          ::Rule.column_names.map(&:to_sym)) << :id
       host = Host.find(args[:system_id]) if args[:system_id].present?
       rules = object.rules_for_system(host, selected_columns) if host.present?
       rules = object.rules.select(selected_columns) if host.blank?
@@ -60,42 +60,46 @@ module Types
                required: false
     end
 
-    field :rules_batch,
-      Types::Rule.connection_type,
-      null: false,
-      resolve: proc { |object|
-        CollectionLoader.for(object.class, :rules).load(object)
-      }
-
     field :compliant_host_count, Int, null: false
 
     def compliant_host_count
-      object.hosts.count { |host| object.compliant?(host) }
+      CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
+        hosts.count { |host| object.compliant?(host) }
+      end
     end
 
     def total_host_count
-      object.hosts.count
+      CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
+        hosts.count
+      end
     end
 
     def compliant(args = {})
-      object.compliant?(Host.find(system_id(args)))
+      RecordLoader.for(Host).load(system_id(args)).then do |host|
+        object.compliant?(host)
+      end
     end
 
     def rules_passed(args = {})
-      Host.find(system_id(args)).rules_passed(object)
+      RecordLoader.for(Host).load(system_id(args)).then do |host|
+        host.rules_passed(object)
+      end
     end
 
     def rules_failed(args = {})
-      Host.find(system_id(args)).rules_failed(object)
+      RecordLoader.for(Host).load(system_id(args)).then do |host|
+        host.rules_failed(object)
+      end
     end
 
     def last_scanned(args = {})
-      rule_ids = object.rules.pluck(:id)
-      rule_results = RuleResult.where(
-        rule_id: rule_ids,
-        host_id: Host.find(system_id(args)).id
-      )
-      rule_results.maximum(:end_time)&.iso8601 || 'Never'
+      CollectionLoader.for(object.class, :rules).load(object).then do |rules|
+        rule_results = RuleResult.where(
+          rule_id: rules.pluck(:id),
+          host_id: system_id(args)
+        )
+        rule_results.maximum(:end_time)&.iso8601 || 'Never'
+      end
     end
 
     private
