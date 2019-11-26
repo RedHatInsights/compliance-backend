@@ -7,7 +7,9 @@ class RuleResult < ApplicationRecord
   scoped_search on: %i[id rule_id host_id result]
   belongs_to :host
   belongs_to :rule
+  belongs_to :test_result
 
+  validates :test_result, presence: true
   validates :host, presence: true
   validates :rule, presence: true
 

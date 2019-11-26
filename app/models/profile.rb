@@ -8,6 +8,7 @@ class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :rules, through: :profile_rules, source: :rule
   has_many :profile_hosts, dependent: :delete_all
   has_many :hosts, through: :profile_hosts, source: :host
+  has_many :test_results, dependent: :destroy
   belongs_to :account, optional: true
   belongs_to :business_objective, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
@@ -19,6 +20,7 @@ class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validates :compliance_threshold, numericality: true
   validates :account, absence: true, unless: -> { hosts.any? }
   validates :account, presence: true, if: -> { hosts.any? }
+
 
   after_update :destroy_orphaned_business_objective
 
