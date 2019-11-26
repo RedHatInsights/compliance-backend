@@ -66,6 +66,8 @@ class SystemQueryTest < ActiveSupport::TestCase
     profiles(:two).rules << rules(:two)
     hosts(:one).profiles << profiles(:one)
     hosts(:one).profiles << profiles(:two)
+    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
+    test_results(:two).update(profile: profiles(:two), host: hosts(:one))
 
     result = Schema.execute(
       query,
@@ -92,8 +94,14 @@ class SystemQueryTest < ActiveSupport::TestCase
     }
     GRAPHQL
 
-    rule_results(:one).update host: hosts(:one), rule: rules(:one)
-    rule_results(:two).update host: hosts(:one), rule: rules(:two)
+    rule_results(:one).update(
+      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    )
+    rule_results(:two).update(
+      host: hosts(:one), rule: rules(:two), test_result: test_results(:two)
+    )
+    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
+    test_results(:two).update(profile: profiles(:two), host: hosts(:one))
     profiles(:one).rules << rules(:one)
     profiles(:two).rules << rules(:two)
     hosts(:one).profiles << profiles(:one)
@@ -241,14 +249,22 @@ class SystemQueryTest < ActiveSupport::TestCase
   private
 
   # rubocop:disable AbcSize
+  # rubocop:disable MethodLength
   def setup_two_hosts
     hosts(:one).profiles << profiles(:one)
     hosts(:two).profiles << profiles(:two)
-    rule_results(:one).update host: hosts(:one), rule: rules(:one)
-    rule_results(:two).update host: hosts(:one), rule: rules(:two)
+    rule_results(:one).update(
+      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    )
+    rule_results(:two).update(
+      host: hosts(:two), rule: rules(:two), test_result: test_results(:two)
+    )
+    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
+    test_results(:two).update(profile: profiles(:two), host: hosts(:two))
     profiles(:one).rules << rules(:one)
     profiles(:two).rules << rules(:two)
     hosts(:two).update(account: accounts(:test))
   end
   # rubocop:enable AbcSize
+  # rubocop:enable MethodLength
 end

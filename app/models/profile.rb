@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 # OpenSCAP profile
-class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
+class Profile < ApplicationRecord
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
 
   has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
   has_many :profile_hosts, dependent: :delete_all
   has_many :hosts, through: :profile_hosts, source: :host
+  has_many :test_results, dependent: :destroy
   belongs_to :account, optional: true
   belongs_to :business_objective, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
@@ -68,33 +69,17 @@ class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   # Disabling MethodLength because it measures things wrong
   # for a multi-line string SQL query.
-  # rubocop:disable Metrics/MethodLength
   def results(host)
     Rails.cache.fetch("#{id}/#{host.id}/results", expires_in: 1.week) do
-      rule_results = RuleResult.find_by_sql(
-        [
-          'SELECT rule_results.* FROM (
-           SELECT rr2.*,
-              rank() OVER (
-                     PARTITION BY rule_id, host_id
-                     ORDER BY end_time DESC, created_at DESC
-              )
-           FROM rule_results rr2
-           WHERE rr2.host_id = ? AND rr2.result IN (?) AND rr2.rule_id IN
-              (SELECT rules.id FROM rules
-               INNER JOIN profile_rules
-               ON rules.id = profile_rules.rule_id
-               WHERE profile_rules.profile_id = ?)
-          ) rule_results WHERE RANK = 1',
-          host.id, RuleResult::SELECTED, id
-        ]
-      )
+      rule_results = TestResult.where(profile: self, host: host)
+                               .order('created_at DESC')&.first&.rule_results
+      return [] if rule_results.blank?
+
       rule_results.map do |rule_result|
         %w[pass notapplicable notselected].include? rule_result.result
       end
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   def score
     return 1 if hosts.blank?

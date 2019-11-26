@@ -7,9 +7,8 @@ module Xccdf
       @rule_results = selected_op_rule_results.map do |op_rule_result|
         ::RuleResult.from_openscap_parser(
           op_rule_result,
-          rule_ids: rule_ids, host_id: @host.id,
-          start_time: @op_test_result.start_time.in_time_zone,
-          end_time: @op_test_result.end_time.in_time_zone
+          test_result_id: @test_result.id, rule_id: rule_ids[op_rule_result.id],
+          host_id: @host.id
         )
       end
 
