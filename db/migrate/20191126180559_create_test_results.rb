@@ -3,7 +3,7 @@ class CreateTestResults < ActiveRecord::Migration[5.2]
     create_table :test_results, id: :uuid do |t|
       t.datetime :start_time
       t.datetime :end_time
-      t.number_field :score, step: :any
+      t.decimal :score
       t.references :profile, type: :uuid, index: true
       t.references :host, type: :uuid, index: true
 
