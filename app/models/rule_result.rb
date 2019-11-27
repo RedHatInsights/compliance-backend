@@ -20,9 +20,11 @@ class RuleResult < ApplicationRecord
   scope :failed, -> { where(result: FAIL) }
   scope :for_system, ->(host_id) { where(host_id: host_id) }
 
-  def self.from_openscap_parser(op_rule_result, rule_ids: {}, host_id: nil,
+  def self.from_openscap_parser(op_rule_result, test_result,
+                                rule_ids: {}, host_id: nil,
                                 start_time: nil, end_time: nil)
-    find_or_initialize_by(rule_id: rule_ids[op_rule_result.id],
+    find_or_initialize_by(test_result: test_result,
+                          rule_id: rule_ids[op_rule_result.id],
                           host_id: host_id, result: op_rule_result.result,
                           start_time: start_time, end_time: end_time)
   end

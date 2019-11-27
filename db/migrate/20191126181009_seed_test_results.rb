@@ -1,17 +1,23 @@
 class SeedTestResults < ActiveRecord::Migration[5.2]
   def change
+    migrated = 0
     ProfileHost.find_each do |profile_host|
       host = profile_host.host
       profile = profile_host.profile
+      binding.pry if profile.ref_id == "xccdf_org.ssgproject.content_profile_cjis"
       test_result = TestResult.create(
         host: host,
         profile: profile
       )
 
+      puts(" - Migrating results for host #{host.name} - profile #{profile.name}")
+
       rule_result_ids = []
       latest_scan_results(host, profile).each do |rule_result|
         rule_result_ids << rule_result.id
       end
+
+      puts("   - Number of RuleResults found: #{rule_result_ids.count}")
 
       latest_rule_results = RuleResult.where(id: rule_result_ids)
       latest_rule_results.update_all(test_result_id: test_result.id)
@@ -21,7 +27,9 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
         score: compliance_score(host.rules_passed(profile),
                                 host.rules_failed(profile))
       )
+      migrated += 1
     end
+    puts("Finished migration of RuleResult to TestResults: #{migrated}")
   end
 
   def latest_scan_results(host, profile)
@@ -49,5 +57,4 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
     score = (100 * (rules_passed.to_f / (rules_passed + rules_failed)))
     score.nan? ? 0.0 : score
   end
-
 end

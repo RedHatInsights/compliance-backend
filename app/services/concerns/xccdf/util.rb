@@ -15,6 +15,7 @@ module Xccdf
       include ::Xccdf::RuleReferencesRules
       include ::Xccdf::Hosts
       include ::Xccdf::RuleResults
+      include ::Xccdf::TestResult
 
       def save_all_benchmark_info
         return if benchmark_saved?
@@ -31,6 +32,7 @@ module Xccdf
       def save_all_test_result_info
         save_host
         @host_profile = save_profile_host
+        save_test_result
         save_rule_results
         invalidate_cache
       end

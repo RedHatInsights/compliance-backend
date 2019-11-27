@@ -6,7 +6,7 @@ module Xccdf
     def save_rule_results
       @rule_results = selected_rule_results.map do |op_rule_result|
         ::RuleResult.from_openscap_parser(
-          op_rule_result,
+          op_rule_result, @test_result,
           rule_ids: rule_ids, host_id: @host.id,
           start_time: @op_test_result.start_time.in_time_zone,
           end_time: @op_test_result.end_time.in_time_zone
