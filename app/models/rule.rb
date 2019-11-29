@@ -55,19 +55,11 @@ class Rule < ApplicationRecord
   # Disabling MethodLength because it measures things wrong
   # for a multi-line string SQL query.
   # rubocop:disable Metrics/MethodLength
-  def compliant?(host)
+  def compliant?(host, profile)
+    return false if profile.rules.include?(false)
     Rails.cache.fetch("#{id}/#{host.id}/compliant", expires_in: 1.week) do
-      latest_result = RuleResult.find_by_sql(
-        ['SELECT rule_results.* FROM (
-          SELECT rr2.*,
-             rank() OVER (
-                    PARTITION BY rule_id, host_id
-                    ORDER BY end_time DESC, created_at DESC
-             )
-          FROM rule_results rr2
-          WHERE rr2.host_id = ? AND rr2.result IN (?) AND rr2.rule_id = ?
-       ) rule_results WHERE RANK = 1', host.id, RuleResult::SELECTED, id]
-      ).last
+      latest_result = TestResult.where(host: host, profile: profile).
+        sort_by(&:created_at)&.first.rule_results.find_by(rule_id: id)
       return false if latest_result.blank?
 
       %w[pass notapplicable notselected].include? latest_result.result

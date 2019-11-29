@@ -73,7 +73,8 @@ class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
   # rubocop:disable Metrics/MethodLength
   def results(host)
     Rails.cache.fetch("#{id}/#{host.id}/results", expires_in: 1.week) do
-      rule_results = TestResult.where(profile: profile, host: host).sort_by(&:created_at)&.first&.rule_results
+      rule_results = TestResult.where(profile: self, host: host).order('created_at DESC')
+        &.first&.rule_results
       rule_results.map do |rule_result|
         %w[pass notapplicable notselected].include? rule_result.result
       end

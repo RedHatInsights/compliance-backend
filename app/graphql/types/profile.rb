@@ -86,24 +86,24 @@ module Types
     end
 
     def rules_passed(args = {})
-      RecordLoader.for(Host).load(system_id(args)).then do |host|
-        host.rules_passed(object)
+      latest_test_result_batch(args).then do |latest_test_result|
+        rule_results_batch(latest_test_result, %w[pass notapplicable notselected]).then do |rule_results|
+          rule_results.count
+        end
       end
     end
 
     def rules_failed(args = {})
-      RecordLoader.for(Host).load(system_id(args)).then do |host|
-        host.rules_failed(object)
+      latest_test_result_batch(args).then do |latest_test_result|
+        rule_results_batch(latest_test_result, %w[fail]).then do |rule_results|
+          rule_results.count
+        end
       end
     end
 
     def last_scanned(args = {})
-      RecordLoader.for(::Rule, column: :profile_id).load_many(object.id).then do |rules|
-        RecordLoader.for(::RuleResult, column: :host_id, where: { rule_id: rules.pluck(:id) })
-          .load_many(system_id(args)).then do |rule_results|
-          binding.pry
-          rule_results.maximum(:end_time)&.iso8601 || 'Never'
-        end
+      latest_test_result_batch(args).then do |latest_test_result|
+        latest_test_result.end_time&.iso8601 || 'Never'
       end
     end
 
@@ -111,6 +111,23 @@ module Types
 
     def system_id(args)
       args[:system_id] || context[:parent_system_id]
+    end
+
+    def latest_test_result_batch(args)
+      ::RecordLoader.for(
+        ::TestResult,
+        column: :profile_id,
+        where: { host_id: system_id(args) },
+        order: 'created_at DESC'
+      ).load(object.id)
+    end
+
+    def rule_results_batch(latest_test_result, results)
+      ::RecordLoader.for(
+        ::RuleResult,
+        column: :test_result_id,
+        where: { result: results }
+      ).load_many(latest_test_result.id)
     end
 
     def context_parent(lookahead)
