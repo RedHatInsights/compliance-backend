@@ -82,9 +82,6 @@ module Types
     private
 
     def context_parent(lookahead)
-      profile_fields = %i[rulesPassed rulesFailed compliant lastScanned]
-      return unless profile_fields.any? { |field| lookahead.selects?(field) }
-
       context[:parent_system_id] = object.id
     end
   end

@@ -62,6 +62,8 @@ services:
     command: bundle exec prometheus_exporter -a lib/graphql_collector.rb
   sidekiq:
     image: compliance-backend-rails
+    tty: true
+    stdin_open: true
     restart: on-failure
     volumes:
       - .:/app:z
