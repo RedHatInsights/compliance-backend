@@ -143,7 +143,7 @@ type Profile implements Node {
   complianceThreshold: Float!
   compliant(
     """
-    Is a system compliant?
+    Is a system compliant with this profile?
     """
     systemId: String
   ): Boolean!
@@ -413,14 +413,19 @@ A Rule registered in Insights Compliance
 type Rule implements Node {
   compliant(
     """
+    Is a system compliant with this profile?
+    """
+    profileId: String
+
+    """
     Is a system compliant?
     """
-    systemId: String!
+    systemId: String
   ): Boolean!
   description: String
   globalId: ID!
   id: ID!
-  identifier: RuleIdentifier
+  identifier: String
 
   """
   Fetches an object given its ID.
@@ -444,72 +449,10 @@ type Rule implements Node {
   profiles: [Profile!]
   rationale: String
   refId: String!
-  references: [RuleReference!]
+  references: String
   remediationAvailable: Boolean!
   severity: String!
   title: String!
-}
-
-"""
-A Rule Identifier
-"""
-type RuleIdentifier implements Node {
-  globalId: ID!
-  id: ID!
-  label: String!
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
-  rule: Rule
-  system: String!
-}
-
-"""
-An OpenSCAP Rule Reference
-"""
-type RuleReference implements Node {
-  globalId: ID!
-  href: String!
-  id: ID!
-  label: String!
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
-  rules: [Rule!]
 }
 
 """
