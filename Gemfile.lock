@@ -355,7 +355,7 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   pry-remote
-  puma (~> 3.11)
+  puma (~> 3.12)
   pundit
   racecar
   rack-cors
