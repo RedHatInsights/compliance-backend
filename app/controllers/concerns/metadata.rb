@@ -22,7 +22,7 @@ module Metadata
     end
 
     def links(last_offset)
-      base_url = "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}"\
+      base_url = "#{path_prefix}/#{ENV['APP_NAME']}"\
         "/#{controller_name}"
       {
         first: "#{base_url}?limit=#{pagination_limit}&offset=1",
@@ -30,6 +30,10 @@ module Metadata
         previous: previous_link(base_url, last_offset),
         next: next_link(base_url, last_offset)
       }.compact
+    end
+
+    def path_prefix
+      request.fullpath[%r{(/(\w+))+/compliance}].sub(%r{/compliance}, '')
     end
 
     def previous_link(base_url, last_offset)
