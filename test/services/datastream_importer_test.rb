@@ -11,6 +11,7 @@ class DatastreamImporterTest < ActiveSupport::TestCase
   test 'datastream import' do
     importer = DatastreamImporter.new(DATASTREAM_FILE)
     importer.expects(:save_all_benchmark_info)
+    ENV['JOBS_ACCOUNT_NUMBER'] ||= Account.first.account_number
     importer.import!
   end
 end
