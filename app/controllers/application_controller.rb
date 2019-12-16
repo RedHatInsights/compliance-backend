@@ -11,7 +11,7 @@ class ApplicationController < ActionController::API
   include Search
 
   def openapi
-    send_file Rails.root.join('swagger', 'v1', 'openapi.v3.yaml')
+    send_file Rails.root.join('swagger/v1/openapi.v3.yaml')
   end
 
   rescue_from Pundit::NotAuthorizedError do

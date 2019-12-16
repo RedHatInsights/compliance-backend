@@ -4,7 +4,7 @@ require 'rake/testtask'
 
 # https://github.com/presidentbeef/brakeman
 desc 'Scan for security vulnerabilities using brakeman'
-task :brakeman do
+task brakeman: :environment do
   require 'brakeman/commandline'
   Brakeman::Commandline.start(
     {
