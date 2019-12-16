@@ -74,8 +74,6 @@ gem 'openscap_parser', '~> 1.0.0'
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'capybara'
-  gem 'capybara-webkit'
   gem 'codecov', :require => false
   gem 'minitest-reporters'
   gem 'mocha'
