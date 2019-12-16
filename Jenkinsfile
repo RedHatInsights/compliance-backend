@@ -18,12 +18,20 @@ def runStages() {
         checkout scm
 
         gitUtils.stageWithContext("Bundle-install", shortenURL = false) {
-            sh "bundle install --path /tmp/bundle"
+            bundleStatus = sh(script: "bundle install --path /tmp/bundle", returnStatus: true)
+        }
+
+        if (bundleStatus != 0) {
+          error("Bundle-install failed")
         }
 
         gitUtils.stageWithContext("Prepare-db", shortenURL = false) {
-            sh "bundle exec rake db:migrate --trace"
+            migrateStatus = sh(script: "bundle exec rake db:migrate --trace", returnStatus: true)
             sh "bundle exec rake db:test:prepare"
+        }
+
+        if (migrateStatus != 0) {
+          error("DB migrations failed")
         }
 
         gitUtils.stageWithContext("Unit-tests", shortenURL = false) {
