@@ -12,12 +12,7 @@ require 'action_controller/railtie'
 require 'action_mailer/railtie'
 require 'action_view/railtie'
 require 'action_cable/engine'
-# require "sprockets/railtie"
 require 'rails/test_unit/railtie'
-
-if Rails.env.development?
-  require 'sprockets/railtie'
-end
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
