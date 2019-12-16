@@ -86,6 +86,7 @@ group :development, :test do
   gem 'shoulda-context'
   gem 'shoulda-matchers'
   gem 'dotenv-rails'
+  gem 'irb', '>= 1.2'
 end
 
 group :development do
