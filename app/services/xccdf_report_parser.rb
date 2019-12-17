@@ -35,9 +35,9 @@ class XccdfReportParser
   end
 
   def check_report_format
-    raise WrongFormatError unless @test_result_file.parsed_xml.at_xpath(
-      './/TestResult/benchmark/@href'
-    ).value.match?('.*-ds.xml')
+    raise WrongFormatError unless @test_result_file.benchmark.id.match?(
+      'xccdf_org.ssgproject.content_benchmark_'
+    )
   end
 
   def save_all
