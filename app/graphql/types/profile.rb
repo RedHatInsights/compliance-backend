@@ -24,7 +24,7 @@ module Types
     def rules(args = {})
       selected_columns = (args[:lookahead].selections.map(&:name) &
                          ::Rule.column_names.map(&:to_sym)) << :id
-      host = Host.find(args[:system_id]) if args[:system_id].present?
+      host = ::Host.find(args[:system_id]) if args[:system_id].present?
       rules = object.rules_for_system(host, selected_columns) if host.present?
       rules = object.rules.select(selected_columns) if host.blank?
       rules = rules.with_identifier(args[:identifier]) if args.dig(:identifier)
@@ -71,22 +71,22 @@ module Types
     end
 
     def compliant(args = {})
-      object.compliant?(Host.find(system_id(args)))
+      object.compliant?(::Host.find(system_id(args)))
     end
 
     def rules_passed(args = {})
-      Host.find(system_id(args)).rules_passed(object)
+      ::Host.find(system_id(args)).rules_passed(object)
     end
 
     def rules_failed(args = {})
-      Host.find(system_id(args)).rules_failed(object)
+      ::Host.find(system_id(args)).rules_failed(object)
     end
 
     def last_scanned(args = {})
       rule_ids = object.rules.pluck(:id)
-      rule_results = RuleResult.where(
+      rule_results = ::RuleResult.where(
         rule_id: rule_ids,
-        host_id: Host.find(system_id(args)).id
+        host_id: ::Host.find(system_id(args)).id
       )
       rule_results.maximum(:end_time)&.iso8601 || 'Never'
     end
