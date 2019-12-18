@@ -24,16 +24,6 @@ class XccdfReportParser
     check_report_format
   end
 
-  def set_openscap_parser_data
-    @op_benchmark = @test_result_file.benchmark
-    @op_test_result = @test_result_file.test_result
-    @op_profiles = @op_benchmark.profiles
-    @op_rules = @op_benchmark.rules
-    @op_rule_references =
-      @op_benchmark.rule_references.reject { |rr| rr.label.empty? }
-    @op_rule_results = @op_test_result.rule_results
-  end
-
   def check_report_format
     raise WrongFormatError unless @test_result_file.benchmark.id.match?(
       'xccdf_org.ssgproject.content_benchmark_'
