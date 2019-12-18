@@ -30,9 +30,20 @@ module Xccdf
 
       def save_all_test_result_info
         save_host
-        @host_profile = save_profile_host
+        save_profile_host
         save_rule_results
+        associate_rules_from_rule_results
         invalidate_cache
+      end
+
+      def set_openscap_parser_data
+        @op_benchmark = @test_result_file.benchmark
+        @op_test_result = @test_result_file.test_result
+        @op_profiles = @op_benchmark.profiles
+        @op_rules = @op_benchmark.rules
+        @op_rule_references =
+          @op_benchmark.rule_references.reject { |rr| rr.label.empty? }
+        @op_rule_results = @op_test_result.rule_results
       end
 
       private
