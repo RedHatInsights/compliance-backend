@@ -22,7 +22,7 @@ module Types
     end
 
     def compliant(system_id:)
-      object.compliant?(Host.find(system_id))
+      object.compliant?(::Host.find(system_id))
     end
 
     def references(lookahead:)
