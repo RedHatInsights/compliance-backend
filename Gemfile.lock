@@ -201,7 +201,7 @@ GEM
     racecar (1.0.0)
       king_konf (~> 0.3.7)
       ruby-kafka (~> 0.7.8)
-    rack (2.0.7)
+    rack (2.0.8)
     rack-cors (1.1.0)
       rack (>= 2.0.0)
     rack-protection (2.0.7)
