@@ -24,12 +24,11 @@ module Types
     end
 
     def compliant(args = {})
-      return false unless system_id(args) &&
-                          profile_id(args) &&
-                          context[:rule_results][object.id][profile_id(args)]
-
-      latest_result = context[:rule_results][object.id][profile_id(args)]
-      %w[pass notapplicable notselected].include? latest_result
+      system_id(args) &&
+        profile_id(args) &&
+        %w[pass notapplicable notselected].include?(
+          context[:rule_results][object.id][profile_id(args)]
+        )
     end
 
     def references
@@ -39,11 +38,15 @@ module Types
           references.map { |ref| [ref.href, ref.label] }.to_json
         end
       else
-        ::RecordLoader.for(::RuleReference)
-                      .load_many(context[:"rule_references_#{object.id}"])
-                      .then do |references|
-          references.map { |ref| [ref.href, ref.label] }.to_json
-        end
+        references_from_context
+      end
+    end
+
+    def references_from_context
+      ::RecordLoader.for(::RuleReference)
+                    .load_many(context[:"rule_references_#{object.id}"])
+                    .then do |references|
+        references.map { |ref| [ref.href, ref.label] }.to_json
       end
     end
 

@@ -14,7 +14,10 @@ class CollectionLoader < GraphQL::Batch::Loader
       raise TypeError,
             "#{@model} loader can't load association for #{record.class}"
     end
-    return Promise.resolve(read_association(record)) if association_loaded?(record)
+
+    if association_loaded?(record)
+      return Promise.resolve(read_association(record))
+    end
 
     super
   end
@@ -34,7 +37,8 @@ class CollectionLoader < GraphQL::Batch::Loader
   end
 
   def preload_association(records)
-    ::ActiveRecord::Associations::Preloader.new.preload(records, @association_name)
+    ::ActiveRecord::Associations::Preloader.new.preload(records,
+                                                        @association_name)
   end
 
   def read_association(record)

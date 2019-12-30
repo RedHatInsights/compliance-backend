@@ -135,7 +135,7 @@ type PageInfo {
 """
 A Profile registered in Insights Compliance
 """
-type Profile implements Node {
+type Profile implements Node & RulesPreload {
   accountId: ID!
   benchmarkId: ID!
   businessObjective: BusinessObjective
@@ -453,6 +453,9 @@ type Rule implements Node {
   remediationAvailable: Boolean!
   severity: String!
   title: String!
+}
+
+interface RulesPreload {
 }
 
 """
