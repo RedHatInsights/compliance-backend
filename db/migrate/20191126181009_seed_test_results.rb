@@ -4,22 +4,21 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
     ProfileHost.find_each do |profile_host|
       host = profile_host.host
       profile = profile_host.profile
-      test_result = TestResult.create(
-        host: host,
-        profile: profile
-      )
-
       puts(" - Migrating results for host #{host.name}"\
            " - profile #{profile.name}")
-      rule_results_by_start_time = scan_results(host, profile)
-        .group_by(&:start_time)
-      rule_results_by_start_time.each do |start_time, rule_results|
+      rule_results_by_end_time = scan_results(host, profile)
+        .group_by(&:end_time)
+      rule_results_by_end_time.each do |end_time, rule_results|
+        test_result = TestResult.create(
+          host: host,
+          profile: profile
+        )
         rule_result_ids = rule_results.pluck(:id)
         puts("   - Number of RuleResults found: #{rule_result_ids.count}"\
-             " at time #{start_time}")
+             " at time #{end_time}")
         latest_rule_results = RuleResult.where(id: rule_result_ids)
         latest_rule_results.update_all(test_result_id: test_result.id)
-        test_result.update(
+        test_result.update!(
           start_time: latest_rule_results[0].start_time || Time.now.utc,
           end_time: latest_rule_results[0].end_time || Time.now.utc,
           score: compliance_score(host.rules_passed(profile),
