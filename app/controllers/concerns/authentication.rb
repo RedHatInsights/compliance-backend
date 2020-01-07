@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rbac_api'
+
 # Authentication logic for all controllers
 module Authentication
   extend ActiveSupport::Concern
@@ -9,7 +11,7 @@ module Authentication
   end
 
   def authenticate_user
-    return unauthenticated unless identity_header.valid?
+    return unauthenticated unless identity_header.valid? && rbac_allowed?
 
     user = find_or_create_user(identity_header.identity['user']['username'])
     return if performed? || !user.persisted?
@@ -39,6 +41,11 @@ module Authentication
       user = create_user
     end
     user
+  end
+
+  def rbac_allowed?
+    @rbac_api ||= ::RbacApi.new(account_from_header)
+    @rbac_api.check_user
   end
 
   private

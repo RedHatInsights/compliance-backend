@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'webmock/rspec'
 
 RSpec.configure do |config|
   config.swagger_root = Rails.root.to_s + '/swagger'
+
+  config.before(:each) do
+    stub_request(:get, /#{Settings.rbac_url}/)
+      .to_return(status: 200,
+                 body: { 'data': [{ 'permission': 'compliance:*:*' }] }.to_json)
+  end
 
   config.swagger_docs = {
     'v1/openapi.json' => {
