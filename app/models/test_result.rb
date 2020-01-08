@@ -9,10 +9,8 @@ class TestResult < ApplicationRecord
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results
 
-  validates :host_id, presence: true,
-                      uniqueness: { scope: %i[profile_id end_time] }
-  validates :profile_id, presence: true,
-                         uniqueness: { scope: %i[host_id end_time] }
+  validates :host_id, presence: true
+  validates :profile_id, presence: true
 
   def self.latest(profile_id, host_id)
     where(host_id: host_id, profile_id: profile_id)

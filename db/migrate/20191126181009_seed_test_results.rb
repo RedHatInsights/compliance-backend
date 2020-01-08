@@ -9,7 +9,7 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
       rule_results_by_end_time = scan_results(host, profile)
         .group_by(&:end_time)
       rule_results_by_end_time.each do |end_time, rule_results|
-        test_result = TestResult.create(
+        test_result = TestResult.create!(
           host: host,
           profile: profile
         )

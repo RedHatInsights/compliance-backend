@@ -11,6 +11,5 @@ class CreateTestResults < ActiveRecord::Migration[5.2]
     end
 
     add_reference :rule_results, :test_result, type: :uuid, index: true
-    add_index :test_results, %i[profile_id host_id end_time], unique: true
   end
 end
