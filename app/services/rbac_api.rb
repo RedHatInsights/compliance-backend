@@ -2,10 +2,10 @@
 
 # This class is meant to handle calls to the RBAC light API
 class RbacApi
-  def initialize(account)
+  def initialize(b64_identity)
     @url = URI.parse("#{URI.parse(Settings.rbac_url)}"\
                      "#{ENV['PATH_PREFIX']}/rbac/v1/access/")
-    @b64_identity = Base64.strict_encode64(account.fake_identity_header.to_json)
+    @b64_identity = b64_identity
   end
 
   def check_user

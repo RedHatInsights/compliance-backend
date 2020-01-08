@@ -44,7 +44,7 @@ module Authentication
   end
 
   def rbac_allowed?
-    @rbac_api ||= ::RbacApi.new(account_from_header)
+    @rbac_api ||= ::RbacApi.new(request.headers['X-RH-IDENTITY'])
     @rbac_api.check_user
   end
 
