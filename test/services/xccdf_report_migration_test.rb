@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class XCCDFReportMigrationTest < ActiveSupport::TestCase
+  include SilentStream
+
   setup do
     @profile = Profile.create(
       name: 'footitle',
@@ -18,14 +20,18 @@ class XCCDFReportMigrationTest < ActiveSupport::TestCase
       rule
     end
     @host = hosts(:one)
+    test_results(:one).update(profile: @profile, host: @host)
     @rule_results = @rules.map do |rule|
-      RuleResult.create(rule: rule, host: @host, result: 'pass')
+      RuleResult.create(rule: rule, host: @host, result: 'pass',
+                        test_result: test_results(:one))
     end
   end
 
   test 'migration should just rename rules/profiles if no conflict' do
     original_profile_ref_id = @profile.ref_id
-    XCCDFReportMigration.new(Account.new, false).run
+    silence_all do
+      XCCDFReportMigration.new(Account.new, false).run
+    end
     @profile.reload
     @rules.map(&:reload)
     @rule_results.map(&:reload)
@@ -65,7 +71,9 @@ class XCCDFReportMigrationTest < ActiveSupport::TestCase
       rule
     end
     original_profile_ref_id = @profile.ref_id
-    XCCDFReportMigration.new(accounts(:test), false).run
+    silence_all do
+      XCCDFReportMigration.new(accounts(:test), false).run
+    end
     assert_empty Profile.where(ref_id: original_profile_ref_id,
                                account: accounts(:test))
     assert_empty Rule.where(ref_id: @rules.map(&:ref_id))

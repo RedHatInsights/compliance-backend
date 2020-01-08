@@ -21,8 +21,11 @@ class HostTest < ActiveSupport::TestCase
       @host.profiles << profiles(:one)
       rules(:one).profiles << profiles(:one)
       rules(:two).profiles << profiles(:one)
-      RuleResult.create(host: @host, rule: rules(:one), result: 'pass')
-      RuleResult.create(host: @host, rule: rules(:two), result: 'fail')
+      test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+      RuleResult.create(host: @host, rule: rules(:one),
+                        test_result: test_results(:one), result: 'pass')
+      RuleResult.create(host: @host, rule: rules(:two),
+                        test_result: test_results(:one), result: 'fail')
     end
 
     should 'total_rules returns the number of rules' do

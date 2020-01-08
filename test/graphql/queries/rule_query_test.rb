@@ -9,7 +9,10 @@ class RuleQueryTest < ActiveSupport::TestCase
     profiles(:one).update rules: [rules(:one)]
     rules(:one).update rule_identifier: rule_identifiers(:one)
     rules(:one).update rule_references: [rule_references(:one)]
-    rule_results(:one).update rule: rules(:one), host: hosts(:one)
+    rule_results(:one).update(
+      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    )
+    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
   end
 
   test 'rules are filtered by system ID' do

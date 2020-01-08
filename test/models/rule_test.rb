@@ -17,13 +17,15 @@ class RuleTest < ActiveSupport::TestCase
   end
 
   test 'host one is not compliant?' do
-    assert_not rules(:one).compliant?(hosts(:one))
+    assert_not rules(:one).compliant?(hosts(:one), rules(:one).profiles.first)
   end
 
   test 'host one is compliant?' do
-    rule_result = rule_results(:one)
-    RuleResult.expects(:find_by_sql).returns([rule_result])
-    assert rules(:one).compliant?(hosts(:one))
+    rules(:one).profiles << profiles(:one)
+    rule_results(:one).update(host: hosts(:one), rule: rules(:one))
+    test_result = TestResult.create(profile: profiles(:one), host: hosts(:one))
+    test_result.rule_results << rule_results(:one)
+    assert rules(:one).compliant?(hosts(:one), profiles(:one))
   end
 
   test 'rule is found with_references' do

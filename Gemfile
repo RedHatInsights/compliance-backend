@@ -87,6 +87,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'dotenv-rails'
   gem 'irb', '>= 1.2'
+  gem 'silent_stream'
   gem 'webmock'
 end
 

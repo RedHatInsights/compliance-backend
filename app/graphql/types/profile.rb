@@ -24,13 +24,14 @@ module Types
     def rules(args = {})
       selected_columns = (args[:lookahead].selections.map(&:name) &
                          ::Rule.column_names.map(&:to_sym)) << :id
-      host = ::Host.find(args[:system_id]) if args[:system_id].present?
-      rules = object.rules_for_system(host, selected_columns) if host.present?
-      rules = object.rules.select(selected_columns) if host.blank?
+
+      rules = rules_for_system(args, selected_columns) if system_id(args)
+      rules = object.rules.select(selected_columns) if rules.blank?
       rules = rules.with_identifier(args[:identifier]) if args.dig(:identifier)
       rules = rules.with_references(args[:references]) if args.dig(:references)
       rules = lookahead_includes(args[:lookahead], rules,
                                  identifier: :rule_identifier)
+      parent_profile(rules)
       rules
     end
     # rubocop:enable AbcSize
@@ -71,30 +72,49 @@ module Types
     end
 
     def compliant(args = {})
-      object.compliant?(::Host.find(system_id(args)))
+      host_results = latest_test_result(args)&.rule_results
+      host_results.present? &&
+        (
+          host_results.where(result: 'pass').count /
+          host_results.count.to_f
+        ) >=
+          (object.compliance_threshold / 100.0)
     end
 
     def rules_passed(args = {})
-      ::Host.find(system_id(args)).rules_passed(object)
+      return 0 if (@latest_test_result = latest_test_result(args)).blank?
+
+      @latest_test_result.rule_results.passed.count
     end
 
     def rules_failed(args = {})
-      ::Host.find(system_id(args)).rules_failed(object)
+      return 0 if (@latest_test_result = latest_test_result(args)).blank?
+
+      @latest_test_result.rule_results.failed.count
     end
 
     def last_scanned(args = {})
-      rule_ids = object.rules.pluck(:id)
-      rule_results = ::RuleResult.where(
-        rule_id: rule_ids,
-        host_id: ::Host.find(system_id(args)).id
-      )
-      rule_results.maximum(:end_time)&.iso8601 || 'Never'
+      latest_test_result(args)&.end_time&.iso8601 || 'Never'
     end
 
     private
 
     def system_id(args)
       args[:system_id] || context[:parent_system_id]
+    end
+
+    def parent_profile(rules)
+      context[:parent_profile_id] ||= {}
+      rules.each { |rule| context[:parent_profile_id][rule.id] = object.id }
+    end
+
+    def latest_test_result(args)
+      TestResult.latest(object.id, system_id(args))
+    end
+
+    def rules_for_system(args, selected_columns)
+      host = Host.find(system_id(args)) if system_id(args).present?
+      object.rules_for_system(host, selected_columns) if host.present?
     end
   end
 end
