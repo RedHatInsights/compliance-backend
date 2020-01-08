@@ -1,0 +1,9 @@
+one:
+  host_id: one
+  profile_id: one
+  score: 98
+
+two:
+  host_id: two
+  profile_id: two
+  score: 98

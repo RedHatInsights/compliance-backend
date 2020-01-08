@@ -21,8 +21,13 @@ module Types
       argument :system_id, String, 'Is a system compliant?', required: true
     end
 
-    def compliant(system_id:)
-      object.compliant?(::Host.find(system_id))
+    def compliant(args = {})
+      return false unless system_id(args) && profile_id(args)
+
+      object.compliant?(
+        ::Host.find(system_id(args)),
+        ::Profile.find(profile_id(args))
+      )
     end
 
     def references(lookahead:)
@@ -32,6 +37,14 @@ module Types
             .pluck(selected_columns).map do |reference|
         selected_columns.zip([reference].flatten).to_h
       end
+    end
+
+    def profile_id(args)
+      args[:profile_id] || context[:parent_profile_id][object.id]
+    end
+
+    def system_id(args)
+      args[:system_id] || context[:parent_system_id]
     end
   end
 end

@@ -69,14 +69,8 @@ module Types
     end
 
     def last_scanned(args = {})
-      if args[:profile_id].present?
-        rule_ids = ::Profile.find(args[:profile_id]).rules.pluck(:id)
-        rule_results = object.rule_results.where(rule_id: rule_ids)
-      else
-        rule_results = object.rule_results
-      end
-
-      rule_results.maximum(:end_time)&.iso8601 || 'Never'
+      latest_test_result = TestResult.latest(args[:profile_id], object.id)
+      latest_test_result&.end_time&.iso8601 || 'Never'
     end
 
     private

@@ -19,26 +19,34 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'host is compliant if all rules are "pass" or "notapplicable"' do
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                      test_result: test_results(:one))
     RuleResult.create(rule: rules(:two), host: hosts(:one),
-                      result: 'notapplicable')
+                      test_result: test_results(:one), result: 'notapplicable')
     assert profiles(:one).compliant?(hosts(:one))
   end
 
   test 'host is not compliant if some rules are "fail" or "error"' do
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                      test_result: test_results(:one))
     RuleResult.create(rule: rules(:two), host: hosts(:one),
-                      result: 'error')
+                      test_result: test_results(:one), result: 'error')
     assert_not profiles(:one).compliant?(hosts(:one))
 
-    RuleResult.find_by(rule: rules(:two), host: hosts(:one))
+    RuleResult.find_by(rule: rules(:two), host: hosts(:one),
+                       test_result: test_results(:one))
               .update(result: 'fail')
     assert_not profiles(:one).compliant?(hosts(:one))
   end
 
   test 'compliance score in terms of percentage' do
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
-    RuleResult.create(rule: rules(:two), host: hosts(:one), result: 'fail')
+    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                      test_result: test_results(:one))
+    RuleResult.create(rule: rules(:two), host: hosts(:one), result: 'fail',
+                      test_result: test_results(:one))
     assert 0.5, profiles(:one).compliance_score(hosts(:one))
   end
 
@@ -47,7 +55,9 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'score returns at least one decimal' do
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                      test_result: test_results(:one))
     profiles(:one).update(hosts: profiles(:one).hosts + [hosts(:two)],
                           account: accounts(:test))
     assert_equal 0.5, profiles(:one).score
@@ -55,9 +65,11 @@ class ProfileTest < ActiveSupport::TestCase
 
   context 'threshold' do
     setup do
-      RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+      test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+      RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                        test_result: test_results(:one))
       RuleResult.create(rule: rules(:two), host: hosts(:one),
-                        result: 'fail')
+                        test_result: test_results(:one), result: 'fail')
     end
 
     should 'host is compliant if 50% of rules pass with a threshold of 50' do
