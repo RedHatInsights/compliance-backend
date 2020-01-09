@@ -3,11 +3,11 @@
 # Policies for accessing Profiles
 class ProfilePolicy < ApplicationPolicy
   def index?
-    match_account? || record.account_id.blank?
+    match_account? || record.canonical?
   end
 
   def show?
-    match_account? || record.account_id.blank?
+    match_account? || record.canonical?
   end
 
   def update?

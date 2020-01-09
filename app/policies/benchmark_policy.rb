@@ -10,8 +10,7 @@ class BenchmarkPolicy < ApplicationPolicy
     true
   end
 
-  # Only select Rules belonging to profiles visible by the current user
-  # (profile account ID = rule account ID)
+  # All users should see all benchmarks currently
   class Scope < ::ApplicationPolicy::Scope
     def resolve
       scope.all
