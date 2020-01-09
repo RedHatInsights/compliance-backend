@@ -39,6 +39,10 @@ class Profile < ApplicationRecord
     profile
   end
 
+  def canonical?
+    account_id.blank?
+  end
+
   def destroy_orphaned_business_objective
     return unless previous_changes.include?(:business_objective_id) &&
                   previous_changes[:business_objective_id].first.present?

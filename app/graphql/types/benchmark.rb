@@ -7,6 +7,7 @@ module Types
     description 'A representation of a SCAP Security Guide version'
 
     field :id, ID, null: false
+    field :description, String, null: true
     field :title, String, null: false
     field :ref_id, String, null: false
     field :version, String, null: false
