@@ -2,6 +2,7 @@
 A representation of a SCAP Security Guide version
 """
 type Benchmark implements Node {
+  description: String
   globalId: ID!
   id: ID!
 

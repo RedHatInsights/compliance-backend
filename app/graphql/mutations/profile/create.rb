@@ -20,7 +20,7 @@ module Mutations
         original_profile = find_original_profile(args[:clone_from_profile_id])
         profile = ::Profile.new(new_profile_options(args))
         profile.save
-        add_rules_to_profile(original_profile, profile)
+        profile.add_rules_from(profile: original_profile)
         { profile: profile }
       end
 
@@ -32,15 +32,6 @@ module Mutations
           ::Profile.find(profile_id),
           :show?
         )
-      end
-
-      def add_rules_to_profile(original_profile, new_profile)
-        profile_rules = original_profile.profile_rules.map do |profile_rule|
-          new_profile_rule = profile_rule.dup
-          new_profile_rule.profile_id = new_profile.id
-          new_profile_rule
-        end
-        ProfileRule.import!(profile_rules)
       end
 
       def new_profile_options(args)
