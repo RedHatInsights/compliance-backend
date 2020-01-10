@@ -19,7 +19,7 @@ module Mutations
       def resolve(args = {})
         original_profile = find_original_profile(args[:clone_from_profile_id])
         profile = ::Profile.new(new_profile_options(args))
-        profile.save
+        profile.save!
         profile.add_rules_from(profile: original_profile)
         { profile: profile }
       end
