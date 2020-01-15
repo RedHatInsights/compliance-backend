@@ -26,6 +26,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 # Kafka integration
 gem 'racecar'
+gem 'ruby-kafka'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
