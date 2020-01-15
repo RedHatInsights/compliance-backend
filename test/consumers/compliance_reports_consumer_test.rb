@@ -92,4 +92,15 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
     @consumer.process(@message)
     assert_equal 0, ParseReportJob.jobs.size
   end
+
+  test 'payload tracker is notified when a report is received' do
+    @message.stubs(:value).returns({}.to_json)
+    @consumer.stubs(:identity).returns(OpenStruct.new(valid?: true))
+    @consumer.stubs(:download_file)
+    @consumer.stubs(:enqueue_job)
+
+    @consumer.expects(:notify_payload_tracker).with(:received)
+
+    @consumer.process(@message)
+  end
 end
