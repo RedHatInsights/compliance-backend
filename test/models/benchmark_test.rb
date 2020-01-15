@@ -23,5 +23,12 @@ module Xccdf
       assert benchmark.save
       assert_equal benchmark.id, Benchmark.from_openscap_parser(OP_BENCHMARK).id
     end
+
+    test 'inferred_os_major_version' do
+      OP_BENCHMARK[:id] = 'xccdf_org.ssgproject.content_benchmark_RHEL-7'
+      benchmark = Benchmark.from_openscap_parser(OP_BENCHMARK)
+
+      assert_equal '7', benchmark.inferred_os_major_version
+    end
   end
 end
