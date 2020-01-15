@@ -384,6 +384,7 @@ DEPENDENCIES
   rswag-ui
   rubocop
   rubocop-rails
+  ruby-kafka
   scoped_search
   shoulda-context
   shoulda-matchers
