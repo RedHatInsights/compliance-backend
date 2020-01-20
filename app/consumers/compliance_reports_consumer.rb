@@ -14,7 +14,6 @@ class ComplianceReportsConsumer < ApplicationConsumer
 
     download_file
     job = enqueue_job
-    notify_payload_tracker(:received, "File is valid. Job #{job} was enqueued")
   rescue EntitlementError, SafeDownloader::DownloadError => e
     error_message = "Error parsing report: #{message_id} - #{e.message}"
     logger.error error_message
@@ -52,15 +51,15 @@ class ComplianceReportsConsumer < ApplicationConsumer
   end
 
   def enqueue_job
-    if validate == 'success'
-      logger.info "Received message, enqueueing: #{@msg_value}"
+    return unless validate == 'success'
+
+    logger.info "Received message, enqueueing: #{@msg_value}"
+    @report_contents.each do |report|
       job = ParseReportJob.perform_async(
-        ActiveSupport::Gzip.compress(@report_contents), @msg_value
+        ActiveSupport::Gzip.compress(report), @msg_value
       )
       logger.info "Message enqueued: #{message_id} as #{job}"
-      job
-    else
-      logger.error "Error parsing report: #{message_id}"
+      notify_payload_tracker(:received, "File is valid. Job #{job} enqueued")
     end
   end
 
@@ -71,7 +70,9 @@ class ComplianceReportsConsumer < ApplicationConsumer
   end
 
   def validation_message
-    XccdfReportParser.new(@report_contents, @msg_value)
+    @report_contents.each do |report|
+      XccdfReportParser.new(report, @msg_value)
+    end
     'success'
   rescue StandardError => e
     logger.error "Error validating report: #{message_id}"\
