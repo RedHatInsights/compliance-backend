@@ -43,7 +43,7 @@ class SafeDownloader
       when StringIO
         downloaded_file.string
       else
-        IO.read(downloaded_file)
+        ReportsTarReader.new(downloaded_file).reports
       end
     end
 

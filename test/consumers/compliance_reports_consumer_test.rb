@@ -11,7 +11,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
   end
 
   test 'report message is parsed and job is enqueued with request_id' do
-    SafeDownloader.expects(:download).returns('report')
+    SafeDownloader.expects(:download).returns(['report'])
     @consumer.expects(:identity).returns(OpenStruct.new(valid?: true))
              .at_least_once
     @message.expects(:value).returns(
@@ -37,7 +37,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
   end
 
   test 'report message is parsed and job is enqueued with payload_id' do
-    SafeDownloader.expects(:download).returns('report')
+    SafeDownloader.expects(:download).returns(['report'])
     @consumer.expects(:identity).returns(OpenStruct.new(valid?: true))
              .at_least_once
     @message.expects(:value).returns(
@@ -63,7 +63,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
   end
 
   test 'file is deleted even when validation fails' do
-    SafeDownloader.expects(:download).returns('report')
+    SafeDownloader.expects(:download).returns(['report'])
     @consumer.expects(:identity).returns(OpenStruct.new(valid?: true))
              .at_least_once
     @message.expects(:value).returns(
