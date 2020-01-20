@@ -48,9 +48,5 @@ module Xccdf
     def inferred_os_major_version
       ref_id[/(?<=RHEL-)\d/]
     end
-
-    def inferred_os_major_version
-      ref_id[/(?<=RHEL-)\d/]
-    end
   end
 end
