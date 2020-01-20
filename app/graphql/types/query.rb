@@ -47,6 +47,10 @@ module Types
       description 'All benchmarks visible by the user'
     end
 
+    field :latest_benchmarks, [Types::Benchmark], null: true do
+      description 'Latest benchmarks visible by the user'
+    end
+
     field :benchmark, Types::Benchmark, null: true do
       argument :id, String, required: true
     end
@@ -91,6 +95,13 @@ module Types
 
     def all_benchmarks
       Pundit.policy_scope(context[:current_user], ::Xccdf::Benchmark)
+    end
+
+    def latest_benchmarks
+      Pundit.authorize(
+        context[:current_user],
+        ::Xccdf::Benchmark.latest
+      )
     end
 
     def benchmark(id:)

@@ -30,5 +30,25 @@ module Xccdf
 
       assert_equal '7', benchmark.inferred_os_major_version
     end
+
+    test 'return latest benchmarks for all ref_ids' do
+      Xccdf::Benchmark.create(ref_id: 'rhel7', version: '0.1.40',
+                              title: 'foo1', description: 'a')
+      Xccdf::Benchmark.create(ref_id: 'rhel7', version: '0.1.41',
+                              title: 'foo2', description: 'a')
+      Xccdf::Benchmark.create(ref_id: 'rhel7', version: '0.2.0',
+                              title: 'foo3', description: 'a')
+      Xccdf::Benchmark.create(ref_id: 'rhel6', version: '0.1.42',
+                              title: 'foo4', description: 'a')
+      Xccdf::Benchmark.create(ref_id: 'rhel8', version: '0.2.2',
+                              title: 'foo5', description: 'a')
+
+      latest = Xccdf::Benchmark.latest
+      assert latest.count == 4
+      assert_equal %w(rhel6 rhel7 rhel8 xccdf_org.ssgproject.content_benchmark_RHEL-7),
+                   latest.map(&:ref_id).sort
+      assert_equal %w(0.1.42 0.1.43 0.2.0 0.2.2),
+                   latest.map(&:version).sort
+    end
   end
 end
