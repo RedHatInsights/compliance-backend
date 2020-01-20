@@ -29,6 +29,16 @@ module Xccdf
       def policy_class
         BenchmarkPolicy
       end
+
+      def latest
+        all.map(&:ref_id).uniq.map { |ref_id| find_latest(ref_id) }
+      end
+
+      def find_latest(ref_id)
+        ::Xccdf::Benchmark.where(ref_id: ref_id).max_by do |benchmark|
+          Gem::Version.new(benchmark.version)
+        end
+      end
     end
 
     def inferred_os_major_version
