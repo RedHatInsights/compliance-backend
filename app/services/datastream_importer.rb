@@ -24,7 +24,8 @@ class DatastreamImporter
 
   def import_remediations
     RemediationsAPI.new(
-      Account.find_by!(account_number: ENV['JOBS_ACCOUNT_NUMBER'])
+      Account.find_by(account_number: ENV['JOBS_ACCOUNT_NUMBER']) ||
+        Account.new
     ).import_remediations
   end
 end
