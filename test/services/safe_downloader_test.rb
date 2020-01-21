@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'safe_downloader'
 
 class SafeDownloaderTest < ActiveSupport::TestCase
   setup do
