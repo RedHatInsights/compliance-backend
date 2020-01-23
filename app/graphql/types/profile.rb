@@ -67,7 +67,7 @@ module Types
       latest_test_result_batch(args).then do |latest_test_result|
         host_results = latest_test_result&.rule_results
         host_results.present? &&
-          latest_test_result.score >= compliance_threshold
+          latest_test_result.score >= object.compliance_threshold
       end
     end
 

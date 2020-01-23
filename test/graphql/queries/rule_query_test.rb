@@ -68,9 +68,11 @@ class RuleQueryTest < ActiveSupport::TestCase
     assert_not result.dig('errors'),
                "Query was unsuccessful: #{result.dig('errors')}"
     assert result.dig('data', 'profile', 'rules').any?, 'No rules returned!'
-    assert_equal rule_identifiers(:one).label,
-                 result.dig('data', 'profile', 'rules',
-                            0, 'identifier')
+    assert_equal(
+      { label: rule_identifiers(:one).label,
+        system: rule_identifiers(:one).system }.to_json,
+      result.dig('data', 'profile', 'rules', 0, 'identifier')
+    )
   end
 
   test 'rules are filtered by references' do

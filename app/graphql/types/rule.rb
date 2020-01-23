@@ -46,14 +46,14 @@ module Types
       ::RecordLoader.for(::RuleReference)
                     .load_many(context[:"rule_references_#{object.id}"])
                     .then do |references|
-        references.map { |ref| [ref.href, ref.label] }.to_json
+        references.map { |ref| { href: ref.href, label: ref.label } }.to_json
       end
     end
 
     def identifier
       ::CollectionLoader.for(::Rule, :rule_identifier)
                         .load(object).then do |identifier|
-        identifier&.label
+        { label: identifier&.label, system: identifier&.system }.to_json
       end
     end
 
