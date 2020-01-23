@@ -67,11 +67,7 @@ module Types
       latest_test_result_batch(args).then do |latest_test_result|
         host_results = latest_test_result&.rule_results
         host_results.present? &&
-          (
-            host_results.where(result: 'pass').count /
-            host_results.count.to_f
-          ) >=
-            (object.compliance_threshold / 100.0)
+          latest_test_result.score >= compliance_threshold
       end
     end
 
