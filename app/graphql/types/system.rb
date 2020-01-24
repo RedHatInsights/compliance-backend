@@ -9,7 +9,7 @@ module Types
 
     field :id, ID, null: false
     field :name, String, null: false
-    field :profiles, [::Types::Profile], null: true, extras: [:lookahead]
+    field :profiles, [::Types::Profile], null: true
     field :compliant, Boolean, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
@@ -31,8 +31,8 @@ module Types
                required: false
     end
 
-    def profiles(lookahead:)
-      context_parent(lookahead)
+    def profiles
+      context_parent
       object.profiles
     end
 
@@ -51,11 +51,15 @@ module Types
     end
 
     def rules_passed(args = {})
-      object.rules_passed(::Profile.find_by(id: args[:profile_id]))
+      ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+        object.rules_passed(profile)
+      end
     end
 
     def rules_failed(args = {})
-      object.rules_failed(::Profile.find_by(id: args[:profile_id]))
+      ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+        object.rules_failed(profile)
+      end
     end
 
     def rule_objects_failed
@@ -75,10 +79,7 @@ module Types
 
     private
 
-    def context_parent(lookahead)
-      profile_fields = %i[rulesPassed rulesFailed compliant lastScanned]
-      return unless profile_fields.any? { |field| lookahead.selects?(field) }
-
+    def context_parent
       context[:parent_system_id] = object.id
     end
   end
