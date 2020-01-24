@@ -14,7 +14,7 @@ class PayloadTracker < Kafka::Client
         date: DateTime.now.iso8601, service: SERVICE,
         account: account, system_id: system_id,
         payload_id: payload_id, status: status,
-        status_msg: status_msg
+        request_id: payload_id, status_msg: status_msg
       }.to_json, topic: TOPIC)
     rescue Kafka::DeliveryFailed => e
       logger.error("Payload tracker delivery failed: #{e}")
