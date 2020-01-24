@@ -34,7 +34,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
   def notify_payload_tracker(status, status_msg = '')
     PayloadTracker.deliver(
       account: @msg_value['account'], system_id: @msg_value['id'],
-      payload_id: @msg_value['payload_id'], status: status,
+      payload_id: @msg_value['request_id'], status: status,
       status_msg: status_msg
     )
   end
