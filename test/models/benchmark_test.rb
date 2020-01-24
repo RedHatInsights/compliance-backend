@@ -48,7 +48,7 @@ module Xccdf
       assert_equal %w[rhel6 rhel7 rhel8
                       xccdf_org.ssgproject.content_benchmark_RHEL-7],
                    latest.map(&:ref_id).sort
-      assert_equal %w[0.1.42 0.1.43 0.2.0 0.2.2],
+      assert_equal %w[0.1.42 0.1.45 0.2.0 0.2.2],
                    latest.map(&:version).sort
     end
   end
