@@ -309,6 +309,11 @@ type Query implements Node {
   id: ID!
 
   """
+  Latest benchmarks visible by the user
+  """
+  latestBenchmarks: [Benchmark!]
+
+  """
   Fetches an object given its ID.
   """
   node(

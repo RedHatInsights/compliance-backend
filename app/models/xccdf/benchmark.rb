@@ -31,11 +31,15 @@ module Xccdf
       end
 
       def latest
-        all.map(&:ref_id).uniq.map { |ref_id| find_latest(ref_id) }
+        select(
+          'DISTINCT ref_id, version, id, title'
+        ).group_by(&:ref_id).map do |_, benchmarks|
+          find_latest(benchmarks)
+        end
       end
 
-      def find_latest(ref_id)
-        ::Xccdf::Benchmark.where(ref_id: ref_id).max_by do |benchmark|
+      def find_latest(benchmarks)
+        benchmarks.max_by do |benchmark|
           Gem::Version.new(benchmark.version)
         end
       end
