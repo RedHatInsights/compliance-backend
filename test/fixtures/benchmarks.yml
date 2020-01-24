@@ -4,4 +4,4 @@ one:
   ref_id: xccdf_org.ssgproject.content_benchmark_RHEL-7
   title: Benchmark One
   description: The first benchmark
-  version: 0.1.43
+  version: 0.1.45
