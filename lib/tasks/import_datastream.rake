@@ -16,7 +16,10 @@ namespace :ssg do
              ' seconds.'
       end
     rescue StandardError => e
-      ExceptionNotifier.notify_exception(e)
+      ExceptionNotifier.notify_exception(
+        e,
+        data: OpenshiftEnvironment.summary
+      )
     end
   end
 
@@ -31,7 +34,10 @@ namespace :ssg do
              ' seconds.'
       end
     rescue StandardError => e
-      ExceptionNotifier.notify_exception(e)
+      ExceptionNotifier.notify_exception(
+        e,
+        data: OpenshiftEnvironment.summary
+      )
     end
   end
 end
