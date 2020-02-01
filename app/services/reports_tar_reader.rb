@@ -12,14 +12,11 @@ class ReportsTarReader
   def reports
     tar_extract = Gem::Package::TarReader.new(Zlib::GzipReader.open(@file))
     tar_extract.rewind # The extract has to be rewinded after every iteration
-    files = []
-    tar_extract.each do |entry|
-      files << entry.read
-    end
-    tar_extract.close
-    files
+    tar_extract.reduce([]) { |entry, files| files << entry.read }
   rescue Zlib::GzipFile::Error
     # Keeps on supporting --payload uploads which only contain one report
     [IO.read(@file)]
+  ensure
+    tar_extract.close
   end
 end
