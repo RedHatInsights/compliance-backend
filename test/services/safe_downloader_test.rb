@@ -17,10 +17,9 @@ class SafeDownloaderTest < ActiveSupport::TestCase
   end
 
   test 'download success with large file' do
-    tempfile = Tempfile.new
-    tempfile.write('foo')
-    URI::HTTP.any_instance.expects(:open).returns(tempfile)
-    IO.expects(:read).with(tempfile)
+    file = File.new(file_fixture('insights-archive.tar.gz'))
+    URI::HTTP.any_instance.expects(:open).returns(file)
+    ReportsTarReader.any_instance.expects(:reports)
 
     SafeDownloader.download(@url)
   end
