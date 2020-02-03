@@ -14,7 +14,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
 
     download_file
     enqueue_job
-    notify_payload_tracker(:received)
+    notify_payload_tracker(:received, 'File is valid. Job is now enqueued')
   rescue EntitlementError, SafeDownloader::DownloadError => e
     error_message = "Error parsing report: #{message_id} - #{e.message}"
     logger.error error_message

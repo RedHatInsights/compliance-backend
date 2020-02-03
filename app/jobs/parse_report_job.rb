@@ -25,9 +25,9 @@ class ParseReportJob
   private
 
   def save_all
-    notify_payload_tracker(:processing)
+    notify_payload_tracker(:processing, 'Job is now processing')
     parser.save_all
-    notify_payload_tracker(:success)
+    notify_payload_tracker(:success, 'Job has completed successfully')
   rescue ::EmptyMetadataError, ::WrongFormatError => e
     error_message = "Cannot parse report: #{e} - #{@msg_value.to_json}"
     notify_payload_tracker(:error, error_message)

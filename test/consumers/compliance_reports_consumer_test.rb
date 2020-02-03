@@ -99,8 +99,10 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
     @consumer.stubs(:download_file)
     @consumer.stubs(:enqueue_job)
 
-    @consumer.expects(:notify_payload_tracker).with(:received)
-
+    @consumer.expects(:notify_payload_tracker).with(
+      :received,
+      'File is valid. Job is now enqueued'
+    )
     @consumer.process(@message)
   end
 end
