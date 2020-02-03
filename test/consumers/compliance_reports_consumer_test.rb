@@ -101,7 +101,7 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
 
     @consumer.expects(:notify_payload_tracker).with(
       :received,
-      'File is valid. Job is now enqueued'
+      'File is valid. Job  was enqueued'
     )
     @consumer.process(@message)
   end

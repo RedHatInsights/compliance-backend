@@ -13,8 +13,8 @@ class ComplianceReportsConsumer < ApplicationConsumer
     raise EntitlementError unless identity.valid?
 
     download_file
-    enqueue_job
-    notify_payload_tracker(:received, 'File is valid. Job is now enqueued')
+    job = enqueue_job
+    notify_payload_tracker(:received, "File is valid. Job #{job} was enqueued")
   rescue EntitlementError, SafeDownloader::DownloadError => e
     error_message = "Error parsing report: #{message_id} - #{e.message}"
     logger.error error_message
@@ -58,6 +58,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
         ActiveSupport::Gzip.compress(@report_contents), @msg_value
       )
       logger.info "Message enqueued: #{message_id} as #{job}"
+      job
     else
       logger.error "Error parsing report: #{message_id}"
     end
