@@ -14,8 +14,15 @@ class ParseReportJobTest < ActiveSupport::TestCase
     XccdfReportParser.stubs(:new).returns(@parser)
     @parser.stubs(:save_all)
     @parse_report_job.stubs(:cancelled?)
-    @parse_report_job.expects(:notify_payload_tracker).with(:processing)
-    @parse_report_job.expects(:notify_payload_tracker).with(:success)
+    @parse_report_job.stubs(:jid).returns('1')
+    @parse_report_job.expects(:notify_payload_tracker).with(
+      :processing,
+      'Job 1 is now processing'
+    )
+    @parse_report_job.expects(:notify_payload_tracker).with(
+      :success,
+      'Job 1 has completed successfully'
+    )
 
     @parse_report_job.perform(@file, @msg_value)
   end
@@ -24,7 +31,11 @@ class ParseReportJobTest < ActiveSupport::TestCase
     XccdfReportParser.stubs(:new).returns(@parser)
     @parser.stubs(:save_all).raises(WrongFormatError)
     @parse_report_job.stubs(:cancelled?)
-    @parse_report_job.expects(:notify_payload_tracker).with(:processing)
+    @parse_report_job.stubs(:jid).returns('1')
+    @parse_report_job.expects(:notify_payload_tracker).with(
+      :processing,
+      'Job 1 is now processing'
+    )
     @parse_report_job.expects(:notify_payload_tracker).with(
       :error, "Cannot parse report: WrongFormatError - #{@msg_value.to_json}"
     )
