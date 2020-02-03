@@ -10,9 +10,12 @@ class PayloadTracker < Kafka::Client
 
   class << self
     def deliver(payload_id:, status:, account:, system_id:, status_msg: nil)
+      # Inventory ID and system ID are identical because we match
+      # system and inventory UUIDs in our database
       kafka&.deliver_message({
         date: DateTime.now.iso8601, service: SERVICE,
         account: account, system_id: system_id,
+        source: ENV['APPLICATION_TYPE'], inventory_id: system_id,
         payload_id: payload_id, status: status,
         request_id: payload_id, status_msg: status_msg
       }.to_json, topic: TOPIC)
