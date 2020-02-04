@@ -54,13 +54,13 @@ module Types
     field :compliant_host_count, Int, null: false
 
     def compliant_host_count
-      CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
+      ::CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
         hosts.count { |host| object.compliant?(host) }
       end
     end
 
     def total_host_count
-      CollectionLoader.for(object.class, :hosts).load(object).then(&:count)
+      ::CollectionLoader.for(object.class, :hosts).load(object).then(&:count)
     end
 
     def compliant(args = {})
