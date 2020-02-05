@@ -13,7 +13,7 @@ module Metadata
     end
 
     def metadata(opts = {})
-      opts[:total] ||= policy_scope(resource).count
+      opts[:total] ||= scope_search.count
       options = {}
       options[:meta] = { total: opts[:total], search: params[:search],
                          limit: pagination_limit, offset: pagination_offset }
@@ -22,13 +22,11 @@ module Metadata
     end
 
     def links(last_offset)
-      base_url = "#{path_prefix}/#{ENV['APP_NAME']}"\
-        "/#{controller_name}"
       {
-        first: "#{base_url}?limit=#{pagination_limit}&offset=1",
-        last: "#{base_url}?limit=#{pagination_limit}&offset=#{last_offset}",
-        previous: previous_link(base_url, last_offset),
-        next: next_link(base_url, last_offset)
+        first: "#{base_link}&offset=1",
+        last: "#{base_link}&offset=#{last_offset}",
+        previous: previous_link(last_offset),
+        next: next_link(last_offset)
       }.compact
     end
 
@@ -36,16 +34,16 @@ module Metadata
       request.fullpath[%r{(/(\w+))+/compliance}].sub(%r{/compliance}, '')
     end
 
-    def previous_link(base_url, last_offset)
+    def previous_link(last_offset)
       return unless pagination_offset > 1 && pagination_offset <= last_offset
 
-      "#{base_url}?limit=#{pagination_limit}&offset=#{previous_offset}"
+      "#{base_link}&offset=#{previous_offset}"
     end
 
-    def next_link(base_url, last_offset)
+    def next_link(last_offset)
       return unless pagination_offset < last_offset
 
-      "#{base_url}?limit=#{pagination_limit}&offset=#{next_offset(last_offset)}"
+      "#{base_link}&offset=#{next_offset(last_offset)}"
     end
 
     def previous_offset
@@ -60,6 +58,16 @@ module Metadata
 
     def last_offset(total)
       (total / pagination_limit.to_f).ceil
+    end
+
+    private
+
+    def base_link
+      base_url = "#{path_prefix}/#{ENV['APP_NAME']}"\
+                 "/#{controller_name}"
+      base = "#{base_url}?limit=#{pagination_limit}"
+      base += "&search=#{params[:search]}" if params[:search].present?
+      base
     end
   end
 end

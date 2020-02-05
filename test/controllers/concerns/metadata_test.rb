@@ -16,10 +16,19 @@ class MetadataTest < ActionDispatch::IntegrationTest
 
   test 'meta adds total and search to JSON response' do
     authenticate
+    3.times do
+      Profile.create(ref_id: "foo#{SecureRandom.uuid}", name: SecureRandom.uuid,
+                     benchmark: benchmarks(:one), hosts: [hosts(:one)],
+                     account: accounts(:test))
+    end
     profiles(:one).update(account: accounts(:test), hosts: [hosts(:one)])
-    search_query = 'name=profile1'
-    get profiles_url, params: { search: search_query }
+    search_query = 'ref_id~foo'
+    get profiles_url, params: { search: search_query, limit: 1, offset: 2 }
     assert_response :success
+    assert_match(/search=ref_id~foo/, json_body['links']['first'])
+    assert_match(/search=ref_id~foo/, json_body['links']['last'])
+    assert_match(/search=ref_id~foo/, json_body['links']['next'])
+    assert_match(/search=ref_id~foo/, json_body['links']['previous'])
     assert_equal Profile.search_for(search_query).count,
                  json_body['meta']['total']
     assert_equal search_query, json_body['meta']['search']
