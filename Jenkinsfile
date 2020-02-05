@@ -47,7 +47,7 @@ def runStages() {
         execSmokeTest (
             ocDeployerBuilderPath: "compliance/compliance-backend",
             ocDeployerComponentPath: "compliance/compliance-backend",
-            ocDeployerServiceSets: "compliance,platform,platform-mq",
+            ocDeployerServiceSets: "rbac,compliance,platform,platform-mq",
             iqePlugins: ["iqe-compliance-plugin"],
             pytestMarker: "compliance_smoke",
         )
