@@ -19,6 +19,6 @@ class ReportsTarReader
     # Keeps on supporting --payload uploads which only contain one report
     [IO.read(@file)]
   ensure
-    tar_extract.close
+    @file.close
   end
 end
