@@ -46,7 +46,7 @@ def runStages() {
     if (currentBuild.currentResult == "SUCCESS" && env.CHANGE_TARGET == "stable" && env.CHANGE_ID) {
         execSmokeTest (
             ocDeployerBuilderPath: "compliance/compliance-backend",
-            ocDeployerComponentPath: "compliance/compliance-backend",
+            ocDeployerComponentPath: "compliance",
             ocDeployerServiceSets: "rbac,compliance,platform,platform-mq",
             iqePlugins: ["iqe-compliance-plugin"],
             pytestMarker: "compliance_smoke",
