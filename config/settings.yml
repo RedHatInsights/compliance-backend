@@ -3,6 +3,7 @@ platform_kafka_inventory_topic: 'platform.inventory.events'
 platform_kafka_validation_topic: 'platform.upload.validation'
 host_inventory_url: http://insights-inventory.platform-ci.svc.cluster.local:8080
 remediations_url: http://remediations.remediations-ci.svc.cluster.local:9002
+rbac_url: http://rbac.rbac-ci.svc.cluster.local:9002
 prometheus_exporter_host: compliance-prometheus-exporter.compliance-ci.svc
 prometheus_exporter_port: 9394
 redis_url: compliance-redis.compliance-ci.svc.cluster.local:6379
