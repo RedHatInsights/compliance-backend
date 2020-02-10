@@ -103,12 +103,6 @@ module Types
       end
     end
 
-    def major_os_version
-      RecordLoader.for(::Xccdf::Benchmark).load(object.benchmark_id).then do |benchmark|
-        benchmark ? benchmark.inferred_os_major_version : 'N/A'
-      end
-    end
-
     private
 
     def system_id(args)

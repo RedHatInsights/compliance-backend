@@ -115,4 +115,8 @@ class Profile < ApplicationRecord
       new_profile_rule
     end, ignore: true)
   end
+
+  def major_os_version
+    benchmark ? benchmark.inferred_os_major_version : 'N/A'
+  end
 end
