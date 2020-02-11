@@ -53,6 +53,8 @@ module Types
 
     field :compliant_host_count, Int, null: false
 
+    field :major_os_version, String, null: false
+
     def compliant_host_count
       ::CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
         hosts.count { |host| object.compliant?(host) }
