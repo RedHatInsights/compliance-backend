@@ -44,6 +44,8 @@ module Authentication
   end
 
   def rbac_allowed?
+    return true if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
+
     @rbac_api ||= ::RbacApi.new(request.headers['X-RH-IDENTITY'])
     @rbac_api.check_user
   end
