@@ -159,7 +159,7 @@ RSpec.configure do |config|
 end
 
 def encoded_header
-  Base64.encode64(x_rh_identity.to_json)
+  Base64.strict_encode64(x_rh_identity.to_json)
 end
 
 # Justification: It's mostly hash test data

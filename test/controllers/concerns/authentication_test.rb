@@ -220,4 +220,33 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       assert_equal User.find_by(username: 'fakeuser'), User.current
     end
   end
+
+  context 'disable rbac' do
+    should 'allow access when RBAC is disabled' do
+      begin
+        encoded_header = Base64.encode64(
+          {
+            'identity': {
+              'account_number': '1234',
+              'user': {
+                'username': 'shoulduser'
+              }
+            },
+            'entitlements':
+            {
+              'smart_management': {
+                'is_entitled': true
+              }
+            }
+          }.to_json
+        )
+        Settings.disable_rbac = 'true'
+        RbacApi.expects(:new).never
+        get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+        assert_response :success
+      ensure
+        Settings.disable_rbac = 'false'
+      end
+    end
+  end
 end
