@@ -79,6 +79,8 @@ spec:
       value: rh-ruby25
     image: quay.io/cloudservices/s2i-insights-compliance
     name: builder
+    imagePullSecrets:
+      - name: cloudservices-quay-pull
     tty: True
     command:
       - cat
