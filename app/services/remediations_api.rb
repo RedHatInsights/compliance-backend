@@ -5,7 +5,7 @@ class RemediationsAPI
   def initialize(account)
     @url = URI.parse("#{URI.parse(Settings.remediations_url)}"\
                      "#{ENV['PATH_PREFIX']}/remediations/v1/resolutions")
-    @b64_identity = Base64.strict_encode64(account.fake_identity_header.to_json)
+    @b64_identity = account.b64_identity
   end
 
   def import_remediations
