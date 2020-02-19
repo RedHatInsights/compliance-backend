@@ -77,8 +77,10 @@ spec:
       value: /opt/rh/rh-ruby25/root/usr/local/share:/opt/rh/rh-ruby25/root/usr/share:/usr/local/share:/usr/share
     - name: X_SCLS
       value: rh-ruby25
-    image: docker-registry.default.svc:5000/buildfactory/s2i-insights-compliance
+    image: quay.io/cloudservices/s2i-insights-compliance
     name: builder
+    imagePullSecrets:
+      - name: cloudservices-quay-pull
     tty: True
     command:
       - cat
