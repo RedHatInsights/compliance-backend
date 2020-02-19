@@ -28,7 +28,7 @@ class Profile < ApplicationRecord
   after_update :destroy_orphaned_business_objective
   before_destroy :destroy_all_test_results, if: -> { delete_all_test_results }
 
-  scope :canonical, -> { where(account_id: nil) }
+  scope :canonical, -> { where(parent_profile_id: nil) }
 
   def self.from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
     profile = find_or_initialize_by(
@@ -46,7 +46,7 @@ class Profile < ApplicationRecord
   end
 
   def canonical?
-    account_id.blank?
+    parent_profile_id.blank?
   end
 
   def destroy_orphaned_business_objective
