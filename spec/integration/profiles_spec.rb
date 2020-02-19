@@ -8,10 +8,12 @@ describe 'Profiles API' do
       fixtures :profiles
       tags 'profile'
       description 'Lists all profiles requested'
-      consumes 'application/vnd.api+json'
-      produces 'application/vnd.api+json'
       operationId 'ListProfiles'
-      parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
+
+      content_types
+      auth_header
+      pagination_params
+      search_params
 
       response '200', 'lists all profiles requested' do
         let(:'X-RH-IDENTITY') { encoded_header }
@@ -54,10 +56,13 @@ describe 'Profiles API' do
       fixtures :hosts, :benchmarks, :profiles
       tags 'profile'
       description 'Retrieves data for a profile'
-      consumes 'application/vnd.api+json'
-      produces 'application/vnd.api+json'
       operationId 'ShowProfile'
-      parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
+
+      content_types
+      auth_header
+      pagination_params
+      search_params
+
       parameter name: :id, in: :path, type: :string
 
       response '404', 'profile not found' do

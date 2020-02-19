@@ -13,19 +13,52 @@
           "profile"
         ],
         "description": "Lists all profiles requested",
+        "operationId": "ListProfiles",
         "consumes": [
           "application/vnd.api+json"
         ],
         "produces": [
           "application/vnd.api+json"
         ],
-        "operationId": "ListProfiles",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
             "in": "header",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "schema": {
+              "type": "string",
+              "default": ""
             }
           }
         ],
@@ -88,19 +121,52 @@
           "profile"
         ],
         "description": "Retrieves data for a profile",
+        "operationId": "ShowProfile",
         "consumes": [
           "application/vnd.api+json"
         ],
         "produces": [
           "application/vnd.api+json"
         ],
-        "operationId": "ShowProfile",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
             "in": "header",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "schema": {
+              "type": "string",
+              "default": ""
             }
           },
           {
@@ -174,19 +240,52 @@
           "rule_result"
         ],
         "description": "Lists all rule_results requested",
+        "operationId": "ListRuleResults",
         "consumes": [
           "application/vnd.api+json"
         ],
         "produces": [
           "application/vnd.api+json"
         ],
-        "operationId": "ListRuleResults",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
             "in": "header",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "schema": {
+              "type": "string",
+              "default": ""
             }
           }
         ],
@@ -262,19 +361,52 @@
           "rule"
         ],
         "description": "Lists all rules requested",
+        "operationId": "ListRules",
         "consumes": [
           "application/vnd.api+json"
         ],
         "produces": [
           "application/vnd.api+json"
         ],
-        "operationId": "ListRules",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
             "in": "header",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "schema": {
+              "type": "string",
+              "default": ""
             }
           }
         ],
@@ -291,7 +423,7 @@
                   "$ref": "#/definitions/links"
                 },
                 "data": {
-                  "type": "array",
+                  "type": "object",
                   "items": {
                     "properties": {
                       "type": {
@@ -340,19 +472,52 @@
           "rule"
         ],
         "description": "Retrieves data for a rule",
+        "operationId": "ShowRule",
         "consumes": [
           "application/vnd.api+json"
         ],
         "produces": [
           "application/vnd.api+json"
         ],
-        "operationId": "ShowRule",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
             "in": "header",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "schema": {
+              "type": "string",
+              "default": ""
             }
           },
           {
@@ -425,19 +590,52 @@
           "host"
         ],
         "description": "Lists all hosts requested",
+        "operationId": "ListHosts",
         "consumes": [
           "application/vnd.api+json"
         ],
         "produces": [
           "application/vnd.api+json"
         ],
-        "operationId": "ListHosts",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
             "in": "header",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "schema": {
+              "type": "string",
+              "default": ""
             }
           }
         ],

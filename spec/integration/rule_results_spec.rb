@@ -8,10 +8,12 @@ describe 'RuleResults API' do
       fixtures :rules, :hosts, :rule_results
       tags 'rule_result'
       description 'Lists all rule_results requested'
-      consumes 'application/vnd.api+json'
-      produces 'application/vnd.api+json'
       operationId 'ListRuleResults'
-      parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
+
+      content_types
+      auth_header
+      pagination_params
+      search_params
 
       response '200', 'lists all rule_results requested' do
         let(:'X-RH-IDENTITY') do
