@@ -40,6 +40,7 @@ module Mutations
           benchmark_id: args[:benchmark_id],
           name: args[:name],
           ref_id: args[:ref_id],
+          parent_profile_id: args[:clone_from_profile_id],
           description: args[:description],
           business_objective_id: args[:business_objective_id],
           compliance_threshold: args[:compliance_threshold]
