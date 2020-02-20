@@ -51,4 +51,28 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     @api.expects(:create_host_in_inventory).returns(@host)
     assert_equal @host, @api.inventory_host
   end
+
+  test 'find_results matches on ID' do
+    assert_equal(
+      @api.send(
+        :find_results, 'results' => [
+          { 'account' => @account.account_number, 'id' => @host.id }
+        ]
+      )['id'],
+      @host.id,
+      'find_results did not return the expected match by ID'
+    )
+  end
+
+  test 'find_results matches on hostname' do
+    assert_equal(
+      @api.send(
+        :find_results, 'results' => [
+          { 'account' => @account.account_number, 'fqdn' => @host.name }
+        ]
+      )['fqdn'],
+      @host.name,
+      'find_results did not return the expected match by hostname'
+    )
+  end
 end
