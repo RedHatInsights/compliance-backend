@@ -45,7 +45,7 @@ class HostInventoryAPI
   def find_results(body)
     body['results'].find do |host|
       host['account'] == @account.account_number && (
-        host['id'] == @host_inventory_id ||
+        host['id'] == @id ||
         host['fqdn'] == @hostname
       )
     end
