@@ -11,7 +11,7 @@ class HostInventoryAPI
     @hostname = hostname
     @url = "#{URI.parse(url)}#{ENV['PATH_PREFIX']}/inventory/v1/hosts"
     @account = account
-    @b64_identity = b64_identity
+    @b64_identity = b64_identity || @account.b64_identity
   end
 
   def host_already_in_inventory(hostname_or_id)
@@ -36,7 +36,7 @@ class HostInventoryAPI
 
   def inventory_host
     @inventory_host ||= host_already_in_inventory(@id) ||
-                        host_already_in_inventory(@hostname) ||
+                        (@hostname && host_already_in_inventory(@hostname)) ||
                         create_host_in_inventory
   end
 
