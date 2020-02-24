@@ -58,7 +58,7 @@ class Profile < ApplicationRecord
   end
 
   def destroy_all_test_results
-    test_results.desroty_all
+    test_results.destroy_all
   end
 
   def compliance_score(host)

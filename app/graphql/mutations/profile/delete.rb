@@ -17,6 +17,7 @@ module Mutations
           :destroy?
         )
         profile.delete_all_test_results = args[:delete_all_test_results]
+        profile.inspect
         profile.destroy!
         { profile: profile }
       end
