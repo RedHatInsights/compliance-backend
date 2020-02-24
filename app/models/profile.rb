@@ -2,13 +2,15 @@
 
 # OpenSCAP profile
 class Profile < ApplicationRecord
+  attribute :delete_all_test_results, :boolean, default: false
+
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
 
   has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
   has_many :profile_hosts, dependent: :delete_all
   has_many :hosts, through: :profile_hosts, source: :host
-  has_many :test_results, dependent: :destroy
+  has_many :test_results
   belongs_to :account, optional: true
   belongs_to :business_objective, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
@@ -22,6 +24,7 @@ class Profile < ApplicationRecord
   validates :account, presence: true, if: -> { hosts.any? }
 
   after_update :destroy_orphaned_business_objective
+  before_destroy :destroy_all_test_results, if: -> { delete_all_test_results }
 
   scope :canonical, -> { where(account_id: nil) }
 
@@ -52,6 +55,10 @@ class Profile < ApplicationRecord
       previous_changes[:business_objective_id].first
     )
     business_objective.destroy if business_objective.profiles.empty?
+  end
+
+  def destroy_all_test_results
+    test_results.desroty_all
   end
 
   def compliance_score(host)
