@@ -16,7 +16,10 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
   setup do
     users(:test).update account: accounts(:test)
     profiles(:one).update(account: accounts(:test))
-    test_results(:one).update(profile: profiles(:one), host: hosts(:one)).save
+    result = test_results(:one).update(
+      profile: profiles(:one), host: hosts(:one)
+    )
+    result.save
   end
 
   test 'delete a profile provided an ID' do
