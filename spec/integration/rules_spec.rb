@@ -8,10 +8,12 @@ describe 'Rules API' do
       fixtures :rules
       tags 'rule'
       description 'Lists all rules requested'
-      consumes 'application/vnd.api+json'
-      produces 'application/vnd.api+json'
       operationId 'ListRules'
-      parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
+
+      content_types
+      auth_header
+      pagination_params
+      search_params
 
       response '200', 'lists all rules requested' do
         let(:'X-RH-IDENTITY') { encoded_header }
@@ -71,10 +73,13 @@ describe 'Rules API' do
       fixtures :hosts, :benchmarks, :rules, :profiles
       tags 'rule'
       description 'Retrieves data for a rule'
-      consumes 'application/vnd.api+json'
-      produces 'application/vnd.api+json'
       operationId 'ShowRule'
-      parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
+
+      content_types
+      auth_header
+      pagination_params
+      search_params
+
       parameter name: :id, in: :path, type: :string
 
       response '404', 'rule not found' do
