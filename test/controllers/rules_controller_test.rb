@@ -48,4 +48,11 @@ class RulesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test 'does not find a rule outside of the user scope' do
+    profiles(:one).update rules: [rules(:one)]
+    get rule_url(rules(:two).ref_id)
+
+    assert_response :not_found
+  end
 end
