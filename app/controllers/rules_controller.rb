@@ -7,8 +7,9 @@ class RulesController < ApplicationController
   end
 
   def show
-    rule = Rule.friendly.find(params[:id])
-    authorize rule
+    rule = ::Pundit.policy_scope(User.current, ::Rule).friendly.find(
+      params[:id]
+    )
     render json: RuleSerializer.new(rule)
   end
 
