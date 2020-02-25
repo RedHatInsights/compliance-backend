@@ -8,6 +8,7 @@ one:
   description: MyText
   rationale: MyText
   benchmark: one
+  slug: MyStringOne
 
 two:
   ref_id: MyStringTwo
@@ -17,3 +18,4 @@ two:
   description: MyText
   rationale: MyText
   benchmark: one
+  slug: MyStringTwo

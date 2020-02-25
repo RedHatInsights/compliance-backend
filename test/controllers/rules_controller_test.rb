@@ -5,6 +5,9 @@ require 'test_helper'
 class RulesControllerTest < ActionDispatch::IntegrationTest
   setup do
     RulesController.any_instance.stubs(:authenticate_user)
+    User.current = users(:test)
+    users(:test).update account: accounts(:test)
+    profiles(:one).update(account: accounts(:test))
   end
 
   test 'index lists all rules' do
@@ -15,13 +18,17 @@ class RulesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'shows a rule' do
-    RulesController.any_instance.expects(:authorize)
-    relation = mock('relation')
-    relation.expects(:find).with('1')
-    Rule.expects(:friendly).returns(relation)
-    get rule_url(1)
+  test 'finds a rule within the user scope' do
+    profiles(:one).update rules: [rules(:one)]
+    get rule_url(rules(:one).ref_id)
 
     assert_response :success
+  end
+
+  test 'does not find a rule outside of the user scope' do
+    profiles(:one).update rules: [rules(:one)]
+    get rule_url(rules(:two).ref_id)
+
+    assert_response :not_found
   end
 end
