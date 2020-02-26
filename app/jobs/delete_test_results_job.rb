@@ -5,6 +5,6 @@ class DeleteTestResultsJob
   include Sidekiq::Worker
 
   def perform(profile_id)
-    TestResult.where(profile_id: profile_id).delete_all
+    TestResult.where(profile_id: profile_id).destroy_all
   end
 end
