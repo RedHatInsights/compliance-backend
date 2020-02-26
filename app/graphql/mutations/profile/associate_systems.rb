@@ -20,56 +20,10 @@ module Mutations
         { profile: profile }
       end
 
-      private
-
-      def find_profile(profile_id)
-        ::Pundit.authorize(
-          current_user,
-          ::Profile.find(profile_id),
-          :edit?
-        )
-      end
-
-      def find_hosts(system_ids)
-        existing_systems = ::Pundit.policy_scope(current_user, ::Host)
-                                   .where(id: system_ids)
-        save_hosts(system_ids - existing_systems.pluck(:id))
-        existing_systems
-      end
-
-      def save_hosts(ids)
-        ids.map do |id|
-          save_host(id)
-        end
-      end
-
-      def save_host(id)
-        i_host = inventory_host(id)
-        host = ::Host.find_or_initialize_by(
-          id: i_host['id'],
-          account_id: current_user.account.id
-        )
-
-        host.update!(
-          name: i_host['fqdn']
-        )
-
-        host
-      end
-
-      def current_user
-        @current_user ||= context[:current_user]
-      end
-
-      def inventory_host(id)
-        ::HostInventoryAPI.new(
-          id,
-          nil, # unknown hostname
-          current_user.account,
-          ::Settings.host_inventory_url,
-          nil # infer identity from account
-        ).inventory_host
-      end
+      include HostHelper
+      include UserHelper
+      include ProfileHelper
+      include InventoryServiceHelper
     end
   end
 end
