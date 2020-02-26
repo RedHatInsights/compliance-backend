@@ -60,7 +60,7 @@ class Profile < ApplicationRecord
   end
 
   def destroy_all_test_results
-    test_results.destroy_all
+    DeleteTestResultsJob.perform_async(id)
   end
 
   def compliance_score(host)

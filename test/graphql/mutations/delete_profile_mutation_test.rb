@@ -2,6 +2,9 @@
 
 require 'test_helper'
 
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
+
 class DeleteProfileMutationTest < ActiveSupport::TestCase
   QUERY = <<-GRAPHQL
       mutation DeleteProfile($input: deleteProfileInput!) {
@@ -16,10 +19,6 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
   setup do
     users(:test).update account: accounts(:test)
     profiles(:one).update(account: accounts(:test))
-    result = test_results(:one).update(
-      profile: profiles(:one), host: hosts(:one)
-    )
-    result.save
   end
 
   test 'delete a profile provided an ID' do
@@ -36,7 +35,7 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
   end
 
   test 'delete a profile provided an ID but not its test_results' do
-    assert_no_difference('TestResult.count') do
+    assert_no_difference('DeleteTestResultsJob.jobs.size') do
       Schema.execute(
         QUERY,
         variables: { input: {
@@ -48,12 +47,11 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
   end
 
   test 'delete a profile and test_results when deleteAllTestResults is set' do
-    assert_difference('TestResult.count', -1) do
+    assert_difference('DeleteTestResultsJob.jobs.size', 1) do
       Schema.execute(
         QUERY,
         variables: { input: {
           id: profiles(:one).id,
-          delete_all_test_results: true,
           deleteAllTestResults: true
         } },
         context: { current_user: users(:test) }
