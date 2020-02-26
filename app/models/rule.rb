@@ -6,8 +6,9 @@ class Rule < ApplicationRecord
   extend FriendlyId
   friendly_id :ref_id, use: :slugged
   scoped_search on: %i[id ref_id severity]
-  scoped_search relation: :rule_references, on: :label, alias: :reference
-  scoped_search relation: :rule_identifier, on: :label, alias: :identifier
+  scoped_search relation: :rule_references, on: :label, rename: :reference,
+                ext_method: :search_by_reference
+  scoped_search relation: :rule_identifier, on: :label, rename: :identifier
   include OpenscapParserDerived
 
   has_many :profile_rules, dependent: :delete_all
@@ -41,18 +42,32 @@ class Rule < ApplicationRecord
     joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
   }
 
-  def self.from_openscap_parser(op_rule, benchmark_id: nil)
-    rule = find_or_initialize_by(ref_id: op_rule.id,
-                                 benchmark_id: benchmark_id)
+  class << self
+    def from_openscap_parser(op_rule, benchmark_id: nil)
+      rule = find_or_initialize_by(ref_id: op_rule.id,
+                                   benchmark_id: benchmark_id)
 
-    rule.op_source = op_rule
+      rule.op_source = op_rule
 
-    rule.assign_attributes(title: op_rule.title,
-                           description: op_rule.description,
-                           rationale: op_rule.rationale,
-                           severity: op_rule.severity)
+      rule.assign_attributes(title: op_rule.title,
+                             description: op_rule.description,
+                             rationale: op_rule.rationale,
+                             severity: op_rule.severity)
 
-    rule
+      rule
+    end
+
+    def search_by_reference(_, operator, value)
+      conditions = sanitize_sql_for_conditions(
+        ["rule_references.label #{operator} ?", CGI.unescape(value)]
+      )
+      rule_ids = RuleReferencesRule.where(
+        rule_reference_id: RuleReference.where(conditions)
+      ).pluck('rule_id').uniq
+      return { conditions: '1=0' } if rule_ids.blank?
+
+      { conditions: sanitize_sql_for_conditions(['rules.id IN (?)', rule_ids]) }
+    end
   end
 
   def compliant?(host, profile)
