@@ -103,7 +103,8 @@ class Profile < ApplicationRecord
   def clone_to(account: nil, host: nil)
     new_profile = in_account(account)
     if new_profile.nil?
-      (new_profile = dup).update!(account: account, hosts: [host])
+      (new_profile = dup).update!(account: account, hosts: [host],
+                                  parent_profile: self)
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
