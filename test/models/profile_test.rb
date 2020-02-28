@@ -119,5 +119,17 @@ class ProfileTest < ActiveSupport::TestCase
         assert hosts(:one).profiles.include?(cloned_profile)
       end
     end
+
+    should 'set the parent profile ID to the original profile' do
+      canonical = Profile.canonical.first
+
+      assert_difference('Profile.count', 1) do
+        cloned_profile = canonical.clone_to(
+          account: accounts(:one), host: hosts(:one)
+        )
+
+        assert_equal canonical, cloned_profile.parent_profile
+      end
+    end
   end
 end
