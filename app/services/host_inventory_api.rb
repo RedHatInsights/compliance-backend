@@ -56,7 +56,7 @@ class HostInventoryAPI
       'facts': [{ 'facts': { 'fqdn': @hostname }, 'namespace': 'inventory' }],
       'fqdn': @hostname,
       'display_name': @hostname,
-      'stale_timestamp': 1.week.from_now.strftime('%FT%T%:z'),
+      'stale_timestamp': 1.week.from_now.iso8601,
       'reporter': 'compliance',
       'account': @account.account_number
     }].to_json
