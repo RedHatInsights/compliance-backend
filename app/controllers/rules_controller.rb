@@ -7,9 +7,12 @@ class RulesController < ApplicationController
   end
 
   def show
-    rule = ::Pundit.policy_scope(User.current, ::Rule).friendly.find(
-      params[:id]
-    )
+    rule = ::Pundit.policy_scope(User.current, ::Rule).where(
+      'rules.slug LIKE ?',
+      "%#{ActiveRecord::Base.sanitize_sql_like(params[:id])}%"
+    ).first
+    raise ActiveRecord::RecordNotFound if rule.blank?
+
     render json: RuleSerializer.new(rule)
   end
 

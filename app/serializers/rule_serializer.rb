@@ -4,5 +4,5 @@
 class RuleSerializer
   include FastJsonapi::ObjectSerializer
   attributes :created_at, :updated_at, :ref_id, :title, :rationale,
-             :description, :severity
+             :description, :severity, :slug
 end
