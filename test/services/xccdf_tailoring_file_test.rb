@@ -19,6 +19,63 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
            'Invalid date in tailoring file'
   end
 
+  test 'handles empty rule_ref_ids and set_values' do
+    profile = Profile.create!(
+      ref_id: 'test',
+      name: 'test profile',
+      benchmark_id: profiles(:one).benchmark.id,
+      parent_profile_id: profiles(:one).id
+    )
+    tailoring_file = XccdfTailoringFile.new(profile: profile)
+    op_tailoring = OpenscapParser::TailoringFile.new(tailoring_file.to_xml)
+                                                .tailoring
+    assert_empty op_tailoring.profiles.first.selected_rule_ids
+    assert_empty op_tailoring.profiles.first.xpath('set-value')
+  end
+
+  test 'properly (de)selects rule_ref_ids' do
+    profile = Profile.create!(
+      ref_id: 'test',
+      name: 'test profile',
+      benchmark_id: profiles(:one).benchmark.id,
+      parent_profile_id: profiles(:one).id
+    )
+    profiles(:one).benchmark.update!(rules: [rules(:one), rules(:two)])
+    tailoring_file = XccdfTailoringFile.new(
+      profile: profile,
+      rule_ref_ids: {
+        rules(:one).ref_id => false,
+        rules(:two).ref_id => true
+      }
+    )
+    op_tailoring = OpenscapParser::TailoringFile.new(tailoring_file.to_xml)
+                                                .tailoring
+    assert_equal(
+      op_tailoring.profiles.first.selected_rule_ids,
+      [rules(:two).ref_id]
+    )
+
+    assert_equal(
+      op_tailoring.profiles.first.xpath(
+        "select[@selected='false']/@idref"
+      ).text,
+      rules(:one).ref_id
+    )
+  end
+
+  test 'handles missing rules in the benchmark' do
+    profile = Profile.create!(
+      ref_id: 'test',
+      name: 'test profile',
+      benchmark_id: profiles(:one).benchmark.id,
+      parent_profile_id: profiles(:one).id
+    )
+    assert_raises(ArgumentError) do
+      XccdfTailoringFile.new(profile: profile,
+                             rule_ref_ids: { 'foo' => true }).to_xml
+    end
+  end
+
   test 'handles nil parent_profile' do
     assert_raises(ArgumentError) do
       XccdfTailoringFile.new(profile: OpenStruct.new).to_xml
