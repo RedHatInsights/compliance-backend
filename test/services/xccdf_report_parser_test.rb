@@ -262,6 +262,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         benchmark: @report_parser.benchmark,
         name: @report_parser.op_profiles.first.name,
         account: accounts(:one),
+        parent_profile: profiles(:one),
         hosts: [hosts(:one)]
       )
       profile2 = Profile.find_or_create_by(
@@ -269,6 +270,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         benchmark: @report_parser.benchmark,
         name: @report_parser.op_profiles.first.name,
         account: accounts(:test),
+        parent_profile: profiles(:one),
         hosts: [hosts(:two)]
       )
 

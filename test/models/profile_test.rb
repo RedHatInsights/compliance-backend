@@ -92,6 +92,28 @@ class ProfileTest < ActiveSupport::TestCase
     assert_empty BusinessObjective.where(title: 'abcd')
   end
 
+  test 'canonical profiles have no parent_profile_id' do
+    assert Profile.new.canonical?, 'nil parent_profile_id should be canonical'
+  end
+
+  test 'non-canonical profiles have a parent_profile_id' do
+    assert_not Profile.new(
+      parent_profile_id: profiles(:one).id
+    ).canonical?, 'non-nil parent_profile_id should not be canonical'
+  end
+
+  test 'canonical scope finds only canonical profiles' do
+    p1 = Profile.create!(ref_id: 'p1_foo_ref_id',
+                         name: 'p1 foo',
+                         benchmark_id: benchmarks(:one).id,
+                         parent_profile_id: profiles(:one).id)
+    p2 = Profile.create!(ref_id: 'p2_foo_ref_id',
+                         name: 'p2 foo',
+                         benchmark_id: benchmarks(:one).id)
+    assert_includes Profile.canonical, p2
+    assert_not_includes Profile.canonical, p1
+  end
+
   context 'cloning profile to account' do
     should 'create host relation when the profile is created' do
       assert_difference('ProfileHost.count', 1) do
