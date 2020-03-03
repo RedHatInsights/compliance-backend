@@ -42,11 +42,30 @@ class RuleTest < ActiveSupport::TestCase
            'Expected rule not found by identifier'
   end
 
-  test 'rule can be searched by reference label' do
-    rules(:one).update(rule_references: [rule_references(:one)])
-    rules = Rule.search_for(
-      "reference=#{CGI.escape(rule_references(:one).label)}"
-    )
-    assert_includes rules, rules(:one)
+  context 'references' do
+    setup do
+      rules(:one).update(rule_references: [rule_references(:one)])
+    end
+
+    should 'be searched by reference label' do
+      rules = Rule.search_for(
+        "reference=\"#{rule_references(:one).label}\""
+      )
+      assert_includes rules, rules(:one)
+    end
+
+    should 'be searched by NOT reference label' do
+      rules = Rule.search_for(
+        "reference != #{CGI.escape(rule_references(:one).label)}"
+      )
+      assert_not_includes rules, rules(:one)
+    end
+
+    should 'be searched by includes reference label' do
+      rules = Rule.search_for(
+        "reference ^ (#{CGI.escape(rule_references(:one).label)})"
+      )
+      assert_includes rules, rules(:one)
+    end
   end
 end

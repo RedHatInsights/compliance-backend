@@ -59,7 +59,7 @@ class Rule < ApplicationRecord
 
     def search_by_reference(_, operator, value)
       conditions = sanitize_sql_for_conditions(
-        ["rule_references.label #{operator} ?", CGI.unescape(value)]
+        ["rule_references.label #{operator} (?)", CGI.unescape(value)]
       )
       rule_ids = RuleReferencesRule.where(
         rule_reference_id: RuleReference.where(conditions)
