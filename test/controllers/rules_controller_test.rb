@@ -7,7 +7,10 @@ class RulesControllerTest < ActionDispatch::IntegrationTest
     RulesController.any_instance.stubs(:authenticate_user)
     User.current = users(:test)
     users(:test).update account: accounts(:test)
-    profiles(:one).update(account: accounts(:test))
+    profiles(:one).update(
+      account: accounts(:test),
+      rules: [rules(:one)]
+    )
   end
 
   test 'index lists all rules' do
@@ -19,9 +22,7 @@ class RulesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'finds a rule within the user scope' do
-    profiles(:one).update rules: [rules(:one)]
     get rule_url(rules(:one).ref_id)
-
     assert_response :success
   end
 
@@ -33,10 +34,18 @@ class RulesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'does not find a rule outside of the user scope' do
-    profiles(:one).update rules: [rules(:one)]
+  test 'finds a rule by ID' do
+    get rule_url(rules(:one).id)
+
+    assert_response :success
+  end
+
+  test 'finds rules not within the user scope but within canonical' do
+    assert_includes(Rule.canonical, rules(:two))
+    assert_not_includes(::Pundit.policy_scope(users(:test), ::Rule),
+                        rules(:two))
     get rule_url(rules(:two).ref_id)
 
-    assert_response :not_found
+    assert_response :success
   end
 end
