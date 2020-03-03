@@ -5,6 +5,8 @@ class ProfileSerializer
   include FastJsonapi::ObjectSerializer
   set_type :profile
   attributes :name, :ref_id, :description, :score, :parent_profile_id
+  attribute :canonical, &:canonical?
+  attribute :tailored, &:tailored?
   attribute :total_host_count do |profile|
     profile.hosts.count
   end
