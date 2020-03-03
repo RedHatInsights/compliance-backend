@@ -49,10 +49,18 @@ class RulesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'does not find a rule outside of the user scope' do
-    profiles(:one).update rules: [rules(:one)]
+  test 'finds a rule by ID' do
+    get rule_url(rules(:one).id)
+
+    assert_response :success
+  end
+
+  test 'finds rules not within the user scope but within latest' do
+    assert_includes(Rule.latest, rules(:two))
+    assert_not_includes(::Pundit.policy_scope(users(:test), ::Rule),
+                        rules(:two))
     get rule_url(rules(:two).ref_id)
 
-    assert_response :not_found
+    assert_response :success
   end
 end
