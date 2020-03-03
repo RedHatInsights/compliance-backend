@@ -29,7 +29,7 @@ class RulesController < ApplicationController
   end
 
   def search_by_ref_id
-    rule = Rule.canonical.where(
+    rule = Rule.latest.where(
       'rules.slug LIKE ?',
       "%#{ActiveRecord::Base.sanitize_sql_like(params[:id])}%"
     )

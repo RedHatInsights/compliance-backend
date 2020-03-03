@@ -40,8 +40,8 @@ class RulesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'finds rules not within the user scope but within canonical' do
-    assert_includes(Rule.canonical, rules(:two))
+  test 'finds rules not within the user scope but within latest' do
+    assert_includes(Rule.latest, rules(:two))
     assert_not_includes(::Pundit.policy_scope(users(:test), ::Rule),
                         rules(:two))
     get rule_url(rules(:two).ref_id)

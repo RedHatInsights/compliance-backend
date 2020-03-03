@@ -41,7 +41,7 @@ class Rule < ApplicationRecord
     joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
   }
 
-  scope :canonical, lambda {
+  scope :latest, lambda {
     where(benchmark_id: ::Xccdf::Benchmark.latest.pluck(:id))
   }
 
