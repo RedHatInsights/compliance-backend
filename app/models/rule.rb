@@ -41,6 +41,10 @@ class Rule < ApplicationRecord
     joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
   }
 
+  scope :canonical, lambda {
+    where(benchmark_id: ::Xccdf::Benchmark.latest.pluck(:id))
+  }
+
   def self.from_openscap_parser(op_rule, benchmark_id: nil)
     rule = find_or_initialize_by(ref_id: op_rule.id,
                                  benchmark_id: benchmark_id)

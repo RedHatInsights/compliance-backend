@@ -29,15 +29,12 @@ class RulesController < ApplicationController
   end
 
   def search_by_ref_id
-    rule = canonical.where(
+    rule = Rule.canonical.where(
       'rules.slug LIKE ?',
       "%#{ActiveRecord::Base.sanitize_sql_like(params[:id])}%"
     )
     raise ActiveRecord::RecordNotFound if rule.blank?
-    rule.first
-  end
 
-  def canonical
-    Rule.where(benchmark_id: ::Xccdf::Benchmark.latest.pluck(:id))
+    rule.first
   end
 end
