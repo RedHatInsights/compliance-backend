@@ -40,7 +40,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
       }
     GRAPHQL
 
-    profiles(:one).update account: accounts(:test)
+    profiles(:one).update account: accounts(:test),
+                          parent_profile: profiles(:two)
     users(:test).update account: nil
 
     assert_raises(Pundit::NotAuthorizedError) do
