@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'sidekiq/testing'
 
 class AssociateProfilesMutationTest < ActiveSupport::TestCase
   test 'provide all required arguments' do
@@ -71,5 +72,38 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
 
     assert_not_nil(new_host = Host.find_by(id: NEW_ID))
     assert_equal new_host.profiles, [profiles(:one), profiles(:two)]
+  end
+
+  test 'submits job to remove system if system has no profiles' do
+    DeleteHost.clear
+
+    query = <<-GRAPHQL
+       mutation associateProfiles($input: associateProfilesInput!) {
+          associateProfiles(input: $input) {
+             system {
+                 id
+                 name
+             }
+          }
+       }
+    GRAPHQL
+
+    users(:test).update account: accounts(:test)
+    profiles(:one).update account: accounts(:test)
+    hosts(:one).update account: accounts(:test)
+
+    assert_equal 0, ParseReportJob.jobs.size
+
+    Schema.execute(
+      query,
+      variables: { input: {
+        id: hosts(:one).id,
+        profileIds: []
+      } },
+      context: { current_user: users(:test) }
+    )['data']['associateProfiles']['system']
+
+    assert_equal hosts(:one).profiles, []
+    assert_equal 1, DeleteHost.jobs.size
   end
 end
