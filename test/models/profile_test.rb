@@ -154,4 +154,29 @@ class ProfileTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context 'profile tailoring' do
+    setup do
+      @parent_profile = Profile.create!(benchmark: benchmarks(:one),
+                                        ref_id: 'foo',
+                                        name: 'foo profile')
+      @parent_profile.update! rules: [rules(:one)]
+      @profile = @parent_profile.clone_to(account: accounts(:one),
+                                          host: hosts(:one))
+      @profile.update! rules: [rules(:two)]
+    end
+
+    should 'send the correct rule ref ids to the tailoring file service' do
+      assert_equal({ rules(:one).ref_id => false, rules(:two).ref_id => true },
+                   @profile.tailored_rule_ref_ids)
+    end
+
+    should 'properly detects added_rules' do
+      assert_equal [rules(:two)], @profile.added_rules
+    end
+
+    should 'properly detects removed_rules' do
+      assert_equal [rules(:one)], @profile.removed_rules
+    end
+  end
 end

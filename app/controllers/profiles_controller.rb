@@ -7,12 +7,28 @@ class ProfilesController < ApplicationController
   end
 
   def show
-    profile = Profile.find(params[:id])
     authorize profile
     render json: ProfileSerializer.new(profile)
   end
 
+  def tailoring_file
+    return unless profile.tailored?
+
+    send_data XccdfTailoringFile.new(
+      profile: profile,
+      rule_ref_ids: profile.tailored_rule_ref_ids
+    ).to_xml, filename: tailoring_filename, type: Mime[:xml]
+  end
+
   private
+
+  def tailoring_filename
+    "#{profile.benchmark.ref_id}__#{profile.ref_id}__tailoring.xml"
+  end
+
+  def profile
+    @profile ||= Profile.find(params[:id])
+  end
 
   def resource
     Profile
