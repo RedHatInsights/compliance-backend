@@ -41,4 +41,21 @@ class RuleTest < ActiveSupport::TestCase
                .include?(rules(:one)),
            'Expected rule not found by identifier'
   end
+
+  test 'rule is identified properly as canonical' do
+    assert_not rules(:one).canonical?,
+               'Rule :one should not be canonical to start'
+    rules(:one).profiles << Profile.create!(
+      ref_id: 'foo', name: 'foo', benchmark: benchmarks(:one)
+    )
+    assert rules(:one).canonical?, 'Rule :one should be canonical'
+  end
+
+  test 'canonical rules are found via canonical scope' do
+    assert_empty Rule.canonical, 'No canonical rules should exist'
+    rules(:one).profiles << Profile.create!(
+      ref_id: 'foo', name: 'foo', benchmark: benchmarks(:one)
+    )
+    assert_equal [rules(:one)], Rule.canonical
+  end
 end
