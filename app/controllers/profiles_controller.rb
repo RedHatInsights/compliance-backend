@@ -27,7 +27,7 @@ class ProfilesController < ApplicationController
   end
 
   def profile
-    @profile ||= Profile.find(params[:id])
+    @profile ||= Pundit.policy_scope(current_user, resource).find(params[:id])
   end
 
   def resource
