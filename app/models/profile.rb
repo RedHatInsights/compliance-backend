@@ -2,6 +2,8 @@
 
 # OpenSCAP profile
 class Profile < ApplicationRecord
+  include ProfileTailoring
+
   attribute :delete_all_test_results, :boolean, default: false
 
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
