@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # OpenSCAP profile
-class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
+class Profile < ApplicationRecord
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
 
   has_many :profile_rules, dependent: :delete_all
