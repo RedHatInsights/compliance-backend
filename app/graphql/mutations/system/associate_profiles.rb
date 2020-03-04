@@ -13,6 +13,7 @@ module Mutations
       def resolve(args = {})
         host = find_hosts([args[:id]]).first
         return delete_host(host) if args[:profile_ids].empty?
+
         profiles = find_profiles(args[:profile_ids])
         host.update(profiles: profiles)
         { system: host }
