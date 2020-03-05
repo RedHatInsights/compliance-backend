@@ -154,6 +154,8 @@ GEM
     loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
+    macaddr (1.7.2)
+      systemu (~> 2.6.5)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (0.3.3)
@@ -198,11 +200,11 @@ GEM
     pry-remote (0.1.8)
       pry (~> 0.9)
       slop (~> 3.0)
-    public_suffix (4.0.2)
-    puma (3.12.2)
+    public_suffix (4.0.3)
+    puma (3.12.4)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
-    racecar (1.0.0)
+    racecar (1.0.1)
       king_konf (~> 0.3.7)
       ruby-kafka (~> 0.7.8)
     rack (2.0.8)
@@ -313,6 +315,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    systemu (2.6.5)
     thor (1.0.1)
     thread_safe (0.3.6)
     tty-color (0.5.0)
@@ -323,6 +326,8 @@ GEM
     unicode-display_width (1.6.0)
     uniform_notifier (1.13.0)
     url (0.3.2)
+    uuid (2.3.9)
+      macaddr (~> 1.0)
     webmock (3.7.6)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -386,6 +391,7 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   tty-command
   tzinfo-data
+  uuid
   webmock
   will_paginate
 

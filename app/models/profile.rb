@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # OpenSCAP profile
-class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
+class Profile < ApplicationRecord
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
 
   has_many :profile_rules, dependent: :delete_all
@@ -17,7 +17,6 @@ class Profile < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validates :name, presence: true
   validates :benchmark_id, presence: true
   validates :compliance_threshold, numericality: true
-  validates :account, absence: true, unless: -> { hosts.any? }
   validates :account, presence: true, if: -> { hosts.any? }
 
   after_update :destroy_orphaned_business_objective
