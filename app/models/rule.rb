@@ -45,6 +45,14 @@ class Rule < ApplicationRecord
     where(benchmark_id: ::Xccdf::Benchmark.latest.pluck(:id))
   }
 
+  scope :canonical, lambda {
+    includes(:profiles).where(profiles: { id: Profile.canonical })
+  }
+
+  def canonical?
+    (profiles & Profile.canonical).any?
+  end
+
   def self.from_openscap_parser(op_rule, benchmark_id: nil)
     rule = find_or_initialize_by(ref_id: op_rule.id,
                                  benchmark_id: benchmark_id)
