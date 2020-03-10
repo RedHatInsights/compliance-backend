@@ -98,11 +98,6 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
     @consumer.stubs(:identity).returns(OpenStruct.new(valid?: true))
     @consumer.stubs(:download_file)
     @consumer.stubs(:enqueue_job)
-
-    @consumer.expects(:notify_payload_tracker).with(
-      :received,
-      'File is valid. Job  was enqueued'
-    )
     @consumer.process(@message)
   end
 end
