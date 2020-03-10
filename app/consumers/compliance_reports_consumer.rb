@@ -13,7 +13,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
     raise EntitlementError unless identity.valid?
 
     download_file
-    job = enqueue_job
+    enqueue_job
   rescue EntitlementError, SafeDownloader::DownloadError => e
     error_message = "Error parsing report: #{message_id} - #{e.message}"
     logger.error error_message
