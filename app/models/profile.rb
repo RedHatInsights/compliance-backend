@@ -110,7 +110,7 @@ class Profile < ApplicationRecord
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
-    new_profile.add_rules_from(profile: self)
+    new_profile.add_rules(rules.map(&:ref_id))
     new_profile
   end
 
