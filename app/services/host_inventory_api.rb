@@ -6,18 +6,17 @@ require 'json'
 # Interact with the Insights Host Inventory. Usually HTTP calls
 # are all that's needed.
 class HostInventoryAPI
-  def initialize(id, hostname, account, url, b64_identity)
+  def initialize(id, account, url, b64_identity)
     @id = id
-    @hostname = hostname
     @url = "#{URI.parse(url)}#{ENV['PATH_PREFIX']}/inventory/v1/hosts"
     @account = account
     @b64_identity = b64_identity || @account.b64_identity
   end
 
-  def host_already_in_inventory(hostname_or_id)
+  def host_already_in_inventory(id)
     response = Platform.connection.get(
       @url, {
-        hostname_or_id: hostname_or_id
+        id: id
       },
       X_RH_IDENTITY: @b64_identity
     )
@@ -25,42 +24,14 @@ class HostInventoryAPI
   end
 
   def inventory_host
-    @inventory_host ||= host_already_in_inventory(@id) ||
-                        (@hostname && host_already_in_inventory(@hostname))
-  end
-
-  # This function is meant to be only used for testing purposes within a
-  # development environment. It is not and should not be called from anywhere
-  # else than a local rake task or the Rails console itself.
-  def create_host_in_inventory
-    response = Platform.connection.post(@url) do |req|
-      req.headers['Content-Type'] = 'application/json'
-      req.headers['X_RH_IDENTITY'] = @b64_identity
-      req.body = create_host_body
-    end
-
-    JSON.parse(response.body).dig('data')&.first&.dig('host')
+    @inventory_host ||= host_already_in_inventory(@id)
   end
 
   private
 
   def find_results(body)
     body['results'].find do |host|
-      host['account'] == @account.account_number && (
-        host['id'] == @id ||
-        host['fqdn'] == @hostname
-      )
+      host['account'] == @account.account_number && host['id'] == @id
     end
-  end
-
-  def create_host_body
-    [{
-      'facts': [{ 'facts': { 'fqdn': @hostname }, 'namespace': 'inventory' }],
-      'fqdn': @hostname,
-      'display_name': @hostname,
-      'stale_timestamp': 1.week.from_now.iso8601,
-      'reporter': 'compliance',
-      'account': @account.account_number
-    }].to_json
   end
 end
