@@ -119,12 +119,10 @@ class Profile < ApplicationRecord
                     benchmark_id: benchmark_id)
   end
 
-  def add_rules_from(profile: nil)
-    new_profile_rules = profile.profile_rules - profile_rules
-    ProfileRule.import!(new_profile_rules.map do |profile_rule|
-      new_profile_rule = profile_rule.dup
-      new_profile_rule.profile = self
-      new_profile_rule
+  def add_rules(ref_ids)
+    rules = benchmark.rules.where(ref_id: ref_ids)
+    ProfileRule.import!(rules.map do |rule|
+      ProfileRule.new(profile_id: id, rule_id: rule.id)
     end, ignore: true)
   end
 

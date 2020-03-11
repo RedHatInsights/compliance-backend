@@ -14,25 +14,17 @@ module Mutations
       argument :description, String, required: false
       argument :business_objective_id, String, required: false
       argument :compliance_threshold, Float, required: false
+      argument :selected_rules, [String], required: true
       field :profile, Types::Profile, null: false
 
       def resolve(args = {})
-        original_profile = find_original_profile(args[:clone_from_profile_id])
         profile = ::Profile.new(new_profile_options(args))
         profile.save!
-        profile.add_rules_from(profile: original_profile)
+        profile.add_rules(args[:selected_rules])
         { profile: profile }
       end
 
       private
-
-      def find_original_profile(profile_id)
-        ::Pundit.authorize(
-          context[:current_user],
-          ::Profile.find(profile_id),
-          :show?
-        )
-      end
 
       def new_profile_options(args)
         {
