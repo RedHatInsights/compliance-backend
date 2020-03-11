@@ -672,6 +672,7 @@ input createProfileInput {
   description: String
   name: String!
   refId: ID!
+  selectedRules: [String!]!
 }
 
 """
