@@ -46,10 +46,10 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     assert_equal @host, @api.inventory_host
   end
 
-  test 'inventory_host for host not already in inventory' do
+  test 'host not already in inventory doesnt attempt to create a new one' do
     @api.expects(:host_already_in_inventory).twice
-    @api.expects(:create_host_in_inventory).returns(@host)
-    assert_equal @host, @api.inventory_host
+    @api.expects(:create_host_in_inventory).never
+    @api.inventory_host
   end
 
   test 'find_results matches on ID' do
