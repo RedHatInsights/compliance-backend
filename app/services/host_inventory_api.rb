@@ -24,6 +24,14 @@ class HostInventoryAPI
     find_results(JSON.parse(response.body))
   end
 
+  def inventory_host
+    @inventory_host ||= host_already_in_inventory(@id) ||
+                        (@hostname && host_already_in_inventory(@hostname))
+  end
+
+  # This function is meant to be only used for testing purposes within a
+  # development environment. It is not and should not be called from anywhere
+  # else than a local rake task or the Rails console itself.
   def create_host_in_inventory
     response = Platform.connection.post(@url) do |req|
       req.headers['Content-Type'] = 'application/json'
@@ -32,12 +40,6 @@ class HostInventoryAPI
     end
 
     JSON.parse(response.body).dig('data')&.first&.dig('host')
-  end
-
-  def inventory_host
-    @inventory_host ||= host_already_in_inventory(@id) ||
-                        (@hostname && host_already_in_inventory(@hostname)) ||
-                        create_host_in_inventory
   end
 
   private

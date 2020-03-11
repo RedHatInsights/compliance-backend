@@ -31,8 +31,7 @@ class XccdfReportParser
   end
 
   def valid_message_format?(message)
-    message['id'].present? && message['metadata'].present? &&
-      message['metadata']['fqdn'].present?
+    message['id'].present? && message.dig('metadata', 'fqdn').present?
   end
 
   def save_all
