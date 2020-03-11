@@ -97,9 +97,9 @@ class Profile < ApplicationRecord
   end
 
   def score
-    return 1 if hosts.blank?
+    return 1 if test_results.latest.blank?
 
-    (hosts.count { |host| compliant?(host) }).to_f / hosts.count
+    (scores = test_results.latest.pluck(:score)).sum / scores.size
   end
 
   def clone_to(account: nil, host: nil)
