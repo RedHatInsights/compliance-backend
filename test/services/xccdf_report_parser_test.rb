@@ -165,7 +165,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
 
   context 'no metadata' do
     should 'raise error if the message does not contain metadata' do
-      assert_raises(::EmptyMetadataError) do
+      assert_raises(::MessageFormatError) do
         TestParser.new(
           'fakereport',
           'account' => accounts(:test).account_number,
@@ -175,12 +175,35 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         )
       end
 
-      assert_raises(::EmptyMetadataError) do
+      assert_raises(::MessageFormatError) do
         TestParser.new(
           'fakereport',
           'account' => accounts(:test).account_number,
           'b64_identity' => 'b64_fake_identity',
           'id' => @host_id
+        )
+      end
+    end
+
+    should 'raise error if message ID is not present' do
+      assert_raises(::MessageFormatError) do
+        TestParser.new(
+          'fakereport',
+          'account' => accounts(:test).account_number,
+          'b64_identity' => 'b64_fake_identity',
+          'metadata' => { 'fqdn': '123' }
+        )
+      end
+    end
+
+    should 'raise error if metadata fqdn is not present' do
+      assert_raises(::MessageFormatError) do
+        TestParser.new(
+          'fakereport',
+          'account' => accounts(:test).account_number,
+          'b64_identity' => 'b64_fake_identity',
+          'id' => @host_id,
+          'metadata' => { 'notfqdn': '123' }
         )
       end
     end
