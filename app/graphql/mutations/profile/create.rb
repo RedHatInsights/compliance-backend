@@ -14,13 +14,13 @@ module Mutations
       argument :description, String, required: false
       argument :business_objective_id, String, required: false
       argument :compliance_threshold, Float, required: false
-      argument :selected_rules, [String], required: true
+      argument :selected_rule_ref_ids, [String], required: true
       field :profile, Types::Profile, null: false
 
       def resolve(args = {})
         profile = ::Profile.new(new_profile_options(args))
         profile.save!
-        profile.add_rules(args[:selected_rules])
+        profile.add_rule_ref_ids(args[:selected_rule_ref_ids])
         { profile: profile }
       end
 

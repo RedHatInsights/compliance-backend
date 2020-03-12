@@ -29,7 +29,7 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
         name: 'customized profile',
         description: 'abcdf',
         complianceThreshold: 90.0,
-        selectedRules: @original_profile.rules.map(&:ref_id)
+        selectedRuleRefIds: @original_profile.rules.map(&:ref_id)
       } },
       context: { current_user: users(:test) }
     )['data']['createProfile']['profile']
@@ -52,7 +52,7 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
         name: 'customized profile',
         description: 'abcdf',
         complianceThreshold: 90.0,
-        selectedRules: tailored_rules
+        selectedRuleRefIds: tailored_rules
       } },
       context: { current_user: users(:test) }
     )['data']['createProfile']['profile']
