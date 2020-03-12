@@ -29,13 +29,17 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     connection = mock('faraday_connection')
     Platform.stubs(:connection).returns(connection)
     get_body = {
-      'results' => [{ 'id' => @host_id,
-                      'account' => accounts(:test).account_number,
-                      'fqdn' => @report_parser.report_host }]
+      'results' => [
+        { 'id' => @host_id,
+          'account' => accounts(:test).account_number,
+          'fqdn' => @report_parser.test_result_file.test_result.host }
+      ]
     }
     connection.stubs(:get).returns(OpenStruct.new(body: get_body.to_json))
     post_body = {
-      'data' => [{ 'host' => { 'name' => @report_parser.report_host } }]
+      'data' => [{ 'host' => {
+        'name' => @report_parser.test_result_file.test_result.host
+      } }]
     }
     connection.stubs(:post).returns(OpenStruct.new(body: post_body.to_json))
   end
@@ -101,24 +105,31 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
 
     should 'be able to parse host name' do
-      assert_equal 'lenovolobato.lobatolan.home', @report_parser.report_host
+      assert_equal(
+        'lenovolobato.lobatolan.home',
+        @report_parser.test_result_file.test_result.host
+      )
     end
 
     should 'save the hostname in db' do
       assert_difference('Host.count', 1) do
         @report_parser.save_host
-        assert Host.find_by(name: @report_parser.report_host)
+        assert Host.find_by(
+          name: @report_parser.test_result_file.test_result.host
+        )
       end
     end
 
     should 'return the host object even if it already existed' do
-      Host.create(id: @host_id, name: @report_parser.report_host,
+      Host.create(id: @host_id,
+                  name: @report_parser.test_result_file.test_result.host,
                   account: accounts(:test))
 
       assert_difference('Host.count', 0) do
         @report_parser.save_host
         assert_equal(
-          @report_parser.host, Host.find_by(name: @report_parser.report_host)
+          @report_parser.host,
+          Host.find_by(name: @report_parser.test_result_file.test_result.host)
         )
       end
     end
@@ -131,7 +142,8 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         @profiles = []
         @report_parser.save_host
         assert_equal(
-          @report_parser.host, Host.find_by(name: @report_parser.report_host)
+          @report_parser.host,
+          Host.find_by(name: @report_parser.test_result_file.test_result.host)
         )
       end
     end
@@ -147,7 +159,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
           rr.result == 'notselected'
         end
 
-        assert_equal @report_parser.report_host,
+        assert_equal @report_parser.test_result_file.test_result.host,
                      RuleResult.find(rule_results.sample.id).host.name
         rule_ids = Rule.includes(:rule_results)
                        .where(rule_results: { id: rule_results.map(&:id) })
@@ -163,24 +175,14 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
   end
 
-  context 'no metadata' do
-    should 'raise error if the message does not contain metadata' do
-      assert_raises(::EmptyMetadataError) do
+  context 'missing ID' do
+    should 'raise error if message ID is not present' do
+      assert_raises(::MissingIdError) do
         TestParser.new(
           'fakereport',
           'account' => accounts(:test).account_number,
           'b64_identity' => 'b64_fake_identity',
-          'id' => @host_id,
-          'metadata' => {}
-        )
-      end
-
-      assert_raises(::EmptyMetadataError) do
-        TestParser.new(
-          'fakereport',
-          'account' => accounts(:test).account_number,
-          'b64_identity' => 'b64_fake_identity',
-          'id' => @host_id
+          'metadata' => { 'fqdn': '123' }
         )
       end
     end
@@ -189,12 +191,12 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   context 'rules' do
     setup do
       @arbitrary_rules = [
-        # rubocop:disable Metrics/LineLength
+        # rubocop:disable Layout/LineLength
         'xccdf_org.ssgproject.content_rule_dir_perms_world_writable_system_owned',
         'xccdf_org.ssgproject.content_rule_bios_enable_execution_restrictions',
         'xccdf_org.ssgproject.content_rule_gconf_gnome_screensaver_lock_enabled',
         'xccdf_org.ssgproject.content_rule_selinux_all_devicefiles_labeled'
-        # rubocop:enable Metrics/LineLength
+        # rubocop:enable Layout/LineLength
       ]
       @report_parser.save_benchmark
       @report_parser.save_profiles

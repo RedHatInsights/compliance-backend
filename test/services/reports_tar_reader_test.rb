@@ -11,7 +11,7 @@ class ReportsTarReaderTest < ActiveSupport::TestCase
         XccdfReportParser.new(
           report,
           'account' => accounts(:test).account_number,
-          'id' => @host_id,
+          'id' => ::UUID.generate,
           'b64_identity' => 'b64_fake_identity',
           'metadata' => {
             'fqdn' => 'lenovolobato.lobatolan.home'

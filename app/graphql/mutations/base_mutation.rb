@@ -15,7 +15,6 @@ module Mutations
     def inventory_host(id)
       ::HostInventoryAPI.new(
         id,
-        nil, # unknown hostname
         current_user.account,
         ::Settings.host_inventory_url,
         nil # infer identity from account
