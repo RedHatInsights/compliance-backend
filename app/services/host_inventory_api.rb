@@ -15,16 +15,18 @@ class HostInventoryAPI
 
   def host_already_in_inventory(id)
     response = Platform.connection.get(
-      @url, {
-        id: id
-      },
-      X_RH_IDENTITY: @b64_identity
+      "#{@url}/#{id}", {}, X_RH_IDENTITY: @b64_identity
     )
     find_results(JSON.parse(response.body))
   end
 
   def inventory_host
-    @inventory_host ||= host_already_in_inventory(@id)
+    return @inventory_host if @inventory_host.present?
+
+    @inventory_host = host_already_in_inventory(@id)
+    raise ::InventoryHostNotFound if @inventory_host.blank?
+
+    @inventory_host
   end
 
   private

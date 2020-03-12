@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Error to raise if metadata['fqdn'] and 'id' are not available
-class MessageFormatError < StandardError; end
+# Error to raise if id is not available
+class MissingIdError < StandardError; end
 # Error to raise if the format of the report is wrong
 class WrongFormatError < StandardError; end
 
@@ -13,11 +13,10 @@ class XccdfReportParser
   attr_reader :report_path, :test_result_file
 
   def initialize(report_contents, message)
-    raise ::MessageFormatError unless valid_message_format?(message)
+    raise ::MissingIdError unless valid_message_format?(message)
 
     @b64_identity = message['b64_identity']
     @account = Account.find_or_create_by(account_number: message['account'])
-    @metadata = message['metadata']
     @host_inventory_id = message['id']
     @test_result_file = OpenscapParser::TestResultFile.new(report_contents)
     set_openscap_parser_data
@@ -31,7 +30,7 @@ class XccdfReportParser
   end
 
   def valid_message_format?(message)
-    message['id'].present? && message.dig('metadata', 'fqdn').present?
+    message['id'].present?
   end
 
   def save_all

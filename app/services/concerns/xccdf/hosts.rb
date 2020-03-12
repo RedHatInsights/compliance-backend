@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Error to raise if the inventory host could not be found
+class InventoryHostNotFound < StandardError; end
+
 module Xccdf
   # Methods related to saving Hosts from openscap_parser
   module Hosts
@@ -15,10 +18,6 @@ module Xccdf
       )
     end
     alias save_profile_host host_profile
-
-    def report_host
-      @metadata&.dig('fqdn') || @test_result_file.test_result.host
-    end
 
     def associate_rules_from_rule_results
       ::ProfileRule.import!(

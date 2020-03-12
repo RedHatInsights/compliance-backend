@@ -28,7 +28,7 @@ class ParseReportJob
     notify_payload_tracker(:processing, "Job #{jid} is now processing")
     parser.save_all
     notify_payload_tracker(:success, "Job #{jid} has completed successfully")
-  rescue ::MessageFormatError, ::WrongFormatError => e
+  rescue ::MissingIdError, ::WrongFormatError, ::InventoryHostNotFound => e
     error_message = "Cannot parse report: #{e} - #{@msg_value.to_json}"
     notify_payload_tracker(:error, error_message)
     Sidekiq.logger.error(error_message)
