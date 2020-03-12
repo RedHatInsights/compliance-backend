@@ -20,6 +20,12 @@ module SystemLike
     result
   end
 
+  def profile_scores
+    test_results.latest.each_with_object({}) do |test_result, h|
+      h[test_result.profile.ref_id] = test_result.score
+    end
+  end
+
   def last_scan_results(profile = nil)
     return profile.results(self) if profile.present?
 
