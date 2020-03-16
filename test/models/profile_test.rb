@@ -50,16 +50,19 @@ class ProfileTest < ActiveSupport::TestCase
     assert 0.5, profiles(:one).compliance_score(hosts(:one))
   end
 
-  test 'score with non-blank hosts' do
-    assert_equal 0.0, profiles(:one).score
+  test 'score with non-blank test results' do
+    test_results(:one).update!(profile: profiles(:one), host: hosts(:one),
+                               score: 0.5, end_time: DateTime.now)
+    test_results(:two).update!(profile: profiles(:one), host: hosts(:two),
+                               score: 0.2, end_time: DateTime.now)
+    assert_equal 0.35, profiles(:one).score
   end
 
   test 'score returns at least one decimal' do
-    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
-                      test_result: test_results(:one))
-    profiles(:one).update(hosts: profiles(:one).hosts + [hosts(:two)],
-                          account: accounts(:test))
+    test_results(:one).update!(profile: profiles(:one), host: hosts(:one),
+                               score: 1, end_time: DateTime.now)
+    test_results(:two).update!(profile: profiles(:one), host: hosts(:two),
+                               score: 0, end_time: DateTime.now)
     assert_equal 0.5, profiles(:one).score
   end
 

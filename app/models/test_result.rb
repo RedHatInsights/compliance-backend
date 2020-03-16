@@ -12,9 +12,15 @@ class TestResult < ApplicationRecord
   validates :host_id, presence: true
   validates :profile_id, presence: true
 
-  def self.latest(profile_id, host_id)
-    where(host_id: host_id, profile_id: profile_id)
-      .order('created_at DESC')
-      .includes(:rule_results).first
+  scope :latest, lambda {
+    joins("JOIN (#{latest_without_ids.to_sql}) as tr on "\
+          'test_results.profile_id = tr.profile_id AND '\
+          'test_results.host_id = tr.host_id AND '\
+          'test_results.end_time = tr.end_time')
+  }
+
+  def self.latest_without_ids
+    group(:profile_id, :host_id)
+      .select(:profile_id, :host_id, 'MAX(end_time) as end_time')
   end
 end
