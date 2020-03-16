@@ -9,7 +9,9 @@ module Types
 
     field :updateProfile, mutation: Mutations::Profile::Edit
     field :createProfile, mutation: Mutations::Profile::Create
+    field :deleteProfile, mutation: Mutations::Profile::Delete
     field :associateSystems, mutation: Mutations::Profile::AssociateSystems
+    field :associateProfiles, mutation: Mutations::System::AssociateProfiles
     field :createBusinessObjective,
           mutation: Mutations::BusinessObjective::Create
   end

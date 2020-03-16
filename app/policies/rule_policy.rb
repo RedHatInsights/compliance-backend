@@ -3,11 +3,13 @@
 # Policies for accessing Rules
 class RulePolicy < ApplicationPolicy
   def index?
-    record.profiles.pluck(:account_id).include? user.account_id
+    record.profiles.pluck(:account_id).include?(user.account_id) ||
+      record.canonical?
   end
 
   def show?
-    record.profiles.pluck(:account_id).include? user.account_id
+    record.profiles.pluck(:account_id).include?(user.account_id) ||
+      record.canonical?
   end
 
   # Only select Rules belonging to profiles visible by the current user
@@ -16,10 +18,9 @@ class RulePolicy < ApplicationPolicy
     def resolve
       return Rule.where('false') if user.account_id.blank?
 
-      account_rule_ids = ProfileRule.where(
-        profile_id: Account.find(user.account_id).profiles.pluck(:id)
-      ).pluck(:rule_id)
-      scope.where(id: account_rule_ids)
+      Rule.includes(:profiles)
+          .where(profiles: { account: user.account_id })
+          .or(Rule.canonical)
     end
   end
 end

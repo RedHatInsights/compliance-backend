@@ -19,26 +19,34 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'host is compliant if all rules are "pass" or "notapplicable"' do
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                      test_result: test_results(:one))
     RuleResult.create(rule: rules(:two), host: hosts(:one),
-                      result: 'notapplicable')
+                      test_result: test_results(:one), result: 'notapplicable')
     assert profiles(:one).compliant?(hosts(:one))
   end
 
   test 'host is not compliant if some rules are "fail" or "error"' do
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                      test_result: test_results(:one))
     RuleResult.create(rule: rules(:two), host: hosts(:one),
-                      result: 'error')
+                      test_result: test_results(:one), result: 'error')
     assert_not profiles(:one).compliant?(hosts(:one))
 
-    RuleResult.find_by(rule: rules(:two), host: hosts(:one))
+    RuleResult.find_by(rule: rules(:two), host: hosts(:one),
+                       test_result: test_results(:one))
               .update(result: 'fail')
     assert_not profiles(:one).compliant?(hosts(:one))
   end
 
   test 'compliance score in terms of percentage' do
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
-    RuleResult.create(rule: rules(:two), host: hosts(:one), result: 'fail')
+    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                      test_result: test_results(:one))
+    RuleResult.create(rule: rules(:two), host: hosts(:one), result: 'fail',
+                      test_result: test_results(:one))
     assert 0.5, profiles(:one).compliance_score(hosts(:one))
   end
 
@@ -47,7 +55,9 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'score returns at least one decimal' do
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                      test_result: test_results(:one))
     profiles(:one).update(hosts: profiles(:one).hosts + [hosts(:two)],
                           account: accounts(:test))
     assert_equal 0.5, profiles(:one).score
@@ -55,9 +65,11 @@ class ProfileTest < ActiveSupport::TestCase
 
   context 'threshold' do
     setup do
-      RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass')
+      test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+      RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
+                        test_result: test_results(:one))
       RuleResult.create(rule: rules(:two), host: hosts(:one),
-                        result: 'fail')
+                        test_result: test_results(:one), result: 'fail')
     end
 
     should 'host is compliant if 50% of rules pass with a threshold of 50' do
@@ -78,6 +90,28 @@ class ProfileTest < ActiveSupport::TestCase
     assert profiles(:one).business_objective, bo
     profiles(:one).update(business_objective: nil)
     assert_empty BusinessObjective.where(title: 'abcd')
+  end
+
+  test 'canonical profiles have no parent_profile_id' do
+    assert Profile.new.canonical?, 'nil parent_profile_id should be canonical'
+  end
+
+  test 'non-canonical profiles have a parent_profile_id' do
+    assert_not Profile.new(
+      parent_profile_id: profiles(:one).id
+    ).canonical?, 'non-nil parent_profile_id should not be canonical'
+  end
+
+  test 'canonical scope finds only canonical profiles' do
+    p1 = Profile.create!(ref_id: 'p1_foo_ref_id',
+                         name: 'p1 foo',
+                         benchmark_id: benchmarks(:one).id,
+                         parent_profile_id: profiles(:one).id)
+    p2 = Profile.create!(ref_id: 'p2_foo_ref_id',
+                         name: 'p2 foo',
+                         benchmark_id: benchmarks(:one).id)
+    assert_includes Profile.canonical, p2
+    assert_not_includes Profile.canonical, p1
   end
 
   context 'cloning profile to account' do
@@ -106,6 +140,43 @@ class ProfileTest < ActiveSupport::TestCase
         )
         assert hosts(:one).profiles.include?(cloned_profile)
       end
+    end
+
+    should 'set the parent profile ID to the original profile' do
+      canonical = Profile.canonical.first
+
+      assert_difference('Profile.count', 1) do
+        cloned_profile = canonical.clone_to(
+          account: accounts(:one), host: hosts(:one)
+        )
+
+        assert_equal canonical, cloned_profile.parent_profile
+      end
+    end
+  end
+
+  context 'profile tailoring' do
+    setup do
+      @parent_profile = Profile.create!(benchmark: benchmarks(:one),
+                                        ref_id: 'foo',
+                                        name: 'foo profile')
+      @parent_profile.update! rules: [rules(:one)]
+      @profile = @parent_profile.clone_to(account: accounts(:one),
+                                          host: hosts(:one))
+      @profile.update! rules: [rules(:two)]
+    end
+
+    should 'send the correct rule ref ids to the tailoring file service' do
+      assert_equal({ rules(:one).ref_id => false, rules(:two).ref_id => true },
+                   @profile.tailored_rule_ref_ids)
+    end
+
+    should 'properly detects added_rules' do
+      assert_equal [rules(:two)], @profile.added_rules
+    end
+
+    should 'properly detects removed_rules' do
+      assert_equal [rules(:one)], @profile.removed_rules
     end
   end
 end

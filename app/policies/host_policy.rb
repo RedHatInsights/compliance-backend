@@ -10,6 +10,10 @@ class HostPolicy < ApplicationPolicy
     match_account?
   end
 
+  def edit?
+    match_account?
+  end
+
   def destroy?
     match_account?
   end

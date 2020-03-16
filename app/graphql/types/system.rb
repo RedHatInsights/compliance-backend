@@ -9,7 +9,7 @@ module Types
 
     field :id, ID, null: false
     field :name, String, null: false
-    field :profiles, [::Types::Profile], null: true, extras: [:lookahead]
+    field :profiles, [::Types::Profile], null: true
     field :compliant, Boolean, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
@@ -31,8 +31,8 @@ module Types
                required: false
     end
 
-    def profiles(lookahead:)
-      context_parent(lookahead)
+    def profiles
+      context_parent
       object.profiles
     end
 
@@ -51,11 +51,15 @@ module Types
     end
 
     def rules_passed(args = {})
-      object.rules_passed(::Profile.find_by(id: args[:profile_id]))
+      ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+        object.rules_passed(profile)
+      end
     end
 
     def rules_failed(args = {})
-      object.rules_failed(::Profile.find_by(id: args[:profile_id]))
+      ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+        object.rules_failed(profile)
+      end
     end
 
     def rule_objects_failed
@@ -69,22 +73,13 @@ module Types
     end
 
     def last_scanned(args = {})
-      if args[:profile_id].present?
-        rule_ids = ::Profile.find(args[:profile_id]).rules.pluck(:id)
-        rule_results = object.rule_results.where(rule_id: rule_ids)
-      else
-        rule_results = object.rule_results
-      end
-
-      rule_results.maximum(:end_time)&.iso8601 || 'Never'
+      latest_test_result = TestResult.latest(args[:profile_id], object.id)
+      latest_test_result&.end_time&.iso8601 || 'Never'
     end
 
     private
 
-    def context_parent(lookahead)
-      profile_fields = %i[rulesPassed rulesFailed compliant lastScanned]
-      return unless profile_fields.any? { |field| lookahead.selects?(field) }
-
+    def context_parent
       context[:parent_system_id] = object.id
     end
   end

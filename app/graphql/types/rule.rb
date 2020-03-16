@@ -14,24 +14,66 @@ module Types
     field :severity, String, null: false
     field :remediation_available, Boolean, null: false
     field :profiles, [::Types::Profile], null: true
-    field :identifier, ::Types::RuleIdentifier, null: true
-    field :references, [::Types::RuleReference], null: true,
-                                                 extras: [:lookahead]
+    field :identifier, String, null: true
+    field :references, String, null: true
     field :compliant, Boolean, null: false do
-      argument :system_id, String, 'Is a system compliant?', required: true
+      argument :system_id, String, 'Is a system compliant?',
+               required: false
+      argument :profile_id, String, 'Is a system compliant with this profile?',
+               required: false
     end
 
-    def compliant(system_id:)
-      object.compliant?(::Host.find(system_id))
+    def compliant(args = {})
+      system_id(args) &&
+        profile_id(args) &&
+        %w[pass notapplicable notselected].include?(
+          context[:rule_results][object.id][profile_id(args)]
+        )
     end
 
-    def references(lookahead:)
-      selected_columns = lookahead.selections.map(&:name) &
-                         ::RuleReference.column_names.map(&:to_sym)
-      object.references.distinct.reorder('')
-            .pluck(selected_columns).map do |reference|
-        selected_columns.zip([reference].flatten).to_h
+    def references
+      if context[:"rule_references_#{object.id}"].nil?
+        ::CollectionLoader.for(::Rule, :rule_references)
+                          .load(object).then do |references|
+          references.map { |ref| [ref.href, ref.label] }.to_json
+        end
+      else
+        references_from_context
       end
+    end
+
+    def references_from_context
+      ::RecordLoader.for(::RuleReference)
+                    .load_many(context[:"rule_references_#{object.id}"])
+                    .then do |references|
+        references.map { |ref| { href: ref.href, label: ref.label } }.to_json
+      end
+    end
+
+    def identifier
+      ::CollectionLoader.for(::Rule, :rule_identifier)
+                        .load(object).then do |identifier|
+        { label: identifier&.label, system: identifier&.system }.to_json
+      end
+    end
+
+    private
+
+    def system_id(args)
+      args[:system_id] || context[:parent_system_id]
+    end
+
+    def profile_id(args)
+      args[:profile_id] || context[:parent_profile_id][object.id]
+    end
+
+    def latest_test_result_batch(args)
+      ::RecordLoader.for(
+        ::TestResult,
+        column: :profile_id,
+        where: { host_id: system_id(args) },
+        order: 'created_at DESC'
+      ).load(profile_id(args))
     end
   end
 end

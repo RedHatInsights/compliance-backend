@@ -5,6 +5,9 @@
 class Rule < ApplicationRecord
   extend FriendlyId
   friendly_id :ref_id, use: :slugged
+  scoped_search on: %i[id ref_id severity]
+  scoped_search relation: :rule_references, on: :label, alias: :reference
+  scoped_search relation: :rule_identifier, on: :label, alias: :identifier
   include OpenscapParserDerived
 
   has_many :profile_rules, dependent: :delete_all
@@ -42,6 +45,14 @@ class Rule < ApplicationRecord
     where(benchmark_id: ::Xccdf::Benchmark.latest.pluck(:id))
   }
 
+  scope :canonical, lambda {
+    includes(:profiles).where(profiles: { id: Profile.canonical })
+  }
+
+  def canonical?
+    (profiles & Profile.canonical).any?
+  end
+
   def self.from_openscap_parser(op_rule, benchmark_id: nil)
     rule = find_or_initialize_by(ref_id: op_rule.id,
                                  benchmark_id: benchmark_id)
@@ -56,26 +67,21 @@ class Rule < ApplicationRecord
     rule
   end
 
-  # Disabling MethodLength because it measures things wrong
-  # for a multi-line string SQL query.
-  # rubocop:disable Metrics/MethodLength
-  def compliant?(host)
+  def compliant?(host, profile)
     Rails.cache.fetch("#{id}/#{host.id}/compliant", expires_in: 1.week) do
-      latest_result = RuleResult.find_by_sql(
-        ['SELECT rule_results.* FROM (
-          SELECT rr2.*,
-             rank() OVER (
-                    PARTITION BY rule_id, host_id
-                    ORDER BY end_time DESC, created_at DESC
-             )
-          FROM rule_results rr2
-          WHERE rr2.host_id = ? AND rr2.result IN (?) AND rr2.rule_id = ?
-       ) rule_results WHERE RANK = 1', host.id, RuleResult::SELECTED, id]
-      ).last
-      return false if latest_result.blank?
+      return false unless profile.present? && profile.rules.include?(self)
 
-      %w[pass notapplicable notselected].include? latest_result.result
+      latest_rule_result = latest_result(host, profile)
+      return false if latest_rule_result.blank?
+
+      %w[pass notapplicable notselected].include? latest_rule_result.result
     end
   end
-  # rubocop:enable Metrics/MethodLength
+
+  def latest_result(host, profile)
+    test_result = TestResult.latest(profile.id, host.id)
+    return nil if test_result.blank?
+
+    test_result.rule_results.find_by(rule_id: id)
+  end
 end

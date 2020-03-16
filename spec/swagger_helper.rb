@@ -191,3 +191,30 @@ def x_rh_identity
   }.with_indifferent_access
 end
 # rubocop:enable Metrics/MethodLength
+
+def pagination_params
+  parameter name: :limit, in: :query, required: false,
+            description: 'The number of items to return',
+            schema: { type: :integer, maximum: 100, minimum: 1, default: 10 }
+  parameter name: :offset, in: :query, required: false,
+            description: 'The number of items to skip before starting '\
+            'to collect the result set',
+            schema: { type: :integer, minimum: 1, default: 1 }
+end
+
+def search_params
+  parameter name: :search, in: :query, required: false,
+            description: 'Query string compliant with scoped_search '\
+            'query language: '\
+            'https://github.com/wvanbergen/scoped_search/wiki/Query-language',
+            schema: { type: :string, default: '' }
+end
+
+def content_types
+  consumes 'application/vnd.api+json'
+  produces 'application/vnd.api+json'
+end
+
+def auth_header
+  parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
+end

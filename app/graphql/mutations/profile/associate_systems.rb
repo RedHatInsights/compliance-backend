@@ -20,20 +20,10 @@ module Mutations
         { profile: profile }
       end
 
-      private
-
-      def find_profile(profile_id)
-        ::Pundit.authorize(
-          context[:current_user],
-          ::Profile.find(profile_id),
-          :edit?
-        )
-      end
-
-      def find_hosts(system_ids)
-        ::Pundit.policy_scope(context[:current_user], ::Host)
-                .where(id: system_ids)
-      end
+      include HostHelper
+      include UserHelper
+      include ProfileHelper
+      include InventoryServiceHelper
     end
   end
 end

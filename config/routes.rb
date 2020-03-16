@@ -3,7 +3,11 @@
 Rails.application.routes.draw do
   def draw_routes(prefix)
     scope "#{prefix}/#{ENV['APP_NAME']}" do
-      resources :profiles, only: [:index, :show]
+      resources :profiles, only: [:index, :show] do
+        member do
+          get 'tailoring_file'
+        end
+      end
       resources :rule_results, only: [:index]
       resources :systems, only: [:index, :destroy]
       resources :rules, only: [:index, :show]

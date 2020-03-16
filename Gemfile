@@ -26,6 +26,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 # Kafka integration
 gem 'racecar'
+gem 'ruby-kafka'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
@@ -42,6 +43,7 @@ gem 'fast_jsonapi'
 
 # GraphQL support
 gem 'graphql'
+gem 'graphql-batch'
 
 # Pundit
 gem 'pundit'
@@ -89,6 +91,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'dotenv-rails'
   gem 'irb', '>= 1.2'
+  gem 'silent_stream'
   gem 'webmock'
 end
 

@@ -12,6 +12,7 @@ class Host < ApplicationRecord
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results, source: :rule
   has_many :profile_hosts, dependent: :destroy
+  has_many :test_results, dependent: :destroy
   include SystemLike
 
   has_many :profiles, through: :profile_hosts, source: :profile

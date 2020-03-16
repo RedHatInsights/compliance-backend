@@ -2,15 +2,23 @@
 
 # OpenSCAP profile
 class Profile < ApplicationRecord
+  include ProfileTailoring
+
+  attribute :delete_all_test_results, :boolean, default: false
+
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
 
   has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
   has_many :profile_hosts, dependent: :delete_all
   has_many :hosts, through: :profile_hosts, source: :host
+  # rubocop:disable Rails/HasManyOrHasOneDependent
+  has_many :test_results
+  # rubocop:enable Rails/HasManyOrHasOneDependent
   belongs_to :account, optional: true
   belongs_to :business_objective, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
+  belongs_to :parent_profile, class_name: 'Profile', optional: true
 
   validates :ref_id, uniqueness: { scope: %i[account_id benchmark_id] },
                      presence: true
@@ -20,8 +28,9 @@ class Profile < ApplicationRecord
   validates :account, presence: true, if: -> { hosts.any? }
 
   after_update :destroy_orphaned_business_objective
+  before_destroy :destroy_all_test_results, if: -> { delete_all_test_results }
 
-  scope :canonical, -> { where(account_id: nil) }
+  scope :canonical, -> { where(parent_profile_id: nil) }
 
   def self.from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
     profile = find_or_initialize_by(
@@ -38,6 +47,10 @@ class Profile < ApplicationRecord
     profile
   end
 
+  def canonical?
+    parent_profile_id.blank?
+  end
+
   def destroy_orphaned_business_objective
     return unless previous_changes.include?(:business_objective_id) &&
                   previous_changes[:business_objective_id].first.present?
@@ -46,6 +59,10 @@ class Profile < ApplicationRecord
       previous_changes[:business_objective_id].first
     )
     business_objective.destroy if business_objective.profiles.empty?
+  end
+
+  def destroy_all_test_results
+    DeleteTestResultsJob.perform_async(id)
   end
 
   def compliance_score(host)
@@ -67,33 +84,17 @@ class Profile < ApplicationRecord
 
   # Disabling MethodLength because it measures things wrong
   # for a multi-line string SQL query.
-  # rubocop:disable Metrics/MethodLength
   def results(host)
     Rails.cache.fetch("#{id}/#{host.id}/results", expires_in: 1.week) do
-      rule_results = RuleResult.find_by_sql(
-        [
-          'SELECT rule_results.* FROM (
-           SELECT rr2.*,
-              rank() OVER (
-                     PARTITION BY rule_id, host_id
-                     ORDER BY end_time DESC, created_at DESC
-              )
-           FROM rule_results rr2
-           WHERE rr2.host_id = ? AND rr2.result IN (?) AND rr2.rule_id IN
-              (SELECT rules.id FROM rules
-               INNER JOIN profile_rules
-               ON rules.id = profile_rules.rule_id
-               WHERE profile_rules.profile_id = ?)
-          ) rule_results WHERE RANK = 1',
-          host.id, RuleResult::SELECTED, id
-        ]
-      )
+      rule_results = TestResult.where(profile: self, host: host)
+                               .order('created_at DESC')&.first&.rule_results
+      return [] if rule_results.blank?
+
       rule_results.map do |rule_result|
         %w[pass notapplicable notselected].include? rule_result.result
       end
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   def score
     return 1 if hosts.blank?
@@ -104,7 +105,8 @@ class Profile < ApplicationRecord
   def clone_to(account: nil, host: nil)
     new_profile = in_account(account)
     if new_profile.nil?
-      (new_profile = dup).update!(account: account, hosts: [host])
+      (new_profile = dup).update!(account: account, hosts: [host],
+                                  parent_profile: self)
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
@@ -124,5 +126,9 @@ class Profile < ApplicationRecord
       new_profile_rule.profile = self
       new_profile_rule
     end, ignore: true)
+  end
+
+  def major_os_version
+    benchmark ? benchmark.inferred_os_major_version : 'N/A'
   end
 end

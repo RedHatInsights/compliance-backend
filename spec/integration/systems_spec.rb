@@ -8,10 +8,12 @@ describe 'Systems API' do
       fixtures :hosts
       tags 'host'
       description 'Lists all hosts requested'
-      consumes 'application/vnd.api+json'
-      produces 'application/vnd.api+json'
       operationId 'ListHosts'
-      parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
+
+      content_types
+      auth_header
+      pagination_params
+      search_params
 
       response '200', 'lists all hosts requested' do
         let(:'X-RH-IDENTITY') { encoded_header }

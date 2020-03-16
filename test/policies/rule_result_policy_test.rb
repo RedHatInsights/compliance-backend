@@ -12,6 +12,7 @@ class RuleResultPolicyTest < ActiveSupport::TestCase
     assert_includes Pundit.policy_scope(users(:test), Host), hosts(:one)
     rule_results(:one).host = hosts(:one)
     rule_results(:one).rule = rules(:one)
+    rule_results(:one).test_result = test_results(:one)
     rule_results(:one).save
     assert_includes Pundit.policy_scope(users(:test), RuleResult),
                     rule_results(:one)

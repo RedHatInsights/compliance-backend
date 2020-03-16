@@ -40,7 +40,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
       }
     GRAPHQL
 
-    profiles(:one).update account: accounts(:test)
+    profiles(:one).update account: accounts(:test),
+                          parent_profile: profiles(:two)
     users(:test).update account: nil
 
     assert_raises(Pundit::NotAuthorizedError) do
@@ -67,8 +68,14 @@ class ProfileQueryTest < ActiveSupport::TestCase
     }
     GRAPHQL
 
-    rule_results(:one).update host: hosts(:one), rule: rules(:one)
-    rule_results(:two).update host: hosts(:two), rule: rules(:two)
+    rule_results(:one).update(
+      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    )
+    rule_results(:two).update(
+      host: hosts(:two), rule: rules(:two), test_result: test_results(:two)
+    )
+    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
+    test_results(:two).update(profile: profiles(:two), host: hosts(:two))
     profiles(:one).rules << rules(:one)
     profiles(:one).rules << rules(:two)
     profiles(:one).update(account: accounts(:test),

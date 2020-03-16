@@ -15,8 +15,9 @@ class ComplianceReportsConsumer < ApplicationConsumer
     download_file
     enqueue_job
   rescue EntitlementError, SafeDownloader::DownloadError => e
-    logger.error "Error parsing report: #{message_id}"\
-      " - #{e.message}"
+    error_message = "Error parsing report: #{message_id} - #{e.message}"
+    logger.error error_message
+    notify_payload_tracker(:error, error_message)
     send_validation('failure')
   end
 
@@ -28,6 +29,14 @@ class ComplianceReportsConsumer < ApplicationConsumer
   end
 
   private
+
+  def notify_payload_tracker(status, status_msg = '')
+    PayloadTracker.deliver(
+      account: @msg_value['account'], system_id: @msg_value['id'],
+      payload_id: @msg_value['request_id'], status: status,
+      status_msg: status_msg
+    )
+  end
 
   def identity
     IdentityHeader.new(@msg_value['b64_identity'])
@@ -50,6 +59,7 @@ class ComplianceReportsConsumer < ApplicationConsumer
         ActiveSupport::Gzip.compress(report), @msg_value
       )
       logger.info "Message enqueued: #{message_id} as #{job}"
+      notify_payload_tracker(:received, "File is valid. Job #{job} enqueued")
     end
   end
 

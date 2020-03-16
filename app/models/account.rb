@@ -28,4 +28,8 @@ class Account < ApplicationRecord
     }
   end
   # rubocop:enable Metrics/MethodLength
+
+  def b64_identity
+    Base64.strict_encode64(fake_identity_header.to_json)
+  end
 end

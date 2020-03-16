@@ -9,7 +9,10 @@ class RuleQueryTest < ActiveSupport::TestCase
     profiles(:one).update rules: [rules(:one)]
     rules(:one).update rule_identifier: rule_identifiers(:one)
     rules(:one).update rule_references: [rule_references(:one)]
-    rule_results(:one).update rule: rules(:one), host: hosts(:one)
+    rule_results(:one).update(
+      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    )
+    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
   end
 
   test 'rules are filtered by system ID' do
@@ -48,9 +51,7 @@ class RuleQueryTest < ActiveSupport::TestCase
               refId
               rules(identifier: $identifier) {
                 id
-                identifier {
-                  label
-                }
+                identifier
               }
           }
       }
@@ -67,9 +68,11 @@ class RuleQueryTest < ActiveSupport::TestCase
     assert_not result.dig('errors'),
                "Query was unsuccessful: #{result.dig('errors')}"
     assert result.dig('data', 'profile', 'rules').any?, 'No rules returned!'
-    assert_equal rule_identifiers(:one).label,
-                 result.dig('data', 'profile', 'rules',
-                            0, 'identifier', 'label')
+    assert_equal(
+      { label: rule_identifiers(:one).label,
+        system: rule_identifiers(:one).system }.to_json,
+      result.dig('data', 'profile', 'rules', 0, 'identifier')
+    )
   end
 
   test 'rules are filtered by references' do
@@ -81,9 +84,7 @@ class RuleQueryTest < ActiveSupport::TestCase
               refId
               rules(references: $references) {
                 id
-                references {
-                  label
-                }
+                references
               }
           }
       }
@@ -100,8 +101,9 @@ class RuleQueryTest < ActiveSupport::TestCase
     assert_not result.dig('errors'),
                "Query was unsuccessful: #{result.dig('errors')}"
     assert result.dig('data', 'profile', 'rules').any?, 'No rules returned!'
-    assert_equal rule_references(:one).label,
+    assert_equal [[rule_references(:one).href,
+                   rule_references(:one).label]].to_json,
                  result.dig('data', 'profile', 'rules',
-                            0, 'references', 0, 'label')
+                            0, 'references')
   end
 end
