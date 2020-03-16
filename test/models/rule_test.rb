@@ -23,7 +23,8 @@ class RuleTest < ActiveSupport::TestCase
   test 'host one is compliant?' do
     rules(:one).profiles << profiles(:one)
     rule_results(:one).update(host: hosts(:one), rule: rules(:one))
-    test_result = TestResult.create(profile: profiles(:one), host: hosts(:one))
+    test_result = TestResult.create(profile: profiles(:one), host: hosts(:one),
+                                    end_time: DateTime.now)
     test_result.rule_results << rule_results(:one)
     assert rules(:one).compliant?(hosts(:one), profiles(:one))
   end

@@ -73,7 +73,9 @@ module Types
     end
 
     def last_scanned(args = {})
-      latest_test_result = TestResult.latest(args[:profile_id], object.id)
+      latest_test_result = TestResult.latest.find_by(
+        profile_id: args[:profile_id], host_id: object.id
+      )
       latest_test_result&.end_time&.iso8601 || 'Never'
     end
 
