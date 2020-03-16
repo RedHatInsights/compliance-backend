@@ -110,7 +110,7 @@ class Profile < ApplicationRecord
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
-    new_profile.add_rules_from(profile: self)
+    new_profile.add_rule_ref_ids(rules.pluck(:ref_id))
     new_profile
   end
 
@@ -119,12 +119,10 @@ class Profile < ApplicationRecord
                     benchmark_id: benchmark_id)
   end
 
-  def add_rules_from(profile: nil)
-    new_profile_rules = profile.profile_rules - profile_rules
-    ProfileRule.import!(new_profile_rules.map do |profile_rule|
-      new_profile_rule = profile_rule.dup
-      new_profile_rule.profile = self
-      new_profile_rule
+  def add_rule_ref_ids(ref_ids)
+    rules = benchmark.rules.where(ref_id: ref_ids)
+    ProfileRule.import!(rules.map do |rule|
+      ProfileRule.new(profile_id: id, rule_id: rule.id)
     end, ignore: true)
   end
 
