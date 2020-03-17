@@ -4,6 +4,10 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
     ProfileHost.find_each do |profile_host|
       host = profile_host.host
       profile = profile_host.profile
+      if host.nil? || profile.nil?
+        profile_host.destroy
+        next
+      end
       puts(" - Migrating results for host #{host.name}"\
            " - profile #{profile.name}")
       rule_results_by_end_time = scan_results(host, profile)
