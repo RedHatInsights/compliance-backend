@@ -7,6 +7,8 @@ class Profile < ApplicationRecord
   attribute :delete_all_test_results, :boolean, default: false
 
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
+  scoped_search relation: :hosts, on: :id, rename: :system_ids
+  scoped_search relation: :hosts, on: :name, rename: :system_names
 
   has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
