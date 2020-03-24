@@ -17,7 +17,7 @@ class ParentProfileAssociator
       parents = Profile.where(ref_id: profile.ref_id,
                               benchmark_id: profile.benchmark_id,
                               account_id: nil)
-      raise not_found(profile) unless parents.one?
+      raise not_found(profile) unless parents.any?
 
       parents.first
     end
