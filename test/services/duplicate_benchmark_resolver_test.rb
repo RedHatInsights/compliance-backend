@@ -41,8 +41,8 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
   test 'resolves identical benchmarks' do
     assert_difference(
       'Xccdf::Benchmark.count' => -1,
-      'Profile.count' => -2,
-      'Rule.count' => -2,
+      'Profile.count' => 0,
+      'Rule.count' => 0,
       'RuleResult.count' => 0,
       'TestResult.count' => 0,
       'RuleReference.count' => 0,
