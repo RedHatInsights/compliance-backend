@@ -19,7 +19,9 @@ module Types
 
     collection_field :systems, Types::System
     collection_field :profiles, Types::Profile
+    collection_field :test_results, Types::TestResult
     record_field :profile, Types::Profile
+    record_field :test_result, Types::TestResult
 
     field :all_systems, [Types::System], null: true do
       description 'All systems visible by the user'
