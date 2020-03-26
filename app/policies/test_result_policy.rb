@@ -13,7 +13,9 @@ class TestResultPolicy < ApplicationPolicy
   # Only show TestResults belonging to profiles owned by the current user
   class Scope < ::ApplicationPolicy::Scope
     def resolve
-      available_profiles = HostPolicy::Scope.new(user, ::Profile).resolve.pluck(:id)
+      available_profiles = HostPolicy::Scope.new(
+        user, ::Profile
+      ).resolve.pluck(:id)
       scope.where(profile_id: available_profiles)
     end
   end
