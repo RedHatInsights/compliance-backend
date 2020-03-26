@@ -74,10 +74,7 @@ class Profile < ApplicationRecord
   end
 
   def compliant?(host)
-    host_results = results(host)
-    host_results.present? &&
-      (host_results.count(true) / host_results.count.to_f) >=
-        (compliance_threshold / 100.0)
+    score(host: host) >= compliance_threshold
   end
 
   def rules_for_system(host, selected_columns = [:id])
@@ -98,10 +95,12 @@ class Profile < ApplicationRecord
     end
   end
 
-  def score
-    return 1 if test_results.latest.blank?
+  def score(host: nil)
+    results = test_results.latest
+    results = results.where(host: host) if host
+    return 0 if results.blank?
 
-    (scores = test_results.latest.pluck(:score)).sum / scores.size
+    (scores = results.pluck(:score)).sum / scores.size
   end
 
   def clone_to(account: nil, host: nil)
