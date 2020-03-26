@@ -8,8 +8,8 @@ class Host < ApplicationRecord
                 only_explicit: true
   scoped_search on: :compliance_score, ext_method: 'filter_by_compliance_score',
                 only_explicit: true
-  scoped_search on: :has_test_results, ext_method: 'has_test_results',
-                only_explicit: true
+  scoped_search on: :has_test_results, ext_method: 'test_results?',
+                only_explicit: true, operators: ['=']
   scoped_search relation: :profile_hosts, on: :profile_id
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results, source: :rule
@@ -27,7 +27,11 @@ class Host < ApplicationRecord
         host.compliant.values.all?(ActiveModel::Type::Boolean.new.cast(value))
       end
       ids = ids.pluck(:id).map { |id| "'#{id}'" }
-      scoped_search_sql_conditions(ids, operator)
+
+      return { conditions: '1=0' } if ids.empty?
+
+      operator = operator == '<>' ? 'NOT' : ''
+      { conditions: "hosts.id #{operator} IN(#{ids.join(',')})" }
     end
 
     def filter_by_compliance_score(_filter, operator, score)
@@ -40,20 +44,13 @@ class Host < ApplicationRecord
       { conditions: "hosts.id IN(#{ids.join(',')})" }
     end
 
-    def has_test_results(_filter, operator, value)
-      ids = Host.select do |h|
-        h.test_results.present? == ActiveModel::Type::Boolean.new.cast(value)
-      end
-      ids = ids.pluck(:id).map { |id| "'#{id}'" }
-      scoped_search_sql_conditions(ids, operator)
-    end
-
-    def scoped_search_sql_conditions(ids, operator)
-      return { conditions: '1=0' } if ids.empty?
-      operator = operator == '<>' ? 'NOT' : ''
-      { conditions: "hosts.id #{operator} IN(#{ids.join(',')})" }
+    def test_results?(_filter, _operator, value)
+      operator = ActiveModel::Type::Boolean.new.cast(value) ? '' : 'NOT'
+      host_ids = TestResult.select(:host_id).distinct.where.not(host_id: nil)
+      {
+        conditions: "hosts.id #{operator} "\
+                    "IN(#{host_ids.to_sql})"
+      }
     end
   end
-
-  private_class_method :scoped_search_sql_conditions
 end

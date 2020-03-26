@@ -71,12 +71,6 @@ class HostTest < ActiveSupport::TestCase
       assert_includes Host.search_for('has_test_results = false'), hosts(:two)
       assert_not_includes(Host.search_for('has_test_results = false'),
                           hosts(:one))
-      assert_includes Host.search_for('has_test_results != true'), hosts(:two)
-      assert_not_includes(Host.search_for('has_test_results != true'),
-                          hosts(:one))
-      assert_includes Host.search_for('has_test_results != false'), hosts(:one)
-      assert_not_includes(Host.search_for('has_test_results != false'),
-                          hosts(:two))
     end
   end
 end
