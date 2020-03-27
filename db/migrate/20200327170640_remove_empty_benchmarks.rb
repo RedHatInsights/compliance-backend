@@ -5,13 +5,13 @@ class RemoveEmptyBenchmarks < ActiveRecord::Migration[5.2]
         id: Profile.select(:benchmark_id).distinct
       )
       empty_benchmarks.each do |empty_benchmark|
-        RuleIdentifier.where(
+        ::RuleIdentifier.where(
           rule_id: empty_benchmark.rules.select(:id)
         ).delete_all
-        empty_rule_references_rules = RuleReferencesRule.where(
+        empty_rule_references_rules = ::RuleReferencesRule.where(
           rule_id: empty_benchmark.rules.select(:id)
         )
-        RuleReferences.where(
+        ::RuleReference.where(
           id: empty_rule_references_rules.select(:rule_reference_id)
         ).delete_all
         empty_rule_references_rules.delete_all
