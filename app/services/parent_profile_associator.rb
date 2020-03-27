@@ -6,7 +6,7 @@ class ParentProfileAssociator
     def run!
       Profile.transaction do
         Profile.where.not(account: nil).find_each do |profile|
-          next if profile_already_in_account(profile)
+          next if profile_already_in_account!(profile)
 
           parent = find_parent(profile)
           profile.update!(parent_profile: parent, benchmark: parent.benchmark)
