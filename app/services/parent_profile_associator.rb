@@ -6,23 +6,25 @@ class ParentProfileAssociator
     def run!
       Profile.transaction do
         Profile.where.not(account: nil).find_each do |profile|
-          if profile.account.profiles.where(ref_id: profile.ref_id).count > 1
-            profile.delete_all_test_results = true
-            profile.destroy
-            next
-          end
+          next if profile_already_in_account(profile)
+
           parent = find_parent(profile)
           profile.update!(parent_profile: parent, benchmark: parent.benchmark)
         end
-        empty_benchmarks = ::Xccdf::Benchmark.where.not(id: Profile.select(:benchmark_id).distinct)
-        empty_benchmarks.each do |empty_benchmark|
-          empty_benchmark.rules.delete_all
-        end
-        empty_benchmarks.destroy_all
       end
     end
 
     private
+
+    def profile_already_in_account!(profile)
+      duplicate_profiles = profile.account.profiles.where(
+        ref_id: profile.ref_id
+      ).count
+      return false unless duplicate_profiles > 1
+
+      profile.delete_all_test_results = true
+      profile.destroy
+    end
 
     def find_parent(profile)
       logger.info("Finding parents for profile #{profile.id}")
