@@ -62,6 +62,6 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
 
   def compliance_score(rules_passed, rules_failed)
     score = (100 * (rules_passed.to_f / (rules_passed + rules_failed)))
-    score.nan? ? 0.0 : score
+    (score.nan? || score.infinite?) ? 0.0 : score
   end
 end
