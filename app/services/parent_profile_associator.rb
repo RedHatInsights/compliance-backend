@@ -6,9 +6,9 @@ class ParentProfileAssociator
     def run!
       Profile.transaction do
         Profile.where.not(account: nil).find_each do |profile|
-          next if profile_already_in_account!(profile)
-
           parent = find_parent(profile)
+          next if profile_already_in_account!(profile, parent)
+
           profile.update!(parent_profile: parent, benchmark: parent.benchmark)
         end
       end
@@ -16,9 +16,10 @@ class ParentProfileAssociator
 
     private
 
-    def profile_already_in_account!(profile)
+    def profile_already_in_account!(profile, parent)
       duplicate_profiles = profile.account.profiles.where(
-        ref_id: profile.ref_id
+        ref_id: profile.ref_id,
+        benchmark_id: parent.benchmark.id
       ).count
       return false unless duplicate_profiles > 1
 
@@ -49,6 +50,7 @@ class ParentProfileAssociator
     def find_in_other_benchmarks(profile)
       Profile.where(name: profile.name,
                     ref_id: profile.ref_id,
+                    description: profile.description,
                     account_id: nil)
     end
 
