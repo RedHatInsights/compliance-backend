@@ -79,8 +79,10 @@ class SystemQueryTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )
 
-    assert_equal "#{profiles(:one).name}, #{profiles(:two).name}",
-                 result['data']['systems']['edges'].first['node']['profileNames']
+    assert_equal(
+      "#{profiles(:one).name}, #{profiles(:two).name}",
+      result['data']['systems']['edges'].first['node']['profileNames']
+    )
     assert_not result['data']['systems']['edges'].first['node']['compliant']
   end
 
@@ -123,9 +125,9 @@ class SystemQueryTest < ActiveSupport::TestCase
       query,
       variables: { search: "profile_id = #{profiles(:one).id}" },
       context: { current_user: users(:test) }
-    )
+    )['data']['systems']['edges']
 
-    result_profiles = result['data']['systems']['edges'].first['node']['profiles']
+    result_profiles = result.first['node']['profiles']
 
     assert_equal 1, result_profiles.first['rulesPassed']
     assert_equal 0, result_profiles.first['rulesFailed']
