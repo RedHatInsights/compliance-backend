@@ -18,6 +18,7 @@ services:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - POSTGRESQL_USER=postgres
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+      - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
     ports:
       - '3000:3000'
     volumes:
