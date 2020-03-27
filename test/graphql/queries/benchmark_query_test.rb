@@ -5,8 +5,8 @@ require 'test_helper'
 class BenchmarkQueryTest < ActiveSupport::TestCase
   test 'query benchmark owned by the user' do
     query = <<-GRAPHQL
-      query allBenchmarks {
-          allBenchmarks {
+      query latestBenchmarks {
+          latestBenchmarks {
               id
               title
               refId
@@ -27,12 +27,12 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
     )
 
     assert_equal benchmarks(:one).id,
-                 result['data']['allBenchmarks'].first['id']
+                 result['data']['latestBenchmarks'].first['id']
     assert_equal benchmarks(:one).title,
-                 result['data']['allBenchmarks'].first['title']
+                 result['data']['latestBenchmarks'].first['title']
     assert_equal benchmarks(:one).ref_id,
-                 result['data']['allBenchmarks'].first['refId']
+                 result['data']['latestBenchmarks'].first['refId']
     assert_equal benchmarks(:one).version,
-                 result['data']['allBenchmarks'].first['version']
+                 result['data']['latestBenchmarks'].first['version']
   end
 end

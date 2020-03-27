@@ -265,49 +265,9 @@ The root of all queries
 """
 type Query implements Node {
   """
-  All benchmarks visible by the user
-  """
-  allBenchmarks: [Benchmark!]
-
-  """
-  All image streams visible by the user
-  """
-  allImageStreams(
-    """
-    Search query
-    """
-    search: String
-  ): [System!]
-
-  """
   All profiles visible by the user
   """
   allProfiles: [Profile!]
-
-  """
-  All systems visible by the user
-  """
-  allSystems(
-    """
-    Per page
-    """
-    page: Int
-
-    """
-    Page
-    """
-    perPage: Int
-
-    """
-    Profile Id
-    """
-    profileId: String
-
-    """
-    Search query
-    """
-    search: String
-  ): [System!]
   benchmark(id: String!): Benchmark
 
   """
