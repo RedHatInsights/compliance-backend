@@ -9,6 +9,8 @@ class Profile < ApplicationRecord
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
   scoped_search relation: :hosts, on: :id, rename: :system_ids
   scoped_search relation: :hosts, on: :name, rename: :system_names
+  scoped_search on: :has_test_results, ext_method: 'test_results?',
+                only_explicit: true, operators: ['=']
 
   has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
@@ -34,19 +36,30 @@ class Profile < ApplicationRecord
 
   scope :canonical, -> { where(parent_profile_id: nil) }
 
-  def self.from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
-    profile = find_or_initialize_by(
-      ref_id: op_profile.id,
-      benchmark_id: benchmark_id,
-      account_id: account_id
-    )
+  class << self
+    def test_results?(_filter, _operator, value)
+      operator = ActiveModel::Type::Boolean.new.cast(value) ? '' : 'NOT'
+      profile_ids = TestResult.select(:profile_id).distinct.where.not(profile_id: nil)
+      {
+        conditions: "hosts.id #{operator} "\
+        "IN(#{profile_ids.to_sql})"
+      }
+    end
 
-    profile.assign_attributes(
-      name: op_profile.title,
-      description: op_profile.description
-    )
+    def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
+      profile = find_or_initialize_by(
+        ref_id: op_profile.id,
+        benchmark_id: benchmark_id,
+        account_id: account_id
+      )
 
-    profile
+      profile.assign_attributes(
+        name: op_profile.title,
+        description: op_profile.description
+      )
+
+      profile
+    end
   end
 
   def canonical?
