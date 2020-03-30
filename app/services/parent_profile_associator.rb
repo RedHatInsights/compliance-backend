@@ -17,11 +17,18 @@ class ParentProfileAssociator
     private
 
     def profile_already_in_account!(profile, parent)
-      duplicate_profiles = profile.account.profiles.where(
+      possible_duplicate_profiles = profile.account.profiles.where(
         ref_id: profile.ref_id,
         benchmark_id: parent.benchmark.id
-      ).count
-      return false unless duplicate_profiles >= 1
+      )
+      # If multiple profiles are returned with the same ref_id and prospective
+      # benchmark_id, `.update!` will not be able to run. If only 1 profile is
+      # found with these ref_id/benchmark_id - it's the same one we're passing
+      # as an argument, so it's not a problem to keep it. Otherwise, remove it
+      # as there's a profile already in the account with the right attributes.
+      return false if (possible_duplicate_profiles.count == 1 &&
+                       possible_duplicate_profiles.include?(profile)) ||
+                      possible_duplicate_profiles.count == 0
 
       profile.delete_all_test_results = true
       profile.destroy
