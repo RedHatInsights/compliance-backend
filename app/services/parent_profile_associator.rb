@@ -48,16 +48,15 @@ class ParentProfileAssociator
     # Profiles in the phony-benchmark will have to be assigned to
     # a real benchmark if it can be found.
     def find_in_other_benchmarks(profile)
-      Profile.where(name: profile.name,
-                    ref_id: profile.ref_id,
-                    description: profile.description,
-                    account_id: nil).or(
-                      Profile.where(
-                        name: profile.name,
-                        ref_id: profile.ref_id,
-                        account_id: nil
-                      )
-                    )
+      parent_matching_description = Profile.where(
+        name: profile.name,
+        ref_id: profile.ref_id,
+        description: profile.description,
+        account_id: nil
+      )
+      return parent_matching_description if parent_matching_description.present?
+
+      Profile.where(name: profile.name, ref_id: profile.ref_id, account_id: nil)
     end
 
     def find_most_recent_parent(parents)
