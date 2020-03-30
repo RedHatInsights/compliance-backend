@@ -1,5 +1,5 @@
 class RemoveEmptyBenchmarks < ActiveRecord::Migration[5.2]
-  def change
+  def up
     ::Xccdf::Benchmark.transaction do
       empty_benchmarks = ::Xccdf::Benchmark.where.not(
         id: Profile.select(:benchmark_id).distinct
@@ -19,5 +19,8 @@ class RemoveEmptyBenchmarks < ActiveRecord::Migration[5.2]
       end
       empty_benchmarks.destroy_all
     end
+  end
+
+  def down
   end
 end
