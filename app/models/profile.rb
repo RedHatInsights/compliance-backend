@@ -3,12 +3,15 @@
 # OpenSCAP profile
 class Profile < ApplicationRecord
   include ProfileTailoring
+  include ProfileScoring
 
   attribute :delete_all_test_results, :boolean, default: false
 
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
   scoped_search relation: :hosts, on: :id, rename: :system_ids
   scoped_search relation: :hosts, on: :name, rename: :system_names
+  scoped_search on: :has_test_results, ext_method: 'test_results?',
+                only_explicit: true, operators: ['=']
 
   has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
@@ -34,19 +37,29 @@ class Profile < ApplicationRecord
 
   scope :canonical, -> { where(parent_profile_id: nil) }
 
-  def self.from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
-    profile = find_or_initialize_by(
-      ref_id: op_profile.id,
-      benchmark_id: benchmark_id,
-      account_id: account_id
-    )
+  class << self
+    def test_results?(_filter, _operator, value)
+      operator = ActiveModel::Type::Boolean.new.cast(value) ? '' : 'NOT'
+      profile_ids = TestResult.where.not(
+        profile_id: nil
+      ).select(:profile_id).distinct
+      { conditions: "profiles.id #{operator} IN(#{profile_ids.to_sql})" }
+    end
 
-    profile.assign_attributes(
-      name: op_profile.title,
-      description: op_profile.description
-    )
+    def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
+      profile = find_or_initialize_by(
+        ref_id: op_profile.id,
+        benchmark_id: benchmark_id,
+        account_id: account_id
+      )
 
-    profile
+      profile.assign_attributes(
+        name: op_profile.title,
+        description: op_profile.description
+      )
+
+      profile
+    end
   end
 
   def canonical?
@@ -65,42 +78,6 @@ class Profile < ApplicationRecord
 
   def destroy_all_test_results
     DeleteTestResultsJob.perform_async(id)
-  end
-
-  def compliance_score(host)
-    return 1 if results(host).count.zero?
-
-    (results(host).count { |result| result == true }) / results(host).count
-  end
-
-  def compliant?(host)
-    score(host: host) >= compliance_threshold
-  end
-
-  def rules_for_system(host, selected_columns = [:id])
-    host.selected_rules(self, selected_columns)
-  end
-
-  # Disabling MethodLength because it measures things wrong
-  # for a multi-line string SQL query.
-  def results(host)
-    Rails.cache.fetch("#{id}/#{host.id}/results", expires_in: 1.week) do
-      rule_results = TestResult.where(profile: self, host: host)
-                               .order('created_at DESC')&.first&.rule_results
-      return [] if rule_results.blank?
-
-      rule_results.map do |rule_result|
-        %w[pass notapplicable notselected].include? rule_result.result
-      end
-    end
-  end
-
-  def score(host: nil)
-    results = test_results.latest
-    results = results.where(host: host) if host
-    return 0 if results.blank?
-
-    (scores = results.pluck(:score)).sum / scores.size
   end
 
   def clone_to(account: nil, host: nil)
