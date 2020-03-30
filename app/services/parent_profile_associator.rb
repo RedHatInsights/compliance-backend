@@ -21,7 +21,7 @@ class ParentProfileAssociator
         ref_id: profile.ref_id,
         benchmark_id: parent.benchmark.id
       ).count
-      return false unless duplicate_profiles > 1
+      return false unless duplicate_profiles >= 1
 
       profile.delete_all_test_results = true
       profile.destroy
@@ -51,7 +51,13 @@ class ParentProfileAssociator
       Profile.where(name: profile.name,
                     ref_id: profile.ref_id,
                     description: profile.description,
-                    account_id: nil)
+                    account_id: nil).or(
+                      Profile.where(
+                        name: profile.name,
+                        ref_id: profile.ref_id,
+                        account_id: nil
+                      )
+                    )
     end
 
     def find_most_recent_parent(parents)
