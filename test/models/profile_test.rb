@@ -105,6 +105,20 @@ class ProfileTest < ActiveSupport::TestCase
     assert_not_includes Profile.canonical, p1
   end
 
+  test 'has_test_results filters by test results available' do
+    test_results(:one).update profile: profiles(:one), host: hosts(:one)
+    assert profiles(:one).test_results.present?
+    assert profiles(:two).test_results.empty?
+    assert_includes(Profile.search_for('has_test_results = true'),
+                    profiles(:one))
+    assert_not_includes(Profile.search_for('has_test_results = true'),
+                        profiles(:two))
+    assert_includes(Profile.search_for('has_test_results = false'),
+                    profiles(:two))
+    assert_not_includes(Profile.search_for('has_test_results = false'),
+                        profiles(:one))
+  end
+
   context 'cloning profile to account' do
     should 'create host relation when the profile is created' do
       assert_difference('ProfileHost.count', 1) do

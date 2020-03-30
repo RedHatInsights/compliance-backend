@@ -39,11 +39,10 @@ class Profile < ApplicationRecord
   class << self
     def test_results?(_filter, _operator, value)
       operator = ActiveModel::Type::Boolean.new.cast(value) ? '' : 'NOT'
-      profile_ids = TestResult.select(:profile_id).distinct.where.not(profile_id: nil)
-      {
-        conditions: "hosts.id #{operator} "\
-        "IN(#{profile_ids.to_sql})"
-      }
+      profile_ids = TestResult.where.not(
+        profile_id: nil
+      ).select(:profile_id).distinct
+      { conditions: "profiles.id #{operator} IN(#{profile_ids.to_sql})" }
     end
 
     def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
