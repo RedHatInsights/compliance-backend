@@ -15,7 +15,7 @@ class RuleResult < ApplicationRecord
 
   SELECTED = %w[pass fail notapplicable error unknown].freeze
   FAIL = %w[fail error unknown notchecked].freeze
-  PASSED = %w[pass notapplicable].freeze
+  PASSED = %w[pass].freeze
 
   scope :passed, -> { where(result: PASSED) }
   scope :selected, -> { where(result: SELECTED) }

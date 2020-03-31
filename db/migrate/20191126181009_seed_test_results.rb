@@ -1,31 +1,36 @@
 class SeedTestResults < ActiveRecord::Migration[5.2]
   def up
     migrated = 0
+    test_results = []
+    rule_results_set = []
     ProfileHost.find_each do |profile_host|
       host = profile_host.host
       profile = profile_host.profile
+      if host.nil? || profile.nil?
+        profile_host.destroy
+        next
+      end
       puts(" - Migrating results for host #{host.name}"\
            " - profile #{profile.name}")
       rule_results_by_end_time = scan_results(host, profile)
         .group_by(&:end_time)
       rule_results_by_end_time.each do |end_time, rule_results|
-        test_result = TestResult.create!(
-          host: host,
-          profile: profile
+        rules_passed = rule_results.count { |rr| RuleResult::PASSED.include?(rr.result) }
+        rules_failed = rule_results.count { |rr| RuleResult::FAIL.include?(rr.result) }
+        rule_results_set << rule_results
+        test_results << TestResult.new(
+          host_id: host.id,
+          profile_id: profile.id,
+          start_time: rule_results[0].start_time || Time.now.utc,
+          end_time: rule_results[0].end_time || Time.now.utc,
+          score: compliance_score(rules_passed, rules_failed)
         )
-        rule_result_ids = rule_results.pluck(:id)
-        puts("   - Number of RuleResults found: #{rule_result_ids.count}"\
-             " at time #{end_time}")
-        latest_rule_results = RuleResult.where(id: rule_result_ids)
-        latest_rule_results.update_all(test_result_id: test_result.id)
-        test_result.update!(
-          start_time: latest_rule_results[0].start_time || Time.now.utc,
-          end_time: latest_rule_results[0].end_time || Time.now.utc,
-          score: compliance_score(host.rules_passed(profile),
-                                  host.rules_failed(profile))
-        ) unless latest_rule_results.empty?
       end
       migrated += 1
+    end
+    imported_test_results = TestResult.import test_results
+    imported_test_results.ids.zip(rule_results_set).each do |imported_test_result, rule_results|
+      RuleResult.where(id: rule_results.pluck(:id)).update_all(test_result_id: imported_test_result)
     end
     puts("Finished migration of RuleResult to TestResults: #{migrated}")
   end
@@ -57,6 +62,6 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
 
   def compliance_score(rules_passed, rules_failed)
     score = (100 * (rules_passed.to_f / (rules_passed + rules_failed)))
-    score.nan? ? 0.0 : score
+    (score.nan? || score.infinite?) ? 0.0 : score
   end
 end

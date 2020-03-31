@@ -19,7 +19,9 @@ module Types
 
     collection_field :systems, Types::System
     collection_field :profiles, Types::Profile
+    collection_field :test_results, Types::TestResult
     record_field :profile, Types::Profile
+    record_field :test_result, Types::TestResult
 
     field :all_systems, [Types::System], null: true do
       description 'All systems visible by the user'
@@ -100,7 +102,8 @@ module Types
     def latest_benchmarks
       Pundit.authorize(
         context[:current_user],
-        ::Xccdf::Benchmark.latest
+        ::Xccdf::Benchmark.latest,
+        :index?, policy_class: BenchmarkPolicy
       )
     end
 

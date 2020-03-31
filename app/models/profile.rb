@@ -7,6 +7,8 @@ class Profile < ApplicationRecord
   attribute :delete_all_test_results, :boolean, default: false
 
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
+  scoped_search relation: :hosts, on: :id, rename: :system_ids
+  scoped_search relation: :hosts, on: :name, rename: :system_names
 
   has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
@@ -72,10 +74,7 @@ class Profile < ApplicationRecord
   end
 
   def compliant?(host)
-    host_results = results(host)
-    host_results.present? &&
-      (host_results.count(true) / host_results.count.to_f) >=
-        (compliance_threshold / 100.0)
+    score(host: host) >= compliance_threshold
   end
 
   def rules_for_system(host, selected_columns = [:id])
@@ -96,10 +95,12 @@ class Profile < ApplicationRecord
     end
   end
 
-  def score
-    return 1 if hosts.blank?
+  def score(host: nil)
+    results = test_results.latest
+    results = results.where(host: host) if host
+    return 0 if results.blank?
 
-    (hosts.count { |host| compliant?(host) }).to_f / hosts.count
+    (scores = results.pluck(:score)).sum / scores.size
   end
 
   def clone_to(account: nil, host: nil)
@@ -110,7 +111,7 @@ class Profile < ApplicationRecord
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
-    new_profile.add_rules_from(profile: self)
+    new_profile.add_rule_ref_ids(rules.pluck(:ref_id))
     new_profile
   end
 
@@ -119,12 +120,10 @@ class Profile < ApplicationRecord
                     benchmark_id: benchmark_id)
   end
 
-  def add_rules_from(profile: nil)
-    new_profile_rules = profile.profile_rules - profile_rules
-    ProfileRule.import!(new_profile_rules.map do |profile_rule|
-      new_profile_rule = profile_rule.dup
-      new_profile_rule.profile = self
-      new_profile_rule
+  def add_rule_ref_ids(ref_ids)
+    rules = benchmark.rules.where(ref_id: ref_ids)
+    ProfileRule.import!(rules.map do |rule|
+      ProfileRule.new(profile_id: id, rule_id: rule.id)
     end, ignore: true)
   end
 

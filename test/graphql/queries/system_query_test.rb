@@ -104,6 +104,8 @@ class SystemQueryTest < ActiveSupport::TestCase
     test_results(:two).update(profile: profiles(:two), host: hosts(:one))
     profiles(:one).rules << rules(:one)
     profiles(:two).rules << rules(:two)
+    profiles(:one).update(compliance_threshold: 95)
+    profiles(:two).update(compliance_threshold: 95)
     hosts(:one).profiles << profiles(:one)
     hosts(:one).profiles << profiles(:two)
 

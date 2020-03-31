@@ -79,7 +79,8 @@ class Rule < ApplicationRecord
   end
 
   def latest_result(host, profile)
-    test_result = TestResult.latest(profile.id, host.id)
+    test_result = TestResult.latest.find_by(profile_id: profile.id,
+                                            host_id: host.id)
     return nil if test_result.blank?
 
     test_result.rule_results.find_by(rule_id: id)
