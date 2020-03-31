@@ -28,7 +28,7 @@ class ParentProfileAssociator
       # as there's a profile already in the account with the right attributes.
       return false if (possible_duplicate_profiles.count == 1 &&
                        possible_duplicate_profiles.include?(profile)) ||
-                      possible_duplicate_profiles.count == 0
+                      possible_duplicate_profiles.count.zero?
 
       profile.delete_all_test_results = true
       profile.destroy
