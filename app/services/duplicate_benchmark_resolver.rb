@@ -16,6 +16,9 @@ class DuplicateBenchmarkResolver
     private
 
     def migrate_benchmark(existing_bm, duplicate_bm)
+      logger.info(
+        "Duplicate benchmark found for #{existing_bm.id} - #{duplicate_bm.id}"
+      )
       migrate_rules(existing_bm, duplicate_bm)
       migrate_profiles(existing_bm, duplicate_bm)
       duplicate_bm.delete
@@ -37,13 +40,23 @@ class DuplicateBenchmarkResolver
     # we expect validations to fail due to nonunique rules/profiles
     # accept duplicate rules for now
     def migrate_rules(existing_bm, duplicate_bm)
+      logger.info(
+        "Migrating rules for #{existing_bm.id} - #{duplicate_bm.id}..."
+      )
       duplicate_bm.rules.update_all(benchmark_id: existing_bm.id)
     end
 
     # accept duplicate profiles for now
     def migrate_profiles(existing_bm, duplicate_bm)
+      logger.info(
+        "Migrating profiles for #{existing_bm.id} - #{duplicate_bm.ref_id}..."
+      )
       duplicate_bm.profiles.update_all(benchmark_id: existing_bm.id)
     end
     # rubocop:enable Rails/SkipsModelValidations
+
+    def logger
+      Rails.logger
+    end
   end
 end
