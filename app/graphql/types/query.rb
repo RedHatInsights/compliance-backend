@@ -3,19 +3,10 @@
 module Types
   # This type contains all of the possible GraphQL queries
   class Query < Types::BaseObject
+    include Fields
+
     graphql_name 'Query'
     description 'The root of all queries'
-
-    class << self
-      def record_field(name, type)
-        field name, type, resolver: Resolvers::Generic.for(type).record
-      end
-
-      def collection_field(name, type)
-        field name, type.connection_type,
-              null: false, resolver: Resolvers::Generic.for(type).collection
-      end
-    end
 
     collection_field :systems, Types::System
     collection_field :profiles, Types::Profile

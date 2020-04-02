@@ -10,6 +10,10 @@ class TestResultPolicy < ApplicationPolicy
     Pundit.policy(user, record.profile) || Pundit.policy(user, record.host)
   end
 
+  def destroy?
+    Pundit.policy(user, record.profile) || Pundit.policy(user, record.host)
+  end
+
   # Only show TestResults belonging to profiles owned by the current user
   class Scope < ::ApplicationPolicy::Scope
     def resolve
