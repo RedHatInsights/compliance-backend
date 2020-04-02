@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require_relative 'interfaces/rules_preload'
+require_relative 'concerns/test_results'
 
 module Types
   # Definition of the Profile type in GraphQL
   class Profile < Types::BaseObject
+    include TestResults
+
     implements(::RulesPreload)
 
     graphql_name 'Profile'
@@ -29,6 +32,12 @@ module Types
     field :business_objective, ::Types::BusinessObjective, null: true
     field :business_objective_id, ID, null: true
     field :total_host_count, Int, null: false
+
+    field :score, Float, null: false do
+      argument :system_id, String,
+               'Latest TestResult score for this system and profile',
+               required: false
+    end
 
     field :compliant, Boolean, null: false do
       argument :system_id, String, 'Is a system compliant with this profile?',
@@ -63,34 +72,6 @@ module Types
 
     def total_host_count
       ::CollectionLoader.for(object.class, :hosts).load(object).then(&:count)
-    end
-
-    def compliant(args = {})
-      latest_test_result_batch(args).then do |latest_test_result|
-        host_results = latest_test_result&.rule_results
-        host_results.present? &&
-          latest_test_result.score >= object.compliance_threshold
-      end
-    end
-
-    def rules_passed(args = {})
-      latest_test_result_batch(args).then do |latest_test_result|
-        if latest_test_result.blank?
-          0
-        else
-          latest_test_result.rule_results.passed.count
-        end
-      end
-    end
-
-    def rules_failed(args = {})
-      latest_test_result_batch(args).then do |latest_test_result|
-        if latest_test_result.blank?
-          0
-        else
-          latest_test_result.rule_results.failed.count
-        end
-      end
     end
 
     def last_scanned(args = {})
