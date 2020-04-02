@@ -5,23 +5,23 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
       test_results = []
       rule_results_set = []
       profile_host_group.each do |profile_host|
-        host = profile_host.host_id
-        profile = profile_host.profile_id
-        if host.nil? || profile.nil?
+        host_id = profile_host.host_id
+        profile_id = profile_host.profile_id
+        if host_id.nil? || profile_id.nil?
           profile_host.destroy
           next
         end
-        puts(" - Migrating results for host #{host}"\
-             " - profile #{profile} - #{ProfileHost.count - migrated}")
-        rule_results_by_end_time = scan_results(host, profile)
+        puts(" - Migrating results for host #{host_id}"\
+             " - profile #{profile_id} - #{ProfileHost.count - migrated}")
+        rule_results_by_end_time = scan_results(host_id, profile_id)
           .group_by(&:end_time)
         rule_results_by_end_time.each do |end_time, rule_results|
           rules_passed = rule_results.count { |rr| RuleResult::PASSED.include?(rr.result) }
           rules_failed = rule_results.count { |rr| RuleResult::FAIL.include?(rr.result) }
           rule_results_set << rule_results
           test_results << {
-            host_id: host,
-            profile_id: profile,
+            host_id: host_id,
+            profile_id: profile_id,
             start_time: rule_results[0].start_time || Time.now.utc,
             end_time: rule_results[0].end_time || Time.now.utc,
             score: compliance_score(rules_passed, rules_failed)
@@ -43,7 +43,7 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
     TestResult.delete_all
   end
 
-  def scan_results(host, profile)
+  def scan_results(host_id, profile_id)
     RuleResult.find_by_sql(
       [
         'SELECT rule_results.* FROM (
@@ -59,7 +59,7 @@ class SeedTestResults < ActiveRecord::Migration[5.2]
                ON rules.id = profile_rules.rule_id
                WHERE profile_rules.profile_id = ?)
           ) rule_results',
-          host, RuleResult::SELECTED, profile
+          host_id, RuleResult::SELECTED, profile_id
       ]
     )
   end
