@@ -5,8 +5,6 @@ class Profile < ApplicationRecord
   include ProfileTailoring
   include ProfileScoring
 
-  attribute :delete_all_test_results, :boolean, default: false
-
   scoped_search on: %i[id name ref_id account_id compliance_threshold]
   scoped_search relation: :hosts, on: :id, rename: :system_ids
   scoped_search relation: :hosts, on: :name, rename: :system_names
@@ -17,9 +15,7 @@ class Profile < ApplicationRecord
   has_many :rules, through: :profile_rules, source: :rule
   has_many :profile_hosts, dependent: :delete_all
   has_many :hosts, through: :profile_hosts, source: :host
-  # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :test_results
-  # rubocop:enable Rails/HasManyOrHasOneDependent
+  has_many :test_results, dependent: :destroy
   belongs_to :account, optional: true
   belongs_to :business_objective, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
@@ -33,7 +29,6 @@ class Profile < ApplicationRecord
   validates :account, presence: true, if: -> { hosts.any? }
 
   after_update :destroy_orphaned_business_objective
-  before_destroy :destroy_all_test_results, if: -> { delete_all_test_results }
 
   scope :canonical, -> { where(parent_profile_id: nil) }
 
@@ -74,10 +69,6 @@ class Profile < ApplicationRecord
       previous_changes[:business_objective_id].first
     )
     business_objective.destroy if business_objective.profiles.empty?
-  end
-
-  def destroy_all_test_results
-    DeleteTestResultsJob.perform_async(id)
   end
 
   def clone_to(account: nil, host: nil)
