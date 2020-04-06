@@ -7,7 +7,6 @@ module Mutations
       graphql_name 'deleteProfile'
 
       argument :id, ID, required: true
-      argument :delete_all_test_results, Boolean, required: false
       field :profile, Types::Profile, null: false
 
       def resolve(args = {})
@@ -16,7 +15,6 @@ module Mutations
           ::Profile.find(args[:id]),
           :destroy?
         )
-        profile.delete_all_test_results = args[:delete_all_test_results]
         profile.destroy!
         { profile: profile }
       end
