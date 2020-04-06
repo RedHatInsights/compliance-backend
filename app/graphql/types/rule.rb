@@ -46,7 +46,9 @@ module Types
       ::RecordLoader.for(::RuleReference)
                     .load_many(context[:"rule_references_#{object.id}"])
                     .then do |references|
-        references.map { |ref| { href: ref.href, label: ref.label } }.to_json
+        references.compact.map do |ref|
+          { href: ref.href, label: ref.label }
+        end.to_json
       end
     end
 
