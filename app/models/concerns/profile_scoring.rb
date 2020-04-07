@@ -35,6 +35,6 @@ module ProfileScoring
     results = results.where(host: host) if host
     return 0 if results.blank?
 
-    (scores = results.pluck(:score)).sum / scores.size
+    ((scores = results.pluck(:score)).sum / scores.size).to_f
   end
 end
