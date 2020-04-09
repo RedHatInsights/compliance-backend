@@ -27,18 +27,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity':
           {
-            'account_number': '1234',
-            'type': 'User',
-            'user': {
-              'email': 'a@b.com',
-              'first_name': 'a',
-              'last_name': 'b',
-              'is_active': true,
-              'locale': 'en_US'
-            },
-            'internal': {
-              'org_id': '29329'
-            }
+            'account_number': '1234'
           }
         }.to_json
       )
@@ -52,18 +41,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity':
           {
-            'account_number': '1234',
-            'type': 'User',
-            'user': {
-              'email': 'a@b.com',
-              'first_name': 'a',
-              'last_name': 'b',
-              'is_active': true,
-              'locale': 'en_US'
-            },
-            'internal': {
-              'org_id': '29329'
-            }
+            'account_number': '1234'
           },
           'entitlements':
           {
@@ -83,10 +61,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': '1234',
-            'user': {
-              'username': 'shoulduser'
-            }
+            'account_number': '1234'
           },
           'entitlements':
           {
@@ -111,10 +86,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': '1234',
-            'user': {
-              'username': 'shoulduser'
-            }
+            'account_number': '1234'
           },
           'entitlements':
           {
@@ -128,10 +100,10 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert Account.find_by(account_number: '1234')
       assert_equal(
-        User.find_by(username: 'shoulduser').account.account_number,
+        Account.find_by(account_number: '1234').account_number,
         '1234'
       )
-      assert_equal User.find_by(username: 'shoulduser'), User.current
+      assert_equal Account.find_by(account_number: '1234'), User.current.account
     end
 
     should 'user not found, creates a new user' do
@@ -139,19 +111,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity':
           {
-            'account_number': '1234',
-            'type': 'User',
-            'user': {
-              'email': 'a@b.com',
-              'username': 'a@b.com',
-              'first_name': 'a',
-              'last_name': 'b',
-              'is_active': true,
-              'locale': 'en_US'
-            },
-            'internal': {
-              'org_id': '29329'
-            }
+            'account_number': '1234'
           },
           'entitlements':
           {
@@ -163,7 +123,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       )
       get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
-      assert_equal User.find_by(username: 'a@b.com'), User.current
+      assert_equal Account.find_by(account_number: '1234'), User.current.account
     end
 
     should 'user not found, creates a new account, username missing' do
@@ -171,41 +131,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity':
           {
-            'account_number': '1234',
-            'type': 'User',
-            'user': {
-              'email': 'a@b.com',
-              'first_name': 'a',
-              'last_name': 'b',
-              'is_active': true,
-              'locale': 'en_US'
-            },
-            'internal': {
-              'org_id': '29329'
-            }
-          },
-          'entitlements':
-          {
-            'smart_management': {
-              'is_entitled': true
-            }
-          }
-        }.to_json
-      )
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
-      assert_response :unauthorized
-      assert_not User.current
-    end
-
-    should 'successful authentication sets User.current' do
-      encoded_header = Base64.encode64(
-        {
-          'identity':
-          {
-            'account_number': '1234',
-            'user': {
-              'username': 'fakeuser'
-            }
+            'account_number': '1234'
           },
           'entitlements':
           {
@@ -217,7 +143,27 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       )
       get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
-      assert_equal User.find_by(username: 'fakeuser'), User.current
+      assert_not_nil User.current
+    end
+
+    should 'successful authentication sets User.current' do
+      encoded_header = Base64.encode64(
+        {
+          'identity':
+          {
+            'account_number': '1234'
+          },
+          'entitlements':
+          {
+            'smart_management': {
+              'is_entitled': true
+            }
+          }
+        }.to_json
+      )
+      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      assert_response :success
+      assert_equal Account.find_by(account_number: '1234'), User.current.account
     end
   end
 
@@ -227,10 +173,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': '1234',
-              'user': {
-                'username': 'shoulduser'
-              }
+              'account_number': '1234'
             },
             'entitlements':
             {
