@@ -13,8 +13,7 @@ module Authentication
   def authenticate_user
     return unauthenticated unless identity_header.valid? && rbac_allowed?
 
-    user = find_or_create_user(identity_header.identity['user']['username'])
-    return if performed? || !user.persisted?
+    return if performed?
 
     User.current = user
   rescue JSON::ParserError, NoMethodError
@@ -33,14 +32,8 @@ module Authentication
     false
   end
 
-  def find_or_create_user(username)
-    user = User.find_by(username: username, account: account_from_header)
-    if user.present?
-      logger.info "User authentication SUCCESS: #{identity_header.identity}"
-    else
-      user = create_user
-    end
-    user
+  def user
+    User.new(account: account_from_header)
   end
 
   def rbac_allowed?
@@ -60,17 +53,5 @@ module Authentication
     Account.find_or_create_by(
       account_number: identity_header.identity['account_number']
     )
-  end
-
-  def create_user
-    if (user = User.from_x_rh_identity(identity_header.identity)).save
-      logger.info 'User authentication SUCCESS - creating user: '\
-        "#{identity_header.identity}"
-    else
-      logger.info 'User authentication FAILED - could not create user: '\
-        "#{user.errors.full_messages}"
-      unauthenticated('Could not create user with X-RH-IDENTITY contents')
-    end
-    user
   end
 end
