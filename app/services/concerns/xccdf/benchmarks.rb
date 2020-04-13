@@ -12,7 +12,7 @@ module Xccdf
       end
 
       def benchmark_saved?
-        benchmark.persisted?
+        benchmark.persisted? && benchmark.rules.count == @op_benchmark.rules.count
       end
 
       def benchmark
