@@ -140,6 +140,7 @@ A Profile registered in Insights Compliance
 """
 type Profile implements Node & RulesPreload {
   accountId: ID!
+  benchmark: Benchmark
   benchmarkId: ID!
   businessObjective: BusinessObjective
   businessObjectiveId: ID
