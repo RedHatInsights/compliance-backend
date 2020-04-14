@@ -60,8 +60,9 @@ module Xccdf
     test 'benchmark is not saved if profiles count differ' do
       mock = Mock.new(OP_BENCHMARK)
       ::Xccdf::Benchmark.any_instance.expects(:profiles)
-                        .returns(['profiles-mock1', 'mock2']).at_least_once
-      assert_not_equal mock.benchmark.profiles.count, OP_BENCHMARK.profiles.count
+                        .returns(%w[profiles-mock1 mock2]).at_least_once
+      assert_not_equal mock.benchmark.profiles.count,
+                       OP_BENCHMARK.profiles.count
       assert_not mock.benchmark_contents_equal_to_op?
     end
   end
