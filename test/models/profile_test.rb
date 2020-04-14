@@ -158,6 +158,28 @@ class ProfileTest < ActiveSupport::TestCase
         assert_equal canonical, cloned_profile.parent_profile
       end
     end
+
+    should 'clone profiles as external by default' do
+      profiles(:one).update!(account: nil, hosts: [])
+      assert_difference('ProfileHost.count' => 1, 'Profile.count' => 1) do
+        cloned_profile = profiles(:one).clone_to(
+          account: accounts(:one), host: hosts(:one)
+        )
+        assert hosts(:one).profiles.include?(cloned_profile)
+        assert cloned_profile.external
+      end
+    end
+
+    should 'clone profiles as internal if specified' do
+      profiles(:one).update!(account: nil, hosts: [])
+      assert_difference('ProfileHost.count' => 1, 'Profile.count' => 1) do
+        cloned_profile = profiles(:one).clone_to(
+          account: accounts(:one), host: hosts(:one), external: false
+        )
+        assert hosts(:one).profiles.include?(cloned_profile)
+        assert_not cloned_profile.external
+      end
+    end
   end
 
   context 'profile tailoring' do
