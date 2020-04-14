@@ -12,8 +12,19 @@ module Xccdf
       end
 
       def benchmark_saved?
-        benchmark.persisted? &&
-          (benchmark.rules.count == @op_benchmark.rules.count)
+        benchmark.persisted?
+      end
+
+      def benchmark_profiles_saved?
+        benchmark.profiles.count == @op_benchmark.profiles.count
+      end
+
+      def benchmark_rules_saved?
+        benchmark.rules.count == @op_benchmark.rules.count
+      end
+
+      def benchmark_contents_equal_to_op?
+        benchmark_saved? && benchmark_rules_saved? && benchmark_profiles_saved?
       end
 
       def benchmark
