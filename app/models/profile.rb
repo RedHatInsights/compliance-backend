@@ -5,7 +5,7 @@ class Profile < ApplicationRecord
   include ProfileTailoring
   include ProfileScoring
 
-  scoped_search on: %i[id name ref_id account_id compliance_threshold]
+  scoped_search on: %i[id name ref_id account_id compliance_threshold external]
   scoped_search relation: :hosts, on: :id, rename: :system_ids
   scoped_search relation: :hosts, on: :name, rename: :system_names
   scoped_search on: :has_test_results, ext_method: 'test_results?',
