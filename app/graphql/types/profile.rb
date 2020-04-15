@@ -33,6 +33,7 @@ module Types
     field :business_objective, ::Types::BusinessObjective, null: true
     field :business_objective_id, ID, null: true
     field :total_host_count, Int, null: false
+    field :external, Boolean, null: false
 
     field :score, Float, null: false do
       argument :system_id, String,

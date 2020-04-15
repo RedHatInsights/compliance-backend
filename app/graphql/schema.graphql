@@ -153,6 +153,7 @@ type Profile implements Node & RulesPreload {
   ): Boolean!
   compliantHostCount: Int!
   description: String
+  external: Boolean!
   globalId: ID!
   hosts: [System!]
   id: ID!
