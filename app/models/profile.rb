@@ -71,11 +71,12 @@ class Profile < ApplicationRecord
     business_objective.destroy if business_objective.profiles.empty?
   end
 
-  def clone_to(account: nil, host: nil)
+  def clone_to(account: nil, host: nil, external: true)
     new_profile = in_account(account)
     if new_profile.nil?
       (new_profile = dup).update!(account: account, hosts: [host],
-                                  parent_profile: self)
+                                  parent_profile: self,
+                                  external: external)
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
