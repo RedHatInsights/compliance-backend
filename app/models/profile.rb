@@ -5,7 +5,7 @@ class Profile < ApplicationRecord
   include ProfileTailoring
   include ProfileScoring
 
-  scoped_search on: %i[id name ref_id account_id compliance_threshold]
+  scoped_search on: %i[id name ref_id account_id compliance_threshold external]
   scoped_search relation: :hosts, on: :id, rename: :system_ids
   scoped_search relation: :hosts, on: :name, rename: :system_names
   scoped_search on: :has_test_results, ext_method: 'test_results?',
@@ -71,11 +71,12 @@ class Profile < ApplicationRecord
     business_objective.destroy if business_objective.profiles.empty?
   end
 
-  def clone_to(account: nil, host: nil)
+  def clone_to(account: nil, host: nil, external: true)
     new_profile = in_account(account)
     if new_profile.nil?
       (new_profile = dup).update!(account: account, hosts: [host],
-                                  parent_profile: self)
+                                  parent_profile: self,
+                                  external: external)
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end

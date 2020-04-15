@@ -29,9 +29,11 @@ module Types
                'Rule references to filter by', required: false
     end
     field :hosts, [::Types::System], null: true
+    field :benchmark, ::Types::Benchmark, null: true
     field :business_objective, ::Types::BusinessObjective, null: true
     field :business_objective_id, ID, null: true
     field :total_host_count, Int, null: false
+    field :external, Boolean, null: false
 
     field :score, Float, null: false do
       argument :system_id, String,

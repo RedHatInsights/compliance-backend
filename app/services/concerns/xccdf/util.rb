@@ -18,7 +18,7 @@ module Xccdf
       include ::Xccdf::TestResult
 
       def save_all_benchmark_info
-        return if benchmark_saved?
+        return if benchmark_contents_equal_to_op?
 
         save_benchmark
         save_profiles
