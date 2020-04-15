@@ -14,9 +14,8 @@ module Xccdf
     class << self
       def from_openscap_parser(op_benchmark)
         benchmark = find_or_initialize_by(
-          ref_id: op_benchmark.id,
-          version: op_benchmark.version
-        )
+          ref_id: op_benchmark.id
+        ).latest
 
         benchmark.assign_attributes(
           title: op_benchmark.title,
