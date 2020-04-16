@@ -57,6 +57,12 @@ module Types
       end
     end
 
+    def profiles
+      ::CollectionLoader.for(::Rule, :profiles).load(object).then do |profiles|
+        profiles
+      end
+    end
+
     private
 
     def system_id(args)
