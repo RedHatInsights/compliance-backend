@@ -185,6 +185,7 @@ type Profile implements Node & RulesPreload {
     """
     ids: [ID!]!
   ): [Node]!
+  policy: Profile
   refId: String!
   rules(
     """
