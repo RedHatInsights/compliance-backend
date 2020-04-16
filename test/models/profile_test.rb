@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'sidekiq/testing'
 
 class ProfileTest < ActiveSupport::TestCase
   should validate_uniqueness_of(:ref_id)
@@ -103,6 +104,19 @@ class ProfileTest < ActiveSupport::TestCase
     profiles(:one).update!(compliance_threshold: 30)
     assert_equal external_profile.policy, profiles(:one)
     assert_equal 30, external_profile.compliance_threshold
+  end
+
+  test "destroying a profile also destroys its policy's profiles" do
+    (bm = benchmarks(:one).dup).update!(version: '0.1.47')
+    (external_profile = profiles(:one).dup).update!(benchmark: bm,
+                                                    external: true)
+    assert_equal external_profile.policy, profiles(:one)
+    assert_difference('Profile.count' => -1) do
+      profiles(:one).destroy
+    end
+    assert_equal 1, DestroyProfilesJob.jobs.size
+    assert_equal [external_profile.id],
+                 DestroyProfilesJob.jobs.dig(0, 'args', 0)
   end
 
   test 'canonical profiles have no parent_profile_id' do
