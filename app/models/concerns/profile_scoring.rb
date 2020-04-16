@@ -19,7 +19,7 @@ module ProfileScoring
   # Disabling MethodLength because it measures things wrong
   # for a multi-line string SQL query.
   def results(host)
-    Rails.cache.fetch("#{id}/#{host.id}/results", expires_in: 1.week) do
+    Rails.cache.fetch("#{id}/#{host.id}/results") do
       rule_results = TestResult.where(profile: self, host: host)
                                .order('created_at DESC')&.first&.rule_results
       return [] if rule_results.blank?
