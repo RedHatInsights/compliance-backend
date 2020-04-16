@@ -63,8 +63,7 @@ module Types
     end
 
     def rule_objects_failed
-      ::Rails.cache.fetch("#{object.id}/failed_rule_objects_result",
-                          expires_in: 1.week) do
+      ::Rails.cache.fetch("#{object.id}/failed_rule_objects_result") do
         ::Rule.where(
           id: ::RuleResult.failed.for_system(object.id)
               .includes(:rule).pluck(:rule_id).uniq
