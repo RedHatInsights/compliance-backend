@@ -2,9 +2,9 @@
 
 desc 'Remove systems in Compliance DB which are not in the inventory'
 task sync_with_inventory: [:environment] do
-  ::Account.all.find_each do |account|
+  ::Account.includes(:hosts).find_each do |account|
     puts "Starting to review account #{account.account_number}"
-    account.hosts.find_each do |host|
+    account.hosts.each do |host|
       begin
         host = ::HostInventoryAPI.new(
           host.id, account, ::Settings.host_inventory_url, account.b64_identity
