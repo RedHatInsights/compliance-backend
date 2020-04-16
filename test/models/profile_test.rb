@@ -83,6 +83,28 @@ class ProfileTest < ActiveSupport::TestCase
     assert_empty BusinessObjective.where(title: 'abcd')
   end
 
+  test 'business_objective comes from policy for external profiles' do
+    (bm = benchmarks(:one).dup).update!(version: '0.1.47')
+    bo = BusinessObjective.create!(title: 'bo')
+    bo2 = BusinessObjective.create!(title: 'bo2')
+    (external_profile = profiles(:one).dup).update!(benchmark: bm,
+                                                    business_objective: bo,
+                                                    external: true)
+    profiles(:one).update!(business_objective: bo2)
+    assert_equal external_profile.policy, profiles(:one)
+    assert_equal bo2, external_profile.business_objective
+  end
+
+  test 'compliance_threshold comes from policy for external profiles' do
+    (bm = benchmarks(:one).dup).update!(version: '0.1.47')
+    (external_profile = profiles(:one).dup).update!(benchmark: bm,
+                                                    compliance_threshold: 100,
+                                                    external: true)
+    profiles(:one).update!(compliance_threshold: 30)
+    assert_equal external_profile.policy, profiles(:one)
+    assert_equal 30, external_profile.compliance_threshold
+  end
+
   test 'canonical profiles have no parent_profile_id' do
     assert Profile.new.canonical?, 'nil parent_profile_id should be canonical'
   end
