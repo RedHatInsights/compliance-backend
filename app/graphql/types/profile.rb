@@ -20,6 +20,7 @@ module Types
     field :compliance_threshold, Float, null: false
     field :benchmark_id, ID, null: false
     field :account_id, ID, null: false
+    field :policy, Types::Profile, null: true
     field :rules, [::Types::Rule], null: true, extras: [:lookahead] do
       argument :system_id, String,
                'System ID to filter by', required: false
