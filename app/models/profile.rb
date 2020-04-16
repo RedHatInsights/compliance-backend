@@ -4,6 +4,7 @@
 class Profile < ApplicationRecord
   include ProfileTailoring
   include ProfileScoring
+  include ProfilePolicyAssociation
 
   scoped_search on: %i[id name ref_id account_id compliance_threshold external]
   scoped_search relation: :hosts, on: :id, rename: :system_ids
@@ -59,26 +60,6 @@ class Profile < ApplicationRecord
 
   def canonical?
     parent_profile_id.blank?
-  end
-
-  def policy
-    return self unless external
-
-    Profile.includes(:benchmark)
-           .find_by(account: account_id, external: false, ref_id: ref_id,
-                    benchmarks: { ref_id: benchmark.ref_id })
-  end
-
-  def business_objective
-    BusinessObjective.find(business_objective_id) if business_objective_id
-  end
-
-  def business_objective_id
-    (policy || self).read_attribute(:business_objective_id)
-  end
-
-  def compliance_threshold
-    (policy || self).read_attribute(:compliance_threshold)
   end
 
   def destroy_orphaned_business_objective
