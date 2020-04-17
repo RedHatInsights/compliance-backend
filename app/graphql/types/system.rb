@@ -51,14 +51,18 @@ module Types
     end
 
     def rules_passed(args = {})
-      ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
-        object.rules_passed(profile)
+      ::Rails.cache.fetch("#{object.id}/#{args[:profile_id]}/rules_passed") do
+        ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+          object.rules_passed(profile)
+        end
       end
     end
 
     def rules_failed(args = {})
-      ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
-        object.rules_failed(profile)
+      ::Rails.cache.fetch("#{object.id}/#{args[:profile_id]}/rules_failed") do
+        ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+          object.rules_failed(profile)
+        end
       end
     end
 

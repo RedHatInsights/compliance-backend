@@ -30,8 +30,10 @@ module RulesPreload
   end
 
   def all_rules
-    ::CollectionLoader.for(::Profile, :rules).load(object).then do |rules|
-      rules
+    ::Rails.cache.fetch("#{object.id}/rules") do
+      ::CollectionLoader.for(::Profile, :rules).load(object).then do |rules|
+        rules
+      end
     end
   end
 

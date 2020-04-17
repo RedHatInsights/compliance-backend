@@ -6,11 +6,13 @@ module Types
     extend ActiveSupport::Concern
 
     def score(args = {})
-      latest_test_result_batch(args).then do |latest_test_result|
-        if latest_test_result.blank?
-          0
-        else
-          latest_test_result.score
+      ::Rails.cache.fetch("#{system_id(args)}/#{object.id}/score") do
+        latest_test_result_batch(args).then do |latest_test_result|
+          if latest_test_result.blank?
+            0
+          else
+            latest_test_result.score
+          end
         end
       end
     end
@@ -24,21 +26,25 @@ module Types
     end
 
     def rules_passed(args = {})
-      latest_test_result_batch(args).then do |latest_test_result|
-        if latest_test_result.blank?
-          0
-        else
-          latest_test_result.rule_results.passed.count
+      ::Rails.cache.fetch("#{system_id(args)}/#{object.id}/rules_passed") do
+        latest_test_result_batch(args).then do |latest_test_result|
+          if latest_test_result.blank?
+            0
+          else
+            latest_test_result.rule_results.passed.count
+          end
         end
       end
     end
 
     def rules_failed(args = {})
-      latest_test_result_batch(args).then do |latest_test_result|
-        if latest_test_result.blank?
-          0
-        else
-          latest_test_result.rule_results.failed.count
+      ::Rails.cache.fetch("#{system_id(args)}/#{object.id}/rules_failed") do
+        latest_test_result_batch(args).then do |latest_test_result|
+          if latest_test_result.blank?
+            0
+          else
+            latest_test_result.rule_results.failed.count
+          end
         end
       end
     end

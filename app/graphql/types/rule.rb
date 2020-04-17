@@ -24,21 +24,27 @@ module Types
     end
 
     def compliant(args = {})
-      system_id(args) &&
-        profile_id(args) &&
-        %w[pass notapplicable notselected].include?(
-          context[:rule_results][object.id][profile_id(args)]
-        )
+      ::Rails.cache.fetch(
+        "#{system_id(args)}/#{profile_id(args)}/#{object.id}/compliant"
+      ) do
+        system_id(args) &&
+          profile_id(args) &&
+          %w[pass notapplicable notselected].include?(
+            context[:rule_results][object.id][profile_id(args)]
+          )
+      end
     end
 
     def references
-      if context[:"rule_references_#{object.id}"].nil?
-        ::CollectionLoader.for(::Rule, :rule_references)
-                          .load(object).then do |references|
-          references.map { |ref| [ref.href, ref.label] }.to_json
+      ::Rails.cache.fetch("#{object.id}/references") do
+        if context[:"rule_references_#{object.id}"].nil?
+          ::CollectionLoader.for(::Rule, :rule_references)
+            .load(object).then do |references|
+            references.map { |ref| [ref.href, ref.label] }.to_json
+          end
+        else
+          references_from_context
         end
-      else
-        references_from_context
       end
     end
 
@@ -51,15 +57,19 @@ module Types
     end
 
     def identifier
-      ::CollectionLoader.for(::Rule, :rule_identifier)
-                        .load(object).then do |identifier|
-        { label: identifier&.label, system: identifier&.system }.to_json
+      ::Rails.cache.fetch("#{object.id}/identifier") do
+        ::CollectionLoader.for(::Rule, :rule_identifier)
+          .load(object).then do |identifier|
+          { label: identifier&.label, system: identifier&.system }.to_json
+        end
       end
     end
 
     def profiles
-      ::CollectionLoader.for(::Rule, :profiles).load(object).then do |profiles|
-        profiles
+      ::Rails.cache.fetch("#{object.id}/profiles") do
+        ::CollectionLoader.for(::Rule, :profiles).load(object).then do |profiles|
+          profiles
+        end
       end
     end
 
