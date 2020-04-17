@@ -49,10 +49,9 @@ class DuplicateRuleResolverTest < ActiveSupport::TestCase
 
   test 'resolves rule_results from a duplicate rule' do
     assert_difference('RuleResult.count' => 2) do
-      (rr = rule_results(:one).dup).save(validate: false)
-      (rr2 = rule_results(:one).dup).save(validate: false)
-      rules(:one).rule_results << rr
-      @dup_rule.rule_results << rr2
+      rule_results(:one).dup.update!(rule: rules(:one), host: hosts(:two),
+                                     test_result: test_results(:two))
+      rule_results(:one).dup.update!(rule: @dup_rule, host: hosts(:two))
     end
 
     assert_difference('RuleResult.count' => 0) do

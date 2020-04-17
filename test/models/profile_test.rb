@@ -144,6 +144,7 @@ class ProfileTest < ActiveSupport::TestCase
 
   test 'has_test_results filters by test results available' do
     test_results(:one).update profile: profiles(:one), host: hosts(:one)
+    profiles(:two).test_results.destroy_all
     assert profiles(:one).test_results.present?
     assert profiles(:two).test_results.empty?
     assert_includes(Profile.search_for('has_test_results = true'),

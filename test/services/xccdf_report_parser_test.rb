@@ -276,6 +276,9 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         hosts: [hosts(:two)]
       )
 
+      assert profile1.persisted?
+      assert profile2.persisted?
+
       assert_difference(
         -> { profile1.reload.rules.count } => 0,
         -> { profile2.reload.rules.count } => 74
