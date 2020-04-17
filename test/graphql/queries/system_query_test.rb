@@ -50,14 +50,18 @@ class SystemQueryTest < ActiveSupport::TestCase
   test 'some host attributes can be queried without profileId arguments' do
     query = <<-GRAPHQL
     {
-        allSystems(perPage: 50, page: 1) {
-            id
-            name
-            profileNames
-            compliant
-            rulesPassed
-            rulesFailed
-            lastScanned
+        systems(limit: 50, offset: 1) {
+          edges {
+            node {
+              id
+              name
+              profileNames
+              compliant
+              rulesPassed
+              rulesFailed
+              lastScanned
+            }
+          }
         }
     }
     GRAPHQL
@@ -75,21 +79,29 @@ class SystemQueryTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )
 
-    assert_equal "#{profiles(:one).name}, #{profiles(:two).name}",
-                 result['data']['allSystems'].first['profileNames']
-    assert_not result['data']['allSystems'].first['compliant']
+    assert_equal(
+      "#{profiles(:one).name}, #{profiles(:two).name}",
+      result['data']['systems']['edges'].first['node']['profileNames']
+    )
+    assert_not result['data']['systems']['edges'].first['node']['compliant']
   end
 
   test 'query attributes with profileId arguments' do
     query = <<-GRAPHQL
-    query getSystems($policyId: String) {
-        allSystems(perPage: 50, page: 1, profileId: $policyId) {
-            id
-            name
-            rulesPassed(profileId: $policyId)
-            rulesFailed(profileId: $policyId)
-            lastScanned(profileId: $policyId)
-            compliant(profileId: $policyId)
+    query getSystems($search: String) {
+        systems(limit: 50, offset: 1, search: $search) {
+            edges {
+                node {
+                    id
+                    name
+                    profiles {
+                        rulesPassed
+                        rulesFailed
+                        lastScanned
+                        compliant
+                    }
+                }
+            }
         }
     }
     GRAPHQL
@@ -111,14 +123,16 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     result = Schema.execute(
       query,
-      variables: { policyId: profiles(:one).id },
+      variables: { search: "profile_id = #{profiles(:one).id}" },
       context: { current_user: users(:test) }
-    )
+    )['data']['systems']['edges']
 
-    assert_equal 1, result['data']['allSystems'].first['rulesPassed']
-    assert_equal 0, result['data']['allSystems'].first['rulesFailed']
-    assert result['data']['allSystems'].first['lastScanned']
-    assert result['data']['allSystems'].first['compliant']
+    result_profiles = result.first['node']['profiles']
+
+    assert_equal 1, result_profiles.first['rulesPassed']
+    assert_equal 0, result_profiles.first['rulesFailed']
+    assert result_profiles.first['lastScanned']
+    assert result_profiles.first['compliant']
   end
 
   test 'query children profile only returns profiles owned by host' do

@@ -68,7 +68,7 @@ class Rule < ApplicationRecord
   end
 
   def compliant?(host, profile)
-    Rails.cache.fetch("#{id}/#{host.id}/compliant", expires_in: 1.week) do
+    Rails.cache.fetch("#{id}/#{host.id}/compliant") do
       return false unless profile.present? && profile.rules.include?(self)
 
       latest_rule_result = latest_result(host, profile)

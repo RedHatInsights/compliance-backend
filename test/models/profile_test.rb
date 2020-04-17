@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'sidekiq/testing'
 
 class ProfileTest < ActiveSupport::TestCase
   should validate_uniqueness_of(:ref_id)
@@ -81,6 +82,41 @@ class ProfileTest < ActiveSupport::TestCase
     assert profiles(:one).business_objective, bo
     profiles(:one).update(business_objective: nil)
     assert_empty BusinessObjective.where(title: 'abcd')
+  end
+
+  test 'business_objective comes from policy for external profiles' do
+    (bm = benchmarks(:one).dup).update!(version: '0.1.47')
+    bo = BusinessObjective.create!(title: 'bo')
+    bo2 = BusinessObjective.create!(title: 'bo2')
+    (external_profile = profiles(:one).dup).update!(benchmark: bm,
+                                                    business_objective: bo,
+                                                    external: true)
+    profiles(:one).update!(business_objective: bo2)
+    assert_equal external_profile.policy, profiles(:one)
+    assert_equal bo2, external_profile.business_objective
+  end
+
+  test 'compliance_threshold comes from policy for external profiles' do
+    (bm = benchmarks(:one).dup).update!(version: '0.1.47')
+    (external_profile = profiles(:one).dup).update!(benchmark: bm,
+                                                    compliance_threshold: 100,
+                                                    external: true)
+    profiles(:one).update!(compliance_threshold: 30)
+    assert_equal external_profile.policy, profiles(:one)
+    assert_equal 30, external_profile.compliance_threshold
+  end
+
+  test "destroying a profile also destroys its policy's profiles" do
+    (bm = benchmarks(:one).dup).update!(version: '0.1.47')
+    (external_profile = profiles(:one).dup).update!(benchmark: bm,
+                                                    external: true)
+    assert_equal external_profile.policy, profiles(:one)
+    assert_difference('Profile.count' => -1) do
+      profiles(:one).destroy
+    end
+    assert_equal 1, DestroyProfilesJob.jobs.size
+    assert_equal [external_profile.id],
+                 DestroyProfilesJob.jobs.dig(0, 'args', 0)
   end
 
   test 'canonical profiles have no parent_profile_id' do
