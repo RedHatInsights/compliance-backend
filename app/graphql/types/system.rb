@@ -3,6 +3,8 @@
 module Types
   # Definition of the System GraphQL type
   class System < Types::BaseObject
+    include TestResults
+
     model_class ::Host
     graphql_name 'System'
     description 'A System registered in Insights Compliance'
@@ -51,23 +53,21 @@ module Types
     end
 
     def rules_passed(args = {})
-      ::Rails.cache.fetch("#{object.id}/#{args[:profile_id]}/rules_passed") do
-        ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
-          object.rules_passed(profile)
-        end
+      return cached_rules_passed(args[:profile_id], object.id) if cached_rules_passed(args[:profile_id], object.id)
+      ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+        object.rules_passed(profile)
       end
     end
 
     def rules_failed(args = {})
-      ::Rails.cache.fetch("#{object.id}/#{args[:profile_id]}/rules_failed") do
-        ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
-          object.rules_failed(profile)
-        end
+      return cached_rules_failed(args[:profile_id], object.id) if cached_rules_failed(args[:profile_id], object.id)
+      ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
+        object.rules_failed(profile)
       end
     end
 
     def rule_objects_failed
-      ::Rails.cache.fetch("#{object.id}/failed_rule_objects_result") do
+      ::Rails.cache.fetch(host: host.id, attribute: 'rule_objects_failed') do
         ::Rule.where(
           id: ::RuleResult.failed.for_system(object.id)
               .includes(:rule).pluck(:rule_id).uniq

@@ -51,26 +51,8 @@ module Xccdf
       private
 
       def invalidate_cache
-        Rails.cache.delete("#{@host&.id}/failed_rule_objects_result")
-        Rails.cache.delete("#{@host_profile&.id}/#{@host&.id}/results")
-        Rails.cache.delete("#{@host_profile&.id}/rules")
-        Rails.cache.delete("#{@host.id}/#{@host_profile&.id}/rules_passed")
-        Rails.cache.delete("#{@host.id}/#{@host_profile&.id}/rules_failed")
-        Rails.cache.delete("#{@host.id}/#{@host_profile&.id}/score")
-        @host_profile.rules.each do |rule|
-          Rails.cache.delete("#{rule.id}/#{@host&.id}/compliant")
-          Rails.cache.delete("#{rule.id}/references")
-          Rails.cache.delete("#{rule.id}/identifier")
-          Rails.cache.delete("#{rule.id}/profiles")
-        end
-
-        @host_profile.rules.each do |rule|
-          Rails.cache.write("#{rule.id}/references", rule.references.map { |ref| [ref.href, ref.label] }.to_json)
-          Rails.cache.write("#{rule.id}/identifier", { label: rule.identifier&.label, system: rule.identifier&.system }.to_json
-                           )
-          Rails.cache.write("#{rule.id}/profiles", rule.profiles)
-        end
-
+        CacheHelper.invalidate_host(@host)
+        CacheHelper.invalidate_profile(@host_profile)
       end
     end
   end
