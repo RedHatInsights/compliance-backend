@@ -57,7 +57,9 @@ module CacheHelper
     def warm_rule(rule)
       Rails.cache.write(
         { rule: rule.id, attribute: 'references' },
-        rule.references.map { |ref| [ref.href, ref.label] }.to_json
+        rule.references.map do |ref|
+          { href: ref.href, label: ref.label }
+        end.to_json
       )
       Rails.cache.write(
         { rule: rule.id, attribute: 'identifier' },
