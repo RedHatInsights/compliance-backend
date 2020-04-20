@@ -5,8 +5,8 @@ require 'test_helper'
 class BenchmarkQueryTest < ActiveSupport::TestCase
   test 'query benchmark owned by the user' do
     latest_benchmark = ::Xccdf::Benchmark.create(
-      ref_id: ::Xccdf::Benchmark.latest_supported_versions.keys[0],
-      version: ::Xccdf::Benchmark.latest_supported_versions.values[0],
+      ref_id: ::Xccdf::Benchmark::LATEST_SUPPORTED_VERSIONS.keys[0],
+      version: ::Xccdf::Benchmark::LATEST_SUPPORTED_VERSIONS.values[0],
       title: 'sample',
       description: 'sample description'
     )

@@ -11,6 +11,12 @@ module Xccdf
     validates :ref_id, uniqueness: { scope: %i[version] }, presence: true
     validates :version, presence: true
 
+    LATEST_SUPPORTED_VERSIONS = {
+      'xccdf_org.ssgproject.content_benchmark_RHEL-6': '0.1.28',
+      'xccdf_org.ssgproject.content_benchmark_RHEL-7': '0.1.46',
+      'xccdf_org.ssgproject.content_benchmark_RHEL-8': '0.1.46'
+    }
+
     class << self
       def from_openscap_parser(op_benchmark)
         benchmark = find_or_initialize_by(
@@ -45,17 +51,11 @@ module Xccdf
       end
 
       def latest_supported
-        latest_supported_versions.map do |ref_id, version|
-          find_by(ref_id: ref_id, version: version)
-        end.compact
-      end
-
-      def latest_supported_versions
-        {
-          'xccdf_org.ssgproject.content_benchmark_RHEL-6': '0.1.28',
-          'xccdf_org.ssgproject.content_benchmark_RHEL-7': '0.1.46',
-          'xccdf_org.ssgproject.content_benchmark_RHEL-8': '0.1.46'
-        }
+        Rails.cache.fetch('latest_supported_benchmarks') do
+          LATEST_SUPPORTED_VERSIONS.map do |ref_id, version|
+            find_by(ref_id: ref_id, version: version)
+          end.compact
+        end
       end
     end
 
