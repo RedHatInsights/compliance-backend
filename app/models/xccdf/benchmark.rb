@@ -43,6 +43,20 @@ module Xccdf
           Gem::Version.new(benchmark.version)
         end
       end
+
+      def latest_supported
+        latest_supported_versions.map do |ref_id, version|
+          find_by(ref_id: ref_id, version: version)
+        end.compact
+      end
+
+      def latest_supported_versions
+        {
+          'xccdf_org.ssgproject.content_benchmark_RHEL-6': '0.1.28',
+          'xccdf_org.ssgproject.content_benchmark_RHEL-7': '0.1.46',
+          'xccdf_org.ssgproject.content_benchmark_RHEL-8': '0.1.46'
+        }
+      end
     end
 
     def inferred_os_major_version
