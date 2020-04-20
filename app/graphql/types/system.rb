@@ -73,7 +73,7 @@ module Types
     end
 
     def rule_objects_failed
-      ::Rails.cache.fetch(host: host.id, attribute: 'rule_objects_failed') do
+      ::Rails.cache.fetch(host: object.id, attribute: 'rule_objects_failed') do
         ::Rule.where(
           id: ::RuleResult.failed.for_system(object.id)
               .includes(:rule).pluck(:rule_id).uniq
