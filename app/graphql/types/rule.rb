@@ -46,7 +46,7 @@ module Types
       if context[:"rule_references_#{object.id}"].nil?
         ::CollectionLoader.for(::Rule, :rule_references)
                           .load(object).then do |references|
-          references.map { |ref| [ref.href, ref.label] }.to_json
+          references.map { |ref| { href: ref.href, label: ref.label } }.to_json
         end
       else
         references_from_context

@@ -16,6 +16,9 @@ module CacheHelper
       Host.find_each do |host|
         warm_host(host)
       end
+      Rule.find_each do |rule|
+        warm_rule(rule)
+      end
     end
 
     def warm_host(host)
@@ -49,22 +52,20 @@ module CacheHelper
     def warm_profile(profile)
       Rails.cache.write({ profile: profile.id, relation: 'rules' },
                         profile.rules)
-      profile.rules.find_each do |rule|
-        Rails.cache.write(
-          { rule: rule.id, attribute: 'references' },
-          rule.references.map { |ref| [ref.href, ref.label] }.to_json
-        )
-        Rails.cache.write(
-          { rule: rule.id, attribute: 'identifier' },
-          {
-            label: rule.identifier&.label, system: rule.identifier&.system
-          }.to_json
-        )
-        Rails.cache.write(
-          { rule: rule.id, relation: 'profiles' },
-          rule.profiles
-        )
-      end
+    end
+
+    def warm_rule(rule)
+      Rails.cache.write(
+        { rule: rule.id, attribute: 'references' },
+        rule.references.map { |ref| [ref.href, ref.label] }.to_json
+      )
+      Rails.cache.write(
+        { rule: rule.id, attribute: 'identifier' },
+        {
+          label: rule.identifier&.label, system: rule.identifier&.system
+        }.to_json
+      )
+      Rails.cache.write({ rule: rule.id, relation: 'profiles' }, rule.profiles)
     end
 
     def warm_benchmark(benchmark)
@@ -88,6 +89,9 @@ module CacheHelper
       ::Xccdf::Benchmark.find_each do |benchmark|
         invalidate_benchmark(benchmark)
       end
+      Rule.find_each do |rule|
+        invalidate_rule(rule)
+      end
     end
 
     def invalidate_host(host)
@@ -106,11 +110,12 @@ module CacheHelper
 
     def invalidate_profile(profile)
       Rails.cache.delete(profile: profile.id, relation: 'rules')
-      profile.rules.each do |rule|
-        Rails.cache.delete(rule: rule.id, attribute: 'references')
-        Rails.cache.delete(rule: rule.id, attribute: 'identifier')
-        Rails.cache.delete(rule: rule.id, relation: 'profiles')
-      end
+    end
+
+    def invalidate_rule(rule)
+      Rails.cache.delete(rule: rule.id, attribute: 'references')
+      Rails.cache.delete(rule: rule.id, attribute: 'identifier')
+      Rails.cache.delete(rule: rule.id, relation: 'profiles')
     end
 
     def invalidate_benchmark(benchmark)
