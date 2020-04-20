@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require_relative 'concerns/test_results'
 
 module Types
   # Definition of the System GraphQL type
