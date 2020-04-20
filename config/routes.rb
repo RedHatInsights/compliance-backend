@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   def draw_routes(prefix)
     scope "#{prefix}/#{ENV['APP_NAME']}" do
       resources :benchmarks, only: [:index, :show]
-      resources :profiles, only: [:index, :show] do
+      resources :profiles do
         member do
           get 'tailoring_file'
         end

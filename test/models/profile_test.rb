@@ -161,6 +161,34 @@ class ProfileTest < ActiveSupport::TestCase
                         profiles(:one))
   end
 
+  test 'canonical is searchable' do
+    assert profiles(:one).canonical?
+    assert_includes Profile.search_for('canonical = true'), profiles(:one)
+    assert_not_includes Profile.search_for('canonical = false'), profiles(:one)
+  end
+
+  test 'add_rules by ID' do
+    ProfileRule.find_by(profile: profiles(:one), rule: rules(:one)).delete
+    assert_not_includes profiles(:one).reload.rules, rules(:one)
+    profiles(:one).reload.add_rules(ids: [rules(:one).id])
+    assert_includes profiles(:one).reload.rules, rules(:one)
+  end
+
+  test 'add_rules by ref_id' do
+    ProfileRule.find_by(profile: profiles(:one), rule: rules(:one)).delete
+    assert_not_includes profiles(:one).reload.rules, rules(:one)
+    profiles(:one).reload.add_rules(ref_ids: [rules(:one).ref_id])
+    assert_includes profiles(:one).reload.rules, rules(:one)
+  end
+
+  test 'add_rules from parent_profile' do
+    profiles(:two).update!(parent_profile_id: profiles(:one).id)
+    assert_includes profiles(:two).parent_profile.rules, rules(:one)
+    assert_not_includes profiles(:two).rules, rules(:one)
+    profiles(:two).add_rules
+    assert_includes profiles(:two).reload.rules, rules(:one)
+  end
+
   context 'cloning profile to account' do
     should 'create host relation when the profile is created' do
       assert_difference('ProfileHost.count', 1) do

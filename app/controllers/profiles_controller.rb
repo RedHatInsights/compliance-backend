@@ -3,12 +3,35 @@
 # API for Profiles
 class ProfilesController < ApplicationController
   def index
-    render json: ProfileSerializer.new(scope_search.sort_by(&:score), metadata)
+    render_json scope_search.sort_by(&:score)
   end
 
   def show
     authorize profile
-    render json: ProfileSerializer.new(profile)
+    render_json profile
+  end
+
+  def create
+    profile = Profile.new(profile_create_params.to_h)
+                     .fill_from_parent
+    if profile.save
+      profile.add_rules(ids: profile_create_params[:rule_ids])
+      render_json profile
+    else
+      render_error profile
+    end
+  end
+
+  def update
+    if profile.update(profile_update_params.to_h)
+      render_json profile
+    else
+      render_error profile
+    end
+  end
+
+  def destroy
+    render_json profile.destroy, status: :accepted
   end
 
   def tailoring_file
@@ -33,4 +56,38 @@ class ProfilesController < ApplicationController
   def resource
     Profile
   end
+
+  def serializer
+    ProfileSerializer
+  end
+
+  # Profile params
+  module Params
+    extend ActiveSupport::Concern
+
+    included do
+      private
+
+      def profile_params
+        params.require(:data)
+              .require(:attributes)
+              .permit(:description, :name, :compliance_threshold,
+                      :business_objective_id)
+      end
+
+      def profile_create_params
+        params.require(:data).require(:attributes).require(:parent_profile_id)
+        params.require(:data).require(:attributes)
+              .with_defaults(account_id: current_user.account_id)
+              .permit(:description, :name, :compliance_threshold, :ref_id,
+                      :business_objective_id, :rule_ids, :parent_profile_id)
+      end
+
+      def profile_update_params
+        params.require(:data).require(:attributes)
+              .permit(:name, :description,
+                      :compliance_threshold, :business_objective_id)
+      end
+    end
+  end; include Params
 end

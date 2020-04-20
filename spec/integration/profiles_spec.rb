@@ -48,6 +48,31 @@ describe 'Profiles API' do
         run_test!
       end
     end
+
+    post 'Create a profiles' do
+      tags 'profile'
+      description 'Creates a profile with the requested attributes'
+      operationId 'CreateProfile'
+
+      content_types
+      auth_header
+
+      response '200', 'Creates the profile with the requested attributes' do
+        let(:'X-RH-IDENTITY') { encoded_header }
+
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: { type: :string, format: :uuid },
+                     attributes: { '$ref' => '#/definitions/profile' }
+                   }
+                 }
+               }
+      end
+    end
   end
 
   path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/profiles/{id}" do

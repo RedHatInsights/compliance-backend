@@ -5,12 +5,7 @@ class Profile < ApplicationRecord
   include ProfileTailoring
   include ProfileScoring
   include ProfilePolicyAssociation
-
-  scoped_search on: %i[id name ref_id account_id compliance_threshold external]
-  scoped_search relation: :hosts, on: :id, rename: :system_ids
-  scoped_search relation: :hosts, on: :name, rename: :system_names
-  scoped_search on: :has_test_results, ext_method: 'test_results?',
-                only_explicit: true, operators: ['=']
+  include ProfileSearching
 
   has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
@@ -31,17 +26,15 @@ class Profile < ApplicationRecord
 
   after_update :destroy_orphaned_business_objective
 
-  scope :canonical, -> { where(parent_profile_id: nil) }
+  scope :canonical, lambda { |canonical = true|
+    canonical && where(parent_profile_id: nil) ||
+      where.not(parent_profile_id: nil)
+  }
+  scope :external, lambda { |external = true|
+    where(external: external)
+  }
 
   class << self
-    def test_results?(_filter, _operator, value)
-      operator = ActiveModel::Type::Boolean.new.cast(value) ? '' : 'NOT'
-      profile_ids = TestResult.where.not(
-        profile_id: nil
-      ).select(:profile_id).distinct
-      { conditions: "profiles.id #{operator} IN(#{profile_ids.to_sql})" }
-    end
-
     def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
       profile = find_or_initialize_by(
         ref_id: op_profile.id,
@@ -56,6 +49,16 @@ class Profile < ApplicationRecord
 
       profile
     end
+  end
+
+  def fill_from_parent
+    self.ref_id ||= parent_profile.ref_id
+    self.name ||= parent_profile.name
+    self.description ||= parent_profile.description
+    self.benchmark_id ||= parent_profile.benchmark_id
+    self.external ||= false
+
+    self
   end
 
   def canonical?
@@ -81,7 +84,7 @@ class Profile < ApplicationRecord
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
-    new_profile.add_rule_ref_ids(rules.pluck(:ref_id))
+    new_profile.add_rules(ref_ids: rules.select(:ref_id))
     new_profile
   end
 
@@ -90,14 +93,30 @@ class Profile < ApplicationRecord
                     benchmark_id: benchmark_id)
   end
 
-  def add_rule_ref_ids(ref_ids)
-    rules = benchmark.rules.where(ref_id: ref_ids)
-    ProfileRule.import!(rules.map do |rule|
+  def add_rules(ids: nil, ref_ids: nil)
+    ProfileRule.import!(rule_ids_to_add(ids, ref_ids).map do |rule|
       ProfileRule.new(profile_id: id, rule_id: rule.id)
     end, ignore: true)
   end
 
   def major_os_version
     benchmark ? benchmark.inferred_os_major_version : 'N/A'
+  end
+
+  private
+
+  def rule_ids_to_add(ids, ref_ids)
+    benchmark.rules.select(:id).tap do |rel|
+      return rel.where(id: ids) if ids
+      return rel.where(ref_id: ref_ids) if ref_ids
+
+      rel.where(id: parent_profile_rule_ids)
+    end
+  end
+
+  def parent_profile_rule_ids
+    return [] if parent_profile_id.blank?
+
+    ProfileRule.select(:rule_id).where(profile_id: parent_profile_id)
   end
 end

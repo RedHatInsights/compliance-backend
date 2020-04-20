@@ -113,15 +113,38 @@ RSpec.configure do |config|
         },
         profile: {
           type: 'object',
-          required: %w[name ref_id],
+          required: %w[name ref_id parent_profile_id],
           properties: {
             name: {
               type: 'string',
-              example: 'Standard System Security Profile for Fedora'
+              example: 'Standard System Security Profile for Red Hat '\
+                       'Enterprise Linux 7'
             },
             ref_id: {
               type: 'string',
               example: 'xccdf_org.ssgproject.content_profile_standard'
+            },
+            parent_profile_id: {
+              type: 'string',
+              format: 'uuid',
+              nullable: true,
+              example: '0105a0f0-7379-4897-a891-f95cfb9ddf9c'
+            },
+            description: {
+              type: 'string',
+              nullable: true,
+              example: 'This profile contains rules to ensure standard '\
+                       'security baseline\nof a Red Hat Enterprise Linux 7 '\
+                       'system. Regardless of your system\'s workload\nall of '\
+                       'these checks should pass.'
+            },
+            compliance_threshold: {
+              type: 'number'
+            },
+            business_objective_id: {
+              type: 'string',
+              format: 'uuid',
+              example: '0105a0f0-7379-4897-a891-f95cfb9ddf9c'
             }
           }
         },
