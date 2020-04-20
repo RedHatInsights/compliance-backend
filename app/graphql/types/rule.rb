@@ -23,6 +23,7 @@ module Types
                required: false
     end
 
+    # rubocop:disable Metrics/AbcSize
     def compliant(args = {})
       ::Rails.cache.fetch(host: system_id(args), profile: profile_id(args),
                           rule: object.id, attribute: 'compliant') do
@@ -32,11 +33,13 @@ module Types
           )
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def cached_references
       ::Rails.cache.read(rule: object.id, attribute: 'references')
     end
 
+    # rubocop:disable Metrics/AbcSize
     def references
       return cached_references if cached_references
 
@@ -49,6 +52,7 @@ module Types
         references_from_context
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def references_from_context
       ::RecordLoader.for(::RuleReference)
