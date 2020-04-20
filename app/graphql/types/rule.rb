@@ -24,11 +24,9 @@ module Types
     end
 
     def compliant(args = {})
-      ::Rails.cache.fetch(
-        host: system_id(args), profile: profile_id(args), rule: object.id, attribute: 'compliant'
-      ) do
-        system_id(args) &&
-          profile_id(args) &&
+      ::Rails.cache.fetch(host: system_id(args), profile: profile_id(args),
+                          rule: object.id, attribute: 'compliant') do
+        system_id(args) && profile_id(args) &&
           %w[pass notapplicable notselected].include?(
             context[:rule_results][object.id][profile_id(args)]
           )
@@ -41,9 +39,10 @@ module Types
 
     def references
       return cached_references if cached_references
+
       if context[:"rule_references_#{object.id}"].nil?
         ::CollectionLoader.for(::Rule, :rule_references)
-          .load(object).then do |references|
+                          .load(object).then do |references|
           references.map { |ref| [ref.href, ref.label] }.to_json
         end
       else
@@ -65,8 +64,9 @@ module Types
 
     def identifier
       return cached_identifier if cached_identifier
+
       ::CollectionLoader.for(::Rule, :rule_identifier)
-        .load(object).then do |identifier|
+                        .load(object).then do |identifier|
         { label: identifier&.label, system: identifier&.system }.to_json
       end
     end
@@ -77,6 +77,7 @@ module Types
 
     def profiles
       return cached_profiles if cached_profiles
+
       ::CollectionLoader.for(::Rule, :profiles).load(object).then do |profiles|
         profiles
       end

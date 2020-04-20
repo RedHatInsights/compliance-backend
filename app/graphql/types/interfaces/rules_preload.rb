@@ -30,11 +30,12 @@ module RulesPreload
   end
 
   def cached_rules
-    ::Rails.cache.fetch(profile: object.id, relation: "rules")
+    ::Rails.cache.fetch(profile: object.id, relation: 'rules')
   end
 
   def all_rules
     return cached_rules if cached_rules
+
     ::CollectionLoader.for(::Profile, :rules).load(object).then do |rules|
       rules
     end

@@ -53,14 +53,18 @@ module Types
     end
 
     def rules_passed(args = {})
-      return cached_rules_passed(args[:profile_id], object.id) if cached_rules_passed(args[:profile_id], object.id)
+      return cached_rules_passed(args[:profile_id], object.id) if
+             cached_rules_passed(args[:profile_id], object.id)
+
       ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
         object.rules_passed(profile)
       end
     end
 
     def rules_failed(args = {})
-      return cached_rules_failed(args[:profile_id], object.id) if cached_rules_failed(args[:profile_id], object.id)
+      return cached_rules_failed(args[:profile_id], object.id) if
+             cached_rules_failed(args[:profile_id], object.id)
+
       ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
         object.rules_failed(profile)
       end

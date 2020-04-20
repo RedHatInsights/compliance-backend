@@ -15,7 +15,8 @@ module Types
     field :rules, [::Types::Rule], null: true
 
     def profiles
-      ::Rails.cache.fetch(benchmark: object.id, relation: 'canonical_profiles') do
+      ::Rails.cache.fetch(benchmark: object.id,
+                          relation: 'canonical_profiles') do
         object.profiles.canonical
       end
     end

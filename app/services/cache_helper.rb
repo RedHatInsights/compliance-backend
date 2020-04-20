@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/ModuleLength
+# Various methods to warm or invalidate the cache
 module CacheHelper
   class << self
     def warm
@@ -41,7 +47,8 @@ module CacheHelper
     end
 
     def warm_profile(profile)
-      Rails.cache.write({ profile: profile.id, relation: 'rules' }, profile.rules)
+      Rails.cache.write({ profile: profile.id, relation: 'rules' },
+                        profile.rules)
       profile.rules.find_each do |rule|
         Rails.cache.write(
           { rule: rule.id, attribute: 'references' },
@@ -49,7 +56,9 @@ module CacheHelper
         )
         Rails.cache.write(
           { rule: rule.id, attribute: 'identifier' },
-          { label: rule.identifier&.label, system: rule.identifier&.system }.to_json
+          {
+            label: rule.identifier&.label, system: rule.identifier&.system
+          }.to_json
         )
         Rails.cache.write(
           { rule: rule.id, relation: 'profiles' },
@@ -59,8 +68,14 @@ module CacheHelper
     end
 
     def warm_benchmark(benchmark)
-      Rails.cache.write({ benchmark: benchmark.id, relation: 'rules' }, benchmark.rules)
-      Rails.cache.write({ benchmark: benchmark.id, relation: 'canonical_profiles' }, benchmark.profiles.canonical)
+      Rails.cache.write({ benchmark: benchmark.id, relation: 'rules' },
+                        benchmark.rules)
+      Rails.cache.write(
+        {
+          benchmark: benchmark.id, relation: 'canonical_profiles'
+        },
+        benchmark.profiles.canonical
+      )
     end
 
     def invalidate
@@ -78,10 +93,14 @@ module CacheHelper
     def invalidate_host(host)
       Rails.cache.delete(host: host.id, attribute: 'rule_objects_failed')
       host.profiles.find_each do |profile|
-        Rails.cache.delete(profile: profile.id, host: host.id, attribute: 'results')
-        Rails.cache.delete(profile: profile.id, host: host.id, attribute: 'rules_passed')
-        Rails.cache.delete(profile: profile.id, host: host.id, attribute: 'rules_failed')
-        Rails.cache.delete(profile: profile.id, host: host.id, attribute: 'score')
+        Rails.cache.delete(profile: profile.id, host: host.id,
+                           attribute: 'results')
+        Rails.cache.delete(profile: profile.id, host: host.id,
+                           attribute: 'rules_passed')
+        Rails.cache.delete(profile: profile.id, host: host.id,
+                           attribute: 'rules_failed')
+        Rails.cache.delete(profile: profile.id, host: host.id,
+                           attribute: 'score')
       end
     end
 
@@ -96,7 +115,11 @@ module CacheHelper
 
     def invalidate_benchmark(benchmark)
       Rails.cache.delete(benchmark: benchmark.id, relation: 'rules')
-      Rails.cache.delete(benchmark: benchmark.id, relation: 'canonical_profiles')
+      Rails.cache.delete(benchmark: benchmark.id,
+                         relation: 'canonical_profiles')
     end
   end
 end
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/ModuleLength
