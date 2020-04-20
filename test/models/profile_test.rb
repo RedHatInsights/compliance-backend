@@ -107,6 +107,7 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test "destroying a profile also destroys its policy's profiles" do
+    DestroyProfilesJob.clear
     (bm = benchmarks(:one).dup).update!(version: '0.1.47')
     (external_profile = profiles(:one).dup).update!(benchmark: bm,
                                                     external: true)
