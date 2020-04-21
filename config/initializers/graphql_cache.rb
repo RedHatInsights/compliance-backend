@@ -21,5 +21,16 @@ module GraphQL
     class Deconstructor
       prepend DeconstructorExtensions
     end
+
+    class Key
+      def to_s
+        @to_s ||= [
+          GraphQL::Cache.namespace,
+          object_clause,
+          arguments_clause,
+          field_clause,
+        ].flatten.compact.join(':')
+      end
+    end
   end
 end

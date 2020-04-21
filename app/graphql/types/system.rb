@@ -10,23 +10,23 @@ module Types
     field :id, ID, null: false, cache: true
     field :name, String, null: false, cache: true
     field :profiles, [::Types::Profile], null: true, cache: true
-    field :compliant, Boolean, null: false do #, cache: true do
+    field :compliant, Boolean, null: false, cache: true do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
     end
     field :profile_names, String, null: false, cache: true
-    field :rules_passed, Int, null: false do#, cache: true do
+    field :rules_passed, Int, null: false, cache: true do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
     end
-    field :rules_failed, Int, null: false do#, cache: true do
+    field :rules_failed, Int, null: false, cache: true do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
     end
-    field :rule_objects_failed, [::Types::Rule], null: true do
+    field :rule_objects_failed, [::Types::Rule], null: true, cache: true do
       description 'Rules failed by a system'
     end
-    field :last_scanned, String, null: true do #, cache: true do
+    field :last_scanned, String, null: true, cache: true do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
     end
