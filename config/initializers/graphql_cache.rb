@@ -4,3 +4,18 @@ GraphQL::Cache.configure do |config|
   config.logger    = Rails.logger     # Logger to receive cache-related log messages
   config.expiry    = 15552000         # 6 months (in seconds)
 end
+
+module GraphQL
+  module Cache
+    module DeconstructorExtensions
+      def perform
+        return raw.value if method == 'lazy'
+        super
+      end
+    end
+
+    class Deconstructor
+      prepend DeconstructorExtensions
+    end
+  end
+end
