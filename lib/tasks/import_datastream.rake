@@ -39,6 +39,22 @@ namespace :ssg do
     end
   end
 
+  desc 'Update compliance DB with the supported SCAP Security Guide versions'
+  task import_rhel_supported: [:environment] do
+    # DATASTREAM_FILENAMES from openscap_parser's ssg:sync
+    begin
+      ENV['DATASTREAMS'] = ::Xccdf::Benchmark::
+        LATEST_SUPPORTED_VERSIONS.map do |ref_id, version|
+        "v#{version}:rhel#{ref_id[/\d+$/]}"
+      end.join(',')
+      Rake::Task['ssg:sync'].invoke
+      DATASTREAM_FILENAMES.flatten.each do |filename|
+        ENV['DATASTREAM_FILE'] = filename
+        Rake::Task['ssg:import'].invoke
+      end
+    end
+  end
+
   desc 'Update compliance DB with data from an Xccdf datastream file'
   task import: [:environment] do
     begin
