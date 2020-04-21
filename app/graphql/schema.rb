@@ -10,7 +10,7 @@ require_relative 'types/mutation'
 # remove here.
 class Schema < GraphQL::Schema
   use GraphQL::Tracing::PrometheusTracing unless Rails.env.test?
-  #use ComplianceTimeout, max_seconds: 20
+  use ComplianceTimeout, max_seconds: 20
   query Types::Query
   mutation Types::Mutation
   lazy_resolve(Promise, :sync)
