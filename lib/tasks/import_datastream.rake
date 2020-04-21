@@ -27,8 +27,8 @@ namespace :ssg do
   task import_rhel_supported: [:environment] do
     # DATASTREAM_FILENAMES from openscap_parser's ssg:sync
     begin
-      ENV['DATASTREAMS'] = ::Xccdf::Benchmark::LATEST_SUPPORTED_VERSIONS
-        .map do |ref_id, version|
+      ENV['DATASTREAMS'] = ::Xccdf::Benchmark::
+        LATEST_SUPPORTED_VERSIONS.map do |ref_id, version|
         "v#{version}:rhel#{ref_id[/\d+$/]}"
       end.join(',')
       Rake::Task['ssg:sync'].invoke
