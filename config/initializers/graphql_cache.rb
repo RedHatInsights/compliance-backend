@@ -10,6 +10,10 @@ module GraphQL
     module DeconstructorExtensions
       def perform
         return raw.value if method == 'lazy'
+        if raw.is_a?(Promise)
+          raw.wait
+          raw.value
+        end
         super
       end
     end
