@@ -13,10 +13,10 @@ module Types
     field :description, String, null: true, cache: true
     field :severity, String, null: false, cache: true
     field :remediation_available, Boolean, null: false, cache: true
-    field :profiles, [::Types::Profile], null: true, cache: true
-    field :identifier, String, null: true, cache: true
-    field :references, String, null: true, cache: true
-    field :compliant, Boolean, null: false, cache: true do
+    field :profiles, [::Types::Profile], null: true#, cache: true
+    field :identifier, String, null: true#, cache: true
+    field :references, String, null: true#, cache: true
+    field :compliant, Boolean, null: false do #, cache: true do
       argument :system_id, String, 'Is a system compliant?',
                required: false
       argument :profile_id, String, 'Is a system compliant with this profile?',

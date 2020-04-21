@@ -21,7 +21,7 @@ module Types
     field :benchmark_id, ID, null: false, cache: true
     field :account_id, ID, null: false, cache: true
     field :policy, Types::Profile, null: true, cache: true
-    field :rules, [::Types::Rule], null: true, cache: true, extras: [:lookahead] do
+    field :rules, [::Types::Rule], null: true, extras: [:lookahead] do # , cache: true do
       argument :system_id, String,
                'System ID to filter by', required: false
       argument :identifier, String,
@@ -33,37 +33,37 @@ module Types
     field :benchmark, ::Types::Benchmark, null: true, cache: true
     field :business_objective, ::Types::BusinessObjective, null: true, cache: true
     field :business_objective_id, ID, null: true, cache: true
-    field :total_host_count, Int, null: false, cache: true
+    field :total_host_count, Int, null: false#, cache: true
     field :external, Boolean, null: false, cache: true
 
-    field :score, Float, null: false, cache: true  do
+    field :score, Float, null: false do#, cache: true  do
       argument :system_id, String,
                'Latest TestResult score for this system and profile',
                required: false
     end
 
-    field :compliant, Boolean, null: false, cache: true  do
+    field :compliant, Boolean, null: false do #, cache: true  do
       argument :system_id, String, 'Is a system compliant with this profile?',
                required: false
     end
 
-    field :rules_passed, Int, null: false, cache: true  do
+    field :rules_passed, Int, null: false do #, cache: true  do
       argument :system_id, String,
                'Rules passed for a system and a profile', required: false
     end
 
-    field :rules_failed, Int, null: false, cache: true  do
+    field :rules_failed, Int, null: false do #, cache: true  do
       argument :system_id, String,
                'Rules failed for a system and a profile', required: false
     end
 
-    field :last_scanned, String, null: false, cache: true  do
+    field :last_scanned, String, null: false do#, cache: true  do
       argument :system_id, String,
                'Last time this profile was scanned for a system',
                required: false
     end
 
-    field :compliant_host_count, Int, null: false, cache: true
+    field :compliant_host_count, Int, null: false# , cache: true
 
     field :major_os_version, String, null: false, cache: true
 
