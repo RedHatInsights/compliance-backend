@@ -29,7 +29,7 @@ namespace :ssg do
     begin
       ENV['DATASTREAMS'] = ::Xccdf::Benchmark::LATEST_SUPPORTED_VERSIONS
         .map do |ref_id, version|
-        "v#{version}:#{ref_id.to_s.downcase.split('_').last.sub('-', '')}"
+        "v#{version}:rhel#{ref_id[/\d+$/]}"
       end.join(',')
       Rake::Task['ssg:sync'].invoke
       DATASTREAM_FILENAMES.flatten.each do |filename|
