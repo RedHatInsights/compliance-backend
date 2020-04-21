@@ -52,10 +52,11 @@ module Xccdf
 
       def latest_supported
         Rails.cache.fetch('latest_supported_benchmarks') do
-          where(
-            ref_id: LATEST_SUPPORTED_VERSIONS.keys,
-            version: LATEST_SUPPORTED_VERSIONS.values
-          ).compact
+          LATEST_SUPPORTED_VERSIONS.inject(
+            where('1=0')
+          ) do |acc, (ref_id, version)|
+            acc.or(where(ref_id: ref_id, version: version))
+          end.compact
         end
       end
     end
