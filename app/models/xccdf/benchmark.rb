@@ -6,6 +6,11 @@ module Xccdf
   # for a given set of software in a specific release of the SCAP Security
   # Guide (i.e. RHEL 7, v0.1.43)
   class Benchmark < ApplicationRecord
+    scoped_search on: %i[id ref_id title version]
+    scoped_search relation: :profiles, on: :id, rename: :profile_ids,
+                  alias: :profile_id
+    scoped_search relation: :rules, on: :id, rename: :rule_ids, alias: :rule_id
+
     has_many :profiles, dependent: :destroy
     has_many :rules, dependent: :destroy
     validates :ref_id, uniqueness: { scope: %i[version] }, presence: true
