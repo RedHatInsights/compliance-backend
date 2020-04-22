@@ -6,7 +6,7 @@ module Types
     graphql_name 'BusinessObjective'
     description 'A Business Objective registered in Insights Compliance'
 
-    field :id, ID, null: false
-    field :title, String, null: false
+    field :id, ID, null: false, cache: true
+    field :title, String, null: false, cache: true
   end
 end

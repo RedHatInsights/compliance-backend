@@ -62,7 +62,7 @@ module Types
     def latest_benchmarks
       Pundit.authorize(
         context[:current_user],
-        ::Xccdf::Benchmark.latest,
+        ::Xccdf::Benchmark.latest_supported,
         :index?, policy_class: BenchmarkPolicy
       )
     end
