@@ -4,7 +4,7 @@ require 'test_helper'
 
 class ParseReportJobTest < ActiveSupport::TestCase
   setup do
-    @msg_value = { 'id': '', 'account': '', 'payload_id': '' }
+    @msg_value = { 'id': '', 'account': '', 'request_id': '' }
     @parse_report_job = ParseReportJob.new
     @file = file_fixture('report.tar.gz').read
     @parser = mock('XccdfReportParser')
