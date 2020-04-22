@@ -35,7 +35,7 @@ module Types
       if context[:"rule_references_#{object.id}"].nil?
         ::CollectionLoader.for(::Rule, :rule_references)
                           .load(object).then do |references|
-          references.map { |ref| [ref.href, ref.label] }.to_json
+          generate_references_json(references)
         end
       else
         references_from_context
@@ -46,7 +46,7 @@ module Types
       ::RecordLoader.for(::RuleReference)
                     .load_many(context[:"rule_references_#{object.id}"])
                     .then do |references|
-        references.map { |ref| { href: ref.href, label: ref.label } }.to_json
+        generate_references_json(references)
       end
     end
 
@@ -71,6 +71,12 @@ module Types
 
     def profile_id(args)
       args[:profile_id] || context[:parent_profile_id][object.id]
+    end
+
+    def generate_references_json(references)
+      references.compact.map do |ref|
+        { href: ref.href, label: ref.label }
+      end.to_json
     end
 
     def latest_test_result_batch(args)
