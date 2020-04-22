@@ -6,6 +6,233 @@
     "description": "This is the API for Cloud Services for RHEL Compliance. You can find out more about Red Hat Cloud Services for RHEL at [https://cloud.redhat.com/](https://cloud.redhat.com/)"
   },
   "paths": {
+    "/api/compliance/benchmarks": {
+      "get": {
+        "summary": "List all benchmarks",
+        "tags": [
+          "benchmark"
+        ],
+        "description": "Lists all benchmarks requested",
+        "operationId": "ListBenchmarks",
+        "consumes": [
+          "application/vnd.api+json"
+        ],
+        "produces": [
+          "application/vnd.api+json"
+        ],
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "lists all benchmarks requested",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "meta": {
+                  "$ref": "#/definitions/metadata"
+                },
+                "links": {
+                  "$ref": "#/definitions/links"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "attributes": {
+                        "$ref": "#/definitions/benchmark"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/vnd.api+json": {
+                "meta": {
+                  "filter": "ref_id=xccdf_org.ssgproject.content_benchmark_RHEL-7"
+                },
+                "data": [
+                  {
+                    "type": "benchmark",
+                    "id": "1b743185-361a-4b9a-bf48-a8efd7114093",
+                    "attributes": {
+                      "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7. It is a rendering of content structured in the eXtensible Configuration Checklist Description Format (XCCDF) in order to support security automation.  The SCAP content is is available in the scap-security-guide package which is developed at     https://www.open-scap.org/security-policies/scap-security-guide. Providing system administrators with such guidance informs them how to securely configure systems under their control in a variety of network roles. Policy makers and baseline creators can use this catalog of settings, with its associated references to higher-level security control catalogs, in order to assist them in security baseline creation. This guide is a catalog, not a checklist, and satisfaction of every item is not likely to be possible or sensible in many operational scenarios. However, the XCCDF format enables granular selection and adjustment of settings, and their association with OVAL and OCIL content provides an automated checking capability. Transformations of this document, and its associated automated checking content, are capable of providing baselines that meet a diverse set of policy objectives. Some example XCCDF Profiles, which are selections of items that form checklists and can be used as baselines, are available with this guide. They can be processed, in an automated fashion, with tools that support the Security Content Automation Protocol (SCAP). The DISA STIG, which provides required settings for US Department of Defense systems, is one example of a baseline created from this guidance.",
+                      "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                      "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
+                      "version": "0.1.46"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compliance/benchmarks/{id}": {
+      "get": {
+        "summary": "Retrieve a benchmark",
+        "tags": [
+          "benchmark"
+        ],
+        "description": "Retrieves data for a benchmark",
+        "operationId": "ShowBenchmark",
+        "consumes": [
+          "application/vnd.api+json"
+        ],
+        "produces": [
+          "application/vnd.api+json"
+        ],
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "benchmark not found",
+            "examples": {
+              "application/vnd.api+json": {
+                "errors": "Resource not found"
+              }
+            }
+          },
+          "200": {
+            "description": "retrieves a benchmark",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "meta": {
+                  "$ref": "#/definitions/metadata"
+                },
+                "links": {
+                  "$ref": "#/definitions/links"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "attributes": {
+                      "$ref": "#/definitions/benchmark"
+                    }
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "type": "benchmark",
+                  "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                  "attributes": {
+                    "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7. It is a rendering of content structured in the eXtensible Configuration Checklist Description Format (XCCDF) in order to support security automation.  The SCAP content is is available in the scap-security-guide package which is developed at     https://www.open-scap.org/security-policies/scap-security-guide. Providing system administrators with such guidance informs them how to securely configure systems under their control in a variety of network roles. Policy makers and baseline creators can use this catalog of settings, with its associated references to higher-level security control catalogs, in order to assist them in security baseline creation. This guide is a catalog, not a checklist, and satisfaction of every item is not likely to be possible or sensible in many operational scenarios. However, the XCCDF format enables granular selection and adjustment of settings, and their association with OVAL and OCIL content provides an automated checking capability. Transformations of this document, and its associated automated checking content, are capable of providing baselines that meet a diverse set of policy objectives. Some example XCCDF Profiles, which are selections of items that form checklists and can be used as baselines, are available with this guide. They can be processed, in an automated fashion, with tools that support the Security Content Automation Protocol (SCAP). The DISA STIG, which provides required settings for US Department of Defense systems, is one example of a baseline created from this guidance.",
+                    "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                    "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
+                    "version": "0.1.46"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/compliance/profiles": {
       "get": {
         "summary": "List all profiles",
@@ -423,7 +650,7 @@
                   "$ref": "#/definitions/links"
                 },
                 "data": {
-                  "type": "object",
+                  "type": "array",
                   "items": {
                     "properties": {
                       "type": {
@@ -751,6 +978,31 @@
         "self": {
           "type": "string",
           "example": "https://compliance.insights.openshift.org/profiles"
+        }
+      }
+    },
+    "benchmark": {
+      "type": "object",
+      "required": [
+        "ref_id",
+        "title",
+        "version"
+      ],
+      "properties": {
+        "ref_id": {
+          "type": "string",
+          "example": "xccdf_org.ssgproject.content_benchmark_RHEL-7"
+        },
+        "title": {
+          "type": "string",
+          "example": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7"
+        },
+        "version": {
+          "type": "string",
+          "example": "0.1.46"
+        },
+        "description": {
+          "type": "string"
         }
       }
     },
