@@ -9,7 +9,6 @@ module Types
     global_id_field :global_id
     field :node, field: GraphQL::Relay::Node.field
     field :nodes, field: GraphQL::Relay::Node.plural_field
-    field_class ::GraphQL::Cache::Field
 
     class << self
       def model_class(new_model_class = nil)
