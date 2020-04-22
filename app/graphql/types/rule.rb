@@ -6,17 +6,17 @@ module Types
     graphql_name 'Rule'
     description 'A Rule registered in Insights Compliance'
 
-    field :id, ID, null: false, cache: true
-    field :title, String, null: false, cache: true
-    field :ref_id, String, null: false, cache: true
-    field :rationale, String, null: true, cache: true
-    field :description, String, null: true, cache: true
-    field :severity, String, null: false, cache: true
-    field :remediation_available, Boolean, null: false, cache: true
-    field :profiles, [::Types::Profile], null: true, cache: true
-    field :identifier, String, null: true, cache: true
-    field :references, String, null: true, cache: true
-    field :compliant, Boolean, null: false, cache: true do
+    field :id, ID, null: false
+    field :title, String, null: false
+    field :ref_id, String, null: false
+    field :rationale, String, null: true
+    field :description, String, null: true
+    field :severity, String, null: false
+    field :remediation_available, Boolean, null: false
+    field :profiles, [::Types::Profile], null: true
+    field :identifier, String, null: true
+    field :references, String, null: true
+    field :compliant, Boolean, null: false do
       argument :system_id, String, 'Is a system compliant?',
                required: false
       argument :profile_id, String, 'Is a system compliant with this profile?',
@@ -35,7 +35,7 @@ module Types
       if context[:"rule_references_#{object.id}"].nil?
         ::CollectionLoader.for(::Rule, :rule_references)
                           .load(object).then do |references|
-          references.map { |ref| { href: ref.href, label: ref.label } }.to_json
+          generate_references_json(references)
         end
       else
         references_from_context
@@ -46,7 +46,7 @@ module Types
       ::RecordLoader.for(::RuleReference)
                     .load_many(context[:"rule_references_#{object.id}"])
                     .then do |references|
-        references.map { |ref| { href: ref.href, label: ref.label } }.to_json
+        generate_references_json(references)
       end
     end
 
@@ -71,6 +71,12 @@ module Types
 
     def profile_id(args)
       args[:profile_id] || context[:parent_profile_id][object.id]
+    end
+
+    def generate_references_json(references)
+      references.compact.map do |ref|
+        { href: ref.href, label: ref.label }
+      end.to_json
     end
 
     def latest_test_result_batch(args)

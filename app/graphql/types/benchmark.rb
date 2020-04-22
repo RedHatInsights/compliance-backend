@@ -6,13 +6,13 @@ module Types
     graphql_name 'Benchmark'
     description 'A representation of a SCAP Security Guide version'
 
-    field :id, ID, null: false, cache: true
-    field :description, String, null: true, cache: true
-    field :title, String, null: false, cache: true
-    field :ref_id, String, null: false, cache: true
-    field :version, String, null: false, cache: true
-    field :profiles, [::Types::Profile], null: true, cache: true
-    field :rules, [::Types::Rule], null: true, cache: true
+    field :id, ID, null: false
+    field :description, String, null: true
+    field :title, String, null: false
+    field :ref_id, String, null: false
+    field :version, String, null: false
+    field :profiles, [::Types::Profile], null: true
+    field :rules, [::Types::Rule], null: true
 
     def profiles
       object.profiles.canonical
