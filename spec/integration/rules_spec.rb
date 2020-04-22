@@ -69,7 +69,6 @@ describe 'Rules API' do
 
   path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/rules/{id}" do
     get 'Retrieve a rule' do
-      set_fixture_class benchmarks: Xccdf::Benchmark
       fixtures :hosts, :benchmarks, :rules, :profiles
       tags 'rule'
       description 'Retrieves data for a rule'
