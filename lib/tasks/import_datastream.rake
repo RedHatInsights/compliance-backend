@@ -34,7 +34,7 @@ namespace :ssg do
       Rake::Task['ssg:sync'].invoke
       DATASTREAM_FILENAMES.flatten.each do |filename|
         ENV['DATASTREAM_FILE'] = filename
-        Rake::Task['ssg:import'].invoke
+        Rake::Task['ssg:import'].execute
       end
     end
   end
