@@ -15,5 +15,6 @@ class Schema < GraphQL::Schema
   mutation Types::Mutation
   lazy_resolve(Promise, :sync)
   use GraphQL::Batch
-  use GraphQL::Cache
+  use GraphQL::Execution::Interpreter
+  use GraphQL::Analysis::AST
 end
