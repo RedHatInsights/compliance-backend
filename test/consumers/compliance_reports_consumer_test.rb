@@ -24,7 +24,6 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
       @consumer.expects(:validation_message).returns('success')
       @consumer.expects(:produce).with(
         {
-          'payload_id': '036738d6f4e541c4aa8cfc9f46f5a140',
           'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
           'service': 'compliance',
           'validation': 'success'
@@ -36,13 +35,13 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
     end
   end
 
-  test 'report message is parsed and job is enqueued with payload_id' do
+  test 'report message is parsed and job is enqueued with request_id' do
     SafeDownloader.expects(:download).returns(['report'])
     @consumer.expects(:identity).returns(OpenStruct.new(valid?: true))
              .at_least_once
     @message.expects(:value).returns(
       '{"account": "000001", "principal": "default_principal", '\
-      '"validation":1,"payload_id":"036738d6f4e541c4aa8cfc9f46f5a140",'\
+      '"validation":1,"request_id":"036738d6f4e541c4aa8cfc9f46f5a140",'\
       '"size": 327, "service": "compliance", "url": "/tmp/uploads'\
       '/insights-upload-quarantine/036738d6f4e541c4aa8cfc9f46f5a140"}'
     ).at_least_once
@@ -50,7 +49,6 @@ class ComplianceReportsConsumerTest < ActiveSupport::TestCase
       @consumer.expects(:validation_message).returns('success')
       @consumer.expects(:produce).with(
         {
-          'payload_id': '036738d6f4e541c4aa8cfc9f46f5a140',
           'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
           'service': 'compliance',
           'validation': 'success'
