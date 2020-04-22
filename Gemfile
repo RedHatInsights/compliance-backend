@@ -11,7 +11,7 @@ gem 'puma', '~> 3.12'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 4.0'
+gem 'hiredis'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -68,12 +68,13 @@ gem 'prometheus_exporter'
 
 gem 'activerecord-import'
 gem 'oj'
-gem 'newrelic_rpm'
 gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
 gem 'uuid'
 
 gem 'openscap_parser', '~> 1.0.0'
+
+gem 'graphql-cache'
 
 group :development, :test do
   gem 'brakeman'
