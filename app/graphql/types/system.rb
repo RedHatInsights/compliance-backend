@@ -7,26 +7,26 @@ module Types
     graphql_name 'System'
     description 'A System registered in Insights Compliance'
 
-    field :id, ID, null: false, cache: true
-    field :name, String, null: false, cache: true
-    field :profiles, [::Types::Profile], null: true, cache: true
-    field :compliant, Boolean, null: false, cache: true do
+    field :id, ID, null: false
+    field :name, String, null: false
+    field :profiles, [::Types::Profile], null: true
+    field :compliant, Boolean, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
     end
-    field :profile_names, String, null: false, cache: true
-    field :rules_passed, Int, null: false, cache: true do
+    field :profile_names, String, null: false
+    field :rules_passed, Int, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
     end
-    field :rules_failed, Int, null: false, cache: true do
+    field :rules_failed, Int, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
     end
-    field :rule_objects_failed, [::Types::Rule], null: true, cache: true do
+    field :rule_objects_failed, [::Types::Rule], null: true do
       description 'Rules failed by a system'
     end
-    field :last_scanned, String, null: true, cache: true do
+    field :last_scanned, String, null: true do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
     end

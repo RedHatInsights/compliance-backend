@@ -4,7 +4,6 @@
 # rule results, compliant,and references
 module RulesPreload
   include GraphQL::Schema::Interface
-  field_class GraphQL::Cache::Field
 
   def rules(args = {})
     context[:parent_profile_id] ||= {}
