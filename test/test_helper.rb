@@ -42,7 +42,6 @@ unless Rails.env.production?
 
   module ActiveSupport
     class TestCase
-      set_fixture_class benchmarks: Xccdf::Benchmark
       fixtures :all
       self.use_transactional_tests = true
     end
