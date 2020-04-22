@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../app/services/concerns/xccdf/hosts'
+
 desc 'Remove systems in Compliance DB which are not in the inventory'
 task sync_with_inventory: [:environment] do
   ::Account.includes(:hosts).find_each do |account|
