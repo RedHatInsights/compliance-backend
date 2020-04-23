@@ -52,7 +52,6 @@ describe 'Profiles API' do
 
   path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/profiles/{id}" do
     get 'Retrieve a profile' do
-      set_fixture_class benchmarks: Xccdf::Benchmark
       fixtures :hosts, :benchmarks, :profiles
       tags 'profile'
       description 'Retrieves data for a profile'

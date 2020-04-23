@@ -89,6 +89,28 @@ RSpec.configure do |config|
             }
           }
         },
+        benchmark: {
+          type: 'object',
+          required: %w[ref_id title version],
+          properties: {
+            ref_id: {
+              type: 'string',
+              example: 'xccdf_org.ssgproject.content_benchmark_RHEL-7'
+            },
+            title: {
+              type: 'string',
+              example: 'Guide to the Secure Configuration of Red Hat '\
+                       'Enterprise Linux 7'
+            },
+            version: {
+              type: 'string',
+              example: '0.1.46'
+            },
+            description: {
+              type: 'string'
+            }
+          }
+        },
         profile: {
           type: 'object',
           required: %w[name ref_id],
