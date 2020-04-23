@@ -20,7 +20,9 @@ module RulesPreload
   end
 
   def latest_rule_results_batch(latest_test_result)
-    return Promise.resolve([]) if latest_test_result.blank?
+    if latest_test_result.blank?
+      return Promise.resolve(::RuleResult.where('1=0'))
+    end
 
     ::CollectionLoader.for(::TestResult, :rule_results).load(latest_test_result)
   end
