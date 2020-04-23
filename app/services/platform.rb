@@ -9,9 +9,9 @@ module Platform
     interval: 0.05,
     interval_randomness: 0.5,
     backoff_factor: 2,
+    methods: %i[get],
     exceptions: [
-      Faraday::ConnectionFailed, Faraday::TimeoutError, Errno::ETIMEDOUT,
-      Timeout::Error, Error::TimeoutError
+      *Faraday::Request::Retry::DEFAULT_EXCEPTIONS, Faraday::ConnectionFailed
     ]
   }.freeze
 
