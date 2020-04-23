@@ -13,7 +13,7 @@ module Platform
       Faraday::ConnectionFailed, Faraday::TimeoutError, Errno::ETIMEDOUT,
       Timeout::Error, Error::TimeoutError
     ]
-  }
+  }.freeze
 
   def self.connection
     faraday = Faraday.new do |f|
