@@ -33,7 +33,9 @@ module Types
 
     def profiles
       context_parent
-      object.profiles
+      ::CollectionLoader.for(::Host, :profiles).load(object).then do |profiles|
+        profiles
+      end
     end
 
     def compliant(args = {})
