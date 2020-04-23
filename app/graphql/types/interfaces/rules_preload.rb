@@ -49,7 +49,7 @@ module RulesPreload
   end
 
   def initialize_rule_references_context(rule_results)
-    grouped_rules_references = ::RuleReferencesRule.where(
+    grouped_rules_references = ::RuleReferencesRule.distinct.where(
       rule_id: rule_results.pluck(:rule_id)
     ).group_by(&:rule_id)
     grouped_rules_references.each do |rule_id, references|
