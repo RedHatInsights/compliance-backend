@@ -51,7 +51,6 @@ module Xccdf
       private
 
       def invalidate_cache
-        Rails.cache.delete("#{@host&.id}/failed_rule_objects_result")
         Rails.cache.delete("#{@new_host_profile&.id}/#{@host&.id}/results")
         @host_profile.rules.each do |rule|
           Rails.cache.delete("#{rule.id}/#{@host&.id}/compliant")

@@ -47,45 +47,6 @@ class SystemQueryTest < ActiveSupport::TestCase
     end
   end
 
-  test 'some host attributes can be queried without profileId arguments' do
-    query = <<-GRAPHQL
-    {
-        systems(limit: 50, offset: 1) {
-          edges {
-            node {
-              id
-              name
-              profileNames
-              compliant
-              rulesPassed
-              rulesFailed
-              lastScanned
-            }
-          }
-        }
-    }
-    GRAPHQL
-
-    profiles(:one).rules << rules(:one)
-    profiles(:two).rules << rules(:two)
-    hosts(:one).profiles << profiles(:one)
-    hosts(:one).profiles << profiles(:two)
-    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
-    test_results(:two).update(profile: profiles(:two), host: hosts(:one))
-
-    result = Schema.execute(
-      query,
-      variables: {},
-      context: { current_user: users(:test) }
-    )
-
-    assert_equal(
-      "#{profiles(:one).name}, #{profiles(:two).name}",
-      result['data']['systems']['edges'].first['node']['profileNames']
-    )
-    assert_not result['data']['systems']['edges'].first['node']['compliant']
-  end
-
   test 'query attributes with profileId arguments' do
     query = <<-GRAPHQL
     query getSystems($search: String) {

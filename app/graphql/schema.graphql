@@ -482,12 +482,6 @@ interface RulesPreload {
 A System registered in Insights Compliance
 """
 type System implements Node {
-  compliant(
-    """
-    Filter results by profile ID
-    """
-    profileId: String
-  ): Boolean!
   globalId: ID!
   id: ID!
   lastScanned(
@@ -517,13 +511,7 @@ type System implements Node {
     """
     ids: [ID!]!
   ): [Node]!
-  profileNames: String!
   profiles: [Profile!]
-
-  """
-  Rules failed by a system
-  """
-  ruleObjectsFailed: [Rule!]
   rulesFailed(
     """
     Filter results by profile ID
