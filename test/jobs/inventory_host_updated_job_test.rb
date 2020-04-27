@@ -12,6 +12,7 @@ class InventoryHostUpdatedJobTest < ActiveSupport::TestCase
         'display_name': 'updated_display_name'
       }
     }
+    InventoryHostUpdatedJob.clear
   end
 
   test 'updates a hostname if the passed ID is found' do

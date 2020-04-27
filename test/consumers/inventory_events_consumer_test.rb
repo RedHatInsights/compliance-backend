@@ -8,6 +8,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     @message = stub(:message)
     @consumer = InventoryEventsConsumer.new
     DeleteHost.clear
+    InventoryHostUpdatedJob.clear
   end
 
   test 'if message is delete, host is enqueued for deletion' do

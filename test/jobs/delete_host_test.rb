@@ -9,6 +9,7 @@ class DeleteHostTest < ActiveSupport::TestCase
       'id': hosts(:one).id,
       'type': 'delete'
     }
+    DeleteHost.clear
   end
 
   test 'deletes a host if the passed ID is found' do
