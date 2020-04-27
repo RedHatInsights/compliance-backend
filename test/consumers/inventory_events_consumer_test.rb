@@ -20,7 +20,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     assert_equal 1, DeleteHost.jobs.size
   end
 
-  test 'if message is not delete, no job is enqueued' do
+  test 'if message is not known, no job is enqueued' do
     @message.expects(:value).returns(
       '{"type": "somethingelse", '\
       '"id": "fe314be5-4091-412d-85f6-00cc68fc001b", '\
@@ -28,5 +28,17 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     ).at_least_once
     @consumer.process(@message)
     assert_equal 0, DeleteHost.jobs.size
+    assert_equal 0, InventoryHostUpdatedJob.jobs.size
+  end
+
+  test 'if message is update, job is enqueued to update hosts' do
+    @message.expects(:value).returns(
+      '{"type": "updated", '\
+      '"host": { "id": "fe314be5-4091-412d-85f6-00cc68fc001b", '\
+      '          "display_name": "foo"}}'
+    ).at_least_once
+    @consumer.process(@message)
+    assert_equal 0, DeleteHost.jobs.size
+    assert_equal 1, InventoryHostUpdatedJob.jobs.size
   end
 end
