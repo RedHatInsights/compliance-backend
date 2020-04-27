@@ -206,7 +206,7 @@ def x_rh_identity
     },
     'entitlements':
       {
-        'smart_management': {
+        'insights': {
           'is_entitled': true
         }
       }

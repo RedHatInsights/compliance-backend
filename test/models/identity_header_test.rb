@@ -6,7 +6,7 @@ class IdentityHeaderTest < ActiveSupport::TestCase
   setup do
     @b64_identity = {
       'entitlements': {
-        'smart_management': {
+        'insights': {
           'is_entitled': true
         }
       },
@@ -16,14 +16,14 @@ class IdentityHeaderTest < ActiveSupport::TestCase
     }
   end
 
-  test 'is valid if smart_management entitlement provided' do
+  test 'is valid if insights entitlement provided' do
     assert IdentityHeader.new(
       Base64.strict_encode64(@b64_identity.to_json)
     ).valid?
   end
 
-  test 'is not valid if smart_management entitlement not provided' do
-    @b64_identity[:entitlements][:smart_management][:is_entitled] = false
+  test 'is not valid if insights entitlement not provided' do
+    @b64_identity[:entitlements][:insights][:is_entitled] = false
     assert_not IdentityHeader.new(
       Base64.strict_encode64(@b64_identity.to_json)
     ).valid?
