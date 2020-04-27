@@ -27,6 +27,6 @@ class IdentityHeader
   end
 
   def entitled?
-    entitlements&.dig('smart_management', 'is_entitled')
+    entitlements&.dig('insights', 'is_entitled')
   end
 end

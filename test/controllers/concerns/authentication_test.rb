@@ -36,7 +36,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       assert_not User.current
     end
 
-    should 'missing smart_management entitlement' do
+    should 'missing insights entitlement' do
       encoded_header = Base64.encode64(
         {
           'identity':
@@ -45,7 +45,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           },
           'entitlements':
           {
-            'smart_management': {
+            'insights': {
               'is_entitled': false
             }
           }
@@ -65,7 +65,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           },
           'entitlements':
           {
-            'smart_management': {
+            'insights': {
               'is_entitled': true
             }
           }
@@ -90,7 +90,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           },
           'entitlements':
           {
-            'smart_management': {
+            'insights': {
               'is_entitled': true
             }
           }
@@ -115,7 +115,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           },
           'entitlements':
           {
-            'smart_management': {
+            'insights': {
               'is_entitled': true
             }
           }
@@ -135,7 +135,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           },
           'entitlements':
           {
-            'smart_management': {
+            'insights': {
               'is_entitled': true
             }
           }
@@ -155,7 +155,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           },
           'entitlements':
           {
-            'smart_management': {
+            'insights': {
               'is_entitled': true
             }
           }
@@ -177,7 +177,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
             },
             'entitlements':
             {
-              'smart_management': {
+              'insights': {
                 'is_entitled': true
               }
             }
