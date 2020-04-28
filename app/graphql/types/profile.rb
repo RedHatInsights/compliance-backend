@@ -98,8 +98,7 @@ module Types
         ::TestResult,
         column: :profile_id,
         where: { host_id: system_id(args) },
-        order: 'created_at DESC',
-        includes: [:rule_results]
+        order: 'created_at DESC'
       ).load(object.id)
     end
   end
