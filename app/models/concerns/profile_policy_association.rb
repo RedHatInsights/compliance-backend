@@ -16,6 +16,8 @@ module ProfilePolicyAssociation
     end
 
     def policy_profiles
+      return Profile.none if account_id.nil?
+
       Profile.includes(:benchmark)
              .where(account: account_id, ref_id: ref_id,
                     benchmarks: { ref_id: benchmark.ref_id })
