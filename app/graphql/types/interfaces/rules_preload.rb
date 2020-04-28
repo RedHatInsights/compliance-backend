@@ -41,9 +41,9 @@ module RulesPreload
     rules.each do |rule|
       context[:parent_profile_id][rule.id] = object.id
     end
-    #if args[:lookahead].selects?(:references)
-      #initialize_rule_references_context(rule_results)
-    #end
+    if args[:lookahead].selects?(:references)
+      initialize_rule_references_context(rule_results)
+    end
     return unless args[:lookahead].selects?(:compliant)
 
     context[:rule_results] ||= {}
@@ -52,24 +52,13 @@ module RulesPreload
 
   def initialize_rule_references_context(rule_results)
     rule_ids = rule_results.pluck(:rule_id)
-    ::RecordLoader.for(
-      ::RuleReferencesRule,
-      column: :rule_id,
-      distinct: true,
-      collection: true
-    ).load_many(rule_ids).then do |rule_references_rules|
-      rule_references_rules.group_by(&:rule_id).each do |rule_id, references|
-        context[:"rule_references_#{rule_id}"] =
-          references.pluck(:rule_reference_id)
-      end
+    grouped_rules_references = ::RuleReferencesRule.distinct.where(
+      rule_id: rule_ids
+    ).group_by(&:rule_id)
+    grouped_rules_references.each do |rule_id, references|
+      context[:"rule_references_#{rule_id}"] =
+        references.pluck(:rule_reference_id)
     end
-#    grouped_rules_references = ::RuleReferencesRule.distinct.where(
-#      rule_id: rule_ids
-#    ).group_by(&:rule_id)
-#    grouped_rules_references.each do |rule_id, references|
-#      context[:"rule_references_#{rule_id}"] =
-#        references.pluck(:rule_reference_id)
-#    end
   end
 
   def initialize_rule_results_context(rule_results)
