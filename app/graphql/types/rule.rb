@@ -32,21 +32,21 @@ module Types
     end
 
     def references
-      if context[:"rule_references_#{object.id}"].nil?
-        ::CollectionLoader.for(::Rule, :rule_references)
-                          .load(object).then do |references|
-          generate_references_json(references)
+      #::CollectionLoader.for(
+      #  ::Rule, :rule_references_rules
+      #).load(object).then do |rule_references_rules|
+      ::RecordLoader.for(
+        ::RuleReferencesRule, column: :rule_id, distinct: true, collection: true
+      ).load(object.id).then do |rule_references_rules|
+        if rule_references_rules.blank?
+          [].to_json
+        else
+          ::RecordLoader.for(
+            ::RuleReference, distinct: true
+          ).load_many(rule_references_rules).then do |references|
+            generate_references_json(references)
+          end
         end
-      else
-        references_from_context
-      end
-    end
-
-    def references_from_context
-      ::RecordLoader.for(::RuleReference)
-                    .load_many(context[:"rule_references_#{object.id}"])
-                    .then do |references|
-        generate_references_json(references)
       end
     end
 
