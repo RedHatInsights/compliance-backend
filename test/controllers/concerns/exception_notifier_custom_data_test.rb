@@ -10,7 +10,11 @@ class MocksController < ActionController::API
   def index; end
 
   def current_user
-    :current_user
+    OpenStruct.new(:account => account)
+  end
+
+  def account
+    OpenStruct.new(:account_number => '12312931')
   end
 end
 
@@ -27,7 +31,7 @@ class ExceptionNotifierCustomDataTest < ActionDispatch::IntegrationTest
     get mocks_path
     assert_response :success
     assert_equal(
-      :current_user,
+      '12312931',
       response.request.env.dig(
         'exception_notifier.exception_data', :current_user
       )
