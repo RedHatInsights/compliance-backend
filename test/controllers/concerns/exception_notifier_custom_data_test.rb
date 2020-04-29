@@ -10,11 +10,11 @@ class MocksController < ActionController::API
   def index; end
 
   def current_user
-    OpenStruct.new(:account => account)
+    OpenStruct.new(account: account)
   end
 
   def account
-    OpenStruct.new(:account_number => '12312931')
+    OpenStruct.new(account_number: '12312931')
   end
 end
 
