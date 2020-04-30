@@ -57,7 +57,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
     end
 
     should 'missing RBAC access for compliance' do
-      RbacApi.any_instance.expects(:check_user).returns(false)
+      RbacApi.any_instance.expects(:check_user)
       encoded_header = Base64.encode64(
         {
           'identity': {
@@ -72,7 +72,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         }.to_json
       )
       get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
-      assert_response :unauthorized
+      assert_response :forbidden
       assert_not User.current
     end
   end

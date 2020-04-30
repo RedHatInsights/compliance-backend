@@ -11,20 +11,29 @@ module Authentication
   end
 
   def authenticate_user
-    return unauthenticated unless identity_header.valid? && rbac_allowed?
+    return unauthenticated unless identity_header.valid?
+    return unauthorized unless rbac_allowed?
 
     return if performed?
 
     User.current = user
   rescue JSON::ParserError, NoMethodError
-    unauthenticated 'Error parsing the X-RH-IDENTITY header'
+    unauthenticated error: 'Error parsing the X-RH-IDENTITY header'
   end
 
   def current_user
     User.current
   end
 
-  def unauthenticated(error = 'X-RH-IDENTITY header should be provided')
+  def unauthorized(error: 'User is not authorized to view this page')
+    render(
+      json: { error: "Authorization error: #{error}" },
+      status: :forbidden
+    )
+    false
+  end
+
+  def unauthenticated(error: 'X-RH-IDENTITY header should be provided')
     render(
       json: { error: "Authentication error: #{error}" },
       status: :unauthorized
