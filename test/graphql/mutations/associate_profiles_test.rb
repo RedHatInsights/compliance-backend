@@ -72,4 +72,42 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     assert_not_nil(new_host = Host.find_by(id: NEW_ID))
     assert_equal new_host.profiles, [profiles(:one), profiles(:two)]
   end
+
+  test 'external profiles are kept after associating internal profiles' do
+    query = <<-GRAPHQL
+       mutation associateProfiles($input: associateProfilesInput!) {
+          associateProfiles(input: $input) {
+             system {
+                 id
+                 name
+             }
+          }
+       }
+    GRAPHQL
+    users(:test).update account: accounts(:test)
+    profiles(:one).update account: accounts(:test)
+    profiles(:two).update account: accounts(:test)
+    hosts(:one).update account: accounts(:test)
+
+    external_profile = Profile.create(
+      name: 'external',
+      ref_id: 'external',
+      benchmark: benchmarks(:one),
+      account: accounts(:test),
+      hosts: [hosts(:one)],
+      external: true
+    )
+
+    Schema.execute(
+      query,
+      variables: { input: {
+        id: hosts(:one).id,
+        profileIds: [profiles(:one).id, profiles(:two).id]
+      } },
+      context: { current_user: users(:test) }
+    )['data']['associateProfiles']['system']
+
+    expected_profiles = [external_profile, profiles(:one), profiles(:two)]
+    assert_equal expected_profiles, hosts(:one).reload.profiles
+  end
 end
