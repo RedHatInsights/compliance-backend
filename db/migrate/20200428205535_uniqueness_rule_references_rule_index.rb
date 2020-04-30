@@ -1,7 +1,7 @@
 class UniquenessRuleReferencesRuleIndex < ActiveRecord::Migration[5.2]
   class NewRuleReferencesRule < ApplicationRecord; end
 
-  def change
+  def up
     ids_to_keep = RuleReferencesRule.group(
       'rule_id, rule_reference_id'
     ).having('count(id) > 1').select(Arel.sql('MIN(id)'))
