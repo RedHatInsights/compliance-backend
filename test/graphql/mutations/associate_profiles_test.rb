@@ -108,6 +108,6 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     )['data']['associateProfiles']['system']
 
     expected_profiles = [external_profile, profiles(:one), profiles(:two)]
-    assert_equal expected_profiles, hosts(:one).reload.profiles
+    assert_equal expected_profiles.sort, hosts(:one).reload.profiles.to_a.sort
   end
 end
