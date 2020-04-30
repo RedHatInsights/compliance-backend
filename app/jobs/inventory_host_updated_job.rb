@@ -11,7 +11,7 @@ class InventoryHostUpdatedJob
     rescue_not_found do
       Host.find_by!(
         id: message['host']['id']
-      ).update(name: message['host']['display_name'])
+      ).update!(name: message['host']['display_name'])
     end
   end
 

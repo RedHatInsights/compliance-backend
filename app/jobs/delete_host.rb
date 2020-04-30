@@ -9,7 +9,7 @@ class DeleteHost
     Host.transaction do
       RuleResult.where(host_id: message['id']).delete_all
       rescue_not_found do
-        Host.find_by!(id: message['id'])&.destroy
+        Host.find_by!(id: message['id']).destroy
       end
     end
   end
