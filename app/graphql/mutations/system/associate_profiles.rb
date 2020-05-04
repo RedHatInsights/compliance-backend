@@ -12,8 +12,9 @@ module Mutations
 
       def resolve(args = {})
         host = find_hosts([args[:id]]).first
-        profiles = find_profiles(args[:profile_ids])
-        host.update(profiles: profiles)
+        external_profiles = host.profiles.where(external: true)
+        internal_profiles = find_profiles(args[:profile_ids])
+        host.update(profiles: internal_profiles + external_profiles)
         { system: host }
       end
 
