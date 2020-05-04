@@ -197,7 +197,7 @@ GEM
       equatable (~> 0.6)
       tty-color (~> 0.5)
     pg (1.2.1)
-    prometheus_exporter (0.4.16)
+    prometheus_exporter (0.5.1)
     promise.rb (0.7.4)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -378,7 +378,7 @@ DEPENDENCIES
   oj
   openscap_parser (~> 1.0.0)
   pg
-  prometheus_exporter
+  prometheus_exporter (>= 0.5)
   pry-byebug
   pry-rails
   pry-remote
