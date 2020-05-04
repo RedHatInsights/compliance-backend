@@ -21,13 +21,13 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       'Client accounts with 1 or more hosts (excludes Red Hat)'
     )
     @total_policies = PrometheusExporter::Metric::Gauge.new(
-      'total_policies', 'Policies'
+      'total_policies', 'Policies (non-canonical)'
     )
     @external_policies = PrometheusExporter::Metric::Gauge.new(
-      'external_policies', 'External policies'
+      'external_policies', 'External policies (non-canonical)'
     )
     @internal_policies = PrometheusExporter::Metric::Gauge.new(
-      'internal_policies', 'Internal policies'
+      'internal_policies', 'Internal policies (non-canonical)'
     )
     @client_policies = PrometheusExporter::Metric::Gauge.new(
       'client_policies', 'Policies from clients (excludes Red Hat)'
@@ -52,16 +52,16 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_accounts.observe client_accounts.count
     @client_accounts_with_hosts.observe(
       Host.where(
-        account_id: client_accounts.pluck(:id)
+        account_id: client_accounts.select(:id)
       ).select(:account_id).distinct.count
     )
-    @total_policies.observe Profile.count
+    @total_policies.observe Profile.where.not(parent_profile_id: nil).count
     @client_policies.observe(
-      Profile.where(account_id: client_accounts.pluck(:id)).count
+      Profile.where(account_id: client_accounts.select(:id)).count
     )
     @total_systems.observe Host.count
     @client_systems.observe(
-      Host.where(account_id: client_accounts.pluck(:id)).count
+      Host.where(account_id: client_accounts.select(:id)).count
     )
   end
 
