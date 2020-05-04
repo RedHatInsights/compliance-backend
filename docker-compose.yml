@@ -54,12 +54,24 @@ services:
   #     - prometheus
   prometheus:
     image: compliance-backend-rails
+    tty: true
+    stdin_open: true
+    environment:
+      - DATABASE_SERVICE_NAME=postgres
+      - POSTGRES_SERVICE_HOST=db
+      - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_USER=postgres
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+      - RAILS_ENV=development
+      - APP_NAME=compliance
+      - PATH_PREFIX=/api
+      - RAILS_LOG_TO_STDOUT=true
     restart: on-failure
     volumes:
       - .:/app:z
     ports:
       - '9394:9394'
-    command: bundle exec prometheus_exporter -a lib/graphql_collector.rb
+    command: bundle exec prometheus_exporter -b 0.0.0.0 -t 50 --verbose -a lib/prometheus/graphql_collector.rb -a lib/prometheus/business_collector.rb
   sidekiq:
     image: compliance-backend-rails
     restart: on-failure
