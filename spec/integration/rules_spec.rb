@@ -98,8 +98,9 @@ describe 'Rules API' do
           )
           user = User.from_x_rh_identity(x_rh_identity[:identity])
           user.save
-          profiles(:one).update(account: user.account, hosts: [hosts(:one)])
-          rules(:one).update(profiles: [profiles(:one)])
+          profiles(:one).update!(account: user.account, hosts: [hosts(:one)])
+          rules(:one).rule_results.destroy_all
+          rules(:one).update!(profiles: [profiles(:one)])
           rules(:one).id
         end
         schema type: :object,

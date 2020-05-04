@@ -9,8 +9,12 @@ class TestResult < ApplicationRecord
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results
 
-  validates :host_id, presence: true
-  validates :profile_id, presence: true
+  validates :host, presence: true,
+                   uniqueness: { scope: %i[profile_id end_time] }
+  validates :profile, presence: true,
+                      uniqueness: { scope: %i[host_id end_time] }
+  validates :end_time, presence: true,
+                       uniqueness: { scope: %i[host_id profile_id] }
 
   scope :latest, lambda {
     joins("JOIN (#{latest_without_ids.to_sql}) as tr on "\
