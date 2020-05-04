@@ -9,9 +9,12 @@ class RuleResult < ApplicationRecord
   belongs_to :rule
   belongs_to :test_result
 
-  validates :test_result, presence: true
-  validates :host, presence: true
-  validates :rule, presence: true
+  validates :test_result, presence: true,
+                          uniqueness: { scope: %i[host_id rule_id] }
+  validates :host, presence: true,
+                   uniqueness: { scope: %i[test_result_id rule_id] }
+  validates :rule, presence: true,
+                   uniqueness: { scope: %i[test_result_id host_id] }
 
   SELECTED = %w[pass fail notapplicable error unknown].freeze
   FAIL = %w[fail error unknown notchecked].freeze

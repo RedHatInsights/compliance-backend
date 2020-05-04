@@ -6,6 +6,9 @@ require 'test_helper'
 class RuleIdentifierTest < ActiveSupport::TestCase
   should validate_presence_of(:label)
   should validate_presence_of(:system)
+  should validate_presence_of(:rule)
+  should validate_uniqueness_of(:label).scoped_to(%i[system rule_id])
+  should validate_uniqueness_of(:system).scoped_to(%i[label rule_id])
   should belong_to(:rule)
 
   OP_RULE_IDENTIFIER = OpenStruct.new(system: 'http://redhat.com',

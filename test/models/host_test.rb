@@ -4,6 +4,7 @@ require 'test_helper'
 
 class HostTest < ActiveSupport::TestCase
   should validate_presence_of :name
+  should validate_presence_of :account
 
   test 'compliant returns a hash with all compliance statuses' do
     host = hosts(:one)
@@ -63,6 +64,7 @@ class HostTest < ActiveSupport::TestCase
     end
 
     should 'be able to filter by "has test results"' do
+      hosts(:two).test_results.destroy_all
       assert hosts(:one).test_results.present?
       assert hosts(:two).test_results.empty?
       assert_includes Host.search_for('has_test_results = true'), hosts(:one)
