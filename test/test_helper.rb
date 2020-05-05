@@ -11,7 +11,7 @@ unless Rails.env.production?
     # API responses, no code (https://github.com/Netflix/fast_jsonapi)
     add_filter 'app/serializers'
     # empty class that has to be there for prometheus integration
-    add_filter 'lib/graphql_collector.rb'
+    add_filter 'lib/'
   end
 
   if ENV['CODECOV_TOKEN']
