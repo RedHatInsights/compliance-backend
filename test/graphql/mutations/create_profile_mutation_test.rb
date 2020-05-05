@@ -60,7 +60,8 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
     cloned_profile = ::Profile.find(result['id'])
     assert cloned_profile.ref_id, 'xccdf-customized'
     assert_not_equal cloned_profile.rules, @original_profile.rules
-    assert_equal cloned_profile.rules, Rule.where(ref_id: tailored_rules)
+    assert_equal Set.new(cloned_profile.rules),
+                 Set.new(Rule.where(ref_id: tailored_rules))
     assert_equal cloned_profile.parent_profile, @original_profile
   end
 end
