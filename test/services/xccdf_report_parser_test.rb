@@ -151,12 +151,12 @@ class XccdfReportParserTest < ActiveSupport::TestCase
 
   context 'rule results' do
     should 'save them, associate them with a rule and a host' do
-      assert_difference('RuleResult.count', 74) do
+      assert_difference('RuleResult.count', 59) do
         @report_parser.save_all
         rule_results = @report_parser.rule_results
         op_rule_results = @report_parser.op_rule_results
         selected_op_rule_results = op_rule_results.reject do |rr|
-          rr.result == 'notselected'
+          RuleResult::NOT_SELECTED.include? rr.result
         end
 
         assert_equal @report_parser.test_result_file.test_result.host,

@@ -16,9 +16,12 @@ class RuleResult < ApplicationRecord
   validates :rule, presence: true,
                    uniqueness: { scope: %i[test_result_id host_id] }
 
-  SELECTED = %w[pass fail notapplicable error unknown].freeze
-  FAIL = %w[fail error unknown notchecked].freeze
+  POSSIBLE_RESULTS = %w[pass fail error unknown notapplicable notchecked
+                        notselected informational fixed].freeze
+  NOT_SELECTED = %w[notapplicable notchecked informational notselected].freeze
+  SELECTED = (POSSIBLE_RESULTS - NOT_SELECTED).freeze
   PASSED = %w[pass].freeze
+  FAIL = (SELECTED - PASSED).freeze
 
   scope :passed, -> { where(result: PASSED) }
   scope :selected, -> { where(result: SELECTED) }
