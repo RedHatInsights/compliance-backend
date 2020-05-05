@@ -24,7 +24,7 @@ class RuleReferencesRulesTest < ActiveSupport::TestCase
       OpenStruct.new(id: rules(:one).ref_id,
                      rule_references: [rule_references(:one)]),
       OpenStruct.new(id: rules(:two).ref_id,
-                     rule_references: [rule_references(:two)]),
+                     rule_references: [rule_references(:two)])
     ]
 
     assert_difference('RuleReferencesRule.count', 1) do

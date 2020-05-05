@@ -9,10 +9,9 @@ module Xccdf
       def save_rule_references_rules
         @rule_references_rules ||= @op_rules.flat_map do |op_rule|
           rule_references_for(op_rule: op_rule).map do |reference|
-            ::RuleReferencesRule.find_or_initialize_by(
-              rule_reference_id: reference.id,
-              rule_id: rule_for(ref_id: op_rule.id).id
-            )
+            ::RuleReferencesRule
+              .find_or_initialize_by(rule_reference_id: reference.id,
+                                     rule_id: rule_for(ref_id: op_rule.id).id)
           end
         end
 
