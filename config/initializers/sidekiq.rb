@@ -20,6 +20,8 @@ sidekiq_config = lambda do |config|
   end
 end
 
+return if $0.include?('prometheus_exporter')
+
 if $0.include?('sidekiq')
   Sidekiq.configure_server(&sidekiq_config)
 end
