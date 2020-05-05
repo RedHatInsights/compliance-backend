@@ -64,7 +64,7 @@ gem 'faraday'
 gem 'friendly_id', '~> 5.2.4'
 gem 'scoped_search'
 gem 'will_paginate'
-gem 'prometheus_exporter'
+gem 'prometheus_exporter', '>= 0.5'
 
 gem 'activerecord-import'
 gem 'oj'
