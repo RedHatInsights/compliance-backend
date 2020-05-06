@@ -5,26 +5,6 @@ type Benchmark implements Node {
   description: String
   globalId: ID!
   id: ID!
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
   profiles: [Profile!]
   refId: String!
   rules: [Rule!]
@@ -38,26 +18,6 @@ A Business Objective registered in Insights Compliance
 type BusinessObjective implements Node {
   globalId: ID!
   id: ID!
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
   title: String!
 }
 
@@ -72,31 +32,7 @@ type Mutation implements Node {
   deleteProfile(input: deleteProfileInput!): deleteProfilePayload
   deleteTestResults(input: deleteTestResultsInput!): deleteTestResultsPayload
   globalId: ID!
-
-  """
-  ID of the object.
-  """
-  id: ID!
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
+  id: ID!!
   updateProfile(input: UpdateProfileInput!): UpdateProfilePayload
 }
 
@@ -165,26 +101,6 @@ type Profile implements Node & RulesPreload {
   ): String!
   majorOsVersion: String!
   name: String!
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
   policy: Profile
   refId: String!
   rules(
@@ -275,36 +191,12 @@ type Query implements Node {
   """
   businessObjectives: [BusinessObjective!]
   globalId: ID!
-
-  """
-  ID of the object.
-  """
-  id: ID!
+  id: ID!!
 
   """
   Latest benchmarks visible by the user
   """
   latestBenchmarks: [Benchmark!]
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
   profile(id: String!): Profile
   profiles(
     """
@@ -446,26 +338,6 @@ type Rule implements Node {
   globalId: ID!
   id: ID!
   identifier: String
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
   profiles: [Profile!]
   rationale: String
   refId: String!
@@ -491,26 +363,6 @@ type System implements Node {
     profileId: String
   ): String
   name: String!
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
   profiles: [Profile!]
   rulesFailed(
     """
@@ -570,26 +422,6 @@ type TestResult implements Node {
   globalId: ID!
   host: System!
   id: ID!
-
-  """
-  Fetches an object given its ID.
-  """
-  node(
-    """
-    ID of the object.
-    """
-    id: ID!
-  ): Node
-
-  """
-  Fetches a list of objects given a list of IDs.
-  """
-  nodes(
-    """
-    IDs of the objects.
-    """
-    ids: [ID!]!
-  ): [Node]!
   profile: Profile!
   score: Float!
   startTime: String
