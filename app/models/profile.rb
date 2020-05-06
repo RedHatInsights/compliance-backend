@@ -14,7 +14,7 @@ class Profile < ApplicationRecord
 
   has_many :profile_rules, dependent: :delete_all
   has_many :rules, through: :profile_rules, source: :rule
-  has_many :profile_hosts, dependent: :delete_all
+  has_many :profile_hosts, dependent: :destroy
   has_many :hosts, through: :profile_hosts, source: :host
   has_many :test_results, dependent: :destroy
   belongs_to :account, optional: true
