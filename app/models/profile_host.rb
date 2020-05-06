@@ -8,4 +8,16 @@ class ProfileHost < ApplicationRecord
 
   validates :profile, presence: true
   validates :host, presence: true, uniqueness: { scope: :profile }
+
+  after_destroy :destroy_orphaned_host
+
+  def destroy_orphaned_host
+    return unless host.profiles.empty?
+
+    if Settings.async
+      DeleteHost.perform_async(id: host.id)
+    else
+      DeleteHost.new.perform(id: host.id)
+    end
+  end
 end
