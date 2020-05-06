@@ -26,6 +26,7 @@ services:
     depends_on:
       - db
       - prometheus
+      - redis
   reports-consumer:
     image: compliance-backend-rails
     restart: on-failure
