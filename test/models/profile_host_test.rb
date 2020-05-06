@@ -5,14 +5,12 @@ require 'sidekiq/testing'
 
 class ProfileHostTest < ActiveSupport::TestCase
   setup do
-    @profile = profiles(:one)
-    @host = hosts(:one)
-    @profile_host = ProfileHost.new(profile: @profile, host: @host)
+    DeleteHost.clear
   end
 
   test 'destroys associated hosts if host has no more policies assigned' do
     profile = Profile.create(name: 'foo', benchmark: benchmarks(:one),
-                          ref_id: 'foo')
+                             ref_id: 'foo')
     host = Host.create(profiles: [profile], name: 'bar',
                        account: accounts(:one))
     assert_equal 0, DeleteHost.jobs.size

@@ -12,6 +12,12 @@ class ProfileHost < ApplicationRecord
   after_destroy :destroy_orphaned_host
 
   def destroy_orphaned_host
-    DeleteHost.perform_async(id: host.id) if host.profiles.empty?
+    return unless host.profiles.empty?
+
+    if Settings.async
+      DeleteHost.perform_async(id: host.id)
+    else
+      DeleteHost.new.perform(id: host.id)
+    end
   end
 end
