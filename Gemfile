@@ -8,19 +8,8 @@ gem 'rails', '~> 5.2.1'
 gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.12'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder', '~> 2.5'
-# Use Redis adapter to run Action Cable in production
+# Use Redis adapter to connect to Sidekiq
 gem 'redis', '~> 4.0'
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
-# Use ActiveStorage variant
-# gem 'mini_magick', '~> 4.8'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
@@ -45,34 +34,32 @@ gem 'fast_jsonapi'
 gem 'graphql'
 gem 'graphql-batch'
 
-# Pundit
+# Pundit authorization system
 gem 'pundit'
 
+# Alarms and notifications
 gem 'exception_notification'
 gem 'slack-notifier'
 
-# Sidekiq
+# Sidekiq - use reliable-fetch by Gitlab
 gem 'sidekiq'
+gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
-gem 'tty-command'
-
-gem 'attr_encrypted'
-
-gem 'docker-api'
-
+# Faraday to make requests easier
 gem 'faraday'
+
+# Helpers for models, pagination, mass import
 gem 'friendly_id', '~> 5.2.4'
 gem 'scoped_search'
 gem 'will_paginate'
-gem 'prometheus_exporter', '>= 0.5'
-
-gem 'activerecord-import'
+gem 'activerecord-import' # Substitute on upgrade to Rails 6
 gem 'oj'
-gem 'newrelic_rpm'
-gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
-
 gem 'uuid'
 
+# Prometheus exporter
+gem 'prometheus_exporter', '>= 0.5'
+
+# Parsing OpenSCAP reports library
 gem 'openscap_parser', '~> 1.0.0'
 
 group :development, :test do
