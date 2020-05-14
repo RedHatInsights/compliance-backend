@@ -19,12 +19,17 @@ module OpenshiftEnvironment
       ENV['OPENSHIFT_BUILD_NAME']
     end
 
+    def namespace
+      ENV['NAMESPACE']
+    end
+
     def summary
       {
         environment: environment,
         application: application,
         pod: pod,
-        build: build
+        build: build,
+        namespace: namespace
       }
     end
   end

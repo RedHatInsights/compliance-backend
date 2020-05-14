@@ -9,9 +9,12 @@ class InventoryEventsConsumer < ApplicationConsumer
     msg_value = JSON.parse(message.value)
     logger.info "Received message, enqueueing: #{message.value}"
 
-    return unless msg_value['type'] == 'delete'
-
-    DeleteHost.perform_async(msg_value)
+    case msg_value['type']
+    when 'delete'
+      DeleteHost.perform_async(msg_value)
+    when 'updated'
+      InventoryHostUpdatedJob.perform_async(msg_value)
+    end
   end
 
   private
