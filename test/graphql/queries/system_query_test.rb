@@ -223,6 +223,53 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert graphql_host.profiles.pluck(:id).include?(profiles(:one).id)
   end
 
+  test 'query system rules when results contain wrong rule_ids' do
+    query = <<-GRAPHQL
+    query System($systemId: String!){
+        system(id: $systemId) {
+	    profiles {
+		id
+		name
+		totalHostCount
+		compliantHostCount
+		rules {
+		    title
+		    severity
+		    rationale
+		    refId
+		    description
+		    compliant
+		    remediationAvailable
+		    references
+		    identifier
+		}
+	    }
+	}
+    }
+    GRAPHQL
+    hosts(:one).profiles << profiles(:one)
+    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
+    rule_results(:one).update(
+      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    )
+    rule_results(:two).update(
+      host: hosts(:one), rule: rules(:two), test_result: test_results(:one)
+    )
+    rules(:one).delete
+
+    assert_nothing_raised do
+      result = Schema.execute(
+        query,
+        variables: { systemId: hosts(:one).id },
+        context: { current_user: users(:test) }
+      )
+      response_rules = result['data']['system']['profiles'][0]['rules']
+
+      assert_equal 1, response_rules.length
+      assert_equal rules(:two).ref_id, response_rules[0]['refId']
+    end
+  end
+
   private
 
   # rubocop:disable AbcSize
