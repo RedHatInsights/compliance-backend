@@ -27,7 +27,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity':
           {
-            'account_number': '1234'
+            'account_number': '1234',
+            'user': { 'username': 'username' }
           }
         }.to_json
       )
@@ -41,7 +42,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity':
           {
-            'account_number': '1234'
+            'account_number': '1234',
+            'user': { 'username': 'username' }
           },
           'entitlements':
           {
@@ -61,7 +63,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': '1234'
+            'account_number': '1234',
+            'user': { 'username': 'username' }
           },
           'entitlements':
           {
@@ -86,7 +89,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': '1234'
+            'account_number': '1234',
+            'user': { 'username': 'username' }
           },
           'entitlements':
           {
@@ -111,7 +115,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity':
           {
-            'account_number': '1234'
+            'account_number': '1234',
+            'user': { 'username': 'username' }
           },
           'entitlements':
           {
@@ -131,7 +136,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity':
           {
-            'account_number': '1234'
+            'account_number': '1234',
+            'user': { 'username': 'username' }
           },
           'entitlements':
           {
@@ -151,7 +157,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity':
           {
-            'account_number': '1234'
+            'account_number': '1234',
+            'user': { 'username': 'username' }
           },
           'entitlements':
           {
@@ -173,7 +180,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': '1234'
+              'account_number': '1234',
+              'user': { 'username': 'username' }
             },
             'entitlements':
             {
@@ -190,6 +198,69 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       ensure
         Settings.disable_rbac = 'false'
       end
+    end
+  end
+
+  context 'disabled rbac via cert based auth' do
+    should 'allow access to profiles#index' do
+      encoded_header = Base64.encode64(
+        {
+          'identity': {
+            'account_number': '1234'
+          },
+          'entitlements':
+          {
+            'insights': {
+              'is_entitled': true
+            }
+          }
+        }.to_json
+      )
+      RbacApi.expects(:new).never
+      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      assert_response :success
+    end
+
+    should 'allow access to profiles#tailoring_file' do
+      profiles(:one).update!(account: accounts(:one))
+      encoded_header = Base64.encode64(
+        {
+          'identity': {
+            'account_number': accounts(:one).account_number
+          },
+          'entitlements':
+          {
+            'insights': {
+              'is_entitled': true
+            }
+          }
+        }.to_json
+      )
+      RbacApi.expects(:new).never
+      get tailoring_file_profile_url(profiles(:one)),
+          headers: { 'X-RH-IDENTITY': encoded_header }
+      assert_response :success
+    end
+
+    should 'disallow access to profiles#show' do
+      RbacApi.any_instance.expects(:check_user)
+      profiles(:one).update!(account: accounts(:one))
+      encoded_header = Base64.encode64(
+        {
+          'identity': {
+            'account_number': accounts(:one).account_number
+          },
+          'entitlements':
+          {
+            'insights': {
+              'is_entitled': true
+            }
+          }
+        }.to_json
+      )
+      get profile_url(profiles(:one)),
+          headers: { 'X-RH-IDENTITY': encoded_header }
+      assert_response :forbidden
     end
   end
 end
