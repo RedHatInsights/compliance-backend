@@ -371,9 +371,9 @@ DEPENDENCIES
   rails (~> 5.2.1)
   redis (~> 4.0)
   rspec-rails
-  rswag-api
-  rswag-specs
-  rswag-ui
+  rswag-api (~> 2.3)
+  rswag-specs (~> 2.3)
+  rswag-ui (~> 2.3)
   rubocop
   rubocop-rails
   ruby-kafka

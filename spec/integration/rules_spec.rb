@@ -19,15 +19,15 @@ describe 'Rules API' do
         let(:'X-RH-IDENTITY') { encoded_header }
         schema type: :object,
                properties: {
-                 meta: { '$ref' => '#/definitions/metadata' },
-                 links: { '$ref' => '#/definitions/links' },
+                 meta: { '$ref' => '#/components/schemas/metadata' },
+                 links: { '$ref' => '#/components/schemas/links' },
                  data: {
                    type: :array,
                    items: {
                      properties: {
                        type: { type: :string },
                        id: { type: :string, format: :uuid },
-                       attributes: { '$ref' => '#/definitions/rule' }
+                       attributes: { '$ref' => '#/components/schemas/rule' }
                      }
                    }
                  }
@@ -105,14 +105,14 @@ describe 'Rules API' do
         end
         schema type: :object,
                properties: {
-                 meta: { '$ref' => '#/definitions/metadata' },
-                 links: { '$ref' => '#/definitions/links' },
+                 meta: { '$ref' => '#/components/schemas/metadata' },
+                 links: { '$ref' => '#/components/schemas/links' },
                  data: {
                    type: :object,
                    properties: {
                      type: { type: :string },
                      id: { type: :string, format: :uuid },
-                     attributes: { '$ref' => '#/definitions/rule' }
+                     attributes: { '$ref' => '#/components/schemas/rule' }
                    }
                  }
                }
