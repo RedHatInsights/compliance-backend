@@ -6,6 +6,11 @@ require 'rbac_api'
 module Authentication
   extend ActiveSupport::Concern
 
+  ALLOWED_CERT_BASED_RBAC_ACTIONS = [
+    { controller: 'profiles', action: 'index' },
+    { controller: 'profiles', action: 'tailoring_file' }
+  ].freeze
+
   included do
     before_action :authenticate_user
   end
@@ -47,12 +52,23 @@ module Authentication
 
   def rbac_allowed?
     return true if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
+    return true if skip_rbac_for_cert_based_auth?
 
     @rbac_api ||= ::RbacApi.new(request.headers['X-RH-IDENTITY'])
     @rbac_api.check_user
   end
 
   private
+
+  def skip_rbac_for_cert_based_auth?
+    cert_based_auth? &&
+      ALLOWED_CERT_BASED_RBAC_ACTIONS.include?(controller: controller_name,
+                                               action: action_name)
+  end
+
+  def cert_based_auth?
+    identity_header.identity.dig('user').nil?
+  end
 
   def identity_header
     @identity_header ||= IdentityHeader.new(request.headers['X-RH-IDENTITY'])
