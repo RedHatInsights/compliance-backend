@@ -19,7 +19,7 @@ module Xccdf
     LATEST_SUPPORTED_VERSIONS = {
       'xccdf_org.ssgproject.content_benchmark_RHEL-6': '0.1.28',
       'xccdf_org.ssgproject.content_benchmark_RHEL-7': '0.1.46',
-      'xccdf_org.ssgproject.content_benchmark_RHEL-8': '0.1.46'
+      'xccdf_org.ssgproject.content_benchmark_RHEL-8': '0.1.48'
     }.freeze
 
     class << self
