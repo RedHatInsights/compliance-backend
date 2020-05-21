@@ -9,10 +9,9 @@ class GraphqlControllerTest < ActionDispatch::IntegrationTest
     variables = ['samplevar']
     User.current = users(:test)
     Schema.expects(:execute).with(
-      query, { variables: variables, context: { current_user: users(:test) }}
+      query, variables: variables, context: { current_user: users(:test) }
     )
     post graphql_url, params: { variables: variables, query: query }
     assert_response :success
   end
 end
-
