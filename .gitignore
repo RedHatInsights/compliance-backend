@@ -4,7 +4,6 @@ capybara-*.html
 /log
 /tmp
 /db/*.sqlite3
-/db/schema.rb
 /db/*.sqlite3-journal
 /public/system
 /coverage/
