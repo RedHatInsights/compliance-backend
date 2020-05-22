@@ -12,7 +12,10 @@ unless Rails.env.production?
     add_filter 'app/serializers'
     # empty class that has to be there for prometheus integration
     add_filter 'lib/'
-    track_files 'app/**/*.rb'
+    add_group 'Consumers', 'app/consumers'
+    add_group 'GraphQL', 'app/graphql'
+    add_group 'Policies', 'app/policies'
+    add_group 'Services', 'app/services'
   end
 
   if ENV['CODECOV_TOKEN']
