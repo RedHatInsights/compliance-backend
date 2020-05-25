@@ -2,9 +2,10 @@
 
 require 'test_helper'
 require 'xccdf/util'
+require 'xccdf/hosts'
 
 module Xccdf
-  # A class to test Xccdf::Profiles
+  # A class to test Xccdf::Hosts
   class HostsTest < ActiveSupport::TestCase
     class MockParser
       include Xccdf::Util
