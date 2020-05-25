@@ -10,6 +10,9 @@ unless Rails.env.production?
     # these just contain the description of the attributes of the
     # API responses, no code (https://github.com/Netflix/fast_jsonapi)
     add_filter 'app/serializers'
+    # Skip testing empty module definition
+    add_filter 'app/models/xccdf.rb'
+    add_filter 'app/services/xccdf_report.rb'
     # empty class that has to be there for prometheus integration
     add_filter 'lib/'
     add_group 'Consumers', 'app/consumers'
