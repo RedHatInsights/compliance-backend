@@ -13,33 +13,37 @@ class ParseReportJobTest < ActiveSupport::TestCase
   test 'payload tracker is notified about successful processing' do
     XccdfReportParser.stubs(:new).returns(@parser)
     @parser.stubs(:save_all)
-    @parse_report_job.stubs(:cancelled?)
+    Sidekiq.stubs(:redis).returns(false)
     @parse_report_job.stubs(:jid).returns('1')
-    @parse_report_job.expects(:notify_payload_tracker).with(
-      :processing,
-      'Job 1 is now processing'
+    PayloadTracker.expects(:deliver).with(
+      account: @msg_value['account'], system_id: @msg_value['id'],
+      request_id: @msg_value['request_id'], status: :processing,
+      status_msg: 'Job 1 is now processing'
     )
-    @parse_report_job.expects(:notify_payload_tracker).with(
-      :success,
-      'Job 1 has completed successfully'
+    PayloadTracker.expects(:deliver).with(
+      account: @msg_value['account'], system_id: @msg_value['id'],
+      request_id: @msg_value['request_id'], status: :success,
+      status_msg: 'Job 1 has completed successfully'
     )
-
     @parse_report_job.perform(@file, @msg_value)
   end
 
   test 'payload tracker is notified about errored processing' do
     XccdfReportParser.stubs(:new).returns(@parser)
     @parser.stubs(:save_all).raises(WrongFormatError)
-    @parse_report_job.stubs(:cancelled?)
+    Sidekiq.stubs(:redis).returns(false)
     @parse_report_job.stubs(:jid).returns('1')
-    @parse_report_job.expects(:notify_payload_tracker).with(
-      :processing,
-      'Job 1 is now processing'
+    PayloadTracker.expects(:deliver).with(
+      account: @msg_value['account'], system_id: @msg_value['id'],
+      request_id: @msg_value['request_id'], status: :processing,
+      status_msg: 'Job 1 is now processing'
     )
-    @parse_report_job.expects(:notify_payload_tracker).with(
-      :error, "Cannot parse report: WrongFormatError - #{@msg_value.to_json}"
+    error_msg = @msg_value.to_json
+    PayloadTracker.expects(:deliver).with(
+      account: @msg_value['account'], system_id: @msg_value['id'],
+      request_id: @msg_value['request_id'], status: :error,
+      status_msg: "Cannot parse report: WrongFormatError - #{error_msg}"
     )
-
     @parse_report_job.perform(@file, @msg_value)
   end
 end
