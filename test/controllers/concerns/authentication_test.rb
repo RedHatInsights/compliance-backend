@@ -59,7 +59,6 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
     end
 
     should 'missing RBAC access for compliance' do
-      RbacApi.any_instance.expects(:check_user)
       encoded_header = Base64.encode64(
         {
           'identity': {
@@ -74,6 +73,10 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
+      rbac_request = OpenStruct.new(body: {
+         'data': [{ 'permission': 'advisor:*:*' }]
+      }.to_json)
+      ::Faraday::Connection.any_instance.expects(:get).returns(rbac_request)
       get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :forbidden
       assert_not User.current
@@ -82,7 +85,10 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
 
   context 'successful login' do
     setup do
-      RbacApi.any_instance.expects(:check_user).returns(true)
+      rbac_request = OpenStruct.new(body: {
+         'data': [{ 'permission': 'compliance:*:*' }]
+      }.to_json)
+      ::Faraday::Connection.any_instance.expects(:get).returns(rbac_request)
     end
 
     should 'account number not found, creates a new account' do
