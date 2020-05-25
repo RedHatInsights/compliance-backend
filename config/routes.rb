@@ -3,6 +3,22 @@
 Rails.application.routes.draw do
   def draw_routes(prefix)
     scope "#{prefix}/#{ENV['APP_NAME']}" do
+      namespace :v1 do
+        resources :benchmarks, only: [:index, :show]
+        resources :profiles, only: [:index, :show] do
+          member do
+            get 'tailoring_file'
+          end
+        end
+        resources :rule_results, only: [:index]
+        resources :systems, only: [:index, :destroy]
+        resources :rules, only: [:index, :show]
+        mount Rswag::Api::Engine => '/',
+          as: "#{prefix}/#{ENV['APP_NAME']}/rswag_api"
+        mount Rswag::Ui::Engine => '/',
+          as: "#{prefix}/#{ENV['APP_NAME']}/rswag_ui"
+        get 'openapi' => 'application#openapi'
+      end
       resources :benchmarks, only: [:index, :show]
       resources :profiles, only: [:index, :show] do
         member do
