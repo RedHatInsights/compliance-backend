@@ -118,6 +118,10 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal 1, DestroyProfilesJob.jobs.size
     assert_equal [external_profile.id],
                  DestroyProfilesJob.jobs.dig(0, 'args', 0)
+
+    assert_difference('Profile.count' => -1) do
+      DestroyProfilesJob.drain
+    end
   end
 
   test 'canonical profiles have no parent_profile_id' do

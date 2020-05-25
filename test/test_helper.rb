@@ -6,12 +6,19 @@ unless Rails.env.production?
     # don't test the schema!
     # https://github.com/rmosolgo/graphql-ruby/blob/master/guides/schema/
     # testing.md#dont-test-the-schema
-    add_filter 'app/models/schema.rb'
+    add_filter 'db/schema.rb'
     # these just contain the description of the attributes of the
     # API responses, no code (https://github.com/Netflix/fast_jsonapi)
     add_filter 'app/serializers'
+    # Skip testing empty module definition
+    add_filter 'app/models/xccdf.rb'
+    add_filter 'app/services/xccdf_report.rb'
     # empty class that has to be there for prometheus integration
     add_filter 'lib/'
+    add_group 'Consumers', 'app/consumers'
+    add_group 'GraphQL', 'app/graphql'
+    add_group 'Policies', 'app/policies'
+    add_group 'Services', 'app/services'
   end
 
   if ENV['CODECOV_TOKEN']
