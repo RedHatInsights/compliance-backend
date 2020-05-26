@@ -1,16 +1,17 @@
-FROM ruby:2.6
+FROM registry.access.redhat.com/ubi8/ruby-26
 
-WORKDIR /app
+USER root
 
-RUN apt-get update && apt-get install -y qt5-default libqt5webkit5-dev \
-      gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x libopenscap-dev \
-      postgresql-client
+COPY . /tmp/src
 
-COPY vendor/ ./vendor
-COPY Gemfile* ./
-COPY entrypoint.sh ./
+RUN rm -rf /tmp/src/.git* && \
+    chown -R 1001 /tmp/src && \
+    chgrp -R 0 /tmp/src && \
+    chmod -R g+w /tmp/src
 
-RUN bundle -j4
+USER 1001
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENV RAILS_ENV development
+ENV DISABLE_ASSET_COMPILATION true
+RUN /usr/libexec/s2i/assemble
 CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]
