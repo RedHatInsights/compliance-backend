@@ -7,6 +7,7 @@ module Rendering
   included do
     def render_json(model, **args)
       opts = ['index'].include?(action_name) ? metadata : {}
+      opts.merge!(include: params[:include].split(',')) if params[:include]
       render({ json: serializer.new(model, opts) }.merge(args))
     end
 

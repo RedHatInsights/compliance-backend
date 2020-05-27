@@ -49,7 +49,7 @@ describe 'Profiles API' do
       end
     end
 
-    post 'Create a profiles' do
+    post 'Create a profile' do
       tags 'profile'
       description 'Creates a profile with the requested attributes'
       operationId 'CreateProfile'
@@ -57,8 +57,17 @@ describe 'Profiles API' do
       content_types
       auth_header
 
+      parameter name: :data, in: :body, schema: {
+        type: :object,
+        properties: {
+          attributes: { '$ref' => '#/definitions/profile' }
+        },
+        required: [ 'attributes' ]
+      }
+
       response '200', 'Creates the profile with the requested attributes' do
         let(:'X-RH-IDENTITY') { encoded_header }
+        let(:data) { { properties: { attributes: {} } } }
 
         schema type: :object,
                properties: {
@@ -71,6 +80,7 @@ describe 'Profiles API' do
                    }
                  }
                }
+        run_test!
       end
     end
   end
@@ -136,6 +146,51 @@ describe 'Profiles API' do
             }
           }
         }
+
+        run_test!
+      end
+    end
+
+    post 'Update a profile' do
+      tags 'profile'
+      description 'Updates a profile with the requested attributes'
+      operationId 'UpdateProfile'
+
+      content_types
+      auth_header
+
+      parameter name: :data, in: :body, schema: {
+        type: :object,
+        properties: {
+          attributes: { '$ref' => '#/definitions/profile' }
+        },
+        required: [ 'attributes' ]
+      }
+
+      response '200', 'Updates the profile with the requested attributes' do
+        let(:'X-RH-IDENTITY') { encoded_header }
+        let(:id) do
+          Account.create(
+            account_number: x_rh_identity[:identity][:account_number]
+          )
+          user = User.from_x_rh_identity(x_rh_identity[:identity])
+          user.save
+          profiles(:one).update(account: user.account, hosts: [hosts(:one)])
+          profiles(:one).id
+        end
+        let(:data) { { properties: { attributes: {} } } }
+
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: { type: :string, format: :uuid },
+                     attributes: { '$ref' => '#/definitions/profile' }
+                   }
+                 }
+               }
 
         run_test!
       end

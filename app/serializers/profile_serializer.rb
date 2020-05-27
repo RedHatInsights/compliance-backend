@@ -4,7 +4,10 @@
 class ProfileSerializer
   include FastJsonapi::ObjectSerializer
   set_type :profile
+  belongs_to :account
+  belongs_to :benchmark
   belongs_to :business_objective
+  belongs_to :parent_profile, record_type: :profile
   attributes :name, :ref_id, :description, :score, :parent_profile_id,
              :external, :compliance_threshold
   attribute :parent_profile_ref_id do |profile|
