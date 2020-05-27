@@ -70,7 +70,8 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     )['data']['associateProfiles']['system']
 
     assert_not_nil(new_host = Host.find_by(id: NEW_ID))
-    assert_equal new_host.profiles, [profiles(:one), profiles(:two)]
+    assert_equal Set.new(new_host.profiles),
+                 Set.new([profiles(:one), profiles(:two)])
   end
 
   test 'external profiles are kept after associating internal profiles' do
