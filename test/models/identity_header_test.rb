@@ -11,7 +11,9 @@ class IdentityHeaderTest < ActiveSupport::TestCase
         }
       },
       'identity': {
-        'account_number': '293912'
+        'user': {},
+        'account_number': '293912',
+        'auth_type': 'basic-auth'
       }
     }
   end
@@ -27,5 +29,16 @@ class IdentityHeaderTest < ActiveSupport::TestCase
     assert_not IdentityHeader.new(
       Base64.strict_encode64(@b64_identity.to_json)
     ).valid?
+  end
+
+  test 'properly detects cert-based auth from the auth_type' do
+    assert_not IdentityHeader.new(
+      Base64.strict_encode64(@b64_identity.to_json)
+    ).cert_based?
+
+    @b64_identity[:identity][:auth_type] = IdentityHeader::CERT_AUTH
+    assert IdentityHeader.new(
+      Base64.strict_encode64(@b64_identity.to_json)
+    ).cert_based?
   end
 end

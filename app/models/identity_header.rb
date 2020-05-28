@@ -4,6 +4,8 @@ require 'base64'
 
 # Helpers to handle the b64 identity header.
 class IdentityHeader
+  CERT_AUTH = 'cert-auth'
+
   def initialize(b64_identity)
     @b64_identity = b64_identity
   end
@@ -28,5 +30,13 @@ class IdentityHeader
 
   def entitled?
     entitlements&.dig('insights', 'is_entitled')
+  end
+
+  def auth_type
+    identity&.dig('auth_type')
+  end
+
+  def cert_based?
+    auth_type == CERT_AUTH
   end
 end
