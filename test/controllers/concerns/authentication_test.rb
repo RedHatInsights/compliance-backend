@@ -206,7 +206,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': '1234'
+            'account_number': '1234',
+            'auth_type': IdentityHeader::CERT_AUTH
           },
           'entitlements':
           {
@@ -226,7 +227,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': accounts(:one).account_number
+            'account_number': accounts(:one).account_number,
+            'auth_type': IdentityHeader::CERT_AUTH
           },
           'entitlements':
           {
@@ -248,7 +250,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': accounts(:one).account_number
+            'account_number': accounts(:one).account_number,
+            'auth_type': IdentityHeader::CERT_AUTH
           },
           'entitlements':
           {
