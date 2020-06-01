@@ -9,6 +9,7 @@ class ApplicationController < ActionController::API
   include Metadata
   include Pagination
   include Search
+  include Rendering
 
   def openapi
     send_file Rails.root.join('swagger/v1/openapi.v3.yaml')

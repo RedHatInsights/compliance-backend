@@ -3,7 +3,7 @@
 # API for Profiles
 class ProfilesController < ApplicationController
   def index
-    render json: ProfileSerializer.new(scope_search.sort_by(&:score), metadata)
+    render_json scope_search.sort_by(&:score)
   end
 
   def show
@@ -32,5 +32,9 @@ class ProfilesController < ApplicationController
 
   def resource
     Profile
+  end
+
+  def serializer
+    ProfileSerializer
   end
 end
