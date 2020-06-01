@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# API for Benchmarks
 module V1
+  # API for Benchmarks
   class BenchmarksController < ApplicationController
     def index
       render json: benchmarks

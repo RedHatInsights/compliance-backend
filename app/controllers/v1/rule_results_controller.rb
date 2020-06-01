@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# API for RuleResults
 module V1
+  # API for RuleResults
   class RuleResultsController < ApplicationController
     def index
       render json: RuleResultSerializer.new(scope_search, metadata)

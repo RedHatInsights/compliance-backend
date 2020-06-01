@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# API for Systems (only Hosts for the moment)
 module V1
+  # API for Systems (only Hosts for the moment)
   class SystemsController < ApplicationController
     def index
       render json: HostSerializer.new(scope_search, metadata)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# API for Profiles
 module V1
+  # API for Profiles
   class ProfilesController < ApplicationController
     def index
       render_json scope_search.sort_by(&:score)
