@@ -21,8 +21,8 @@ gem 'ruby-kafka'
 gem 'rack-cors'
 
 # Swagger
-gem 'rswag-api'
-gem 'rswag-ui'
+gem 'rswag-api', '~> 2.3'
+gem 'rswag-ui', '~> 2.3'
 
 # Config YAML files for all environments
 gem 'config'
@@ -71,7 +71,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'pry-remote'
   gem 'rspec-rails'
-  gem 'rswag-specs'
+  gem 'rswag-specs', '~> 2.3'
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
   gem 'shoulda-context'
