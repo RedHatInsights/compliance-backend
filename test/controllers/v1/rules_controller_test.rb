@@ -5,7 +5,7 @@ require 'test_helper'
 module V1
   class RulesControllerTest < ActionDispatch::IntegrationTest
     setup do
-      ::RulesController.any_instance.stubs(:authenticate_user)
+      RulesController.any_instance.stubs(:authenticate_user)
       User.current = users(:test)
       users(:test).update account: accounts(:test)
       profiles(:one).update(
@@ -15,8 +15,8 @@ module V1
     end
 
     test 'index lists all rules' do
-      ::RulesController.any_instance.expects(:policy_scope).with(Rule)
-                       .returns(Rule.all).at_least_once
+      RulesController.any_instance.expects(:policy_scope).with(Rule)
+                     .returns(Rule.all).at_least_once
       get v1_rules_url
 
       assert_response :success
