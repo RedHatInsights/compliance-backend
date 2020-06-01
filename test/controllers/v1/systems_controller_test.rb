@@ -10,7 +10,7 @@ module V1
 
     test 'index lists all systems' do
       SystemsController.any_instance.expects(:policy_scope).with(Host)
-                         .returns(Host.all).at_least_once
+                       .returns(Host.all).at_least_once
       get v1_systems_url
 
       assert_response :success
@@ -18,7 +18,7 @@ module V1
 
     test 'index accepts search' do
       SystemsController.any_instance.expects(:policy_scope).with(Host)
-                         .returns(Host.all).at_least_once
+                       .returns(Host.all).at_least_once
       get v1_systems_url, params: { search: 'name=bar' }
 
       assert_response :success
