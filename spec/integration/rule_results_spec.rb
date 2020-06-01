@@ -28,15 +28,17 @@ describe 'RuleResults API' do
         end
         schema type: :object,
                properties: {
-                 meta: { '$ref' => '#/definitions/metadata' },
-                 links: { '$ref' => '#/definitions/links' },
+                 meta: { '$ref' => '#/components/schemas/metadata' },
+                 links: { '$ref' => '#/components/schemas/links' },
                  data: {
                    type: :array,
                    items: {
                      properties: {
                        type: { type: :string },
                        id: { type: :string, format: :uuid },
-                       attributes: { '$ref' => '#/definitions/rule_result' }
+                       attributes: {
+                         '$ref' => '#/components/schemas/rule_result'
+                       }
                      }
                    }
                  }
