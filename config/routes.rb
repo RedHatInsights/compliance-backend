@@ -3,15 +3,31 @@
 Rails.application.routes.draw do
   def draw_routes(prefix)
     scope "#{prefix}/#{ENV['APP_NAME']}" do
-      resources :benchmarks, only: [:index, :show]
-      resources :profiles, only: [:index, :show] do
+      namespace :v1 do
+        resources :benchmarks, only: [:index, :show]
+        resources :profiles, only: [:index, :show] do
+          member do
+            get 'tailoring_file'
+          end
+        end
+        resources :rule_results, only: [:index]
+        resources :systems, only: [:index, :destroy]
+        resources :rules, only: [:index, :show]
+        mount Rswag::Api::Engine => '/',
+          as: "#{prefix}/#{ENV['APP_NAME']}/rswag_api"
+        mount Rswag::Ui::Engine => '/',
+          as: "#{prefix}/#{ENV['APP_NAME']}/rswag_ui"
+        get 'openapi' => 'application#openapi'
+      end
+      resources :benchmarks, controller: 'v1/benchmarks', only: [:index, :show]
+      resources :profiles, controller: 'v1/profiles', only: [:index, :show] do
         member do
           get 'tailoring_file'
         end
       end
-      resources :rule_results, only: [:index]
-      resources :systems, only: [:index, :destroy]
-      resources :rules, only: [:index, :show]
+      resources :rule_results, controller: 'v1/rule_results', only: [:index]
+      resources :systems, controller: 'v1/systems', only: [:index, :destroy]
+      resources :rules, controller: 'v1/rules', only: [:index, :show]
       mount Rswag::Api::Engine => '/',
         as: "#{prefix}/#{ENV['APP_NAME']}/rswag_api"
       mount Rswag::Ui::Engine => '/',
