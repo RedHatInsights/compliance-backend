@@ -161,6 +161,21 @@ class ProfileTest < ActiveSupport::TestCase
                         profiles(:one))
   end
 
+  test 'canonical is searchable' do
+    assert profiles(:one).canonical?
+    assert_includes Profile.search_for('canonical = true'), profiles(:one)
+    assert_not_includes Profile.search_for('canonical = false'), profiles(:one)
+  end
+
+  test 'external is searchable' do
+    profiles(:one).update!(external: true)
+    assert profiles(:one).external
+    assert_includes Profile.search_for('external = true'), profiles(:one)
+    assert_includes Profile.external, profiles(:one)
+    assert_not_includes Profile.search_for('external = false'), profiles(:one)
+    assert_not_includes Profile.external(false), profiles(:one)
+  end
+
   context 'cloning profile to account' do
     should 'create host relation when the profile is created' do
       assert_difference('ProfileHost.count', 1) do

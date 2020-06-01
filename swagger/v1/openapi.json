@@ -103,7 +103,7 @@
                     "type": "benchmark",
                     "id": "1b743185-361a-4b9a-bf48-a8efd7114093",
                     "attributes": {
-                      "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7. It is a rendering of content structured in the eXtensible Configuration Checklist Description Format (XCCDF) in order to support security automation.  The SCAP content is is available in the scap-security-guide package which is developed at     https://www.open-scap.org/security-policies/scap-security-guide. Providing system administrators with such guidance informs them how to securely configure systems under their control in a variety of network roles. Policy makers and baseline creators can use this catalog of settings, with its associated references to higher-level security control catalogs, in order to assist them in security baseline creation. This guide is a catalog, not a checklist, and satisfaction of every item is not likely to be possible or sensible in many operational scenarios. However, the XCCDF format enables granular selection and adjustment of settings, and their association with OVAL and OCIL content provides an automated checking capability. Transformations of this document, and its associated automated checking content, are capable of providing baselines that meet a diverse set of policy objectives. Some example XCCDF Profiles, which are selections of items that form checklists and can be used as baselines, are available with this guide. They can be processed, in an automated fashion, with tools that support the Security Content Automation Protocol (SCAP). The DISA STIG, which provides required settings for US Department of Defense systems, is one example of a baseline created from this guidance.",
+                      "description": "This guide presents ... which provides required settings for US Department of Defense systems, is one example of a baseline created from this guidance.",
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
                       "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
                       "version": "0.1.46"
@@ -221,7 +221,7 @@
                   "type": "benchmark",
                   "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
                   "attributes": {
-                    "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7. It is a rendering of content structured in the eXtensible Configuration Checklist Description Format (XCCDF) in order to support security automation.  The SCAP content is is available in the scap-security-guide package which is developed at     https://www.open-scap.org/security-policies/scap-security-guide. Providing system administrators with such guidance informs them how to securely configure systems under their control in a variety of network roles. Policy makers and baseline creators can use this catalog of settings, with its associated references to higher-level security control catalogs, in order to assist them in security baseline creation. This guide is a catalog, not a checklist, and satisfaction of every item is not likely to be possible or sensible in many operational scenarios. However, the XCCDF format enables granular selection and adjustment of settings, and their association with OVAL and OCIL content provides an automated checking capability. Transformations of this document, and its associated automated checking content, are capable of providing baselines that meet a diverse set of policy objectives. Some example XCCDF Profiles, which are selections of items that form checklists and can be used as baselines, are available with this guide. They can be processed, in an automated fashion, with tools that support the Security Content Automation Protocol (SCAP). The DISA STIG, which provides required settings for US Department of Defense systems, is one example of a baseline created from this guidance.",
+                    "description": "This guide presents ... which provides required settings for US Department of Defense systems, is one example of a baseline created from this guidance.",
                     "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
                     "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
                     "version": "0.1.46"
@@ -1015,11 +1015,60 @@
       "properties": {
         "name": {
           "type": "string",
-          "example": "Standard System Security Profile for Fedora"
+          "example": "Standard System Security Profile for Red Hat Enterprise Linux 7"
         },
         "ref_id": {
           "type": "string",
           "example": "xccdf_org.ssgproject.content_profile_standard"
+        },
+        "parent_profile_id": {
+          "type": "string",
+          "format": "uuid",
+          "nullable": true,
+          "example": "0105a0f0-7379-4897-a891-f95cfb9ddf9c"
+        },
+        "parent_profile_ref_id": {
+          "type": "string",
+          "nullable": true,
+          "example": "xccdf_org.ssgproject.content_profile_standard"
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "example": "This profile contains rules to ensure standard security baseline\\nof a Red Hat Enterprise Linux 7 system. Regardless of your system's workload\\nall of these checks should pass."
+        },
+        "compliance_threshold": {
+          "type": "number",
+          "example": 95.0
+        },
+        "score": {
+          "type": "number",
+          "example": 63.154762
+        },
+        "business_objective": {
+          "type": "string",
+          "example": "APAC Expansion",
+          "nullable": true
+        },
+        "canonical": {
+          "type": "boolean",
+          "example": true
+        },
+        "compliant_host_count": {
+          "type": "integer",
+          "example": 3
+        },
+        "external": {
+          "type": "boolean",
+          "example": false
+        },
+        "tailored": {
+          "type": "boolean",
+          "example": false
+        },
+        "total_host_count": {
+          "type": "integer",
+          "example": 5
         }
       }
     },
