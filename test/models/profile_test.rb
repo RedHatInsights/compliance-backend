@@ -176,6 +176,63 @@ class ProfileTest < ActiveSupport::TestCase
     assert_not_includes Profile.external(false), profiles(:one)
   end
 
+  test 'os_major_version scope' do
+    bm61 = Xccdf::Benchmark.create!(
+      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
+      version: '1', title: 'A', description: 'A'
+    )
+    bm62 = Xccdf::Benchmark.create!(
+      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
+      version: '2', title: 'A', description: 'A'
+    )
+    bm8 = Xccdf::Benchmark.create!(
+      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-8',
+      version: '1', title: 'A', description: 'A'
+    )
+    p61a = Profile.create!(benchmark: bm61, ref_id: 'A', name: 'A')
+    p61b = Profile.create!(benchmark: bm61, ref_id: 'B', name: 'B')
+    p62 = Profile.create!(benchmark: bm62, ref_id: 'A', name: 'A')
+    p8 = Profile.create!(benchmark: bm8, ref_id: 'A', name: 'A')
+    assert_equal Set.new(Profile.os_major_version(6).to_a),
+                 Set.new([p61a, p61b, p62])
+    assert_equal Set.new(Profile.os_major_version(7).to_a), Set.new(profiles)
+    assert_equal Profile.os_major_version(8).to_a, [p8]
+
+    assert_equal Set.new(Profile.os_major_version(8, false).to_a),
+                 Set.new(Profile.where.not(id: p8.id).to_a)
+    assert_equal Set.new(Profile.os_major_version(6, false).to_a),
+                 Set.new([p8] + profiles)
+  end
+
+  test 'os_major_version scoped_search' do
+    bm61 = Xccdf::Benchmark.create!(
+      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
+      version: '1', title: 'A', description: 'A'
+    )
+    bm62 = Xccdf::Benchmark.create!(
+      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
+      version: '2', title: 'A', description: 'A'
+    )
+    bm8 = Xccdf::Benchmark.create!(
+      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-8',
+      version: '1', title: 'A', description: 'A'
+    )
+    p61a = Profile.create!(benchmark: bm61, ref_id: 'A', name: 'A')
+    p61b = Profile.create!(benchmark: bm61, ref_id: 'B', name: 'B')
+    p62 = Profile.create!(benchmark: bm62, ref_id: 'A', name: 'A')
+    p8 = Profile.create!(benchmark: bm8, ref_id: 'A', name: 'A')
+    assert_equal Set.new(Profile.search_for('os_major_version = 6').to_a),
+                 Set.new([p61a, p61b, p62])
+    assert_equal Set.new(Profile.search_for('os_major_version = 7').to_a),
+                 Set.new(profiles)
+    assert_equal Profile.search_for('os_major_version = 8').to_a, [p8]
+
+    assert_equal Set.new(Profile.search_for('os_major_version != 8').to_a),
+                 Set.new(Profile.where.not(id: p8.id).to_a)
+    assert_equal Set.new(Profile.search_for('os_major_version != 6').to_a),
+                 Set.new([p8] + profiles)
+  end
+
   context 'cloning profile to account' do
     should 'create host relation when the profile is created' do
       assert_difference('ProfileHost.count', 1) do
