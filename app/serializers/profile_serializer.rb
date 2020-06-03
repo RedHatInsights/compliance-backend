@@ -9,7 +9,7 @@ class ProfileSerializer
   belongs_to :business_objective
   belongs_to :parent_profile, record_type: :profile
   attributes :name, :ref_id, :description, :score, :parent_profile_id,
-             :external, :compliance_threshold
+             :external, :compliance_threshold, :os_major_version
   attribute :parent_profile_ref_id do |profile|
     profile.parent_profile&.ref_id
   end
