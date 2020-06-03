@@ -13,6 +13,9 @@ module ProfileSearching
                   only_explicit: true, operators: ['=']
     scoped_search on: :canonical, ext_method: 'canonical?', only_explicit: true,
                   operators: ['=']
+    scoped_search on: :os_major_version, ext_method: 'os_major_version_search',
+                  only_explicit: true, operators: ['=', '!='],
+                  validator: ScopedSearch::Validators::INTEGER
 
     scope :canonical, lambda { |canonical = true|
       canonical && where(parent_profile_id: nil) ||
@@ -24,6 +27,9 @@ module ProfileSearching
     scope :has_test_results, lambda { |has_test_results = true|
       test_results = TestResult.select(:profile_id).distinct
       has_test_results && where(id: test_results) || where.not(id: test_results)
+    }
+    scope :os_major_version, lambda { |major, equals = true|
+      where(benchmark: Xccdf::Benchmark.os_major_version(major, equals))
     }
   end
 
@@ -37,6 +43,12 @@ module ProfileSearching
       has_test_results = ActiveModel::Type::Boolean.new.cast(value)
       profiles = Profile.has_test_results(has_test_results)
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
+    end
+
+    def os_major_version_search(_filter, operator, value)
+      benchmark_id = Profile.arel_table[:benchmark_id]
+      benchmarks = Xccdf::Benchmark.os_major_version(value, operator == '=')
+      { conditions: benchmark_id.in(benchmarks.pluck(:id)).to_sql }
     end
   end
 end
