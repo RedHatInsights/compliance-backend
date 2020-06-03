@@ -51,5 +51,56 @@ module Xccdf
       assert_equal %w[0.1.42 0.1.45 0.2.0 0.2.2],
                    latest.map(&:version).sort
     end
+
+    test 'os_major_version scope' do
+      bm61 = Xccdf::Benchmark.create!(
+        ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
+        version: '1', title: 'A', description: 'A'
+      )
+      bm62 = Xccdf::Benchmark.create!(
+        ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
+        version: '2', title: 'A', description: 'A'
+      )
+      bm8 = Xccdf::Benchmark.create!(
+        ref_id: 'foo_bar.ssgproject.benchmark_RHEL-8',
+        version: '1', title: 'A', description: 'A'
+      )
+
+      assert_equal Set.new(Xccdf::Benchmark.os_major_version(6).to_a),
+                   Set.new([bm61, bm62])
+      assert_equal Xccdf::Benchmark.os_major_version(7).to_a, [benchmarks(:one)]
+      assert_equal Xccdf::Benchmark.os_major_version(8).to_a, [bm8]
+
+      assert_equal Set.new(Xccdf::Benchmark.os_major_version(6, false).to_a),
+                   Set.new([benchmarks(:one), bm8])
+    end
+
+    test 'os_major_version scoped_search' do
+      bm61 = Xccdf::Benchmark.create!(
+        ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
+        version: '1', title: 'A', description: 'A'
+      )
+      bm62 = Xccdf::Benchmark.create!(
+        ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
+        version: '2', title: 'A', description: 'A'
+      )
+      bm8 = Xccdf::Benchmark.create!(
+        ref_id: 'foo_bar.ssgproject.benchmark_RHEL-8',
+        version: '1', title: 'A', description: 'A'
+      )
+
+      assert_equal(
+        Set.new(Xccdf::Benchmark.search_for('os_major_version = 6').to_a),
+        Set.new([bm61, bm62])
+      )
+      assert_equal Xccdf::Benchmark.search_for('os_major_version = 7').to_a,
+                   [benchmarks(:one)]
+      assert_equal Xccdf::Benchmark.search_for('os_major_version = 8').to_a,
+                   [bm8]
+      assert_equal(
+        Set.new(Xccdf::Benchmark.search_for('os_major_version != 6').to_a),
+        Set.new([benchmarks(:one), bm8])
+      )
+    end
   end
 end
