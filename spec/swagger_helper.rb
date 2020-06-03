@@ -167,6 +167,10 @@ RSpec.configure do |config|
               total_host_count: {
                 type: 'integer',
                 example: 5
+              },
+              os_major_version: {
+                type: 'string',
+                example: '7'
               }
             }
           },
