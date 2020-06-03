@@ -85,4 +85,5 @@ class Profile < ApplicationRecord
   def major_os_version
     benchmark ? benchmark.inferred_os_major_version : 'N/A'
   end
+  alias os_major_version major_os_version
 end
