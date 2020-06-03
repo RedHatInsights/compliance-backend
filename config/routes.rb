@@ -13,11 +13,6 @@ Rails.application.routes.draw do
         resources :rule_results, only: [:index]
         resources :systems, only: [:index, :destroy]
         resources :rules, only: [:index, :show]
-        mount Rswag::Api::Engine => '/',
-          as: "#{prefix}/#{ENV['APP_NAME']}/rswag_api"
-        mount Rswag::Ui::Engine => '/',
-          as: "#{prefix}/#{ENV['APP_NAME']}/rswag_ui"
-        get 'openapi' => 'application#openapi'
       end
       resources :benchmarks, controller: 'v1/benchmarks', only: [:index, :show]
       resources :profiles, controller: 'v1/profiles', only: [:index, :show] do
