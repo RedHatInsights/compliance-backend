@@ -10,6 +10,9 @@ module Xccdf
     scoped_search relation: :profiles, on: :id, rename: :profile_ids,
                   alias: :profile_id
     scoped_search relation: :rules, on: :id, rename: :rule_ids, alias: :rule_id
+    scoped_search on: :os_major_version, ext_method: 'os_major_version_search',
+                  only_explicit: true, operators: ['=', '!='],
+                  validator: ScopedSearch::Validators::INTEGER
 
     has_many :profiles, dependent: :destroy
     has_many :rules, dependent: :destroy
@@ -22,7 +25,27 @@ module Xccdf
       'xccdf_org.ssgproject.content_benchmark_RHEL-8': '0.1.48'
     }.freeze
 
+    scope :os_major_version, lambda { |major, equals = true|
+      where(os_major_version_query(major, equals))
+    }
+
     class << self
+      def os_major_version_like_condition(major)
+        "%RHEL-#{major}"
+      end
+
+      def os_major_version_query(major, equals)
+        ref_id = arel_table[:ref_id]
+        condition = os_major_version_like_condition(major)
+        equals ? ref_id.matches(condition) : ref_id.does_not_match(condition)
+      end
+
+      def os_major_version_search(_filter, operator, value)
+        equals = operator == '=' ? ' ' : ' NOT '
+        { conditions: "ref_id#{equals}like ?",
+          parameter: [os_major_version_like_condition(value)] }
+      end
+
       def from_openscap_parser(op_benchmark)
         benchmark = find_or_initialize_by(
           ref_id: op_benchmark.id,
@@ -69,5 +92,6 @@ module Xccdf
     def inferred_os_major_version
       ref_id[/(?<=RHEL-)\d/]
     end
+    alias os_major_version inferred_os_major_version
   end
 end
