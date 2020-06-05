@@ -9,7 +9,7 @@ module V1
 
     def show
       authorize profile
-      render json: ProfileSerializer.new(profile)
+      render_json profile
     end
 
     def tailoring_file
