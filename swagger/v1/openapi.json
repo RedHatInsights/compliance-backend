@@ -26,6 +26,7 @@
             "name": "limit",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -38,6 +39,7 @@
             "name": "offset",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -49,6 +51,7 @@
             "name": "search",
             "in": "query",
             "required": false,
+            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -134,6 +137,7 @@
             "name": "limit",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -146,6 +150,7 @@
             "name": "offset",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -157,6 +162,7 @@
             "name": "search",
             "in": "query",
             "required": false,
+            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -252,6 +258,7 @@
             "name": "limit",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -264,6 +271,7 @@
             "name": "offset",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -275,6 +283,7 @@
             "name": "search",
             "in": "query",
             "required": false,
+            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -284,22 +293,20 @@
         ],
         "responses": {
           "200": {
-            "description": "lists all profiles requested",
+            "description": "lists all profiles requested filtered by OS",
             "examples": {
               "application/vnd.api+json": {
+                "data": [],
                 "meta": {
-                  "filter": "name=Standard System Security Profile for Fedora"
+                  "total": 0,
+                  "search": "os_major_version = 7",
+                  "limit": 10,
+                  "offset": 1
                 },
-                "data": [
-                  {
-                    "type": "Profile",
-                    "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
-                    "attributes": {
-                      "name": "Standard System Security Profile for Fedora",
-                      "ref_id": "xccdf_org.ssgproject.content_profile_standard"
-                    }
-                  }
-                ]
+                "links": {
+                  "first": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=1",
+                  "last": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=0"
+                }
               }
             },
             "content": {
@@ -321,8 +328,7 @@
                             "type": "string"
                           },
                           "id": {
-                            "type": "string",
-                            "format": "uuid"
+                            "$ref": "#/components/schemas/uuid"
                           },
                           "attributes": {
                             "$ref": "#/components/schemas/profile"
@@ -355,45 +361,22 @@
             }
           },
           {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "description": "The number of items to return",
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "default": 10
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "description": "The number of items to skip before starting to collect the result set",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "required": false,
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
-          },
-          {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
           }
         ],
         "responses": {
@@ -407,21 +390,61 @@
             "content": {}
           },
           "200": {
-            "description": "retrieves a profile",
+            "description": "retrieves a profile with included benchmark",
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "type": "Profile",
-                  "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                  "type": "profile",
                   "attributes": {
-                    "name": "Standard System Security Profile for Fedora",
-                    "ref_id": "xccdf_org.ssgproject.content_profile_standard",
-                    "description": "Set of rules for Fedora",
-                    "score": 1,
+                    "name": "profile1",
+                    "ref_id": "xccdf_org.ssgproject.profile1",
+                    "description": null,
+                    "score": 98.0,
+                    "parent_profile_id": null,
+                    "external": false,
+                    "compliance_threshold": 100.0,
+                    "os_major_version": "7",
+                    "parent_profile_ref_id": null,
+                    "canonical": true,
+                    "tailored": false,
                     "total_host_count": 1,
-                    "compliant_host_count": 1
+                    "compliant_host_count": 0,
+                    "business_objective": null
+                  },
+                  "relationships": {
+                    "account": {
+                      "data": {
+                        "id": "cf8ae1be-2626-4c7b-8134-bda1c78946c6",
+                        "type": "account"
+                      }
+                    },
+                    "benchmark": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "benchmark"
+                      }
+                    },
+                    "business_objective": {
+                      "data": null
+                    },
+                    "parent_profile": {
+                      "data": null
+                    }
                   }
-                }
+                },
+                "included": [
+                  {
+                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                    "type": "benchmark",
+                    "attributes": {
+                      "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                      "title": "Benchmark One",
+                      "version": "0.1.45",
+                      "description": "The first benchmark"
+                    }
+                  }
+                ]
               }
             },
             "content": {
@@ -442,11 +465,49 @@
                           "type": "string"
                         },
                         "id": {
-                          "type": "string",
-                          "format": "uuid"
+                          "$ref": "#/components/schemas/uuid"
                         },
                         "attributes": {
                           "$ref": "#/components/schemas/profile"
+                        },
+                        "relationships": {
+                          "account": {
+                            "$ref": "#/components/schemas/relationship"
+                          },
+                          "benchmark": {
+                            "$ref": "#/components/schemas/relationship"
+                          },
+                          "parent_profile": {
+                            "$ref": "#/components/schemas/relationship"
+                          }
+                        }
+                      },
+                      "relationships": {
+                        "account": {
+                          "$ref": "#/components/schemas/relationship"
+                        },
+                        "benchmark": {
+                          "$ref": "#/components/schemas/relationship"
+                        },
+                        "parent_profile": {
+                          "$ref": "#/components/schemas/relationship"
+                        }
+                      },
+                      "included": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "id": {
+                              "$ref": "#/components/schemas/uuid"
+                            },
+                            "attributes": {
+                              "$ref": "#/components/schemas/benchmark"
+                            }
+                          }
                         }
                       }
                     }
@@ -478,6 +539,7 @@
             "name": "limit",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -490,6 +552,7 @@
             "name": "offset",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -501,6 +564,7 @@
             "name": "search",
             "in": "query",
             "required": false,
+            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -597,6 +661,7 @@
             "name": "limit",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -609,6 +674,7 @@
             "name": "offset",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -620,6 +686,7 @@
             "name": "search",
             "in": "query",
             "required": false,
+            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -706,6 +773,7 @@
             "name": "limit",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -718,6 +786,7 @@
             "name": "offset",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -729,6 +798,7 @@
             "name": "search",
             "in": "query",
             "required": false,
+            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -825,6 +895,7 @@
             "name": "limit",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -837,6 +908,7 @@
             "name": "offset",
             "in": "query",
             "required": false,
+            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -848,6 +920,7 @@
             "name": "search",
             "in": "query",
             "required": false,
+            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -911,6 +984,18 @@
   },
   "components": {
     "schemas": {
+      "uuid": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "relationship": {
+        "data": {
+          "id": {
+            "$ref": "#/components/schemas/uuid"
+          },
+          "type": "string"
+        }
+      },
       "error": {
         "type": "object",
         "required": [

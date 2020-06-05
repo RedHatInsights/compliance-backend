@@ -5,7 +5,7 @@ require 'swagger_helper'
 describe 'Profiles API' do
   path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/profiles" do
     get 'List all profiles' do
-      fixtures :profiles
+      fixtures :accounts, :hosts, :benchmarks, :profiles
       tags 'profile'
       description 'Lists all profiles requested'
       operationId 'ListProfiles'
@@ -16,35 +16,51 @@ describe 'Profiles API' do
       search_params
 
       response '200', 'lists all profiles requested' do
-        let(:'X-RH-IDENTITY') { encoded_header }
+        before do
+          profiles(:one).update!(account: accounts(:one))
+        end
+
+        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {
-                 meta: { '$ref' => '#/components/schemas/metadata' },
-                 links: { '$ref' => '#/components/schemas/links' },
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
                  data: {
                    type: :array,
                    items: {
                      properties: {
                        type: { type: :string },
-                       id: { type: :string, format: :uuid },
-                       attributes: { '$ref' => '#/components/schemas/profile' }
+                       id: ref_schema('uuid'),
+                       attributes: ref_schema('profile')
                      }
                    }
                  }
                }
-        examples 'application/vnd.api+json' => {
-          meta: { filter: 'name=Standard System Security Profile for Fedora' },
-          data: [
-            {
-              type: 'Profile',
-              id: 'd9654ad0-7cb5-4f61-b57c-0d22e3341dcc',
-              attributes: {
-                name: 'Standard System Security Profile for Fedora',
-                ref_id: 'xccdf_org.ssgproject.content_profile_standard'
-              }
-            }
-          ]
-        }
+        after { |e| autogenerate_examples(e) }
+        run_test!
+      end
+
+      response '200', 'lists all profiles requested filtered by OS' do
+        let(:'X-RH-IDENTITY') { encoded_header }
+        let(:include) { '' } # work around buggy rswag
+        let(:search) { 'os_major_version = 7' }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('uuid'),
+                       attributes: ref_schema('profile')
+                     }
+                   }
+                 }
+               }
+        after { |e| autogenerate_examples(e) }
         run_test!
       end
     end
@@ -59,17 +75,15 @@ describe 'Profiles API' do
 
       content_types
       auth_header
-      pagination_params
-      search_params
 
       parameter name: :id, in: :path, type: :string
+      include_param
 
       response '404', 'profile not found' do
         let(:id) { 'invalid' }
         let(:'X-RH-IDENTITY') { encoded_header }
-        examples 'application/vnd.api+json' => {
-          errors: 'Resource not found'
-        }
+        let(:include) { '' } # work around buggy rswag
+        after { |e| autogenerate_examples(e) }
         run_test!
       end
 
@@ -84,33 +98,72 @@ describe 'Profiles API' do
           profiles(:one).update(account: user.account, hosts: [hosts(:one)])
           profiles(:one).id
         end
+        let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {
-                 meta: { '$ref' => '#/components/schemas/metadata' },
-                 links: { '$ref' => '#/components/schemas/links' },
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
                  data: {
                    type: :object,
                    properties: {
                      type: { type: :string },
-                     id: { type: :string, format: :uuid },
-                     attributes: { '$ref' => '#/components/schemas/profile' }
+                     id: ref_schema('uuid'),
+                     attributes: ref_schema('profile'),
+                     relationships: {
+                       account: ref_schema('relationship'),
+                       benchmark: ref_schema('relationship'),
+                       parent_profile: ref_schema('relationship')
+                     }
                    }
                  }
                }
-        examples 'application/vnd.api+json' => {
-          data: {
-            type: 'Profile',
-            id: 'd9654ad0-7cb5-4f61-b57c-0d22e3341dcc',
-            attributes: {
-              name: 'Standard System Security Profile for Fedora',
-              ref_id: 'xccdf_org.ssgproject.content_profile_standard',
-              description: 'Set of rules for Fedora',
-              score: 1,
-              total_host_count: 1,
-              compliant_host_count: 1
-            }
-          }
-        }
+        after { |e| autogenerate_examples(e) }
+
+        run_test!
+      end
+
+      response '200', 'retrieves a profile with included benchmark' do
+        let(:'X-RH-IDENTITY') { encoded_header }
+        let(:id) do
+          Account.create(
+            account_number: x_rh_identity[:identity][:account_number]
+          )
+          user = User.from_x_rh_identity(x_rh_identity[:identity])
+          user.save
+          profiles(:one).update(account: user.account, hosts: [hosts(:one)])
+          profiles(:one).id
+        end
+        let(:include) { 'benchmark' }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: ref_schema('uuid'),
+                     attributes: ref_schema('profile')
+                   },
+                   relationships: {
+                     account: ref_schema('relationship'),
+                     benchmark: ref_schema('relationship'),
+                     parent_profile: ref_schema('relationship')
+                   },
+                   included: {
+                     type: :array,
+                     items: {
+                       type: :object,
+                       properties: {
+                         type: { type: :string },
+                         id: ref_schema('uuid'),
+                         attributes: ref_schema('benchmark')
+                       }
+                     }
+                   }
+                 }
+               }
+        after { |e| autogenerate_examples(e) }
 
         run_test!
       end
