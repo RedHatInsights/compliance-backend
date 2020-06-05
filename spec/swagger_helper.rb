@@ -3,6 +3,8 @@
 require 'rails_helper'
 require 'webmock/rspec'
 
+SCHEMAS = '#/components/schemas'
+
 RSpec.configure do |config|
   config.swagger_root = Rails.root.to_s + '/swagger'
 
@@ -26,6 +28,16 @@ RSpec.configure do |config|
       paths: {},
       components: {
         schemas: {
+          uuid: {
+            type: :string,
+            format: :uuid
+          },
+          relationship: {
+            data: {
+              id: { '$ref' => '#/components/schemas/uuid' },
+              type: :string
+            }
+          },
           error: {
             type: 'object',
             required: %w[code detail status title],
@@ -230,17 +242,28 @@ RSpec.configure do |config|
   }
 end
 
-def encoded_header
-  Base64.strict_encode64(x_rh_identity.to_json)
+def autogenerate_examples(example)
+  example.metadata[:response][:examples] = {
+    'application/vnd.api+json' => JSON.parse(response.body,
+                                             symbolize_names: true)
+  }
+end
+
+def ref_schema(label)
+  { '$ref' => "#{SCHEMAS}/#{label}" }
+end
+
+def encoded_header(account = nil)
+  Base64.strict_encode64(x_rh_identity(account).to_json)
 end
 
 # Justification: It's mostly hash test data
 # rubocop:disable Metrics/MethodLength
-def x_rh_identity
+def x_rh_identity(account = nil)
   {
     'identity':
     {
-      'account_number': '1234',
+      'account_number': account&.account_number || '1234',
       'type': 'User',
       'user': {
         'email': 'a@b.com',
@@ -264,18 +287,25 @@ def x_rh_identity
 end
 # rubocop:enable Metrics/MethodLength
 
+def include_param
+  parameter name: :include, in: :query, type: :string, required: false,
+            schema: { type: :string },
+            description: 'A comma seperated list of resources to include in '\
+                         'the response'
+end
+
 def pagination_params
-  parameter name: :limit, in: :query, required: false,
+  parameter name: :limit, in: :query, required: false, type: :integer,
             description: 'The number of items to return',
             schema: { type: :integer, maximum: 100, minimum: 1, default: 10 }
-  parameter name: :offset, in: :query, required: false,
+  parameter name: :offset, in: :query, required: false, type: :integer,
             description: 'The number of items to skip before starting '\
             'to collect the result set',
             schema: { type: :integer, minimum: 1, default: 1 }
 end
 
 def search_params
-  parameter name: :search, in: :query, required: false,
+  parameter name: :search, in: :query, required: false, type: :string,
             description: 'Query string compliant with scoped_search '\
             'query language: '\
             'https://github.com/wvanbergen/scoped_search/wiki/Query-language',
