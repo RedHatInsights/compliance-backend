@@ -8,6 +8,14 @@ class BusinessObjective < ApplicationRecord
   validates :title, presence: true
 
   scope :in_account, lambda { |account_or_account_id|
-    joins(:accounts).where(accounts: { id: account_or_account_id })
+    joins(:accounts).where(accounts: { id: account_or_account_id }).distinct
   }
+
+  scope :without_profiles, lambda {
+    includes(:profiles).where(profiles: { id: nil })
+  }
+
+  def self.from_title(title)
+    find_or_create_by(title: title) if title
+  end
 end

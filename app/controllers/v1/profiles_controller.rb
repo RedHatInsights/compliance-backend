@@ -3,6 +3,11 @@
 module V1
   # API for Profiles
   class ProfilesController < ApplicationController
+    ALLOWED_CREATE_ATTRIBUTES = %i[
+      name description compliance_threshold business_objective
+      parent_profile_id
+    ].freeze
+
     def index
       params[:search] ||= 'external=false and canonical=false'
       render_json scope_search.sort_by(&:score)
@@ -16,6 +21,16 @@ module V1
     def destroy
       authorize profile
       render_json profile.destroy, status: :accepted
+    end
+
+    def create
+      profile = Profile.new(profile_create_attributes).fill_from_parent
+
+      if profile.save
+        render_json profile, status: :created
+      else
+        render_error profile
+      end
     end
 
     def tailoring_file
@@ -34,7 +49,31 @@ module V1
     end
 
     def profile
-      @profile ||= Pundit.policy_scope(current_user, resource).find(params[:id])
+      @profile ||= pundit_scope.find(params[:id])
+    end
+
+    def parent_profile
+      @parent_profile ||= pundit_scope.find(
+        resource_params.require(:parent_profile_id)
+      )
+    end
+
+    def business_objective
+      @business_objective ||= Pundit.policy_scope(
+        current_user, BusinessObjective
+      ).from_title(resource_params[:business_objective])
+    end
+
+    def profile_create_attributes
+      resource_params.to_h.slice(*ALLOWED_CREATE_ATTRIBUTES)
+                     .merge(account_id: current_user.account_id).tap do |attrs|
+        parent_profile
+
+        if business_objective
+          attrs.except! :business_objective
+          attrs[:business_objective_id] = business_objective.id
+        end
+      end
     end
 
     def resource

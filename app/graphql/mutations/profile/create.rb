@@ -20,7 +20,7 @@ module Mutations
       def resolve(args = {})
         profile = ::Profile.new(new_profile_options(args))
         profile.save!
-        profile.add_rule_ref_ids(args[:selected_rule_ref_ids])
+        profile.add_rules(ref_ids: args[:selected_rule_ref_ids])
         { profile: profile }
       end
 
