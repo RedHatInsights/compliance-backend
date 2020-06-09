@@ -12,6 +12,11 @@ module V1
       render_json profile
     end
 
+    def destroy
+      authorize profile
+      render_json profile.destroy, status: :accepted
+    end
+
     def tailoring_file
       return unless profile.tailored?
 

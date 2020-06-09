@@ -415,7 +415,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "6a888174-88fd-4e80-a100-25550e5f77e6",
+                        "id": "56f767cf-6e55-475b-a8ec-016dd7e48863",
                         "type": "account"
                       }
                     },
@@ -507,6 +507,139 @@
                             "attributes": {
                               "$ref": "#/components/schemas/benchmark"
                             }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Destroy a profile",
+        "tags": [
+          "profile"
+        ],
+        "description": "Destroys a profile",
+        "operationId": "DestroyProfile",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "profile not found",
+            "examples": {
+              "application/vnd.api+json": {
+                "errors": "Resource not found"
+              }
+            },
+            "content": {}
+          },
+          "202": {
+            "description": "destroys a profile",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                  "type": "profile",
+                  "attributes": {
+                    "name": "profile1",
+                    "ref_id": "xccdf_org.ssgproject.profile1",
+                    "description": null,
+                    "score": 0,
+                    "parent_profile_id": null,
+                    "external": false,
+                    "compliance_threshold": 100.0,
+                    "os_major_version": "7",
+                    "parent_profile_ref_id": null,
+                    "canonical": true,
+                    "tailored": false,
+                    "total_host_count": 0,
+                    "compliant_host_count": 0,
+                    "business_objective": null
+                  },
+                  "relationships": {
+                    "account": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "account"
+                      }
+                    },
+                    "benchmark": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "benchmark"
+                      }
+                    },
+                    "business_objective": {
+                      "data": null
+                    },
+                    "parent_profile": {
+                      "data": null
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/links"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/profile"
+                        },
+                        "relationships": {
+                          "account": {
+                            "$ref": "#/components/schemas/relationship"
+                          },
+                          "benchmark": {
+                            "$ref": "#/components/schemas/relationship"
+                          },
+                          "parent_profile": {
+                            "$ref": "#/components/schemas/relationship"
                           }
                         }
                       }

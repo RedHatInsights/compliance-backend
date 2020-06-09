@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     scope "#{prefix}/#{ENV['APP_NAME']}" do
       namespace :v1 do
         resources :benchmarks, only: [:index, :show]
-        resources :profiles, only: [:index, :show] do
+        resources :profiles, only: [:index, :show, :destroy] do
           member do
             get 'tailoring_file'
           end
@@ -15,7 +15,7 @@ Rails.application.routes.draw do
         resources :rules, only: [:index, :show]
       end
       resources :benchmarks, controller: 'v1/benchmarks', only: [:index, :show]
-      resources :profiles, controller: 'v1/profiles', only: [:index, :show] do
+      resources :profiles, controller: 'v1/profiles', only: [:index, :show, :destroy] do
         member do
           get 'tailoring_file'
         end
