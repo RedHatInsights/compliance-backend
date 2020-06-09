@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'swagger_helper'
+require 'sidekiq/testing'
 
 describe 'Profiles API' do
   path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/profiles" do
@@ -163,6 +164,62 @@ describe 'Profiles API' do
                    }
                  }
                }
+        after { |e| autogenerate_examples(e) }
+
+        run_test!
+      end
+    end
+
+    delete 'Destroy a profile' do
+      fixtures :accounts, :benchmarks, :profiles
+      tags 'profile'
+      description 'Destroys a profile'
+      operationId 'DestroyProfile'
+
+      content_types
+      auth_header
+
+      parameter name: :id, in: :path, type: :string
+      include_param
+
+      response '404', 'profile not found' do
+        let(:id) { 'invalid' }
+        let(:'X-RH-IDENTITY') { encoded_header }
+        let(:include) { '' } # work around buggy rswag
+
+        after { |e| autogenerate_examples(e) }
+
+        run_test!
+      end
+
+      response '202', 'destroys a profile' do
+        before do
+          profiles(:one).update!(account: accounts(:one))
+        end
+
+        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:id) { profiles(:one).id }
+        let(:include) { '' } # work around buggy rswag
+
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: ref_schema('uuid'),
+                     attributes: ref_schema('profile'),
+                     relationships: {
+                       account: ref_schema('relationship'),
+                       benchmark: ref_schema('relationship'),
+                       parent_profile: ref_schema('relationship')
+                     }
+                   }
+                 }
+               }
+
         after { |e| autogenerate_examples(e) }
 
         run_test!
