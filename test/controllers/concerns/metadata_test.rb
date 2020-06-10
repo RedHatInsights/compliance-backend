@@ -38,7 +38,8 @@ class MetadataTest < ActionDispatch::IntegrationTest
     setup do
       authenticate
       Profile.all.find_each do |p|
-        p.update!(account_id: accounts(:test).id, hosts: [hosts(:one)])
+        p.update!(account_id: accounts(:test).id, hosts: [hosts(:one)],
+                  parent_profile: profiles(:one))
       end
     end
 
@@ -46,7 +47,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
       3.times do
         Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
                        benchmark: benchmarks(:one), hosts: [hosts(:one)],
-                       account: accounts(:test))
+                       account: accounts(:test), parent_profile: profiles(:one))
       end
       get profiles_url, params: { limit: 1, offset: 3 }
       assert_response :success
@@ -83,6 +84,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
     should 'return correct pagination links when there are three pages' do
       Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
                      benchmark: benchmarks(:one),
+                     parent_profile: profiles(:one),
                      account: accounts(:test), hosts: [hosts(:one)])
       get profiles_url, params: { limit: 1, offset: 2 }
       assert_response :success
@@ -100,6 +102,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
       3.times do
         Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
                        benchmark: benchmarks(:one),
+                       parent_profile: profiles(:one),
                        account: accounts(:test), hosts: [hosts(:one)])
       end
       get profiles_url, params: { limit: 2, offset: 1 }
