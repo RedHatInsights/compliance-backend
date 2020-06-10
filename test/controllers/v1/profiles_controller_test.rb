@@ -26,6 +26,16 @@ module V1
         get tailoring_file_v1_profile_url(profiles(:one).id)
         assert_response :no_content
       end
+
+      test 'tailoring_file with a noncanonical profile '\
+        'returns tailoring file' do
+        profiles(:two).update!(rules: [rules(:one), rules(:two)])
+        profiles(:one).update!(parent_profile: profiles(:two),
+                               rules: [rules(:one)])
+        get tailoring_file_v1_profile_url(profiles(:one).id)
+        assert_response :success
+        assert_equal Mime[:xml].to_s, @response.content_type
+      end
     end
 
     class IndexTest < ProfilesControllerTest
