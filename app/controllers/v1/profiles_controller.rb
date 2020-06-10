@@ -4,6 +4,7 @@ module V1
   # API for Profiles
   class ProfilesController < ApplicationController
     def index
+      params[:search] ||= 'external=false and canonical=false'
       render_json scope_search.sort_by(&:score)
     end
 
