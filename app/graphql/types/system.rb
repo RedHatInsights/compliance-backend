@@ -9,6 +9,8 @@ module Types
 
     field :id, ID, null: false
     field :name, String, null: false
+    field :os_major, Int, null: true
+    field :os_minor, Int, null: true
     field :profiles, [::Types::Profile], null: true
     field :rules_passed, Int, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
