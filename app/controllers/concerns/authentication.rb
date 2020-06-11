@@ -61,13 +61,9 @@ module Authentication
   private
 
   def skip_rbac_for_cert_based_auth?
-    cert_based_auth? &&
+    identity_header.cert_based? &&
       ALLOWED_CERT_BASED_RBAC_ACTIONS.include?(controller: controller_name,
                                                action: action_name)
-  end
-
-  def cert_based_auth?
-    identity_header.identity.dig('user').nil?
   end
 
   def identity_header
