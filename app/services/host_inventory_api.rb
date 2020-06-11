@@ -42,9 +42,7 @@ class HostInventoryAPI
     )
     response.body['results'].inject([]) do |acc, host|
       os_major, os_minor = host['system_profile']['os_release'].split('.')
-      os_releases << { id: host['id'],
-                       os_major: os_major,
-                       os_minor: os_minor }
+      acc << { id: host['id'], os_major: os_major, os_minor: os_minor }
     end
   end
 
