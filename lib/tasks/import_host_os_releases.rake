@@ -16,7 +16,7 @@ task import_host_os_releases: :environment do
     )
     ::Host.find_in_batches(batch_size: 50) do |hosts|
       begin
-        inventory_api.import_os_releases(host_ids)
+        inventory_api.import_os_releases(hosts.pluck(:id))
       rescue Faraday::ClientError => e
         Rails.logger.info("#{e.message} #{e.response}")
       end

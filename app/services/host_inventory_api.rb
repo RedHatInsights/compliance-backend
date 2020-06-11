@@ -27,9 +27,10 @@ class HostInventoryAPI
 
     @inventory_host = host_already_in_inventory(@id)
     raise ::InventoryHostNotFound if @inventory_host.blank?
+
     if (os_release = host_os_releases([@id]).first)
-      @inventory_host.os_major = os_major
-      @inventory_host.os_minor = os_minor
+      @inventory_host.os_major = os_release.os_major
+      @inventory_host.os_minor = os_release.os_minor
     end
     @inventory_host
   end
@@ -39,14 +40,12 @@ class HostInventoryAPI
       "#{@url}/#{ids.join(',')}/system_profile", { per_page: 50, page: 1 },
       X_RH_IDENTITY: @b64_identity
     )
-    os_releases = []
-    response.body['results'].each do |host|
+    response.body['results'].inject([]) do |acc, host|
       os_major, os_minor = host['system_profile']['os_release'].split('.')
       os_releases << { id: host['id'],
                        os_major: os_major,
                        os_minor: os_minor }
     end
-    os_releases
   end
 
   def import_os_releases(ids)
