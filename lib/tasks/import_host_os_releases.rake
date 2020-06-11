@@ -11,11 +11,12 @@ task import_host_os_releases: :environment do
   begin
     start_time = Time.now.utc
     puts "Starting import_host_os_releases job at #{start_time}"
+    inventory_api = HostInventoryAPI.new(
+      Account.find_by!(account_number: ENV['JOBS_ACCOUNT_NUMBER'])
+    )
     ::Host.find_in_batches(batch_size: 50) do |hosts|
       begin
-        HostInventoryAPI.new(
-          Account.find_by!(account_number: ENV['JOBS_ACCOUNT_NUMBER'])
-        ).import_os_releases(host_ids)
+        inventory_api.import_os_releases(host_ids)
       rescue Faraday::ClientError => e
         Rails.logger.info("#{e.message} #{e.response}")
       end

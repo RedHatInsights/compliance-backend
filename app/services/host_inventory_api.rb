@@ -27,11 +27,10 @@ class HostInventoryAPI
 
     @inventory_host = host_already_in_inventory(@id)
     raise ::InventoryHostNotFound if @inventory_host.blank?
-    os_release = host_os_releases([@id]).first
-    raise ::InventoryInvalidOsRelease unless os_release[:os_major] && os_release[:os_minor]
-
-    @inventory_host.os_major = os_major
-    @inventory_host.os_minor = os_minor
+    if (os_release = host_os_releases([@id]).first)
+      @inventory_host.os_major = os_major
+      @inventory_host.os_minor = os_minor
+    end
     @inventory_host
   end
 
