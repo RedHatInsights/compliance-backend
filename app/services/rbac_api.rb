@@ -9,12 +9,16 @@ class RbacApi
   end
 
   def check_user
-    body = JSON.parse(access_check_response.body)
-    body['data'].find do |access_check|
-      return true if access_check['permission'] == 'compliance:*:*'
+    begin
+      body = JSON.parse(access_check_response.body)
+      body['data'].find do |access_check|
+        return true if access_check['permission'] == 'compliance:*:*'
+      end
+    rescue Faraday::ClientError => e
+      Rails.logger.info("#{e.message} #{e.response}")
     end
-  rescue Faraday::ClientError => e
-    Rails.logger.info("#{e.message} #{e.response}")
+
+    false
   end
 
   private
