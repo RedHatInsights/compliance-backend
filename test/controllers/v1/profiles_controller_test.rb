@@ -51,6 +51,7 @@ module V1
       end
 
       test 'canonical profiles can be requested' do
+        profiles(:two).update! parent_profile_id: profiles(:one).id
         search_query = 'canonical=true'
         get v1_profiles_url, params: { search: search_query }
         assert_response :success
@@ -82,6 +83,7 @@ module V1
       end
 
       test 'all profile types can be requested at the same time' do
+        profiles(:two).update! parent_profile_id: profiles(:one).id
         internal = Profile.create!(
           account: accounts(:test), name: 'foo', ref_id: 'foo',
           benchmark: benchmarks(:one),
