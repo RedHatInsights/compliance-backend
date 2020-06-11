@@ -83,8 +83,11 @@ class ProfileQueryTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )
 
-    assert_equal 2, result['data']['allProfiles'].first['totalHostCount']
-    assert_equal 1, result['data']['allProfiles'].first['compliantHostCount']
-    assert_not result['data']['allProfiles'].first['businessObjective']
+    profile1_result = result['data']['allProfiles'].find do |h|
+      h['name'] == 'profile1'
+    end
+    assert_equal 2, profile1_result['totalHostCount']
+    assert_equal 1, profile1_result['compliantHostCount']
+    assert_not profile1_result['businessObjective']
   end
 end

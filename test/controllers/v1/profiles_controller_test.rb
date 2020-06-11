@@ -143,10 +143,19 @@ module V1
       end
 
       test 'destroy an existing, not accessible profile' do
+        profiles(:two).update! parent_profile: profiles(:one)
         assert_difference('Profile.count' => 0) do
           delete v1_profile_path(profiles(:two).id)
         end
         assert_response :not_found
+      end
+
+      test 'destroy an existing, accessible profile that is not authorized '\
+           'to be deleted' do
+        assert_difference('Profile.count' => 0) do
+          delete v1_profile_path(profiles(:two).id)
+        end
+        assert_response :forbidden
       end
     end
   end

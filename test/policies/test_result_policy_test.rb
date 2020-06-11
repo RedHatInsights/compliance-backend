@@ -10,6 +10,8 @@ class TestResultPolicyTest < ActiveSupport::TestCase
   end
 
   test 'only test results within visible profiles are accessible' do
+    profiles(:two).update!(parent_profile: profiles(:one))
+    assert_not test_results(:two).profile.canonical?
     profiles(:one).account = accounts(:test)
     profiles(:one).save
     assert_includes Pundit.policy_scope(users(:test), Profile), profiles(:one)
@@ -29,6 +31,8 @@ class TestResultPolicyTest < ActiveSupport::TestCase
   end
 
   test 'only test results within visible hosts are accessible' do
+    profiles(:two).update!(parent_profile: profiles(:one))
+    assert_not test_results(:two).profile.canonical?
     hosts(:one).account = accounts(:test)
     hosts(:one).save
     assert_includes Pundit.policy_scope(users(:test), Host), hosts(:one)
