@@ -11,6 +11,14 @@ module V1
       profiles(:one).update! account: accounts(:test)
     end
 
+    def params(data)
+      { data: data }
+    end
+
+    def parsed_data
+      JSON.parse(response.body).dig('data')
+    end
+
     class TailoringFileTest < ProfilesControllerTest
       test 'tailoring_file with a canonical profile returns no content' do
         profiles(:one).update! rules: [rules(:one)]
@@ -408,6 +416,116 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
+      end
+    end
+
+    class UpdateTest < ProfilesControllerTest
+      fixtures :accounts, :benchmarks, :profiles
+
+      NAME = 'A new name'
+      DESCRIPTION = 'A new description'
+      COMPLIANCE_THRESHOLD = 93.5
+      BUSINESS_OBJECTIVE = 'LATAM Expansion'
+
+      setup do
+        @profile = Profile.new(parent_profile_id: profiles(:two).id,
+                               account_id: accounts(:test).id).fill_from_parent
+        @profile.save
+        @profile.update_rules
+      end
+
+      test 'update without data' do
+        patch v1_profile_path(@profile.id), params: params({})
+        assert_response :unprocessable_entity
+        assert_match 'param is missing or the value is empty: data',
+                     JSON.parse(response.body).dig('errors')
+      end
+
+      test 'update with invalid data' do
+        patch profile_path(@profile.id), params: params('foo')
+        assert_response :unprocessable_entity
+        assert_match 'data must be a hash',
+                     JSON.parse(response.body).dig('errors')
+      end
+
+      test 'update with invalid attributes' do
+        patch profile_path(@profile.id), params: params(attributes: 'foo')
+        assert_response :unprocessable_entity
+        assert_match 'attributes must be a hash',
+                     JSON.parse(response.body).dig('errors')
+      end
+
+      test 'update with a single attribute' do
+        assert_difference("Profile.where(name: '#{NAME}').count" => 1) do
+          patch profile_path(@profile.id), params: params(
+            attributes: { name: NAME }
+          )
+        end
+        assert_response :success
+        assert_equal NAME, @profile.reload.name
+      end
+
+      test 'update with multiple attributes' do
+        assert_difference('BusinessObjective.count' => 1) do
+          patch profile_path(@profile.id), params: params(
+            attributes: {
+              name: NAME,
+              description: DESCRIPTION,
+              compliance_threshold: COMPLIANCE_THRESHOLD,
+              business_objective: BUSINESS_OBJECTIVE
+            }
+          )
+        end
+        assert_response :success
+        assert_equal NAME, @profile.reload.name
+        assert_equal DESCRIPTION, @profile.description
+        assert_equal COMPLIANCE_THRESHOLD, @profile.compliance_threshold
+        assert_equal BUSINESS_OBJECTIVE, @profile.business_objective.title
+      end
+
+      test 'update with attributes and rules relationships' do
+        assert_difference(
+          '@profile.rules.count' => @profile.benchmark.rules.count
+        ) do
+          patch profile_path(@profile.id), params: params(
+            attributes: {
+              business_objective: BUSINESS_OBJECTIVE
+            },
+            relationships: {
+              rules: {
+                data: @profile.benchmark.rules.map do |rule|
+                  { id: rule.id, type: 'rule' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :success
+        assert_equal BUSINESS_OBJECTIVE,
+                     @profile.reload.business_objective.title
+      end
+
+      test 'update to remove rules relationships' do
+        @profile.update!(rules: @profile.benchmark.rules)
+        assert_difference(
+          '@profile.reload.rules.count' => -1
+        ) do
+          patch profile_path(@profile.id), params: params(
+            attributes: {
+              business_objective: BUSINESS_OBJECTIVE
+            },
+            relationships: {
+              rules: {
+                data: @profile.benchmark.rules[0...-1].map do |rule|
+                  { id: rule.id, type: 'rule' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :success
+        assert_equal BUSINESS_OBJECTIVE,
+                     @profile.reload.business_objective.title
       end
     end
   end
