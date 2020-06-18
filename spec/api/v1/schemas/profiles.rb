@@ -1,18 +1,23 @@
 # frozen_string_literal: true
 
+require './spec/api/v1/schemas/util'
+
 module Api
   module V1
     module Schemas
       module Profiles
+        extend Api::V1::Schemas::Util
+
         PROFILE = {
           type: 'object',
-          required: %w[name ref_id],
+          required: %w[parent_profile_id],
           properties: {
             parent_profile_id: {
               type: 'string',
               format: 'uuid',
               nullable: true,
-              example: '0105a0f0-7379-4897-a891-f95cfb9ddf9c'
+              example: '0105a0f0-7379-4897-a891-f95cfb9ddf9c',
+              required: true
             },
             parent_profile_ref_id: {
               type: 'string',
@@ -64,6 +69,18 @@ module Api
               type: 'string',
               example: '7'
             }
+          }
+        }.freeze
+
+        PROFILE_RELATIONSHIPS = {
+          type: 'object',
+          properties: {
+            account: ref_schema('relationship'),
+            benchmark: ref_schema('relationship'),
+            parent_profile: ref_schema('relationship'),
+            rules: ref_schema('relationship_collection'),
+            hosts: ref_schema('relationship_collection'),
+            test_results: ref_schema('relationship_collection')
           }
         }.freeze
       end

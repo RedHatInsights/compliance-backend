@@ -25,6 +25,8 @@ class Profile < ApplicationRecord
   validates :account, presence: true, if: -> { hosts.any? }
 
   after_update :destroy_orphaned_business_objective
+  after_rollback :destroy_orphaned_business_objective
+  after_create :add_rules
 
   class << self
     def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
@@ -43,18 +45,25 @@ class Profile < ApplicationRecord
     end
   end
 
+  def fill_from_parent
+    self.ref_id = parent_profile.ref_id
+    self.benchmark_id = parent_profile.benchmark_id
+    self.name ||= parent_profile.name
+    self.description ||= parent_profile.description
+
+    self
+  end
+
   def canonical?
     parent_profile_id.blank?
   end
 
   def destroy_orphaned_business_objective
-    return unless previous_changes.include?(:business_objective_id) &&
-                  previous_changes[:business_objective_id].first.present?
+    bo_changes = (previous_changes.fetch(:business_objective_id, []) +
+                  changes.fetch(:business_objective_id, [])).compact
+    return if bo_changes.blank?
 
-    business_objective = BusinessObjective.find(
-      previous_changes[:business_objective_id].first
-    )
-    business_objective.destroy if business_objective.profiles.empty?
+    BusinessObjective.without_profiles.where(id: bo_changes).destroy_all
   end
 
   def clone_to(account: nil, host: nil, external: true)
@@ -66,7 +75,7 @@ class Profile < ApplicationRecord
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
-    new_profile.add_rule_ref_ids(rules.pluck(:ref_id))
+    new_profile.add_rules(ref_ids: rules.pluck(:ref_id))
     new_profile
   end
 
@@ -75,9 +84,8 @@ class Profile < ApplicationRecord
                     benchmark_id: benchmark_id)
   end
 
-  def add_rule_ref_ids(ref_ids)
-    rules = benchmark.rules.where(ref_id: ref_ids)
-    ProfileRule.import!(rules.map do |rule|
+  def add_rules(ids: nil, ref_ids: nil)
+    ProfileRule.import!(rule_ids_to_add(ids, ref_ids).map do |rule|
       ProfileRule.new(profile_id: id, rule_id: rule.id)
     end, ignore: true)
   end
@@ -86,4 +94,21 @@ class Profile < ApplicationRecord
     benchmark ? benchmark.inferred_os_major_version : 'N/A'
   end
   alias os_major_version major_os_version
+
+  private
+
+  def rule_ids_to_add(ids, ref_ids)
+    benchmark.rules.select(:id).tap do |rel|
+      return rel.where(id: ids) if ids
+      return rel.where(ref_id: ref_ids) if ref_ids
+
+      return rel.where(id: parent_profile_rule_ids)
+    end
+  end
+
+  def parent_profile_rule_ids
+    return [] if parent_profile_id.blank?
+
+    ProfileRule.select(:rule_id).where(profile_id: parent_profile_id)
+  end
 end

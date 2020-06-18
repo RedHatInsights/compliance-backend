@@ -233,6 +233,48 @@ class ProfileTest < ActiveSupport::TestCase
                  Set.new([p8] + profiles)
   end
 
+  context 'fill_from_parent' do
+    NAME = 'Customized profile'
+    DESCRIPTION = 'The best profile ever'
+
+    should 'copy attributes from the parent profile' do
+      profile = Profile.new(parent_profile_id: profiles(:one).id)
+                       .fill_from_parent
+
+      assert_equal profiles(:one).ref_id, profile.ref_id
+      assert_equal profiles(:one).name, profile.name
+      assert_equal profiles(:one).description, profile.description
+      assert_equal profiles(:one).benchmark_id, profile.benchmark_id
+      assert_not profile.external
+    end
+
+    should 'copy rules from the parent profile on save' do
+      profile = Profile.new(parent_profile_id: profiles(:one).id)
+                       .fill_from_parent
+
+      assert_not_equal Set.new(profiles(:one).rules.pluck(:id)),
+                       Set.new(profile.rules.pluck(:id))
+      profile.save
+      assert_equal Set.new(profiles(:one).rules.pluck(:id)),
+                   Set.new(profile.reload.rules.pluck(:id))
+    end
+
+    should 'allow some customized attributes' do
+      profile = Profile.new(name: NAME,
+                            description: DESCRIPTION,
+                            ref_id: 'this should be a noop',
+                            benchmark_id: 'this should be a noop',
+                            parent_profile_id: profiles(:one).id)
+                       .fill_from_parent
+
+      assert_equal profiles(:one).ref_id, profile.ref_id
+      assert_equal NAME, profile.name
+      assert_equal DESCRIPTION, profile.description
+      assert_equal profiles(:one).benchmark_id, profile.benchmark_id
+      assert_not profile.external
+    end
+  end
+
   context 'cloning profile to account' do
     should 'create host relation when the profile is created' do
       assert_difference('ProfileHost.count', 1) do

@@ -6,8 +6,10 @@ class ProfileSerializer
   set_type :profile
   belongs_to :account
   belongs_to :benchmark
-  belongs_to :business_objective
   belongs_to :parent_profile, record_type: :profile
+  has_many :rules
+  has_many :hosts
+  has_many :test_results
   attributes :name, :ref_id, :description, :score, :parent_profile_id,
              :external, :compliance_threshold, :os_major_version
   attribute :parent_profile_ref_id do |profile|
