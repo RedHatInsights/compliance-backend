@@ -20,6 +20,12 @@ class ApplicationController < ActionController::API
     Pundit.policy_scope(current_user, resource)
   end
 
+  rescue_from ActiveRecord::RecordNotUnique do |error|
+    render json: {
+      errors: "Duplicate record: #{error.message[/Key \(.+\).+\./]}"
+    }, status: :conflict
+  end
+
   rescue_from Pundit::NotAuthorizedError do
     render json: { errors: 'You are not authorized to access this action.' },
            status: :forbidden

@@ -774,7 +774,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "3f9375da-38da-494a-83a4-77f02e3f0269",
+                  "id": "2375e6a8-859a-4649-8779-43df2bc04e82",
                   "type": "profile",
                   "attributes": {
                     "name": "A custom name",
@@ -875,8 +875,14 @@
                   "data": {
                     "type": "object",
                     "properties": {
+                      "type": {
+                        "type": "string"
+                      },
                       "attributes": {
                         "$ref": "#/components/schemas/profile"
+                      },
+                      "relationships": {
+                        "$ref": "#/components/schemas/profile_relationships"
                       }
                     }
                   }
@@ -983,7 +989,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "24d26f50-3a7c-43bb-b3f7-8a93b7c10ab3",
+                        "id": "eaa86e92-fe95-4174-9260-279edc170afa",
                         "type": "account"
                       }
                     },
@@ -1106,6 +1112,206 @@
                             "$ref": "#/components/schemas/benchmark_relationships"
                           }
                         }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a profile",
+        "tags": [
+          "profile"
+        ],
+        "description": "Updates a profile",
+        "operationId": "UpdateProfile",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "profile not found",
+            "examples": {
+              "application/vnd.api+json": {
+                "errors": "Profile not found with ID invalid"
+              }
+            },
+            "content": {}
+          },
+          "200": {
+            "description": "updates a profile",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "id": "4fc1bac4-6425-4706-a51e-34ece921568f",
+                  "type": "profile",
+                  "attributes": {
+                    "name": "An updated custom name",
+                    "ref_id": "xccdf_org.ssgproject.profile2",
+                    "description": null,
+                    "score": 0,
+                    "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                    "external": false,
+                    "compliance_threshold": 93.5,
+                    "os_major_version": "7",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
+                    "canonical": false,
+                    "tailored": true,
+                    "total_host_count": 0,
+                    "compliant_host_count": 0,
+                    "business_objective": "APAC Expansion"
+                  },
+                  "relationships": {
+                    "account": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "account"
+                      }
+                    },
+                    "benchmark": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "benchmark"
+                      }
+                    },
+                    "parent_profile": {
+                      "data": {
+                        "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                        "type": "profile"
+                      }
+                    },
+                    "rules": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "rule"
+                        },
+                        {
+                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                          "type": "rule"
+                        }
+                      ]
+                    },
+                    "hosts": {
+                      "data": []
+                    },
+                    "test_results": {
+                      "data": []
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/links"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/profile"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/profile_relationships"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "profile"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "$ref": "#/components/schemas/uuid"
+                      },
+                      "attributes": {
+                        "$ref": "#/components/schemas/profile"
+                      },
+                      "relationships": {
+                        "$ref": "#/components/schemas/profile_relationships"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "id": "02596112-042c-4fc2-a321-787e98537452",
+                    "attributes": {
+                      "name": "My updated custom profile",
+                      "description": "This profile contains rules to ensure standard security baseline\\nof a Red Hat Enterprise Linux 7 system. Regardless of your system's workload\\nall of these checks should pass.",
+                      "compliance_threshold": 92.0,
+                      "business_objective": "APAC Expansion"
+                    },
+                    "relationships": {
+                      "rules": {
+                        "data": [
+                          {
+                            "id": "cc9afa66-3536-4d2e-bc8e-10111d13ec50",
+                            "type": "rule"
+                          },
+                          {
+                            "id": "06a19f0e-5c7a-4d54-bc66-e932a96bf954",
+                            "type": "rule"
+                          }
+                        ]
                       }
                     }
                   }

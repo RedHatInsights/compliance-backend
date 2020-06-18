@@ -85,7 +85,9 @@ describe 'Profiles API' do
           data: {
             type: :object,
             properties: {
-              attributes: ref_schema('profile')
+              type: { type: :string },
+              attributes: ref_schema('profile'),
+              relationships: ref_schema('profile_relationships')
             }
           }
         },
@@ -248,6 +250,117 @@ describe 'Profiles API' do
                    }
                  }
                }
+        after { |e| autogenerate_examples(e) }
+
+        run_test!
+      end
+    end
+
+    patch 'Update a profile' do
+      fixtures :accounts, :benchmarks, :profiles
+      tags 'profile'
+      description 'Updates a profile'
+      operationId 'UpdateProfile'
+
+      content_types
+      auth_header
+
+      include_param
+      parameter name: :id, in: :path, type: :string
+      parameter name: :data, in: :body, schema: {
+        type: :object,
+        properties: {
+          type: { type: :string, example: 'profile' },
+          data: {
+            type: :object,
+            properties: {
+              type: { type: :string },
+              id: ref_schema('uuid'),
+              attributes: ref_schema('profile'),
+              relationships: ref_schema('profile_relationships')
+            }
+          }
+        },
+        example: {
+          data: {
+            id: '02596112-042c-4fc2-a321-787e98537452',
+            attributes: {
+              name: 'My updated custom profile',
+              description: 'This profile contains rules to ensure standard '\
+              'security baseline\nof a Red Hat Enterprise Linux 7 '\
+              'system. Regardless of your system\'s workload\nall '\
+              'of these checks should pass.',
+              compliance_threshold: 92.0,
+              business_objective: 'APAC Expansion'
+            },
+            relationships: {
+              rules: {
+                data: [
+                  { id: 'cc9afa66-3536-4d2e-bc8e-10111d13ec50', type: 'rule' },
+                  { id: '06a19f0e-5c7a-4d54-bc66-e932a96bf954', type: 'rule' }
+                ]
+              }
+            }
+          }
+        }
+      }
+
+      response '404', 'profile not found' do
+        let(:id) { 'invalid' }
+        let(:'X-RH-IDENTITY') { encoded_header }
+        let(:include) { '' } # work around buggy rswag
+        let(:data) {}
+
+        after { |e| autogenerate_examples(e) }
+
+        run_test!
+      end
+
+      response '200', 'updates a profile' do
+        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:id) do
+          new_profile = Profile.new(parent_profile_id: profiles(:two).id,
+                                    account_id: accounts(:one).id)
+                               .fill_from_parent
+          new_profile.save
+          new_profile.update_rules
+          new_profile.id
+        end
+        let(:include) { '' } # work around buggy rswag
+        let(:data) do
+          {
+            data: {
+              attributes: {
+                name: 'An updated custom name',
+                compliance_threshold: 93.5,
+                business_objective: 'APAC Expansion'
+              },
+              relationships: {
+                rules: {
+                  data: profiles(:two).benchmark.rules.map do |rule|
+                    { id: rule.id, type: 'rule' }
+                  end
+                }
+              }
+            }
+          }
+        end
+
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: ref_schema('uuid'),
+                     attributes: ref_schema('profile'),
+                     relationships: ref_schema('profile_relationships')
+                   }
+                 }
+               }
+
         after { |e| autogenerate_examples(e) }
 
         run_test!
