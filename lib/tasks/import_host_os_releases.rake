@@ -21,23 +21,18 @@ task import_host_os_releases: :environment do
         begin
           os_releases = inventory_api.system_profile(hosts.pluck(:id))
           print "Found OS releases for account #{account.account_number}: "
-          puts "#{os_releases}"
-          print "Importing..."
+          puts os_releases
+          print 'Importing...'
           Host.import os_releases
-          puts "IMPORTED"
+          puts 'IMPORTED'
         rescue Faraday::ClientError => e
           Rails.logger.info("#{e.message} #{e.response}")
         end
       end
     end
-    end_time = Time.now.utc
-    duration = end_time - start_time
-    puts "Finishing import_host_os_releases job at #{end_time} "\
-         "and last #{duration} seconds"
+    puts "Finishing import_host_os_releases job at #{Time.now.utc} "\
+         "and last #{end_time - start_time} seconds"
   rescue StandardError => e
-    ExceptionNotifier.notify_exception(
-      e,
-      data: OpenshiftEnvironment.summary
-    )
+    ExceptionNotifier.notify_exception(e, data: OpenshiftEnvironment.summary)
   end
 end
