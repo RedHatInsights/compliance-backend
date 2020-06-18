@@ -10,8 +10,7 @@ class ApplicationController < ActionController::API
   include Pagination
   include Search
   include Rendering
-
-  ParamType = ActionController::Parameters
+  include Parameters
 
   def openapi
     send_file Rails.root.join('swagger/v1/openapi.v3.yaml')
@@ -19,12 +18,6 @@ class ApplicationController < ActionController::API
 
   def pundit_scope
     Pundit.policy_scope(current_user, resource)
-  end
-
-  def resource_params
-    params.permit(data: ParamType.map(attributes: ParamType.map))
-    params.require(:data).require(:attributes)
-          .permit(serializer.attributes_to_serialize.keys)
   end
 
   rescue_from Pundit::NotAuthorizedError do
