@@ -207,7 +207,9 @@ module V1
 
       test 'create with empty parent_profile_id' do
         assert_difference('Profile.count' => 0) do
-          post profiles_path, params: params(parent_profile_id: '')
+          post profiles_path, params: params(
+            attributes: { parent_profile_id: '' }
+          )
         end
         assert_response :unprocessable_entity
         assert_match 'param is missing or the value is empty: '\
@@ -216,15 +218,18 @@ module V1
       end
 
       test 'create with an unfound parent_profile_id' do
-        post profiles_path, params: params(parent_profile_id: 'notfound')
+        post profiles_path, params: params(
+          attributes: { parent_profile_id: 'notfound' }
+        )
         assert_response :not_found
       end
 
       test 'create with a found parent_profile_id but existing ref_id '\
            'in the account' do
         assert_difference('Profile.count' => 0) do
-          post profiles_path,
-               params: params(parent_profile_id: profiles(:one).id)
+          post profiles_path, params: params(
+            attributes: { parent_profile_id: profiles(:one).id }
+          )
         end
         assert_response :not_acceptable
       end
@@ -232,8 +237,9 @@ module V1
       test 'create with a found parent_profile_id and nonexisting ref_id '\
            'in the account' do
         assert_difference('Profile.count' => 1) do
-          post profiles_path,
-               params: params(parent_profile_id: profiles(:two).id)
+          post profiles_path, params: params(
+            attributes: { parent_profile_id: profiles(:two).id }
+          )
         end
         assert_response :created
         assert_equal accounts(:test).id,
@@ -243,8 +249,10 @@ module V1
       test 'create with a business objective' do
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
-            parent_profile_id: profiles(:two).id,
-            business_objective: BUSINESS_OBJECTIVE
+            attributes: {
+              parent_profile_id: profiles(:two).id,
+              business_objective: BUSINESS_OBJECTIVE
+            }
           )
         end
         assert_response :created
@@ -257,8 +265,10 @@ module V1
       test 'create with some customized profile attributes' do
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
-            parent_profile_id: profiles(:two).id,
-            name: NAME, description: DESCRIPTION
+            attributes: {
+              parent_profile_id: profiles(:two).id,
+              name: NAME, description: DESCRIPTION
+            }
           )
         end
         assert_response :created
@@ -271,10 +281,12 @@ module V1
       test 'create with all customized profile attributes' do
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
-            parent_profile_id: profiles(:two).id,
-            name: NAME, description: DESCRIPTION,
-            compliance_threshold: COMPLIANCE_THRESHOLD,
-            business_objective: BUSINESS_OBJECTIVE
+            attributes: {
+              parent_profile_id: profiles(:two).id,
+              name: NAME, description: DESCRIPTION,
+              compliance_threshold: COMPLIANCE_THRESHOLD,
+              business_objective: BUSINESS_OBJECTIVE
+            }
           )
         end
         assert_response :created
@@ -288,8 +300,118 @@ module V1
                      parsed_data.dig('attributes', 'business_objective')
       end
 
-      def params(attributes = {})
-        { data: { attributes: attributes } }
+      test 'create copies rules from the parent profile' do
+        profiles(:two).update!(rules: [profiles(:two).benchmark.rules.first])
+        assert_difference('Profile.count' => 1) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: profiles(:two).id
+            }
+          )
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal(
+          Set.new(profiles(:two).rule_ids),
+          Set.new(parsed_data.dig('relationships', 'rules', 'data')
+                             .map { |r| r['id'] })
+        )
+      end
+
+      test 'create allows custom rules' do
+        rule_ids = profiles(:two).benchmark.rules.pluck(:id)
+        assert_difference('Profile.count' => 1) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: profiles(:two).id
+            },
+            relationships: {
+              rules: {
+                data: rule_ids.map do |id|
+                  { id: id, type: 'rule' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal(
+          Set.new(rule_ids),
+          Set.new(parsed_data.dig('relationships', 'rules', 'data')
+                             .map { |r| r['id'] })
+        )
+      end
+
+      test 'create only adds custom rules from the parent profile benchmark' do
+        bm = profiles(:two).benchmark
+        bm2 = Xccdf::Benchmark.create!(ref_id: 'foo', title: 'foo', version: 1,
+                                       description: 'foo')
+        bm2.update!(rules: [bm.rules.last])
+        assert(bm.rules.one?)
+        profiles(:two).update!(rules: [bm.rules.first])
+        rule_ids = bm.rules.pluck(:id) + bm2.rules.pluck(:id)
+        assert_difference('Profile.count' => 1) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: profiles(:two).id
+            },
+            relationships: {
+              rules: {
+                data: rule_ids.map do |id|
+                  { id: id, type: 'rule' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal(
+          Set.new(bm.rule_ids),
+          Set.new(parsed_data.dig('relationships', 'rules', 'data')
+                             .map { |r| r['id'] })
+        )
+      end
+
+      test 'create only adds custom rules from the parent profile benchmark'\
+           'and defaults to parent profile rules' do
+        bm = profiles(:two).benchmark
+        bm2 = Xccdf::Benchmark.create!(ref_id: 'foo', title: 'foo', version: 1,
+                                       description: 'foo')
+        bm2.update!(rules: [bm.rules.last])
+        assert(bm.rules.one?)
+        profiles(:two).update!(rules: [bm.rules.first])
+        rule_ids = bm2.rules.pluck(:id)
+        assert_difference('Profile.count' => 1) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: profiles(:two).id
+            },
+            relationships: {
+              rules: {
+                data: rule_ids.map do |id|
+                  { id: id, type: 'rule' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal(
+          Set.new(profiles(:two).rule_ids),
+          Set.new(parsed_data.dig('relationships', 'rules', 'data')
+                             .map { |r| r['id'] })
+        )
+      end
+
+      def params(data)
+        { data: data }
       end
 
       def parsed_data

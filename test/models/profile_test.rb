@@ -238,25 +238,15 @@ class ProfileTest < ActiveSupport::TestCase
     DESCRIPTION = 'The best profile ever'
 
     should 'copy attributes from the parent profile' do
-      profile = Profile.new(parent_profile_id: profiles(:one).id)
-                       .fill_from_parent
+      profile = Profile.new(
+        parent_profile_id: profiles(:one).id, account_id: accounts(:one).id
+      ).fill_from_parent
 
       assert_equal profiles(:one).ref_id, profile.ref_id
       assert_equal profiles(:one).name, profile.name
       assert_equal profiles(:one).description, profile.description
       assert_equal profiles(:one).benchmark_id, profile.benchmark_id
       assert_not profile.external
-    end
-
-    should 'copy rules from the parent profile on save' do
-      profile = Profile.new(parent_profile_id: profiles(:one).id)
-                       .fill_from_parent
-
-      assert_not_equal Set.new(profiles(:one).rules.pluck(:id)),
-                       Set.new(profile.rules.pluck(:id))
-      profile.save
-      assert_equal Set.new(profiles(:one).rules.pluck(:id)),
-                   Set.new(profile.reload.rules.pluck(:id))
     end
 
     should 'allow some customized attributes' do

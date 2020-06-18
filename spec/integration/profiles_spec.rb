@@ -16,6 +16,8 @@ describe 'Profiles API' do
       pagination_params
       search_params
 
+      include_param
+
       response '200', 'lists all profiles requested' do
         before do
           profiles(:one).update!(account: accounts(:one))
@@ -33,7 +35,8 @@ describe 'Profiles API' do
                      properties: {
                        type: { type: :string },
                        id: ref_schema('uuid'),
-                       attributes: ref_schema('profile')
+                       attributes: ref_schema('profile'),
+                       relationships: ref_schema('profile_relationships')
                      }
                    }
                  }
@@ -67,7 +70,7 @@ describe 'Profiles API' do
     end
 
     post 'Create a profile' do
-      fixtures :accounts, :profiles, :benchmarks
+      fixtures :accounts, :profiles, :rules, :benchmarks
       tags 'profile'
       description 'Create a profile with the provided attributes'
       operationId 'CreateProfile'
@@ -97,6 +100,14 @@ describe 'Profiles API' do
               'of these checks should pass.',
               compliance_threshold: 95.0,
               business_objective: 'APAC Expansion'
+            },
+            relationships: {
+              rules: {
+                data: [
+                  { id: 'cc9afa66-3536-4d2e-bc8e-10111d13ec50', type: 'rule' },
+                  { id: '06a19f0e-5c7a-4d54-bc66-e932a96bf954', type: 'rule' }
+                ]
+              }
             }
           }
         }
@@ -113,6 +124,13 @@ describe 'Profiles API' do
                 name: 'A custom name',
                 compliance_threshold: 93.5,
                 business_objective: 'LATAM Expansion'
+              },
+              relationships: {
+                rules: {
+                  data: profiles(:two).benchmark.rules.map do |rule|
+                    { id: rule.id, type: 'rule' }
+                  end
+                }
               }
             }
           }
@@ -212,18 +230,20 @@ describe 'Profiles API' do
                    properties: {
                      type: { type: :string },
                      id: ref_schema('uuid'),
-                     attributes: ref_schema('profile')
+                     attributes: ref_schema('profile'),
+                     relationships: ref_schema('profile_relationships')
                    },
-                   relationships: ref_schema('profile_relationships'),
-                   included: {
-                     type: :array,
-                     items: {
-                       type: :object,
-                       properties: {
-                         type: { type: :string },
-                         id: ref_schema('uuid'),
-                         attributes: ref_schema('benchmark')
-                       }
+                   relationships: ref_schema('profile_relationships')
+                 },
+                 included: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('uuid'),
+                       attributes: ref_schema('benchmark'),
+                       relationships: ref_schema('benchmark_relationships')
                      }
                    }
                  }

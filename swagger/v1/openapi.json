@@ -57,6 +57,16 @@
               "type": "string",
               "default": ""
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
           }
         ],
         "responses": {
@@ -64,21 +74,54 @@
             "description": "lists all benchmarks requested",
             "examples": {
               "application/vnd.api+json": {
-                "meta": {
-                  "filter": "ref_id=xccdf_org.ssgproject.content_benchmark_RHEL-7"
-                },
                 "data": [
                   {
+                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                     "type": "benchmark",
-                    "id": "1b743185-361a-4b9a-bf48-a8efd7114093",
                     "attributes": {
-                      "description": "This guide presents ... which provides required settings for US Department of Defense systems, is one example of a baseline created from this guidance.",
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                      "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
-                      "version": "0.1.46"
+                      "title": "Benchmark One",
+                      "version": "0.1.45",
+                      "description": "The first benchmark"
+                    },
+                    "relationships": {
+                      "rules": {
+                        "data": [
+                          {
+                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "type": "rule"
+                          },
+                          {
+                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                            "type": "rule"
+                          }
+                        ]
+                      },
+                      "profiles": {
+                        "data": [
+                          {
+                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "type": "profile"
+                          },
+                          {
+                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                            "type": "profile"
+                          }
+                        ]
+                      }
                     }
                   }
-                ]
+                ],
+                "meta": {
+                  "total": 1,
+                  "search": null,
+                  "limit": 10,
+                  "offset": 1
+                },
+                "links": {
+                  "first": "/api/compliance/benchmarks?limit=10&offset=1",
+                  "last": "/api/compliance/benchmarks?limit=10&offset=1"
+                }
               }
             },
             "content": {
@@ -100,8 +143,7 @@
                             "type": "string"
                           },
                           "id": {
-                            "type": "string",
-                            "format": "uuid"
+                            "$ref": "#/components/schemas/uuid"
                           },
                           "attributes": {
                             "$ref": "#/components/schemas/benchmark"
@@ -134,48 +176,22 @@
             }
           },
           {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "description": "The number of items to return",
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "default": 10
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "description": "The number of items to skip before starting to collect the result set",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
-          },
-          {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
           }
         ],
         "responses": {
@@ -183,7 +199,7 @@
             "description": "benchmark not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Resource not found"
+                "errors": "Xccdf::Benchmark not found with ID invalid"
               }
             },
             "content": {}
@@ -193,13 +209,39 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
+                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                   "type": "benchmark",
-                  "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
                   "attributes": {
-                    "description": "This guide presents ... which provides required settings for US Department of Defense systems, is one example of a baseline created from this guidance.",
                     "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                    "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
-                    "version": "0.1.46"
+                    "title": "Benchmark One",
+                    "version": "0.1.45",
+                    "description": "The first benchmark"
+                  },
+                  "relationships": {
+                    "rules": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "rule"
+                        },
+                        {
+                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                          "type": "rule"
+                        }
+                      ]
+                    },
+                    "profiles": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "profile"
+                        },
+                        {
+                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                          "type": "profile"
+                        }
+                      ]
+                    }
                   }
                 }
               }
@@ -222,11 +264,13 @@
                           "type": "string"
                         },
                         "id": {
-                          "type": "string",
-                          "format": "uuid"
+                          "$ref": "#/components/schemas/uuid"
                         },
                         "attributes": {
                           "$ref": "#/components/schemas/benchmark"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/benchmark_relationships"
                         }
                       }
                     }
@@ -289,6 +333,16 @@
               "type": "string",
               "default": ""
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
           }
         ],
         "responses": {
@@ -429,6 +483,9 @@
                           },
                           "attributes": {
                             "$ref": "#/components/schemas/profile"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/profile_relationships"
                           }
                         }
                       }
@@ -462,7 +519,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "3ff92a51-fa16-497a-b01b-c89d7fb19d24",
+                  "id": "8528687e-c44e-4c01-bded-c45a183792f0",
                   "type": "profile",
                   "attributes": {
                     "name": "A custom name",
@@ -475,7 +532,7 @@
                     "os_major_version": "7",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "canonical": false,
-                    "tailored": false,
+                    "tailored": true,
                     "total_host_count": 0,
                     "compliant_host_count": 0,
                     "business_objective": "LATAM Expansion"
@@ -500,7 +557,16 @@
                       }
                     },
                     "rules": {
-                      "data": []
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "rule"
+                        },
+                        {
+                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                          "type": "rule"
+                        }
+                      ]
                     },
                     "hosts": {
                       "data": []
@@ -568,6 +634,20 @@
                       "description": "This profile contains rules to ensure standard security baseline\\nof a Red Hat Enterprise Linux 7 system. Regardless of your system's workload\\nall of these checks should pass.",
                       "compliance_threshold": 95.0,
                       "business_objective": "APAC Expansion"
+                    },
+                    "relationships": {
+                      "rules": {
+                        "data": [
+                          {
+                            "id": "cc9afa66-3536-4d2e-bc8e-10111d13ec50",
+                            "type": "rule"
+                          },
+                          {
+                            "id": "06a19f0e-5c7a-4d54-bc66-e932a96bf954",
+                            "type": "rule"
+                          }
+                        ]
+                      }
                     }
                   }
                 }
@@ -648,7 +728,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "e9b83492-f95d-4659-9273-3ab378e5868d",
+                        "id": "b301900b-fe92-4df5-a50b-e3ba87a75f82",
                         "type": "account"
                       }
                     },
@@ -691,6 +771,32 @@
                       "title": "Benchmark One",
                       "version": "0.1.45",
                       "description": "The first benchmark"
+                    },
+                    "relationships": {
+                      "rules": {
+                        "data": [
+                          {
+                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "type": "rule"
+                          },
+                          {
+                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                            "type": "rule"
+                          }
+                        ]
+                      },
+                      "profiles": {
+                        "data": [
+                          {
+                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                            "type": "profile"
+                          },
+                          {
+                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "type": "profile"
+                          }
+                        ]
+                      }
                     }
                   }
                 ]
@@ -725,21 +831,24 @@
                       },
                       "relationships": {
                         "$ref": "#/components/schemas/profile_relationships"
-                      },
-                      "included": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "type": {
-                              "type": "string"
-                            },
-                            "id": {
-                              "$ref": "#/components/schemas/uuid"
-                            },
-                            "attributes": {
-                              "$ref": "#/components/schemas/benchmark"
-                            }
+                      }
+                    },
+                    "included": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/benchmark"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/benchmark_relationships"
                           }
                         }
                       }
@@ -1360,6 +1469,7 @@
         "properties": {
           "data": {
             "type": "object",
+            "nullable": true,
             "properties": {
               "id": {
                 "$ref": "#/components/schemas/uuid"
@@ -1475,6 +1585,17 @@
           },
           "description": {
             "type": "string"
+          }
+        }
+      },
+      "benchmark_relationships": {
+        "type": "object",
+        "properties": {
+          "rules": {
+            "$ref": "#/components/schemas/relationship_collection"
+          },
+          "profiles": {
+            "$ref": "#/components/schemas/relationship_collection"
           }
         }
       },

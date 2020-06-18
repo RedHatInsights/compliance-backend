@@ -15,6 +15,7 @@ module Api
           properties: {
             data: {
               type: :object,
+              nullable: true,
               properties: {
                 id: ref_schema('uuid'),
                 type: { type: :string }

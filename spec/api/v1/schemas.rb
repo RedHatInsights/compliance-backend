@@ -30,6 +30,7 @@ module Api
         host: HOST,
         links: LINKS,
         benchmark: BENCHMARK,
+        benchmark_relationships: BENCHMARK_RELATIONSHIPS,
         profile: PROFILE,
         profile_relationships: PROFILE_RELATIONSHIPS,
         rule_result: RULE_RESULT,
