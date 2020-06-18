@@ -265,6 +265,51 @@ class ProfileTest < ActiveSupport::TestCase
     end
   end
 
+  context 'update_rules' do
+    should 'add new rules to an empty rule set' do
+      profiles(:one).update!(rules: [])
+      assert_empty(profiles(:one).rules)
+      assert_difference(
+        'profiles(:one).rules.count', profiles(:one).benchmark.rules.count
+      ) do
+        profiles(:one).update_rules(
+          ids: profiles(:one).benchmark.rules.pluck(:id)
+        )
+      end
+    end
+
+    should 'add new rules to an existing rule set' do
+      profiles(:one).update!(rules: profiles(:one).rules[0...-1])
+      assert_not_empty(profiles(:one).rules)
+      assert_difference('profiles(:one).rules.count', 1) do
+        profiles(:one).update_rules(
+          ids: profiles(:one).benchmark.rules.pluck(:id)
+        )
+      end
+    end
+
+    should 'remove old rules from an existing rule set' do
+      assert_not_empty(profiles(:one).rules)
+      assert_difference('profiles(:one).rules.count',
+                        -profiles(:one).rules.count) do
+        profiles(:one).update_rules(
+          ids: []
+        )
+      end
+    end
+
+    should 'add new and remove old rules from an existing rule set' do
+      original_rule_ids = profiles(:one).rules.pluck(:id)
+      profiles(:one).update!(rule_ids: original_rule_ids[0...-1])
+      assert_not_empty(profiles(:one).rules)
+      assert_difference('profiles(:one).rules.count', 0) do
+        profiles(:one).update_rules(
+          ids: original_rule_ids[1..-1]
+        )
+      end
+    end
+  end
+
   context 'cloning profile to account' do
     should 'create host relation when the profile is created' do
       assert_difference('ProfileHost.count', 1) do
