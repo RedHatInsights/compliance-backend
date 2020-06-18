@@ -4,23 +4,21 @@ module V1
   # API for Benchmarks
   class BenchmarksController < ApplicationController
     def index
-      render json: benchmarks
+      render_json benchmarks
     end
 
     def show
-      render json: benchmark
+      render_json benchmark
     end
 
     private
 
     def benchmarks
-      @benchmarks ||= BenchmarkSerializer.new(authorize(scope_search), metadata)
+      @benchmarks ||= authorize(scope_search)
     end
 
     def benchmark
-      @benchmark ||= BenchmarkSerializer.new(
-        authorize(resource.find(params[:id]))
-      )
+      @benchmark ||= authorize(resource.find(params[:id]))
     end
 
     def scope
@@ -29,6 +27,10 @@ module V1
 
     def resource
       Xccdf::Benchmark
+    end
+
+    def serializer
+      BenchmarkSerializer
     end
   end
 end

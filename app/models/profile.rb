@@ -26,7 +26,6 @@ class Profile < ApplicationRecord
 
   after_update :destroy_orphaned_business_objective
   after_rollback :destroy_orphaned_business_objective
-  after_create :add_rules
 
   class << self
     def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
@@ -75,7 +74,7 @@ class Profile < ApplicationRecord
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
-    new_profile.add_rules(ref_ids: rules.pluck(:ref_id))
+    new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
     new_profile
   end
 
@@ -84,31 +83,37 @@ class Profile < ApplicationRecord
                     benchmark_id: benchmark_id)
   end
 
-  def add_rules(ids: nil, ref_ids: nil)
-    ProfileRule.import!(rule_ids_to_add(ids, ref_ids).map do |rule|
-      ProfileRule.new(profile_id: id, rule_id: rule.id)
-    end, ignore: true)
-  end
-
   def major_os_version
     benchmark ? benchmark.inferred_os_major_version : 'N/A'
   end
   alias os_major_version major_os_version
 
+  def update_rules(ids: nil, ref_ids: nil)
+    ids_to_add = rule_ids_to_add(ids, ref_ids)
+
+    ProfileRule.where(rule_id: rule_ids - ids_to_add, profile_id: id)
+               .destroy_all
+
+    ProfileRule.import!(ids_to_add.map do |rule|
+      ProfileRule.new(profile_id: id, rule_id: rule.id)
+    end)
+  end
+
   private
 
   def rule_ids_to_add(ids, ref_ids)
-    benchmark.rules.select(:id).tap do |rel|
-      return rel.where(id: ids) if ids
-      return rel.where(ref_id: ref_ids) if ref_ids
+    bm_rules = benchmark.rules.select(:id).where.not(id: rule_ids)
 
-      return rel.where(id: parent_profile_rule_ids)
-    end
+    rel = if ids
+            bm_rules.where(id: ids)
+          elsif ref_ids
+            bm_rules.where(ref_id: ref_ids)
+          end
+
+    rel&.any? ? rel : bm_rules.where(id: parent_profile_rule_ids)
   end
 
   def parent_profile_rule_ids
-    return [] if parent_profile_id.blank?
-
-    ProfileRule.select(:rule_id).where(profile_id: parent_profile_id)
+    parent_profile&.rules&.select(:id) || []
   end
 end
