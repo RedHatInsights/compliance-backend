@@ -296,16 +296,113 @@
             "description": "lists all profiles requested filtered by OS",
             "examples": {
               "application/vnd.api+json": {
-                "data": [],
+                "data": [
+                  {
+                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                    "type": "profile",
+                    "attributes": {
+                      "name": "profile1",
+                      "ref_id": "xccdf_org.ssgproject.profile1",
+                      "description": null,
+                      "score": 98.0,
+                      "parent_profile_id": null,
+                      "external": false,
+                      "compliance_threshold": 100.0,
+                      "os_major_version": "7",
+                      "parent_profile_ref_id": null,
+                      "canonical": true,
+                      "tailored": false,
+                      "total_host_count": 0,
+                      "compliant_host_count": 0,
+                      "business_objective": null
+                    },
+                    "relationships": {
+                      "account": {
+                        "data": null
+                      },
+                      "benchmark": {
+                        "data": {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "benchmark"
+                        }
+                      },
+                      "parent_profile": {
+                        "data": null
+                      },
+                      "rules": {
+                        "data": []
+                      },
+                      "hosts": {
+                        "data": []
+                      },
+                      "test_results": {
+                        "data": [
+                          {
+                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "type": "test_result"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                    "type": "profile",
+                    "attributes": {
+                      "name": "profile2",
+                      "ref_id": "xccdf_org.ssgproject.profile2",
+                      "description": null,
+                      "score": 98.0,
+                      "parent_profile_id": null,
+                      "external": false,
+                      "compliance_threshold": 100.0,
+                      "os_major_version": "7",
+                      "parent_profile_ref_id": null,
+                      "canonical": true,
+                      "tailored": false,
+                      "total_host_count": 0,
+                      "compliant_host_count": 0,
+                      "business_objective": null
+                    },
+                    "relationships": {
+                      "account": {
+                        "data": null
+                      },
+                      "benchmark": {
+                        "data": {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "benchmark"
+                        }
+                      },
+                      "parent_profile": {
+                        "data": null
+                      },
+                      "rules": {
+                        "data": []
+                      },
+                      "hosts": {
+                        "data": []
+                      },
+                      "test_results": {
+                        "data": [
+                          {
+                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                            "type": "test_result"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
                 "meta": {
-                  "total": 0,
+                  "total": 2,
                   "search": "os_major_version = 7",
                   "limit": 10,
                   "offset": 1
                 },
                 "links": {
                   "first": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=1",
-                  "last": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=0"
+                  "last": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=1"
                 }
               }
             },
@@ -335,6 +432,99 @@
                           }
                         }
                       }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a profile",
+        "tags": [
+          "profile"
+        ],
+        "description": "Create a profile with the provided attributes",
+        "operationId": "CreateProfile",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "creates a profile",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "id": "feb7537d-b530-48db-8b51-0abd226829fa",
+                  "type": "profile",
+                  "attributes": {
+                    "name": "A custom name",
+                    "ref_id": "xccdf_org.ssgproject.profile2",
+                    "description": null,
+                    "score": 0,
+                    "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                    "external": false,
+                    "compliance_threshold": 93.5,
+                    "os_major_version": "7",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
+                    "canonical": false,
+                    "tailored": false,
+                    "total_host_count": 0,
+                    "compliant_host_count": 0,
+                    "business_objective": "LATAM Expansion"
+                  },
+                  "relationships": {
+                    "account": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "account"
+                      }
+                    },
+                    "benchmark": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "benchmark"
+                      }
+                    },
+                    "parent_profile": {
+                      "data": {
+                        "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                        "type": "profile"
+                      }
+                    },
+                    "rules": {
+                      "data": []
+                    },
+                    "hosts": {
+                      "data": []
+                    },
+                    "test_results": {
+                      "data": []
+                    }
+                  }
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "type": "object",
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "attributes": {
+                      "$ref": "#/components/schemas/profile"
                     }
                   }
                 }
@@ -384,7 +574,7 @@
             "description": "profile not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Resource not found"
+                "errors": "Profile not found with ID invalid"
               }
             },
             "content": {}
@@ -415,7 +605,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "56f767cf-6e55-475b-a8ec-016dd7e48863",
+                        "id": "02f8f65e-8d32-4cef-b0b6-c982cabd855e",
                         "type": "account"
                       }
                     },
@@ -425,11 +615,27 @@
                         "type": "benchmark"
                       }
                     },
-                    "business_objective": {
-                      "data": null
-                    },
                     "parent_profile": {
                       "data": null
+                    },
+                    "rules": {
+                      "data": []
+                    },
+                    "hosts": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "host"
+                        }
+                      ]
+                    },
+                    "test_results": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "test_result"
+                        }
+                      ]
                     }
                   }
                 },
@@ -471,27 +677,11 @@
                           "$ref": "#/components/schemas/profile"
                         },
                         "relationships": {
-                          "account": {
-                            "$ref": "#/components/schemas/relationship"
-                          },
-                          "benchmark": {
-                            "$ref": "#/components/schemas/relationship"
-                          },
-                          "parent_profile": {
-                            "$ref": "#/components/schemas/relationship"
-                          }
+                          "$ref": "#/components/schemas/profile_relationships"
                         }
                       },
                       "relationships": {
-                        "account": {
-                          "$ref": "#/components/schemas/relationship"
-                        },
-                        "benchmark": {
-                          "$ref": "#/components/schemas/relationship"
-                        },
-                        "parent_profile": {
-                          "$ref": "#/components/schemas/relationship"
-                        }
+                        "$ref": "#/components/schemas/profile_relationships"
                       },
                       "included": {
                         "type": "array",
@@ -557,7 +747,7 @@
             "description": "profile not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Resource not found"
+                "errors": "Profile not found with ID invalid"
               }
             },
             "content": {}
@@ -598,11 +788,17 @@
                         "type": "benchmark"
                       }
                     },
-                    "business_objective": {
-                      "data": null
-                    },
                     "parent_profile": {
                       "data": null
+                    },
+                    "rules": {
+                      "data": []
+                    },
+                    "hosts": {
+                      "data": []
+                    },
+                    "test_results": {
+                      "data": []
                     }
                   }
                 }
@@ -632,15 +828,7 @@
                           "$ref": "#/components/schemas/profile"
                         },
                         "relationships": {
-                          "account": {
-                            "$ref": "#/components/schemas/relationship"
-                          },
-                          "benchmark": {
-                            "$ref": "#/components/schemas/relationship"
-                          },
-                          "parent_profile": {
-                            "$ref": "#/components/schemas/relationship"
-                          }
+                          "$ref": "#/components/schemas/profile_relationships"
                         }
                       }
                     }
@@ -1129,6 +1317,19 @@
           "type": "string"
         }
       },
+      "relationship_collection": {
+        "data": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/uuid"
+              },
+              "type": "string"
+            }
+          }
+        }
+      },
       "error": {
         "type": "object",
         "required": [
@@ -1221,15 +1422,15 @@
       "profile": {
         "type": "object",
         "required": [
-          "name",
-          "ref_id"
+          "parent_profile_id"
         ],
         "properties": {
           "parent_profile_id": {
             "type": "string",
             "format": "uuid",
             "nullable": true,
-            "example": "0105a0f0-7379-4897-a891-f95cfb9ddf9c"
+            "example": "0105a0f0-7379-4897-a891-f95cfb9ddf9c",
+            "required": true
           },
           "parent_profile_ref_id": {
             "type": "string",
@@ -1277,6 +1478,29 @@
           "os_major_version": {
             "type": "string",
             "example": "7"
+          }
+        }
+      },
+      "profile_relationships": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/relationship"
+          },
+          "benchmark": {
+            "$ref": "#/components/schemas/relationship"
+          },
+          "parent_profile": {
+            "$ref": "#/components/schemas/relationship"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/relationship_collection"
+          },
+          "hosts": {
+            "$ref": "#/components/schemas/relationship_collection"
+          },
+          "test_results": {
+            "$ref": "#/components/schemas/relationship_collection"
           }
         }
       },

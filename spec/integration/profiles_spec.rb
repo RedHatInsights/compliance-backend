@@ -65,6 +65,43 @@ describe 'Profiles API' do
         run_test!
       end
     end
+
+    post 'Create a profile' do
+      fixtures :accounts, :profiles, :benchmarks
+      tags 'profile'
+      description 'Create a profile with the provided attributes'
+      operationId 'CreateProfile'
+
+      content_types
+      auth_header
+
+      parameter name: :data, in: :body, required: true, schema: {
+        type: :object,
+        data: {
+          type: :object,
+          properties: {
+            attributes: ref_schema('profile')
+          }
+        }
+      }
+
+      response '201', 'creates a profile' do
+        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:include) { '' } # work around buggy rswag
+        let(:data) do
+          { data: { attributes: {
+            parent_profile_id: profiles(:two).id,
+            name: 'A custom name',
+            compliance_threshold: 93.5,
+            business_objective: 'LATAM Expansion'
+          } } }
+        end
+
+        after { |e| autogenerate_examples(e) }
+
+        run_test!
+      end
+    end
   end
 
   path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/profiles/{id}" do
@@ -110,11 +147,7 @@ describe 'Profiles API' do
                      type: { type: :string },
                      id: ref_schema('uuid'),
                      attributes: ref_schema('profile'),
-                     relationships: {
-                       account: ref_schema('relationship'),
-                       benchmark: ref_schema('relationship'),
-                       parent_profile: ref_schema('relationship')
-                     }
+                     relationships: ref_schema('profile_relationships')
                    }
                  }
                }
@@ -146,11 +179,7 @@ describe 'Profiles API' do
                      id: ref_schema('uuid'),
                      attributes: ref_schema('profile')
                    },
-                   relationships: {
-                     account: ref_schema('relationship'),
-                     benchmark: ref_schema('relationship'),
-                     parent_profile: ref_schema('relationship')
-                   },
+                   relationships: ref_schema('profile_relationships'),
                    included: {
                      type: :array,
                      items: {
@@ -211,11 +240,7 @@ describe 'Profiles API' do
                      type: { type: :string },
                      id: ref_schema('uuid'),
                      attributes: ref_schema('profile'),
-                     relationships: {
-                       account: ref_schema('relationship'),
-                       benchmark: ref_schema('relationship'),
-                       parent_profile: ref_schema('relationship')
-                     }
+                     relationships: ref_schema('profile_relationships')
                    }
                  }
                }

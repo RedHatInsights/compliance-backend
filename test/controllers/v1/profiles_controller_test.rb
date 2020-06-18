@@ -160,5 +160,141 @@ module V1
         assert_response :forbidden
       end
     end
+
+    class CreateTest < ProfilesControllerTest
+      fixtures :accounts, :benchmarks, :profiles
+
+      NAME = 'A new name'
+      DESCRIPTION = 'A new description'
+      COMPLIANCE_THRESHOLD = 93.5
+      BUSINESS_OBJECTIVE = 'LATAM Expansion'
+
+      test 'create without data' do
+        assert_difference('Profile.count' => 0) do
+          post profiles_path, params: { data: {} }
+        end
+        assert_response :unprocessable_entity
+        assert_match 'param is missing or the value is empty: data',
+                     JSON.parse(response.body).dig('errors')
+      end
+
+      test 'create with invalid data' do
+        assert_difference('Profile.count' => 0) do
+          post profiles_path, params: { data: 'foo' }
+        end
+        assert_response :unprocessable_entity
+        assert_match 'data must be a hash',
+                     JSON.parse(response.body).dig('errors')
+      end
+
+      test 'create with empty attributes' do
+        assert_difference('Profile.count' => 0) do
+          post profiles_path, params: { data: { attributes: {} } }
+        end
+        assert_response :unprocessable_entity
+        assert_match 'param is missing or the value is empty: data',
+                     JSON.parse(response.body).dig('errors')
+      end
+
+      test 'create with invalid attributes' do
+        assert_difference('Profile.count' => 0) do
+          post profiles_path, params: { data: { attributes: 'invalid' } }
+        end
+        assert_response :unprocessable_entity
+        assert_match 'attributes must be a hash',
+                     JSON.parse(response.body).dig('errors')
+      end
+
+      test 'create with empty parent_profile_id' do
+        assert_difference('Profile.count' => 0) do
+          post profiles_path, params: params(parent_profile_id: '')
+        end
+        assert_response :unprocessable_entity
+        assert_match 'param is missing or the value is empty: '\
+                     'parent_profile_id',
+                     JSON.parse(response.body).dig('errors')
+      end
+
+      test 'create with an unfound parent_profile_id' do
+        post profiles_path, params: params(parent_profile_id: 'notfound')
+        assert_response :not_found
+      end
+
+      test 'create with a found parent_profile_id but existing ref_id '\
+           'in the account' do
+        assert_difference('Profile.count' => 0) do
+          post profiles_path,
+               params: params(parent_profile_id: profiles(:one).id)
+        end
+        assert_response :not_acceptable
+      end
+
+      test 'create with a found parent_profile_id and nonexisting ref_id '\
+           'in the account' do
+        assert_difference('Profile.count' => 1) do
+          post profiles_path,
+               params: params(parent_profile_id: profiles(:two).id)
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+      end
+
+      test 'create with a business objective' do
+        assert_difference('Profile.count' => 1) do
+          post profiles_path, params: params(
+            parent_profile_id: profiles(:two).id,
+            business_objective: BUSINESS_OBJECTIVE
+          )
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal BUSINESS_OBJECTIVE,
+                     parsed_data.dig('attributes', 'business_objective')
+      end
+
+      test 'create with some customized profile attributes' do
+        assert_difference('Profile.count' => 1) do
+          post profiles_path, params: params(
+            parent_profile_id: profiles(:two).id,
+            name: NAME, description: DESCRIPTION
+          )
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal NAME, parsed_data.dig('attributes', 'name')
+        assert_equal DESCRIPTION, parsed_data.dig('attributes', 'description')
+      end
+
+      test 'create with all customized profile attributes' do
+        assert_difference('Profile.count' => 1) do
+          post profiles_path, params: params(
+            parent_profile_id: profiles(:two).id,
+            name: NAME, description: DESCRIPTION,
+            compliance_threshold: COMPLIANCE_THRESHOLD,
+            business_objective: BUSINESS_OBJECTIVE
+          )
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal NAME, parsed_data.dig('attributes', 'name')
+        assert_equal DESCRIPTION, parsed_data.dig('attributes', 'description')
+        assert_equal COMPLIANCE_THRESHOLD,
+                     parsed_data.dig('attributes', 'compliance_threshold')
+        assert_equal BUSINESS_OBJECTIVE,
+                     parsed_data.dig('attributes', 'business_objective')
+      end
+
+      def params(attributes = {})
+        { data: { attributes: attributes } }
+      end
+
+      def parsed_data
+        JSON.parse(response.body).dig('data')
+      end
+    end
   end
 end
