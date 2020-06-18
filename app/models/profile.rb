@@ -89,20 +89,27 @@ class Profile < ApplicationRecord
   alias os_major_version major_os_version
 
   def update_rules(ids: nil, ref_ids: nil)
-    ids_to_add = rule_ids_to_add(ids, ref_ids)
+    ProfileRule.where(
+      rule_id: rule_ids_to_destroy(ids, ref_ids), profile_id: id
+    ).destroy_all
 
-    ProfileRule.where(rule_id: rule_ids - ids_to_add, profile_id: id)
-               .destroy_all
-
-    ProfileRule.import!(ids_to_add.map do |rule|
-      ProfileRule.new(profile_id: id, rule_id: rule.id)
+    ProfileRule.import!(rule_ids_to_add(ids, ref_ids).map do |rule_id|
+      ProfileRule.new(profile_id: id, rule_id: rule_id)
     end)
   end
 
   private
 
   def rule_ids_to_add(ids, ref_ids)
-    bm_rules = benchmark.rules.select(:id).where.not(id: rule_ids)
+    new_rules(ids, ref_ids).where.not(id: rule_ids).pluck(:id)
+  end
+
+  def rule_ids_to_destroy(ids, ref_ids)
+    rule_ids - new_rules(ids, ref_ids).pluck(:id)
+  end
+
+  def new_rules(ids, ref_ids)
+    bm_rules = benchmark.rules.select(:id)
 
     rel = if ids
             bm_rules.where(id: ids)

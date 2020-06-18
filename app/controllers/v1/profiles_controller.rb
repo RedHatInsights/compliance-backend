@@ -8,6 +8,10 @@ module V1
       parent_profile_id
     ].freeze
 
+    ALLOWED_UPDATE_ATTRIBUTES = %i[
+      name description compliance_threshold business_objective
+    ].freeze
+
     def index
       params[:search] ||= 'external=false and canonical=false'
       render_json scope_search.sort_by(&:score)
@@ -29,6 +33,17 @@ module V1
       if profile.save
         profile.update_rules(ids: new_rule_ids)
         render_json profile, status: :created
+      else
+        render_error profile
+      end
+    end
+
+    def update
+      authorize profile
+
+      if profile.update(profile_update_attributes)
+        profile.update_rules(ids: new_rule_ids)
+        render_json profile
       else
         render_error profile
       end
@@ -71,6 +86,15 @@ module V1
                          .tap do |attrs|
         parent_profile
 
+        if business_objective
+          attrs.except! :business_objective
+          attrs[:business_objective_id] = business_objective.id
+        end
+      end
+    end
+
+    def profile_update_attributes
+      resource_attributes.to_h.slice(*ALLOWED_UPDATE_ATTRIBUTES).tap do |attrs|
         if business_objective
           attrs.except! :business_objective
           attrs[:business_objective_id] = business_objective.id
