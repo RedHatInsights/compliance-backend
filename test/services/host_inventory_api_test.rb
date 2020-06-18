@@ -32,10 +32,11 @@ class HostInventoryApiTest < ActiveSupport::TestCase
   test 'inventory_host for host already in inventory' do
     @api.expects(:host_already_in_inventory).returns(@host)
     system_profile_response = OpenStruct.new(body: {
-      results: [{ id: @host.id, system_profile: { os_release: '8.2' }}]
+      results: [{ id: @host.id, system_profile: { os_release: '8.2' } }]
     }.to_json)
     @connection.expects(:get).with(
-      "#{@url}#{ENV['PATH_PREFIX']}/inventory/v1/hosts/#{@host.id}/system_profile",
+      "#{@url}#{ENV['PATH_PREFIX']}/inventory/v1/hosts/"\
+      "#{@host.id}/system_profile",
       { per_page: 50, page: 1 },
       X_RH_IDENTITY: @b64_identity
     ).returns(system_profile_response)
@@ -54,9 +55,12 @@ class HostInventoryApiTest < ActiveSupport::TestCase
   test 'find_results matches on ID' do
     assert_equal(
       @api.send(
-        :find_results, { 'results' => [
-          { 'account' => @account.account_number, 'id' => @host.id }
-        ]},
+        :find_results, {
+          'results' =>
+          [
+            { 'account' => @account.account_number, 'id' => @host.id }
+          ]
+        },
         @host.id
       )['id'],
       @host.id,

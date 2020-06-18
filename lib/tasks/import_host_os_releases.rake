@@ -3,22 +3,31 @@
 desc <<-END_DESC
   Imports the os_release field from the system_profile stored in the Inventory.
 
+  To contact the Inventory API, each account b64_identity will be used.
+
   Examples:
-    # JOBS_ACCOUNT_NUMBER=000001 rake import_host_os_releases
+    # rake import_host_os_releases
 END_DESC
 
 task import_host_os_releases: :environment do
   begin
     start_time = Time.now.utc
     puts "Starting import_host_os_releases job at #{start_time}"
-    inventory_api = HostInventoryAPI.new(
-      Account.find_by!(account_number: ENV['JOBS_ACCOUNT_NUMBER'])
-    )
-    ::Host.find_in_batches(batch_size: 50) do |hosts|
-      begin
-        inventory_api.import_os_releases(hosts.pluck(:id))
-      rescue Faraday::ClientError => e
-        Rails.logger.info("#{e.message} #{e.response}")
+    ::Account.includes(:hosts).find_each do |account|
+      inventory_api = HostInventoryAPI.new(
+        account, ::Settings.host_inventory_url, account.b64_identity
+      )
+      ::Host.find_in_batches(batch_size: 50) do |hosts|
+        begin
+          os_releases = inventory_api.system_profile(hosts.pluck(:id))
+          print "Found OS releases for account #{account.account_number}: "
+          puts "#{os_releases}"
+          print "Importing..."
+          Host.import os_releases
+          puts "IMPORTED"
+        rescue Faraday::ClientError => e
+          Rails.logger.info("#{e.message} #{e.response}")
+        end
       end
     end
     end_time = Time.now.utc

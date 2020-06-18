@@ -29,8 +29,8 @@ class HostInventoryAPI
     raise ::InventoryHostNotFound if @inventory_host.blank?
 
     if (os_release = system_profile([host_id]).first)
-      @inventory_host.os_major = os_release[:os_major]
-      @inventory_host.os_minor = os_release[:os_minor]
+      @inventory_host[:os_major] = os_release[:os_major]
+      @inventory_host[:os_minor] = os_release[:os_minor]
     end
     @inventory_host
   end
@@ -44,11 +44,6 @@ class HostInventoryAPI
       os_major, os_minor = host['system_profile']['os_release'].split('.')
       acc << { id: host['id'], os_major: os_major, os_minor: os_minor }
     end
-  end
-
-  def import_os_releases(ids)
-    os_releases = system_profile(ids)
-    Host.import os_releases
   end
 
   private
