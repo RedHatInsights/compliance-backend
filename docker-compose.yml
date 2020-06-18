@@ -3,6 +3,8 @@ services:
   db:
     image: postgres
     restart: on-failure
+    environment:
+        - POSTGRES_PASSWORD=postgres
     volumes:
       - ./tmp/insights-compliance-db:/var/lib/postgresql/data:z
   rails:
@@ -95,7 +97,3 @@ services:
   redis:
     image: redis:latest
 
-networks:
-  default:
-    external:
-      name: docker_default # should match insights-upload's network name

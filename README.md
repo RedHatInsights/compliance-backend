@@ -88,6 +88,10 @@ SPANDX_CONFIG=$(pwd)/compliance-backend.js ../insights-proxy/scripts/run.sh
 
 ### Option 3: Docker Development setup
 
+## pre-requisites:
+
+There should be an [upload-service](https://github.com/RedHatInsights/insights-upload) container available in the same network the `rails` container runs.
+
 Bring up the DB, rails, and racecar:
 
 ```shell
