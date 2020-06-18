@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
+require './spec/api/v1/schemas/util'
+
 module Api
   module V1
     module Schemas
       module Benchmarks
+        extend Api::V1::Schemas::Util
+
         BENCHMARK = {
           type: 'object',
           required: %w[ref_id title version],
@@ -24,6 +28,14 @@ module Api
             description: {
               type: 'string'
             }
+          }
+        }.freeze
+
+        BENCHMARK_RELATIONSHIPS = {
+          type: :object,
+          properties: {
+            rules: ref_schema('relationship_collection'),
+            profiles: ref_schema('relationship_collection')
           }
         }.freeze
       end
