@@ -1,0 +1,99 @@
+# Generation of Kubernetes YAML is still under development!
+#
+# Save the output of this file and use kubectl create -f to import
+# it into Kubernetes.
+#
+# Created with podman-1.9.2
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2020-06-18T12:25:29Z"
+  labels:
+    app: postgresql
+  name: postgresql
+spec:
+  containers:
+  - command:
+    - /postgres_exporter
+    - /postgres_exporter
+    env:
+    - name: PATH
+      value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    - name: TERM
+      value: xterm
+    - name: HOSTNAME
+      value: postgresql
+    - name: PG_VERSION
+      value: 12.3-1.pgdg100+1
+    - name: GOSU_VERSION
+      value: "1.12"
+    - name: container
+      value: podman
+    - name: POSTGRES_PASSWORD
+      value: password
+    - name: DATA_SOURCE_NAME
+      value: postgresql://postgres:password@localhost:5432/postgres?sslmode=disable
+    - name: PG_MAJOR
+      value: "12"
+    - name: PGDATA
+      value: /var/lib/postgresql/data
+    - name: LANG
+      value: en_US.utf8
+    image: docker.io/wrouesnel/postgres_exporter:latest
+    name: hungryhermann
+    ports:
+    - containerPort: 5432
+      hostPort: 5432
+      protocol: TCP
+    - containerPort: 9187
+      hostPort: 9187
+      protocol: TCP
+    resources: {}
+    securityContext:
+      allowPrivilegeEscalation: true
+      capabilities: {}
+      privileged: false
+      readOnlyRootFilesystem: false
+      runAsGroup: 20001
+      runAsUser: 20001
+      seLinuxOptions: {}
+    workingDir: /
+  - command:
+    - docker-entrypoint.sh
+    - docker-entrypoint.sh
+    - postgres
+    env:
+    - name: PATH
+      value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/postgresql/12/bin
+    - name: TERM
+      value: xterm
+    - name: HOSTNAME
+      value: postgresql
+    - name: PGDATA
+      value: /var/lib/postgresql/data
+    - name: LANG
+      value: en_US.utf8
+    - name: PG_MAJOR
+      value: "12"
+    - name: POSTGRES_PASSWORD
+      value: password
+    - name: DATA_SOURCE_NAME
+      value: postgresql://postgres:password@localhost:5432/postgres?sslmode=disable
+    - name: PG_VERSION
+      value: 12.3-1.pgdg100+1
+    - name: GOSU_VERSION
+      value: "1.12"
+    - name: container
+      value: podman
+    image: docker.io/library/postgres:latest
+    name: focusedhopper
+    resources: {}
+    securityContext:
+      allowPrivilegeEscalation: true
+      capabilities: {}
+      privileged: false
+      readOnlyRootFilesystem: false
+      seLinuxOptions: {}
+    workingDir: /
+status: {}
+
