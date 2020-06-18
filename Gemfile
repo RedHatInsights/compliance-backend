@@ -62,6 +62,9 @@ gem 'prometheus_exporter', '>= 0.5'
 # Parsing OpenSCAP reports library
 gem 'openscap_parser', '~> 1.0.0'
 
+# REST API parameter type checking
+gem 'stronger_parameters'
+
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]

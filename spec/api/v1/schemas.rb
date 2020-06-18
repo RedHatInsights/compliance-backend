@@ -24,12 +24,14 @@ module Api
       SCHEMAS = {
         uuid: UUID,
         relationship: RELATIONSHIP,
+        relationship_collection: RELATIONSHIP_COLLECTION,
         error: ERROR,
         metadata: METADATA,
         host: HOST,
         links: LINKS,
         benchmark: BENCHMARK,
         profile: PROFILE,
+        profile_relationships: PROFILE_RELATIONSHIPS,
         rule_result: RULE_RESULT,
         rule: RULE
       }.freeze

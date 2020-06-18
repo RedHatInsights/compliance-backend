@@ -16,6 +16,18 @@ module Api
             type: :string
           }
         }.freeze
+
+        RELATIONSHIP_COLLECTION = {
+          data: {
+            type: :array,
+            items: {
+              properties: {
+                id: ref_schema('uuid'),
+                type: :string
+              }
+            }
+          }
+        }.freeze
       end
     end
   end
