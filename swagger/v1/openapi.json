@@ -294,6 +294,118 @@
         "responses": {
           "200": {
             "description": "lists all profiles requested filtered by OS",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": [
+                  {
+                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                    "type": "profile",
+                    "attributes": {
+                      "name": "profile1",
+                      "ref_id": "xccdf_org.ssgproject.profile1",
+                      "description": null,
+                      "score": 98.0,
+                      "parent_profile_id": null,
+                      "external": false,
+                      "compliance_threshold": 100.0,
+                      "os_major_version": "7",
+                      "parent_profile_ref_id": null,
+                      "canonical": true,
+                      "tailored": false,
+                      "total_host_count": 0,
+                      "compliant_host_count": 0,
+                      "business_objective": null
+                    },
+                    "relationships": {
+                      "account": {
+                        "data": null
+                      },
+                      "benchmark": {
+                        "data": {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "benchmark"
+                        }
+                      },
+                      "parent_profile": {
+                        "data": null
+                      },
+                      "rules": {
+                        "data": []
+                      },
+                      "hosts": {
+                        "data": []
+                      },
+                      "test_results": {
+                        "data": [
+                          {
+                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "type": "test_result"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                    "type": "profile",
+                    "attributes": {
+                      "name": "profile2",
+                      "ref_id": "xccdf_org.ssgproject.profile2",
+                      "description": null,
+                      "score": 98.0,
+                      "parent_profile_id": null,
+                      "external": false,
+                      "compliance_threshold": 100.0,
+                      "os_major_version": "7",
+                      "parent_profile_ref_id": null,
+                      "canonical": true,
+                      "tailored": false,
+                      "total_host_count": 0,
+                      "compliant_host_count": 0,
+                      "business_objective": null
+                    },
+                    "relationships": {
+                      "account": {
+                        "data": null
+                      },
+                      "benchmark": {
+                        "data": {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "benchmark"
+                        }
+                      },
+                      "parent_profile": {
+                        "data": null
+                      },
+                      "rules": {
+                        "data": []
+                      },
+                      "hosts": {
+                        "data": []
+                      },
+                      "test_results": {
+                        "data": [
+                          {
+                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                            "type": "test_result"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "meta": {
+                  "total": 2,
+                  "search": "os_major_version = 7",
+                  "limit": 10,
+                  "offset": 1
+                },
+                "links": {
+                  "first": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=1",
+                  "last": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=1"
+                }
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -347,6 +459,59 @@
         "responses": {
           "201": {
             "description": "creates a profile",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "id": "3ff92a51-fa16-497a-b01b-c89d7fb19d24",
+                  "type": "profile",
+                  "attributes": {
+                    "name": "A custom name",
+                    "ref_id": "xccdf_org.ssgproject.profile2",
+                    "description": null,
+                    "score": 0,
+                    "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                    "external": false,
+                    "compliance_threshold": 93.5,
+                    "os_major_version": "7",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
+                    "canonical": false,
+                    "tailored": false,
+                    "total_host_count": 0,
+                    "compliant_host_count": 0,
+                    "business_objective": "LATAM Expansion"
+                  },
+                  "relationships": {
+                    "account": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "account"
+                      }
+                    },
+                    "benchmark": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "benchmark"
+                      }
+                    },
+                    "parent_profile": {
+                      "data": {
+                        "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                        "type": "profile"
+                      }
+                    },
+                    "rules": {
+                      "data": []
+                    },
+                    "hosts": {
+                      "data": []
+                    },
+                    "test_results": {
+                      "data": []
+                    }
+                  }
+                }
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -450,10 +615,87 @@
         "responses": {
           "404": {
             "description": "profile not found",
+            "examples": {
+              "application/vnd.api+json": {
+                "errors": "Profile not found with ID invalid"
+              }
+            },
             "content": {}
           },
           "200": {
             "description": "retrieves a profile with included benchmark",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                  "type": "profile",
+                  "attributes": {
+                    "name": "profile1",
+                    "ref_id": "xccdf_org.ssgproject.profile1",
+                    "description": null,
+                    "score": 98.0,
+                    "parent_profile_id": null,
+                    "external": false,
+                    "compliance_threshold": 100.0,
+                    "os_major_version": "7",
+                    "parent_profile_ref_id": null,
+                    "canonical": true,
+                    "tailored": false,
+                    "total_host_count": 1,
+                    "compliant_host_count": 0,
+                    "business_objective": null
+                  },
+                  "relationships": {
+                    "account": {
+                      "data": {
+                        "id": "e9b83492-f95d-4659-9273-3ab378e5868d",
+                        "type": "account"
+                      }
+                    },
+                    "benchmark": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "benchmark"
+                      }
+                    },
+                    "parent_profile": {
+                      "data": null
+                    },
+                    "rules": {
+                      "data": []
+                    },
+                    "hosts": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "host"
+                        }
+                      ]
+                    },
+                    "test_results": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "test_result"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "included": [
+                  {
+                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                    "type": "benchmark",
+                    "attributes": {
+                      "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                      "title": "Benchmark One",
+                      "version": "0.1.45",
+                      "description": "The first benchmark"
+                    }
+                  }
+                ]
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -546,10 +788,68 @@
         "responses": {
           "404": {
             "description": "profile not found",
+            "examples": {
+              "application/vnd.api+json": {
+                "errors": "Profile not found with ID invalid"
+              }
+            },
             "content": {}
           },
           "202": {
             "description": "destroys a profile",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                  "type": "profile",
+                  "attributes": {
+                    "name": "profile1",
+                    "ref_id": "xccdf_org.ssgproject.profile1",
+                    "description": null,
+                    "score": 0,
+                    "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                    "external": false,
+                    "compliance_threshold": 100.0,
+                    "os_major_version": "7",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
+                    "canonical": false,
+                    "tailored": false,
+                    "total_host_count": 0,
+                    "compliant_host_count": 0,
+                    "business_objective": null
+                  },
+                  "relationships": {
+                    "account": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "account"
+                      }
+                    },
+                    "benchmark": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "benchmark"
+                      }
+                    },
+                    "parent_profile": {
+                      "data": {
+                        "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                        "type": "profile"
+                      }
+                    },
+                    "rules": {
+                      "data": []
+                    },
+                    "hosts": {
+                      "data": []
+                    },
+                    "test_results": {
+                      "data": []
+                    }
+                  }
+                }
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
