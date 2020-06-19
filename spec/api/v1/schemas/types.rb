@@ -16,10 +16,10 @@ module Api
             data: {
               type: :object,
               properties: {
-                id: ref_schema('uuid')
+                id: ref_schema('uuid'),
+                type: { type: :string }
               }
-            },
-            type: { type: :string }
+            }
           }
         }.freeze
 
@@ -30,7 +30,8 @@ module Api
               type: :array,
               items: {
                 properties: {
-                  id: ref_schema('uuid')
+                  id: ref_schema('uuid'),
+                  type: { type: :string }
                 }
               }
             }

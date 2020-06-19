@@ -78,10 +78,25 @@ describe 'Profiles API' do
       parameter name: :data, in: :body, schema: {
         type: :object,
         properties: {
+          type: { type: :string, example: 'profile' },
           data: {
             type: :object,
             properties: {
-              attributes: ref_schema('profile_create')
+              attributes: ref_schema('profile')
+            }
+          }
+        },
+        example: {
+          data: {
+            attributes: {
+              name: 'my custom profile',
+              parent_profile_id: '0105a0f0-7379-4897-a891-f95cfb9ddf9c',
+              description: 'This profile contains rules to ensure standard '\
+              'security baseline\nof a Red Hat Enterprise Linux 7 '\
+              'system. Regardless of your system\'s workload\nall '\
+              'of these checks should pass.',
+              compliance_threshold: 95.0,
+              business_objective: 'APAC Expansion'
             }
           }
         }
@@ -108,7 +123,7 @@ describe 'Profiles API' do
                  data: {
                    type: :object,
                    properties: {
-                     type: { type: :string },
+                     type: { type: :string, example: 'profile' },
                      id: ref_schema('uuid'),
                      attributes: ref_schema('profile'),
                      relationships: ref_schema('profile_relationships')
@@ -247,10 +262,10 @@ describe 'Profiles API' do
         end
 
         let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
-        let(:id) {
+        let(:id) do
           profiles(:one).update(parent_profile_id: profiles(:two).id)
           profiles(:one).id
-        }
+        end
         let(:include) { '' } # work around buggy rswag
 
         schema type: :object,
