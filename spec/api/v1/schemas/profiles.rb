@@ -10,8 +10,11 @@ module Api
 
         PROFILE = {
           type: 'object',
-          required: %w[parent_profile_id],
+          required: %w[name parent_profile_id],
           properties: {
+            name: {
+              type: 'string',
+            },
             parent_profile_id: {
               type: 'string',
               format: 'uuid',
@@ -72,8 +75,42 @@ module Api
           }
         }.freeze
 
+        PROFILE_CREATE = {
+          type: :object,
+          required: %w[name parent_profile_id],
+          properties: {
+            name: {
+              type: 'string',
+            },
+            business_objective: {
+              type: 'string',
+              example: 'APAC Expansion',
+              nullable: true
+            },
+            parent_profile_id: {
+              type: 'string',
+              format: 'uuid',
+              nullable: true,
+              example: '0105a0f0-7379-4897-a891-f95cfb9ddf9c',
+              required: true
+            },
+            description: {
+              type: 'string',
+              nullable: true,
+              example: 'This profile contains rules to ensure standard '\
+              'security baseline\nof a Red Hat Enterprise Linux 7 '\
+              'system. Regardless of your system\'s workload\nall '\
+              'of these checks should pass.'
+            },
+            compliance_threshold: {
+              type: 'number',
+              example: 95.0
+            }
+          }
+        }.freeze
+
         PROFILE_RELATIONSHIPS = {
-          type: 'object',
+          type: :object,
           properties: {
             account: ref_schema('relationship'),
             benchmark: ref_schema('relationship'),
