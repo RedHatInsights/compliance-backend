@@ -11,19 +11,27 @@ module Api
         UUID = { type: :string, format: :uuid }.freeze
 
         RELATIONSHIP = {
-          data: {
-            id: ref_schema('uuid'),
-            type: :string
+          type: :object,
+          properties: {
+            data: {
+              type: :object,
+              properties: {
+                id: ref_schema('uuid')
+              }
+            },
+            type: { type: :string }
           }
         }.freeze
 
         RELATIONSHIP_COLLECTION = {
-          data: {
-            type: :array,
-            items: {
-              properties: {
-                id: ref_schema('uuid'),
-                type: :string
+          type: :object,
+          properties: {
+            data: {
+              type: :array,
+              items: {
+                properties: {
+                  id: ref_schema('uuid')
+                }
               }
             }
           }
