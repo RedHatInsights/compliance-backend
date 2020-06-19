@@ -31,6 +31,7 @@ module Api
         links: LINKS,
         benchmark: BENCHMARK,
         profile: PROFILE,
+        profile_create: PROFILE_CREATE,
         profile_relationships: PROFILE_RELATIONSHIPS,
         rule_result: RULE_RESULT,
         rule: RULE
