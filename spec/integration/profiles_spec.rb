@@ -75,12 +75,14 @@ describe 'Profiles API' do
       content_types
       auth_header
 
-      parameter name: :data, in: :body, required: true, schema: {
+      parameter name: :data, in: :body, schema: {
         type: :object,
-        data: {
-          type: :object,
-          properties: {
-            attributes: ref_schema('profile')
+        properties: {
+          data: {
+            type: :object,
+            properties: {
+              attributes: ref_schema('profile_create')
+            }
           }
         }
       }
@@ -89,13 +91,30 @@ describe 'Profiles API' do
         let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
         let(:include) { '' } # work around buggy rswag
         let(:data) do
-          { data: { attributes: {
-            parent_profile_id: profiles(:two).id,
-            name: 'A custom name',
-            compliance_threshold: 93.5,
-            business_objective: 'LATAM Expansion'
-          } } }
+          {
+            data: {
+              attributes: {
+                parent_profile_id: profiles(:two).id,
+                name: 'A custom name',
+                compliance_threshold: 93.5,
+                business_objective: 'LATAM Expansion'
+              }
+            }
+          }
         end
+
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: ref_schema('uuid'),
+                     attributes: ref_schema('profile'),
+                     relationships: ref_schema('profile_relationships')
+                   }
+                 }
+               }
 
         after { |e| autogenerate_examples(e) }
 
@@ -133,7 +152,8 @@ describe 'Profiles API' do
           )
           user = User.from_x_rh_identity(x_rh_identity[:identity])
           user.save
-          profiles(:one).update(account: user.account, hosts: [hosts(:one)])
+          profiles(:one).update(account: user.account, hosts: [hosts(:one)],
+                                parent_profile_id: profiles(:two).id)
           profiles(:one).id
         end
         let(:include) { '' } # work around buggy rswag
@@ -227,7 +247,10 @@ describe 'Profiles API' do
         end
 
         let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
-        let(:id) { profiles(:one).id }
+        let(:id) {
+          profiles(:one).update(parent_profile_id: profiles(:two).id)
+          profiles(:one).id
+        }
         let(:include) { '' } # work around buggy rswag
 
         schema type: :object,
