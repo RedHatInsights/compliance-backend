@@ -356,7 +356,8 @@
                       "type": "object",
                       "properties": {
                         "type": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "profile"
                         },
                         "id": {
                           "$ref": "#/components/schemas/uuid"
@@ -381,12 +382,27 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "profile"
+                  },
                   "data": {
                     "type": "object",
                     "properties": {
                       "attributes": {
-                        "$ref": "#/components/schemas/profile_create"
+                        "$ref": "#/components/schemas/profile"
                       }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "attributes": {
+                      "name": "my custom profile",
+                      "parent_profile_id": "0105a0f0-7379-4897-a891-f95cfb9ddf9c",
+                      "description": "This profile contains rules to ensure standard security baseline\\nof a Red Hat Enterprise Linux 7 system. Regardless of your system's workload\\nall of these checks should pass.",
+                      "compliance_threshold": 95.0,
+                      "business_objective": "APAC Expansion"
                     }
                   }
                 }
@@ -1047,11 +1063,11 @@
             "properties": {
               "id": {
                 "$ref": "#/components/schemas/uuid"
+              },
+              "type": {
+                "type": "string"
               }
             }
-          },
-          "type": {
-            "type": "string"
           }
         }
       },
@@ -1064,6 +1080,9 @@
               "properties": {
                 "id": {
                   "$ref": "#/components/schemas/uuid"
+                },
+                "type": {
+                  "type": "string"
                 }
               }
             }
@@ -1162,12 +1181,12 @@
       "profile": {
         "type": "object",
         "required": [
-          "name",
           "parent_profile_id"
         ],
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "example": "my custom profile"
           },
           "parent_profile_id": {
             "type": "string",
@@ -1222,39 +1241,6 @@
           "os_major_version": {
             "type": "string",
             "example": "7"
-          }
-        }
-      },
-      "profile_create": {
-        "type": "object",
-        "required": [
-          "name",
-          "parent_profile_id"
-        ],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "business_objective": {
-            "type": "string",
-            "example": "APAC Expansion",
-            "nullable": true
-          },
-          "parent_profile_id": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true,
-            "example": "0105a0f0-7379-4897-a891-f95cfb9ddf9c",
-            "required": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "example": "This profile contains rules to ensure standard security baseline\\nof a Red Hat Enterprise Linux 7 system. Regardless of your system's workload\\nall of these checks should pass."
-          },
-          "compliance_threshold": {
-            "type": "number",
-            "example": 95.0
           }
         }
       },
