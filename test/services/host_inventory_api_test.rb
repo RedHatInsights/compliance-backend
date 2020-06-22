@@ -41,8 +41,8 @@ class HostInventoryApiTest < ActiveSupport::TestCase
       X_RH_IDENTITY: @b64_identity
     ).returns(@system_profile_response)
     assert_equal @host, @api.inventory_host(@host.id)
-    assert_equal 8, @host.os_major
-    assert_equal 2, @host.os_minor
+    assert_equal 8, @host.os_major_version
+    assert_equal 2, @host.os_minor_version
   end
 
   test 'inventory_host for host not already in inventory' do
@@ -76,8 +76,8 @@ class HostInventoryApiTest < ActiveSupport::TestCase
       X_RH_IDENTITY: @b64_identity
     ).returns(@system_profile_response)
     system_profile_results = @api.system_profile([@host.id])
-    assert_equal '8', system_profile_results.first[:os_major]
-    assert_equal '2', system_profile_results.first[:os_minor]
+    assert_equal '8', system_profile_results.first[:os_major_version]
+    assert_equal '2', system_profile_results.first[:os_minor_version]
     assert_equal @host.id, system_profile_results.first[:id]
   end
 
@@ -92,8 +92,8 @@ class HostInventoryApiTest < ActiveSupport::TestCase
       X_RH_IDENTITY: @b64_identity
     ).returns(wrong_system_profile_response)
     system_profile_results = @api.system_profile([@host.id])
-    assert_equal nil, system_profile_results.first[:os_major]
-    assert_equal nil, system_profile_results.first[:os_minor]
+    assert_equal nil, system_profile_results.first[:os_major_version]
+    assert_equal nil, system_profile_results.first[:os_minor_version]
     assert_equal @host.id, system_profile_results.first[:id]
   end
 end
