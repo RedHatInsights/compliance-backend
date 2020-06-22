@@ -9,8 +9,8 @@ task sync_with_inventory: [:environment] do
     account.hosts.each do |host|
       begin
         host = ::HostInventoryAPI.new(
-          host.id, account, ::Settings.host_inventory_url, account.b64_identity
-        ).inventory_host
+          account, ::Settings.host_inventory_url, account.b64_identity
+        ).inventory_host(host.id)
       rescue ::InventoryHostNotFound
         print "Account #{account.account_number}: "\
           "System #{host.id} - #{host.name} not found in the inventory. "\

@@ -363,6 +363,8 @@ type System implements Node {
     profileId: String
   ): String
   name: String!
+  osMajorVersion: Int
+  osMinorVersion: Int
   profiles: [Profile!]
   rulesFailed(
     """

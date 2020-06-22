@@ -35,13 +35,33 @@ class XccdfReportParserTest < ActiveSupport::TestCase
           'fqdn' => @report_parser.test_result_file.test_result.host }
       ]
     }
-    connection.stubs(:get).returns(OpenStruct.new(body: get_body.to_json))
+    connection.stubs(:get).with(
+      "#{::Settings.host_inventory_url}#{ENV['PATH_PREFIX']}" \
+      "/inventory/v1/hosts/#{@host_id}",
+      {}, X_RH_IDENTITY: 'b64_fake_identity'
+    ).returns(OpenStruct.new(body: get_body.to_json))
     post_body = {
       'data' => [{ 'host' => {
         'name' => @report_parser.test_result_file.test_result.host
       } }]
     }
     connection.stubs(:post).returns(OpenStruct.new(body: post_body.to_json))
+    system_profile_body = {
+      'results' => [
+        {
+          'id' => @host_id,
+          'system_profile' => {
+            'os_release': '8.3'
+          }
+        }
+      ]
+    }
+    connection.stubs(:get).with(
+      "#{::Settings.host_inventory_url}#{ENV['PATH_PREFIX']}" \
+      "/inventory/v1/hosts/#{[@host_id].join(',')}/system_profile",
+      { per_page: 50, page: 1 },
+      X_RH_IDENTITY: 'b64_fake_identity'
+    ).returns(OpenStruct.new(body: system_profile_body.to_json))
   end
 
   context 'benchmark' do
