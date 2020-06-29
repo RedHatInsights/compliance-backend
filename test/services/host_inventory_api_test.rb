@@ -83,7 +83,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
 
   test 'system_profile returns a hash without OS info if not found' do
     wrong_system_profile_response = OpenStruct.new(body: {
-      results: [{ id: @host.id, system_profile: { os_release: '' } }]
+      results: [{ id: @host.id, system_profile: {} }]
     }.to_json)
     @connection.expects(:get).with(
       "#{@url}#{ENV['PATH_PREFIX']}/inventory/v1/hosts/"\
@@ -92,8 +92,8 @@ class HostInventoryApiTest < ActiveSupport::TestCase
       X_RH_IDENTITY: @b64_identity
     ).returns(wrong_system_profile_response)
     system_profile_results = @api.system_profile([@host.id])
-    assert_equal nil, system_profile_results.first[:os_major_version]
-    assert_equal nil, system_profile_results.first[:os_minor_version]
+    assert_nil system_profile_results.first[:os_major_version]
+    assert_nil system_profile_results.first[:os_minor_version]
     assert_equal @host.id, system_profile_results.first[:id]
   end
 end

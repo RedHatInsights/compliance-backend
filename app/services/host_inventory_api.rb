@@ -41,7 +41,7 @@ class HostInventoryAPI
       X_RH_IDENTITY: @b64_identity
     )
     JSON.parse(response.body)['results'].inject([]) do |acc, host|
-      os_major, os_minor = host['system_profile']['os_release'].split('.')
+      os_major, os_minor = find_os_release(host['system_profile'])
       acc << { id: host['id'],
                os_major_version: os_major,
                os_minor_version: os_minor }
@@ -49,6 +49,12 @@ class HostInventoryAPI
   end
 
   private
+
+  def find_os_release(system_profile)
+    return [nil, nil] if system_profile['os_release'].blank?
+
+    system_profile['os_release'].split('.')
+  end
 
   def find_results(body, host_id)
     body['results'].find do |host|
