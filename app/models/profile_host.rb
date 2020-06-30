@@ -10,6 +10,7 @@ class ProfileHost < ApplicationRecord
   validates :host, presence: true, uniqueness: { scope: :profile }
 
   after_destroy :destroy_orphaned_host
+  after_destroy :destroy_orphaned_external_profile
 
   def destroy_orphaned_host
     return unless host.profiles.empty?
@@ -19,5 +20,11 @@ class ProfileHost < ApplicationRecord
     else
       DeleteHost.new.perform(id: host.id)
     end
+  end
+
+  def destroy_orphaned_external_profile
+    return unless profile.external && profile.hosts.empty?
+
+    profile.destroy
   end
 end
