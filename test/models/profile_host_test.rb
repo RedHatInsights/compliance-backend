@@ -22,4 +22,18 @@ class ProfileHostTest < ActiveSupport::TestCase
     assert_empty Host.where(id: host.id)
     assert_equal 0, DeleteHost.jobs.size
   end
+
+  test 'destory associated external policies if they have no more hosts' do
+    internal_profile = Profile.create(name: 'foo', benchmark: benchmarks(:one),
+                                      ref_id: 'foo')
+    external_profile = Profile.create(name: 'baz', benchmark: benchmarks(:one),
+                                      ref_id: 'baz', external: true)
+    host = Host.create(profiles: [internal_profile, external_profile],
+                       name: 'bar', account: accounts(:one))
+    assert_difference('Profile.count', -1) do
+      host.destroy
+    end
+    assert_equal internal_profile, Profile.find(internal_profile.id)
+    assert_empty Profile.where(id: external_profile.id)
+  end
 end
