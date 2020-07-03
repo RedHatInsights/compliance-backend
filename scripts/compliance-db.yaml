@@ -86,7 +86,7 @@ spec:
     - name: container
       value: podman
     image: docker.io/library/postgres:latest
-    name: focusedhopper
+    name: compliance-db
     resources: {}
     securityContext:
       allowPrivilegeEscalation: true
