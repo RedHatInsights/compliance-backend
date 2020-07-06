@@ -265,6 +265,40 @@ class ProfileTest < ActiveSupport::TestCase
     end
   end
 
+  context 'update_hosts' do
+    should 'add new hosts to an empty host set' do
+      profiles(:one).update!(hosts: [])
+      assert_empty(profiles(:one).hosts)
+      assert_difference('profiles(:one).hosts.count', hosts.count) do
+        profiles(:one).update_hosts(hosts.pluck(:id))
+      end
+    end
+
+    should 'add new hosts to an existing host set' do
+      profiles(:one).update!(hosts: hosts[0...-1])
+      assert_not_empty(profiles(:one).hosts)
+      assert_difference('profiles(:one).hosts.count', 1) do
+        profiles(:one).update_hosts(hosts.pluck(:id))
+      end
+    end
+
+    should 'remove old hosts from an existing host set' do
+      profiles(:one).update!(hosts: hosts)
+      assert_equal hosts.count, profiles(:one).hosts.count
+      assert_difference('profiles(:one).reload.hosts.count', -hosts.count) do
+        profiles(:one).update_hosts([])
+      end
+    end
+
+    should 'add new and remove old hosts from an existing host set' do
+      profiles(:one).update!(host_ids: hosts.pluck(:id)[0...-1])
+      assert_not_empty(profiles(:one).hosts)
+      assert_difference('profiles(:one).hosts.count', 0) do
+        profiles(:one).update_hosts(hosts.pluck(:id)[1..-1])
+      end
+    end
+  end
+
   context 'update_rules' do
     should 'add new rules to an empty rule set' do
       profiles(:one).update!(rules: [])

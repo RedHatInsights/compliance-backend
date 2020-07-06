@@ -774,7 +774,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "2375e6a8-859a-4649-8779-43df2bc04e82",
+                  "id": "e2ef5fb5-9981-4528-81bb-947b0426cd07",
                   "type": "profile",
                   "attributes": {
                     "name": "A custom name",
@@ -788,7 +788,7 @@
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "canonical": false,
                     "tailored": true,
-                    "total_host_count": 0,
+                    "total_host_count": 2,
                     "compliant_host_count": 0,
                     "business_objective": "LATAM Expansion"
                   },
@@ -824,7 +824,16 @@
                       ]
                     },
                     "hosts": {
-                      "data": []
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "host"
+                        },
+                        {
+                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                          "type": "host"
+                        }
+                      ]
                     },
                     "test_results": {
                       "data": []
@@ -908,6 +917,18 @@
                             "type": "rule"
                           }
                         ]
+                      },
+                      "hosts": {
+                        "data": [
+                          {
+                            "id": "6c3837ed-edac-4522-83a1-147af958f0f2",
+                            "type": "host"
+                          },
+                          {
+                            "id": "f896d5e7-e44e-41cb-8e8e-96aab6d895d6",
+                            "type": "host"
+                          }
+                        ]
                       }
                     }
                   }
@@ -989,7 +1010,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "eaa86e92-fe95-4174-9260-279edc170afa",
+                        "id": "ad762496-2af7-44c8-a38c-f38c4d1ea0a6",
                         "type": "account"
                       }
                     },
@@ -1170,7 +1191,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "4fc1bac4-6425-4706-a51e-34ece921568f",
+                  "id": "316aff02-6475-4c3c-b539-1e5bedff5db7",
                   "type": "profile",
                   "attributes": {
                     "name": "An updated custom name",
@@ -1184,7 +1205,7 @@
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "canonical": false,
                     "tailored": true,
-                    "total_host_count": 0,
+                    "total_host_count": 2,
                     "compliant_host_count": 0,
                     "business_objective": "APAC Expansion"
                   },
@@ -1220,7 +1241,16 @@
                       ]
                     },
                     "hosts": {
-                      "data": []
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "host"
+                        },
+                        {
+                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                          "type": "host"
+                        }
+                      ]
                     },
                     "test_results": {
                       "data": []
@@ -1310,6 +1340,18 @@
                           {
                             "id": "06a19f0e-5c7a-4d54-bc66-e932a96bf954",
                             "type": "rule"
+                          }
+                        ]
+                      },
+                      "hosts": {
+                        "data": [
+                          {
+                            "id": "6c3837ed-edac-4522-83a1-147af958f0f2",
+                            "type": "host"
+                          },
+                          {
+                            "id": "f896d5e7-e44e-41cb-8e8e-96aab6d895d6",
+                            "type": "host"
                           }
                         ]
                       }
