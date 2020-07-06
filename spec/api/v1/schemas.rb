@@ -5,6 +5,7 @@ require './spec/api/v1/schemas/errors'
 require './spec/api/v1/schemas/metadata'
 require './spec/api/v1/schemas/hosts'
 require './spec/api/v1/schemas/benchmarks'
+require './spec/api/v1/schemas/business_objectives'
 require './spec/api/v1/schemas/profiles'
 require './spec/api/v1/schemas/rule_results'
 require './spec/api/v1/schemas/rules'
@@ -17,6 +18,7 @@ module Api
       include Metadata
       include Hosts
       include Benchmarks
+      include BusinessObjectives
       include Profiles
       include RuleResults
       include Rules
@@ -31,6 +33,8 @@ module Api
         links: LINKS,
         benchmark: BENCHMARK,
         benchmark_relationships: BENCHMARK_RELATIONSHIPS,
+        business_objective: BUSINESS_OBJECTIVE,
+        business_objective_relationships: BUSINESS_OBJECTIVE_RELATIONSHIPS,
         profile: PROFILE,
         profile_relationships: PROFILE_RELATIONSHIPS,
         rule_result: RULE_RESULT,
