@@ -3,7 +3,7 @@
 # Host representation in insights compliance backend. Most of the times
 # these hosts will also show up in the insights-platform host inventory.
 class Host < ApplicationRecord
-  scoped_search on: %i[id name account_id os_major_version os_minor_version]
+  scoped_search on: %i[name os_major_version os_minor_version]
   scoped_search on: :compliant, ext_method: 'filter_by_compliance',
                 only_explicit: true
   scoped_search on: :compliance_score, ext_method: 'filter_by_compliance_score',

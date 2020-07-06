@@ -30,7 +30,8 @@ describe 'Benchmarks API' do
                      properties: {
                        type: { type: :string },
                        id: ref_schema('uuid'),
-                       attributes: ref_schema('benchmark')
+                       attributes: ref_schema('benchmark'),
+                       relationships: ref_schema('benchmark_relationships')
                      }
                    }
                  }
