@@ -20,6 +20,12 @@ module SystemLike
     result
   end
 
+  def last_scanned(profile_id: nil)
+    rel = test_results.latest.order(:end_time)
+    rel = rel.where(profile_id: profile_id) if profile_id
+    rel.last&.end_time&.iso8601 || 'Never'
+  end
+
   def last_scan_results(profile = nil)
     return profile.results(self) if profile.present?
 

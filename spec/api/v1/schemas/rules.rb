@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
+require './spec/api/v1/schemas/util'
+
 module Api
   module V1
     module Schemas
       module Rules
+        extend Api::V1::Schemas::Util
+
         RULE = {
           type: 'object',
           required: %w[title ref_id],
@@ -42,6 +46,16 @@ module Api
               ' of malicious activity on a system.\nAuditing these events'\
               ' could serve as evidence of potential system compromise.'
             }
+          }
+        }.freeze
+
+        RULE_RELATIONSHIPS = {
+          type: :object,
+          properties: {
+            benchmark: ref_schema('relationship'),
+            rule_identifier: ref_schema('relationship'),
+            profiles: ref_schema('relationship_collection'),
+            rule_references: ref_schema('relationship_collection')
           }
         }.freeze
       end
