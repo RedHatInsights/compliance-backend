@@ -417,6 +417,32 @@ module V1
                              .map { |r| r['id'] })
         )
       end
+
+      test 'create allows hosts relationship' do
+        assert_empty(profiles(:one).hosts)
+        assert_difference('ProfileHost.count', hosts.count) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: profiles(:two).id
+            },
+            relationships: {
+              hosts: {
+                data: hosts.map do |host|
+                  { id: host.id, type: 'host' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal(
+          Set.new(hosts.pluck(:id)),
+          Set.new(parsed_data.dig('relationships', 'hosts', 'data')
+                             .map { |r| r['id'] })
+        )
+      end
     end
 
     class UpdateTest < ProfilesControllerTest
@@ -526,6 +552,42 @@ module V1
         assert_response :success
         assert_equal BUSINESS_OBJECTIVE,
                      @profile.reload.business_objective.title
+      end
+
+      test 'update to update hosts relationships' do
+        @profile.update!(hosts: hosts[0...-1])
+        assert_difference('@profile.reload.hosts.count' => 0) do
+          patch profile_path(@profile.id), params: params(
+            attributes: {},
+            relationships: {
+              hosts: {
+                data: hosts[1..-1].map do |host|
+                  { id: host.id, type: 'host' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :success
+      end
+
+      test 'update to remove hosts relationships' do
+        @profile.update!(hosts: hosts)
+        assert_difference(
+          '@profile.reload.hosts.count' => -1
+        ) do
+          patch profile_path(@profile.id), params: params(
+            attributes: {},
+            relationships: {
+              hosts: {
+                data: hosts[0...-1].map do |host|
+                  { id: host.id, type: 'host' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :success
       end
     end
   end

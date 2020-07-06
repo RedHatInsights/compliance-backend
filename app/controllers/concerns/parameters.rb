@@ -30,6 +30,12 @@ module Parameters
       resource_params[:relationships]&.permit(relationship_types)
     end
 
+    def new_relationship_ids(relationship)
+      resource_relationships.to_h.dig(relationship, :data)&.map do |resource|
+        resource[:id]
+      end
+    end
+
     private
 
     def relationship_types
