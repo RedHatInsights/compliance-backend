@@ -70,7 +70,7 @@ describe 'Profiles API' do
     end
 
     post 'Create a profile' do
-      fixtures :accounts, :profiles, :rules, :benchmarks
+      fixtures :accounts, :profiles, :rules, :hosts, :benchmarks
       tags 'profile'
       description 'Create a profile with the provided attributes'
       operationId 'CreateProfile'
@@ -109,6 +109,12 @@ describe 'Profiles API' do
                   { id: 'cc9afa66-3536-4d2e-bc8e-10111d13ec50', type: 'rule' },
                   { id: '06a19f0e-5c7a-4d54-bc66-e932a96bf954', type: 'rule' }
                 ]
+              },
+              hosts: {
+                data: [
+                  { id: '6c3837ed-edac-4522-83a1-147af958f0f2', type: 'host' },
+                  { id: 'f896d5e7-e44e-41cb-8e8e-96aab6d895d6', type: 'host' }
+                ]
               }
             }
           }
@@ -131,6 +137,11 @@ describe 'Profiles API' do
                 rules: {
                   data: profiles(:two).benchmark.rules.map do |rule|
                     { id: rule.id, type: 'rule' }
+                  end
+                },
+                hosts: {
+                  data: hosts.map do |host|
+                    { id: host.id, type: 'host' }
                   end
                 }
               }
@@ -257,7 +268,7 @@ describe 'Profiles API' do
     end
 
     patch 'Update a profile' do
-      fixtures :accounts, :benchmarks, :profiles
+      fixtures :accounts, :rules, :hosts, :benchmarks, :profiles
       tags 'profile'
       description 'Updates a profile'
       operationId 'UpdateProfile'
@@ -299,6 +310,12 @@ describe 'Profiles API' do
                   { id: 'cc9afa66-3536-4d2e-bc8e-10111d13ec50', type: 'rule' },
                   { id: '06a19f0e-5c7a-4d54-bc66-e932a96bf954', type: 'rule' }
                 ]
+              },
+              hosts: {
+                data: [
+                  { id: '6c3837ed-edac-4522-83a1-147af958f0f2', type: 'host' },
+                  { id: 'f896d5e7-e44e-41cb-8e8e-96aab6d895d6', type: 'host' }
+                ]
               }
             }
           }
@@ -339,6 +356,11 @@ describe 'Profiles API' do
                 rules: {
                   data: profiles(:two).benchmark.rules.map do |rule|
                     { id: rule.id, type: 'rule' }
+                  end
+                },
+                hosts: {
+                  data: hosts.map do |host|
+                    { id: host.id, type: 'host' }
                   end
                 }
               }
