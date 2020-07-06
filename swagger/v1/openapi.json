@@ -147,6 +147,9 @@
                           },
                           "attributes": {
                             "$ref": "#/components/schemas/benchmark"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/benchmark_relationships"
                           }
                         }
                       }
@@ -774,7 +777,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "e2ef5fb5-9981-4528-81bb-947b0426cd07",
+                  "id": "3d65ab5b-718e-4817-9c30-de201b2356f3",
                   "type": "profile",
                   "attributes": {
                     "name": "A custom name",
@@ -1010,7 +1013,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "ad762496-2af7-44c8-a38c-f38c4d1ea0a6",
+                        "id": "a8495924-f365-4e81-bf8b-82e2d7cf5cf9",
                         "type": "account"
                       }
                     },
@@ -1191,7 +1194,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "316aff02-6475-4c3c-b539-1e5bedff5db7",
+                  "id": "d9e2c76a-cf26-4f76-8fd0-42781ecbf48f",
                   "type": "profile",
                   "attributes": {
                     "name": "An updated custom name",
@@ -1549,6 +1552,16 @@
               "type": "string",
               "default": ""
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
           }
         ],
         "responses": {
@@ -1556,32 +1569,39 @@
             "description": "lists all rule_results requested",
             "examples": {
               "application/vnd.api+json": {
-                "meta": {
-                  "filter": "result=notselected"
-                },
                 "data": [
                   {
-                    "type": "Rule Result",
-                    "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                    "type": "rule_result",
                     "attributes": {
-                      "result": "notselected"
+                      "result": "pass"
                     },
                     "relationships": {
                       "host": {
                         "data": {
-                          "id": "6b97bc3a-3614-411f-9a9d-4a8a5b041687",
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                           "type": "host"
                         }
                       },
                       "rule": {
                         "data": {
-                          "id": "9bi7bc3a-2314-4929-9a9d-4a8a5b041687",
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                           "type": "rule"
                         }
                       }
                     }
                   }
-                ]
+                ],
+                "meta": {
+                  "total": 1,
+                  "search": null,
+                  "limit": 10,
+                  "offset": 1
+                },
+                "links": {
+                  "first": "/api/compliance/rule_results?limit=10&offset=1",
+                  "last": "/api/compliance/rule_results?limit=10&offset=1"
+                }
               }
             },
             "content": {
@@ -1608,6 +1628,9 @@
                           },
                           "attributes": {
                             "$ref": "#/components/schemas/rule_result"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/rule_result_relationships"
                           }
                         }
                       }
@@ -1671,6 +1694,16 @@
               "type": "string",
               "default": ""
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
           }
         ],
         "responses": {
@@ -1678,22 +1711,52 @@
             "description": "lists all rules requested",
             "examples": {
               "application/vnd.api+json": {
-                "meta": {
-                  "filter": "title=Record Access Events to Audit Log directory"
-                },
                 "data": [
                   {
-                    "type": "Rule",
-                    "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                    "type": "rule",
                     "attributes": {
-                      "title": "Record Access Events to Audit Log directory",
-                      "ref_id": "xccdf_org.ssgproject.content_rule_directory_access_var_log_audit",
-                      "severity": "Low",
-                      "description": "The audit system should collect access events to read audit log directory.\\nThe following audit rule will assure that access to audit log directory are\\ncollected.\\n-a always,exit -F dir=/var/log/audit/ -F perm=r -F auid>=1000-F auid!=unset -F key=access-audit-trail\\nIf the auditd daemon is configured to use the augenrules\\nprogram to read audit rules during daemon startup (the default), add the\\nrule to a file with suffix .rules in the directory\\n/etc/audit/rules.d.\\nIf the auditd daemon is configured to use the auditctl\\nutility to read audit rules during daemon startup, add the rule to\\n/etc/audit/audit.rules file.",
-                      "rationale": "Attempts to read the logs should be recorded, suspicious access to audit log files could be an indicator of malicious activity on a system.\\nAuditing these events could serve as evidence of potential system compromise."
+                      "ref_id": "MyStringOne",
+                      "title": "MyString",
+                      "rationale": "MyText",
+                      "description": "MyText",
+                      "severity": "high",
+                      "slug": "MyStringOne"
+                    },
+                    "relationships": {
+                      "benchmark": {
+                        "data": {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "benchmark"
+                        }
+                      },
+                      "profiles": {
+                        "data": [
+                          {
+                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "type": "profile"
+                          }
+                        ]
+                      },
+                      "rule_references": {
+                        "data": []
+                      },
+                      "rule_identifier": {
+                        "data": null
+                      }
                     }
                   }
-                ]
+                ],
+                "meta": {
+                  "total": 1,
+                  "search": null,
+                  "limit": 10,
+                  "offset": 1
+                },
+                "links": {
+                  "first": "/api/compliance/rules?limit=10&offset=1",
+                  "last": "/api/compliance/rules?limit=10&offset=1"
+                }
               }
             },
             "content": {
@@ -1720,6 +1783,9 @@
                           },
                           "attributes": {
                             "$ref": "#/components/schemas/rule"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/rule_relationships"
                           }
                         }
                       }
@@ -1749,48 +1815,22 @@
             }
           },
           {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "description": "The number of items to return",
-            "schema": {
-              "type": "integer",
-              "maximum": 100,
-              "minimum": 1,
-              "default": 10
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "description": "The number of items to skip before starting to collect the result set",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
-            "schema": {
-              "type": "string",
-              "default": ""
-            }
-          },
-          {
             "name": "id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
           }
         ],
         "responses": {
@@ -1798,7 +1838,7 @@
             "description": "rule not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Resource not found"
+                "errors": "Rule not found with ID 37f7eeff-831b-5c41-984a-254965f58c0f"
               }
             },
             "content": {}
@@ -1808,14 +1848,37 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "type": "Rule",
-                  "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                  "type": "rule",
                   "attributes": {
-                    "title": "Record Access Events to Audit Log directory",
-                    "ref_id": "xccdf_org.ssgproject.content_rule_directory_access_var_log_audit",
-                    "severity": "Low",
-                    "description": "The audit system should collect access events to read audit log directory.\\nThe following audit rule will assure that access to audit log directory are\\ncollected.\\n-a always,exit -F dir=/var/log/audit/ -F perm=r -F auid>=1000-F auid!=unset -F key=access-audit-trail\\nIf the auditd daemonis configured to use the augenrules\\nprogram to read audit rules during daemon startup (the default), add the\\nrule to a file with suffix .rules in the directory\\n/etc/audit/rules.d.\\nIf the auditd daemon is configured to use the auditctl\\nutility to read audit rules during daemon startup, add the rule to\\n/etc/audit/audit.rules file.",
-                    "rationale": "Attempts to read the logs should be recorded, suspicious access to audit log files could be an indicator of malicious activity on a system.\\nAuditing these events could serve as evidence of potential system compromise."
+                    "ref_id": "MyStringOne",
+                    "title": "MyString",
+                    "rationale": "MyText",
+                    "description": "MyText",
+                    "severity": "high",
+                    "slug": "MyStringOne"
+                  },
+                  "relationships": {
+                    "benchmark": {
+                      "data": {
+                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                        "type": "benchmark"
+                      }
+                    },
+                    "profiles": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "profile"
+                        }
+                      ]
+                    },
+                    "rule_references": {
+                      "data": []
+                    },
+                    "rule_identifier": {
+                      "data": null
+                    }
                   }
                 }
               }
@@ -1838,11 +1901,13 @@
                           "type": "string"
                         },
                         "id": {
-                          "type": "string",
-                          "format": "uuid"
+                          "$ref": "#/components/schemas/uuid"
                         },
                         "attributes": {
                           "$ref": "#/components/schemas/rule"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/rule_relationships"
                         }
                       }
                     }
@@ -1905,6 +1970,16 @@
               "type": "string",
               "default": ""
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
           }
         ],
         "responses": {
@@ -1914,14 +1989,42 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "type": "Host",
-                    "id": "d9654ad0-7cb5-4f61-b57c-0d22e3341dcc",
+                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                    "type": "host",
                     "attributes": {
-                      "name": "Standard System Security Profile for Fedora",
-                      "ref_id": "xccdf_org.ssgproject.content_host_standard"
+                      "name": "MyStringone",
+                      "os_major_version": null,
+                      "os_minor_version": null,
+                      "last_scanned": "2020-03-25T14:51:17Z",
+                      "rules_passed": 0,
+                      "rules_failed": 0,
+                      "compliant": true
+                    },
+                    "relationships": {
+                      "test_results": {
+                        "data": [
+                          {
+                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "type": "test_result"
+                          }
+                        ]
+                      },
+                      "profiles": {
+                        "data": []
+                      }
                     }
                   }
-                ]
+                ],
+                "meta": {
+                  "total": 1,
+                  "search": null,
+                  "limit": 10,
+                  "offset": 1
+                },
+                "links": {
+                  "first": "/api/compliance/systems?limit=10&offset=1",
+                  "last": "/api/compliance/systems?limit=10&offset=1"
+                }
               }
             },
             "content": {
@@ -1943,11 +2046,13 @@
                             "type": "string"
                           },
                           "id": {
-                            "type": "string",
-                            "format": "uuid"
+                            "$ref": "#/components/schemas/uuid"
                           },
                           "attributes": {
                             "$ref": "#/components/schemas/host"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/host_relationships"
                           }
                         }
                       }
@@ -2043,17 +2148,49 @@
       "host": {
         "type": "object",
         "required": [
-          "name",
-          "account_id"
+          "name"
         ],
         "properties": {
           "name": {
             "type": "string",
             "example": "cloud.redhat.com"
           },
-          "account_id": {
+          "compliant": {
+            "type": "boolean",
+            "example": true
+          },
+          "os_major_version": {
             "type": "string",
-            "example": "649cf080-ccce-4c02-ba60-21d046983c7f"
+            "example": "7",
+            "nullable": true
+          },
+          "os_minor_version": {
+            "type": "string",
+            "example": "3",
+            "nullable": true
+          },
+          "last_scanned": {
+            "type": "string",
+            "example": "2020-06-04T19:31:55Z"
+          },
+          "rules_passed": {
+            "type": "integer",
+            "example": 34
+          },
+          "rules_failed": {
+            "type": "integer",
+            "example": 12
+          }
+        }
+      },
+      "host_relationships": {
+        "type": "object",
+        "properties": {
+          "profiles": {
+            "$ref": "#/components/schemas/relationship_collection"
+          },
+          "test_results": {
+            "$ref": "#/components/schemas/relationship_collection"
           }
         }
       },
@@ -2223,6 +2360,17 @@
           }
         }
       },
+      "rule_result_relationships": {
+        "type": "object",
+        "properties": {
+          "hosts": {
+            "$ref": "#/components/schemas/relationship_collection"
+          },
+          "rules": {
+            "$ref": "#/components/schemas/relationship_collection"
+          }
+        }
+      },
       "rule": {
         "type": "object",
         "required": [
@@ -2249,6 +2397,23 @@
           "rationale": {
             "type": "string",
             "example": "Attempts to read the logs should be recorded, suspicious access to audit log files could be an indicator of malicious activity on a system.\\nAuditing these events could serve as evidence of potential system compromise."
+          }
+        }
+      },
+      "rule_relationships": {
+        "type": "object",
+        "properties": {
+          "benchmark": {
+            "$ref": "#/components/schemas/relationship"
+          },
+          "rule_identifier": {
+            "$ref": "#/components/schemas/relationship"
+          },
+          "profiles": {
+            "$ref": "#/components/schemas/relationship_collection"
+          },
+          "rule_references": {
+            "$ref": "#/components/schemas/relationship_collection"
           }
         }
       }

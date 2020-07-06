@@ -41,9 +41,12 @@ module V1
       assert_response :success
     end
 
-    test 'finds rules not within the user scope but within latest' do
+    test 'finds latest canonical rules' do
+      assert(profiles(:one).canonical?)
+      profiles(:one).rules << rules(:two)
+      assert(rules(:two).canonical?)
       assert_includes(Rule.latest, rules(:two))
-      assert_not_includes(::Pundit.policy_scope(users(:test), ::Rule),
+      assert_not_includes(accounts(:test).profiles.map(&:rules).uniq,
                           rules(:two))
       get v1_rule_url(rules(:two).ref_id)
 

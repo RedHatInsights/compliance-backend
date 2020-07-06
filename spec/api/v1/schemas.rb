@@ -30,6 +30,7 @@ module Api
         error: ERROR,
         metadata: METADATA,
         host: HOST,
+        host_relationships: HOST_RELATIONSHIPS,
         links: LINKS,
         benchmark: BENCHMARK,
         benchmark_relationships: BENCHMARK_RELATIONSHIPS,
@@ -38,7 +39,9 @@ module Api
         profile: PROFILE,
         profile_relationships: PROFILE_RELATIONSHIPS,
         rule_result: RULE_RESULT,
-        rule: RULE
+        rule_result_relationships: RULE_RESULT_RELATIONSHIPS,
+        rule: RULE,
+        rule_relationships: RULE_RELATIONSHIPS
       }.freeze
     end
   end
