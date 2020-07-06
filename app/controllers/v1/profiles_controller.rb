@@ -12,13 +12,16 @@ module V1
       name description compliance_threshold business_objective
     ].freeze
 
+    before_action only: %i[show update] do
+      authorize profile
+    end
+
     def index
       params[:search] ||= 'external=false and canonical=false'
       render_json scope_search.sort_by(&:score)
     end
 
     def show
-      authorize profile
       render_json profile
     end
 
@@ -31,6 +34,7 @@ module V1
       profile = Profile.new(profile_create_attributes).fill_from_parent
 
       if profile.save
+        profile.update_hosts(new_host_ids)
         profile.update_rules(ids: new_rule_ids)
         render_json profile, status: :created
       else
@@ -39,9 +43,8 @@ module V1
     end
 
     def update
-      authorize profile
-
       if profile.update(profile_update_attributes)
+        profile.update_hosts(new_host_ids)
         profile.update_rules(ids: new_rule_ids)
         render_json profile
       else
@@ -77,7 +80,7 @@ module V1
     def business_objective
       @business_objective ||= Pundit.policy_scope(
         current_user, BusinessObjective
-      ).from_title(resource_attributes[:business_objective])
+      ).from_title(resource_attributes&.dig(:business_objective))
     end
 
     def profile_create_attributes
@@ -102,10 +105,12 @@ module V1
       end
     end
 
+    def new_host_ids
+      new_relationship_ids(:hosts)
+    end
+
     def new_rule_ids
-      resource_relationships.to_h.dig(:rules, :data)&.map do |rule|
-        rule[:id]
-      end
+      new_relationship_ids(:rules)
     end
 
     def resource
