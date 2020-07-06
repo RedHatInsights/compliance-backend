@@ -59,6 +59,14 @@ unless Rails.env.production?
       def json_body
         JSON.parse(response.body)
       end
+
+      def params(data)
+        { data: data }
+      end
+
+      def parsed_data
+        json_body.dig('data')
+      end
     end
   end
 end
