@@ -282,6 +282,261 @@
         }
       }
     },
+    "/api/compliance/business_objectives": {
+      "get": {
+        "summary": "List all business_objectives",
+        "tags": [
+          "business_objective"
+        ],
+        "description": "Lists all business_objectives requested",
+        "operationId": "ListBusinessObjectives",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "lists all business_objectives requested",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": [
+                  {
+                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                    "type": "business_objective",
+                    "attributes": {
+                      "title": "china expansion"
+                    },
+                    "relationships": {
+                      "profiles": {
+                        "data": [
+                          {
+                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "type": "profile"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                    "type": "business_objective",
+                    "attributes": {
+                      "title": "project X"
+                    },
+                    "relationships": {
+                      "profiles": {
+                        "data": [
+                          {
+                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                            "type": "profile"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "meta": {
+                  "total": 2,
+                  "search": null,
+                  "limit": 10,
+                  "offset": 1
+                },
+                "links": {
+                  "first": "/api/compliance/business_objectives?limit=10&offset=1",
+                  "last": "/api/compliance/business_objectives?limit=10&offset=1"
+                }
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/links"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/business_objective"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compliance/business_objectives/{id}": {
+      "get": {
+        "summary": "Retrieve a business_objective",
+        "tags": [
+          "business_objective"
+        ],
+        "description": "Retrieves data for a business_objective",
+        "operationId": "ShowBusinessObjective",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "business_objective not found",
+            "examples": {
+              "application/vnd.api+json": {
+                "errors": "BusinessObjective not found with ID invalid"
+              }
+            },
+            "content": {}
+          },
+          "200": {
+            "description": "retrieves a business_objective",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                  "type": "business_objective",
+                  "attributes": {
+                    "title": "china expansion"
+                  },
+                  "relationships": {
+                    "profiles": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "profile"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/links"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/business_objective"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/business_objective_relationships"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/compliance/profiles": {
       "get": {
         "summary": "List all profiles",
@@ -519,7 +774,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "8528687e-c44e-4c01-bded-c45a183792f0",
+                  "id": "3f9375da-38da-494a-83a4-77f02e3f0269",
                   "type": "profile",
                   "attributes": {
                     "name": "A custom name",
@@ -728,7 +983,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "b301900b-fe92-4df5-a50b-e3ba87a75f82",
+                        "id": "24d26f50-3a7c-43bb-b3f7-8a93b7c10ab3",
                         "type": "account"
                       }
                     },
@@ -1594,6 +1849,26 @@
           "rules": {
             "$ref": "#/components/schemas/relationship_collection"
           },
+          "profiles": {
+            "$ref": "#/components/schemas/relationship_collection"
+          }
+        }
+      },
+      "business_objective": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7"
+          }
+        }
+      },
+      "business_objective_relationships": {
+        "type": "object",
+        "properties": {
           "profiles": {
             "$ref": "#/components/schemas/relationship_collection"
           }

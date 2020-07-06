@@ -409,14 +409,6 @@ module V1
                              .map { |r| r['id'] })
         )
       end
-
-      def params(data)
-        { data: data }
-      end
-
-      def parsed_data
-        JSON.parse(response.body).dig('data')
-      end
     end
   end
 end
