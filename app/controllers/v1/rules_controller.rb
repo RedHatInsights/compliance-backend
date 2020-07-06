@@ -4,7 +4,7 @@ module V1
   # REST API for Rules
   class RulesController < ApplicationController
     def index
-      render json: RuleSerializer.new(scope_search, metadata)
+      render_json scope_search
     end
 
     def show
@@ -16,7 +16,7 @@ module V1
 
       raise ActiveRecord::RecordNotFound if rule.blank?
 
-      render json: RuleSerializer.new(rule)
+      render_json rule
     end
 
     private
@@ -25,12 +25,16 @@ module V1
       Rule
     end
 
+    def serializer
+      RuleSerializer
+    end
+
     def search_by_id
-      ::Pundit.policy_scope(User.current, ::Rule).friendly.find(params[:id])
+      pundit_scope.friendly.find(params[:id])
     end
 
     def search_by_ref_id
-      rule = Rule.latest.where(
+      rule = pundit_scope.latest.where(
         'rules.slug LIKE ?',
         "%#{ActiveRecord::Base.sanitize_sql_like(params[:id])}%"
       )
