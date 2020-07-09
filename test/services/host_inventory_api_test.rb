@@ -7,7 +7,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
   setup do
     @account = accounts(:one)
     @inventory_host = { 'id': hosts(:one).id,
-                        'fqdn': hosts(:one).name,
+                        'display_name': hosts(:one).name,
                         'account': @account.account_number }
     @host = hosts(:one)
     @url = 'http://localhost'

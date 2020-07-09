@@ -14,7 +14,7 @@ class ReportsTarReaderTest < ActiveSupport::TestCase
           'id' => ::UUID.generate,
           'b64_identity' => 'b64_fake_identity',
           'metadata' => {
-            'fqdn' => 'lenovolobato.lobatolan.home'
+            'display_name' => 'lenovolobato.lobatolan.home'
           }
         )
       end

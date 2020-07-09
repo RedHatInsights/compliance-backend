@@ -47,7 +47,7 @@ module Mutations
       )
 
       host.update!(
-        name: i_host['fqdn']
+        name: i_host['display_name']
       )
 
       host

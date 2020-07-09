@@ -57,7 +57,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
     HostInventoryAPI.expects(:new).returns(@api)
     @api.expects(:inventory_host).returns(
       'id' => NEW_ID,
-      'fqdn' => 'newhostname'
+      'display_name' => 'newhostname'
     )
 
     Schema.execute(
