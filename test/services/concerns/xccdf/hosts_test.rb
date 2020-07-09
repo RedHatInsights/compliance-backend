@@ -14,7 +14,9 @@ module Xccdf
         @test_result_file = test_result_file
         @host = host
         @account = account
-        @inventory_host = OpenStruct.new(id: @host.id, fqdn: @host.name)
+        @inventory_host = OpenStruct.new(id: @host.id, display_name: @host.name,
+                                         os_major_version: 8,
+                                         os_minor_version: 2)
         set_openscap_parser_data
       end
     end

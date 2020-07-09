@@ -22,7 +22,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
                           'b64_identity' => 'b64_fake_identity',
                           'id' => @host_id,
                           'metadata' => {
-                            'fqdn' => 'lenovolobato.lobatolan.home'
+                            'display_name' => 'lenovolobato.lobatolan.home'
                           })
     @report_parser.set_openscap_parser_data
     # A hack to skip API calls in the test env for the time being
@@ -32,7 +32,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       'results' => [
         { 'id' => @host_id,
           'account' => accounts(:test).account_number,
-          'fqdn' => @report_parser.test_result_file.test_result.host }
+          'display_name' => @report_parser.test_result_file.test_result.host }
       ]
     }
     connection.stubs(:get).with(
@@ -113,7 +113,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
                             'id' => @host_id,
                             'b64_identity' => 'b64_fake_identity',
                             'metadata' => {
-                              'fqdn' => 'lenovolobato.lobatolan.home'
+                              'display_name' => 'lenovolobato.lobatolan.home'
                             })
       assert_equal 10, @report_parser.op_benchmark.profiles.count
     end
@@ -202,7 +202,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
           'fakereport',
           'account' => accounts(:test).account_number,
           'b64_identity' => 'b64_fake_identity',
-          'metadata' => { 'fqdn': '123' }
+          'metadata' => { 'display_name': '123' }
         )
       end
     end
@@ -321,7 +321,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
           'id' => @host_id,
           'b64_identity' => 'b64_fake_identity',
           'metadata' => {
-            'fqdn' => 'lenovolobato.lobatolan.home'
+            'display_name' => 'lenovolobato.lobatolan.home'
           }
         )
       end
