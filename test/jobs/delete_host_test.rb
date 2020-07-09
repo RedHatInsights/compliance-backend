@@ -23,7 +23,7 @@ class DeleteHostTest < ActiveSupport::TestCase
   test 'logs if message contains an ID not found ' do
     DeleteHost.perform_async(@message.merge('id': 'notfound'))
     assert_equal 1, DeleteHost.jobs.size
-    Sidekiq.logger.expects(:info)
+    Sidekiq.logger.expects(:info).at_least_once
     assert_difference('Host.count', 0) do
       DeleteHost.drain
     end
