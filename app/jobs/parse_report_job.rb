@@ -11,6 +11,10 @@ class ParseReportJob
 
     @file = file
     @msg_value = message
+    Sidekiq.logger.info(
+      "Parsing report for account #{@msg_value['account']}, "\
+      "system #{@msg_value['id']}"
+    )
     save_all
   end
 

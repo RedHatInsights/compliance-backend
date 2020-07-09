@@ -9,9 +9,7 @@ class InventoryHostUpdatedJob
     return wrong_format_warning(message) unless valid_message_format(message)
 
     rescue_not_found do
-      Host.find_by!(
-        id: message['host']['id']
-      ).update!(name: message['host']['display_name'])
+      update_host(message)
     end
   end
 
@@ -24,5 +22,15 @@ class InventoryHostUpdatedJob
       'Received a message to update a hostname but message '\
       "doesn't have the expected format - #{message}"
     )
+  end
+
+  def update_host(message)
+    Sidekiq.logger.info(
+      "Updating host #{message['host']['id']} name "\
+      " to #{message['host']['display_name']}"
+    )
+    Host.find_by!(
+      id: message['host']['id']
+    ).update!(name: message['host']['display_name'])
   end
 end
