@@ -34,7 +34,7 @@ class InventoryHostUpdatedJobTest < ActiveSupport::TestCase
       'host': { 'id': 'notfound', 'display_name': 'abc' }
     )
     assert_equal 1, InventoryHostUpdatedJob.jobs.size
-    Sidekiq.logger.expects(:info)
+    Sidekiq.logger.expects(:info).at_least_once
     InventoryHostUpdatedJob.drain
   end
 end
