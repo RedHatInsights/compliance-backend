@@ -9,7 +9,9 @@ module Xccdf
     def save_host
       @host = ::Host.find_or_initialize_by(id: inventory_host['id'],
                                            account_id: @account.id)
-      @host.update!(name: inventory_host['fqdn'])
+      @host.update!(name: inventory_host['display_name'],
+                    os_major_version: inventory_host['os_major_version'],
+                    os_minor_version: inventory_host['os_minor_version'])
     end
 
     def host_profile
