@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.1'
+gem 'rails', '~> 5.2.4'
 gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 4'
@@ -19,6 +19,7 @@ gem 'ruby-kafka'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
+gem 'rack', '>= 2.1.4'
 
 # Swagger
 gem 'rswag-api', '~> 2.3'
