@@ -777,7 +777,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "3d65ab5b-718e-4817-9c30-de201b2356f3",
+                  "id": "90392693-82fb-4e78-bf06-00f988d5b545",
                   "type": "profile",
                   "attributes": {
                     "name": "A custom name",
@@ -1013,7 +1013,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "a8495924-f365-4e81-bf8b-82e2d7cf5cf9",
+                        "id": "14ea2548-e89b-4749-b948-947a7632ab68",
                         "type": "account"
                       }
                     },
@@ -1194,7 +1194,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "d9e2c76a-cf26-4f76-8fd0-42781ecbf48f",
+                  "id": "170537e4-7111-4675-973e-3a9a9fb73057",
                   "type": "profile",
                   "attributes": {
                     "name": "An updated custom name",
@@ -2054,6 +2054,119 @@
                           "relationships": {
                             "$ref": "#/components/schemas/host_relationships"
                           }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/compliance/systems/{id}": {
+      "get": {
+        "summary": "Retrieve a system",
+        "tags": [
+          "host"
+        ],
+        "description": "Lists all hosts requested",
+        "operationId": "ListHosts",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "system not found",
+            "examples": {
+              "application/vnd.api+json": {
+                "errors": "Host not found with ID invalid"
+              }
+            },
+            "content": {}
+          },
+          "200": {
+            "description": "retrieves a system",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                  "type": "host",
+                  "attributes": {
+                    "name": "MyStringone",
+                    "os_major_version": null,
+                    "os_minor_version": null,
+                    "last_scanned": "2020-03-25T14:51:17Z",
+                    "rules_passed": 0,
+                    "rules_failed": 0,
+                    "compliant": true
+                  },
+                  "relationships": {
+                    "test_results": {
+                      "data": [
+                        {
+                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "type": "test_result"
+                        }
+                      ]
+                    },
+                    "profiles": {
+                      "data": []
+                    }
+                  }
+                }
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/links"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/host"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/host_relationships"
                         }
                       }
                     }
