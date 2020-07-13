@@ -12,7 +12,7 @@ Rails.application.routes.draw do
           end
         end
         resources :rule_results, only: [:index]
-        resources :systems, only: [:index, :destroy]
+        resources :systems, only: [:index, :show, :destroy]
         resources :rules, only: [:index, :show]
       end
       resources :benchmarks, controller: 'v1/benchmarks', only: [:index, :show]
@@ -23,7 +23,7 @@ Rails.application.routes.draw do
         end
       end
       resources :rule_results, controller: 'v1/rule_results', only: [:index]
-      resources :systems, controller: 'v1/systems', only: [:index, :destroy]
+      resources :systems, controller: 'v1/systems', only: [:index, :show, :destroy]
       resources :rules, controller: 'v1/rules', only: [:index, :show]
       mount Rswag::Api::Engine => '/',
         as: "#{prefix}/#{ENV['APP_NAME']}/rswag_api"
