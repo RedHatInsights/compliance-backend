@@ -9,7 +9,8 @@ class ComplianceReportsConsumer < ApplicationConsumer
   subscribes_to Settings.platform_kafka_topic
 
   def process(message)
-    @msg_value = JSON.parse(message.value)
+    super(message)
+
     raise EntitlementError unless identity.valid?
 
     download_file
@@ -86,9 +87,5 @@ class ComplianceReportsConsumer < ApplicationConsumer
       'service': 'compliance',
       'validation': result
     }.to_json
-  end
-
-  def logger
-    Rails.logger
   end
 end
