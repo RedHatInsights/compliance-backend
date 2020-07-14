@@ -8,8 +8,9 @@ module Xccdf
   class Benchmark < ApplicationRecord
     scoped_search on: %i[id ref_id title version]
     scoped_search relation: :profiles, on: :id, rename: :profile_ids,
-                  alias: :profile_id
-    scoped_search relation: :rules, on: :id, rename: :rule_ids, alias: :rule_id
+                  aliases: %i[profile_id]
+    scoped_search relation: :rules, on: :id, rename: :rule_ids,
+                  aliases: %i[rule_id]
     scoped_search on: :os_major_version, ext_method: 'os_major_version_search',
                   only_explicit: true, operators: ['=', '!='],
                   validator: ScopedSearch::Validators::INTEGER
