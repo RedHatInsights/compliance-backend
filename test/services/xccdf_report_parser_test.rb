@@ -36,7 +36,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       ]
     }
     connection.stubs(:get).with(
-      "#{::Settings.host_inventory_url}#{ENV['PATH_PREFIX']}" \
+      "#{::Settings.host_inventory_url}#{Settings.path_prefix}" \
       "/inventory/v1/hosts/#{@host_id}",
       {}, X_RH_IDENTITY: 'b64_fake_identity'
     ).returns(OpenStruct.new(body: get_body.to_json))
@@ -57,7 +57,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       ]
     }
     connection.stubs(:get).with(
-      "#{::Settings.host_inventory_url}#{ENV['PATH_PREFIX']}" \
+      "#{::Settings.host_inventory_url}#{Settings.path_prefix}" \
       "/inventory/v1/hosts/#{[@host_id].join(',')}/system_profile",
       { per_page: 50, page: 1 },
       X_RH_IDENTITY: 'b64_fake_identity'

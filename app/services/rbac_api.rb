@@ -4,7 +4,7 @@
 class RbacApi
   def initialize(b64_identity)
     @url = URI.parse("#{URI.parse(Settings.rbac_url)}"\
-                     "#{ENV['PATH_PREFIX']}/rbac/v1/access/")
+                     "#{Settings.path_prefix}/rbac/v1/access/")
     @b64_identity = b64_identity
   end
 

@@ -4,7 +4,7 @@
 module OpenshiftEnvironment
   class << self
     def environment
-      ENV['SETTINGS__PROMETHEUS_EXPORTER_HOST'].split('.')[1]
+      Settings.prometheus_exporter_host.split('.')[1]
     end
 
     def application
