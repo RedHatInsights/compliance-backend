@@ -4,7 +4,7 @@
 class RemediationsAPI
   def initialize(account)
     @url = URI.parse("#{URI.parse(Settings.remediations_url)}"\
-                     "#{ENV['PATH_PREFIX']}/remediations/v1/resolutions")
+                     "#{Settings.path_prefix}/remediations/v1/resolutions")
     @b64_identity = account.b64_identity
   end
 

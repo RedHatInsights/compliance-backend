@@ -86,9 +86,48 @@ using insights-proxy. You may run the proxy using the SPANDX config provided her
 SPANDX_CONFIG=$(pwd)/compliance-backend.js ../insights-proxy/scripts/run.sh
 ```
 
-### Option 3: Docker Development setup
+### Option 3: Docker/Podman Compose Development setup
 
-Bring up the DB, rails, and racecar:
+The first step is to copy over the .env file from .env.example and modify the
+values as needed:
+
+```shell
+cp .env.example .env
+```
+
+You may also need to add basic auth to `app/services/platform.rb`. This
+authentication will be used when talking to platform services such as inventory,
+rbac, and remediations. Anything not deployed locally will require basic auth
+instead of using an identity header (i.e. rbac, remediations):
+
+```diff
+diff --git a/app/services/platform.rb b/app/services/platform.rb
+index 36a0f00..c4b0e92 100644
+--- a/app/services/platform.rb
++++ b/app/services/platform.rb
+@@ -21,6 +21,7 @@ module Platform
+       f.request :retry, RETRY_OPTIONS
+       f.adapter Faraday.default_adapter # this must be the last middleware
+       f.ssl[:verify] = Rails.env.production?
++      f.basic_auth 'username', 'password'
+     end
+     faraday
+   end
+```
+
+Either podman-compose or docker-compose should work. podman-compose does not
+support exec, so podman commands must be run manually against the running
+container, as demonstrated:
+
+```shell
+# docker
+docker-compose exec rails bash
+
+# podman
+podman exec compliance-backend_rails_1 bash
+```
+
+Bring up the everything, including inventory, ingress, etc.:
 
 ```shell
 docker-compose up
@@ -106,10 +145,31 @@ Debug with pry-remote:
 docker-compose exec rails pry-remote -w
 ```
 
+Run the tests:
+
+```shell
+# run all tests (same thing run on PRs to master)
+docker-compose exec rails bundle exec rake test:validate
+
+# run a single test file
+docker-compose exec -e TEST=$TEST rails bundle exec rake test TEST=test/consumers/inventory_events_consumer_test.rb
+```
+
+Access logs:
+note: podman-compose does not support the logs command, so similar to exec,
+it must be run against the container itself, as shown
+
+```shell
+docker-compose logs -f sidekiq
+
+# podman
+podman logs -f compliance-backend_sidekiq_1
+```
+
 ## API documentation
 
-The API documentation can be found at `ENV['PATH_PREFIX']/ENV['APP_NAME']`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `ENV['PATH_PREFIX']/ENV['APP_NAME']/v1/openapi.json`
-The OpenAPI version 3.0 description can be found at `ENV['PATH_PREFIX']/ENV['APP_NAME']/openapi`. You can build this API by converting the JSON representation (OpenAPI 2.x) using [swagger2openapi](https://github.com/Mermade/oas-kit/blob/master/packages/swagger2openapi).
+The API documentation can be found at `Settings.path_prefix/Settings.app_name`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `Settings.path_prefix/Settings.app_name/v1/openapi.json`
+The OpenAPI version 3.0 description can be found at `Settings.path_prefix/Settings.app_name/openapi`. You can build this API by converting the JSON representation (OpenAPI 2.x) using [swagger2openapi](https://github.com/Mermade/oas-kit/blob/master/packages/swagger2openapi).
 
 ## Contributing
 

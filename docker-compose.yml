@@ -1,10 +1,185 @@
+# This docker-compose file will stand up the entire stack including ingress and inventory.
 version: "3"
 services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=32181
+      - ZOOKEEPER_SERVER_ID=1
+      - KAFKA_OPTS=-Dzookeeper.admin.enableServer=false
+  kafka:
+    image: confluentinc/cp-kafka
+    ports:
+      - 29092:29092
+    depends_on:
+      - zookeeper
+    links:
+      - zookeeper
+    environment:
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092
+      - KAFKA_BROKER_ID=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:32181
+  puptoo:
+    image: quay.io/cloudservices/insights-puptoo:latest
+    command:
+      - python
+      - -m
+      - puptoo.app
+    ports:
+      - 8001:8001 #for prometheus endpoint
+    environment:
+      - REJECTION_TOPIC=platform.upload.validation
+      - LOGLEVEL=INFO
+      - PROMETHEUS_PORT=8001
+    depends_on:
+      - kafka
+    links:
+      - kafka
+  minio:
+    image: minio/minio
+    command: server /data
+    volumes:
+      - /data
+    ports:
+      - 9000:9000
+    environment:
+      - MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    links:
+      - minio
+    entrypoint: /bin/sh
+    command: -c '
+      until /usr/bin/mc config host add myminio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY >/dev/null; do sleep 1; done ;
+      /usr/bin/mc mb myminio/insights-upload-perma;
+      /usr/bin/mc mb myminio/insights-upload-rejected;
+      /usr/bin/mc policy set download myminio/insights-upload-perma;
+      /usr/bin/mc policy set download myminio/insights-upload-rejected;
+      exit 0;'
+    volumes:
+      - /data
+    environment:
+      - MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY
+  ingress:
+    image: quay.io/cloudservices/insights-ingress:latest
+    environment:
+      - AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
+      - AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
+      - AWS_REGION=us-east-1
+      - INGRESS_STAGEBUCKET=insights-upload-perma
+      - INGRESS_REJECTBUCKET=insights-upload-rejected
+      - INGRESS_VALIDTOPICS=testareno,advisor,buckit,compliance #if you test a different topic, add it here
+      - INGRESS_INVENTORYURL=inventory-web:8081/api/inventory/v1/hosts
+      - OPENSHIFT_BUILD_COMMIT=woopwoop
+      - INGRESS_PORT=8080
+      - INGRESS_MINIODEV=true
+      - INGRESS_MINIOACCESSKEY=$MINIO_ACCESS_KEY
+      - INGRESS_MINIOSECRETKEY=$MINIO_SECRET_KEY
+      - INGRESS_MINIOENDPOINT=minio:9000
+    ports:
+      - 8080:8080
+    depends_on:
+      - kafka
+    links:
+      - kafka
   db:
     image: postgres
-    restart: on-failure
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: insights
+      POSTGRES_USER: insights
+      POSTGRES_DB: insights
+    ports:
+      - 5432:5432
     volumes:
-      - ./tmp/insights-compliance-db:/var/lib/postgresql/data:z
+      - /data
+  inventory:
+    image: quay.io/cloudservices/insights-inventory:latest
+    command: bash -c 'sleep 10 && make upgrade_db && make run_inv_mq_service'
+    environment:
+      - INVENTORY_DB_HOST=db
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - INVENTORY_LOG_LEVEL=ERROR
+      - KAFKA_SECONDARY_TOPIC_ENABLED=True
+    links:
+      - db
+      - kafka
+    depends_on:
+      - db
+      - kafka
+    links:
+      - db
+      - kafka
+  inventory-web:
+    image: quay.io/cloudservices/insights-inventory:latest
+    command: bash -c 'sleep 10 && make upgrade_db && python run_gunicorn.py'
+    environment:
+      - INVENTORY_DB_HOST=db
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - KAFKA_TOPIC=platform.system_profile
+        KAFKA_GROUP=inventory
+      - INVENTORY_LOG_LEVEL=DEBUG
+      - KAFKA_SECONDARY_TOPIC_ENABLED=True
+      - LISTEN_PORT=8081
+    ports:
+      - 8081:8081
+    links:
+      - db
+    depends_on:
+      - db
+      - kafka
+    links:
+      - db
+      - kafka
+  #
+  # NOTE: The following two 'services' are only required for a new DB
+  # Feel free to comment them out for subsequent use
+  #
+  build-rails-db:
+    image: compliance-backend-rails
+    entrypoint: ''
+    command: 'bundle exec rake db:create db:migrate'
+    volumes:
+      - .:/app:z
+    depends_on:
+      - db
+      - prometheus
+    links:
+      - db
+      - prometheus
+    environment:
+      - DATABASE_SERVICE_NAME=postgres
+      - POSTGRES_SERVICE_HOST=db
+      - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_TEST_DATABASE=compliance_test
+      - POSTGRESQL_USER=insights
+      - POSTGRESQL_PASSWORD=insights
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+  ssg-import-rhel-supported:
+    image: compliance-backend-rails
+    entrypoint: ''
+    command: 'bundle exec rake ssg:import_rhel_supported'
+    volumes:
+      - .:/app:z
+    depends_on:
+      - db
+      - prometheus
+    links:
+      - db
+      - prometheus
+    environment:
+      - DATABASE_SERVICE_NAME=postgres
+      - POSTGRES_SERVICE_HOST=db
+      - POSTGRESQL_DATABASE=compliance_dev
+      - POSTGRESQL_TEST_DATABASE=compliance_test
+      - POSTGRESQL_USER=insights
+      - POSTGRESQL_PASSWORD=insights
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
   rails:
     build: .
     image: compliance-backend-rails
@@ -16,44 +191,47 @@ services:
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_TEST_DATABASE=compliance_test
-      - POSTGRESQL_USER=postgres
+      - POSTGRESQL_USER=insights
+      - POSTGRESQL_PASSWORD=insights
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
     ports:
-      - '3000:3000'
+      - 3000:3000
     volumes:
       - .:/app:z
     depends_on:
       - db
       - prometheus
       - redis
-  reports-consumer:
+    links:
+      - db
+      - prometheus
+      - redis
+  inventory-consumer:
     image: compliance-backend-rails
     restart: on-failure
-    command: bundle exec racecar -l log/consumer.log ComplianceReportsConsumer
-    volumes:
-      - .:/app:z
+    entrypoint: ''
+    command: 'bundle exec racecar -l log/inventory-consumer.log InventoryEventsConsumer'
     environment:
-      - SETTINGS__REDIS_URL=redis:6379
-      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+      - KAFKAMQ=kafka:29092
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_TEST_DATABASE=compliance_test
-      - POSTGRESQL_USER=postgres
-      - KAFKAMQ=kafka:29092
+      - POSTGRESQL_USER=insights
+      - POSTGRESQL_PASSWORD=insights
+      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+      - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
+    volumes:
+      - .:/app:z
     depends_on:
       - db
       - prometheus
-  # inventory-consumer:
-  #   image: compliance-backend-rails
-  #   restart: on-failure
-  #   entrypoint: bash -c 'KAFKAMQ=kafka:29092 bundle exec racecar -l log/inventory-consumer.log InventoryEventsConsumer'
-  #   volumes:
-  #     - .:/app:z
-  #   depends_on:
-  #     - db
-  #     - prometheus
+      - kafka
+    links:
+      - db
+      - prometheus
+      - kafka
   prometheus:
     image: compliance-backend-rails
     tty: true
@@ -62,11 +240,10 @@ services:
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
-      - POSTGRESQL_USER=postgres
+      - POSTGRESQL_USER=insights
+      - POSTGRESQL_PASSWORD=insights
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - RAILS_ENV=development
-      - APP_NAME=compliance
-      - PATH_PREFIX=/api
       - RAILS_LOG_TO_STDOUT=true
     restart: on-failure
     volumes:
@@ -81,6 +258,8 @@ services:
       - .:/app:z
     depends_on:
       - redis
+    links:
+      - redis
     command: bundle exec sidekiq
     environment:
       - MALLOC_ARENA_MAX=2
@@ -90,12 +269,8 @@ services:
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_TEST_DATABASE=compliance_test
-      - POSTGRESQL_USER=postgres
+      - POSTGRESQL_USER=insights
+      - POSTGRESQL_PASSWORD=insights
       - SIDEKIQ_CONCURRENCY=5
   redis:
     image: redis:latest
-
-networks:
-  default:
-    external:
-      name: docker_default # should match insights-upload's network name

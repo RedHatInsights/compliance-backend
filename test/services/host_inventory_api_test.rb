@@ -35,7 +35,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
   test 'inventory_host for host already in inventory' do
     @api.expects(:host_already_in_inventory).returns(@host)
     @connection.expects(:get).with(
-      "#{@url}#{ENV['PATH_PREFIX']}/inventory/v1/hosts/"\
+      "#{@url}#{Settings.path_prefix}/inventory/v1/hosts/"\
       "#{@host.id}/system_profile",
       { per_page: 50, page: 1 },
       X_RH_IDENTITY: @b64_identity
@@ -70,7 +70,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
 
   test 'system_profile returns a hash with OS info if found' do
     @connection.expects(:get).with(
-      "#{@url}#{ENV['PATH_PREFIX']}/inventory/v1/hosts/"\
+      "#{@url}#{Settings.path_prefix}/inventory/v1/hosts/"\
       "#{@host.id}/system_profile",
       { per_page: 50, page: 1 },
       X_RH_IDENTITY: @b64_identity
@@ -86,7 +86,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
       results: [{ id: @host.id, system_profile: {} }]
     }.to_json)
     @connection.expects(:get).with(
-      "#{@url}#{ENV['PATH_PREFIX']}/inventory/v1/hosts/"\
+      "#{@url}#{Settings.path_prefix}/inventory/v1/hosts/"\
       "#{@host.id}/system_profile",
       { per_page: 50, page: 1 },
       X_RH_IDENTITY: @b64_identity

@@ -9,7 +9,7 @@ describe 'Systems API' do
     hosts(:one).update!(account: accounts(:one))
   end
 
-  path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/systems" do
+  path "#{Settings.path_prefix}/#{Settings.app_name}/systems" do
     get 'List all hosts' do
       tags 'host'
       description 'Lists all hosts requested'
@@ -49,7 +49,7 @@ describe 'Systems API' do
     end
   end
 
-  path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/systems/{id}" do
+  path "#{Settings.path_prefix}/#{Settings.app_name}/systems/{id}" do
     get 'Retrieve a system' do
       tags 'host'
       description 'Lists all hosts requested'

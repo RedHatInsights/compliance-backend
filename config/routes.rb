@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   def draw_routes(prefix)
-    scope "#{prefix}/#{ENV['APP_NAME']}" do
+    scope "#{prefix}/#{Settings.app_name}" do
       namespace :v1 do
         resources :benchmarks, only: [:index, :show]
         resources :business_objectives, only: [:index, :show]
@@ -26,19 +26,19 @@ Rails.application.routes.draw do
       resources :systems, controller: 'v1/systems', only: [:index, :show, :destroy]
       resources :rules, controller: 'v1/rules', only: [:index, :show]
       mount Rswag::Api::Engine => '/',
-        as: "#{prefix}/#{ENV['APP_NAME']}/rswag_api"
+        as: "#{prefix}/#{Settings.app_name}/rswag_api"
       mount Rswag::Ui::Engine => '/',
-        as: "#{prefix}/#{ENV['APP_NAME']}/rswag_ui"
+        as: "#{prefix}/#{Settings.app_name}/rswag_ui"
       get 'openapi' => 'application#openapi'
       post 'graphql' => 'graphql#query'
       if Rails.env.development?
         mount GraphiQL::Rails::Engine, at: "/graphiql",
-          graphql_path: "#{prefix}/#{ENV['APP_NAME']}/graphql",
-          as: "#{prefix}/#{ENV['APP_NAME']}/graphiql"
+          graphql_path: "#{prefix}/#{Settings.app_name}/graphql",
+          as: "#{prefix}/#{Settings.app_name}/graphiql"
       end
     end
   end
 
-  draw_routes(ENV['PATH_PREFIX'])
-  draw_routes(ENV['OLD_PATH_PREFIX'])
+  draw_routes(Settings.path_prefix)
+  draw_routes(Settings.old_path_prefix)
 end

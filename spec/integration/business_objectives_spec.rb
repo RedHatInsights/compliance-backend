@@ -12,7 +12,7 @@ describe 'Business Objectives API' do
                            business_objective: business_objectives(:two))
   end
 
-  path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/business_objectives" do
+  path "#{Settings.path_prefix}/#{Settings.app_name}/business_objectives" do
     get 'List all business_objectives' do
       tags 'business_objective'
       description 'Lists all business_objectives requested'
@@ -51,7 +51,8 @@ describe 'Business Objectives API' do
     end
   end
 
-  path "#{ENV['PATH_PREFIX']}/#{ENV['APP_NAME']}/business_objectives/{id}" do
+  path "#{Settings.path_prefix}/#{Settings.app_name}/"\
+       'business_objectives/{id}' do
     get 'Retrieve a business_objective' do
       tags 'business_objective'
       description 'Retrieves data for a business_objective'

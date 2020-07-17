@@ -1,3 +1,6 @@
+app_name: 'compliance'
+path_prefix: '/api'
+old_path_prefix: '/r/insights/platform'
 platform_kafka_topic: 'platform.upload.compliance'
 platform_kafka_inventory_topic: 'platform.inventory.events'
 platform_kafka_validation_topic: 'platform.upload.validation'

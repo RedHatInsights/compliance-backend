@@ -63,7 +63,7 @@ module Metadata
     private
 
     def base_link
-      base_url = "#{path_prefix}/#{ENV['APP_NAME']}"\
+      base_url = "#{path_prefix}/#{Settings.app_name}"\
                  "/#{controller_name}"
       base = "#{base_url}?limit=#{pagination_limit}"
       base += "&search=#{params[:search]}" if params[:search].present?

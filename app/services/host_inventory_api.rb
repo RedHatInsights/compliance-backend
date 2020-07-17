@@ -10,7 +10,7 @@ class InventoryInvalidOsRelease < StandardError; end
 # are all that's needed.
 class HostInventoryAPI
   def initialize(account, url, b64_identity)
-    @url = "#{URI.parse(url)}#{ENV['PATH_PREFIX']}/inventory/v1/hosts"
+    @url = "#{URI.parse(url)}#{Settings.path_prefix}/inventory/v1/hosts"
     @account = account
     @b64_identity = b64_identity || @account.b64_identity
   end
