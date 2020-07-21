@@ -5,8 +5,14 @@
 class InventoryEventsConsumer < ApplicationConsumer
   subscribes_to Settings.platform_kafka_inventory_topic
 
+  include ReportParsing
+
   def process(message)
     super(message)
+
+    if service == 'compliance'
+      produce(parse_report, topic: Settings.platform_kafka_validation_topic)
+    end
 
     case @msg_value['type']
     when 'delete'
