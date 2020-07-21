@@ -2,25 +2,33 @@
 
 set -e
 
-PODNAME="compliance"
+PODNAME="insights-compliance-backend"
 
 WORKDIR="$(dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd ))"
 
 DB_DATA_DIR="${WORKDIR}/tmp/insights-compliance-db"
 
-PODMAN_NETWORK="cni-podman1"
-PODMAN_GATEWAY=$(podman network inspect $PODMAN_NETWORK | jq -r '..| .gateway? // empty')
+POSTGRES_PASSWORD='postgres'
 
-if ! podman pod exists $PODNAME; then
-	podman pod create --name "$PODNAME" -p "8080:3000"
+DEFAULT_HOST=192.168.122.1
+
+#PODMAN_NETWORK="cni-podman1"
+#PODMAN_GATEWAY=$(podman network inspect $PODMAN_NETWORK | jq -r '..| .gateway? // empty')
+
+if podman pod exists "$PODNAME"; then
+    podman pod rm "$PODNAME" -f
+fi
+
+#if ! podman pod exists $PODNAME; then
+podman pod create --name "$PODNAME" -p "8080:3000"
 	#podman pod create --name "$PODNAME" -p "8080:3000"
-#	podman pod create --name "$PODNAME" --network "$PODMAN_NETWORK" 
-	#podman pod create --name "$PODNAME" -p "8080:3000" 
+#	podman pod create --name "$PODNAME" --network "$PODMAN_NETWORK"
+	#podman pod create --name "$PODNAME" -p "8080:3000"
 #		--add-host "ci.foo.redhat.com:$PODMAN_GATEWAY" \
 #		--add-host "qa.foo.redhat.com:$PODMAN_GATEWAY" \
 #		--add-host "stage.foo.redhat.com:$PODMAN_GATEWAY" \
 #		--add-host "prod.foo.redhat.com:$PODMAN_GATEWAY"
-fi
+#fi
 
 #podman build "$WORKDIR" -t "compliance-backend-rails"
 
@@ -40,24 +48,21 @@ fi
 
 # compliance-redis
 podman run --pod "$PODNAME" -d --name "redis" \
-    --network="$PODMAN_NETWORK" \
     redis
-
 
 # compliance-db
 podman run --pod "$PODNAME" -d --name "db" \
-    --network="$PODMAN_NETWORK" \
     -v "$DB_DATA_DIR:/var/lib/postgresql/data:z" \
+	-e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
     postgres
 
 
 # compliance-prometheus-exporter
 podman run --pod "$PODNAME" -d --name "prometheus" -v "$WORKDIR:/app:z" \
-    --network="$PODMAN_NETWORK" \
 	-e DATABASE_SERVICE_NAME=postgres \
-	-e POSTGRES_SERVICE_HOST=db \
+	-e POSTGRES_SERVICE_HOST=localhost \
 	-e POSTGRESQL_USER=postgres \
-	-e POSTGRESQL_PASSWORD=postgres \
+	-e POSTGRESQL_PASSWORD=$POSTGRES_PASSWORD \
 	-e RAILS_ENV=development \
 	-e APP_NAME=compliance \
 	-e PATH_PREFIX=/api \
@@ -68,59 +73,54 @@ podman run --pod "$PODNAME" -d --name "prometheus" -v "$WORKDIR:/app:z" \
 
 # compliance-db-migrations
 podman run --pod "$PODNAME" --rm --name "migration" -v "${WORKDIR}:/app:z" \
-    --network="$PODMAN_NETWORK" \
 	-e DATABASE_SERVICE_NAME=postgres \
-	-e POSTGRES_SERVICE_HOST=db \
+	-e POSTGRES_SERVICE_HOST=localhost \
 	-e POSTGRESQL_USER=postgres \
-	-e POSTGRESQL_PASSWORD=postgres \
+	-e POSTGRESQL_PASSWORD=$POSTGRES_PASSWORD \
 	-e RAILS_LOG_TO_STDOUT=true \
-	-e SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus \
-	-e SETTINGS__REDIS_URL=redis \
+	-e SETTINGS__PROMETHEUS_EXPORTER_HOST=localhost \
+	-e SETTINGS__REDIS_URL=localhost\
 	compliance-backend-rails \
 	bundle exec rake db:create db:migrate
 
-
 # compliance-backend
 podman run --pod "$PODNAME" -d --name "rails" -v "${WORKDIR}:/app:z" \
-    --network="$PODMAN_NETWORK" -p 8080:3000 \
 	-e DATABASE_SERVICE_NAME=postgres \
-	-e POSTGRES_SERVICE_HOST=db \
-	-e POSTGRESQL_DATABASE=compliance_dev \
+	-e POSTGRES_SERVICE_HOST=localhost \
+	-e POSTGRESQL_DATABASE=postgres \
 	-e POSTGRESQL_TEST_DATABASE=compliance_test \
 	-e POSTGRESQL_USER=postgres \
-	-e SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus \
+	-e SETTINGS__PROMETHEUS_EXPORTER_HOST=localhost \
 	-e DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
-	-e SETTINGS__REDIS_URL=redis \
+	-e SETTINGS__REDIS_URL=localhost\
 	-e SETTINGS__DISABLE_RBAC=true \
 	compliance-backend-rails
 
 
-## compliance-consumer
-#podman run --pod "$PODNAME" -d --name "reports-consumer" -v "${WORKDIR}:/app:z" \
-#    --network="$PODMAN_NETWORK" \
-#	-e DATABASE_SERVICE_NAME=postgres \
-#	-e POSTGRES_SERVICE_HOST=localhost \
-#	-e POSTGRESQL_DATABASE=compliance_dev \
-#	-e POSTGRESQL_TEST_DATABASE=compliance_test \
-#	-e POSTGRESQL_USER=postgres \
-#	-e SETTINGS__PROMETHEUS_EXPORTER_HOST=localhost \
-#	-e SETTINGS__REDIS_URL=localhost \
-#    -e KAFKAMQ=kafka:29092 \
-#	compliance-backend-rails \
-#	bundle exec racecar -l log/consumer.log ComplianceReportsConsumer
-#
-#
-## compliance-sidekiq
-#podman run --pod "$PODNAME" -d --name "sidekiq" -v "${WORKDIR}:/app:z" \
-#    --network="$PODMAN_NETWORK" \
-#    -e MALLOC_ARENA_MAX=2 \
-#	-e SETTINGS__REDIS_URL=localhost \
-#	-e SETTINGS__PROMETHEUS_EXPORTER_HOST=localhost \
-#	-e DATABASE_SERVICE_NAME=postgres \
-#	-e POSTGRES_SERVICE_HOST=localhost \
-#	-e POSTGRESQL_DATABASE=compliance_dev \
-#	-e POSTGRESQL_TEST_DATABASE=compliance_test \
-#	-e POSTGRESQL_USER=postgres \
-#	compliance-backend-rails \
-#	bundle exec sidekiq
-#
+# compliance-consumer
+podman run --pod "$PODNAME" -d --name "reports-consumer" -v "${WORKDIR}:/app:z" \
+	-e DATABASE_SERVICE_NAME=postgres \
+	-e POSTGRES_SERVICE_HOST=localhost \
+	-e POSTGRESQL_DATABASE=postgres \
+	-e POSTGRESQL_TEST_DATABASE=compliance_test \
+	-e POSTGRESQL_USER=postgres \
+	-e SETTINGS__PROMETHEUS_EXPORTER_HOST=localhost \
+	-e SETTINGS__REDIS_URL=localhost \
+    -e KAFKAMQ=${DEFAULT_HOST}:29092 \
+	compliance-backend-rails \
+	bundle exec racecar -l log/consumer.log ComplianceReportsConsumer
+
+
+# compliance-sidekiq
+podman run --pod "$PODNAME" -d --name "sidekiq" -v "${WORKDIR}:/app:z" \
+    -e MALLOC_ARENA_MAX=2 \
+	-e SETTINGS__REDIS_URL=localhost \
+	-e SETTINGS__PROMETHEUS_EXPORTER_HOST=localhost \
+	-e DATABASE_SERVICE_NAME=postgres \
+	-e POSTGRES_SERVICE_HOST=localhost \
+	-e POSTGRESQL_DATABASE=postgres \
+	-e POSTGRESQL_TEST_DATABASE=compliance_test \
+	-e POSTGRESQL_USER=postgres \
+	compliance-backend-rails \
+	bundle exec sidekiq
+
