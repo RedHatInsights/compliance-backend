@@ -12,6 +12,8 @@ POSTGRES_PASSWORD='postgres'
 
 DEFAULT_HOST=192.168.122.1
 
+COMPLIANCE_BACKEND_PORT=3000
+
 #PODMAN_NETWORK="cni-podman1"
 #PODMAN_GATEWAY=$(podman network inspect $PODMAN_NETWORK | jq -r '..| .gateway? // empty')
 
@@ -20,7 +22,7 @@ if podman pod exists "$PODNAME"; then
 fi
 
 #if ! podman pod exists $PODNAME; then
-podman pod create --name "$PODNAME" -p "8080:3000"
+podman pod create --name "$PODNAME" -p "$COMPLIANCE_BACKEND_PORT"
 	#podman pod create --name "$PODNAME" -p "8080:3000"
 #	podman pod create --name "$PODNAME" --network "$PODMAN_NETWORK"
 	#podman pod create --name "$PODNAME" -p "8080:3000"
@@ -82,6 +84,7 @@ podman run --pod "$PODNAME" --rm --name "migration" -v "${WORKDIR}:/app:z" \
 	-e SETTINGS__REDIS_URL=localhost\
 	compliance-backend-rails \
 	bundle exec rake db:create db:migrate
+
 
 # compliance-backend
 podman run --pod "$PODNAME" -d --name "rails" -v "${WORKDIR}:/app:z" \
