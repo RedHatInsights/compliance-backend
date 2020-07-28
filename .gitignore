@@ -58,3 +58,5 @@ config/environments/*.local.yml
 brakeman_output.markdown
 
 Gemfile.local
+
+scap-security-guide*
