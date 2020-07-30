@@ -18,9 +18,10 @@ class RuleReference < ApplicationRecord
                      message: 'and label combination already taken'
                    }
 
-  def self.find_from_oscap(oscap_references)
-    oscap_references.inject(where('1=0')) do |rel, reference|
-      rel.or(where(href: reference.href, label: reference.label))
+  def self.find_unique(references)
+    arel_find(references) do |reference|
+      arel_table[:href].eq(reference.href)
+                       .and(arel_table[:label].eq(reference.label))
     end
   end
 
