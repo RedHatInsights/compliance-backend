@@ -6,21 +6,54 @@ module Xccdf
     extend ActiveSupport::Concern
 
     included do
-      def save_rule_references_rules
-        @rule_references_rules ||= @op_rules.flat_map do |op_rule|
-          rule_references_for(op_rule: op_rule).map do |reference|
-            ::RuleReferencesRule
-              .find_or_initialize_by(rule_reference_id: reference.id,
-                                     rule_id: rule_for(ref_id: op_rule.id).id)
-          end
-        end
+      RuleReferencesRuleStruct = Struct.new(:rule_id, :rule_reference_id)
 
-        ::RuleReferencesRule.import!(
-          @rule_references_rules.select(&:new_record?), ignore: true
-        )
+      def save_rule_references_rules
+        @rule_references_rules = new_rule_references_rules +
+                                 existing_rule_references_rules
+
+        ::RuleReferencesRule.import!(new_rule_references_rules)
       end
 
       private
+
+      def op_rule_references_rules
+        @op_rule_references_rules ||= @op_rules.flat_map do |op_rule|
+          rule = rule_for(ref_id: op_rule.id)
+          rule_references_for(op_rule: op_rule).map do |rule_reference|
+            RuleReferencesRuleStruct.new(rule.id, rule_reference.id)
+          end
+        end
+      end
+
+      def existing_rule_references_rules
+        @existing_rule_references_rules ||= ::RuleReferencesRule.find_unique(
+          op_rule_references_rules
+        )
+      end
+
+      def existing_ids
+        existing_rule_references_rules.pluck(:rule_id, :rule_reference_id)
+      end
+
+      def new_rule_references_rules
+        @new_rule_references_rules ||= new_op_rule_references_rules
+                                       .map do |op_rule_references_rule|
+          RuleReferencesRule.new(
+            rule_id: op_rule_references_rule.rule_id,
+            rule_reference_id: op_rule_references_rule.rule_reference_id
+          )
+        end
+      end
+
+      def new_op_rule_references_rules
+        op_rule_references_rules.reject do |op_rule_references_rule|
+          existing_ids.include? [
+            op_rule_references_rule.rule_id,
+            op_rule_references_rule.rule_reference_id
+          ]
+        end
+      end
 
       def rule_references_for(op_rule: nil)
         label_hrefs = op_rule.rule_references.map do |rr|
