@@ -30,8 +30,8 @@ task import_host_os_releases: :environment do
         end
       end
     end
-    puts "Finishing import_host_os_releases job at #{Time.now.utc} "\
-         "and last #{end_time - start_time} seconds"
+    end_time = Time.now.utc
+    puts "Finishing import at #{end_time} in #{end_time - start_time} seconds"
   rescue StandardError => e
     ExceptionNotifier.notify_exception(e, data: OpenshiftEnvironment.summary)
   end
