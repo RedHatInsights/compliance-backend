@@ -32,6 +32,10 @@ module Xccdf
         )
       end
 
+      def existing_ids
+        existing_rule_references_rules.pluck(:rule_id, :rule_reference_id)
+      end
+
       def new_rule_references_rules
         @new_rule_references_rules ||= new_op_rule_references_rules
                                        .map do |op_rule_references_rule|
@@ -42,15 +46,13 @@ module Xccdf
         end
       end
 
-      def existing_op_rule_references_rules
-        existing_rule_references_rules.map do |rule_references_rule|
-          RuleReferencesRuleStruct.new(rule_references_rule.rule_id,
-                                       rule_references_rule.rule_reference_id)
-        end
-      end
-
       def new_op_rule_references_rules
-        op_rule_references_rules - existing_op_rule_references_rules
+        op_rule_references_rules.reject do |op_rule_references_rule|
+          existing_ids.include? [
+            op_rule_references_rule.rule_id,
+            op_rule_references_rule.rule_reference_id
+          ]
+        end
       end
 
       def rule_references_for(op_rule: nil)
