@@ -19,9 +19,7 @@ class RuleReferencesRulesTest < ActiveSupport::TestCase
       save_rule_references_rules
     end
 
-    @new_rule_references_rules,
-      @existing_rule_references_rules,
-      @op_rule_references_rules = nil # un-cache it from ||=
+    @rule_references_rules = nil # un-cache it from ||=
     @op_rules = [
       OpenStruct.new(id: rules(:one).ref_id,
                      rule_references: [rule_references(:one)]),
@@ -32,9 +30,6 @@ class RuleReferencesRulesTest < ActiveSupport::TestCase
     assert_difference('RuleReferencesRule.count', 1) do
       save_rule_references_rules
     end
-
-    @new_rule_references_rules,
-      @existing_rule_references_rules = nil # un-cache it from ||=
 
     assert_difference('RuleReferencesRule.count', 0) do
       save_rule_references_rules

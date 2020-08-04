@@ -17,7 +17,7 @@ class RuleReferencesTest < ActiveSupport::TestCase
       save_rule_references
     end
 
-    @existing_rule_references, @new_rule_references = nil # un-cache it from ||=
+    @rule_references, @new_rule_references = nil # un-cache it from ||=
     @op_rule_references = [OpenStruct.new(label: 'foo', href: ''),
                            OpenStruct.new(label: 'bar', href: '')]
     stubs(:new_rules).returns(
