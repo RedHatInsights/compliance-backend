@@ -38,7 +38,7 @@ module Xccdf
     def test_result_profile
       ::Profile.canonical
                .where(ref_id: @test_result_file.test_result.profile_id,
-                      benchmark: @benchmark).first ||
+                      benchmark: @benchmark).order(:external).first ||
         ::Profile.find_or_initialize_by(
           ref_id: @test_result_file.test_result.profile_id,
           name: @test_result_file.test_result.profile_id,

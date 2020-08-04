@@ -4,7 +4,8 @@ module Xccdf
   # Methods related to saving TestResult from openscap_parser
   module TestResult
     def save_test_result
-      @test_result = ::TestResult.create!(
+      require 'pry'; binding.pry
+      @test_result = ::TestResult.find_or_create_by!(
         host: @host,
         profile: @host_profile,
         score: @op_test_result.score,

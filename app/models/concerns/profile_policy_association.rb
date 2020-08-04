@@ -9,10 +9,6 @@ module ProfilePolicyAssociation
 
     def policy
       return self unless external
-
-      Profile.includes(:benchmark)
-             .find_by(account: account_id, external: false, ref_id: ref_id,
-                      benchmarks: { ref_id: benchmark.ref_id })
     end
 
     def policy_profiles

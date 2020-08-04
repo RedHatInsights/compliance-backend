@@ -20,22 +20,22 @@ module Xccdf
       def save_all_benchmark_info
         return if benchmark_contents_equal_to_op?
 
-        save_benchmark
-        save_profiles
-        save_rules
-        save_rule_identifiers
-        save_profile_rules
-        save_rule_references
-        save_rule_references_rules
+        save_benchmark; Sidekiq.logger.info('save_benchmark')
+        save_profiles; Sidekiq.logger.info('save_profiles')
+        save_rules; Sidekiq.logger.info('save_rules')
+        save_rule_identifiers; Sidekiq.logger.info('save_rule_identifiers')
+        save_profile_rules; Sidekiq.logger.info('save_profile_rules')
+        save_rule_references; Sidekiq.logger.info('save_rule_references')
+        save_rule_references_rules; Sidekiq.logger.info('save_rule_references_rules')
       end
 
       def save_all_test_result_info
-        save_host
-        save_profile_host
-        save_test_result
-        save_rule_results
-        associate_rules_from_rule_results
-        invalidate_cache
+        save_host; Sidekiq.logger.info('save_host')
+        save_profile_host; Sidekiq.logger.info('save_profile_host')
+        save_test_result; Sidekiq.logger.info('save_test_result')
+        save_rule_results; Sidekiq.logger.info('save_rule_results')
+        associate_rules_from_rule_results; Sidekiq.logger.info('associate_rules_from_rule_results')
+        invalidate_cache; Sidekiq.logger.info('invalidate_cache')
       end
 
       def set_openscap_parser_data

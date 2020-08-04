@@ -15,8 +15,9 @@ class Profile < ApplicationRecord
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
   belongs_to :parent_profile, class_name: 'Profile', optional: true
 
-  validates :ref_id, uniqueness: { scope: %i[account_id benchmark_id] },
-                     presence: true
+  validates :ref_id, presence: true, uniqueness: {
+    scope: %i[account_id benchmark_id external]
+  }
   validates :name, presence: true
   validates :benchmark_id, presence: true
   validates :compliance_threshold, numericality: true
