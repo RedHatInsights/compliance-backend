@@ -31,7 +31,8 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )['data']['associateProfiles']['system']
 
-    assert_equal hosts(:one).reload.profiles, [profiles(:one), profiles(:two)]
+    assert_equal Set.new(hosts(:one).reload.profiles),
+                 Set.new([profiles(:one), profiles(:two)])
   end
 
   test 'finds inventory systems and creates them in compliance' do

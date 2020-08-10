@@ -11,6 +11,7 @@ module ProfilePolicyAssociation
       return self unless external
 
       Profile.includes(:benchmark)
+             .older_than(created_at)
              .find_by(account: account_id, external: false, ref_id: ref_id,
                       benchmarks: { ref_id: benchmark.ref_id })
     end
