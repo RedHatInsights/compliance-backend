@@ -28,7 +28,8 @@ module Xccdf
       ::Xccdf::Benchmark.any_instance.expects(:rules)
                         .returns(['rule-mock1']).at_least_once
       ::Xccdf::Benchmark.any_instance.expects(:profiles)
-                        .returns(['profile-mock1']).at_least_once
+                        .returns(stub(canonical: ['profile-mock1']))
+                        .at_least_once
       assert_difference('Xccdf::Benchmark.count', 1) do
         mock.save_benchmark
       end
@@ -40,7 +41,8 @@ module Xccdf
       ::Xccdf::Benchmark.any_instance.expects(:rules)
                         .returns(['rule-mock1']).at_least_once
       ::Xccdf::Benchmark.any_instance.expects(:profiles)
-                        .returns(['profile-mock1']).at_least_once
+                        .returns(stub(canonical: ['profile-mock1']))
+                        .at_least_once
       mock.save_benchmark
       assert mock.benchmark_contents_equal_to_op?
 

@@ -16,7 +16,7 @@ module Xccdf
       end
 
       def benchmark_profiles_saved?
-        benchmark.profiles.count == @op_benchmark.profiles.count
+        benchmark.profiles.canonical.count == @op_benchmark.profiles.count
       end
 
       def benchmark_rules_saved?
