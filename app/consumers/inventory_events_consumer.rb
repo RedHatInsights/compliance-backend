@@ -10,9 +10,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   def process(message)
     super(message)
 
-    if service == 'compliance'
-      produce(parse_report, topic: Settings.platform_kafka_validation_topic)
-    end
+    handle_report_parsing
 
     case @msg_value['type']
     when 'delete'
@@ -20,5 +18,18 @@ class InventoryEventsConsumer < ApplicationConsumer
     when 'updated'
       InventoryHostUpdatedJob.perform_async(@msg_value)
     end
+
+    clear!
+  end
+
+  def handle_report_parsing
+    return unless service == 'compliance'
+
+    produce(parse_report, topic: Settings.platform_kafka_validation_topic)
+  end
+
+  # NB: This consumer object stays around between messages
+  def clear!
+    @report_contents, @validation_message, @msg_value = nil
   end
 end

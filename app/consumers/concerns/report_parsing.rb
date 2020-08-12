@@ -82,7 +82,7 @@ module ReportParsing
     end
 
     def identity
-      @identity ||= IdentityHeader.new(b64_identity)
+      IdentityHeader.new(b64_identity)
     end
   end
 end
