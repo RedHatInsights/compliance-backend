@@ -50,6 +50,28 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       IdentityHeader.stubs(:new).returns(OpenStruct.new(valid?: true))
     end
 
+    should 'not leak memory to subsequent messages' do
+      @message.stubs(:value).returns({
+        host: {
+          id: '37f7eeff-831b-5c41-984a-254965f58c0f'
+        },
+        platform_metadata: {
+          service: 'compliance',
+          url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
+        }
+      }.to_json)
+      @consumer.stubs(:validation_message).returns('success')
+      @consumer.stubs(:produce)
+
+      @consumer.process(@message)
+
+      assert_equal 1, ParseReportJob.jobs.size
+      assert_nil @consumer.instance_variable_get(:@report_contents)
+      assert_nil @consumer.instance_variable_get(:@validation_message)
+      assert_nil @consumer.instance_variable_get(:@msg_value)
+    end
+
     should 'should queue a ParseReportJob' do
       @message.stubs(:value).returns({
         host: {
