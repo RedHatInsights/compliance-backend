@@ -4,7 +4,7 @@ require 'swagger_helper'
 require 'sidekiq/testing'
 
 describe 'Profiles API' do
-  path "#{Settings.path_prefix}/#{Settings.app_name}/profiles" do
+  path '/profiles' do
     get 'List all profiles' do
       fixtures :accounts, :hosts, :benchmarks, :profiles
       tags 'profile'
@@ -169,7 +169,7 @@ describe 'Profiles API' do
     end
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/profiles/{id}" do
+  path '/profiles/{id}' do
     get 'Retrieve a profile' do
       fixtures :hosts, :benchmarks, :profiles
       tags 'profile'

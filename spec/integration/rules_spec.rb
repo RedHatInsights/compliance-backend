@@ -9,7 +9,7 @@ describe 'Rules API' do
     profiles(:one).update!(rules: rules[0...-1], account: accounts(:test))
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/rules" do
+  path '/rules' do
     get 'List all rules' do
       tags 'rule'
       description 'Lists all rules requested'
@@ -49,7 +49,7 @@ describe 'Rules API' do
     end
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/rules/{id}" do
+  path '/rules/{id}' do
     get 'Retrieve a rule' do
       tags 'rule'
       description 'Retrieves data for a rule'

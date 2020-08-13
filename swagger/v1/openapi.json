@@ -6,7 +6,7 @@
     "description": "This is the API for Cloud Services for RHEL Compliance. You can find out more about Red Hat Cloud Services for RHEL at [https://cloud.redhat.com/](https://cloud.redhat.com/)"
   },
   "paths": {
-    "/api/compliance/benchmarks": {
+    "/benchmarks": {
       "get": {
         "summary": "List all benchmarks",
         "tags": [
@@ -72,58 +72,6 @@
         "responses": {
           "200": {
             "description": "lists all benchmarks requested",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": [
-                  {
-                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                    "type": "benchmark",
-                    "attributes": {
-                      "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                      "title": "Benchmark One",
-                      "version": "0.1.45",
-                      "description": "The first benchmark"
-                    },
-                    "relationships": {
-                      "rules": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "rule"
-                          },
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "rule"
-                          }
-                        ]
-                      },
-                      "profiles": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "profile"
-                          },
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "profile"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "meta": {
-                  "total": 1,
-                  "search": null,
-                  "limit": 10,
-                  "offset": 1
-                },
-                "links": {
-                  "first": "/api/compliance/benchmarks?limit=10&offset=1",
-                  "last": "/api/compliance/benchmarks?limit=10&offset=1"
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -162,7 +110,7 @@
         }
       }
     },
-    "/api/compliance/benchmarks/{id}": {
+    "/benchmarks/{id}": {
       "get": {
         "summary": "Retrieve a benchmark",
         "tags": [
@@ -200,55 +148,10 @@
         "responses": {
           "404": {
             "description": "benchmark not found",
-            "examples": {
-              "application/vnd.api+json": {
-                "errors": "Xccdf::Benchmark not found with ID invalid"
-              }
-            },
             "content": {}
           },
           "200": {
             "description": "retrieves a benchmark",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": {
-                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                  "type": "benchmark",
-                  "attributes": {
-                    "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                    "title": "Benchmark One",
-                    "version": "0.1.45",
-                    "description": "The first benchmark"
-                  },
-                  "relationships": {
-                    "rules": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "rule"
-                        },
-                        {
-                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                          "type": "rule"
-                        }
-                      ]
-                    },
-                    "profiles": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "profile"
-                        },
-                        {
-                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                          "type": "profile"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -285,7 +188,7 @@
         }
       }
     },
-    "/api/compliance/business_objectives": {
+    "/business_objectives": {
       "get": {
         "summary": "List all business_objectives",
         "tags": [
@@ -351,56 +254,6 @@
         "responses": {
           "200": {
             "description": "lists all business_objectives requested",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": [
-                  {
-                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                    "type": "business_objective",
-                    "attributes": {
-                      "title": "china expansion"
-                    },
-                    "relationships": {
-                      "profiles": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "profile"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                    "type": "business_objective",
-                    "attributes": {
-                      "title": "project X"
-                    },
-                    "relationships": {
-                      "profiles": {
-                        "data": [
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "profile"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "meta": {
-                  "total": 2,
-                  "search": null,
-                  "limit": 10,
-                  "offset": 1
-                },
-                "links": {
-                  "first": "/api/compliance/business_objectives?limit=10&offset=1",
-                  "last": "/api/compliance/business_objectives?limit=10&offset=1"
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -436,7 +289,7 @@
         }
       }
     },
-    "/api/compliance/business_objectives/{id}": {
+    "/business_objectives/{id}": {
       "get": {
         "summary": "Retrieve a business_objective",
         "tags": [
@@ -474,36 +327,10 @@
         "responses": {
           "404": {
             "description": "business_objective not found",
-            "examples": {
-              "application/vnd.api+json": {
-                "errors": "BusinessObjective not found with ID invalid"
-              }
-            },
             "content": {}
           },
           "200": {
             "description": "retrieves a business_objective",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": {
-                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                  "type": "business_objective",
-                  "attributes": {
-                    "title": "china expansion"
-                  },
-                  "relationships": {
-                    "profiles": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "profile"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -540,7 +367,7 @@
         }
       }
     },
-    "/api/compliance/profiles": {
+    "/profiles": {
       "get": {
         "summary": "List all profiles",
         "tags": [
@@ -606,118 +433,6 @@
         "responses": {
           "200": {
             "description": "lists all profiles requested filtered by OS",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": [
-                  {
-                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                    "type": "profile",
-                    "attributes": {
-                      "name": "profile1",
-                      "ref_id": "xccdf_org.ssgproject.profile1",
-                      "description": null,
-                      "score": 98.0,
-                      "parent_profile_id": null,
-                      "external": false,
-                      "compliance_threshold": 100.0,
-                      "os_major_version": "7",
-                      "parent_profile_ref_id": null,
-                      "canonical": true,
-                      "tailored": false,
-                      "total_host_count": 0,
-                      "compliant_host_count": 0,
-                      "business_objective": null
-                    },
-                    "relationships": {
-                      "account": {
-                        "data": null
-                      },
-                      "benchmark": {
-                        "data": {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "benchmark"
-                        }
-                      },
-                      "parent_profile": {
-                        "data": null
-                      },
-                      "rules": {
-                        "data": []
-                      },
-                      "hosts": {
-                        "data": []
-                      },
-                      "test_results": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "test_result"
-                          }
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                    "type": "profile",
-                    "attributes": {
-                      "name": "profile2",
-                      "ref_id": "xccdf_org.ssgproject.profile2",
-                      "description": null,
-                      "score": 98.0,
-                      "parent_profile_id": null,
-                      "external": false,
-                      "compliance_threshold": 100.0,
-                      "os_major_version": "7",
-                      "parent_profile_ref_id": null,
-                      "canonical": true,
-                      "tailored": false,
-                      "total_host_count": 0,
-                      "compliant_host_count": 0,
-                      "business_objective": null
-                    },
-                    "relationships": {
-                      "account": {
-                        "data": null
-                      },
-                      "benchmark": {
-                        "data": {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "benchmark"
-                        }
-                      },
-                      "parent_profile": {
-                        "data": null
-                      },
-                      "rules": {
-                        "data": []
-                      },
-                      "hosts": {
-                        "data": []
-                      },
-                      "test_results": {
-                        "data": [
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "test_result"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ],
-                "meta": {
-                  "total": 2,
-                  "search": "os_major_version = 7",
-                  "limit": 10,
-                  "offset": 1
-                },
-                "links": {
-                  "first": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=1",
-                  "last": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=1"
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -774,77 +489,6 @@
         "responses": {
           "201": {
             "description": "creates a profile",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": {
-                  "id": "90392693-82fb-4e78-bf06-00f988d5b545",
-                  "type": "profile",
-                  "attributes": {
-                    "name": "A custom name",
-                    "ref_id": "xccdf_org.ssgproject.profile2",
-                    "description": null,
-                    "score": 0,
-                    "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                    "external": false,
-                    "compliance_threshold": 93.5,
-                    "os_major_version": "7",
-                    "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
-                    "canonical": false,
-                    "tailored": true,
-                    "total_host_count": 2,
-                    "compliant_host_count": 0,
-                    "business_objective": "LATAM Expansion"
-                  },
-                  "relationships": {
-                    "account": {
-                      "data": {
-                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                        "type": "account"
-                      }
-                    },
-                    "benchmark": {
-                      "data": {
-                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                        "type": "benchmark"
-                      }
-                    },
-                    "parent_profile": {
-                      "data": {
-                        "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                        "type": "profile"
-                      }
-                    },
-                    "rules": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "rule"
-                        },
-                        {
-                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                          "type": "rule"
-                        }
-                      ]
-                    },
-                    "hosts": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "host"
-                        },
-                        {
-                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                          "type": "host"
-                        }
-                      ]
-                    },
-                    "test_results": {
-                      "data": []
-                    }
-                  }
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -942,7 +586,7 @@
         }
       }
     },
-    "/api/compliance/profiles/{id}": {
+    "/profiles/{id}": {
       "get": {
         "summary": "Retrieve a profile",
         "tags": [
@@ -980,113 +624,10 @@
         "responses": {
           "404": {
             "description": "profile not found",
-            "examples": {
-              "application/vnd.api+json": {
-                "errors": "Profile not found with ID invalid"
-              }
-            },
             "content": {}
           },
           "200": {
             "description": "retrieves a profile with included benchmark",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": {
-                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                  "type": "profile",
-                  "attributes": {
-                    "name": "profile1",
-                    "ref_id": "xccdf_org.ssgproject.profile1",
-                    "description": null,
-                    "score": 98.0,
-                    "parent_profile_id": null,
-                    "external": false,
-                    "compliance_threshold": 100.0,
-                    "os_major_version": "7",
-                    "parent_profile_ref_id": null,
-                    "canonical": true,
-                    "tailored": false,
-                    "total_host_count": 1,
-                    "compliant_host_count": 0,
-                    "business_objective": null
-                  },
-                  "relationships": {
-                    "account": {
-                      "data": {
-                        "id": "14ea2548-e89b-4749-b948-947a7632ab68",
-                        "type": "account"
-                      }
-                    },
-                    "benchmark": {
-                      "data": {
-                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                        "type": "benchmark"
-                      }
-                    },
-                    "parent_profile": {
-                      "data": null
-                    },
-                    "rules": {
-                      "data": []
-                    },
-                    "hosts": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "host"
-                        }
-                      ]
-                    },
-                    "test_results": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "test_result"
-                        }
-                      ]
-                    }
-                  }
-                },
-                "included": [
-                  {
-                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                    "type": "benchmark",
-                    "attributes": {
-                      "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                      "title": "Benchmark One",
-                      "version": "0.1.45",
-                      "description": "The first benchmark"
-                    },
-                    "relationships": {
-                      "rules": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "rule"
-                          },
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "rule"
-                          }
-                        ]
-                      },
-                      "profiles": {
-                        "data": [
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "profile"
-                          },
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "profile"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ]
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -1182,86 +723,10 @@
         "responses": {
           "404": {
             "description": "profile not found",
-            "examples": {
-              "application/vnd.api+json": {
-                "errors": "Profile not found with ID invalid"
-              }
-            },
             "content": {}
           },
           "200": {
             "description": "updates a profile",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": {
-                  "id": "170537e4-7111-4675-973e-3a9a9fb73057",
-                  "type": "profile",
-                  "attributes": {
-                    "name": "An updated custom name",
-                    "ref_id": "xccdf_org.ssgproject.profile2",
-                    "description": null,
-                    "score": 0,
-                    "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                    "external": false,
-                    "compliance_threshold": 93.5,
-                    "os_major_version": "7",
-                    "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
-                    "canonical": false,
-                    "tailored": true,
-                    "total_host_count": 2,
-                    "compliant_host_count": 0,
-                    "business_objective": "APAC Expansion"
-                  },
-                  "relationships": {
-                    "account": {
-                      "data": {
-                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                        "type": "account"
-                      }
-                    },
-                    "benchmark": {
-                      "data": {
-                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                        "type": "benchmark"
-                      }
-                    },
-                    "parent_profile": {
-                      "data": {
-                        "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                        "type": "profile"
-                      }
-                    },
-                    "rules": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "rule"
-                        },
-                        {
-                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                          "type": "rule"
-                        }
-                      ]
-                    },
-                    "hosts": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "host"
-                        },
-                        {
-                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                          "type": "host"
-                        }
-                      ]
-                    },
-                    "test_results": {
-                      "data": []
-                    }
-                  }
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -1403,68 +868,10 @@
         "responses": {
           "404": {
             "description": "profile not found",
-            "examples": {
-              "application/vnd.api+json": {
-                "errors": "Profile not found with ID invalid"
-              }
-            },
             "content": {}
           },
           "202": {
             "description": "destroys a profile",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": {
-                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                  "type": "profile",
-                  "attributes": {
-                    "name": "profile1",
-                    "ref_id": "xccdf_org.ssgproject.profile1",
-                    "description": null,
-                    "score": 0,
-                    "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                    "external": false,
-                    "compliance_threshold": 100.0,
-                    "os_major_version": "7",
-                    "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
-                    "canonical": false,
-                    "tailored": false,
-                    "total_host_count": 0,
-                    "compliant_host_count": 0,
-                    "business_objective": null
-                  },
-                  "relationships": {
-                    "account": {
-                      "data": {
-                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                        "type": "account"
-                      }
-                    },
-                    "benchmark": {
-                      "data": {
-                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                        "type": "benchmark"
-                      }
-                    },
-                    "parent_profile": {
-                      "data": {
-                        "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                        "type": "profile"
-                      }
-                    },
-                    "rules": {
-                      "data": []
-                    },
-                    "hosts": {
-                      "data": []
-                    },
-                    "test_results": {
-                      "data": []
-                    }
-                  }
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -1501,7 +908,7 @@
         }
       }
     },
-    "/api/compliance/rule_results": {
+    "/rule_results": {
       "get": {
         "summary": "List all rule_results",
         "tags": [
@@ -1567,43 +974,6 @@
         "responses": {
           "200": {
             "description": "lists all rule_results requested",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": [
-                  {
-                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                    "type": "rule_result",
-                    "attributes": {
-                      "result": "pass"
-                    },
-                    "relationships": {
-                      "host": {
-                        "data": {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "host"
-                        }
-                      },
-                      "rule": {
-                        "data": {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "rule"
-                        }
-                      }
-                    }
-                  }
-                ],
-                "meta": {
-                  "total": 1,
-                  "search": null,
-                  "limit": 10,
-                  "offset": 1
-                },
-                "links": {
-                  "first": "/api/compliance/rule_results?limit=10&offset=1",
-                  "last": "/api/compliance/rule_results?limit=10&offset=1"
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -1643,7 +1013,7 @@
         }
       }
     },
-    "/api/compliance/rules": {
+    "/rules": {
       "get": {
         "summary": "List all rules",
         "tags": [
@@ -1709,56 +1079,6 @@
         "responses": {
           "200": {
             "description": "lists all rules requested",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": [
-                  {
-                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                    "type": "rule",
-                    "attributes": {
-                      "ref_id": "MyStringOne",
-                      "title": "MyString",
-                      "rationale": "MyText",
-                      "description": "MyText",
-                      "severity": "high",
-                      "slug": "MyStringOne"
-                    },
-                    "relationships": {
-                      "benchmark": {
-                        "data": {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "benchmark"
-                        }
-                      },
-                      "profiles": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "profile"
-                          }
-                        ]
-                      },
-                      "rule_references": {
-                        "data": []
-                      },
-                      "rule_identifier": {
-                        "data": null
-                      }
-                    }
-                  }
-                ],
-                "meta": {
-                  "total": 1,
-                  "search": null,
-                  "limit": 10,
-                  "offset": 1
-                },
-                "links": {
-                  "first": "/api/compliance/rules?limit=10&offset=1",
-                  "last": "/api/compliance/rules?limit=10&offset=1"
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -1798,7 +1118,7 @@
         }
       }
     },
-    "/api/compliance/rules/{id}": {
+    "/rules/{id}": {
       "get": {
         "summary": "Retrieve a rule",
         "tags": [
@@ -1836,53 +1156,10 @@
         "responses": {
           "404": {
             "description": "rule not found",
-            "examples": {
-              "application/vnd.api+json": {
-                "errors": "Rule not found with ID 37f7eeff-831b-5c41-984a-254965f58c0f"
-              }
-            },
             "content": {}
           },
           "200": {
             "description": "retrieves a rule",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": {
-                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                  "type": "rule",
-                  "attributes": {
-                    "ref_id": "MyStringOne",
-                    "title": "MyString",
-                    "rationale": "MyText",
-                    "description": "MyText",
-                    "severity": "high",
-                    "slug": "MyStringOne"
-                  },
-                  "relationships": {
-                    "benchmark": {
-                      "data": {
-                        "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                        "type": "benchmark"
-                      }
-                    },
-                    "profiles": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "profile"
-                        }
-                      ]
-                    },
-                    "rule_references": {
-                      "data": []
-                    },
-                    "rule_identifier": {
-                      "data": null
-                    }
-                  }
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -1919,7 +1196,7 @@
         }
       }
     },
-    "/api/compliance/systems": {
+    "/systems": {
       "get": {
         "summary": "List all hosts",
         "tags": [
@@ -1985,48 +1262,6 @@
         "responses": {
           "200": {
             "description": "lists all hosts requested",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": [
-                  {
-                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                    "type": "host",
-                    "attributes": {
-                      "name": "MyStringone",
-                      "os_major_version": null,
-                      "os_minor_version": null,
-                      "last_scanned": "2020-03-25T14:51:17Z",
-                      "rules_passed": 0,
-                      "rules_failed": 0,
-                      "compliant": true
-                    },
-                    "relationships": {
-                      "test_results": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "test_result"
-                          }
-                        ]
-                      },
-                      "profiles": {
-                        "data": []
-                      }
-                    }
-                  }
-                ],
-                "meta": {
-                  "total": 1,
-                  "search": null,
-                  "limit": 10,
-                  "offset": 1
-                },
-                "links": {
-                  "first": "/api/compliance/systems?limit=10&offset=1",
-                  "last": "/api/compliance/systems?limit=10&offset=1"
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -2065,7 +1300,7 @@
         }
       }
     },
-    "/api/compliance/systems/{id}": {
+    "/systems/{id}": {
       "get": {
         "summary": "Retrieve a system",
         "tags": [
@@ -2103,45 +1338,10 @@
         "responses": {
           "404": {
             "description": "system not found",
-            "examples": {
-              "application/vnd.api+json": {
-                "errors": "Host not found with ID invalid"
-              }
-            },
             "content": {}
           },
           "200": {
             "description": "retrieves a system",
-            "examples": {
-              "application/vnd.api+json": {
-                "data": {
-                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                  "type": "host",
-                  "attributes": {
-                    "name": "MyStringone",
-                    "os_major_version": null,
-                    "os_minor_version": null,
-                    "last_scanned": "2020-03-25T14:51:17Z",
-                    "rules_passed": 0,
-                    "rules_failed": 0,
-                    "compliant": true
-                  },
-                  "relationships": {
-                    "test_results": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "test_result"
-                        }
-                      ]
-                    },
-                    "profiles": {
-                      "data": []
-                    }
-                  }
-                }
-              }
-            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
