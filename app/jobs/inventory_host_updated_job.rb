@@ -26,11 +26,21 @@ class InventoryHostUpdatedJob
 
   def update_host(message)
     Sidekiq.logger.info(
-      "Updating host #{message['host']['id']} name "\
-      " to #{message['host']['display_name']}"
+      "Updating host #{message['host']['id']}:"\
+      "name=#{message['host']['display_name']}"\
+      "os_major_version=#{os_major_version(message)}"\
+      "os_minor_version=#{os_minor_version(message)}"
     )
     Host.find_by!(
       id: message['host']['id']
     ).update!(name: message['host']['display_name'])
+  end
+
+  def os_major_version(message)
+    message['host']['os_release'].split('.')[0]
+  end
+
+  def os_minor_version(message)
+    message['host']['os_release'].split('.')[1]
   end
 end
