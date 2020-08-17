@@ -8,13 +8,16 @@ module ProfileHosts
     has_many :profile_hosts, dependent: :destroy
     has_many :hosts, through: :profile_hosts, source: :host
 
-    def update_hosts(new_host_ids)
-      return unless new_host_ids
+    def update_hosts(ids)
+      return unless ids
 
-      profile_hosts.where.not(host_id: new_host_ids).destroy_all
-      ProfileHost.import((new_host_ids - host_ids).map do |host_id|
-        { host_id: host_id, profile_id: id }
-      end)
+      profile_hosts.destroy_all
+
+      new_profile_hosts = Host.find_or_create_hosts_by_inventory_ids(ids)
+                              .map do |host|
+        { host_id: host.id, profile_id: id }
+      end
+      ProfileHost.import!(new_profile_hosts)
     end
   end
 end

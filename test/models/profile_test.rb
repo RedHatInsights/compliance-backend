@@ -13,6 +13,11 @@ class ProfileTest < ActiveSupport::TestCase
   setup do
     profiles(:one).update!(rules: [rules(:one), rules(:two)],
                            hosts: [hosts(:one)], account: accounts(:one))
+    users(:test).account = accounts(:test)
+    User.current = users(:test)
+    hosts(:one).update!(account: accounts(:one))
+
+    mock_platform_api
   end
 
   test 'host is not compliant there are no results for all rules' do
@@ -266,6 +271,10 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   context 'update_hosts' do
+    setup do
+      profiles(:one).update!(hosts: [])
+    end
+
     should 'add new hosts to an empty host set' do
       profiles(:one).update!(hosts: [])
       assert_empty(profiles(:one).hosts)
@@ -295,6 +304,14 @@ class ProfileTest < ActiveSupport::TestCase
       assert_not_empty(profiles(:one).hosts)
       assert_difference('profiles(:one).hosts.count', 0) do
         profiles(:one).update_hosts(hosts.pluck(:id)[1..-1])
+      end
+    end
+
+    should 'create new hosts for non existent ones' do
+      profile = profiles(:one)
+      assert_empty(profile.hosts)
+      assert_difference('Host.count', 1) do
+        profile.update_hosts(['NONE_EXISTENT_ONE'])
       end
     end
   end

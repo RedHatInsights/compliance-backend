@@ -70,3 +70,18 @@ unless Rails.env.production?
     end
   end
 end
+
+def mock_platform_api
+  require 'securerandom'
+
+  @url = 'http://localhost'
+  @b64_identity = '1234abcd'
+  @api = HostInventoryAPI.new(@account, @url, @b64_identity)
+  @connection = mock('faraday_connection')
+  @system_profile_response = OpenStruct.new(body: {
+    results: [{
+      id: "MOCK_INVENTORY_HOST_ID_#{SecureRandom.uuid}",
+      system_profile: { os_release: '8.2' } }]
+  }.to_json)
+  Platform.stubs(:connection).returns(@connection)
+end

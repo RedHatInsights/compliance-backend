@@ -6,6 +6,13 @@ class HostTest < ActiveSupport::TestCase
   should validate_presence_of :name
   should validate_presence_of :account
 
+  setup do
+    users(:test).account = accounts(:test)
+    User.current = users(:test)
+
+    mock_platform_api
+  end
+
   test 'compliant returns a hash with all compliance statuses' do
     host = hosts(:one)
     host.profiles << [profiles(:one), profiles(:two)]
@@ -73,6 +80,24 @@ class HostTest < ActiveSupport::TestCase
       assert_includes Host.search_for('has_test_results = false'), hosts(:two)
       assert_not_includes(Host.search_for('has_test_results = false'),
                           hosts(:one))
+    end
+  end
+
+  context '.find_or_create_hosts_by_inventory_ids' do
+    setup do
+      Host.destroy_all
+    end
+
+    should 'return an array of hosts' do
+      host_ids = %w[ID1 ID2 ID3]
+      assert Host.find_or_create_hosts_by_inventory_ids(host_ids)[0].class, Host
+    end
+
+    should 'creates new hosts if needed' do
+      host_ids = %w[ID1 ID2 ID3]
+      assert_difference('Host.count', host_ids.size) do
+        Host.find_or_create_hosts_by_inventory_ids(host_ids)
+      end
     end
   end
 end

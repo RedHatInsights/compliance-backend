@@ -9,6 +9,8 @@ module V1
       User.current = users(:test)
       users(:test).update! account: accounts(:test)
       profiles(:one).update! account: accounts(:test)
+
+      mock_platform_api
     end
 
     def params(data)

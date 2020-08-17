@@ -22,7 +22,43 @@ class Host < ApplicationRecord
   validates :name, presence: true
   validates :account, presence: true
 
+  def in_inventory
+    host_in_inventory(id)
+  end
+
   class << self
+    def host_in_inventory(host_id)
+      ::HostInventoryAPI.new(
+        User.current.account,
+        ::Settings.host_inventory_url,
+        nil
+      ).inventory_host(host_id)
+    end
+
+    def find_or_create_hosts_by_inventory_ids(ids)
+      ids.map { |id| find_or_create_from_inventory(id) }
+    end
+
+    def find_or_create_from_inventory(host_id)
+      existing_hosts = ::Pundit.policy_scope(User.current, self)
+                               .where(id: host_id).first
+
+      existing_hosts || create_from_inventory(host_id)
+    end
+
+    def create_from_inventory(host_id)
+      i_host = host_in_inventory(host_id)
+
+      host = find_or_initialize_by(
+        id: i_host['id'],
+        account_id: User.current.account.id
+      ) do |h|
+        h.name = i_host['display_name']
+      end
+      host.save!
+      host
+    end
+
     def filter_by_compliance(_filter, operator, value)
       ids = Host.includes(:profiles).select do |host|
         host.compliant.values.all?(ActiveModel::Type::Boolean.new.cast(value))

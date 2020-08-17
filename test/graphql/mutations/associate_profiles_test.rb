@@ -3,6 +3,11 @@
 require 'test_helper'
 
 class AssociateProfilesMutationTest < ActiveSupport::TestCase
+  setup do
+    users(:test).update account: accounts(:test)
+    User.current = users(:test)
+  end
+
   test 'provide all required arguments' do
     query = <<-GRAPHQL
        mutation associateProfiles($input: associateProfilesInput!) {
