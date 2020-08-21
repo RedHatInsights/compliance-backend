@@ -166,6 +166,16 @@ docker-compose logs -f sidekiq
 podman logs -f compliance-backend_sidekiq_1
 ```
 
+## Development notes
+
+### Creating hosts in the inventory
+
+To create hosts in the inventory the `kafka_producer.py` script can be used from the `inventory` container:
+
+```
+docker-compose run -e NUM_HOSTS=1000 -e INVENTORY_HOST_ACCOUNT=00001 inventory-web bash -c 'pipenv install --system --dev; python3 ./utils/kafka_producer.py;'
+```
+
 ## API documentation
 
 The API documentation can be found at `Settings.path_prefix/Settings.app_name`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `Settings.path_prefix/Settings.app_name/v1/openapi.json`
