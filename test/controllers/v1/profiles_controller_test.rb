@@ -9,6 +9,7 @@ module V1
       User.current = users(:test)
       users(:test).update! account: accounts(:test)
       profiles(:one).update! account: accounts(:test)
+      accounts(:test).hosts = hosts
     end
 
     def params(data)
@@ -443,6 +444,36 @@ module V1
                              .map { |r| r['id'] })
         )
       end
+
+      test 'create allows hosts relationship of hosts only in inventory' do
+        HOST_ID = 'a035f646-e28c-44ef-89cb-de8f6e5ce5c0'
+        ProfilesController.any_instance.expects(:inventory_host).with(HOST_ID)
+                          .returns('id' => HOST_ID,
+                                   'display_name' => 'host.example.com')
+        assert_empty(profiles(:one).hosts)
+        assert_difference('ProfileHost.count', hosts.count + 1) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: profiles(:two).id
+            },
+            relationships: {
+              hosts: {
+                data: hosts.map do |host|
+                  { id: host.id, type: 'host' }
+                end + [{ id: HOST_ID, type: 'host' }]
+              }
+            }
+          )
+        end
+        assert_response :created
+        assert_equal accounts(:test).id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal(
+          Set.new(hosts.pluck(:id) + [HOST_ID]),
+          Set.new(parsed_data.dig('relationships', 'hosts', 'data')
+                             .map { |r| r['id'] })
+        )
+      end
     end
 
     class UpdateTest < ProfilesControllerTest
@@ -587,6 +618,26 @@ module V1
             }
           )
         end
+        assert_response :success
+      end
+
+      test 'update to update hosts relationships only in inventory' do
+        HOST_ID = 'a035f646-e28c-44ef-89cb-de8f6e5ce5c0'
+        ProfilesController.any_instance.expects(:inventory_host).with(HOST_ID)
+                          .returns('id' => HOST_ID,
+                                   'display_name' => 'host.example.com')
+        @profile.update!(hosts: hosts[0...-1])
+        assert_difference('@profile.reload.hosts.count' => 0) do
+          patch profile_path(@profile.id), params: params(
+            attributes: {},
+            relationships: {
+              hosts: {
+                data: [{ id: HOST_ID, type: 'host' }]
+              }
+            }
+          )
+        end
+        assert_equal [HOST_ID], @profile.hosts.pluck(:id)
         assert_response :success
       end
     end

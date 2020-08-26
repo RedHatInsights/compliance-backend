@@ -11,7 +11,7 @@ module Mutations
       field :system, ::Types::System, null: true
 
       def resolve(args = {})
-        host = find_hosts([args[:id]]).first
+        host = add_inventory_hosts([args[:id]]).first
         external_profiles = host.profiles.where(external: true)
         internal_profiles = find_profiles(args[:profile_ids])
         host.update(profiles: internal_profiles + external_profiles)

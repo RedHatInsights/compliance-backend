@@ -71,4 +71,35 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
 
     assert_equal(profiles(:one).hosts.pluck(:id), [NEW_ID])
   end
+
+  test 'removes systems from a profile' do
+    query = <<-GRAPHQL
+       mutation associateSystems($input: associateSystemsInput!) {
+          associateSystems(input: $input) {
+             profile {
+                 id
+             }
+          }
+       }
+    GRAPHQL
+
+    profiles(:one).update account: accounts(:test)
+    hosts(:one).update account: accounts(:test)
+    hosts(:two).update account: accounts(:test)
+    users(:test).update account: accounts(:test)
+    profiles(:one).hosts = hosts
+
+    assert_not_empty profiles(:one).hosts
+
+    Schema.execute(
+      query,
+      variables: { input: {
+        id: profiles(:one).id,
+        systemIds: []
+      } },
+      context: { current_user: users(:test) }
+    )['data']['associateSystems']['profile']
+
+    assert_empty profiles(:one).reload.hosts
+  end
 end
