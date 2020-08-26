@@ -71,6 +71,11 @@ describe 'Profiles API' do
 
     post 'Create a profile' do
       fixtures :accounts, :profiles, :rules, :hosts, :benchmarks
+
+      before do
+        accounts(:one).hosts = hosts
+      end
+
       tags 'profile'
       description 'Create a profile with the provided attributes'
       operationId 'CreateProfile'
@@ -269,6 +274,9 @@ describe 'Profiles API' do
 
     patch 'Update a profile' do
       fixtures :accounts, :rules, :hosts, :benchmarks, :profiles
+      before do
+        accounts(:one).hosts = hosts
+      end
       tags 'profile'
       description 'Updates a profile'
       operationId 'UpdateProfile'
