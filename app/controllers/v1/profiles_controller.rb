@@ -3,6 +3,8 @@
 module V1
   # API for Profiles
   class ProfilesController < ApplicationController
+    include InventoryServiceHelper
+
     ALLOWED_CREATE_ATTRIBUTES = %i[
       name description compliance_threshold business_objective
       parent_profile_id
@@ -31,11 +33,10 @@ module V1
     end
 
     def create
-      profile = Profile.new(profile_create_attributes).fill_from_parent
+      @profile = Profile.new(profile_create_attributes).fill_from_parent
 
       if profile.save
-        profile.update_hosts(new_host_ids)
-        profile.update_rules(ids: new_rule_ids)
+        update_relationships
         render_json profile, status: :created
       else
         render_error profile
@@ -44,8 +45,7 @@ module V1
 
     def update
       if profile.update(profile_update_attributes)
-        profile.update_hosts(new_host_ids)
-        profile.update_rules(ids: new_rule_ids)
+        update_relationships
         render_json profile
       else
         render_error profile
@@ -62,6 +62,12 @@ module V1
     end
 
     private
+
+    def update_relationships
+      add_inventory_hosts(new_host_ids || [])
+      profile.update_hosts(new_host_ids)
+      profile.update_rules(ids: new_rule_ids)
+    end
 
     def tailoring_filename
       "#{profile.benchmark.ref_id}__#{profile.ref_id}__tailoring.xml"

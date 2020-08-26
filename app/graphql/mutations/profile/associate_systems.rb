@@ -12,18 +12,13 @@ module Mutations
 
       def resolve(args = {})
         profile = find_profile(args[:id])
-        hosts = find_hosts(args[:system_ids])
-        profile_hosts = hosts.map do |host|
-          ProfileHost.new(profile_id: profile.id, host_id: host.id)
-        end
-        ProfileHost.import!(profile_hosts)
+        add_inventory_hosts(args[:system_ids])
+        profile.update_hosts(args[:system_ids])
         { profile: profile }
       end
 
       include HostHelper
-      include UserHelper
       include ProfileHelper
-      include InventoryServiceHelper
     end
   end
 end
