@@ -12,7 +12,7 @@ class RemediationsAPI
     ::Rule.with_profiles.find_in_batches(batch_size: 100) do |rules|
       update_rules(remediations_available(remediations_response(rules)))
     end
-  rescue Faraday::ClientError => e
+  rescue Faraday::Error => e
     Rails.logger.info("#{e.message} #{e.response}")
   end
 
