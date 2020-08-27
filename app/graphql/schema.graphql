@@ -476,7 +476,9 @@ input UpdateProfileInput {
   """
   clientMutationId: String
   complianceThreshold: Float
+  description: String
   id: ID!
+  name: String
 }
 
 """
