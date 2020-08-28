@@ -272,6 +272,6 @@ services:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - POSTGRESQL_USER=insights
       - POSTGRESQL_PASSWORD=insights
-      - SIDEKIQ_CONCURRENCY=5
+      - SIDEKIQ_CONCURRENCY=1
   redis:
     image: redis:latest
