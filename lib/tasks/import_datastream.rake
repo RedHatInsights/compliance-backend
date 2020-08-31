@@ -56,6 +56,8 @@ namespace :ssg do
         e,
         data: OpenshiftEnvironment.summary
       )
+      puts "Import failed for #{filename} in #{Time.zone.now - start} seconds."
+      raise e
     end
   end
 end

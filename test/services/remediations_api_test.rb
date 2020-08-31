@@ -42,12 +42,32 @@ class RemediationsAPITest < ActiveSupport::TestCase
     assert @rule.reload.remediation_available
   end
 
-  test 'import_remediations request fails' do
+  test 'import_remediations request fails with a ClientError' do
     @connection = mock('faraday_connection')
     Platform.stubs(:connection).returns(@connection)
     assert_not @rule.remediation_available
     @connection.expects(:post).raises(Faraday::ClientError, '400 error')
     RemediationsAPI.new(accounts(:test)).import_remediations
+    assert_not @rule.reload.remediation_available
+  end
+
+  test 'import_remediations request fails with a ConnectionFailed' do
+    @connection = mock('faraday_connection')
+    Platform.stubs(:connection).returns(@connection)
+    assert_not @rule.remediation_available
+    @connection.expects(:post).raises(Faraday::ConnectionFailed, 'error')
+    RemediationsAPI.new(accounts(:test)).import_remediations
+    assert_not @rule.reload.remediation_available
+  end
+
+  test 'import_remediations bubbles up an unexpected error' do
+    @connection = mock('faraday_connection')
+    Platform.stubs(:connection).returns(@connection)
+    assert_not @rule.remediation_available
+    @connection.expects(:post).raises(Faraday::ServerError, 'uncaught!')
+    assert_raises Faraday::ServerError do
+      RemediationsAPI.new(accounts(:test)).import_remediations
+    end
     assert_not @rule.reload.remediation_available
   end
 end
