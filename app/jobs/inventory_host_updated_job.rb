@@ -31,6 +31,6 @@ class InventoryHostUpdatedJob
     )
     Host.find_by!(
       id: message['host']['id']
-    ).update!(name: message['host']['display_name'])
+    ).update_from_inventory_host!(message['host'])
   end
 end

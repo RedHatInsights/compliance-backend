@@ -24,9 +24,7 @@ module InventoryServiceHelper
         account_id: current_user.account.id
       )
 
-      host.update!(
-        name: i_host['display_name']
-      )
+      host.update_from_inventory_host!(i_host)
 
       host
     end

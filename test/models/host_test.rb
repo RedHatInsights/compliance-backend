@@ -16,6 +16,15 @@ class HostTest < ActiveSupport::TestCase
     assert_equal expected_result, host.compliant
   end
 
+  test 'update_from_inventory_host' do
+    hosts(:one).update_from_inventory_host!('display_name' => 'foo',
+                                            'os_major_version' => 7,
+                                            'os_minor_version' => 5)
+    assert_equal hosts(:one).name, 'foo'
+    assert_equal hosts(:one).os_major_version, 7
+    assert_equal hosts(:one).os_minor_version, 5
+  end
+
   context 'external methods for search' do
     setup do
       @host = hosts(:one)
