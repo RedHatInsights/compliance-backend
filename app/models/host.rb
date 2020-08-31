@@ -54,4 +54,10 @@ class Host < ApplicationRecord
       }
     end
   end
+
+  def update_from_inventory_host!(i_host)
+    update!(name: i_host['display_name'],
+            os_major_version: i_host['os_major_version'],
+            os_minor_version: i_host['os_minor_version'])
+  end
 end
