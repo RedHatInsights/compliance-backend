@@ -29,8 +29,8 @@ class HostInventoryAPI
     raise ::InventoryHostNotFound if @inventory_host.blank?
 
     if (os_release = system_profile([host_id]).first)
-      @inventory_host[:os_major_version] = os_release[:os_major_version]
-      @inventory_host[:os_minor_version] = os_release[:os_minor_version]
+      @inventory_host['os_major_version'] = os_release['os_major_version']
+      @inventory_host['os_minor_version'] = os_release['os_minor_version']
     end
     @inventory_host
   end
@@ -42,9 +42,9 @@ class HostInventoryAPI
     )
     JSON.parse(response.body)['results'].inject([]) do |acc, host|
       os_major, os_minor = find_os_release(host['system_profile'])
-      acc << { id: host['id'],
-               os_major_version: os_major,
-               os_minor_version: os_minor }
+      acc << { 'id' => host['id'],
+               'os_major_version' => os_major,
+               'os_minor_version' => os_minor }
     end
   end
 
