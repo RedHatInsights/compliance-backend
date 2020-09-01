@@ -6,9 +6,9 @@ require 'host_inventory_api'
 class HostInventoryApiTest < ActiveSupport::TestCase
   setup do
     @account = accounts(:one)
-    @inventory_host = { 'id': hosts(:one).id,
-                        'display_name': hosts(:one).name,
-                        'account': @account.account_number }
+    @inventory_host = { 'id' => hosts(:one).id,
+                        'display_name' => hosts(:one).name,
+                        'account' => @account.account_number }
     @host = hosts(:one)
     @url = 'http://localhost'
     @b64_identity = '1234abcd'
@@ -33,16 +33,17 @@ class HostInventoryApiTest < ActiveSupport::TestCase
   end
 
   test 'inventory_host for host already in inventory' do
-    @api.expects(:host_already_in_inventory).returns(@host)
+    @api.expects(:host_already_in_inventory).returns(@inventory_host)
     @connection.expects(:get).with(
       "#{@url}#{Settings.path_prefix}/inventory/v1/hosts/"\
       "#{@host.id}/system_profile",
       { per_page: 50, page: 1 },
       X_RH_IDENTITY: @b64_identity
     ).returns(@system_profile_response)
-    assert_equal @host, @api.inventory_host(@host.id)
-    assert_equal 8, @host.os_major_version
-    assert_equal 2, @host.os_minor_version
+    i_host = @api.inventory_host(@host.id)
+    assert_equal @host.id, i_host['id']
+    assert_equal '8', i_host['os_major_version']
+    assert_equal '2', i_host['os_minor_version']
   end
 
   test 'inventory_host for host not already in inventory' do
@@ -76,9 +77,9 @@ class HostInventoryApiTest < ActiveSupport::TestCase
       X_RH_IDENTITY: @b64_identity
     ).returns(@system_profile_response)
     system_profile_results = @api.system_profile([@host.id])
-    assert_equal '8', system_profile_results.first[:os_major_version]
-    assert_equal '2', system_profile_results.first[:os_minor_version]
-    assert_equal @host.id, system_profile_results.first[:id]
+    assert_equal '8', system_profile_results.first['os_major_version']
+    assert_equal '2', system_profile_results.first['os_minor_version']
+    assert_equal @host.id, system_profile_results.first['id']
   end
 
   test 'system_profile returns a hash without OS info if not found' do
@@ -92,8 +93,8 @@ class HostInventoryApiTest < ActiveSupport::TestCase
       X_RH_IDENTITY: @b64_identity
     ).returns(wrong_system_profile_response)
     system_profile_results = @api.system_profile([@host.id])
-    assert_nil system_profile_results.first[:os_major_version]
-    assert_nil system_profile_results.first[:os_minor_version]
-    assert_equal @host.id, system_profile_results.first[:id]
+    assert_nil system_profile_results.first['os_major_version']
+    assert_nil system_profile_results.first['os_minor_version']
+    assert_equal @host.id, system_profile_results.first['id']
   end
 end
