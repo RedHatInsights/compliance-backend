@@ -278,30 +278,41 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       assert_includes rule.profiles, profile
     end
 
-    should 'not add rules to profiles not related to the current account' do
-      profile1 = Profile.find_or_create_by(
-        ref_id: @report_parser.op_profiles.first.id,
-        benchmark: @report_parser.benchmark,
-        name: @report_parser.op_profiles.first.name,
-        account: accounts(:one),
-        parent_profile: profiles(:one),
-        hosts: [hosts(:one)]
-      )
-      profile2 = Profile.find_or_create_by(
-        ref_id: @report_parser.op_profiles.first.id,
-        benchmark: @report_parser.benchmark,
-        name: @report_parser.op_profiles.first.name,
-        account: accounts(:test),
-        parent_profile: profiles(:one),
-        hosts: [hosts(:two)]
+    should 'add rules to new non-canonical (external) profiles' do
+      parent_profile = Profile.canonical.find_by(
+        ref_id: @report_parser.op_test_result.profile_id,
+        benchmark: @report_parser.benchmark
       )
 
-      assert profile1.persisted?
-      assert profile2.persisted?
+      @report_parser.save_rules
+      @report_parser.save_profile_rules
+      @report_parser.save_host
+      assert_empty(Profile.where(parent_profile: parent_profile))
+      assert_difference(
+        -> { Profile.count } => 1,
+        lambda {
+          Profile.find_by(parent_profile: parent_profile)&.rules&.count || 0
+        } => parent_profile.rules.count
+      ) do
+        @report_parser.save_profile_host
+      end
+    end
+
+    should 'not add rules to existing profiles' do
+      parent_profile = Profile.canonical.find_by(
+        ref_id: @report_parser.op_test_result.profile_id,
+        benchmark: @report_parser.benchmark
+      )
+      (profile = Profile.new(
+        parent_profile: parent_profile,
+        account: accounts(:test)
+      ).fill_from_parent).update!(rules: [])
+
+      assert profile.persisted?
 
       assert_difference(
-        -> { profile1.reload.rules.count } => 0,
-        -> { profile2.reload.rules.count } => 74
+        -> { Profile.count } => 0,
+        -> { profile.reload.rules.count } => 0
       ) do
         @report_parser.save_rules
         @report_parser.save_profile_rules

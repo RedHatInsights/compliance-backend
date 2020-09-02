@@ -70,10 +70,11 @@ class Profile < ApplicationRecord
       (new_profile = dup).update!(account: account, hosts: [host],
                                   parent_profile: self,
                                   external: external)
+      new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
     else
       new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
-    new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
+
     new_profile
   end
 
