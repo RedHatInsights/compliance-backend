@@ -405,6 +405,23 @@ class ProfileTest < ActiveSupport::TestCase
         assert_not cloned_profile.external
       end
     end
+
+    should 'not add rules to existing profiles' do
+      assert_not_empty(profiles(:one).rules)
+      profiles(:one).update!(account: nil, hosts: [])
+      existing_profile = profiles(:one).clone_to(account: accounts(:one),
+                                                 host: hosts(:one))
+      existing_profile.update!(rules: [])
+      assert_difference('ProfileHost.count' => 0,
+                        'Profile.count' => 0,
+                        'ProfileRule.count' => 0) do
+        cloned_profile = profiles(:one).clone_to(
+          account: accounts(:one), host: hosts(:one)
+        )
+        assert hosts(:one).profiles.include?(cloned_profile)
+      end
+      assert_empty(existing_profile.rules)
+    end
   end
 
   context 'profile tailoring' do
