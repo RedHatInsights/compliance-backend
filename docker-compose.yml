@@ -107,9 +107,6 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - INVENTORY_LOG_LEVEL=ERROR
       - KAFKA_SECONDARY_TOPIC_ENABLED=True
-    links:
-      - db
-      - kafka
     depends_on:
       - db
       - kafka
@@ -129,8 +126,6 @@ services:
       - LISTEN_PORT=8081
     ports:
       - 8081:8081
-    links:
-      - db
     depends_on:
       - db
       - kafka
