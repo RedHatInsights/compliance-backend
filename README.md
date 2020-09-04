@@ -176,6 +176,10 @@ To create hosts in the inventory the `kafka_producer.py` script can be used from
 docker-compose run -e NUM_HOSTS=1000 -e INVENTORY_HOST_ACCOUNT=00001 inventory-web bash -c 'pipenv install --system --dev; python3 ./utils/kafka_producer.py;'
 ```
 
+### Disabling Prometheus
+
+To disable Prometheus (e.g. in develompent) clear `prometheus_exporter_host` setting (set to empty).
+
 ## API documentation
 
 The API documentation can be found at `Settings.path_prefix/Settings.app_name`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `Settings.path_prefix/Settings.app_name/v1/openapi.json`

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'prometheus_exporter/client' unless Rails.env.test?
+require 'prometheus_exporter/client' if Settings.prometheus_exporter_host.present? && !Rails.env.test?
 require 'compliance_timeout'
 require_relative 'types/query'
 require_relative 'types/mutation'
@@ -9,7 +9,7 @@ require_relative 'types/mutation'
 # GraphQL-ruby documentation to find out what to add or
 # remove here.
 class Schema < GraphQL::Schema
-  use GraphQL::Tracing::PrometheusTracing unless Rails.env.test?
+  use GraphQL::Tracing::PrometheusTracing if Settings.prometheus_exporter_host.present? && !Rails.env.test?
   use ComplianceTimeout, max_seconds: 20
   query Types::Query
   mutation Types::Mutation
