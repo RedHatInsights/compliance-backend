@@ -64,7 +64,7 @@ in Kafka, so by default the system is highly available.
 To run a Reports consumer:
 
 ```shell
-KAFKAMQ=localhost:29092 bundle exec racecar ComplianceReportsConsumer
+KAFKAMQ=localhost:29092 bundle exec racecar InventoryEventsConsumer
 ```
 
 #### Web server
