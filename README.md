@@ -55,6 +55,12 @@ bundle install
 bundle exec rake db:create db:migrate
 ```
 
+Once you have database initialized, you might want to import SSG policies:
+
+```shell
+bundle exec rake ssg:import_rhel_supported
+```
+
 #### Kafka consumers (XCCDF report consumers)
 
 At this point you can launch as many ['racecar'](https://github.com/zendesk/racecar)
