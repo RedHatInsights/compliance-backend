@@ -9,12 +9,44 @@ a policy. For example, you should be able to generate reports of all kinds for
 your auditors, get alerts, and create playbooks to fix your hosts.
 
 
-## Getting started
+## Architecture
 
 This project does two main things:
 
-1 - Connect to a Kafka message queue [provided by the Insights Platform](https://github.com/RedHatInsights/insights-upload)
-2 - Serve as the API backend for the web UI [compliance-frontend](https://github.com/RedHatInsights/compliance-frontend) and for other consumers.
+1. Serve as the API/GraphQL backend for the web UI
+   [compliance-frontend](https://github.com/RedHatInsights/compliance-frontend)
+   and for other consumers,
+2. Connect to a Kafka message queue provided by the Insights Platform.
+
+### Components
+
+The Insights Compliance backend comprises of these components/services:
+
+* Rails web server — serving REST API and GraphQL (port 3000)
+* Sidekiq — job runner connected through Redis (see [app/jobs](app/jobs))
+* Inventory Consumer (racecar) — processor of Kafka messages,
+  mainly to process and parse reports
+* Prometheus Exporter (optional) — providing metrics (port 9394)
+
+### Dependent Services
+
+Before running the project, these services must be running and acessible:
+
+* Kafka — message broker (default port 29092)
+  - set by `KAFKAMQ` environment variable
+* Redis — Job queue and cache
+* PostgreSQL compatible database
+  - `DATABASE_SERVICE_NAME=postgres`
+  - conrolled by environment variables `POSTGRES_SERVICE_HOST`,
+    `POSTGRESQL_DATABASE`, `POSTGRESQL_USER`, `POSTGRESQL_PASSWORD`
+* [Insights Ingress](https://github.com/RedHatInsights/insights-ingress-go)
+  (also requires S3/minio)
+* [Insights PUPTOO](https://github.com/RedHatInsights/insights-puptoo)
+  — Platform Upload Processor
+* [Insights Host Inventory](https://github.com/RedHatInsights/insights-host-inventory) (MQ service and web service)
+
+
+## Getting started
 
 Let's examine how to run the project:
 
