@@ -1,2 +1,4 @@
 host_inventory_url: http://test-host-inventory:8000
 rbac_url: http://test-rbac-url:9002
+# Disable Prometheus
+prometheus_exporter_host:
