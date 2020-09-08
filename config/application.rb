@@ -19,6 +19,11 @@ require 'sprockets/railtie' if Rails.env.development?
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# (Development/Test env only)
+# Load .env* variables before the config (Settings) initializer is
+# being run.
+Dotenv::Railtie.load unless Rails.env.production?
+
 module ComplianceBackend
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
