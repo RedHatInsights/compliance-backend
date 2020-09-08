@@ -69,16 +69,26 @@ ocdeployer -s compliance your_openshift_project
 ### Option 2: Development setup
 
 compliance-backend is a Ruby on Rails application. It should run using
-at least two different processes:
+at least three different processes:
 
-#### Shared prerequisites
+#### Prerequisites
 
 Prerequisites:
 
 * URL to Kafka
-  - environment variable: `KAFKAMQ`
+  - environment variable: `KAFKAMQ` (`KAFKAMQ=localhost:29092`)
 * URL to PostgreSQL database
   - environment variables: `POSTGRESQL_DATABASE`, `POSTGRESQL_SERVICE_HOST`, `POSTGRESQL_USER`, `POSTGRESQL_PASSWORD`, `POSTGRESQL_ADMIN_PASSWORD`, `DATABASE_SERVICE_NAME`
+* URL to Redis
+  - `redis_url` and `redis_cache_url` configured in [settings](config/settings/development.yml)
+* URL to [Insights Inventory](https://github.com/RedHatInsights/insights-host-inventory)
+  - or, `host_inventory_url` configured in [settings](config/settings/development.yml)
+* Generated minio credentials (for Ingress)
+  - environment variables: `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`
+
+Note, that the environment variables can be written to `.env` file
+(see [.env.example](.env.example)).
+They are being read by dotenv.
 
 First, let's install all dependencies and initialize the database.
 
@@ -93,7 +103,7 @@ Once you have database initialized, you might want to import SSG policies:
 bundle exec rake ssg:import_rhel_supported
 ```
 
-#### Kafka consumers (XCCDF report consumers)
+#### Kafka Consumers (XCCDF report consumers)
 
 At this point you can launch as many ['racecar'](https://github.com/zendesk/racecar)
 processes as you want. These processes will become part of a *consumer group*
@@ -102,10 +112,10 @@ in Kafka, so by default the system is highly available.
 To run a Reports consumer:
 
 ```shell
-KAFKAMQ=localhost:29092 bundle exec racecar InventoryEventsConsumer
+bundle exec racecar InventoryEventsConsumer
 ```
 
-#### Web server
+#### Web Server
 
 You may simply run:
 
@@ -118,10 +128,21 @@ CORS-protected, check out `config/initializers/cors.rb` and change it to only
 allow a certain domain.
 
 After this, make sure you can redirect your requests to your the backend's port 3000
-using insights-proxy. You may run the proxy using the SPANDX config provided here:
+using [insights-proxy](https://github.com/RedHatInsights/insights-proxy).
+You may run the proxy using the SPANDX config provided here:
 
 ```ruby
 SPANDX_CONFIG=$(pwd)/compliance-backend.js ../insights-proxy/scripts/run.sh
+```
+
+#### Job Runner
+
+Asynchonous jobs are run by sidekiq with messages being exchanged through Redis.
+
+To start the runner execute:
+
+```shell
+bundle exec sidekiq
 ```
 
 ### Option 3: Docker/Podman Compose Development setup
