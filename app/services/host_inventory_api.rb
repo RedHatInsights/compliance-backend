@@ -6,6 +6,9 @@ require 'json'
 # Error to raise if the OS release contains an invalid major or minor
 class InventoryInvalidOsRelease < StandardError; end
 
+# Error to raise if the inventory host could not be found
+class InventoryHostNotFound < StandardError; end
+
 # Interact with the Insights Host Inventory. Usually HTTP calls
 # are all that's needed.
 class HostInventoryAPI
