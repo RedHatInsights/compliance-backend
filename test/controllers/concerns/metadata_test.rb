@@ -8,6 +8,13 @@ require 'securerandom'
 # ActionDispatch::IntegrationTest, it is testing the Profiles controller
 # instead for the time being
 class MetadataTest < ActionDispatch::IntegrationTest
+  setup do
+    profiles(:one).update!(policy_object: policies(:one),
+                           account: accounts(:test))
+    profiles(:two).update!(policy_object: policies(:one),
+                           account: accounts(:test))
+  end
+
   def authenticate
     V1::ProfilesController.any_instance.expects(:authenticate_user)
     users(:test).account = accounts(:test)
@@ -18,10 +25,10 @@ class MetadataTest < ActionDispatch::IntegrationTest
     authenticate
     3.times do
       Profile.create(ref_id: "foo#{SecureRandom.uuid}", name: SecureRandom.uuid,
-                     benchmark: benchmarks(:one), hosts: [hosts(:one)],
+                     benchmark: benchmarks(:one),
                      account: accounts(:test))
     end
-    profiles(:one).update(account: accounts(:test), hosts: [hosts(:one)])
+    profiles(:one).update(account: accounts(:test))
     search_query = 'ref_id~foo'
     get profiles_url, params: { search: search_query, limit: 1, offset: 2 }
     assert_response :success
@@ -38,7 +45,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
     setup do
       authenticate
       Profile.all.find_each do |p|
-        p.update!(account_id: accounts(:test).id, hosts: [hosts(:one)],
+        p.update!(account_id: accounts(:test).id,
                   parent_profile: profiles(:one))
       end
     end
@@ -46,8 +53,9 @@ class MetadataTest < ActionDispatch::IntegrationTest
     should 'return correct pagination links' do
       3.times do
         Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
-                       benchmark: benchmarks(:one), hosts: [hosts(:one)],
-                       account: accounts(:test), parent_profile: profiles(:one))
+                       benchmark: benchmarks(:one),
+                       account: accounts(:test), parent_profile: profiles(:one),
+                       policy_object: policies(:one))
       end
       get profiles_url, params: { limit: 1, offset: 3 }
       assert_response :success
@@ -85,7 +93,8 @@ class MetadataTest < ActionDispatch::IntegrationTest
       Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
                      benchmark: benchmarks(:one),
                      parent_profile: profiles(:one),
-                     account: accounts(:test), hosts: [hosts(:one)])
+                     account: accounts(:test),
+                     policy_object: policies(:one))
       get profiles_url, params: { limit: 1, offset: 2 }
       assert_response :success
       assert_match(/limit=1/, json_body['links']['first'])
@@ -103,7 +112,8 @@ class MetadataTest < ActionDispatch::IntegrationTest
         Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
                        benchmark: benchmarks(:one),
                        parent_profile: profiles(:one),
-                       account: accounts(:test), hosts: [hosts(:one)])
+                       account: accounts(:test),
+                       policy_object: policies(:one))
       end
       get profiles_url, params: { limit: 2, offset: 1 }
       assert_response :success

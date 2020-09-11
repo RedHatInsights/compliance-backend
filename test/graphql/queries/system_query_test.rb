@@ -4,6 +4,10 @@ require 'test_helper'
 
 class SystemQueryTest < ActiveSupport::TestCase
   setup do
+    profiles(:one).update! policy_object: policies(:one),
+                           account: accounts(:test)
+    profiles(:two).update! policy_object: policies(:two),
+                           account: accounts(:test)
     users(:test).update account: accounts(:test)
     hosts(:one).update account: accounts(:test)
   end
@@ -77,10 +81,10 @@ class SystemQueryTest < ActiveSupport::TestCase
     test_results(:two).update(profile: profiles(:two), host: hosts(:one))
     profiles(:one).rules << rules(:one)
     profiles(:two).rules << rules(:two)
-    profiles(:one).update(compliance_threshold: 95)
-    profiles(:two).update(compliance_threshold: 95)
-    hosts(:one).profiles << profiles(:one)
-    hosts(:one).profiles << profiles(:two)
+    policies(:one).update(compliance_threshold: 95)
+    policies(:two).update(compliance_threshold: 95)
+    hosts(:one).policies << policies(:one)
+    hosts(:one).policies << policies(:two)
 
     result = Schema.execute(
       query,
@@ -247,7 +251,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 	}
     }
     GRAPHQL
-    hosts(:one).profiles << profiles(:one)
+    hosts(:one).policies << policies(:one)
     test_results(:one).update(profile: profiles(:one), host: hosts(:one))
     rule_results(:one).update(
       host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
@@ -275,8 +279,8 @@ class SystemQueryTest < ActiveSupport::TestCase
   # rubocop:disable AbcSize
   # rubocop:disable MethodLength
   def setup_two_hosts
-    hosts(:one).profiles << profiles(:one)
-    hosts(:two).profiles << profiles(:two)
+    hosts(:one).policies << policies(:one)
+    hosts(:two).policies << policies(:two)
     rule_results(:one).update(
       host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
     )

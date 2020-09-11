@@ -75,14 +75,12 @@ class PolicyTest < ActiveSupport::TestCase
     should 'destroy business objectives without policies on update' do
       assert_difference('BusinessObjective.count' => -1) do
         policies(:one).update!(business_objective: nil)
-        policies(:one).destroy_orphaned_business_objective
       end
     end
 
     should 'destroy business objectives without policies on destroy' do
       assert_difference('BusinessObjective.count' => -1) do
         policies(:one).destroy
-        policies(:one).destroy_orphaned_business_objective
       end
     end
   end

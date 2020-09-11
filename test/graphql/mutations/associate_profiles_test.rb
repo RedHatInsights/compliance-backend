@@ -15,12 +15,16 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
        }
     GRAPHQL
 
-    profiles(:one).update account: accounts(:test)
-    profiles(:two).update account: accounts(:test)
+    policies(:one).update account: accounts(:test)
+    profiles(:one).update account: accounts(:test),
+                          policy_object: policies(:one)
+    policies(:two).update account: accounts(:test)
+    profiles(:two).update account: accounts(:test),
+                          policy_object: policies(:two)
     hosts(:one).update account: accounts(:test)
     users(:test).update account: accounts(:test)
 
-    assert_empty hosts(:one).profiles
+    assert_empty hosts(:one).policies
 
     Schema.execute(
       query,
@@ -31,8 +35,8 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )['data']['associateProfiles']['system']
 
-    assert_equal Set.new(hosts(:one).reload.profiles),
-                 Set.new([profiles(:one), profiles(:two)])
+    assert_equal Set.new(hosts(:one).reload.policies),
+                 Set.new([policies(:one), policies(:two)])
   end
 
   test 'finds inventory systems and creates them in compliance' do
@@ -51,8 +55,12 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     GRAPHQL
 
     users(:test).update account: accounts(:test)
-    profiles(:one).update account: accounts(:test)
-    profiles(:two).update account: accounts(:test)
+    policies(:one).update account: accounts(:test)
+    profiles(:one).update account: accounts(:test),
+                          policy_object: policies(:one)
+    policies(:two).update account: accounts(:test)
+    profiles(:two).update account: accounts(:test),
+                          policy_object: policies(:two)
 
     @api = mock('HostInventoryAPI')
     HostInventoryAPI.expects(:new).returns(@api)
@@ -71,8 +79,8 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     )['data']['associateProfiles']['system']
 
     assert_not_nil(new_host = Host.find_by(id: NEW_ID))
-    assert_equal Set.new(new_host.profiles),
-                 Set.new([profiles(:one), profiles(:two)])
+    assert_equal Set.new(new_host.policies),
+                 Set.new([policies(:one), policies(:two)])
   end
 
   test 'external profiles are kept after associating internal profiles' do
@@ -87,18 +95,13 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
        }
     GRAPHQL
     users(:test).update account: accounts(:test)
-    profiles(:one).update account: accounts(:test)
-    profiles(:two).update account: accounts(:test)
+    policies(:one).update account: accounts(:test)
+    profiles(:one).update account: accounts(:test),
+                          policy_object: policies(:one)
+    policies(:two).update account: accounts(:test)
+    profiles(:two).update account: accounts(:test),
+                          policy_object: policies(:two)
     hosts(:one).update account: accounts(:test)
-
-    external_profile = Profile.create(
-      name: 'external',
-      ref_id: 'external',
-      benchmark: benchmarks(:one),
-      account: accounts(:test),
-      hosts: [hosts(:one)],
-      external: true
-    )
 
     Schema.execute(
       query,
@@ -109,7 +112,7 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )['data']['associateProfiles']['system']
 
-    expected_profiles = [external_profile, profiles(:one), profiles(:two)]
-    assert_equal expected_profiles.sort, hosts(:one).reload.profiles.to_a.sort
+    assert_equal Set.new([policies(:one), policies(:two)]),
+                 Set.new(hosts(:one).reload.policies)
   end
 end
