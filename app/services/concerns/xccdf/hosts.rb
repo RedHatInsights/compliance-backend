@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# Error to raise if the inventory host could not be found
-class InventoryHostNotFound < StandardError; end
-
 module Xccdf
   # Methods related to saving Hosts from openscap_parser
   module Hosts
