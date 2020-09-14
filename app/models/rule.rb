@@ -9,6 +9,7 @@ class Rule < ApplicationRecord
   scoped_search relation: :rule_references, on: :label, aliases: %i[reference]
   scoped_search relation: :rule_identifier, on: :label, aliases: %i[identifier]
   include OpenscapParserDerived
+  include RuleRemediation
 
   has_many :profile_rules, dependent: :delete_all
   has_many :profiles, through: :profile_rules, source: :profile
