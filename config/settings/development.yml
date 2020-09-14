@@ -2,6 +2,9 @@ host_inventory_url: http://inventory-web:8081
 remediations_url: https://ci.cloud.redhat.com
 rbac_url: https://ci.cloud.redhat.com
 # disable_rbac: true
+# platform_basic_auth:
+#   - username
+#   - password
 prometheus_exporter_host: prometheus
 prometheus_exporter_port: 9394
 redis_url: redis:6379
