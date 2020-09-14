@@ -31,6 +31,7 @@ class ParseReportJob
   def save_all
     notify_payload_tracker(:processing, "Job #{jid} is now processing")
     parser.save_all
+    notify_remediation
     notify_payload_tracker(:success, "Job #{jid} has completed successfully")
   rescue ::MissingIdError, ::WrongFormatError, ::InventoryHostNotFound,
          ::ActiveRecord::RecordInvalid => e
@@ -50,5 +51,18 @@ class ParseReportJob
       request_id: @msg_value['request_id'], status: status,
       status_msg: status_msg
     )
+  end
+
+  def notify_remediation
+    RemediationUpdates.deliver(
+      host_id: @msg_value['id'],
+      issue_ids: remediation_issue_ids
+    )
+  end
+
+  def remediation_issue_ids
+    parser.failed_rules
+          .includes(:profiles)
+          .collect(&:remediation_issue_id)
   end
 end

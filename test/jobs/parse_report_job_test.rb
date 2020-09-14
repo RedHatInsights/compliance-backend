@@ -8,6 +8,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @parse_report_job = ParseReportJob.new
     @file = file_fixture('report.tar.gz').read
     @parser = mock('XccdfReportParser')
+    @issue_id = 'ssg:rhel7|short_profile_ref_id|rule_ref_id'
   end
 
   test 'payload tracker is notified about successful processing' do
@@ -15,6 +16,9 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @parser.stubs(:save_all)
     Sidekiq.stubs(:redis).returns(false)
     @parse_report_job.stubs(:jid).returns('1')
+    @parse_report_job
+      .stubs(:remediation_issue_ids)
+      .returns([@issue_id])
     PayloadTracker.expects(:deliver).with(
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: :processing,
@@ -24,6 +28,21 @@ class ParseReportJobTest < ActiveSupport::TestCase
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: :success,
       status_msg: 'Job 1 has completed successfully'
+    )
+    @parse_report_job.perform(@file, @msg_value)
+  end
+
+  test 'remediation service is notified about results with failed issues' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    @parser.stubs(:save_all)
+    Sidekiq.stubs(:redis).returns(false)
+    @parse_report_job.stubs(:jid).returns('1')
+    @parse_report_job
+      .stubs(:remediation_issue_ids)
+      .returns([@issue_id])
+    RemediationUpdates.expects(:deliver).with(
+      host_id: @msg_value['id'],
+      issue_ids: [@issue_id]
     )
     @parse_report_job.perform(@file, @msg_value)
   end

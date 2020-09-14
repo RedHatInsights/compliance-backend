@@ -193,6 +193,21 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         end
       end
     end
+
+    should 'provide failed results' do
+      @report_parser.save_all
+      failed_rule_results = @report_parser.failed_rule_results
+      assert_equal failed_rule_results.count, 45
+      assert failed_rule_results.all? do |rr|
+        ::RuleResult::FAIL.include?(rr.result)
+      end
+    end
+
+    should 'provide failed rules' do
+      @report_parser.save_all
+      assert_equal @report_parser.failed_rules.count,
+                   @report_parser.failed_rule_results.count
+    end
   end
 
   context 'missing ID' do

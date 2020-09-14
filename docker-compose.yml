@@ -260,6 +260,7 @@ services:
       - MALLOC_ARENA_MAX=2
       - SETTINGS__REDIS_URL=redis:6379
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+      - KAFKAMQ=kafka:29092
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev

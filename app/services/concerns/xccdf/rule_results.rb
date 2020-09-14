@@ -17,6 +17,16 @@ module Xccdf
       end
     end
 
+    def failed_rule_results
+      ::RuleResult.where(id: rule_results).failed
+    end
+
+    def failed_rules
+      ::Rule.joins(:rule_results)
+            .where(rule_results: failed_rule_results)
+            .distinct
+    end
+
     def selected_op_rule_results
       @op_rule_results.reject do |rule_result|
         ::RuleResult::NOT_SELECTED.include? rule_result.result
