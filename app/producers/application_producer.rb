@@ -4,7 +4,7 @@
 # https://www.rubydoc.info/gems/ruby-kafka/Kafka/Producer
 class ApplicationProducer < Kafka::Client
   BROKERS = [ENV['KAFKAMQ']].compact.freeze
-  CLIENT_ID = 'compliance-payload-tracker-producer'
+  CLIENT_ID = 'compliance-backend'
   SERVICE = 'compliance'
   # Define TOPIC in the inherited class.
   # Example:
