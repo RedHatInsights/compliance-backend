@@ -26,28 +26,8 @@ class RemediationsAPI
     end
   end
 
-  def remove_ref_id_prefix(ref_id)
-    short_ref_id = ref_id.downcase.split(
-      'xccdf_org.ssgproject.content_profile_'
-    )[1]
-    short_ref_id || ref_id
-  end
-
   def build_issues_list(rules)
-    profile_rules = profile_for_rules(rules)
-
-    rules.map do |rule|
-      "ssg:rhel7|#{remove_ref_id_prefix(profile_rules[rule.id])}"\
-        "|#{rule.ref_id}"
-    end
-  end
-
-  def profile_for_rules(rules)
-    profile_rules = ProfileRule.where(rule_id: rules.pluck(:id))
-                               .pluck(:rule_id, :profile_id).to_h
-    profile_ref_ids = Profile.where(id: profile_rules.values.uniq)
-                             .pluck(:id, :ref_id).to_h
-    profile_rules.transform_values! { |profile_id| profile_ref_ids[profile_id] }
+    ::Rule.where(id: rules).includes(:profiles).collect(&:remediation_issue_id)
   end
 
   def remediations_available(response)

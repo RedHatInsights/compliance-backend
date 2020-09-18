@@ -6,7 +6,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   class TestParser < ::XccdfReportParser
     attr_accessor :op_benchmark, :op_test_result, :op_profiles, :op_rules,
                   :op_rule_results, :rules
-    attr_reader :test_result_file, :host, :rule_results, :profiles
+    attr_reader :test_result_file, :host, :profiles
   end
 
   setup do
@@ -192,6 +192,21 @@ class XccdfReportParserTest < ActiveSupport::TestCase
                                  .result
         end
       end
+    end
+
+    should 'provide failed results' do
+      @report_parser.save_all
+      failed_rule_results = @report_parser.failed_rule_results
+      assert_equal failed_rule_results.count, 45
+      assert failed_rule_results.all? do |rr|
+        ::RuleResult::FAIL.include?(rr.result)
+      end
+    end
+
+    should 'provide failed rules' do
+      @report_parser.save_all
+      assert_equal @report_parser.failed_rules.count,
+                   @report_parser.failed_rule_results.count
     end
   end
 
