@@ -2,7 +2,7 @@
 
 # A Kafka producer client for payload-tracker
 class PayloadTracker < ApplicationProducer
-  TOPIC = 'platform.payload-status'
+  TOPIC = Settings.kafka_producer_topics.payload_tracker
 
   def self.deliver(request_id:, status:, account:, system_id:, status_msg: nil)
     # Inventory ID and system ID are identical because we match
