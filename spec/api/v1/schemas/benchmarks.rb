@@ -27,6 +27,9 @@ module Api
             },
             description: {
               type: 'string'
+            },
+            os_major_version: {
+              type: 'string'
             }
           }
         }.freeze

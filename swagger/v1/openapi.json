@@ -82,7 +82,8 @@
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
                       "title": "Benchmark One",
                       "version": "0.1.45",
-                      "description": "The first benchmark"
+                      "description": "The first benchmark",
+                      "os_major_version": "7"
                     },
                     "relationships": {
                       "rules": {
@@ -218,7 +219,8 @@
                     "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
                     "title": "Benchmark One",
                     "version": "0.1.45",
-                    "description": "The first benchmark"
+                    "description": "The first benchmark",
+                    "os_major_version": "7"
                   },
                   "relationships": {
                     "rules": {
@@ -777,7 +779,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "90392693-82fb-4e78-bf06-00f988d5b545",
+                  "id": "6bf986d7-ca23-4c1e-99ea-9f1e42267615",
                   "type": "profile",
                   "attributes": {
                     "name": "A custom name",
@@ -1013,7 +1015,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "14ea2548-e89b-4749-b948-947a7632ab68",
+                        "id": "a4ca12c4-3d3c-41ec-8c1b-aeceb94fe71c",
                         "type": "account"
                       }
                     },
@@ -1055,7 +1057,8 @@
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
                       "title": "Benchmark One",
                       "version": "0.1.45",
-                      "description": "The first benchmark"
+                      "description": "The first benchmark",
+                      "os_major_version": "7"
                     },
                     "relationships": {
                       "rules": {
@@ -1194,7 +1197,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "170537e4-7111-4675-973e-3a9a9fb73057",
+                  "id": "4eca960b-69f4-47d9-bee8-fd9b539bc192",
                   "type": "profile",
                   "attributes": {
                     "name": "An updated custom name",
@@ -2337,6 +2340,9 @@
             "example": "0.1.46"
           },
           "description": {
+            "type": "string"
+          },
+          "os_major_version": {
             "type": "string"
           }
         }
