@@ -3,7 +3,7 @@
 # Receives messages from the Kafka topic, converts them into jobs
 # for processing
 class InventoryEventsConsumer < ApplicationConsumer
-  subscribes_to Settings.platform_kafka_inventory_topic
+  subscribes_to Settings.kafka_consumer_topics.inventory_events
 
   include ReportParsing
 
@@ -25,7 +25,8 @@ class InventoryEventsConsumer < ApplicationConsumer
   def handle_report_parsing
     return unless service == 'compliance'
 
-    produce(parse_report, topic: Settings.platform_kafka_validation_topic)
+    produce(parse_report,
+            topic: Settings.kafka_producer_topics.upload_validation)
   end
 
   # NB: This consumer object stays around between messages
