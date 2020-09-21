@@ -90,7 +90,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'success'
         }.to_json,
-        topic: Settings.platform_kafka_validation_topic
+        topic: Settings.kafka_producer_topics.upload_validation
       )
 
       @consumer.process(@message)
@@ -116,7 +116,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'failure'
         }.to_json,
-        topic: Settings.platform_kafka_validation_topic
+        topic: Settings.kafka_producer_topics.upload_validation
       )
 
       @consumer.process(@message)
@@ -141,7 +141,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'failure'
         }.to_json,
-        topic: Settings.platform_kafka_validation_topic
+        topic: Settings.kafka_producer_topics.upload_validation
       )
 
       @consumer.process(@message)
@@ -167,7 +167,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'success'
         }.to_json,
-        topic: Settings.platform_kafka_validation_topic
+        topic: Settings.kafka_producer_topics.upload_validation
       )
 
       @consumer.process(@message)
