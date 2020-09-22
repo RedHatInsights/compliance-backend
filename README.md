@@ -83,6 +83,8 @@ Prerequisites:
   - `redis_url` and `redis_cache_url` configured in [settings](config/settings/development.yml)
 * URL to [Insights Inventory](https://github.com/RedHatInsights/insights-host-inventory)
   - or, `host_inventory_url` configured in [settings](config/settings/development.yml)
+* Basic authethication credentials set by
+  [option `platform_basic_auth`](config/settings/development.yml)
 * Generated minio credentials (for Ingress)
   - environment variables: `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`
 
@@ -154,25 +156,9 @@ values as needed:
 cp .env.example .env
 ```
 
-You may also need to add basic auth to `app/services/platform.rb`. This
-authentication will be used when talking to platform services such as inventory,
-rbac, and remediations. Anything not deployed locally will require basic auth
-instead of using an identity header (i.e. rbac, remediations):
-
-```diff
-diff --git a/app/services/platform.rb b/app/services/platform.rb
-index 36a0f00..c4b0e92 100644
---- a/app/services/platform.rb
-+++ b/app/services/platform.rb
-@@ -21,6 +21,7 @@ module Platform
-       f.request :retry, RETRY_OPTIONS
-       f.adapter Faraday.default_adapter # this must be the last middleware
-       f.ssl[:verify] = Rails.env.production?
-+      f.basic_auth 'username', 'password'
-     end
-     faraday
-   end
-```
+You may also need to set up basic auth in
+[settings](config/settings/development.yml), option `platform_basic_auth`
+(see Development notes).
 
 Either podman-compose or docker-compose should work. podman-compose does not
 support exec, so podman commands must be run manually against the running
@@ -234,6 +220,13 @@ To create hosts in the inventory the `kafka_producer.py` script can be used from
 ```
 docker-compose run -e NUM_HOSTS=1000 -e INVENTORY_HOST_ACCOUNT=00001 inventory-web bash -c 'pipenv install --system --dev; python3 ./utils/kafka_producer.py;'
 ```
+
+### Basic Auth Platform Credentials
+
+Basic authentication ([`platform_basic_auth` option](config/settings/development.yml))
+might be needed for platform services such as inventory, rbac, and remediations.
+Anything not deployed locally will require basic auth instead of using
+an identity header (i.e. rbac, remediations).
 
 ### Disabling Prometheus
 
