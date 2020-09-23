@@ -64,5 +64,6 @@ class ParseReportJob
     parser.failed_rules
           .includes(:profiles)
           .collect(&:remediation_issue_id)
+          .compact
   end
 end
