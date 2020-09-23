@@ -59,4 +59,19 @@ class RuleTest < ActiveSupport::TestCase
     )
     assert_equal [rules(:one)], Rule.canonical
   end
+
+  test 'rule generates remediation issue id' do
+    rule = rules(:one)
+    profiles(:one).update!(
+      ref_id: 'xccdf_org.ssgproject.content_profile_profile1'
+    )
+    rule.profiles << profiles(:one)
+
+    assert_equal rule.remediation_issue_id, 'ssg:rhel7|profile1|MyStringOne'
+  end
+
+  test 'rule empty remediation issue id for a rule without a profile' do
+    rule = rules(:one)
+    assert_nil rule.remediation_issue_id
+  end
 end

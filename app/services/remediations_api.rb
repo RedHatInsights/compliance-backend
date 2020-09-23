@@ -27,7 +27,10 @@ class RemediationsAPI
   end
 
   def build_issues_list(rules)
-    ::Rule.where(id: rules).includes(:profiles).collect(&:remediation_issue_id)
+    ::Rule.where(id: rules)
+          .includes(:profiles)
+          .map(&:remediation_issue_id)
+          .compact
   end
 
   def remediations_available(response)
