@@ -23,9 +23,12 @@ task import_remediations: :environment do
     puts "Finishing import_remediations job at #{end_time} "\
          "and last #{duration} seconds "
   rescue StandardError => e
+    puts "import_remediations job failed at #{end_time} "\
+         "and lasted #{duration} seconds "
     ExceptionNotifier.notify_exception(
       e,
       data: OpenshiftEnvironment.summary
     )
+    raise
   end
 end
