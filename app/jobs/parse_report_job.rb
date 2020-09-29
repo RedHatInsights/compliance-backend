@@ -62,7 +62,7 @@ class ParseReportJob
 
   def remediation_issue_ids
     parser.failed_rules
-          .includes(:profiles)
+          .includes(profiles: :benchmark)
           .collect(&:remediation_issue_id)
           .compact
   end

@@ -28,7 +28,7 @@ class RemediationsAPI
 
   def build_issues_list(rules)
     ::Rule.where(id: rules)
-          .includes(:profiles)
+          .includes(profiles: :benchmark)
           .map(&:remediation_issue_id)
           .compact
   end
