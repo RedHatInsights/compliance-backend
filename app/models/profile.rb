@@ -87,4 +87,10 @@ class Profile < ApplicationRecord
     benchmark ? benchmark.inferred_os_major_version : 'N/A'
   end
   alias os_major_version major_os_version
+
+  def short_ref_id
+    ref_id.downcase.split(
+      'xccdf_org.ssgproject.content_profile_'
+    )[1] || ref_id
+  end
 end

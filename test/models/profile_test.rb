@@ -233,6 +233,15 @@ class ProfileTest < ActiveSupport::TestCase
                  Set.new([p8] + profiles)
   end
 
+  test 'short_ref_id' do
+    profile1 = profiles(:one)
+    profile1.update!(ref_id: 'xccdf_org.ssgproject.content_profile_one')
+    assert_equal profile1.short_ref_id, 'one'
+
+    profile2 = profiles(:two)
+    assert_equal profile2.short_ref_id, 'xccdf_org.ssgproject.profile2'
+  end
+
   context 'fill_from_parent' do
     NAME = 'Customized profile'
     DESCRIPTION = 'The best profile ever'
