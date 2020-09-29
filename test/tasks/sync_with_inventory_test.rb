@@ -23,4 +23,13 @@ class SyncWithInventoryTest < ActiveSupport::TestCase
     assert_equal hosts(:one).os_major_version, 7
     assert_equal hosts(:one).os_minor_version, 5
   end
+
+  test 'sync_with_inventory handles Inventory API errors' do
+    HostInventoryAPI.any_instance.stubs(:inventory_host)
+                    .raises(Faraday::ServerError.new(500))
+
+    assert_nothing_raised do
+      Rake::Task['sync_with_inventory'].execute
+    end
+  end
 end
