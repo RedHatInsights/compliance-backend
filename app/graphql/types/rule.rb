@@ -9,6 +9,7 @@ module Types
     field :id, ID, null: false
     field :title, String, null: false
     field :ref_id, String, null: false
+    field :remediation_issue_id, String, null: true
     field :rationale, String, null: true
     field :description, String, null: true
     field :severity, String, null: false
