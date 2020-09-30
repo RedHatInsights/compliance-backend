@@ -3,28 +3,26 @@
 Rails.application.routes.draw do
   def draw_routes(prefix)
     scope "#{prefix}/#{Settings.app_name}" do
-      namespace :v1 do
-        resources :benchmarks, only: [:index, :show]
-        resources :business_objectives, only: [:index, :show]
-        resources :profiles do
-          member do
-            get 'tailoring_file'
+      concern :rest_api_v1 do
+        scope module: 'v1' do
+          resources :benchmarks, only: [:index, :show]
+          resources :business_objectives, only: [:index, :show]
+          resources :profiles do
+            member do
+              get 'tailoring_file'
+            end
           end
-        end
-        resources :rule_results, only: [:index]
-        resources :systems, only: [:index, :show, :destroy]
-        resources :rules, only: [:index, :show]
-      end
-      resources :benchmarks, controller: 'v1/benchmarks', only: [:index, :show]
-      resources :business_objectives, controller: 'v1/business_objectives', only: [:index, :show]
-      resources :profiles, controller: 'v1/profiles' do
-        member do
-          get 'tailoring_file'
+          resources :rule_results, only: [:index]
+          resources :systems, only: [:index, :show, :destroy]
+          resources :rules, only: [:index, :show]
         end
       end
-      resources :rule_results, controller: 'v1/rule_results', only: [:index]
-      resources :systems, controller: 'v1/systems', only: [:index, :show, :destroy]
-      resources :rules, controller: 'v1/rules', only: [:index, :show]
+
+      concerns :rest_api_v1
+      scope 'v1', as: 'v1' do
+        concerns :rest_api_v1
+      end
+
       mount Rswag::Api::Engine => '/',
         as: "#{prefix}/#{Settings.app_name}/rswag_api"
       mount Rswag::Ui::Engine => '/',
