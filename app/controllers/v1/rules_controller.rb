@@ -29,6 +29,10 @@ module V1
       RuleSerializer
     end
 
+    def includes
+      [profiles: :benchmark]
+    end
+
     def search_by_id
       pundit_scope.friendly.find(params[:id])
     end

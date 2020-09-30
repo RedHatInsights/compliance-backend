@@ -21,6 +21,11 @@ module Api
               example: 'xccdf_org.ssgproject.content_rule_directory_access_'\
               'var_log_audit'
             },
+            remediation_issue_id: {
+              type: 'string',
+              example: 'ssg:rhel7|rhelh-stig|xccdf_org.ssgproject.content_'\
+              'rule_no_empty_passwords'
+            },
             severity: {
               type: 'string',
               example: 'Low'
