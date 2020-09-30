@@ -98,7 +98,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - /data
+      - /var/lib/postgresql/data
   inventory:
     image: quay.io/cloudservices/insights-inventory:latest
     command: bash -c 'sleep 10 && make upgrade_db && make run_inv_mq_service'
