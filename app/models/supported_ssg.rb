@@ -30,7 +30,6 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
 
     def map_attributes(values)
       attrs = values.slice(*members.map(&:to_s))
-      attrs['profiles'] = attrs['profiles']&.keys
       attrs.symbolize_keys
     end
 
