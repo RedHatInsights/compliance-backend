@@ -1922,6 +1922,460 @@
         }
       }
     },
+    "/api/compliance/supported_ssgs": {
+      "get": {
+        "summary": "List all supported SSGs",
+        "tags": [
+          "supported_ssg"
+        ],
+        "description": "List all supported SSGs mapped to RHEL minor version",
+        "operationId": "ListSupportedSsgs",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A comma seperated list of resources to include in the response"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "lists all supported_ssgs requested",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": [
+                  {
+                    "id": "RHEL-6.6",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.18-3.el6",
+                      "version": "0.1.18",
+                      "os_major_version": "6",
+                      "os_minor_version": "6",
+                      "profiles": [
+                        "C2S",
+                        "common",
+                        "CS2",
+                        "CSCF-RHEL6-MLS",
+                        "rht-ccp",
+                        "server",
+                        "stig-rhel6-server-upstream",
+                        "test",
+                        "usgcb-rhel6-server"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-6.7",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.21-3.el6",
+                      "version": "0.1.21",
+                      "os_major_version": "6",
+                      "os_minor_version": "7",
+                      "profiles": [
+                        "C2S",
+                        "common",
+                        "CS2",
+                        "CSCF-RHEL6-MLS",
+                        "rht-ccp",
+                        "server",
+                        "stig-rhel6-server-upstream",
+                        "usgcb-rhel6-server"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-6.8",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.28-2.el6",
+                      "version": "0.1.28",
+                      "os_major_version": "6",
+                      "os_minor_version": "8",
+                      "profiles": [
+                        "C2S",
+                        "common",
+                        "CS2",
+                        "CSCF-RHEL6-MLS",
+                        "nist-cl-il-al",
+                        "pci-dss",
+                        "rht-ccp",
+                        "server",
+                        "standard",
+                        "stig-rhel6-server-upstream",
+                        "usgcb-rhel6-server"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-6.9",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.28-3.el6",
+                      "version": "0.1.28",
+                      "os_major_version": "6",
+                      "os_minor_version": "9",
+                      "profiles": [
+                        "C2S",
+                        "common",
+                        "CS2",
+                        "CSCF-RHEL6-MLS",
+                        "nist-cl-il-al",
+                        "pci-dss",
+                        "rht-ccp",
+                        "server",
+                        "standard",
+                        "stig-rhel6-server-upstream",
+                        "usgcb-rhel6-server"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-6.10",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.28-4.el6",
+                      "version": "0.1.28",
+                      "os_major_version": "6",
+                      "os_minor_version": "10",
+                      "profiles": [
+                        "C2S",
+                        "common",
+                        "CS2",
+                        "CSCF-RHEL6-MLS",
+                        "nist-cl-il-al",
+                        "pci-dss",
+                        "rht-ccp",
+                        "server",
+                        "standard",
+                        "stig-rhel6-server-upstream",
+                        "usgcb-rhel6-server"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.1",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.19-2.el7",
+                      "version": "0.1.19",
+                      "os_major_version": "7",
+                      "os_minor_version": "1",
+                      "profiles": [
+                        "rht-ccp"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.2",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.25-3.el7",
+                      "version": "0.1.25",
+                      "os_major_version": "7",
+                      "os_minor_version": "2",
+                      "profiles": [
+                        "common",
+                        "pci-dss",
+                        "rht-ccp",
+                        "standard",
+                        "stig-rhel7-server-upstream"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.3",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.30-5.el7_3",
+                      "version": "0.1.30",
+                      "os_major_version": "7",
+                      "os_minor_version": "3",
+                      "profiles": [
+                        "C2S",
+                        "cjis-rhel7-server",
+                        "common",
+                        "nist-cl-il-al",
+                        "ospp-rhel7-server",
+                        "pci-dss",
+                        "rht-ccp",
+                        "standard",
+                        "stig-rhel7-server-gui-upstream",
+                        "stig-rhel7-server-upstream",
+                        "stig-rhel7-workstation-upstream"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.4",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.33-6.el7_4",
+                      "version": "0.1.33",
+                      "os_major_version": "7",
+                      "os_minor_version": "4",
+                      "profiles": [
+                        "C2S",
+                        "cjis-rhel7-server",
+                        "common",
+                        "docker-host",
+                        "nist-800-171-cui",
+                        "ospp-rhel7",
+                        "pci-dss_centric",
+                        "pci-dss",
+                        "rht-ccp",
+                        "standard",
+                        "stig-rhel7-disa",
+                        "stig-rhevh-upstream"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.5",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.36-10.el7_5",
+                      "version": "0.1.36",
+                      "os_major_version": "7",
+                      "os_minor_version": "5",
+                      "profiles": [
+                        "C2S",
+                        "cjis-rhel7-server",
+                        "common",
+                        "docker-host",
+                        "nist-800-171-cui",
+                        "ospp-rhel7",
+                        "pci-dss_centric",
+                        "pci-dss",
+                        "rht-ccp",
+                        "standard",
+                        "stig-rhel7-disa",
+                        "stig-rhevh-upstream"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.6",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.40-13.el7_6",
+                      "version": "0.1.40",
+                      "os_major_version": "7",
+                      "os_minor_version": "6",
+                      "profiles": [
+                        "C2S",
+                        "cjis",
+                        "hipaa",
+                        "nist-800-171-cui",
+                        "ospp42",
+                        "ospp",
+                        "pci-dss_centric",
+                        "pci-dss",
+                        "rht-ccp",
+                        "standard",
+                        "stig-rhel7-disa"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.7",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.43-13.el7",
+                      "version": "0.1.43",
+                      "os_major_version": "7",
+                      "os_minor_version": "7",
+                      "profiles": [
+                        "C2S",
+                        "cjis",
+                        "hipaa",
+                        "nist-800-171-cui",
+                        "ospp42",
+                        "ospp",
+                        "pci-dss_centric",
+                        "pci-dss",
+                        "rhelh-vpp",
+                        "rht-ccp",
+                        "standard",
+                        "stig-rhel7-disa"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.8",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.46-11.el7",
+                      "version": "0.1.46",
+                      "os_major_version": "7",
+                      "os_minor_version": "8",
+                      "profiles": [
+                        "anssi_nt28_enhanced",
+                        "anssi_nt28_high",
+                        "anssi_nt28_intermediary",
+                        "anssi_nt28_minimal",
+                        "C2S",
+                        "cjis",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ncp",
+                        "ospp",
+                        "pci-dss_centric",
+                        "pci-dss",
+                        "rhelh-stig",
+                        "rhelh-vpp",
+                        "rht-ccp",
+                        "standard",
+                        "stig"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.9",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.49-13.el7",
+                      "version": "0.1.49",
+                      "os_major_version": "7",
+                      "os_minor_version": "9",
+                      "profiles": [
+                        "anssi_nt28_enhanced",
+                        "anssi_nt28_high",
+                        "anssi_nt28_intermediary",
+                        "anssi_nt28_minimal",
+                        "C2S",
+                        "cis",
+                        "cjis",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ncp",
+                        "ospp",
+                        "pci-dss_centric",
+                        "pci-dss",
+                        "rhelh-stig",
+                        "rhelh-vpp",
+                        "rht-ccp",
+                        "standard",
+                        "stig"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.0",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.42-11.el8",
+                      "version": "0.1.42",
+                      "os_major_version": "8",
+                      "os_minor_version": "0",
+                      "profiles": [
+                        "ospp",
+                        "pci-dss"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.1",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.46-1.el8",
+                      "version": "0.1.46",
+                      "os_major_version": "8",
+                      "os_minor_version": "1",
+                      "profiles": [
+                        "ospp",
+                        "pci-dss"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.2",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.48-7.el8",
+                      "version": "0.1.48",
+                      "os_major_version": "8",
+                      "os_minor_version": "2",
+                      "profiles": [
+                        "e8",
+                        "ospp",
+                        "pci-dss",
+                        "stig"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.3",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.50-14.el8",
+                      "version": "0.1.50",
+                      "os_major_version": "8",
+                      "os_minor_version": "3",
+                      "profiles": [
+                        "cis",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ospp",
+                        "pci-dss",
+                        "stig"
+                      ]
+                    }
+                  }
+                ],
+                "meta": {
+                  "total": 18,
+                  "revision": "2020-09-24"
+                }
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/supported_ssg"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/compliance/systems": {
       "get": {
         "summary": "List all hosts",
@@ -2533,6 +2987,37 @@
           },
           "rule_references": {
             "$ref": "#/components/schemas/relationship_collection"
+          }
+        }
+      },
+      "supported_ssg": {
+        "type": "object",
+        "required": [
+          "package",
+          "version"
+        ],
+        "properties": {
+          "package": {
+            "type": "string",
+            "example": "scap-security-guide-0.1.30-5.el7_3"
+          },
+          "version": {
+            "type": "string",
+            "example": "0.1.30"
+          },
+          "os_major_version": {
+            "type": "string",
+            "example": "7"
+          },
+          "os_minor_version": {
+            "type": "string",
+            "example": "3"
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }

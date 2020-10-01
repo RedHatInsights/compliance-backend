@@ -15,6 +15,7 @@ Rails.application.routes.draw do
           resources :rule_results, only: [:index]
           resources :systems, only: [:index, :show, :destroy]
           resources :rules, only: [:index, :show]
+          resources :supported_ssgs, only: [:index]
         end
       end
 
