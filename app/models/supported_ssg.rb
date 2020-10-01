@@ -38,7 +38,8 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def raw_supported
-      YAML.load_file(self::SUPPORTED_FILE)
+      # cached for the whole runtime
+      @raw_supported ||= YAML.load_file(self::SUPPORTED_FILE)
     end
   end
 end
