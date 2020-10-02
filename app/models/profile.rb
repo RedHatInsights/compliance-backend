@@ -27,6 +27,18 @@ class Profile < ApplicationRecord
   after_rollback :destroy_orphaned_business_objective
 
   class << self
+    def find_by_sql(*args, **kwargs)
+      super(*args, **kwargs)
+    rescue ActiveRecord::StatementInvalid => e
+      if e.message =~ /^PG::UnableToSend:/
+        # Rescue connection for auto-recconect
+        # TODO: log
+        # TODO: thread-safety
+        clear_active_connections!
+      end
+      raise
+    end
+
     def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
       profile = find_or_initialize_by(
         ref_id: op_profile.id,
