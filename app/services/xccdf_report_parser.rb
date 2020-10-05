@@ -4,6 +4,8 @@
 class MissingIdError < StandardError; end
 # Error to raise if the format of the report is wrong
 class WrongFormatError < StandardError; end
+# Error to raise if the OS version does not match benchmark's
+class OSVersionMismatch < StandardError; end
 
 # Takes in a path to an Xccdf file, returns all kinds of properties about it
 # and saves it in our database
@@ -33,8 +35,20 @@ class XccdfReportParser
     message['id'].present?
   end
 
+  def check_os_version
+    # rubocop:disable Style/GuardClause
+    if benchmark.os_major_version.to_s != @host.os_major_version.to_s
+      raise OSVersionMismatch,
+            "OS major version (#{@host.os_major_version}) does not match with" \
+            " benchmark #{benchmark.ref_id} (#{benchmark.os_major_version})"
+    end
+    # rubocop:enable Style/GuardClause
+  end
+
   def save_all
     Host.transaction do
+      save_host
+      check_os_version
       save_all_benchmark_info
       save_all_test_result_info
     end
