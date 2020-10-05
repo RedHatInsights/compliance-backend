@@ -34,7 +34,7 @@ class ParseReportJob
     notify_remediation
     notify_payload_tracker(:success, "Job #{jid} has completed successfully")
   rescue ::MissingIdError, ::WrongFormatError, ::InventoryHostNotFound,
-         ::ActiveRecord::RecordInvalid => e
+         ::OSVersionMismatch, ::ActiveRecord::RecordInvalid => e
     error_message = "Cannot parse report: #{e} - #{@msg_value.to_json}"
     notify_payload_tracker(:error, error_message)
     Sidekiq.logger.error(error_message)

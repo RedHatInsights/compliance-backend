@@ -167,6 +167,30 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         )
       end
     end
+
+    should 'raise on OS version mismatch' do
+      system_profile_body = {
+        'results' => [
+          {
+            'id' => @host_id,
+            'system_profile' => {
+              'os_release': '7.1'
+            }
+          }
+        ]
+      }
+      Platform.connection.stubs(:get).with(
+        "#{::Settings.host_inventory_url}#{Settings.path_prefix}" \
+        "/inventory/v1/hosts/#{[@host_id].join(',')}/system_profile",
+        { per_page: 50, page: 1 },
+        X_RH_IDENTITY: 'b64_fake_identity'
+      ).returns(OpenStruct.new(body: system_profile_body.to_json))
+
+      @report_parser.save_host
+      assert_raises(::OSVersionMismatch) do
+        @report_parser.check_os_version
+      end
+    end
   end
 
   context 'rule results' do
