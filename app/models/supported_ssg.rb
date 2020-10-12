@@ -26,6 +26,13 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
       raw_supported['revision']
     end
 
+    # Collection of supported SSGs that have ZIP available upstream
+    def available_upstream
+      all.reject do |ssg|
+        ssg.upstream_version&.upcase == 'N/A'
+      end
+    end
+
     private
 
     def map_attributes(values)
