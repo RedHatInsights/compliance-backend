@@ -206,7 +206,9 @@ supported:
           - stig-rhel7-disa
   RHEL-7.9:
     package: scap-security-guide-0.1.49-13.el7
+    # RHEL 7 with CIS backported to 0.1.49 in downstream
     version: 0.1.49
+    upstream_version: 0.1.50
     profiles:
       anssi_nt28_enhanced:
       anssi_nt28_high:
