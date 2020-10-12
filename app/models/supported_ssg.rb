@@ -3,7 +3,7 @@
 require 'yaml'
 
 # rubocop:disable Metrics/BlockLength
-SupportedSsg = Struct.new(:id, :package, :version, :profiles,
+SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
                           :os_major_version, :os_minor_version,
                           keyword_init: true) do
   self::SUPPORTED_FILE = Rails.root.join('config/supported_ssg.yaml')
