@@ -3,6 +3,7 @@
 # General controller to include all-encompassing behavior
 class ApplicationController < ActionController::API
   include ActionController::Helpers
+  include DefaultHeaders
   include Pundit
   include Authentication
   include ExceptionNotifierCustomData
