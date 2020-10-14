@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_04_012906) do
+ActiveRecord::Schema.define(version: 2020_09_10_153704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -65,6 +65,26 @@ ActiveRecord::Schema.define(version: 2020_08_04_012906) do
     t.index ["os_minor_version"], name: "index_hosts_on_os_minor_version"
   end
 
+  create_table "policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "business_objective_id"
+    t.float "compliance_threshold", default: 100.0
+    t.string "name"
+    t.string "description"
+    t.uuid "account_id"
+    t.index ["account_id"], name: "index_policies_on_account_id"
+    t.index ["business_objective_id"], name: "index_policies_on_business_objective_id"
+  end
+
+  create_table "policy_hosts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "policy_id", null: false
+    t.uuid "host_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["host_id"], name: "index_policy_hosts_on_host_id"
+    t.index ["policy_id", "host_id"], name: "index_policy_hosts_on_policy_id_and_host_id", unique: true
+    t.index ["policy_id"], name: "index_policy_hosts_on_policy_id"
+  end
+
   create_table "profile_hosts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "profile_id", null: false
     t.uuid "host_id", null: false
@@ -97,11 +117,13 @@ ActiveRecord::Schema.define(version: 2020_08_04_012906) do
     t.uuid "benchmark_id", null: false
     t.uuid "parent_profile_id"
     t.boolean "external", default: false, null: false
+    t.uuid "policy_id"
     t.index ["account_id"], name: "index_profiles_on_account_id"
     t.index ["business_objective_id"], name: "index_profiles_on_business_objective_id"
     t.index ["external"], name: "index_profiles_on_external"
     t.index ["name"], name: "index_profiles_on_name"
     t.index ["parent_profile_id"], name: "index_profiles_on_parent_profile_id"
+    t.index ["policy_id"], name: "index_profiles_on_policy_id"
     t.index ["ref_id", "account_id", "benchmark_id", "external"], name: "uniqueness", unique: true
   end
 
@@ -188,5 +210,9 @@ ActiveRecord::Schema.define(version: 2020_08_04_012906) do
     t.index ["account_id"], name: "index_users_on_account_id"
   end
 
+  add_foreign_key "policies", "accounts"
+  add_foreign_key "policies", "business_objectives"
+  add_foreign_key "policy_hosts", "hosts"
+  add_foreign_key "policy_hosts", "policies"
   add_foreign_key "profiles", "profiles", column: "parent_profile_id"
 end
