@@ -5,7 +5,11 @@ module ProfilePolicyAssociation
   extend ActiveSupport::Concern
 
   included do
+    after_destroy :destroy_empty_policy
     after_destroy :destroy_policy_test_results
+
+    belongs_to :policy_object, class_name: :Policy, foreign_key: :policy_id,
+                               optional: true, inverse_of: :profiles
 
     def policy
       return self unless external
@@ -42,6 +46,10 @@ module ProfilePolicyAssociation
       else
         DestroyProfilesJob.new.perform(policy_profiles.pluck(:id))
       end
+    end
+
+    def destroy_empty_policy
+      policy_object.destroy if policy_object&.profiles&.empty?
     end
   end
 end
