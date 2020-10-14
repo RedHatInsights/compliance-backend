@@ -4,6 +4,12 @@ require 'test_helper'
 require 'sidekiq/testing'
 
 class ProfileTest < ActiveSupport::TestCase
+  should have_many(:policy_hosts).through(:policy_object)
+  should have_many(:hosts).through(:profile_hosts)
+  should have_many(:assigned_hosts).through(:policy_hosts).source(:host)
+  should belong_to(:policy_object).optional
+  should validate_uniqueness_of(:ref_id)
+    .scoped_to(%i[account_id benchmark_id policy_id])
   should validate_uniqueness_of(:ref_id)
     .scoped_to(%i[account_id benchmark_id external])
   should validate_presence_of :ref_id
@@ -118,9 +124,15 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal 1, DestroyProfilesJob.jobs.size
     assert_equal [external_profile.id],
                  DestroyProfilesJob.jobs.dig(0, 'args', 0)
-
     assert_difference('Profile.count' => -1) do
       DestroyProfilesJob.drain
+    end
+  end
+
+  test 'destroying a profile also destroys its related test results' do
+    test_results(:one).update profile: profiles(:one), host: hosts(:one)
+    assert_difference('Profile.count' => -1, 'TestResult.count' => -1) do
+      profiles(:one).destroy
     end
   end
 

@@ -9,10 +9,16 @@ module ProfileSearching
                          external parent_profile_id]
     scoped_search relation: :hosts, on: :id, rename: :system_ids
     scoped_search relation: :hosts, on: :name, rename: :system_names
+    scoped_search relation: :assigned_hosts, on: :id,
+                  rename: :assigned_system_ids
+    scoped_search relation: :assigned_hosts, on: :name,
+                  rename: :assigned_system_names
     scoped_search on: :has_test_results, ext_method: 'test_results?',
                   only_explicit: true, operators: ['=']
     scoped_search on: :canonical, ext_method: 'canonical?', only_explicit: true,
                   operators: ['=']
+    scoped_search on: :has_policy, ext_method: 'policy_object_search',
+                  only_explicit: true, operators: ['=']
     scoped_search on: :os_major_version, ext_method: 'os_major_version_search',
                   only_explicit: true, operators: ['=', '!='],
                   validator: ScopedSearch::Validators::INTEGER
@@ -20,6 +26,10 @@ module ProfileSearching
     scope :canonical, lambda { |canonical = true|
       canonical && where(parent_profile_id: nil) ||
         where.not(parent_profile_id: nil)
+    }
+    scope :with_policy, lambda { |with_policy = true|
+      with_policy && where.not(policy: nil) ||
+        where(policy: nil)
     }
     scope :external, lambda { |external = true|
       where(external: external)
@@ -34,6 +44,11 @@ module ProfileSearching
   end
 
   class_methods do
+    def policy_object_search(_filter, _operator, value)
+      profiles = Profile.with_policy(ActiveModel::Type::Boolean.new.cast(value))
+      { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
+    end
+
     def canonical?(_filter, _operator, value)
       profiles = Profile.canonical(ActiveModel::Type::Boolean.new.cast(value))
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
