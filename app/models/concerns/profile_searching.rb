@@ -28,8 +28,8 @@ module ProfileSearching
         where.not(parent_profile_id: nil)
     }
     scope :with_policy, lambda { |with_policy = true|
-      with_policy && where.not(policy: nil) ||
-        where(policy: nil)
+      with_policy && where.not(policy_id: nil) ||
+        where(policy_id: nil)
     }
     scope :external, lambda { |external = true|
       where(external: external)
