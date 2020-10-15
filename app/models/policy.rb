@@ -18,7 +18,7 @@ class Policy < ApplicationRecord
 
   validates :compliance_threshold, numericality: true
   validates :account, presence: true
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true
 
   def self.attrs_from(profile:)
     profile.attributes.slice(*PROFILE_ATTRS)
