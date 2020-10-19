@@ -6,19 +6,20 @@ class HostTest < ActiveSupport::TestCase
   should have_many(:rule_results)
   should have_many(:rules).through(:rule_results).source(:rule)
   should have_many(:profile_hosts)
-  should have_many(:profiles).through(:profile_hosts).source(:profile)
+  should have_many(:profiles).through(:test_results)
+  should have_many(:profile_host_profiles).through(:profile_hosts)
+                                          .source(:profile)
   should have_many(:policy_hosts)
   should have_many(:test_results)
   should have_many(:policies).through(:policy_hosts)
   should have_many(:assigned_profiles).through(:policies).source(:profiles)
-  should have_many(:test_result_profiles).through(:test_results)
-                                         .source(:profile)
   should validate_presence_of :name
   should validate_presence_of :account
 
   test 'compliant returns a hash with all compliance statuses' do
     host = hosts(:one)
-    host.profiles << [profiles(:one), profiles(:two)]
+    test_results(:one).update!(host: host, profile: profiles(:one))
+    test_results(:two).update!(host: host, profile: profiles(:two))
     expected_result = {
       profiles(:one).ref_id.to_s => false,
       profiles(:two).ref_id.to_s => false
@@ -49,7 +50,6 @@ class HostTest < ActiveSupport::TestCase
   context 'external methods for search' do
     setup do
       @host = hosts(:one)
-      @host.profiles << profiles(:one)
       rules(:one).profiles << profiles(:one)
       rules(:two).profiles << profiles(:one)
       test_results(:one).update(host: hosts(:one), profile: profiles(:one))

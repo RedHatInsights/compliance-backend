@@ -3,13 +3,17 @@
 require 'swagger_helper'
 
 describe 'Business Objectives API' do
-  fixtures :business_objectives, :accounts, :profiles
+  fixtures :business_objectives, :accounts, :policies, :profiles
 
   before do
-    profiles(:one).update!(account: accounts(:one),
+    policies(:one).update!(account: accounts(:one),
                            business_objective: business_objectives(:one))
-    profiles(:two).update!(account: accounts(:one),
+    profiles(:one).update!(account: accounts(:one),
+                           policy_object: policies(:one))
+    policies(:two).update!(account: accounts(:one),
                            business_objective: business_objectives(:two))
+    profiles(:two).update!(account: accounts(:one),
+                           policy_object: policies(:two))
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/business_objectives" do

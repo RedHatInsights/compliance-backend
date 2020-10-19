@@ -3,6 +3,14 @@
 require 'test_helper'
 
 class AssociateSystemsMutationTest < ActiveSupport::TestCase
+  setup do
+    profiles(:one).update account: accounts(:test),
+                          policy_object: policies(:one)
+    hosts(:one).update account: accounts(:test)
+    hosts(:two).update account: accounts(:test)
+    users(:test).update account: accounts(:test)
+  end
+
   test 'provide all required arguments' do
     query = <<-GRAPHQL
        mutation associateSystems($input: associateSystemsInput!) {
@@ -14,12 +22,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
        }
     GRAPHQL
 
-    profiles(:one).update account: accounts(:test)
-    hosts(:one).update account: accounts(:test)
-    hosts(:two).update account: accounts(:test)
-    users(:test).update account: accounts(:test)
-
-    assert_empty profiles(:one).hosts
+    assert_empty profiles(:one).assigned_hosts
 
     Schema.execute(
       query,
@@ -30,7 +33,8 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )['data']['associateSystems']['profile']
 
-    assert_equal profiles(:one).reload.hosts, [hosts(:one), hosts(:two)]
+    assert_equal Set.new(profiles(:one).policy_object.reload.hosts),
+                 Set.new([hosts(:one), hosts(:two)])
   end
 
   test 'finds inventory systems and creates them in compliance' do
@@ -46,12 +50,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
 
     NEW_ID = '7ccda3fb-bd28-4845-ab5a-061099eae7b3'
 
-    profiles(:one).update account: accounts(:test)
-    hosts(:one).update account: accounts(:test)
-    hosts(:two).update account: accounts(:test)
-    users(:test).update account: accounts(:test)
-
-    assert_empty profiles(:one).hosts
+    assert_empty profiles(:one).assigned_hosts
 
     @api = mock('HostInventoryAPI')
     HostInventoryAPI.expects(:new).returns(@api)
@@ -69,7 +68,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )['data']['associateSystems']['profile']
 
-    assert_equal(profiles(:one).hosts.pluck(:id), [NEW_ID])
+    assert_equal(profiles(:one).assigned_hosts.pluck(:id), [NEW_ID])
   end
 
   test 'removes systems from a profile' do
@@ -83,12 +82,6 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
        }
     GRAPHQL
 
-    profiles(:one).update account: accounts(:test)
-    hosts(:one).update account: accounts(:test)
-    hosts(:two).update account: accounts(:test)
-    users(:test).update account: accounts(:test)
-    profiles(:one).hosts = hosts
-
     assert_not_empty profiles(:one).hosts
 
     Schema.execute(
@@ -100,6 +93,6 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )['data']['associateSystems']['profile']
 
-    assert_empty profiles(:one).reload.hosts
+    assert_empty profiles(:one).policy_object.reload.hosts
   end
 end

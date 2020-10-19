@@ -10,15 +10,17 @@ class Host < ApplicationRecord
                 only_explicit: true
   scoped_search on: :has_test_results, ext_method: 'test_results?',
                 only_explicit: true, operators: ['=']
-  scoped_search relation: :profile_hosts, on: :profile_id
+  scoped_search relation: :test_results, on: :profile_id
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results, source: :rule
   has_many :profile_hosts, dependent: :destroy
   has_many :policy_hosts, dependent: :destroy
   has_many :test_results, dependent: :destroy
+  has_many :test_result_profiles, through: :test_results, dependent: :destroy
   include SystemLike
 
-  has_many :profiles, through: :profile_hosts, source: :profile
+  has_many :profiles, through: :test_results
+  has_many :profile_host_profiles, through: :profile_hosts, source: :profile
   has_many :test_result_profiles, through: :test_results, source: :profile
   has_many :policies, through: :policy_hosts
   has_many :assigned_profiles, through: :policies, source: :profiles
@@ -28,12 +30,15 @@ class Host < ApplicationRecord
 
   class << self
     def filter_by_compliance(_filter, operator, value)
-      ids = Host.includes(:profiles).select do |host|
+      ids = Host.includes(test_results: :profile).select do |host|
         host.compliant.values.all?(ActiveModel::Type::Boolean.new.cast(value))
       end
       ids = ids.pluck(:id).map { |id| "'#{id}'" }
 
-      return { conditions: '1=0' } if ids.empty?
+      if ids.empty?
+        return { conditions: '1=0' } if operator == '='
+        return { conditions: '1=1' } if operator == '<>'
+      end
 
       operator = operator == '<>' ? 'NOT' : ''
       { conditions: "hosts.id #{operator} IN(#{ids.join(',')})" }

@@ -6,7 +6,7 @@ class Account < ApplicationRecord
   has_many :hosts, dependent: :nullify
   has_many :profiles, dependent: :destroy
   has_many :policies, dependent: :destroy
-  has_many :business_objectives, through: :profiles
+  has_many :business_objectives, through: :policies
 
   validates :account_number, presence: true
 

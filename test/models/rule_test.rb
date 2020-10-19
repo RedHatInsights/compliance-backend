@@ -62,6 +62,7 @@ class RuleTest < ActiveSupport::TestCase
 
   test 'rule generates remediation issue id' do
     rule = rules(:one)
+    profiles(:one).test_results.destroy_all
     profiles(:one).update!(
       ref_id: 'xccdf_org.ssgproject.content_profile_profile1'
     )
@@ -71,6 +72,7 @@ class RuleTest < ActiveSupport::TestCase
   end
 
   test 'rule generates remediation issue id for RHEL8' do
+    profiles(:one).test_results.destroy_all
     benchmark = benchmarks(:one)
     benchmark.update!(ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-8')
 

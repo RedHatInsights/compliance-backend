@@ -67,6 +67,14 @@ module Types
 
     field :major_os_version, String, null: false
 
+    def policy
+      object.old_policy
+    end
+
+    def external
+      object.external?
+    end
+
     def compliant_host_count
       ::CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
         hosts.count { |host| object.compliant?(host) }
@@ -74,7 +82,8 @@ module Types
     end
 
     def total_host_count
-      ::CollectionLoader.for(object.class, :hosts).load(object).then(&:count)
+      ::CollectionLoader.for(policy_or_report.class, :hosts)
+                        .load(policy_or_report).then(&:count)
     end
 
     def last_scanned(args = {})
@@ -87,7 +96,16 @@ module Types
       end
     end
 
+    def hosts
+      ::CollectionLoader.for(policy_or_report.class, :hosts)
+                        .load(policy_or_report)
+    end
+
     private
+
+    def policy_or_report
+      object.policy_object || object
+    end
 
     def system_id(args)
       args[:system_id] || context[:parent_system_id]

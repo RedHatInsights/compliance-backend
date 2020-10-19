@@ -615,15 +615,15 @@
                     "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                     "type": "profile",
                     "attributes": {
-                      "name": "profile1",
                       "ref_id": "xccdf_org.ssgproject.profile1",
-                      "description": null,
                       "score": 98.0,
                       "parent_profile_id": null,
                       "external": false,
                       "compliance_threshold": 100.0,
                       "os_major_version": "7",
                       "parent_profile_ref_id": null,
+                      "name": "profile1",
+                      "description": null,
                       "canonical": true,
                       "tailored": false,
                       "total_host_count": 0,
@@ -663,15 +663,15 @@
                     "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
                     "type": "profile",
                     "attributes": {
-                      "name": "profile2",
                       "ref_id": "xccdf_org.ssgproject.profile2",
-                      "description": null,
                       "score": 98.0,
                       "parent_profile_id": null,
                       "external": false,
                       "compliance_threshold": 100.0,
                       "os_major_version": "7",
                       "parent_profile_ref_id": null,
+                      "name": "profile2",
+                      "description": null,
                       "canonical": true,
                       "tailored": false,
                       "total_host_count": 0,
@@ -779,21 +779,21 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "6bf986d7-ca23-4c1e-99ea-9f1e42267615",
+                  "id": "3e94efa4-4671-4705-848e-d565379e074e",
                   "type": "profile",
                   "attributes": {
-                    "name": "A custom name",
                     "ref_id": "xccdf_org.ssgproject.profile2",
-                    "description": null,
                     "score": 0,
                     "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
+                    "name": "A custom name",
+                    "description": null,
                     "canonical": false,
                     "tailored": true,
-                    "total_host_count": 2,
+                    "total_host_count": 0,
                     "compliant_host_count": 0,
                     "business_objective": "LATAM Expansion"
                   },
@@ -997,15 +997,15 @@
                   "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                   "type": "profile",
                   "attributes": {
-                    "name": "profile1",
                     "ref_id": "xccdf_org.ssgproject.profile1",
-                    "description": null,
                     "score": 98.0,
                     "parent_profile_id": null,
                     "external": false,
                     "compliance_threshold": 100.0,
                     "os_major_version": "7",
                     "parent_profile_ref_id": null,
+                    "name": "profile1",
+                    "description": null,
                     "canonical": true,
                     "tailored": false,
                     "total_host_count": 1,
@@ -1015,7 +1015,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "a4ca12c4-3d3c-41ec-8c1b-aeceb94fe71c",
+                        "id": "d656f7ab-32a6-44e6-96f0-a4c67440ccaf",
                         "type": "account"
                       }
                     },
@@ -1032,12 +1032,7 @@
                       "data": []
                     },
                     "hosts": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "host"
-                        }
-                      ]
+                      "data": []
                     },
                     "test_results": {
                       "data": [
@@ -1197,21 +1192,21 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "4eca960b-69f4-47d9-bee8-fd9b539bc192",
+                  "id": "6feae109-d523-416e-a9df-c71b24f2e8c8",
                   "type": "profile",
                   "attributes": {
-                    "name": "An updated custom name",
                     "ref_id": "xccdf_org.ssgproject.profile2",
-                    "description": null,
                     "score": 0,
                     "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
+                    "name": "An updated custom name",
+                    "description": null,
                     "canonical": false,
                     "tailored": true,
-                    "total_host_count": 2,
+                    "total_host_count": 0,
                     "compliant_host_count": 0,
                     "business_objective": "APAC Expansion"
                   },
@@ -1421,15 +1416,15 @@
                   "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                   "type": "profile",
                   "attributes": {
-                    "name": "profile1",
                     "ref_id": "xccdf_org.ssgproject.profile1",
-                    "description": null,
                     "score": 0,
                     "parent_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
                     "external": false,
                     "compliance_threshold": 100.0,
                     "os_major_version": "7",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
+                    "name": "profile1",
+                    "description": null,
                     "canonical": false,
                     "tailored": false,
                     "total_host_count": 0,

@@ -4,9 +4,14 @@ require 'swagger_helper'
 require 'sidekiq/testing'
 
 describe 'Profiles API' do
+  fixtures :accounts, :hosts, :rules, :benchmarks, :profiles, :policies
+
+  before do
+    policies(:one).update! account: accounts(:one)
+  end
+
   path "#{Settings.path_prefix}/#{Settings.app_name}/profiles" do
     get 'List all profiles' do
-      fixtures :accounts, :hosts, :benchmarks, :profiles
       tags 'profile'
       description 'Lists all profiles requested'
       operationId 'ListProfiles'
@@ -20,7 +25,9 @@ describe 'Profiles API' do
 
       response '200', 'lists all profiles requested' do
         before do
-          profiles(:one).update!(account: accounts(:one))
+          policies(:one).update!(account: accounts(:one))
+          profiles(:one).update!(account: accounts(:one),
+                                 policy_object: policies(:one))
         end
 
         let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
@@ -70,8 +77,6 @@ describe 'Profiles API' do
     end
 
     post 'Create a profile' do
-      fixtures :accounts, :profiles, :rules, :hosts, :benchmarks
-
       before do
         accounts(:one).hosts = hosts
       end
@@ -176,7 +181,6 @@ describe 'Profiles API' do
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/profiles/{id}" do
     get 'Retrieve a profile' do
-      fixtures :hosts, :benchmarks, :profiles
       tags 'profile'
       description 'Retrieves data for a profile'
       operationId 'ShowProfile'
@@ -203,7 +207,7 @@ describe 'Profiles API' do
           )
           user = User.from_x_rh_identity(x_rh_identity[:identity])
           user.save
-          profiles(:one).update(account: user.account, hosts: [hosts(:one)],
+          profiles(:one).update(account: user.account,
                                 parent_profile_id: profiles(:two).id)
           profiles(:one).id
         end
@@ -235,7 +239,7 @@ describe 'Profiles API' do
           )
           user = User.from_x_rh_identity(x_rh_identity[:identity])
           user.save
-          profiles(:one).update(account: user.account, hosts: [hosts(:one)])
+          profiles(:one).update(account: user.account)
           profiles(:one).id
         end
         let(:include) { 'benchmark' }
@@ -273,7 +277,6 @@ describe 'Profiles API' do
     end
 
     patch 'Update a profile' do
-      fixtures :accounts, :rules, :hosts, :benchmarks, :profiles
       before do
         accounts(:one).hosts = hosts
       end
@@ -345,7 +348,8 @@ describe 'Profiles API' do
         let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
         let(:id) do
           new_profile = Profile.new(parent_profile_id: profiles(:two).id,
-                                    account_id: accounts(:one).id)
+                                    account_id: accounts(:one).id,
+                                    policy_object: policies(:one))
                                .fill_from_parent
           new_profile.save
           new_profile.update_rules
@@ -398,7 +402,6 @@ describe 'Profiles API' do
     end
 
     delete 'Destroy a profile' do
-      fixtures :accounts, :benchmarks, :profiles
       tags 'profile'
       description 'Destroys a profile'
       operationId 'DestroyProfile'

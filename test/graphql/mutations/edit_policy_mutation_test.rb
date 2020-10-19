@@ -20,7 +20,8 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
     profiles(:one).update(account: accounts(:test),
                           hosts: [hosts(:one)],
                           compliance_threshold: 90,
-                          business_objective: nil)
+                          policy_object: policies(:one))
+    assert_nil policies(:one).business_objective
 
     result = Schema.execute(
       query,
