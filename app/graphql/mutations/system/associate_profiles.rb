@@ -12,9 +12,11 @@ module Mutations
 
       def resolve(args = {})
         host = add_inventory_hosts([args[:id]]).first
-        external_profiles = host.profiles.where(external: true)
-        internal_profiles = find_profiles(args[:profile_ids])
-        host.update(profiles: internal_profiles + external_profiles)
+        policies = find_profiles(args[:profile_ids]).map(&:policy_object).uniq
+        policies.map do |policy|
+          policy.hosts << host
+        end
+
         { system: host }
       end
 

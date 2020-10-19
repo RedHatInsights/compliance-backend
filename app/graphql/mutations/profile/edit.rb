@@ -6,6 +6,9 @@ module Mutations
     class Edit < BaseMutation
       graphql_name 'UpdateProfile'
 
+      POLICY_ATTRIBUTES = %i[name description
+                             compliance_threshold business_objective_id].freeze
+
       argument :id, ID, required: true
       argument :name, String, required: false
       argument :description, String, required: false
@@ -16,7 +19,7 @@ module Mutations
 
       def resolve(args = {})
         profile = authorized_profile(args)
-        profile.update(args.compact)
+        profile.policy_object.update(args.compact.slice(*POLICY_ATTRIBUTES))
         { profile: profile }
       end
 

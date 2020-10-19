@@ -91,6 +91,10 @@ module Xccdf
       end
     end
 
+    def latest_ssg
+      LATEST_SUPPORTED_VERSIONS[ref_id.to_sym]
+    end
+
     def inferred_os_major_version
       ref_id[/(?<=RHEL-)\d/]
     end

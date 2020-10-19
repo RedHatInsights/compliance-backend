@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-# Business objectives are arbitrary strings to tag profiles in the UI
+# Business objectives are arbitrary strings to tag policies in the UI
 class BusinessObjective < ApplicationRecord
-  has_many :profiles, dependent: :nullify
   has_many :policies, dependent: :nullify
-  has_many :accounts, through: :profiles
+  has_many :profiles, through: :policies
+  has_many :accounts, through: :policies
 
   validates :title, presence: true
 
@@ -14,10 +14,6 @@ class BusinessObjective < ApplicationRecord
 
   scope :without_policies, lambda {
     includes(:policies).where(policies: { id: nil })
-  }
-
-  scope :without_profiles, lambda {
-    includes(:profiles).where(profiles: { id: nil })
   }
 
   def self.from_title(title)

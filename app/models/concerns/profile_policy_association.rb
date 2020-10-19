@@ -6,21 +6,24 @@ module ProfilePolicyAssociation
 
   included do
     after_destroy :destroy_empty_policy
-    after_destroy :destroy_policy_test_results
 
     belongs_to :policy_object, class_name: :Policy, foreign_key: :policy_id,
                                optional: true, inverse_of: :profiles
+    delegate :business_objective, :business_objective_id, :update_hosts,
+             to: :policy_object, allow_nil: true
 
-    def policy
-      return self unless external
+    def old_policy
+      return if canonical?
 
-      Profile.includes(:benchmark)
+      Profile.includes(:benchmark, :policy_hosts)
              .older_than(created_at)
+             .where(policy_hosts: { host_id: test_result_hosts })
              .find_by(account: account_id, external: false, ref_id: ref_id,
-                      benchmarks: { ref_id: benchmark.ref_id })
+                      benchmarks: { ref_id: benchmark.ref_id,
+                                    version: benchmark.latest_ssg }) || self
     end
 
-    def policy_profiles
+    def old_policy_profiles
       return Profile.none if account_id.nil?
 
       Profile.includes(:benchmark)
@@ -28,24 +31,9 @@ module ProfilePolicyAssociation
                     benchmarks: { ref_id: benchmark.ref_id })
     end
 
-    def business_objective
-      BusinessObjective.find(business_objective_id) if business_objective_id
-    end
-
-    def business_objective_id
-      (policy || self).read_attribute(:business_objective_id)
-    end
-
     def compliance_threshold
-      (policy || self).read_attribute(:compliance_threshold)
-    end
-
-    def destroy_policy_test_results
-      if Settings.async
-        DestroyProfilesJob.perform_async(policy_profiles.pluck(:id))
-      else
-        DestroyProfilesJob.new.perform(policy_profiles.pluck(:id))
-      end
+      policy_object&.compliance_threshold ||
+        Policy::DEFAULT_COMPLIANCE_THRESHOLD
     end
 
     def destroy_empty_policy
