@@ -8,13 +8,24 @@ class ProfileSerializer
   belongs_to :benchmark
   belongs_to :parent_profile, record_type: :profile
   has_many :rules
-  has_many :hosts
+  has_many :hosts do |profile|
+    profile.policy_object&.hosts || []
+  end
   has_many :test_results
-  attributes :name, :ref_id, :description, :score, :parent_profile_id,
+  attributes :ref_id, :score, :parent_profile_id,
              :external, :compliance_threshold, :os_major_version
   attribute :parent_profile_ref_id do |profile|
     profile.parent_profile&.ref_id
   end
+
+  attribute :name do |profile|
+    profile.policy_object&.name || profile.name
+  end
+
+  attribute :description do |profile|
+    profile.policy_object&.description || profile.description
+  end
+
   attribute :canonical, &:canonical?
   attribute :tailored, &:tailored?
   attribute :total_host_count do |profile|
@@ -24,6 +35,6 @@ class ProfileSerializer
     profile.hosts.count { |host| profile.compliant?(host) }
   end
   attribute :business_objective do |profile|
-    profile.business_objective&.title
+    profile&.policy_object&.business_objective&.title
   end
 end

@@ -7,12 +7,12 @@ module ProfileSearching
   included do
     scoped_search on: %i[id name ref_id account_id compliance_threshold
                          external parent_profile_id]
-    scoped_search relation: :hosts, on: :id, rename: :system_ids
-    scoped_search relation: :hosts, on: :name, rename: :system_names
-    scoped_search relation: :assigned_hosts, on: :id,
-                  rename: :assigned_system_ids
-    scoped_search relation: :assigned_hosts, on: :name,
-                  rename: :assigned_system_names
+    scoped_search relation: :assigned_hosts, on: :id, rename: :system_ids
+    scoped_search relation: :assigned_hosts, on: :name, rename: :system_names
+    scoped_search relation: :test_result_hosts, on: :id,
+                  rename: :test_result_system_ids
+    scoped_search relation: :test_result_hosts, on: :name,
+                  rename: :test_result_system_names
     scoped_search on: :has_test_results, ext_method: 'test_results?',
                   only_explicit: true, operators: ['=']
     scoped_search on: :canonical, ext_method: 'canonical?', only_explicit: true,

@@ -27,7 +27,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
   end
 
   test 'delete a test result keeps the profile if not-external' do
-    profiles(:one).update(external: false)
+    profiles(:one).update(policy_object: policies(:one))
     assert_difference('TestResult.count', -1) do
       assert_difference('Profile.count', 0) do
         assert_difference('ProfileHost.count', 0) do
@@ -46,20 +46,18 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
   end
 
   test 'deleting results for external policy removes profile and profilehost' do
-    profiles(:one).update(external: true)
+    profiles(:one).update(policy_object: nil)
     assert_difference('TestResult.count', -1) do
       assert_difference('Profile.count', -1) do
-        assert_difference('ProfileHost.count', -1) do
-          result = Schema.execute(
-            QUERY,
-            variables: { input: {
-              profileId: profiles(:one).id
-            } },
-            context: { current_user: users(:test) }
-          ).dig('data', 'deleteTestResults')
-          assert_equal profiles(:one).id, result.dig('profile', 'id')
-          assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
-        end
+        result = Schema.execute(
+          QUERY,
+          variables: { input: {
+            profileId: profiles(:one).id
+          } },
+          context: { current_user: users(:test) }
+        ).dig('data', 'deleteTestResults')
+        assert_equal profiles(:one).id, result.dig('profile', 'id')
+        assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
       end
     end
   end

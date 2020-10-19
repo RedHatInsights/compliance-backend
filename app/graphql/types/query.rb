@@ -50,7 +50,7 @@ module Types
     def profile(id:)
       Pundit.authorize(
         context[:current_user],
-        ::Profile.includes(:profile_hosts, :hosts).find(id),
+        ::Profile.includes(:test_results, :hosts).find(id),
         :show?
       )
     end

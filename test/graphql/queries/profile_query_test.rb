@@ -75,6 +75,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
     profiles(:one).rules << rules(:one)
     profiles(:one).rules << rules(:two)
     profiles(:one).update(account: accounts(:test),
+                          policy_object: policies(:one))
+    policies(:one).update(account: accounts(:test),
                           hosts: [hosts(:one), hosts(:two)])
 
     result = Schema.execute(

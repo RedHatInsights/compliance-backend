@@ -20,6 +20,10 @@ class Policy < ApplicationRecord
   validates :account, presence: true
   validates :name, presence: true
 
+  after_destroy :destroy_orphaned_business_objective
+  after_update :destroy_orphaned_business_objective
+  after_rollback :destroy_orphaned_business_objective
+
   def self.attrs_from(profile:)
     profile.attributes.slice(*PROFILE_ATTRS)
   end

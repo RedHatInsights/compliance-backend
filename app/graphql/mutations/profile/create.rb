@@ -18,24 +18,36 @@ module Mutations
       field :profile, Types::Profile, null: false
 
       def resolve(args = {})
-        profile = ::Profile.new(new_profile_options(args))
-        profile.save!
-        profile.update_rules(ref_ids: args[:selected_rule_ref_ids])
+        policy = ::Policy.new(new_policy_options(args)).fill_from(
+          profile: ::Profile.find(args[:clone_from_profile_id])
+        )
+        profile = ::Profile.new(new_profile_options(args)).fill_from_parent
+
+        Policy.transaction do
+          policy.save!
+          profile.update!(policy_object: policy, external: false)
+          profile.update_rules(ref_ids: args[:selected_rule_ref_ids])
+        end
+
         { profile: profile }
       end
 
       private
 
-      def new_profile_options(args)
+      def new_policy_options(args)
         {
           account_id: context[:current_user].account_id,
-          benchmark_id: args[:benchmark_id],
           name: args[:name],
-          ref_id: args[:ref_id],
-          parent_profile_id: args[:clone_from_profile_id],
           description: args[:description],
           business_objective_id: args[:business_objective_id],
           compliance_threshold: args[:compliance_threshold]
+        }
+      end
+
+      def new_profile_options(args)
+        {
+          account_id: context[:current_user].account_id,
+          parent_profile_id: args[:clone_from_profile_id]
         }
       end
     end

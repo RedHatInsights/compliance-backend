@@ -15,7 +15,6 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
     GRAPHQL
 
     @original_profile = profiles(:one)
-    @original_profile.update account: accounts(:test)
     users(:test).update account: accounts(:test)
   end
 

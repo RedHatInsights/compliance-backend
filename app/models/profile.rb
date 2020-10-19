@@ -9,9 +9,7 @@ class Profile < ApplicationRecord
   include ProfileHosts
   include ProfileRules
 
-  has_many :test_results, dependent: :destroy
   belongs_to :account, optional: true
-  belongs_to :business_objective, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
   belongs_to :parent_profile, class_name: 'Profile', optional: true
 
@@ -33,11 +31,7 @@ class Profile < ApplicationRecord
   }, unless: :policy_id
   validates :name, presence: true
   validates :benchmark_id, presence: true
-  validates :compliance_threshold, numericality: true
   validates :account, presence: true, if: -> { hosts.any? }
-
-  after_update :destroy_orphaned_business_objective
-  after_rollback :destroy_orphaned_business_objective
 
   class << self
     def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
@@ -69,24 +63,17 @@ class Profile < ApplicationRecord
     parent_profile_id.blank?
   end
 
-  def destroy_orphaned_business_objective
-    bo_changes = (previous_changes.fetch(:business_objective_id, []) +
-                  changes.fetch(:business_objective_id, [])).compact
-    return if bo_changes.blank?
-
-    BusinessObjective.without_profiles.where(id: bo_changes).destroy_all
-  end
-
-  def clone_to(account: nil, host: nil, external: true)
+  def clone_to(account: nil, host: nil, external: true,
+               policy: old_policy&.policy_object)
     new_profile = in_account(account)
     if new_profile.nil?
-      (new_profile = dup).update!(account: account, hosts: [host],
+      (new_profile = dup).update!(account: account,
                                   parent_profile: self,
-                                  external: external)
+                                  external: external,
+                                  policy_object: policy)
       new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
-    else
-      new_profile.hosts << host unless new_profile.hosts.include?(host)
     end
+    policy.hosts << host if policy && !policy.hosts.include?(host)
 
     new_profile
   end

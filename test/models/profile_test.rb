@@ -5,18 +5,19 @@ require 'sidekiq/testing'
 
 class ProfileTest < ActiveSupport::TestCase
   should have_many(:policy_hosts).through(:policy_object)
-  should have_many(:hosts).through(:profile_hosts)
+  should have_many(:profile_host_hosts).through(:profile_hosts)
   should have_many(:assigned_hosts).through(:policy_hosts).source(:host)
+  should have_many(:hosts).through(:test_results)
   should belong_to(:policy_object).optional
   should validate_uniqueness_of(:ref_id)
     .scoped_to(%i[account_id benchmark_id external policy_id])
   should validate_presence_of :ref_id
   should validate_presence_of :name
-  should belong_to(:business_objective).optional
 
   setup do
+    policies(:one).update!(hosts: [hosts(:one)], account: accounts(:one))
     profiles(:one).update!(rules: [rules(:one), rules(:two)],
-                           hosts: [hosts(:one)], account: accounts(:one))
+                           account: accounts(:one))
   end
 
   test 'uniqness by external without a policy' do
@@ -135,71 +136,65 @@ class ProfileTest < ActiveSupport::TestCase
     setup do
       test_results(:one).update(host: hosts(:one), profile: profiles(:one),
                                 score: 50)
+      profiles(:one).update!(policy_id: policies(:one).id)
+      assert_equal policies(:one), profiles(:one).policy_object
     end
 
     should 'host is compliant if 50% of rules pass with a threshold of 50' do
-      profiles(:one).update(compliance_threshold: 50)
-      assert profiles(:one).compliant?(hosts(:one))
+      policies(:one).update(compliance_threshold: 50)
+      assert profiles(:one).reload.compliant?(hosts(:one))
     end
 
     should 'host is not compliant if 50% rules pass with a threshold of 51' do
-      profiles(:one).update(compliance_threshold: 51)
-      assert_not profiles(:one).compliant?(hosts(:one))
+      policies(:one).update(compliance_threshold: 51)
+      assert_not profiles(:one).reload.compliant?(hosts(:one))
     end
   end
 
   test 'orphaned business objectives' do
+    profiles(:one).update!(policy_id: policies(:one).id)
     bo = BusinessObjective.new(title: 'abcd')
     bo.save
-    profiles(:one).update(business_objective: bo)
+    policies(:one).update(business_objective: bo)
     assert profiles(:one).business_objective, bo
-    profiles(:one).update(business_objective: nil)
+    policies(:one).update(business_objective: nil)
     assert_empty BusinessObjective.where(title: 'abcd')
   end
 
-  test 'business_objective comes from policy for external profiles' do
-    (bm = benchmarks(:one).dup).update!(version: '0.1.47')
-    bo = BusinessObjective.create!(title: 'bo')
-    bo2 = BusinessObjective.create!(title: 'bo2')
-    (external_profile = profiles(:one).dup).update!(benchmark: bm,
-                                                    business_objective: bo,
-                                                    external: true)
-    profiles(:one).update!(business_objective: bo2)
-    assert_equal external_profile.policy, profiles(:one)
-    assert_equal bo2, external_profile.business_objective
+  test 'business_objective comes from policy' do
+    policies(:one).update!(business_objective: business_objectives(:one))
+    profiles(:one).update!(policy_object: nil)
+    assert_nil profiles(:one).business_objective
+    profiles(:one).update!(policy_object: policies(:one))
+    assert_equal business_objectives(:one), profiles(:one).business_objective
   end
 
   test 'compliance_threshold comes from policy for external profiles' do
     (bm = benchmarks(:one).dup).update!(version: '0.1.47')
     (external_profile = profiles(:one).dup).update!(benchmark: bm,
                                                     compliance_threshold: 100,
-                                                    external: true)
+                                                    policy_object: nil)
     profiles(:one).update!(compliance_threshold: 30)
-    assert_equal external_profile.policy, profiles(:one)
-    assert_equal 30, external_profile.compliance_threshold
+    assert_nil external_profile.policy_object
+    assert_equal 100, external_profile.compliance_threshold
   end
 
-  test "destroying a profile also destroys its policy's profiles" do
-    DestroyProfilesJob.clear
-    (bm = benchmarks(:one).dup).update!(version: '0.1.47')
-    (external_profile = profiles(:one).dup).update!(benchmark: bm,
-                                                    external: true)
-    assert_equal external_profile.policy, profiles(:one)
-    assert_difference('Profile.count' => -1) do
-      profiles(:one).destroy
+  context 'destroying' do
+    setup do
+      profiles(:one).update!(policy_id: policies(:one).id)
     end
-    assert_equal 1, DestroyProfilesJob.jobs.size
-    assert_equal [external_profile.id],
-                 DestroyProfilesJob.jobs.dig(0, 'args', 0)
-    assert_difference('Profile.count' => -1) do
-      DestroyProfilesJob.drain
-    end
-  end
 
-  test 'destroying a profile also destroys its related test results' do
-    test_results(:one).update profile: profiles(:one), host: hosts(:one)
-    assert_difference('Profile.count' => -1, 'TestResult.count' => -1) do
-      profiles(:one).destroy
+    should 'also destroys its policy if empty' do
+      assert_difference('Profile.count' => -1, 'Policy.count' => -1) do
+        profiles(:one).destroy
+      end
+    end
+
+    should 'also destroys its related test results' do
+      test_results(:one).update profile: profiles(:one), host: hosts(:one)
+      assert_difference('Profile.count' => -1, 'TestResult.count' => -1) do
+        profiles(:one).destroy
+      end
     end
   end
 
@@ -247,8 +242,8 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'external is searchable' do
-    profiles(:one).update!(external: true)
-    assert profiles(:one).external
+    profiles(:one).update!(policy_object: nil, external: true)
+    assert_nil profiles(:one).policy_object
     assert_includes Profile.search_for('external = true'), profiles(:one)
     assert_includes Profile.external, profiles(:one)
     assert_not_includes Profile.search_for('external = false'), profiles(:one)
@@ -353,40 +348,6 @@ class ProfileTest < ActiveSupport::TestCase
     end
   end
 
-  context 'update_hosts' do
-    should 'add new hosts to an empty host set' do
-      profiles(:one).update!(hosts: [])
-      assert_empty(profiles(:one).hosts)
-      assert_difference('profiles(:one).hosts.count', hosts.count) do
-        profiles(:one).update_hosts(hosts.pluck(:id))
-      end
-    end
-
-    should 'add new hosts to an existing host set' do
-      profiles(:one).update!(hosts: hosts[0...-1])
-      assert_not_empty(profiles(:one).hosts)
-      assert_difference('profiles(:one).hosts.count', 1) do
-        profiles(:one).update_hosts(hosts.pluck(:id))
-      end
-    end
-
-    should 'remove old hosts from an existing host set' do
-      profiles(:one).update!(hosts: hosts)
-      assert_equal hosts.count, profiles(:one).hosts.count
-      assert_difference('profiles(:one).reload.hosts.count', -hosts.count) do
-        profiles(:one).update_hosts([])
-      end
-    end
-
-    should 'add new and remove old hosts from an existing host set' do
-      profiles(:one).update!(host_ids: hosts.pluck(:id)[0...-1])
-      assert_not_empty(profiles(:one).hosts)
-      assert_difference('profiles(:one).hosts.count', 0) do
-        profiles(:one).update_hosts(hosts.pluck(:id)[1..-1])
-      end
-    end
-  end
-
   context 'update_rules' do
     should 'add new rules to an empty rule set' do
       profiles(:one).update!(rules: [])
@@ -433,63 +394,71 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   context 'cloning profile to account' do
+    setup do
+      PolicyHost.destroy_all
+      profiles(:one).update!(policy_id: policies(:one).id)
+    end
+
     should 'create host relation when the profile is created' do
-      assert_difference('ProfileHost.count', 1) do
+      assert_difference('PolicyHost.count', 1) do
         cloned_profile = profiles(:one).clone_to(
-          account: accounts(:one), host: hosts(:two)
+          account: accounts(:one), host: hosts(:one),
+          policy: policies(:one).reload
         )
-        assert hosts(:one).profiles.include?(cloned_profile)
+        assert hosts(:one).assigned_profiles.include?(cloned_profile)
       end
     end
 
     should 'create host relation even if profile is already created' do
-      assert_difference('ProfileHost.count', 1) do
+      assert_difference('PolicyHost.count', 1) do
         cloned_profile = profiles(:two).clone_to(
-          account: accounts(:one), host: hosts(:one)
+          account: accounts(:one), host: hosts(:one),
+          policy: policies(:one).reload
         )
-        assert hosts(:one).profiles.include?(cloned_profile)
+        assert hosts(:one).assigned_profiles.include?(cloned_profile)
       end
     end
 
     should 'not create host relation if host is already in profile' do
-      assert_difference('ProfileHost.count', 0) do
+      PolicyHost.create!(policy: policies(:one), host: hosts(:one))
+      assert_difference('PolicyHost.count', 0) do
         cloned_profile = profiles(:one).clone_to(
-          account: accounts(:one), host: hosts(:one)
+          account: accounts(:one), host: hosts(:one),
+          policy: policies(:one).reload
         )
         assert hosts(:one).profiles.include?(cloned_profile)
       end
     end
 
     should 'set the parent profile ID to the original profile' do
-      canonical = Profile.canonical.first
-
+      assert profiles(:one).canonical?
       assert_difference('Profile.count', 1) do
-        cloned_profile = canonical.clone_to(
-          account: accounts(:one), host: hosts(:one)
+        cloned_profile = profiles(:one).clone_to(
+          account: accounts(:test), host: hosts(:one)
         )
 
-        assert_equal canonical, cloned_profile.parent_profile
+        assert_equal profiles(:one), cloned_profile.parent_profile
       end
     end
 
     should 'clone profiles as external by default' do
       profiles(:one).update!(account: nil, hosts: [])
-      assert_difference('ProfileHost.count' => 1, 'Profile.count' => 1) do
+      assert_difference('PolicyHost.count' => 0, 'Profile.count' => 1) do
         cloned_profile = profiles(:one).clone_to(
           account: accounts(:one), host: hosts(:one)
         )
-        assert hosts(:one).profiles.include?(cloned_profile)
-        assert cloned_profile.external
+        assert_not hosts(:one).assigned_profiles.include?(cloned_profile)
+        assert_nil cloned_profile.policy_object
       end
     end
 
     should 'clone profiles as internal if specified' do
       profiles(:one).update!(account: nil, hosts: [])
-      assert_difference('ProfileHost.count' => 1, 'Profile.count' => 1) do
+      assert_difference('PolicyHost.count' => 0, 'Profile.count' => 1) do
         cloned_profile = profiles(:one).clone_to(
           account: accounts(:one), host: hosts(:one), external: false
         )
-        assert hosts(:one).profiles.include?(cloned_profile)
+        assert_not hosts(:one).assigned_profiles.include?(cloned_profile)
         assert_not cloned_profile.external
       end
     end
@@ -500,13 +469,13 @@ class ProfileTest < ActiveSupport::TestCase
       existing_profile = profiles(:one).clone_to(account: accounts(:one),
                                                  host: hosts(:one))
       existing_profile.update!(rules: [])
-      assert_difference('ProfileHost.count' => 0,
+      assert_difference('PolicyHost.count' => 0,
                         'Profile.count' => 0,
                         'ProfileRule.count' => 0) do
         cloned_profile = profiles(:one).clone_to(
           account: accounts(:one), host: hosts(:one)
         )
-        assert hosts(:one).profiles.include?(cloned_profile)
+        assert_not hosts(:one).assigned_profiles.include?(cloned_profile)
       end
       assert_empty(existing_profile.rules)
     end

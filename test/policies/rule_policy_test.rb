@@ -23,10 +23,12 @@ class RulePolicyTest < ActiveSupport::TestCase
 
   test 'allows rules in the current_user account' do
     assert_empty Pundit.policy_scope(users(:test), Rule)
-    Profile.create!(name: 'test', ref_id: 'test',
-                    parent_profile: profiles(:one),
-                    benchmark: benchmarks(:one), hosts: [hosts(:one)],
-                    account: accounts(:test), rules: [rules(:one)])
+    profile = Profile.create!(name: 'test', ref_id: 'test',
+                              parent_profile: profiles(:one),
+                              benchmark: benchmarks(:one),
+                              account: accounts(:test), rules: [rules(:one)])
+    TestResult.create!(host: hosts(:one), profile: profile,
+                       end_time: DateTime.now)
     assert_includes Pundit.policy_scope(users(:test), Rule), rules(:one)
     assert Pundit.authorize(users(:test), rules(:one), :index?)
     assert Pundit.authorize(users(:test), rules(:one), :show?)
