@@ -71,10 +71,6 @@ module Types
       object.old_policy
     end
 
-    def external
-      object.external?
-    end
-
     def compliant_host_count
       ::CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
         hosts.count { |host| object.compliant?(host) }
