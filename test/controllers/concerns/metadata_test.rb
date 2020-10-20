@@ -8,13 +8,6 @@ require 'securerandom'
 # ActionDispatch::IntegrationTest, it is testing the Profiles controller
 # instead for the time being
 class MetadataTest < ActionDispatch::IntegrationTest
-  setup do
-    profiles(:one).update!(policy_object: policies(:one),
-                           account: accounts(:test))
-    profiles(:two).update!(policy_object: policies(:one),
-                           account: accounts(:test))
-  end
-
   def authenticate
     V1::ProfilesController.any_instance.expects(:authenticate_user)
     users(:test).account = accounts(:test)
