@@ -187,60 +187,60 @@ module V1
       COMPLIANCE_THRESHOLD = 93.5
       BUSINESS_OBJECTIVE = 'LATAM Expansion'
 
-      # test 'create without data' do
-      #   assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
-      #     post profiles_path, params: { data: {} }
-      #   end
-      #   assert_response :unprocessable_entity
-      #   assert_match 'param is missing or the value is empty: data',
-      #                JSON.parse(response.body).dig('errors')
-      # end
+      test 'create without data' do
+        assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
+          post profiles_path, params: { data: {} }
+        end
+        assert_response :unprocessable_entity
+        assert_match 'param is missing or the value is empty: data',
+                     JSON.parse(response.body).dig('errors')
+      end
 
-      # test 'create with invalid data' do
-      #   assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
-      #     post profiles_path, params: { data: 'foo' }
-      #   end
-      #   assert_response :unprocessable_entity
-      #   assert_match 'data must be a hash',
-      #                JSON.parse(response.body).dig('errors')
-      # end
+      test 'create with invalid data' do
+        assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
+          post profiles_path, params: { data: 'foo' }
+        end
+        assert_response :unprocessable_entity
+        assert_match 'data must be a hash',
+                     JSON.parse(response.body).dig('errors')
+      end
 
-      # test 'create with empty attributes' do
-      #   assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
-      #     post profiles_path, params: { data: { attributes: {} } }
-      #   end
-      #   assert_response :unprocessable_entity
-      #   assert_match 'param is missing or the value is empty: data',
-      #                JSON.parse(response.body).dig('errors')
-      # end
+      test 'create with empty attributes' do
+        assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
+          post profiles_path, params: { data: { attributes: {} } }
+        end
+        assert_response :unprocessable_entity
+        assert_match 'param is missing or the value is empty: data',
+                     JSON.parse(response.body).dig('errors')
+      end
 
-      # test 'create with invalid attributes' do
-      #   assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
-      #     post profiles_path, params: { data: { attributes: 'invalid' } }
-      #   end
-      #   assert_response :unprocessable_entity
-      #   assert_match 'attributes must be a hash',
-      #                JSON.parse(response.body).dig('errors')
-      # end
+      test 'create with invalid attributes' do
+        assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
+          post profiles_path, params: { data: { attributes: 'invalid' } }
+        end
+        assert_response :unprocessable_entity
+        assert_match 'attributes must be a hash',
+                     JSON.parse(response.body).dig('errors')
+      end
 
-      # test 'create with empty parent_profile_id' do
-      #   assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
-      #     post profiles_path, params: params(
-      #       attributes: { parent_profile_id: '' }
-      #     )
-      #   end
-      #   assert_response :unprocessable_entity
-      #   assert_match 'param is missing or the value is empty: '\
-      #                'parent_profile_id',
-      #                JSON.parse(response.body).dig('errors')
-      # end
+      test 'create with empty parent_profile_id' do
+        assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
+          post profiles_path, params: params(
+            attributes: { parent_profile_id: '' }
+          )
+        end
+        assert_response :unprocessable_entity
+        assert_match 'param is missing or the value is empty: '\
+                     'parent_profile_id',
+                     JSON.parse(response.body).dig('errors')
+      end
 
-      # test 'create with an unfound parent_profile_id' do
-      #   post profiles_path, params: params(
-      #     attributes: { parent_profile_id: 'notfound' }
-      #   )
-      #   assert_response :not_found
-      # end
+      test 'create with an unfound parent_profile_id' do
+        post profiles_path, params: params(
+          attributes: { parent_profile_id: 'notfound' }
+        )
+        assert_response :not_found
+      end
 
       test 'create with a found parent_profile_id but existing ref_id '\
            'in the account' do

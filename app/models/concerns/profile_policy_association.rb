@@ -20,7 +20,7 @@ module ProfilePolicyAssociation
              .where(policy_hosts: { host_id: test_result_hosts })
              .find_by(account: account_id, external: false, ref_id: ref_id,
                       benchmarks: { ref_id: benchmark.ref_id,
-                                    version: benchmark.latest_ssg }) || self
+                                    version: benchmark.latest_ssg })
     end
 
     def old_policy_profiles
