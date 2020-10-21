@@ -33,6 +33,14 @@ class ProfileTest < ActiveSupport::TestCase
     end
   end
 
+  test 'unqiness by ref_id for an internal profile' do
+    profiles(:one).update!(external: false)
+
+    assert_raises ActiveRecord::RecordInvalid do
+      profiles(:one).dup.update!(policy_id: policies(:one).id)
+    end
+  end
+
   test 'uniqness by ref_id in a policy, the same external boolean value' do
     profiles(:one).update!(policy_id: policies(:one).id)
     assert profiles(:one).policy_id
@@ -65,12 +73,19 @@ class ProfileTest < ActiveSupport::TestCase
     assert dupe2.policy_id
   end
 
-  test 'allows profiles with same ref_id in two policies' do
-    profiles(:one).update!(policy_id: policies(:one).id)
+  test 'allows external profiles with same ref_id in two policies' do
+    profiles(:one).update!(external: true, policy_id: policies(:one).id)
     assert profiles(:one).policy_id
 
     dupe = profiles(:one).dup
     dupe.update!(policy_id: policies(:two).id)
+    assert dupe.policy_id
+  end
+
+  test 'creation of internal profile with a policy, external profile exists' do
+    profiles(:one).update!(external: true)
+    dupe = profiles(:one).dup
+    dupe.update!(external: false, policy_id: policies(:one).id)
     assert dupe.policy_id
   end
 
