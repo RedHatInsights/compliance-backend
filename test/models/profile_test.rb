@@ -10,7 +10,7 @@ class ProfileTest < ActiveSupport::TestCase
   should have_many(:hosts).through(:test_results)
   should belong_to(:policy_object).optional
   should validate_uniqueness_of(:ref_id)
-    .scoped_to(%i[account_id benchmark_id external])
+    .scoped_to(%i[account_id benchmark_id external policy_id])
   should validate_presence_of :ref_id
   should validate_presence_of :name
 
