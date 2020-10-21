@@ -32,6 +32,7 @@ module Xccdf
       def save_all_test_result_info
         save_profile_host
         save_test_result
+        associate_policy_to_test_result_profile
         save_rule_results
         associate_rules_from_rule_results
         invalidate_cache

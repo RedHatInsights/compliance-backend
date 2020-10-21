@@ -28,6 +28,11 @@ module Xccdf
       )
     end
 
+    def associate_policy_to_test_result_profile
+      policy_id = host_profile.old_policy&.policy_id
+      host_profile.update!(policy_id: policy_id) if policy_id
+    end
+
     private
 
     def test_result_profile

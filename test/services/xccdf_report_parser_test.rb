@@ -193,6 +193,25 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
   end
 
+  context 'policy association' do
+    setup do
+      @report_parser.save_host
+      @report_parser.save_all_benchmark_info
+      test_result_profile = @report_parser.send(:test_result_profile)
+      Profile.new(parent_profile: test_result_profile,
+                  policy_id: policies(:one).id,
+                  account: accounts(:test)).fill_from_parent.save!
+      @report_parser.save_profile_host
+    end
+
+    should 'associate a policy to test results' do
+      @report_parser.save_test_result
+      @report_parser.associate_policy_to_test_result_profile
+
+      assert_equal policies(:one).id, @report_parser.host_profile.policy_id
+    end
+  end
+
   context 'rule results' do
     should 'save them, associate them with a rule and a host' do
       assert_difference('RuleResult.count', 59) do
