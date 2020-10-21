@@ -32,6 +32,33 @@ class ProfileTest < ActiveSupport::TestCase
     end
   end
 
+  test 'uniqness by ref_id in a policy, the same external boolean value' do
+    profiles(:one).update!(policy_id: policies(:one).id)
+    assert profiles(:one).policy_id
+
+    assert_raises ActiveRecord::RecordInvalid do
+      profiles(:one).dup.save!
+    end
+  end
+
+  test 'uniqness by ref_id in a policy, different external boolean value' do
+    profiles(:one).update!(policy_id: policies(:one).id)
+    assert profiles(:one).policy_id
+
+    assert_raises ActiveRecord::RecordInvalid do
+      profiles(:one).dup.update!(external: !profiles(:one).external)
+    end
+  end
+
+  test 'allows profiles with same ref_id in two policies' do
+    profiles(:one).update!(policy_id: policies(:one).id)
+    assert profiles(:one).policy_id
+
+    dupe = profiles(:one).dup
+    dupe.update!(policy_id: policies(:two).id)
+    assert dupe.policy_id
+  end
+
   test 'host is not compliant there are no results for all rules' do
     assert_not profiles(:one).compliant?(hosts(:one))
   end
