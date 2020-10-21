@@ -14,7 +14,7 @@ class Profile < ApplicationRecord
   belongs_to :parent_profile, class_name: 'Profile', optional: true
 
   validates :ref_id, uniqueness: {
-    scope: %i[account_id benchmark_id external]
+    scope: %i[account_id benchmark_id external policy_id]
   }, presence: true
   validates :name, presence: true
   validates :benchmark_id, presence: true
