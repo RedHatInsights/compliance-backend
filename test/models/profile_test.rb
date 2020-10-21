@@ -19,6 +19,19 @@ class ProfileTest < ActiveSupport::TestCase
                            hosts: [hosts(:one)], account: accounts(:one))
   end
 
+  test 'uniqness by external without a policy' do
+    orig = profiles(:one)
+    assert_nil orig.policy_id
+
+    (dupe = orig.dup).update!(external: !orig.external)
+    assert_nil dupe.policy_id
+    assert dupe.external != orig.external
+
+    assert_raises ActiveRecord::RecordInvalid do
+      orig.dup.save!
+    end
+  end
+
   test 'host is not compliant there are no results for all rules' do
     assert_not profiles(:one).compliant?(hosts(:one))
   end

@@ -18,6 +18,9 @@ class Profile < ApplicationRecord
   validates :ref_id, uniqueness: {
     scope: %i[account_id benchmark_id external policy_id]
   }, presence: true
+  validates :external, uniqueness: {
+    scope: %i[ref_id account_id benchmark_id]
+  }, unless: :policy_id
   validates :name, presence: true
   validates :benchmark_id, presence: true
   validates :compliance_threshold, numericality: true
