@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_15_174517) do
+ActiveRecord::Schema.define(version: 2020_10_21_083148) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -124,7 +124,7 @@ ActiveRecord::Schema.define(version: 2020_10_15_174517) do
     t.index ["name"], name: "index_profiles_on_name"
     t.index ["parent_profile_id"], name: "index_profiles_on_parent_profile_id"
     t.index ["policy_id"], name: "index_profiles_on_policy_id"
-    t.index ["ref_id", "account_id", "benchmark_id", "external"], name: "uniqueness", unique: true
+    t.index ["ref_id", "account_id", "benchmark_id", "external", "policy_id"], name: "uniqueness", unique: true
   end
 
   create_table "rule_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
