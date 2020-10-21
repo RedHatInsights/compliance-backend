@@ -11,7 +11,7 @@ class CopyProfilesToPoliciesTest < ActiveSupport::TestCase
     profiles(:one).update!(parent_profile: profiles(:two),
                            account: accounts(:test),
                            compliance_threshold: 75.0,
-                           business_objective: business_objectives(:two))
+                           business_objective_id: business_objectives(:two).id)
   end
 
   test 'copies profile attributes to new policies' do
