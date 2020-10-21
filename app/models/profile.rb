@@ -18,6 +18,10 @@ class Profile < ApplicationRecord
   validates :ref_id, uniqueness: {
     scope: %i[account_id benchmark_id external policy_id]
   }, presence: true
+  validates :ref_id, uniqueness: {
+    scope: %i[account_id benchmark_id policy_id],
+    message: 'must be unique in a policy'
+  }, if: :policy_id
   validates :external, uniqueness: {
     scope: %i[ref_id account_id benchmark_id]
   }, unless: :policy_id
