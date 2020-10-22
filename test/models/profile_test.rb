@@ -51,6 +51,20 @@ class ProfileTest < ActiveSupport::TestCase
     end
   end
 
+  test 'coexistence of external profiles with and without a policy' do
+    dupe1 = profiles(:one).dup
+    dupe1.update!(external: true, policy_id: policies(:one).id)
+    assert dupe1.policy_id
+
+    profiles(:one).update!(external: true)
+    assert_not profiles(:one).policy_id
+    assert profiles(:one).external
+
+    dupe2 = profiles(:one).dup
+    dupe2.update!(external: true, policy_id: policies(:two).id)
+    assert dupe2.policy_id
+  end
+
   test 'allows profiles with same ref_id in two policies' do
     profiles(:one).update!(policy_id: policies(:one).id)
     assert profiles(:one).policy_id
