@@ -73,7 +73,6 @@ class Profile < ApplicationRecord
                                   policy_object: policy)
       new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
     end
-    policy.hosts << host if policy && !policy.hosts.include?(host)
 
     new_profile
   end
