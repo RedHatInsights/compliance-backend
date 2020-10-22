@@ -19,10 +19,10 @@ class Host < ApplicationRecord
   has_many :test_result_profiles, through: :test_results, dependent: :destroy
   include SystemLike
 
-  has_many :profiles, through: :test_results
   has_many :profile_host_profiles, through: :profile_hosts, source: :profile
   has_many :test_result_profiles, through: :test_results, source: :profile
   has_many :policies, through: :policy_hosts
+  has_many :profiles, through: :policies, source: :profiles
   has_many :assigned_profiles, through: :policies, source: :profiles
 
   validates :name, presence: true
