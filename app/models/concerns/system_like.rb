@@ -14,7 +14,7 @@ module SystemLike
 
   def compliant
     result = {}
-    profiles.map do |profile|
+    test_result_profiles.map do |profile|
       result[profile.ref_id] = profile.compliant?(self)
     end
     result
@@ -29,7 +29,7 @@ module SystemLike
   def last_scan_results(profile = nil)
     return profile.results(self) if profile.present?
 
-    profiles.flat_map do |p|
+    test_result_profiles.flat_map do |p|
       p.results(self)
     end
   end
