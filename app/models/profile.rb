@@ -63,9 +63,10 @@ class Profile < ApplicationRecord
     parent_profile_id.blank?
   end
 
-  def clone_to(account: nil, host: nil, external: true,
-               policy: old_policy&.policy_object)
-    new_profile = in_account(account)
+  def clone_to(account: nil, host: nil, external: true, policy: nil)
+    policy ||= find_policy(hosts: [host], account: account)&.policy_object
+
+    new_profile = in_account(account, policy)
     if new_profile.nil?
       (new_profile = dup).update!(account: account,
                                   parent_profile: self,
@@ -77,8 +78,9 @@ class Profile < ApplicationRecord
     new_profile
   end
 
-  def in_account(account)
+  def in_account(account, policy)
     Profile.find_by(account: account, ref_id: ref_id,
+                    policy_object: policy,
                     benchmark_id: benchmark_id)
   end
 
