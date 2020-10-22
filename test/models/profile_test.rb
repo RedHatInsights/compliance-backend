@@ -17,8 +17,7 @@ class ProfileTest < ActiveSupport::TestCase
   setup do
     policies(:one).update!(hosts: [hosts(:one)], account: accounts(:one))
     profiles(:one).update!(rules: [rules(:one), rules(:two)],
-                           account: accounts(:one),
-                           policy_object: policies(:one))
+                           account: accounts(:one))
   end
 
   test 'host is not compliant there are no results for all rules' do
@@ -68,21 +67,23 @@ class ProfileTest < ActiveSupport::TestCase
     setup do
       test_results(:one).update(host: hosts(:one), profile: profiles(:one),
                                 score: 50)
+      profiles(:one).update!(policy_id: policies(:one).id)
       assert_equal policies(:one), profiles(:one).policy_object
     end
 
     should 'host is compliant if 50% of rules pass with a threshold of 50' do
       policies(:one).update(compliance_threshold: 50)
-      assert profiles(:one).compliant?(hosts(:one))
+      assert profiles(:one).reload.compliant?(hosts(:one))
     end
 
     should 'host is not compliant if 50% rules pass with a threshold of 51' do
       policies(:one).update(compliance_threshold: 51)
-      assert_not profiles(:one).compliant?(hosts(:one))
+      assert_not profiles(:one).reload.compliant?(hosts(:one))
     end
   end
 
   test 'orphaned business objectives' do
+    profiles(:one).update!(policy_id: policies(:one).id)
     bo = BusinessObjective.new(title: 'abcd')
     bo.save
     policies(:one).update(business_objective: bo)
@@ -109,16 +110,22 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal 100, external_profile.compliance_threshold
   end
 
-  test 'destroying a profile also destroys its policy if empty' do
-    assert_difference('Profile.count' => -1, 'Policy.count' => -1) do
-      profiles(:one).destroy
+  context 'destroying' do
+    setup do
+      profiles(:one).update!(policy_id: policies(:one).id)
     end
-  end
 
-  test 'destroying a profile also destroys its related test results' do
-    test_results(:one).update profile: profiles(:one), host: hosts(:one)
-    assert_difference('Profile.count' => -1, 'TestResult.count' => -1) do
-      profiles(:one).destroy
+    should 'also destroys its policy if empty' do
+      assert_difference('Profile.count' => -1, 'Policy.count' => -1) do
+        profiles(:one).destroy
+      end
+    end
+
+    should 'also destroys its related test results' do
+      test_results(:one).update profile: profiles(:one), host: hosts(:one)
+      assert_difference('Profile.count' => -1, 'TestResult.count' => -1) do
+        profiles(:one).destroy
+      end
     end
   end
 
@@ -320,6 +327,7 @@ class ProfileTest < ActiveSupport::TestCase
   context 'cloning profile to account' do
     setup do
       PolicyHost.destroy_all
+      profiles(:one).update!(policy_id: policies(:one).id)
     end
 
     should 'create host relation when the profile is created' do
