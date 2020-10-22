@@ -399,36 +399,6 @@ class ProfileTest < ActiveSupport::TestCase
       profiles(:one).update!(policy_id: policies(:one).id)
     end
 
-    should 'create host relation when the profile is created' do
-      assert_difference('PolicyHost.count', 1) do
-        cloned_profile = profiles(:one).clone_to(
-          account: accounts(:one), host: hosts(:one),
-          policy: policies(:one).reload
-        )
-        assert hosts(:one).assigned_profiles.include?(cloned_profile)
-      end
-    end
-
-    should 'create host relation even if profile is already created' do
-      assert_difference('PolicyHost.count', 1) do
-        cloned_profile = profiles(:two).clone_to(
-          account: accounts(:one), host: hosts(:one),
-          policy: policies(:one).reload
-        )
-        assert hosts(:one).assigned_profiles.include?(cloned_profile)
-      end
-    end
-
-    should 'not create host relation if host is already in profile' do
-      PolicyHost.create!(policy: policies(:one), host: hosts(:one))
-      assert_difference('PolicyHost.count', 0) do
-        cloned_profile = profiles(:one).clone_to(
-          account: accounts(:one), host: hosts(:one),
-          policy: policies(:one).reload
-        )
-        assert hosts(:one).profiles.include?(cloned_profile)
-      end
-    end
 
     should 'set the parent profile ID to the original profile' do
       assert profiles(:one).canonical?
