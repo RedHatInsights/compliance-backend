@@ -23,7 +23,8 @@ class Profile < ApplicationRecord
     message: 'must be unique in a policy'
   }, if: :policy_id
   validates :external, uniqueness: {
-    scope: %i[ref_id account_id benchmark_id]
+    scope: %i[ref_id account_id benchmark_id],
+    conditions: -> { where(policy_id: nil) }
   }, unless: :policy_id
   validates :name, presence: true
   validates :benchmark_id, presence: true
