@@ -12,15 +12,18 @@ module ProfilePolicyAssociation
     delegate :business_objective, :business_objective_id, :update_hosts,
              to: :policy_object, allow_nil: true
 
-    def old_policy
-      return if canonical?
-
+    # Lookup up internal profile that has the host(s)
+    # assinged to a policy an which matches the ref_id
+    # and ref_id of a benchmark (to ensure major OS version)
+    def find_policy(hosts: test_result_hosts, account: account_id)
       Profile.includes(:benchmark, :policy_hosts)
-             .older_than(created_at)
-             .where(policy_hosts: { host_id: test_result_hosts })
-             .find_by(account: account_id, external: false, ref_id: ref_id,
-                      benchmarks: { ref_id: benchmark.ref_id,
-                                    version: benchmark.latest_ssg })
+             .where(policy_hosts: { host_id: hosts })
+             .find_by(account: account, external: false, ref_id: ref_id,
+                      benchmarks: { ref_id: benchmark.ref_id })
+    end
+
+    def old_policy(hosts: test_result_hosts)
+      find_policy(hosts: hosts) unless canonical?
     end
 
     def old_policy_profiles
