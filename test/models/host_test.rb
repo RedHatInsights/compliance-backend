@@ -6,12 +6,12 @@ class HostTest < ActiveSupport::TestCase
   should have_many(:rule_results)
   should have_many(:rules).through(:rule_results).source(:rule)
   should have_many(:profile_hosts)
-  should have_many(:profiles).through(:test_results)
   should have_many(:profile_host_profiles).through(:profile_hosts)
                                           .source(:profile)
   should have_many(:policy_hosts)
   should have_many(:test_results)
   should have_many(:policies).through(:policy_hosts)
+  should have_many(:profiles).through(:policies).source(:profiles)
   should have_many(:assigned_profiles).through(:policies).source(:profiles)
   should validate_presence_of :name
   should validate_presence_of :account
