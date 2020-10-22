@@ -399,6 +399,44 @@ class ProfileTest < ActiveSupport::TestCase
       profiles(:one).update!(policy_id: policies(:one).id)
     end
 
+    should 'use the same profile when the host is assinged' do
+      policy = profiles(:one).policy_object
+      policy.hosts << hosts(:two)
+
+      dupe = profiles(:one).dup
+      dupe.assign_attributes(external: true)
+
+      assert_difference('Profile.count' => 0, 'Policy.count' => 0,
+                        'PolicyHost.count' => 0) do
+        cloned_profile = dupe.clone_to(
+          account: accounts(:one), host: hosts(:two)
+        )
+
+        assert_equal cloned_profile.reload.policy_id, policies(:one).id
+        assert_includes policy.reload.profiles, profiles(:one)
+      end
+    end
+
+    should 'assign different SSG profile to a policy the host is part of' do
+      policy = profiles(:one).policy_object
+      policy.hosts << hosts(:two)
+
+      second_benchmark = benchmarks(:one).dup
+      second_benchmark.update!(version: '0.0.7')
+
+      dupe = profiles(:one).dup
+      dupe.update!(account: nil, benchmark: second_benchmark)
+
+      assert_difference('Profile.count' => 1, 'Policy.count' => 0,
+                        'PolicyHost.count' => 0) do
+        cloned_profile = dupe.clone_to(
+          account: accounts(:one), host: hosts(:two)
+        )
+
+        assert_equal cloned_profile.reload.policy_id, policies(:one).id
+        assert_includes policy.reload.profiles, cloned_profile
+      end
+    end
 
     should 'set the parent profile ID to the original profile' do
       assert profiles(:one).canonical?
