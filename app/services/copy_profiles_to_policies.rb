@@ -22,7 +22,7 @@ class CopyProfilesToPolicies
   def create_policies
     profiles.where(external: false).find_each do |profile|
       policy = Policy.create!(Policy.attrs_from(profile: profile))
-      profile.update(policy_id: policy.id)
+      profile.update!(policy_id: policy.id)
 
       host_ids = profile.profile_hosts.distinct.pluck(:host_id)
       PolicyHost.create(
