@@ -11,5 +11,7 @@ class HostSerializer
   end
 
   has_many :test_results
-  has_many :profiles
+  has_many :profiles do |host|
+    (host.assigned_profiles + host.test_result_profiles).uniq
+  end
 end
