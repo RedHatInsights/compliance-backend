@@ -68,7 +68,9 @@ module Types
     field :major_os_version, String, null: false
 
     def policy
-      object.old_policy
+      return if object.canonical?
+
+      object.policy_object&.initial_profile
     end
 
     def compliant_host_count

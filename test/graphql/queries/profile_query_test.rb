@@ -5,7 +5,7 @@ require 'test_helper'
 class ProfileQueryTest < ActiveSupport::TestCase
   setup do
     users(:test).update account: accounts(:test)
-    profiles(:one).update account: accounts(:test), hosts: [hosts(:one)]
+    profiles(:one).update account: accounts(:test)
   end
 
   test 'query profile owned by the user' do
@@ -51,6 +51,50 @@ class ProfileQueryTest < ActiveSupport::TestCase
         context: { current_user: users(:test) }
       )
     end
+  end
+
+  test 'query profile with a policy owned by the user' do
+    query = <<-GRAPHQL
+      query Profile($id: String!){
+          profile(id: $id) {
+              id
+              name
+              refId
+              policy {
+                id
+                name
+                refId
+              }
+          }
+      }
+    GRAPHQL
+
+    policies(:one).update!(account: accounts(:test),
+                           hosts: [hosts(:one), hosts(:two)])
+
+    (parent = profiles(:one).dup).update!(account: nil, hosts: [])
+    profiles(:one).update!(policy_object: policies(:one),
+                           parent_profile: parent)
+    profiles(:two).update!(account: accounts(:test),
+                           external: true,
+                           parent_profile: parent,
+                           policy_object: policies(:one))
+
+    result = Schema.execute(
+      query,
+      variables: { id: profiles(:two).id },
+      context: { current_user: users(:test) }
+    )
+
+    assert_equal profiles(:two).name, result['data']['profile']['name']
+    assert_equal profiles(:two).ref_id, result['data']['profile']['refId']
+
+    assert_equal profiles(:one).id,
+                 result['data']['profile']['policy']['id']
+    assert_equal profiles(:one).name,
+                 result['data']['profile']['policy']['name']
+    assert_equal profiles(:one).ref_id,
+                 result['data']['profile']['policy']['refId']
   end
 
   test 'query all profiles' do
