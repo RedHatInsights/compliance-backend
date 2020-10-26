@@ -97,6 +97,53 @@ class ProfileQueryTest < ActiveSupport::TestCase
                  result['data']['profile']['policy']['name']
   end
 
+  test 'query profile with a policy policy profiles owned by the user' do
+    query = <<-GRAPHQL
+      query Profile($id: String!){
+          profile(id: $id) {
+              id
+              name
+              refId
+              policy {
+                profiles {
+                  id
+                  refId
+                }
+              }
+          }
+      }
+    GRAPHQL
+
+    policies(:one).update!(account: accounts(:test),
+                           hosts: [hosts(:one), hosts(:two)])
+
+    (parent = profiles(:one).dup).update!(account: nil, hosts: [])
+    profiles(:one).update!(policy_object: policies(:one),
+                           parent_profile: parent)
+    profiles(:two).update!(account: accounts(:test),
+                           external: true,
+                           parent_profile: parent,
+                           policy_object: policies(:one))
+
+    result = Schema.execute(
+      query,
+      variables: { id: profiles(:two).id },
+      context: { current_user: users(:test) }
+    )
+
+    assert_equal profiles(:two).name, result['data']['profile']['name']
+    assert_equal profiles(:two).ref_id, result['data']['profile']['refId']
+
+    returned_profiles = result['data']['profile']['policy']['profiles']
+    assert_equal returned_profiles.count, 2
+    assert_includes returned_profiles.map { |rp| rp['id'] }, profiles(:one).id
+    assert_includes returned_profiles.map { |rp| rp['refId'] },
+                    profiles(:one).ref_id
+    assert_includes returned_profiles.map { |rp| rp['id'] }, profiles(:two).id
+    assert_includes returned_profiles.map { |rp| rp['refId'] },
+                    profiles(:two).ref_id
+  end
+
   test 'query all profiles' do
     query = <<-GRAPHQL
     {
