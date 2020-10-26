@@ -91,10 +91,10 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
     assert_equal profiles(:one).id,
                  result['data']['profile']['policy']['id']
-    assert_equal profiles(:one).name,
-                 result['data']['profile']['policy']['name']
     assert_equal profiles(:one).ref_id,
                  result['data']['profile']['policy']['refId']
+    assert_equal policies(:one).name,
+                 result['data']['profile']['policy']['name']
   end
 
   test 'query all profiles' do

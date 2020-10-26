@@ -67,10 +67,18 @@ module Types
 
     field :major_os_version, String, null: false
 
+    # Pseudo policy with a Profile type
+    # inheriting most of the attributes form the policy.
     def policy
-      return if object.canonical?
+      return if object.canonical? || object.policy_object.nil?
 
-      object.policy_object&.initial_profile
+      policy = object.policy_object
+      policy_profile = object.policy_object.initial_profile
+      policy_profile.assign_attributes(
+        name: policy.name,
+        description: policy.description
+      )
+      policy_profile
     end
 
     def compliant_host_count
