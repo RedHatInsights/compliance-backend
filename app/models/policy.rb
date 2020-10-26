@@ -48,6 +48,11 @@ class Policy < ApplicationRecord
     benchmarks.first.os_major_version
   end
 
+  def initial_profile
+    # assuming that there is only one external=false profile in a policy
+    profiles.external(false).first
+  end
+
   def destroy_orphaned_business_objective
     bo_changes = (previous_changes.fetch(:business_objective_id, []) +
                   changes.fetch(:business_objective_id, [])).compact
