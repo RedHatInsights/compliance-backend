@@ -22,18 +22,6 @@ module ProfilePolicyAssociation
                       benchmarks: { ref_id: benchmark.ref_id })
     end
 
-    def old_policy(hosts: test_result_hosts)
-      find_policy(hosts: hosts) unless canonical?
-    end
-
-    def old_policy_profiles
-      return Profile.none if account_id.nil?
-
-      Profile.includes(:benchmark)
-             .where(account: account_id, ref_id: ref_id,
-                    benchmarks: { ref_id: benchmark.ref_id })
-    end
-
     def compliance_threshold
       policy_object&.compliance_threshold ||
         Policy::DEFAULT_COMPLIANCE_THRESHOLD
