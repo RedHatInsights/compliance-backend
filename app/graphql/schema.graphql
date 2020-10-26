@@ -102,6 +102,7 @@ type Profile implements Node & RulesPreload {
   majorOsVersion: String!
   name: String!
   policy: Profile
+  profiles: [Profile!]
   refId: String!
   rules(
     """

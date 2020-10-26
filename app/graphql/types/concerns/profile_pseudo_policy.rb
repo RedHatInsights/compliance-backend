@@ -18,5 +18,12 @@ module Types
       )
       policy_profile
     end
+
+    # policy profiles
+    def profiles
+      return if object.canonical?
+
+      object.policy_object&.profiles
+    end
   end
 end
