@@ -2,11 +2,13 @@
 
 require_relative 'interfaces/rules_preload'
 require_relative 'concerns/test_results'
+require_relative 'concerns/profile_pseudo_policy'
 
 module Types
   # Definition of the Profile type in GraphQL
   class Profile < Types::BaseObject
     include TestResults
+    include ProfilePseudoPolicy
 
     implements(::RulesPreload)
 
@@ -66,20 +68,6 @@ module Types
     field :compliant_host_count, Int, null: false
 
     field :major_os_version, String, null: false
-
-    # Pseudo policy with a Profile type
-    # inheriting most of the attributes form the policy.
-    def policy
-      return if object.canonical? || object.policy_object.nil?
-
-      policy = object.policy_object
-      policy_profile = object.policy_object.initial_profile
-      policy_profile.assign_attributes(
-        name: policy.name,
-        description: policy.description
-      )
-      policy_profile
-    end
 
     def compliant_host_count
       ::CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
