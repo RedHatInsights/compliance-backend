@@ -28,6 +28,10 @@ class Host < ApplicationRecord
   validates :name, presence: true
   validates :account, presence: true
 
+  def all_profiles
+    (assigned_profiles + test_result_profiles).uniq
+  end
+
   class << self
     def filter_by_compliance(_filter, operator, value)
       ids = Host.includes(test_results: :profile).select do |host|

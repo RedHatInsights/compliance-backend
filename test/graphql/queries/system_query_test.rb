@@ -141,6 +141,38 @@ class SystemQueryTest < ActiveSupport::TestCase
     end
   end
 
+  test 'system returns profiles from test results' do
+    query = <<-GRAPHQL
+    query System($systemId: String!){
+        system(id: $systemId) {
+            id
+            name
+            profiles {
+                id
+                name
+            }
+        }
+    }
+    GRAPHQL
+
+    profiles(:one).update!(policy_object: nil)
+    profiles(:one).rules << rules(:one)
+    rule_results(:one).update(
+      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    )
+    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
+
+    result = Schema.execute(
+      query,
+      variables: { systemId: hosts(:one).id },
+      context: { current_user: users(:test) }
+    )
+
+    returned_profiles = result.dig('data', 'system', 'profiles')
+    assert returned_profiles.any?
+    assert_includes returned_profiles.map { |p| p['id'] }, profiles(:one).id
+  end
+
   test 'page info can be obtained on system query' do
     query = <<-GRAPHQL
     query getSystems($first: Int) {
@@ -277,22 +309,12 @@ class SystemQueryTest < ActiveSupport::TestCase
   private
 
   # rubocop:disable AbcSize
-  # rubocop:disable MethodLength
   def setup_two_hosts
     hosts(:one).policies << policies(:one)
     hosts(:two).policies << policies(:two)
-    rule_results(:one).update(
-      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
-    )
-    rule_results(:two).update(
-      host: hosts(:two), rule: rules(:two), test_result: test_results(:two)
-    )
-    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
-    test_results(:two).update(profile: profiles(:two), host: hosts(:two))
     profiles(:one).rules << rules(:one)
     profiles(:two).rules << rules(:two)
     hosts(:two).update(account: accounts(:test))
   end
   # rubocop:enable AbcSize
-  # rubocop:enable MethodLength
 end
