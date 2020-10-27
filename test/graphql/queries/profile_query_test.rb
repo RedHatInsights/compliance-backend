@@ -29,6 +29,30 @@ class ProfileQueryTest < ActiveSupport::TestCase
     assert_equal profiles(:one).ref_id, result['data']['profile']['refId']
   end
 
+  test 'query profile with SSG version' do
+    query = <<-GRAPHQL
+      query Profile($id: String!){
+          profile(id: $id) {
+              id
+              refId
+              ssgVersion
+          }
+      }
+    GRAPHQL
+
+    assert profiles(:one).benchmark.version
+
+    result = Schema.execute(
+      query,
+      variables: { id: profiles(:one).id },
+      context: { current_user: users(:test) }
+    )
+
+    assert_equal profiles(:one).ref_id, result['data']['profile']['refId']
+    assert_equal profiles(:one).benchmark.version,
+                 result['data']['profile']['ssgVersion']
+  end
+
   test 'query profile owned by another user' do
     query = <<-GRAPHQL
       query Profile($id: String!){

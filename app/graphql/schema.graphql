@@ -138,6 +138,7 @@ type Profile implements Node & RulesPreload {
     """
     systemId: String
   ): Float!
+  ssgVersion: String!
   totalHostCount: Int!
 }
 

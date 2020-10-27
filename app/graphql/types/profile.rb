@@ -34,6 +34,7 @@ module Types
     end
     field :hosts, [::Types::System], null: true
     field :benchmark, ::Types::Benchmark, null: true
+    field :ssg_version, String, null: false
     field :business_objective, ::Types::BusinessObjective, null: true
     field :business_objective_id, ID, null: true
     field :total_host_count, Int, null: false
@@ -69,6 +70,12 @@ module Types
     field :compliant_host_count, Int, null: false
 
     field :major_os_version, String, null: false
+
+    def ssg_version
+      ::RecordLoader.for(::Xccdf::Benchmark)
+                    .load(object.benchmark_id)
+                    .then(&:version)
+    end
 
     def compliant_host_count
       ::CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
