@@ -11,10 +11,23 @@ class HostTest < ActiveSupport::TestCase
   should have_many(:policy_hosts)
   should have_many(:test_results)
   should have_many(:policies).through(:policy_hosts)
-  should have_many(:profiles).through(:policies).source(:profiles)
   should have_many(:assigned_profiles).through(:policies).source(:profiles)
+  should have_many(:test_result_profiles).through(:test_results)
   should validate_presence_of :name
   should validate_presence_of :account
+
+  test 'host provides all profiles, assigned and from test results' do
+    host = hosts(:one)
+    policies(:one).update!(account: host.account)
+    policies(:one).hosts << host
+
+    profiles(:one).update!(account: host.account, policy_object: policies(:one))
+    test_results(:two).update!(host: host, profile: profiles(:two))
+
+    assert_equal host.all_profiles.count, 2
+    assert_includes host.all_profiles.map(&:id), profiles(:one).id
+    assert_includes host.all_profiles.map(&:id), profiles(:two).id
+  end
 
   test 'compliant returns a hash with all compliance statuses' do
     host = hosts(:one)

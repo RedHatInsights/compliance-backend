@@ -11,7 +11,10 @@ class HostSerializer
   end
 
   has_many :test_results
+
+  # rubocop:disable Style/SymbolProc
   has_many :profiles do |host|
-    (host.assigned_profiles + host.test_result_profiles).uniq
+    host.all_profiles
   end
+  # rubocop:enable Style/SymbolProc
 end
