@@ -27,7 +27,7 @@ module Types
 
     def profiles
       context_parent
-      object.profiles
+      object.all_profiles
     end
 
     def rules_passed(args = {})
