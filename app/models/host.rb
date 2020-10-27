@@ -22,7 +22,6 @@ class Host < ApplicationRecord
   has_many :profile_host_profiles, through: :profile_hosts, source: :profile
   has_many :test_result_profiles, through: :test_results, source: :profile
   has_many :policies, through: :policy_hosts
-  has_many :profiles, through: :policies, source: :profiles
   has_many :assigned_profiles, through: :policies, source: :profiles
 
   validates :name, presence: true
@@ -49,7 +48,7 @@ class Host < ApplicationRecord
     end
 
     def filter_by_compliance_score(_filter, operator, score)
-      ids = Host.includes(:profiles).select do |host|
+      ids = Host.includes(:test_result_profiles).select do |host|
         host.compliance_score.public_send(operator, score.to_f)
       end
       ids = ids.pluck(:id).map { |id| "'#{id}'" }

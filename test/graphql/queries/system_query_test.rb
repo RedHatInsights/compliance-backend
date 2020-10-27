@@ -133,7 +133,8 @@ class SystemQueryTest < ActiveSupport::TestCase
     hosts.each do |graphql_host|
       host = Host.find(graphql_host['node']['id'])
       graphql_host['node']['profiles'].each do |graphql_profile|
-        assert host.profiles.map(&:name).include? graphql_profile['name']
+        assert_includes host.assigned_profiles.map(&:name),
+                        graphql_profile['name']
         profile = Profile.find(graphql_profile['id'])
         assert_equal host.rules_passed(profile), graphql_profile['rulesPassed']
         assert_equal host.rules_failed(profile), graphql_profile['rulesFailed']
@@ -256,7 +257,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_not_equal users(:test).account.hosts.count,
                      result['systems']['totalCount']
     assert_equal 1, result['systems']['totalCount']
-    assert graphql_host.profiles.pluck(:id).include?(profiles(:one).id)
+    assert graphql_host.assigned_profiles.pluck(:id).include?(profiles(:one).id)
   end
 
   test 'query system rules when results contain wrong rule_ids' do
