@@ -28,7 +28,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           'identity':
           {
             'account_number': '1234',
-            'user': { 'username': 'username' }
+            'user': { 'username': 'username' },
+            'org_id': '00001'
           }
         }.to_json
       )
@@ -43,7 +44,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           'identity':
           {
             'account_number': '1234',
-            'user': { 'username': 'username' }
+            'user': { 'username': 'username' },
+            'org_id': '00001'
           },
           'entitlements':
           {
@@ -63,7 +65,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity': {
             'account_number': '1234',
-            'user': { 'username': 'username' }
+            'user': { 'username': 'username' },
+            'org_id': '00001'
           },
           'entitlements':
           {
@@ -96,7 +99,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity': {
             'account_number': '1234',
-            'user': { 'username': 'username' }
+            'user': { 'username': 'username' },
+            'org_id': '00001'
           },
           'entitlements':
           {
@@ -122,7 +126,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           'identity':
           {
             'account_number': '1234',
-            'user': { 'username': 'username' }
+            'user': { 'username': 'username' },
+            'org_id': '00001'
           },
           'entitlements':
           {
@@ -143,7 +148,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           'identity':
           {
             'account_number': '1234',
-            'user': { 'username': 'username' }
+            'user': { 'username': 'username' },
+            'org_id': '00001'
           },
           'entitlements':
           {
@@ -164,7 +170,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           'identity':
           {
             'account_number': '1234',
-            'user': { 'username': 'username' }
+            'user': { 'username': 'username' },
+            'org_id': '00001'
           },
           'entitlements':
           {
@@ -187,7 +194,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           {
             'identity': {
               'account_number': '1234',
-              'user': { 'username': 'username' }
+              'user': { 'username': 'username' },
+              'org_id': '00001'
             },
             'entitlements':
             {
@@ -213,7 +221,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity': {
             'account_number': '1234',
-            'auth_type': IdentityHeader::CERT_AUTH
+            'auth_type': IdentityHeader::CERT_AUTH,
+            'org_id': '00001'
           },
           'entitlements':
           {
@@ -234,7 +243,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity': {
             'account_number': accounts(:one).account_number,
-            'auth_type': IdentityHeader::CERT_AUTH
+            'auth_type': IdentityHeader::CERT_AUTH,
+            'org_id': '00001'
           },
           'entitlements':
           {
@@ -257,7 +267,8 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         {
           'identity': {
             'account_number': accounts(:one).account_number,
-            'auth_type': IdentityHeader::CERT_AUTH
+            'auth_type': IdentityHeader::CERT_AUTH,
+            'org_id': '00001'
           },
           'entitlements':
           {

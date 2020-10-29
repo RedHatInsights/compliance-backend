@@ -16,6 +16,9 @@ class Account < ApplicationRecord
       'identity': {
         'account_number': account_number,
         'type': 'User',
+        'internal': {
+          'org_id': '000001'
+        },
         'user': {
           'username': 'ComplianceSyncJob',
           'email': 'no-reply@redhat.com',
