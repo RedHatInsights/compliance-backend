@@ -60,7 +60,7 @@ class HostTest < ActiveSupport::TestCase
     assert_equal hosts(:one).os_minor_version, 5
   end
 
-  context 'external methods for search' do
+  context 'test result dependent search methods' do
     setup do
       @host = hosts(:one)
       rules(:one).profiles << profiles(:one)
@@ -116,6 +116,24 @@ class HostTest < ActiveSupport::TestCase
       assert_includes Host.search_for('has_test_results = false'), hosts(:two)
       assert_not_includes(Host.search_for('has_test_results = false'),
                           hosts(:one))
+    end
+  end
+
+  context 'scope search by a policy' do
+    setup do
+      profiles(:one).update!(policy_object: policies(:one),
+                             account: accounts(:one))
+      policies(:one).hosts << hosts(:one)
+    end
+
+    should 'find host using assigned policy id' do
+      search = "policy_id = #{policies(:one).id}"
+      assert_includes Host.search_for(search), hosts(:one)
+    end
+
+    should 'find host using a profile id assigned to the policy' do
+      search = "policy_id = #{profiles(:one).id}"
+      assert_includes Host.search_for(search), hosts(:one)
     end
   end
 end

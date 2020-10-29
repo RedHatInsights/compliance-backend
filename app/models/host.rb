@@ -11,6 +11,8 @@ class Host < ApplicationRecord
   scoped_search on: :has_test_results, ext_method: 'test_results?',
                 only_explicit: true, operators: ['=']
   scoped_search relation: :test_results, on: :profile_id
+  scoped_search on: :policy_id, ext_method: 'filter_by_policy',
+                only_explicit: true, operators: ['=']
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results, source: :rule
   has_many :profile_hosts, dependent: :destroy
@@ -32,6 +34,16 @@ class Host < ApplicationRecord
   end
 
   class << self
+    def filter_by_policy(_filter, _operator, policy_or_profile_id)
+      policy_cond = { policies: { id: policy_or_profile_id } }
+      profile_cond = { policies: { profiles: { id: policy_or_profile_id } } }
+
+      search = joins(policies: :profiles)
+      search = search.where(policy_cond).or(search.where(profile_cond))
+
+      { conditions: "hosts.id IN (#{search.select('id').to_sql})" }
+    end
+
     def filter_by_compliance(_filter, operator, value)
       ids = Host.includes(test_results: :profile).select do |host|
         host.compliant.values.all?(ActiveModel::Type::Boolean.new.cast(value))
