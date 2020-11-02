@@ -5,6 +5,7 @@ module ProfilePolicyAssociation
   extend ActiveSupport::Concern
 
   included do
+    after_destroy :destroy_policy_with_internal
     after_destroy :destroy_empty_policy
 
     belongs_to :policy_object, class_name: :Policy, foreign_key: :policy_id,
@@ -25,6 +26,10 @@ module ProfilePolicyAssociation
     def compliance_threshold
       policy_object&.compliance_threshold ||
         Policy::DEFAULT_COMPLIANCE_THRESHOLD
+    end
+
+    def destroy_policy_with_internal
+      policy_object&.destroy unless external?
     end
 
     def destroy_empty_policy
