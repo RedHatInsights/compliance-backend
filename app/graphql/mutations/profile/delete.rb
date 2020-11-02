@@ -10,13 +10,18 @@ module Mutations
       field :profile, Types::Profile, null: false
 
       def resolve(args = {})
-        profile = Pundit.authorize(
-          context[:current_user],
-          ::Profile.find(args[:id]),
-          :destroy?
-        )
-        profile.destroy!
-        { profile: profile }
+        profile = Pundit.authorize(context[:current_user],
+                                   ::Profile.find(args[:id]),
+                                   :destroy?)
+
+        destroyed =
+          if profile.external?
+            profile.destroy
+          else
+            profile.destroy_with_policy
+          end
+
+        { profile: destroyed }
       end
     end
   end

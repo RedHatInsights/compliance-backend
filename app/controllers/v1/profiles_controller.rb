@@ -26,7 +26,15 @@ module V1
 
     def destroy
       authorize profile
-      render_json profile.destroy, status: :accepted
+
+      destroyed =
+        if profile.external?
+          profile.destroy
+        else
+          profile.destroy_with_policy
+        end
+
+      render_json destroyed, status: :accepted
     end
 
     def create

@@ -151,6 +151,21 @@ module V1
                      'Profile ID did not match deleted profile'
       end
 
+      test 'destroing internal profile detroys its policy with profiles' do
+        profiles(:two).update!(account: accounts(:one),
+                               external: true,
+                               policy_id: policies(:one).id)
+
+        profile_id = profiles(:one).id
+        assert_difference('Profile.count' => -2, 'Policy.count' => -1) do
+          delete v1_profile_path(profile_id)
+        end
+        assert_response :success
+        assert_equal 202, response.status, 'Response should be 202 accepted'
+        assert_equal profile_id, JSON.parse(response.body).dig('data', 'id'),
+                     'Profile ID did not match deleted profile'
+      end
+
       test 'destroy a non-existant profile' do
         profile_id = profiles(:one).id
         profiles(:one).destroy
