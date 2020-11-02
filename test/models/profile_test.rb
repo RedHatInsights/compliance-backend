@@ -190,6 +190,16 @@ class ProfileTest < ActiveSupport::TestCase
       end
     end
 
+    should 'also destroys its policy having more profiles' do
+      profiles(:two).update!(account: accounts(:one),
+                             external: true,
+                             policy_id: policies(:one).id)
+
+      assert_difference('Profile.count' => -2, 'Policy.count' => -1) do
+        profiles(:one).destroy
+      end
+    end
+
     should 'also destroys its related test results' do
       test_results(:one).update profile: profiles(:one), host: hosts(:one)
       assert_difference('Profile.count' => -1, 'TestResult.count' => -1) do
