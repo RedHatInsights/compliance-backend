@@ -27,6 +27,14 @@ module ProfilePolicyAssociation
         Policy::DEFAULT_COMPLIANCE_THRESHOLD
     end
 
+    def destroy_with_policy
+      transaction do
+        destroyed = destroy
+        destroyed&.policy_object&.destroy
+        destroyed
+      end
+    end
+
     def destroy_empty_policy
       policy_object.destroy if policy_object&.profiles&.empty?
     end

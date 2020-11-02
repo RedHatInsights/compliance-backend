@@ -196,6 +196,33 @@ class ProfileTest < ActiveSupport::TestCase
         profiles(:one).destroy
       end
     end
+
+    should 'destroy with policy having one profile' do
+      assert_difference('Profile.count' => -1, 'Policy.count' => -1) do
+        destroyed = profiles(:one).destroy_with_policy
+        assert_equal destroyed, profiles(:one)
+      end
+    end
+
+    should 'destroy with policy having more profiles' do
+      profiles(:two).update!(account: accounts(:one),
+                             external: true,
+                             policy_id: policies(:one).id)
+
+      assert_difference('Profile.count' => -2, 'Policy.count' => -1) do
+        destroyed = profiles(:one).destroy_with_policy
+        assert_equal destroyed, profiles(:one)
+      end
+    end
+
+    should 'destroy with policy when profile has no policy' do
+      profiles(:one).update!(policy_id: nil)
+
+      assert_difference('Profile.count' => -1, 'Policy.count' => 0) do
+        destroyed = profiles(:one).destroy_with_policy
+        assert_equal destroyed, profiles(:one)
+      end
+    end
   end
 
   test 'canonical profiles have no parent_profile_id' do
