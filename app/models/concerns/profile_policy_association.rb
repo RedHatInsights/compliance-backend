@@ -12,6 +12,20 @@ module ProfilePolicyAssociation
                                optional: true, inverse_of: :profiles
     delegate :business_objective, :business_objective_id, :update_hosts,
              to: :policy_object, allow_nil: true
+    validate :no_duplicate_policy_types, on: :create
+
+    def no_duplicate_policy_types
+      return if canonical? || external
+
+      error_msg = 'must be unique. Another policy with '\
+                  'this policy type already exists.'
+      profile = Profile.includes(:benchmark).find_by(
+        ref_id: ref_id, account: account, external: false,
+        benchmarks: { ref_id: benchmark.ref_id }
+      )
+
+      errors.add(:policy_type, error_msg) if profile
+    end
 
     # Lookup up internal profile that has the host(s)
     # assinged to a policy an which matches the ref_id

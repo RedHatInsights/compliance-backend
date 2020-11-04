@@ -45,7 +45,7 @@ class CopyProfilesToPoliciesTest < ActiveSupport::TestCase
 
   test 'copies two similar internal profiles with to two new policies' do
     first = profiles(:one)
-    (bm = benchmarks(:one).dup).update!(version: '0.1.46')
+    (bm = benchmarks(:one).dup).update!(version: '0.1.46', ref_id: 'bm1')
     (second = profiles(:one).dup).update!(parent_profile: profiles(:two),
                                           account: accounts(:test),
                                           benchmark: bm)

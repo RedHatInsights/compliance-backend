@@ -59,6 +59,18 @@ class ProfileTest < ActiveSupport::TestCase
     end
   end
 
+  test 'uniqness of policy profiles by policy type' do
+    (bm = benchmarks(:one).dup).update!(version: '123')
+    profiles(:one).update!(policy_id: policies(:one).id,
+                           parent_profile: profiles(:two))
+    assert profiles(:one).policy_id
+    assert_not profiles(:one).external
+
+    p = profiles(:one).dup
+    assert_not p.update(policy_id: policies(:two).id, benchmark: bm)
+    assert  p.errors.full_messages.join['Policy type must be unique']
+  end
+
   test 'coexistence of external profiles with and without a policy' do
     dupe1 = profiles(:one).dup
     dupe1.update!(external: true, policy_id: policies(:one).id)
