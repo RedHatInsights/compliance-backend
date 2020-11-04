@@ -112,7 +112,7 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
     assert_difference('Profile.count' => 4) do
       parent.update!(ref_id: 'foo', benchmark: benchmarks(:one))
       p.update!(ref_id: 'foo2', benchmark: benchmarks(:one),
-                account: accounts(:one), parent_profile_id: parent.id)
+                account: accounts(:test), parent_profile_id: parent.id)
 
       dup_parent.update!(ref_id: 'foo',
                          benchmark: @dup_benchmark)
