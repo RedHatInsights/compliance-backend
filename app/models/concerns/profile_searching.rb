@@ -15,6 +15,9 @@ module ProfileSearching
                   rename: :test_result_system_names
     scoped_search on: :has_test_results, ext_method: 'test_results?',
                   only_explicit: true, operators: ['=']
+    scoped_search on: :has_policy_test_results,
+                  ext_method: 'policy_test_results?',
+                  only_explicit: true, operators: ['=']
     scoped_search on: :canonical, ext_method: 'canonical?', only_explicit: true,
                   operators: ['=']
     scoped_search on: :has_policy, ext_method: 'policy_object_search',
@@ -38,6 +41,21 @@ module ProfileSearching
       test_results = TestResult.select(:profile_id).distinct
       has_test_results && where(id: test_results) || where.not(id: test_results)
     }
+    scope :has_policy_test_results, lambda { |has_policy_test_results = true|
+      # the use of default scope is to bypass Pundit
+      # and avoid the situation with bind parameters
+      # that must have a different order in the resulting query
+      # of a scoped_search
+      with_policy_test_results = default_scoped.joins(
+        policy_object: :test_results
+      )
+
+      if has_policy_test_results
+        where(id: with_policy_test_results)
+      else
+        where.not(id: with_policy_test_results)
+      end
+    }
     scope :os_major_version, lambda { |major, equals = true|
       where(benchmark: Xccdf::Benchmark.os_major_version(major, equals))
     }
@@ -57,6 +75,12 @@ module ProfileSearching
     def test_results?(_filter, _operator, value)
       has_test_results = ActiveModel::Type::Boolean.new.cast(value)
       profiles = Profile.has_test_results(has_test_results)
+      { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
+    end
+
+    def policy_test_results?(_filter, _operator, value)
+      has_test_results = ActiveModel::Type::Boolean.new.cast(value)
+      profiles = Profile.has_policy_test_results(has_test_results)
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 

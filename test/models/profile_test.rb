@@ -245,6 +245,69 @@ class ProfileTest < ActiveSupport::TestCase
                         profiles(:one))
   end
 
+  context 'has_policy_test_results filter' do
+    setup do
+      test_results(:one).update(profile: profiles(:one), host: hosts(:one))
+      profiles(:two).test_results.destroy_all
+    end
+
+    should 'find a policy profile if it has a test result' do
+      profiles(:one).update!(policy_object: policies(:one))
+      assert profiles(:one).test_results.present?
+      assert profiles(:two).test_results.empty?
+
+      assert_includes(Profile.search_for('has_policy_test_results = true'),
+                      profiles(:one))
+      assert_not_includes(Profile.search_for('has_policy_test_results = true'),
+                          profiles(:two))
+      assert_includes(Profile.search_for('has_policy_test_results = false'),
+                      profiles(:two))
+      assert_not_includes(Profile.search_for('has_policy_test_results = false'),
+                          profiles(:one))
+    end
+
+    should 'find a policy profile if it has a test result on a scope change' do
+      profiles(:one).update!(policy_object: policies(:one))
+      profiles(:two).update!(account: accounts(:one))
+
+      assert profiles(:one).test_results.present?
+      assert profiles(:two).test_results.empty?
+
+      Profile.where(account: accounts(:one)).scoping do
+        assert_includes(Profile.search_for('has_policy_test_results = true'),
+                        profiles(:one))
+        assert_not_includes(
+          Profile.search_for('has_policy_test_results = true'),
+          profiles(:two)
+        )
+        assert_includes(Profile.search_for('has_policy_test_results = false'),
+                        profiles(:two))
+        assert_not_includes(
+          Profile.search_for('has_policy_test_results = false'),
+          profiles(:one)
+        )
+      end
+    end
+
+    should 'find all policy profiles if one has a test result' do
+      profiles(:one).update!(policy_object: policies(:one),
+                             external: true)
+      profiles(:two).update!(policy_object: policies(:one),
+                             external: false)
+
+      assert profiles(:one).test_results.present?
+      assert profiles(:two).test_results.empty?
+      assert_includes(Profile.search_for('has_policy_test_results = true'),
+                      profiles(:two))
+      assert_not_includes(Profile.search_for('has_policy_test_results = false'),
+                          profiles(:two))
+      assert_includes(Profile.search_for('has_policy_test_results = true'),
+                      profiles(:one))
+      assert_not_includes(Profile.search_for('has_policy_test_results = false'),
+                          profiles(:one))
+    end
+  end
+
   test 'canonical is searchable' do
     assert profiles(:one).canonical?
     assert_includes Profile.search_for('canonical = true'), profiles(:one)
