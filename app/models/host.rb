@@ -35,13 +35,8 @@ class Host < ApplicationRecord
 
   class << self
     def filter_by_policy(_filter, _operator, policy_or_profile_id)
-      policy_cond = { policies: { id: policy_or_profile_id } }
-      profile_cond = { policies: { profiles: { id: policy_or_profile_id } } }
-
-      search = joins(policies: :profiles)
-      search = search.where(policy_cond).or(search.where(profile_cond))
-
-      { conditions: "hosts.id IN (#{search.select('id').to_sql})" }
+      with_policy = with_policy_lookup(policy_or_profile_id).select('id')
+      { conditions: "hosts.id IN (#{with_policy.to_sql})" }
     end
 
     def filter_by_compliance(_filter, operator, value)
@@ -76,6 +71,16 @@ class Host < ApplicationRecord
         conditions: "hosts.id #{operator} "\
                     "IN(#{host_ids.to_sql})"
       }
+    end
+
+    private
+
+    def with_policy_lookup(policy_or_profile_id)
+      policy_cond = { policies: { id: policy_or_profile_id } }
+      profile_cond = { policies: { profiles: { id: policy_or_profile_id } } }
+
+      search = joins(policies: :profiles)
+      search.where(policy_cond).or(search.where(profile_cond))
     end
   end
 
