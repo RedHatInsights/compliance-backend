@@ -70,6 +70,7 @@ module Types
     field :compliant_host_count, Int, null: false
 
     field :major_os_version, String, null: false
+    field :policy_type, String, null: false
 
     def ssg_version
       ::RecordLoader.for(::Xccdf::Benchmark)

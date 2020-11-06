@@ -79,6 +79,18 @@ module V1
         assert_empty profiles['data']
       end
 
+      test 'returns the policy_type attribute' do
+        profiles(:one).update!(account: accounts(:test),
+                               parent_profile: profiles(:two))
+
+        get v1_profiles_url
+        assert_response :success
+
+        profiles = JSON.parse(response.body)
+        assert_equal profiles(:two).name,
+                     profiles.dig('data', 0, 'attributes', 'policy_type')
+      end
+
       test 'only contain internal profiles by default' do
         internal = Profile.create!(
           account: accounts(:test), name: 'foo', ref_id: 'foo',
