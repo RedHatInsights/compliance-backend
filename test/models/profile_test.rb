@@ -94,6 +94,16 @@ class ProfileTest < ActiveSupport::TestCase
     assert dupe.policy_id
   end
 
+  test 'policy_profile finds the initial profile of a policy' do
+    profiles(:two).update!(account: accounts(:test), policy_object: nil)
+    assert_nil profiles(:two).policy_profile
+    profiles(:one).update!(policy_object: policies(:one), external: false)
+    assert_equal profiles(:one), profiles(:one).policy_profile
+    profiles(:two).update!(policy_object: policies(:one), external: true)
+    assert_equal profiles(:one), profiles(:one).policy_profile
+    assert_equal profiles(:one), profiles(:two).policy_profile
+  end
+
   test 'creation of internal profile with a policy, external profile exists' do
     profiles(:one).update!(external: true)
     dupe = profiles(:one).dup
