@@ -18,7 +18,9 @@ module Xccdf
     end
 
     def delete_old_test_results
-      ::TestResult.where(host: @host, profile: @host_profile)
+      ::TestResult.left_outer_joins(profile: :policy_object)
+                  .where(profiles: { policy_object: @host_profile.policy_id },
+                         host: @host)
                   .where.not(id: @test_result.id)
                   .destroy_all
     end
