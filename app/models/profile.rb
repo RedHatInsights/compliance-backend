@@ -50,6 +50,10 @@ class Profile < ApplicationRecord
     end
   end
 
+  def policy_type
+    (parent_profile || self).name
+  end
+
   def fill_from_parent
     self.ref_id = parent_profile.ref_id
     self.benchmark_id = parent_profile.benchmark_id

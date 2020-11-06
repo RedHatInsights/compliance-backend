@@ -72,6 +72,10 @@ module Api
             os_major_version: {
               type: 'string',
               example: '7'
+            },
+            policy_type: {
+              type: 'string',
+              example: 'Australian Cyber Security Centre (ACSC) Essential Eight'
             }
           }
         }.freeze

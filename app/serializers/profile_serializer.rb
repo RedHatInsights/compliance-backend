@@ -37,4 +37,5 @@ class ProfileSerializer
   attribute :business_objective do |profile|
     profile&.policy_object&.business_objective&.title
   end
+  attribute :policy_type
 end
