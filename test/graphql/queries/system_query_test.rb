@@ -88,7 +88,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     result = Schema.execute(
       query,
-      variables: { search: "profile_id = #{profiles(:one).id}" },
+      variables: { search: "policy_id = #{profiles(:one).id}" },
       context: { current_user: users(:test) }
     )['data']['systems']['edges']
 
@@ -250,7 +250,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     setup_two_hosts
     result = Schema.execute(
       query,
-      variables: { search: "profile_id = #{profiles(:one).id}" },
+      variables: { search: "policy_id = #{profiles(:one).id}" },
       context: { current_user: users(:test) }
     )['data']
     graphql_host = Host.find(result['systems']['edges'].first['node']['id'])

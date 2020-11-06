@@ -117,6 +117,11 @@ class HostTest < ActiveSupport::TestCase
       assert_not_includes(Host.search_for('has_test_results = false'),
                           hosts(:one))
     end
+
+    should 'be able to filter by profile_id from test results' do
+      assert_includes Host.search_for("profile_id = #{profiles(:one).id}"),
+                      hosts(:one)
+    end
   end
 
   context 'scope search by a policy' do
@@ -134,6 +139,36 @@ class HostTest < ActiveSupport::TestCase
     should 'find host using a profile id assigned to the policy' do
       search = "policy_id = #{profiles(:one).id}"
       assert_includes Host.search_for(search), hosts(:one)
+    end
+
+    should 'find host using external profile id from its test result' do
+      rules(:one).profiles << profiles(:two)
+      rules(:two).profiles << profiles(:two)
+      test_results(:one).update(host: hosts(:one), profile: profiles(:two))
+      RuleResult.create(host: @host, rule: rules(:one),
+                        test_result: test_results(:one), result: 'pass')
+      RuleResult.create(host: @host, rule: rules(:two),
+                        test_result: test_results(:one), result: 'fail')
+
+      search = "policy_id = #{policies(:two).id}"
+      assert_includes Host.search_for(search), hosts(:one)
+    end
+
+    should 'NOT find host unassigned to the policy even with test results' do
+      policies(:one).hosts = []
+      profiles(:two).update!(policy_object: policies(:one),
+                             external: true,
+                             account: accounts(:one))
+      rules(:one).profiles << profiles(:two)
+      rules(:two).profiles << profiles(:two)
+      test_results(:one).update(host: hosts(:one), profile: profiles(:two))
+      RuleResult.create(host: @host, rule: rules(:one),
+                        test_result: test_results(:one), result: 'pass')
+      RuleResult.create(host: @host, rule: rules(:two),
+                        test_result: test_results(:one), result: 'fail')
+
+      search = "policy_id = #{policies(:two).id}"
+      assert_not_includes Host.search_for(search), hosts(:one)
     end
   end
 end

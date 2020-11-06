@@ -36,7 +36,13 @@ class Host < ApplicationRecord
   class << self
     def filter_by_policy(_filter, _operator, policy_or_profile_id)
       with_policy = with_policy_lookup(policy_or_profile_id).select('id')
-      { conditions: "hosts.id IN (#{with_policy.to_sql})" }
+      with_profile = with_external_profile_lookup(policy_or_profile_id)
+                     .select('id')
+
+      {
+        conditions: "hosts.id IN (#{with_policy.to_sql})" \
+                    " OR hosts.id IN (#{with_profile.to_sql})"
+      }
     end
 
     def filter_by_compliance(_filter, operator, value)
@@ -81,6 +87,17 @@ class Host < ApplicationRecord
 
       search = joins(policies: :profiles)
       search.where(policy_cond).or(search.where(profile_cond))
+    end
+
+    def with_external_profile_lookup(profile_id)
+      joins(test_results: :profile).where(
+        test_results: {
+          profiles: {
+            id: profile_id,
+            policy_id: nil
+          }
+        }
+      )
     end
   end
 
