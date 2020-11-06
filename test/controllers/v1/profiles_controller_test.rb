@@ -49,6 +49,19 @@ module V1
     end
 
     class IndexTest < ProfilesControllerTest
+      test 'policy_profile_id is exposed' do
+        profiles(:one).update!(external: false,
+                               parent_profile: profiles(:two),
+                               account: accounts(:test))
+        get v1_profiles_url
+        assert_response :success
+
+        profiles = JSON.parse(response.body)
+        assert_equal 1, profiles['data'].length
+        assert_equal profiles(:one).policy_profile_id,
+                     profiles.dig('data', 0, 'attributes', 'policy_profile_id')
+      end
+
       test 'external profiles can be requested' do
         profiles(:one).update! external: true
         search_query = 'external=true'

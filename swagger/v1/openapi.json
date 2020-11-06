@@ -621,6 +621,7 @@
                       "external": false,
                       "compliance_threshold": 100.0,
                       "os_major_version": "7",
+                      "policy_profile_id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                       "parent_profile_ref_id": null,
                       "name": "profile1",
                       "description": null,
@@ -670,6 +671,7 @@
                       "external": false,
                       "compliance_threshold": 100.0,
                       "os_major_version": "7",
+                      "policy_profile_id": "37f7eeff-831b-5c41-984a-254965f58c0f",
                       "parent_profile_ref_id": null,
                       "name": "profile2",
                       "description": null,
@@ -781,7 +783,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "4bde0dc1-a96a-4620-b8d0-57b9d0c55b31",
+                  "id": "ec7932de-2dbe-429a-98cf-f74731daf39c",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -790,6 +792,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
+                    "policy_profile_id": "ec7932de-2dbe-429a-98cf-f74731daf39c",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "A custom name",
                     "description": null,
@@ -1006,6 +1009,7 @@
                     "external": false,
                     "compliance_threshold": 100.0,
                     "os_major_version": "7",
+                    "policy_profile_id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                     "parent_profile_ref_id": null,
                     "name": "profile1",
                     "description": null,
@@ -1019,7 +1023,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "015a9962-782d-40d0-8c02-f5e7ec3eac11",
+                        "id": "23725ef6-056d-417f-88ea-75697529f51e",
                         "type": "account"
                       }
                     },
@@ -1196,7 +1200,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "ab51ba5a-8434-44be-a070-34f15acfd406",
+                  "id": "df2943f9-eb01-4964-aa0e-cf1d1e4614e2",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -1205,6 +1209,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
+                    "policy_profile_id": "df2943f9-eb01-4964-aa0e-cf1d1e4614e2",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "An updated custom name",
                     "description": null,
@@ -1427,6 +1432,7 @@
                     "external": false,
                     "compliance_threshold": 100.0,
                     "os_major_version": "7",
+                    "policy_profile_id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "profile1",
                     "description": null,
@@ -2898,6 +2904,10 @@
           "tailored": {
             "type": "boolean",
             "example": false
+          },
+          "policy_profile_id": {
+            "type": "uuid",
+            "example": "374399b7-e6ba-49b7-a405-9b620a2bd0b3"
           },
           "total_host_count": {
             "type": "integer",

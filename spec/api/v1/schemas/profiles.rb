@@ -65,6 +65,10 @@ module Api
               type: 'boolean',
               example: false
             },
+            policy_profile_id: {
+              type: 'uuid',
+              example: '374399b7-e6ba-49b7-a405-9b620a2bd0b3'
+            },
             total_host_count: {
               type: 'integer',
               example: 5

@@ -14,6 +14,14 @@ module ProfilePolicyAssociation
              to: :policy_object, allow_nil: true
     validate :no_duplicate_policy_types, on: :create
 
+    def policy_profile
+      policy_object&.initial_profile
+    end
+
+    def policy_profile_id
+      policy_profile&.id
+    end
+
     def no_duplicate_policy_types
       return if canonical? || external
 

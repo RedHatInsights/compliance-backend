@@ -13,7 +13,8 @@ class ProfileSerializer
   end
   has_many :test_results
   attributes :ref_id, :score, :parent_profile_id,
-             :external, :compliance_threshold, :os_major_version
+             :external, :compliance_threshold, :os_major_version,
+             :policy_profile_id
   attribute :parent_profile_ref_id do |profile|
     profile.parent_profile&.ref_id
   end
