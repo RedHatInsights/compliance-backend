@@ -119,6 +119,51 @@ module V1
         assert_includes returned_ids, external.id
         assert_includes returned_ids, profiles(:one).id
       end
+
+      test 'returns all policy hosts' do
+        assert hosts
+        host_ids = hosts.map(&:id).sort
+
+        profiles(:one).update!(policy_object: policies(:one))
+        profiles(:two).update!(account: accounts(:test),
+                               policy_object: policies(:one),
+                               external: true)
+        policies(:one).update!(account: accounts(:test))
+        policies(:one).hosts = hosts
+
+        get v1_profiles_url, params: { search: '' }
+        assert_response :success
+
+        profiles = JSON.parse(response.body)['data']
+        assert_equal 2, profiles.length
+
+        profiles.each do |returned_profile|
+          returned_hosts =
+            returned_profile.dig('relationships', 'hosts', 'data')
+                            .map { |h| h['id'] }
+                            .sort
+          assert_equal host_ids, returned_hosts
+        end
+      end
+
+      test 'returns test result hosts for external profiles' do
+        test_results(:one).update(host: hosts(:one), profile: profiles(:one))
+        profiles(:one).update!(policy_object: nil, external: true)
+
+        get v1_profiles_url, params: { search: 'external = true' }
+        assert_response :success
+
+        returned_profiles = JSON.parse(response.body)['data']
+        assert_equal 1, returned_profiles.length
+
+        returned_hosts =
+          returned_profiles.first
+                           .dig('relationships', 'hosts', 'data')
+                           .map { |h| h['id'] }
+                           .sort
+        assert_equal 1, returned_hosts.length
+        assert_includes(returned_hosts, hosts(:one).id)
+      end
     end
 
     class DestroyTest < ProfilesControllerTest

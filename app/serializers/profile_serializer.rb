@@ -9,7 +9,12 @@ class ProfileSerializer
   belongs_to :parent_profile, record_type: :profile
   has_many :rules
   has_many :hosts do |profile|
-    profile.policy_object&.hosts || []
+    if profile.policy_object
+      profile.policy_object.hosts
+    else
+      # external profile
+      profile.test_result_hosts
+    end
   end
   has_many :test_results
   attributes :ref_id, :score, :parent_profile_id,
