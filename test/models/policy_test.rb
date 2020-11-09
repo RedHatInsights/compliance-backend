@@ -80,7 +80,7 @@ class PolicyTest < ActiveSupport::TestCase
 
     should 'destroy business objectives without policies on destroy' do
       assert_difference('BusinessObjective.count' => -1) do
-        policies(:one).destroy
+        Policy.where(id: policies(:one)).destroy_all
       end
     end
   end
