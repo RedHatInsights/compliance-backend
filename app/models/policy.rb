@@ -55,9 +55,8 @@ class Policy < ApplicationRecord
 
   def destroy_orphaned_business_objective
     bo_changes = (previous_changes.fetch(:business_objective_id, []) +
-                  changes.fetch(:business_objective_id, [])).compact
-    return if bo_changes.blank?
-
+                  changes.fetch(:business_objective_id, []) +
+                  [business_objective_id]).compact
     BusinessObjective.without_policies.where(id: bo_changes).destroy_all
   end
 end
