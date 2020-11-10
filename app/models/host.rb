@@ -30,7 +30,9 @@ class Host < ApplicationRecord
   validates :account, presence: true
 
   def all_profiles
-    (assigned_profiles + test_result_profiles).uniq
+    Profile.where(id: assigned_profiles)
+           .or(Profile.where(id: test_result_profiles))
+           .distinct
   end
 
   class << self

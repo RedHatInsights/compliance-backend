@@ -60,6 +60,7 @@ class SystemQueryTest < ActiveSupport::TestCase
                     id
                     name
                     profiles {
+                        id
                         rulesPassed
                         rulesFailed
                         lastScanned
@@ -93,11 +94,19 @@ class SystemQueryTest < ActiveSupport::TestCase
     )['data']['systems']['edges']
 
     result_profiles = result.first['node']['profiles']
+    assert_equal 2, result_profiles.length
 
-    assert_equal 1, result_profiles.first['rulesPassed']
-    assert_equal 0, result_profiles.first['rulesFailed']
-    assert result_profiles.first['lastScanned']
-    assert result_profiles.first['compliant']
+    passed_profile = result_profiles.find { |p| p['id'] == profiles(:one).id }
+    assert_equal 1, passed_profile['rulesPassed']
+    assert_equal 0, passed_profile['rulesFailed']
+    assert passed_profile
+    assert passed_profile
+
+    failed_profile = result_profiles.find { |p| p['id'] == profiles(:two).id }
+    assert_equal 0, failed_profile['rulesPassed']
+    assert_equal 1, failed_profile['rulesFailed']
+    assert failed_profile
+    assert failed_profile
   end
 
   test 'query children profile only returns profiles owned by host' do
