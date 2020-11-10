@@ -252,6 +252,57 @@ class ProfileTest < ActiveSupport::TestCase
     assert_not_includes Profile.canonical, p1
   end
 
+  context 'in_policy scope' do
+    setup do
+      profiles(:one).update!(policy_object: policies(:one),
+                             account: accounts(:one))
+    end
+
+    should 'find by exact profile id' do
+      profiles(:two).update!(policy_object: nil,
+                             account: accounts(:one))
+      assert_includes Profile.in_policy(profiles(:two).id),
+                      profiles(:two)
+      assert_equal 1, Profile.in_policy(profiles(:two).id).length
+    end
+
+    should 'find all policy profiles with policy id provided' do
+      profiles(:two).update!(policy_object: policies(:one),
+                             external: true,
+                             account: accounts(:one))
+
+      profiles(:two).dup.update!(policy_object: policies(:two),
+                                 account: accounts(:one))
+
+      returned_profiles = Profile.in_policy(policies(:one).id)
+      assert_includes returned_profiles, profiles(:one)
+      assert_includes returned_profiles, profiles(:two)
+      assert_equal 2, returned_profiles.length
+    end
+
+    should 'find all policy profiles with any policy profile id provided' do
+      # set different UUIDs on profiles, as they share
+      # the same labels/uuids with policies.
+      profiles(:one).update!(id: SecureRandom.uuid)
+      profiles(:two).update!(id: SecureRandom.uuid,
+                             policy_object: policies(:one),
+                             external: true,
+                             account: accounts(:one))
+
+      profiles(:two).dup.update!(policy_object: policies(:two).dup,
+                                 account: accounts(:one))
+
+      returned_profiles = Profile.in_policy(profiles(:two).id)
+      assert_includes returned_profiles, profiles(:one)
+      assert_includes returned_profiles, profiles(:two)
+      assert_equal 2, returned_profiles.length
+    end
+
+    should 'find nothing on invalid UUID' do
+      assert_equal Profile.none, Profile.in_policy('bogus')
+    end
+  end
+
   test 'has_test_results filters by test results available' do
     test_results(:one).update profile: profiles(:one), host: hosts(:one)
     profiles(:two).test_results.destroy_all
