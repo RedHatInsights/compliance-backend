@@ -368,7 +368,12 @@ type System implements Node {
   name: String!
   osMajorVersion: Int
   osMinorVersion: Int
-  profiles: [Profile!]
+  profiles(
+    """
+    Filter results by policy or profile ID
+    """
+    policyId: ID
+  ): [Profile!]
   rulesFailed(
     """
     Filter results by profile ID
