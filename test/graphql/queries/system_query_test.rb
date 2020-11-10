@@ -51,62 +51,189 @@ class SystemQueryTest < ActiveSupport::TestCase
     end
   end
 
-  test 'query attributes with profileId arguments' do
-    query = <<-GRAPHQL
-    query getSystems($search: String) {
-        systems(limit: 50, offset: 1, search: $search) {
-            edges {
-                node {
-                    id
-                    name
-                    profiles {
-                        id
-                        rulesPassed
-                        rulesFailed
-                        lastScanned
-                        compliant
-                    }
-                }
-            }
-        }
-    }
-    GRAPHQL
+  context 'policy id querying' do
+    setup do
+      rule_results(:one).update(
+        host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+      )
+      rule_results(:two).update(
+        host: hosts(:one), rule: rules(:two), test_result: test_results(:two)
+      )
+      test_results(:one).update(profile: profiles(:one), host: hosts(:one))
+      test_results(:two).update(profile: profiles(:two), host: hosts(:one))
+      profiles(:one).rules << rules(:one)
+      profiles(:two).rules << rules(:two)
+      policies(:one).update(compliance_threshold: 95)
+      policies(:two).update(compliance_threshold: 95)
+      hosts(:one).policies << policies(:one)
+      hosts(:one).policies << policies(:two)
+    end
 
-    rule_results(:one).update(
-      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
-    )
-    rule_results(:two).update(
-      host: hosts(:one), rule: rules(:two), test_result: test_results(:two)
-    )
-    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
-    test_results(:two).update(profile: profiles(:two), host: hosts(:one))
-    profiles(:one).rules << rules(:one)
-    profiles(:two).rules << rules(:two)
-    policies(:one).update(compliance_threshold: 95)
-    policies(:two).update(compliance_threshold: 95)
-    hosts(:one).policies << policies(:one)
-    hosts(:one).policies << policies(:two)
+    should 'return systems belonging to a policy' do
+      query = <<-GRAPHQL
+      query getSystems($search: String) {
+          systems(limit: 50, offset: 1, search: $search) {
+              edges {
+                  node {
+                      id
+                      name
+                      profiles {
+                          id
+                          rulesPassed
+                          rulesFailed
+                          lastScanned
+                          compliant
+                      }
+                  }
+              }
+          }
+      }
+      GRAPHQL
 
-    result = Schema.execute(
-      query,
-      variables: { search: "policy_id = #{profiles(:one).id}" },
-      context: { current_user: users(:test) }
-    )['data']['systems']['edges']
+      result = Schema.execute(
+        query,
+        variables: { search: "policy_id = #{profiles(:one).id}" },
+        context: { current_user: users(:test) }
+      )['data']['systems']['edges']
 
-    result_profiles = result.first['node']['profiles']
-    assert_equal 2, result_profiles.length
+      result_profiles = result.first['node']['profiles']
+      assert_equal 2, result_profiles.length
 
-    passed_profile = result_profiles.find { |p| p['id'] == profiles(:one).id }
-    assert_equal 1, passed_profile['rulesPassed']
-    assert_equal 0, passed_profile['rulesFailed']
-    assert passed_profile
-    assert passed_profile
+      passed_profile = result_profiles.find { |p| p['id'] == profiles(:one).id }
+      assert_equal 1, passed_profile['rulesPassed']
+      assert_equal 0, passed_profile['rulesFailed']
+      assert passed_profile
+      assert passed_profile
 
-    failed_profile = result_profiles.find { |p| p['id'] == profiles(:two).id }
-    assert_equal 0, failed_profile['rulesPassed']
-    assert_equal 1, failed_profile['rulesFailed']
-    assert failed_profile
-    assert failed_profile
+      failed_profile = result_profiles.find { |p| p['id'] == profiles(:two).id }
+      assert_equal 0, failed_profile['rulesPassed']
+      assert_equal 1, failed_profile['rulesFailed']
+      assert failed_profile
+      assert failed_profile
+    end
+
+    should 'return policy profiles using an internal profile id via policyId' do
+      query = <<-GRAPHQL
+      query getSystems($policyId: ID) {
+          systems(limit: 50, offset: 1) {
+              edges {
+                  node {
+                      id
+                      name
+                      profiles(policyId: $policyId) {
+                          id
+                          rulesPassed
+                          rulesFailed
+                          lastScanned
+                          compliant
+                      }
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      result = Schema.execute(
+        query,
+        variables: { policyId: profiles(:one).id },
+        context: { current_user: users(:test) }
+      )['data']['systems']['edges']
+
+      result_profiles = result.first['node']['profiles']
+
+      assert_equal 1, result_profiles.first['rulesPassed']
+      assert_equal 0, result_profiles.first['rulesFailed']
+      assert result_profiles.first['lastScanned']
+      assert result_profiles.first['compliant']
+
+      result_profile_ids = result_profiles.map { |p| p['id'] }
+      assert_includes result_profile_ids, profiles(:one).id
+      assert_equal 1, result_profile_ids.length
+    end
+
+    should 'return policy profiles using an any policy profile id' \
+           'via policyId' do
+      query = <<-GRAPHQL
+      query getSystems($policyId: ID) {
+          systems(limit: 50, offset: 1) {
+              edges {
+                  node {
+                      id
+                      name
+                      profiles(policyId: $policyId) {
+                          id
+                          rulesPassed
+                          rulesFailed
+                          lastScanned
+                          compliant
+                      }
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      (second_benchmark = benchmarks(:one).dup).update!(version: '1.2.3')
+      other_profile = profiles(:one).dup
+      other_profile.update!(policy_object: policies(:one),
+                            external: true,
+                            benchmark: second_benchmark,
+                            account: accounts(:test))
+
+      result = Schema.execute(
+        query,
+        variables: { policyId: other_profile.id },
+        context: { current_user: users(:test) }
+      )['data']['systems']['edges']
+
+      result_profiles = result.first['node']['profiles']
+
+      result_profile_ids = result_profiles.map { |p| p['id'] }
+      assert_includes result_profile_ids, other_profile.id
+      assert_includes result_profile_ids, profiles(:one).id
+      assert_equal 2, result_profile_ids.length
+    end
+
+    should 'return external profile using an external profile id' \
+           ' via policyId' do
+      query = <<-GRAPHQL
+      query getSystems($policyId: ID) {
+          systems(limit: 50, offset: 1) {
+              edges {
+                  node {
+                      id
+                      name
+                      profiles(policyId: $policyId) {
+                          id
+                          rulesPassed
+                          rulesFailed
+                          lastScanned
+                          compliant
+                      }
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      profiles(:one).update!(policy_id: nil)
+
+      result = Schema.execute(
+        query,
+        variables: { policyId: profiles(:one).id },
+        context: { current_user: users(:test) }
+      )['data']['systems']['edges']
+
+      result_profiles = result.first['node']['profiles']
+
+      assert_equal 1, result_profiles.first['rulesPassed']
+      assert_equal 0, result_profiles.first['rulesFailed']
+      assert result_profiles.first['lastScanned']
+
+      result_profile_ids = result_profiles.map { |p| p['id'] }
+      assert_includes result_profile_ids, profiles(:one).id
+      assert_equal 1, result_profile_ids.length
+    end
   end
 
   test 'query children profile only returns profiles owned by host' do

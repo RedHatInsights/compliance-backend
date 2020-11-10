@@ -11,7 +11,10 @@ module Types
     field :name, String, null: false
     field :os_major_version, Int, null: true
     field :os_minor_version, Int, null: true
-    field :profiles, [::Types::Profile], null: true
+    field :profiles, [::Types::Profile], null: true do
+      argument :policy_id, ID, 'Filter results by policy or profile ID',
+               required: false
+    end
     field :rules_passed, Int, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
@@ -25,9 +28,11 @@ module Types
                required: false
     end
 
-    def profiles
+    def profiles(policy_id: nil)
       context_parent
-      object.all_profiles
+      all_profiles = object.all_profiles
+      all_profiles = all_profiles.in_policy(policy_id) if policy_id
+      all_profiles
     end
 
     def rules_passed(args = {})
