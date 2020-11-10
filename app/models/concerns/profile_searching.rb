@@ -59,6 +59,24 @@ module ProfileSearching
     scope :os_major_version, lambda { |major, equals = true|
       where(benchmark: Xccdf::Benchmark.os_major_version(major, equals))
     }
+    scope :in_policy, lambda { |policy_or_profile_id|
+      return none unless UUID.validate(policy_or_profile_id)
+
+      policy_cond = { policy_id: policy_or_profile_id }
+      profile_cond = {
+        policy_object: {
+          profiles_policies: {
+            id: policy_or_profile_id
+          }
+        }
+      }
+
+      search = left_outer_joins(policy_object: :profiles)
+      search.where(id: policy_or_profile_id)
+            .or(search.where(policy_cond))
+            .or(search.where(profile_cond))
+            .distinct
+    }
   end
 
   class_methods do
