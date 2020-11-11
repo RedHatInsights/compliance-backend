@@ -24,7 +24,7 @@ module Xccdf
       'xccdf_org.ssgproject.content_benchmark_RHEL-6': '0.1.28',
       # RHEL 7 with CIS backported to 0.1.49 in downstream
       'xccdf_org.ssgproject.content_benchmark_RHEL-7': '0.1.50',
-      'xccdf_org.ssgproject.content_benchmark_RHEL-8': '0.1.48'
+      'xccdf_org.ssgproject.content_benchmark_RHEL-8': '0.1.50'
     }.freeze
 
     scope :os_major_version, lambda { |major, equals = true|
