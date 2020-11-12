@@ -237,6 +237,11 @@ To disable Prometheus (e.g. in develompent) clear `prometheus_exporter_host` set
 The API documentation can be found at `Settings.path_prefix/Settings.app_name`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `Settings.path_prefix/Settings.app_name/v1/openapi.json`
 The OpenAPI version 3.0 description can be found at `Settings.path_prefix/Settings.app_name/openapi`. You can build this API by converting the JSON representation (OpenAPI 2.x) using [swagger2openapi](https://github.com/Mermade/oas-kit/blob/master/packages/swagger2openapi).
 
+## Database migration notes
+
+Database migrations need to be run prior to intialization of backend containers,
+to proprely initialize model attributes on all instances.
+
 ## Contributing
 
 If you'd like to contribute, please fork the repository and use a feature
