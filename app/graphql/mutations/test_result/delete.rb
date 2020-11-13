@@ -14,8 +14,9 @@ module Mutations
 
       def resolve(args = {})
         profile = scoped_profiles.find(args[:profile_id])
-        test_results = scoped_test_results(args).destroy_all
-        profile.destroy! if profile.external
+        profiles = profile.external ? [profile] : profile.policy_object.profiles
+        test_results = scoped_test_results(profile_id: profiles).destroy_all
+        profile.destroy! unless profile.policy_id
 
         { profile: profile, test_results: test_results }
       end
