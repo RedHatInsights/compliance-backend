@@ -72,12 +72,6 @@ module Types
     field :major_os_version, String, null: false
     field :policy_type, String, null: false
 
-    def ssg_version
-      ::RecordLoader.for(::Xccdf::Benchmark)
-                    .load(object.benchmark_id)
-                    .then(&:version)
-    end
-
     def compliant_host_count
       ::CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
         hosts.count { |host| object.compliant?(host) }
