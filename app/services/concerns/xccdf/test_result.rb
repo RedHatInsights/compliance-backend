@@ -7,6 +7,7 @@ module Xccdf
       @test_result = ::TestResult.create!(
         host: @host,
         profile: @host_profile,
+        supported: supported?,
         score: @op_test_result.score,
         start_time: @op_test_result.start_time.in_time_zone,
         end_time: @op_test_result.end_time.in_time_zone
@@ -23,6 +24,16 @@ module Xccdf
                          host: @host)
                   .where.not(id: @test_result.id)
                   .destroy_all
+    end
+
+    private
+
+    def supported?
+      SupportedSsg.supported?(
+        ssg_version: @host_profile.ssg_version,
+        os_major_version: @host.os_major_version,
+        os_minor_version: @host.os_minor_version
+      )
     end
   end
 end

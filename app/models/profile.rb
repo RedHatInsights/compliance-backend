@@ -50,6 +50,10 @@ class Profile < ApplicationRecord
     end
   end
 
+  def ssg_version
+    benchmark.version
+  end
+
   def policy_type
     (parent_profile || self).name
   end

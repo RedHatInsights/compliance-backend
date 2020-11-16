@@ -9,6 +9,16 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
   self::SUPPORTED_FILE = Rails.root.join('config/supported_ssg.yaml')
 
   class << self
+    def supported?(ssg_version:, os_major_version:, os_minor_version:)
+      ssg_version == ssg_for_os(os_major_version, os_minor_version)
+    end
+
+    def ssg_for_os(os_major_version, os_minor_version)
+      raw_supported.dig('supported',
+                        "RHEL-#{os_major_version}.#{os_minor_version}",
+                        'version')
+    end
+
     def all
       raw_supported['supported'].map do |rhel, values|
         major, minor = os_version(rhel)

@@ -82,4 +82,46 @@ class TestResultTest < ActiveSupport::TestCase
     end
     assert_equal TestResult.find_by(host: hosts(:one)), @mock.test_result
   end
+
+  context 'supportability' do
+    should 'default to supported' do
+      assert test_results(:one).supported
+    end
+
+    should 'mark hosts without an OS as unsupported' do
+      assert_nil hosts(:one).os_major_version
+      assert_nil hosts(:one).os_minor_version
+
+      @mock.save_test_result
+
+      test_result = TestResult.find_by(host: hosts(:one),
+                                       profile: profiles(:one))
+      assert_not test_result.supported
+    end
+
+    should 'mark hosts with a mismatched OS as unsupported' do
+      hosts(:one).update!(os_major_version: 7, os_minor_version: 4)
+      assert_not_equal SupportedSsg.ssg_for_os(7, 4),
+                       profiles(:one).ssg_version
+
+      @mock.save_test_result
+
+      test_result = TestResult.find_by(host: hosts(:one),
+                                       profile: profiles(:one))
+      assert_not test_result.supported
+    end
+
+    should 'mark hosts with a matched OS as supported' do
+      hosts(:one).update!(os_major_version: 7, os_minor_version: 4)
+      profiles(:one).benchmark.update!(version: '0.1.33')
+      assert_equal SupportedSsg.ssg_for_os(7, 4),
+                   profiles(:one).ssg_version
+
+      @mock.save_test_result
+
+      test_result = TestResult.find_by(host: hosts(:one),
+                                       profile: profiles(:one))
+      assert test_result.supported
+    end
+  end
 end
