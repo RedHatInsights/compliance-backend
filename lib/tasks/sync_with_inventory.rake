@@ -13,7 +13,7 @@ task sync_with_inventory: [:environment] do
             account, ::Settings.host_inventory_url, account.b64_identity
           ).inventory_host(host.id)
         )
-      rescue Faraday::ServerError => e
+      rescue Faraday::Error => e
         puts 'Inventory API error while syncing account '\
           "#{account.account_number}: System #{host.id} - #{host.name}. "
         puts e.full_message

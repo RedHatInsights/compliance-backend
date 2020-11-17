@@ -32,4 +32,31 @@ class SyncWithInventoryTest < ActiveSupport::TestCase
       Rake::Task['sync_with_inventory'].execute
     end
   end
+
+  test 'sync_with_inventory handles Forbidden errors' do
+    HostInventoryAPI.any_instance.stubs(:inventory_host)
+                    .raises(Faraday::ForbiddenError.new(''))
+
+    assert_nothing_raised do
+      Rake::Task['sync_with_inventory'].execute
+    end
+  end
+
+  test 'sync_with_inventory handles Client errors' do
+    HostInventoryAPI.any_instance.stubs(:inventory_host)
+                    .raises(Faraday::ClientError.new(''))
+
+    assert_nothing_raised do
+      Rake::Task['sync_with_inventory'].execute
+    end
+  end
+
+  test 'sync_with_inventory handles ConnectionFailed errors' do
+    HostInventoryAPI.any_instance.stubs(:inventory_host)
+                    .raises(Faraday::ConnectionFailed.new(''))
+
+    assert_nothing_raised do
+      Rake::Task['sync_with_inventory'].execute
+    end
+  end
 end
