@@ -2,6 +2,8 @@
 
 # Compliance policy
 class Policy < ApplicationRecord
+  include ProfilePolicyScoring
+
   DEFAULT_COMPLIANCE_THRESHOLD = 100.0
   PROFILE_ATTRS = %w[name description account_id compliance_threshold
                      business_objective_id].freeze
@@ -12,6 +14,7 @@ class Policy < ApplicationRecord
 
   has_many :policy_hosts, dependent: :destroy
   has_many :hosts, through: :policy_hosts, source: :host
+  has_many :test_result_hosts, through: :test_results, source: :host
 
   belongs_to :business_objective, optional: true
   belongs_to :account
@@ -42,6 +45,10 @@ class Policy < ApplicationRecord
     PolicyHost.import((new_host_ids - host_ids).map do |host_id|
       { host_id: host_id, policy_id: id }
     end)
+  end
+
+  def compliant?(host)
+    score(host: host) >= compliance_threshold
   end
 
   def os_major_version
