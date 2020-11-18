@@ -30,7 +30,7 @@ module Types
 
     def profiles(policy_id: nil)
       context_parent
-      all_profiles = object.all_profiles
+      all_profiles = object.policy_profiles
       all_profiles = all_profiles.in_policy(policy_id) if policy_id
       all_profiles
     end

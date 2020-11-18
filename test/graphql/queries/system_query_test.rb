@@ -189,9 +189,9 @@ class SystemQueryTest < ActiveSupport::TestCase
       result_profiles = result.first['node']['profiles']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
-      assert_includes result_profile_ids, other_profile.id
+      assert_not_includes result_profile_ids, other_profile.id
       assert_includes result_profile_ids, profiles(:one).id
-      assert_equal 2, result_profile_ids.length
+      assert_equal 1, result_profile_ids.length
     end
 
     should 'return external profile using an external profile id' \
@@ -216,7 +216,7 @@ class SystemQueryTest < ActiveSupport::TestCase
       }
       GRAPHQL
 
-      profiles(:one).update!(policy_id: nil)
+      profiles(:one).update!(policy_id: nil, external: true)
 
       result = Schema.execute(
         query,
@@ -278,7 +278,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     end
   end
 
-  test 'system returns profiles from test results' do
+  test 'system returns profiles from external policy test results' do
     query = <<-GRAPHQL
     query System($systemId: String!){
         system(id: $systemId) {
@@ -292,7 +292,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     }
     GRAPHQL
 
-    profiles(:one).update!(policy_object: nil)
+    profiles(:one).update!(policy_object: nil, external: true)
     profiles(:one).rules << rules(:one)
     rule_results(:one).update(
       host: hosts(:one), rule: rules(:one), test_result: test_results(:one)

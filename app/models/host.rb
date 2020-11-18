@@ -34,6 +34,12 @@ class Host < ApplicationRecord
            .distinct
   end
 
+  def policy_profiles
+    Profile.where(id: assigned_profiles.external(false))
+           .or(Profile.where(id: test_result_profiles.external(true)
+                      .where(policy_id: nil))).distinct
+  end
+
   class << self
     def filter_by_policy(_filter, _operator, policy_or_profile_id)
       with_policy = with_policy_lookup(policy_or_profile_id).select('id')
