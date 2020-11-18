@@ -251,6 +251,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
             id
             name
             totalHostCount
+            testResultHostCount
             compliantHostCount
             businessObjective {
                title
@@ -267,8 +268,12 @@ class ProfileQueryTest < ActiveSupport::TestCase
     profiles(:one).rules << rules(:two)
     profiles(:one).update(account: accounts(:test),
                           policy_object: policies(:one))
-    policies(:one).update(account: accounts(:test),
-                          hosts: [hosts(:one), hosts(:two)])
+    profiles(:two).update(account: accounts(:test),
+                          policy_object: policies(:one))
+    (host3 = hosts(:two).dup).update!(name: 'host3')
+    policies(:one).update(compliance_threshold: 95,
+                          account: accounts(:test),
+                          hosts: [hosts(:one), hosts(:two), host3])
 
     result = Schema.execute(
       query,
@@ -279,7 +284,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
     profile1_result = result['data']['allProfiles'].find do |h|
       h['name'] == 'profile1'
     end
-    assert_equal 2, profile1_result['totalHostCount']
+    assert_equal 3, profile1_result['totalHostCount']
+    assert_equal 2, profile1_result['testResultHostCount']
     assert_equal 1, profile1_result['compliantHostCount']
     assert_not profile1_result['businessObjective']
   end

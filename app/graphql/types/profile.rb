@@ -3,12 +3,14 @@
 require_relative 'interfaces/rules_preload'
 require_relative 'concerns/test_results'
 require_relative 'concerns/profile_pseudo_policy'
+require_relative 'concerns/profile_scoring'
 
 module Types
   # Definition of the Profile type in GraphQL
   class Profile < Types::BaseObject
     include TestResults
     include ProfilePseudoPolicy
+    include ProfileScoring
 
     implements(::RulesPreload)
 
@@ -38,6 +40,7 @@ module Types
     field :business_objective, ::Types::BusinessObjective, null: true
     field :business_objective_id, ID, null: true
     field :total_host_count, Int, null: false
+    field :test_result_host_count, Int, null: false
     field :external, Boolean, null: false
 
     field :score, Float, null: false do
@@ -71,17 +74,6 @@ module Types
 
     field :major_os_version, String, null: false
     field :policy_type, String, null: false
-
-    def compliant_host_count
-      ::CollectionLoader.for(object.class, :hosts).load(object).then do |hosts|
-        hosts.count { |host| object.compliant?(host) }
-      end
-    end
-
-    def total_host_count
-      ::CollectionLoader.for(policy_or_report.class, :hosts)
-                        .load(policy_or_report).then(&:count)
-    end
 
     def last_scanned(args = {})
       latest_test_result_batch(args).then do |latest_test_result|

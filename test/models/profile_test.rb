@@ -171,6 +171,14 @@ class ProfileTest < ActiveSupport::TestCase
       policies(:one).update(compliance_threshold: 51)
       assert_not profiles(:one).reload.compliant?(hosts(:one))
     end
+
+    should 'host is compliant if it is compliant on some policy profile' do
+      profiles(:two).update!(policy_object: policies(:one),
+                             account: accounts(:one))
+      policies(:one).update(compliance_threshold: 50)
+      assert policies(:one).compliant?(hosts(:one))
+      assert profiles(:two).reload.compliant?(hosts(:one))
+    end
   end
 
   test 'orphaned business objectives' do
@@ -316,6 +324,34 @@ class ProfileTest < ActiveSupport::TestCase
                     profiles(:two))
     assert_not_includes(Profile.search_for('has_test_results = false'),
                         profiles(:one))
+  end
+
+  context 'policy_test_results' do
+    should 'return all test results on the policy' do
+      profiles(:one).update!(policy_object: policies(:one))
+      profiles(:two).update!(policy_object: policies(:one),
+                             account: accounts(:one))
+
+      assert_not_empty policies(:one).test_results
+      assert_equal policies(:one).test_results,
+                   profiles(:one).policy_test_results
+      assert_equal policies(:one).test_results,
+                   profiles(:two).policy_test_results
+    end
+  end
+
+  context 'policy_test_result_hosts' do
+    should 'return all test result hosts on the policy' do
+      profiles(:one).update!(policy_object: policies(:one))
+      profiles(:two).update!(policy_object: policies(:one),
+                             account: accounts(:one))
+
+      assert_not_empty policies(:one).test_result_hosts
+      assert_equal Set.new(policies(:one).test_result_hosts),
+                   Set.new(profiles(:one).policy_test_result_hosts)
+      assert_equal Set.new(policies(:one).test_result_hosts),
+                   Set.new(profiles(:two).policy_test_result_hosts)
+    end
   end
 
   context 'has_policy_test_results filter' do

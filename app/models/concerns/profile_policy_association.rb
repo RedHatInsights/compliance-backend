@@ -10,6 +10,10 @@ module ProfilePolicyAssociation
 
     belongs_to :policy_object, class_name: :Policy, foreign_key: :policy_id,
                                optional: true, inverse_of: :profiles
+    has_many :policy_test_results, through: :policy_object,
+                                   source: :test_results
+    has_many :policy_test_result_hosts, -> { distinct },
+             through: :policy_test_results, source: :host
     delegate :business_objective, :business_objective_id, :update_hosts,
              to: :policy_object, allow_nil: true
     validate :no_duplicate_policy_types, on: :create

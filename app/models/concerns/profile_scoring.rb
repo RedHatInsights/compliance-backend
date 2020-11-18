@@ -2,6 +2,8 @@
 
 # Methods that are related to computing the score of a profile
 module ProfileScoring
+  include ProfilePolicyScoring
+
   def compliance_score(host)
     return 1 if results(host).count.zero?
 
@@ -9,6 +11,8 @@ module ProfileScoring
   end
 
   def compliant?(host)
+    return policy_object.compliant?(host) if policy_id
+
     score(host: host) >= compliance_threshold
   end
 
@@ -24,13 +28,5 @@ module ProfileScoring
         %w[pass notapplicable notselected].include? rule_result.result
       end
     end
-  end
-
-  def score(host: nil)
-    results = test_results.latest
-    results = results.where(host: host) if host
-    return 0 if results.blank?
-
-    ((scores = results.pluck(:score)).sum / scores.size).to_f
   end
 end

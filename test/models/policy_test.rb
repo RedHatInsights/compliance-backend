@@ -8,6 +8,7 @@ class PolicyTest < ActiveSupport::TestCase
   should have_many(:test_results).through(:profiles)
   should have_many(:policy_hosts)
   should have_many(:hosts).through(:policy_hosts).source(:host)
+  should have_many(:test_result_hosts).through(:test_results).source(:host)
   should belong_to(:business_objective).optional
   should belong_to(:account)
 
@@ -82,6 +83,35 @@ class PolicyTest < ActiveSupport::TestCase
       assert_difference('BusinessObjective.count' => -1) do
         Policy.where(id: policies(:one)).destroy_all
       end
+    end
+  end
+
+  context 'compliant?' do
+    should 'be compliant if score is above compliance threshold' do
+      policies(:one).update!(compliance_threshold: 90)
+      policies(:one).stubs(:score).returns(95)
+      profiles(:one).update!(policy_object: policies(:one),
+                             account: accounts(:test))
+
+      assert policies(:one).compliant?(hosts(:one))
+
+      policies(:one).update!(compliance_threshold: 96)
+
+      assert_not policies(:one).compliant?(hosts(:one))
+    end
+  end
+
+  context 'score' do
+    should 'return the associated profile score' do
+      profiles(:one).update!(policy_object: policies(:one),
+                             account: accounts(:test))
+      profiles(:two).update!(policy_object: policies(:one),
+                             account: accounts(:test))
+
+      assert_equal test_results(:one).score,
+                   policies(:one).score(host: hosts(:one))
+      assert_equal test_results(:two).score,
+                   policies(:one).score(host: hosts(:two))
     end
   end
 end
