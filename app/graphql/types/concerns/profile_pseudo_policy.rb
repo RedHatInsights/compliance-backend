@@ -6,11 +6,11 @@ module Types
     extend ActiveSupport::Concern
 
     def name
-      object == policy ? object.policy_object.name : object.name
+      object.policy_object&.name || object.name
     end
 
     def description
-      object == policy ? object.policy_object.description : object.description
+      object.policy_object&.description || object.description
     end
 
     # Pseudo policy with a Profile type

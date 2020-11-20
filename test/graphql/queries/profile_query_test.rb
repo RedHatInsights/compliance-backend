@@ -138,7 +138,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
         context: { current_user: users(:test) }
       )
 
-      assert_equal profiles(:two).name, result['data']['profile']['name']
+      assert_equal policies(:one).name, result['data']['profile']['name']
       assert_equal profiles(:two).ref_id, result['data']['profile']['refId']
 
       assert_equal profiles(:one).id,
@@ -193,8 +193,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
       second_profile =
         returned_profiles.find { |rp| rp['id'] == profiles(:two).id }
       assert_equal profiles(:two).ref_id, second_profile['refId']
-      assert_equal profiles(:two).name, second_profile['name']
-      assert_equal profiles(:two).description, second_profile['description']
+      assert_equal policies(:one).name, second_profile['name']
+      assert_equal policies(:one).description, second_profile['description']
     end
 
     should 'query profile with a policy profiles using any policy profile' \
@@ -224,7 +224,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
         context: { current_user: users(:test) }
       )
 
-      assert_equal profiles(:two).name, result['data']['profile']['name']
+      assert_equal policies(:one).name, result['data']['profile']['name']
       assert_equal profiles(:two).ref_id, result['data']['profile']['refId']
 
       returned_profiles = result['data']['profile']['policy']['profiles']
@@ -239,8 +239,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
       second_profile =
         returned_profiles.find { |rp| rp['id'] == profiles(:two).id }
       assert_equal profiles(:two).ref_id, second_profile['refId']
-      assert_equal profiles(:two).name, second_profile['name']
-      assert_equal profiles(:two).description, second_profile['description']
+      assert_equal policies(:one).name, second_profile['name']
+      assert_equal policies(:one).description, second_profile['description']
     end
   end
 
@@ -282,8 +282,9 @@ class ProfileQueryTest < ActiveSupport::TestCase
     )
 
     profile1_result = result['data']['allProfiles'].find do |h|
-      h['name'] == 'profile1'
+      h['id'] == profiles(:one).id
     end
+    assert_equal policies(:one).name, profile1_result['name']
     assert_equal 3, profile1_result['totalHostCount']
     assert_equal 2, profile1_result['testResultHostCount']
     assert_equal 1, profile1_result['compliantHostCount']
