@@ -269,11 +269,13 @@ class SystemQueryTest < ActiveSupport::TestCase
     hosts.each do |graphql_host|
       host = Host.find(graphql_host['node']['id'])
       graphql_host['node']['profiles'].each do |graphql_profile|
-        assert_includes host.assigned_profiles.map(&:name),
-                        graphql_profile['name']
+        assert_includes host.assigned_profiles.map(&:id),
+                        graphql_profile['id']
         profile = Profile.find(graphql_profile['id'])
         assert_equal host.rules_passed(profile), graphql_profile['rulesPassed']
         assert_equal host.rules_failed(profile), graphql_profile['rulesFailed']
+        assert_includes host.policies.pluck(:name),
+                        graphql_profile['name']
       end
     end
   end
