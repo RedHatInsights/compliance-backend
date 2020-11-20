@@ -29,7 +29,7 @@ namespace :ssg do
     # DATASTREAM_FILENAMES from openscap_parser's ssg:sync
     ENV['DATASTREAMS'] = ::SupportedSsg.available_upstream.map do |ssg|
       "v#{ssg.upstream_version || ssg.version}:rhel#{ssg.os_major_version}"
-    end.join(',')
+    end.uniq.join(',')
     Rake::Task['ssg:sync'].invoke
     DATASTREAM_FILENAMES.flatten.each do |filename|
       ENV['DATASTREAM_FILE'] = filename
