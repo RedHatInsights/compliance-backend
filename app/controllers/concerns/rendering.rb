@@ -11,10 +11,16 @@ module Rendering
       render({ json: serializer.new(model, opts) }.merge(args))
     end
 
-    def render_error(models, **args)
+    def render_error(messages, status: :not_acceptable, **opts)
+      messages = [messages].flatten
       render({ json: {
-        errors: model_errors(models)
-      }, status: :not_acceptable }.merge(args))
+        errors: messages
+      }, status: status }.merge(opts))
+    end
+
+    def render_model_errors(models, status: :not_acceptable, **opts)
+      messages = model_errors(models)
+      render_error(messages, status: status, **opts)
     end
 
     private

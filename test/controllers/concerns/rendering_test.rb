@@ -17,6 +17,22 @@ class RenderingTest < ActionDispatch::IntegrationTest
 
   context '#render_error' do
     setup do
+      @controller = DummyController.new
+    end
+
+    should 'accept a single message' do
+      @controller.expects(:render)
+      @controller.render_error('Error message')
+    end
+
+    should 'accept multiple messages' do
+      @controller.expects(:render)
+      @controller.render_error(%w[one two])
+    end
+  end
+
+  context '#render_model_errors' do
+    setup do
       @model = OpenStruct.new(
         errors: OpenStruct.new(full_messages: [:foo.to_s, :bar.to_s])
       )
