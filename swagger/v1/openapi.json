@@ -203,7 +203,9 @@
             "description": "benchmark not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Xccdf::Benchmark not found with ID invalid"
+                "errors": [
+                  "Xccdf::Benchmark not found with ID invalid"
+                ]
               }
             },
             "content": {}
@@ -478,7 +480,9 @@
             "description": "business_objective not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "BusinessObjective not found with ID invalid"
+                "errors": [
+                  "BusinessObjective not found with ID invalid"
+                ]
               }
             },
             "content": {}
@@ -990,7 +994,9 @@
             "description": "profile not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Profile not found with ID invalid"
+                "errors": [
+                  "Profile not found with ID invalid"
+                ]
               }
             },
             "content": {}
@@ -1190,7 +1196,9 @@
             "description": "profile not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Profile not found with ID invalid"
+                "errors": [
+                  "Profile not found with ID invalid"
+                ]
               }
             },
             "content": {}
@@ -1413,7 +1421,9 @@
             "description": "profile not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Profile not found with ID invalid"
+                "errors": [
+                  "Profile not found with ID invalid"
+                ]
               }
             },
             "content": {}
@@ -1848,7 +1858,9 @@
             "description": "rule not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Rule not found with ID 37f7eeff-831b-5c41-984a-254965f58c0f"
+                "errors": [
+                  "Rule not found with ID 37f7eeff-831b-5c41-984a-254965f58c0f"
+                ]
               }
             },
             "content": {}
@@ -2574,7 +2586,9 @@
             "description": "system not found",
             "examples": {
               "application/vnd.api+json": {
-                "errors": "Host not found with ID invalid"
+                "errors": [
+                  "Host not found with ID invalid"
+                ]
               }
             },
             "content": {}

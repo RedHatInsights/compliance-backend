@@ -278,7 +278,7 @@ module V1
         end
         assert_response :unprocessable_entity
         assert_match 'param is missing or the value is empty: data',
-                     JSON.parse(response.body).dig('errors')
+                     JSON.parse(response.body).dig('errors', 0)
       end
 
       test 'create with invalid data' do
@@ -287,7 +287,7 @@ module V1
         end
         assert_response :unprocessable_entity
         assert_match 'data must be a hash',
-                     JSON.parse(response.body).dig('errors')
+                     JSON.parse(response.body).dig('errors', 0)
       end
 
       test 'create with empty attributes' do
@@ -296,7 +296,7 @@ module V1
         end
         assert_response :unprocessable_entity
         assert_match 'param is missing or the value is empty: data',
-                     JSON.parse(response.body).dig('errors')
+                     JSON.parse(response.body).dig('errors', 0)
       end
 
       test 'create with invalid attributes' do
@@ -305,7 +305,7 @@ module V1
         end
         assert_response :unprocessable_entity
         assert_match 'attributes must be a hash',
-                     JSON.parse(response.body).dig('errors')
+                     JSON.parse(response.body).dig('errors', 0)
       end
 
       test 'create with empty parent_profile_id' do
@@ -317,7 +317,7 @@ module V1
         assert_response :unprocessable_entity
         assert_match 'param is missing or the value is empty: '\
                      'parent_profile_id',
-                     JSON.parse(response.body).dig('errors')
+                     JSON.parse(response.body).dig('errors', 0)
       end
 
       test 'create with an unfound parent_profile_id' do
@@ -592,21 +592,21 @@ module V1
         patch v1_profile_path(@profile.id), params: params({})
         assert_response :unprocessable_entity
         assert_match 'param is missing or the value is empty: data',
-                     JSON.parse(response.body).dig('errors')
+                     JSON.parse(response.body).dig('errors', 0)
       end
 
       test 'update with invalid data' do
         patch profile_path(@profile.id), params: params('foo')
         assert_response :unprocessable_entity
         assert_match 'data must be a hash',
-                     JSON.parse(response.body).dig('errors')
+                     JSON.parse(response.body).dig('errors', 0)
       end
 
       test 'update with invalid attributes' do
         patch profile_path(@profile.id), params: params(attributes: 'foo')
         assert_response :unprocessable_entity
         assert_match 'attributes must be a hash',
-                     JSON.parse(response.body).dig('errors')
+                     JSON.parse(response.body).dig('errors', 0)
       end
 
       test 'update with a single attribute' do
