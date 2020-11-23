@@ -22,31 +22,30 @@ class ApplicationController < ActionController::API
   end
 
   rescue_from ActiveRecord::RecordNotUnique do |error|
-    render json: {
-      errors: "Duplicate record: #{error.message[/Key \(.+\).+\./]}"
-    }, status: :conflict
+    render_error "Duplicate record: #{error.message[/Key \(.+\).+\./]}",
+                 status: :conflict
   end
 
   rescue_from Pundit::NotAuthorizedError do
-    render json: { errors: 'You are not authorized to access this action.' },
-           status: :forbidden
+    render_error 'You are not authorized to access this action.',
+                 status: :forbidden
   end
 
   rescue_from ActiveRecord::RecordNotFound do |error|
     logger.info "#{error.message} (#{error.class})"
-    render json: { errors: "#{error.model} not found with ID #{error.id}" },
-           status: :not_found
+    render_error "#{error.model} not found with ID #{error.id}",
+                 status: :not_found
   end
 
   rescue_from ActionController::ParameterMissing do |error|
     logger.info "#{error.message} (#{error.class})"
-    render json: { errors: "Parameter missing: #{error.message}" },
-           status: :unprocessable_entity
+    render_error "Parameter missing: #{error.message}",
+                 status: :unprocessable_entity
   end
 
   rescue_from StrongerParameters::InvalidParameter do |error|
     logger.info "#{error.message} (#{error.class})"
-    render json: { errors: error.message },
-           status: :unprocessable_entity
+    render_error error.message,
+                 status: :unprocessable_entity
   end
 end
