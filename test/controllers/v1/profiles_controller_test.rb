@@ -349,6 +349,21 @@ module V1
                      parsed_data.dig('relationships', 'account', 'data', 'id')
       end
 
+      test 'create with an exisiting profile type for a major OS' do
+        (parent = profiles(:one).dup).update!(account: nil, policy_id: nil)
+        profiles(:one).update!(policy_id: policies(:one).id,
+                               parent_profile: parent)
+
+        assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: parent.id
+            }
+          )
+        end
+        assert_response :not_acceptable
+      end
+
       test 'create with a business objective' do
         assert_difference('Profile.count' => 1, 'Policy.count' => 1) do
           post profiles_path, params: params(
