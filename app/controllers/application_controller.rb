@@ -37,6 +37,15 @@ class ApplicationController < ActionController::API
                  status: :not_found
   end
 
+  rescue_from ActiveRecord::RecordInvalid do |error|
+    logger.info "#{error.message} (#{error.class})"
+    if error.record
+      render_model_errors(error.record)
+    else
+      render_error(error.message)
+    end
+  end
+
   rescue_from ActionController::ParameterMissing do |error|
     logger.info "#{error.message} (#{error.class})"
     render_error "Parameter missing: #{error.message}",
