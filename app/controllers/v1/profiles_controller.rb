@@ -35,7 +35,7 @@ module V1
           update_relationships
           render_json new_profile, status: :created
         else
-          render_error [new_profile, new_policy]
+          render_model_errors [new_profile, new_policy]
           raise ActiveRecord::Rollback
         end
       end
@@ -47,7 +47,7 @@ module V1
           update_relationships
           render_json profile
         else
-          render_error profile
+          render_model_errors profile
         end
       end
     end
