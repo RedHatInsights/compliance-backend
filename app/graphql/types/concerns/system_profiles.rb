@@ -7,9 +7,18 @@ module Types
 
     def profiles(policy_id: nil)
       context_parent
-      all_profiles = object.all_profiles
-      all_profiles = all_profiles.in_policy(policy_id) if policy_id
-      all_profiles
+      scope_profiles(object.all_profiles, policy_id)
+    end
+
+    def test_result_profiles(policy_id: nil)
+      context_parent
+      scope_profiles(object.test_result_profiles, policy_id)
+    end
+
+    private
+
+    def scope_profiles(profiles, policy_id)
+      policy_id ? profiles.in_policy(policy_id) : profiles
     end
   end
 end

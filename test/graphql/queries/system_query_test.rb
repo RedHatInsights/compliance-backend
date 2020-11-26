@@ -77,7 +77,7 @@ class SystemQueryTest < ActiveSupport::TestCase
                   node {
                       id
                       name
-                      profiles {
+                      testResultProfiles {
                           id
                           rulesPassed
                           rulesFailed
@@ -96,7 +96,7 @@ class SystemQueryTest < ActiveSupport::TestCase
         context: { current_user: users(:test) }
       )['data']['systems']['edges']
 
-      result_profiles = result.first['node']['profiles']
+      result_profiles = result.first['node']['testResultProfiles']
       assert_equal 2, result_profiles.length
 
       passed_profile = result_profiles.find { |p| p['id'] == profiles(:one).id }
@@ -151,6 +151,97 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_equal 1, result_profile_ids.length
     end
 
+    should 'filter test result profiles by policyId using an internal' \
+           ' profile id' do
+      query = <<-GRAPHQL
+      query getSystems($policyId: ID) {
+          systems(limit: 50, offset: 1) {
+              edges {
+                  node {
+                      id
+                      name
+                      testResultProfiles(policyId: $policyId) {
+                          id
+                          rulesPassed
+                          rulesFailed
+                          lastScanned
+                          compliant
+                      }
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      (second_benchmark = benchmarks(:one).dup).update!(version: '1.2.3')
+      other_profile = profiles(:one).dup
+      other_profile.update!(policy_object: policies(:one),
+                            external: true,
+                            benchmark: second_benchmark,
+                            account: accounts(:test))
+
+      test_results(:one).update!(profile: other_profile)
+
+      result = Schema.execute(
+        query,
+        variables: { policyId: profiles(:one).id },
+        context: { current_user: users(:test) }
+      )['data']['systems']['edges']
+
+      result_profiles = result.first['node']['testResultProfiles']
+
+      assert_equal 1, result_profiles.first['rulesPassed']
+      assert_equal 0, result_profiles.first['rulesFailed']
+      assert result_profiles.first['lastScanned']
+      assert result_profiles.first['compliant']
+
+      result_profile_ids = result_profiles.map { |p| p['id'] }
+      assert_includes result_profile_ids, other_profile.id
+      assert_equal 1, result_profile_ids.length
+    end
+
+    should 'return test results filtered by policyId even if the host' \
+           ' is not associated to the policy' do
+      query = <<-GRAPHQL
+      query getSystems($policyId: ID) {
+          systems(limit: 50, offset: 1) {
+              edges {
+                  node {
+                      id
+                      name
+                      testResultProfiles(policyId: $policyId) {
+                          id
+                          rulesPassed
+                          rulesFailed
+                          lastScanned
+                          compliant
+                      }
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      hosts(:one).policies.delete(policies(:one))
+
+      result = Schema.execute(
+        query,
+        variables: { policyId: profiles(:one).id },
+        context: { current_user: users(:test) }
+      )['data']['systems']['edges']
+
+      result_profiles = result.first['node']['testResultProfiles']
+
+      assert_equal 1, result_profiles.first['rulesPassed']
+      assert_equal 0, result_profiles.first['rulesFailed']
+      assert result_profiles.first['lastScanned']
+      assert result_profiles.first['compliant']
+
+      result_profile_ids = result_profiles.map { |p| p['id'] }
+      assert_includes result_profile_ids, profiles(:one).id
+      assert_equal 1, result_profile_ids.length
+    end
+
     should 'return policy profiles using an any policy profile id' \
            'via policyId' do
       query = <<-GRAPHQL
@@ -192,6 +283,48 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_includes result_profile_ids, other_profile.id
       assert_includes result_profile_ids, profiles(:one).id
       assert_equal 2, result_profile_ids.length
+    end
+
+    should 'filter test result profiles by policyId using any policy' \
+           ' profile id' do
+      query = <<-GRAPHQL
+      query getSystems($policyId: ID) {
+        systems(limit: 50, offset: 1) {
+            edges {
+                node {
+                    id
+                    name
+                    testResultProfiles(policyId: $policyId) {
+                        id
+                        rulesPassed
+                        rulesFailed
+                        lastScanned
+                        compliant
+                    }
+                }
+            }
+        }
+      }
+      GRAPHQL
+
+      (second_benchmark = benchmarks(:one).dup).update!(version: '1.2.3')
+      other_profile = profiles(:one).dup
+      other_profile.update!(policy_object: policies(:one),
+                            external: true,
+                            benchmark: second_benchmark,
+                            account: accounts(:test))
+
+      result = Schema.execute(
+        query,
+        variables: { policyId: other_profile.id },
+        context: { current_user: users(:test) }
+      )['data']['systems']['edges']
+
+      result_profiles = result.first['node']['testResultProfiles']
+
+      result_profile_ids = result_profiles.map { |p| p['id'] }
+      assert_includes result_profile_ids, profiles(:one).id
+      assert_equal 1, result_profile_ids.length
     end
 
     should 'return external profile using an external profile id' \
@@ -252,6 +385,14 @@ class SystemQueryTest < ActiveSupport::TestCase
                         lastScanned
                         compliant
                     }
+                    testResultProfiles {
+                        id
+                        name
+                        rulesPassed
+                        rulesFailed
+                        lastScanned
+                        compliant
+                    }
                 }
             }
         }
@@ -268,14 +409,18 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_equal 2, hosts.count
     hosts.each do |graphql_host|
       host = Host.find(graphql_host['node']['id'])
-      graphql_host['node']['profiles'].each do |graphql_profile|
-        assert_includes host.assigned_profiles.map(&:id),
-                        graphql_profile['id']
-        profile = Profile.find(graphql_profile['id'])
-        assert_equal host.rules_passed(profile), graphql_profile['rulesPassed']
-        assert_equal host.rules_failed(profile), graphql_profile['rulesFailed']
-        assert_includes host.policies.pluck(:name),
-                        graphql_profile['name']
+      %w[profiles testResultProfiles].each do |field|
+        graphql_host['node'][field].each do |graphql_profile|
+          assert_includes host.assigned_profiles.map(&:id),
+                          graphql_profile['id']
+          profile = Profile.find(graphql_profile['id'])
+          assert_equal host.rules_passed(profile),
+                       graphql_profile['rulesPassed']
+          assert_equal host.rules_failed(profile),
+                       graphql_profile['rulesFailed']
+          assert_includes host.policies.pluck(:name),
+                          graphql_profile['name']
+        end
       end
     end
   end
@@ -287,6 +432,10 @@ class SystemQueryTest < ActiveSupport::TestCase
             id
             name
             profiles {
+                id
+                name
+            }
+            testResultProfiles {
                 id
                 name
             }
@@ -310,6 +459,12 @@ class SystemQueryTest < ActiveSupport::TestCase
     returned_profiles = result.dig('data', 'system', 'profiles')
     assert returned_profiles.any?
     assert_includes returned_profiles.map { |p| p['id'] }, profiles(:one).id
+
+    returned_result_profiles = result.dig('data', 'system',
+                                          'testResultProfiles')
+    assert returned_result_profiles.any?
+    assert_includes returned_result_profiles.map { |p| p['id'] },
+                    profiles(:one).id
   end
 
   test 'page info can be obtained on system query' do

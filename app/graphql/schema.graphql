@@ -387,6 +387,12 @@ type System implements Node {
     """
     profileId: String
   ): Int!
+  testResultProfiles(
+    """
+    Filter results tested against a policy or profile ID
+    """
+    policyId: ID
+  ): [Profile!]
 }
 
 """
