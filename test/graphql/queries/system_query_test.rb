@@ -367,6 +367,37 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_includes result_profile_ids, profiles(:one).id
       assert_equal 1, result_profile_ids.length
     end
+
+    should 'filter polices by policyId using an internal profile id' do
+      query = <<-GRAPHQL
+      query getSystems($policyId: ID) {
+          systems(limit: 50, offset: 1) {
+              edges {
+                  node {
+                      id
+                      name
+                      policies(policyId: $policyId) {
+                          id
+                          name
+                      }
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      result = Schema.execute(
+        query,
+        variables: { policyId: profiles(:one).id },
+        context: { current_user: users(:test) }
+      )['data']['systems']['edges']
+
+      returned_policies = result.first['node']['policies']
+      assert_equal 1, returned_policies.length
+
+      assert_equal returned_policies.dig(0, 'id'), profiles(:one).id
+      assert_equal returned_policies.dig(0, 'name'), policies(:one).name
+    end
   end
 
   test 'query children profile only returns profiles owned by host' do
@@ -465,6 +496,35 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert returned_result_profiles.any?
     assert_includes returned_result_profiles.map { |p| p['id'] },
                     profiles(:one).id
+  end
+
+  test 'system returns assigned policies' do
+    query = <<-GRAPHQL
+    query System($systemId: String!){
+        system(id: $systemId) {
+            id
+            name
+            policies {
+                id
+                name
+            }
+        }
+    }
+    GRAPHQL
+
+    hosts(:one).policies << policies(:one)
+
+    result = Schema.execute(
+      query,
+      variables: { systemId: hosts(:one).id },
+      context: { current_user: users(:test) }
+    )
+
+    returned_policies = result.dig('data', 'system', 'policies')
+    assert_equal 1, returned_policies.length
+
+    assert_equal returned_policies.dig(0, 'id'), profiles(:one).id
+    assert_equal returned_policies.dig(0, 'name'), policies(:one).name
   end
 
   test 'page info can be obtained on system query' do

@@ -15,6 +15,12 @@ module Types
       scope_profiles(object.test_result_profiles, policy_id)
     end
 
+    def policies(policy_id: nil)
+      context_parent
+      policy_profiles = object.assigned_profiles.external(false)
+      scope_profiles(policy_profiles, policy_id)
+    end
+
     private
 
     def scope_profiles(profiles, policy_id)
