@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+require_relative 'concerns/system_profiles'
+
 module Types
   # Definition of the System GraphQL type
   class System < Types::BaseObject
+    include SystemProfiles
+
     model_class ::Host
     graphql_name 'System'
     description 'A System registered in Insights Compliance'
@@ -26,13 +30,6 @@ module Types
     field :last_scanned, String, null: true do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
-    end
-
-    def profiles(policy_id: nil)
-      context_parent
-      all_profiles = object.all_profiles
-      all_profiles = all_profiles.in_policy(policy_id) if policy_id
-      all_profiles
     end
 
     def rules_passed(args = {})
