@@ -24,6 +24,10 @@ module Types
                'Filter results tested against a policy or profile ID',
                required: false
     end
+    field :policies, [::Types::Profile], null: true do
+      argument :policy_id, ID, 'Filter results by policy or profile ID',
+               required: false
+    end
     field :rules_passed, Int, null: false do
       argument :profile_id, String, 'Filter results by profile ID',
                required: false
