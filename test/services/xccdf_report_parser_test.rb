@@ -194,6 +194,10 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   end
 
   context 'rule results' do
+    setup do
+      @report_parser.stubs(:external_report?)
+    end
+
     should 'save them, associate them with a rule and a host' do
       assert_difference('RuleResult.count', 59) do
         @report_parser.save_all
@@ -374,6 +378,16 @@ class XccdfReportParserTest < ActiveSupport::TestCase
             'display_name' => 'lenovolobato.lobatolan.home'
           }
         )
+      end
+    end
+  end
+
+  context 'missing policy' do
+    should 'raise an error and halt parsing (external report)' do
+      @report_parser.stubs(:external_report?).returns(true)
+      @report_parser.save_host
+      assert_raises(::ExternalReportError) do
+        @report_parser.check_for_external_reports
       end
     end
   end

@@ -6,6 +6,8 @@ class MissingIdError < StandardError; end
 class WrongFormatError < StandardError; end
 # Error to raise if the OS version does not match benchmark's
 class OSVersionMismatch < StandardError; end
+# Error to raise if the incoming report belongs to no known policy
+class ExternalReportError < StandardError; end
 
 # Takes in a path to an Xccdf file, returns all kinds of properties about it
 # and saves it in our database
@@ -45,10 +47,23 @@ class XccdfReportParser
     # rubocop:enable Style/GuardClause
   end
 
+  def check_for_external_reports
+    # rubocop:disable Style/GuardClause
+    if external_report?
+      raise ExternalReportError,
+            "No policy found matching benchmark #{benchmark.ref_id} "\
+            "(RHEL-#{benchmark.os_major_version}) and profile "\
+            "#{test_result_profile.ref_id} with host #{@host.name} assigned "\
+            "for account #{@account.account_number}."
+    end
+    # rubocop:enable Style/GuardClause
+  end
+
   def save_all
     Host.transaction do
       save_host
       check_os_version
+      check_for_external_reports unless Settings.features.parse_external_reports
       save_all_benchmark_info
       save_all_test_result_info
     end

@@ -28,16 +28,20 @@ module Xccdf
       )
     end
 
+    def external_report?
+      test_result_profile.find_policy(account: @account, hosts: [@host]).nil?
+    end
+
     private
 
     def test_result_profile
       ::Profile.canonical
                .where(ref_id: @test_result_file.test_result.profile_id,
-                      benchmark: @benchmark).first ||
+                      benchmark: benchmark).first ||
         ::Profile.find_or_initialize_by(
           ref_id: @test_result_file.test_result.profile_id,
           name: @test_result_file.test_result.profile_id,
-          benchmark_id: @benchmark.id
+          benchmark_id: benchmark.id
         )
     end
 
