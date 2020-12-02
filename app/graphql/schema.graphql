@@ -140,8 +140,15 @@ type Profile implements Node & RulesPreload {
     systemId: String
   ): Float!
   ssgVersion: String!
+  supported(
+    """
+    Latest TestResult supported for this system and profile
+    """
+    systemId: String
+  ): Boolean!
   testResultHostCount: Int!
   totalHostCount: Int!
+  unsupportedHostCount: Int!
 }
 
 """
@@ -448,6 +455,7 @@ type TestResult implements Node {
   profile: Profile!
   score: Float!
   startTime: String
+  supported: Boolean!
 }
 
 """

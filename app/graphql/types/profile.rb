@@ -41,11 +41,18 @@ module Types
     field :business_objective_id, ID, null: true
     field :total_host_count, Int, null: false
     field :test_result_host_count, Int, null: false
+    field :unsupported_host_count, Int, null: false
     field :external, Boolean, null: false
 
     field :score, Float, null: false do
       argument :system_id, String,
                'Latest TestResult score for this system and profile',
+               required: false
+    end
+
+    field :supported, Boolean, null: false do
+      argument :system_id, String,
+               'Latest TestResult supported for this system and profile',
                required: false
     end
 

@@ -5,6 +5,15 @@ module Types
   module ProfileScoring
     extend ActiveSupport::Concern
 
+    def unsupported_host_count
+      ::CollectionLoader.for(
+        object.class,
+        object.policy_id ? :policy_test_results : :test_results
+      ).load(object).then do |test_results|
+        test_results.latest.supported(false).count
+      end
+    end
+
     def compliant_host_count
       ::CollectionLoader.for(
         object.class,

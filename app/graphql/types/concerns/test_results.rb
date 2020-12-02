@@ -15,6 +15,16 @@ module Types
       end
     end
 
+    def supported(args = {})
+      latest_test_result_batch(args).then do |latest_test_result|
+        if latest_test_result.blank?
+          false
+        else
+          latest_test_result.supported
+        end
+      end
+    end
+
     def compliant(args = {})
       latest_test_result_batch(args).then do |latest_test_result|
         host_results = latest_test_result&.rule_results
