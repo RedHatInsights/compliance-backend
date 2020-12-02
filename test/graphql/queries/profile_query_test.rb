@@ -287,7 +287,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
     end
     assert_equal policies(:one).name, profile1_result['name']
     assert_equal 3, profile1_result['totalHostCount']
-    assert_equal 2, profile1_result['testResultHostCount']
+    assert_equal 1, profile1_result['testResultHostCount']
     assert_equal 1, profile1_result['compliantHostCount']
     assert_equal 1, profile1_result['unsupportedHostCount']
     assert_not profile1_result['businessObjective']
