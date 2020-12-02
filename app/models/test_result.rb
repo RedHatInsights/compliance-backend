@@ -25,6 +25,10 @@ class TestResult < ApplicationRecord
           'test_results.end_time = tr.end_time')
   }
 
+  scope :supported, lambda { |supported = true|
+    where(supported: supported)
+  }
+
   def destroy_orphaned_external_profiles
     profile.destroy if profile&.policy_id.nil? && profile&.test_results&.empty?
   end

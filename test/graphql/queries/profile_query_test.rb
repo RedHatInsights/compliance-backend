@@ -253,6 +253,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
             totalHostCount
             testResultHostCount
             compliantHostCount
+            unsupportedHostCount
             businessObjective {
                title
             }
@@ -263,7 +264,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
     test_results(:one).update(profile: profiles(:one), host: hosts(:one),
                               score: 100)
     test_results(:two).update(profile: profiles(:two), host: hosts(:two),
-                              score: 90)
+                              score: 90, supported: false)
     profiles(:one).rules << rules(:one)
     profiles(:one).rules << rules(:two)
     profiles(:one).update(account: accounts(:test),
@@ -288,6 +289,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
     assert_equal 3, profile1_result['totalHostCount']
     assert_equal 2, profile1_result['testResultHostCount']
     assert_equal 1, profile1_result['compliantHostCount']
+    assert_equal 1, profile1_result['unsupportedHostCount']
     assert_not profile1_result['businessObjective']
   end
 end

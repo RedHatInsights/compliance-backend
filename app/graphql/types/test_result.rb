@@ -11,6 +11,7 @@ module Types
     field :start_time, String, null: true
     field :end_time, String, null: false
     field :score, Float, null: false
+    field :supported, Boolean, null: false
     field :profile, ::Types::Profile, null: false
     field :host, ::Types::System, null: false
   end

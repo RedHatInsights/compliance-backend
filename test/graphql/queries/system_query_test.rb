@@ -60,7 +60,8 @@ class SystemQueryTest < ActiveSupport::TestCase
         host: hosts(:one), rule: rules(:two), test_result: test_results(:two)
       )
       test_results(:one).update(profile: profiles(:one), host: hosts(:one))
-      test_results(:two).update(profile: profiles(:two), host: hosts(:one))
+      test_results(:two).update(profile: profiles(:two), host: hosts(:one),
+                                supported: false)
       profiles(:one).rules << rules(:one)
       profiles(:two).rules << rules(:two)
       policies(:one).update(compliance_threshold: 95)
@@ -397,6 +398,45 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       assert_equal returned_policies.dig(0, 'id'), profiles(:one).id
       assert_equal returned_policies.dig(0, 'name'), policies(:one).name
+    end
+
+    should 'return suppotability and SSG information' do
+      query = <<-GRAPHQL
+      query getSystems($policyId: ID) {
+          systems(limit: 50, offset: 1) {
+              edges {
+                  node {
+                      id
+                      testResultProfiles(policyId: $policyId) {
+                          id
+                          rulesPassed
+                          rulesFailed
+                          lastScanned
+                          compliant
+                          score
+                          supported
+                          ssgVersion
+                      }
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      result = Schema.execute(
+        query,
+        variables: { policyId: profiles(:one).id },
+        context: { current_user: users(:test) }
+      )['data']['systems']['edges']
+
+      returned_profiles = result.dig(0, 'node', 'testResultProfiles')
+      assert_equal 1, returned_profiles.length
+
+      assert_equal test_results(:one).score, returned_profiles.dig(0, 'score')
+      assert_equal test_results(:one).supported,
+                   returned_profiles.dig(0, 'supported')
+      assert_equal profiles(:one).ssg_version,
+                   returned_profiles.dig(0, 'ssgVersion')
     end
   end
 
