@@ -14,10 +14,14 @@ class SupportedSsgTest < ActiveSupport::TestCase
   context 'loaded supported SSGs' do
     setup do
       loaded = [
-        SupportedSsg.new(version: '0.1.50'),
-        SupportedSsg.new(version: '0.1.24'),
-        SupportedSsg.new(upstream_version: '0.1.25', version: '0.1.22'),
-        SupportedSsg.new(upstream_version: 'N/A', version: '0.1.1')
+        SupportedSsg.new(version: '0.1.50',
+                         os_major_version: '7', os_minor_version: '3'),
+        SupportedSsg.new(version: '0.1.24',
+                         os_major_version: '7', os_minor_version: '2'),
+        SupportedSsg.new(upstream_version: '0.1.25', version: '0.1.22',
+                         os_major_version: '6', os_minor_version: '10'),
+        SupportedSsg.new(upstream_version: 'N/A', version: '0.1.1',
+                         os_major_version: '6', os_minor_version: '9')
       ]
       SupportedSsg.stubs(:all).returns(loaded)
     end
@@ -29,6 +33,14 @@ class SupportedSsgTest < ActiveSupport::TestCase
       assert_includes versions, '0.1.24'
       assert_includes versions, '0.1.22' # upstream version is higher
       assert_equal in_upstream.count, 3
+    end
+
+    should 'provide models by latest in each OS major version' do
+      latest = SupportedSsg.latest_per_os_major
+      versions = latest.map(&:version)
+      assert_includes versions, '0.1.50'
+      assert_includes versions, '0.1.22'
+      assert_equal latest.count, 2
     end
   end
 
