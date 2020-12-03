@@ -7,6 +7,13 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
                           :os_major_version, :os_minor_version,
                           keyword_init: true) do
   self::SUPPORTED_FILE = Rails.root.join('config/supported_ssg.yaml')
+  OS_NAME = 'RHEL'
+  self::OS_NAME = OS_NAME
+
+  def ref_id
+    'xccdf_org.ssgproject' \
+    ".content_benchmark_#{OS_NAME}-#{os_major_version}"
+  end
 
   class << self
     def supported?(ssg_version:, os_major_version:, os_minor_version:)
@@ -14,9 +21,11 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
     end
 
     def ssg_for_os(os_major_version, os_minor_version)
-      raw_supported.dig('supported',
-                        "RHEL-#{os_major_version}.#{os_minor_version}",
-                        'version')
+      raw_supported.dig(
+        'supported',
+        "#{self::OS_NAME}-#{os_major_version}.#{os_minor_version}",
+        'version'
+      )
     end
 
     def all

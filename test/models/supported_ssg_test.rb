@@ -26,6 +26,11 @@ class SupportedSsgTest < ActiveSupport::TestCase
       SupportedSsg.stubs(:all).returns(loaded)
     end
 
+    should 'provide models with ref_id' do
+      ref_ids = SupportedSsg.all.map(&:ref_id)
+      assert ref_ids.all?(&:present?)
+    end
+
     should 'provide models available upstream' do
       in_upstream = SupportedSsg.available_upstream
       versions = in_upstream.map(&:version)
