@@ -43,6 +43,12 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
       end
     end
 
+    def latest_per_os_major
+      all.group_by(&:os_major_version).values.map do |ssgs|
+        ssgs.max_by { |ssg| ssg.os_minor_version.to_i }
+      end
+    end
+
     private
 
     def map_attributes(values)
