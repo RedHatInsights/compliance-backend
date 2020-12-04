@@ -20,13 +20,6 @@ module Xccdf
     validates :ref_id, uniqueness: { scope: %i[version] }, presence: true
     validates :version, presence: true
 
-    LATEST_SUPPORTED_VERSIONS = {
-      'xccdf_org.ssgproject.content_benchmark_RHEL-6': '0.1.28',
-      # RHEL 7 with CIS backported to 0.1.49 in downstream
-      'xccdf_org.ssgproject.content_benchmark_RHEL-7': '0.1.50',
-      'xccdf_org.ssgproject.content_benchmark_RHEL-8': '0.1.50'
-    }.freeze
-
     scope :os_major_version, lambda { |major, equals = true|
       where(os_major_version_query(major, equals))
     }
@@ -82,11 +75,12 @@ module Xccdf
 
       def latest_supported
         Rails.cache.fetch('latest_supported_benchmarks') do
-          LATEST_SUPPORTED_VERSIONS.inject(
-            where('1=0')
-          ) do |acc, (ref_id, version)|
-            acc.or(where(ref_id: ref_id, version: version))
-          end.compact
+          SupportedSsg.latest_per_os_major.inject(none) do |supported, ssg|
+            supported.or(
+              where(ref_id: ssg.ref_id,
+                    version: ssg.upstream_version || ssg.version)
+            )
+          end
         end
       end
     end
