@@ -4,9 +4,14 @@ require 'test_helper'
 
 class BenchmarkQueryTest < ActiveSupport::TestCase
   test 'query benchmark owned by the user' do
+    supported_ssg = SupportedSsg.new(version: '0.1.50',
+                                     os_major_version: '7',
+                                     os_minor_version: '3')
+    SupportedSsg.stubs(:latest_per_os_major).returns([supported_ssg])
+
     latest_benchmark = ::Xccdf::Benchmark.create(
-      ref_id: ::Xccdf::Benchmark::LATEST_SUPPORTED_VERSIONS.keys[0],
-      version: ::Xccdf::Benchmark::LATEST_SUPPORTED_VERSIONS.values[0],
+      ref_id: supported_ssg.ref_id,
+      version: supported_ssg.version,
       title: 'sample',
       description: 'sample description'
     )
