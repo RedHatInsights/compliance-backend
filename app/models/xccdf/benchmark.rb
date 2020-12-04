@@ -24,6 +24,15 @@ module Xccdf
       where(os_major_version_query(major, equals))
     }
 
+    scope :latest_supported, lambda {
+      SupportedSsg.latest_per_os_major.inject(none) do |supported, ssg|
+        supported.or(
+          where(ref_id: ssg.ref_id,
+                version: ssg.upstream_version || ssg.version)
+        )
+      end
+    }
+
     class << self
       def os_major_version_like_condition(major)
         "%RHEL-#{major}"
@@ -70,17 +79,6 @@ module Xccdf
       def find_latest(benchmarks)
         benchmarks.max_by do |benchmark|
           Gem::Version.new(benchmark.version)
-        end
-      end
-
-      def latest_supported
-        Rails.cache.fetch('latest_supported_benchmarks') do
-          SupportedSsg.latest_per_os_major.inject(none) do |supported, ssg|
-            supported.or(
-              where(ref_id: ssg.ref_id,
-                    version: ssg.upstream_version || ssg.version)
-            )
-          end
         end
       end
     end

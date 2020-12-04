@@ -102,5 +102,37 @@ module Xccdf
         Set.new([benchmarks(:one), bm8])
       )
     end
+
+    test 'latest_supported scope' do
+      rhel7_latest_ver = '0.1.50'
+      rhel8_latest_ver = '0.1.40'
+      ssg_matched_ver = SupportedSsg.new(version: rhel7_latest_ver,
+                                         os_major_version: '7',
+                                         os_minor_version: '3')
+      ssg_unmatched_ver = SupportedSsg.new(version: '0.1.39',
+                                           upstream_version: rhel8_latest_ver,
+                                           os_major_version: '8',
+                                           os_minor_version: '2')
+      SupportedSsg.stubs(:latest_per_os_major)
+                  .returns([ssg_matched_ver, ssg_unmatched_ver])
+
+      bm7 = Xccdf::Benchmark.create!(
+        ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-7',
+        version: rhel7_latest_ver, title: 'A', description: 'A'
+      )
+      bm8 = Xccdf::Benchmark.create!(
+        ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-8',
+        version: rhel8_latest_ver, title: 'A', description: 'A'
+      )
+      Xccdf::Benchmark.create!(
+        ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-8',
+        version: '0.1.39', title: 'A', description: 'A'
+      )
+
+      returned = Xccdf::Benchmark.latest_supported
+      assert_includes returned, bm7
+      assert_includes returned, bm8
+      assert_equal 2, returned.count
+    end
   end
 end
