@@ -21,7 +21,6 @@ namespace :ssg do
         data: OpenshiftEnvironment.summary
       )
     end
-    Rails.cache.delete('latest_supported_benchmarks')
   end
 
   desc 'Update compliance DB with the supported SCAP Security Guide versions'
@@ -35,7 +34,6 @@ namespace :ssg do
       ENV['DATASTREAM_FILE'] = filename
       Rake::Task['ssg:import'].execute
     end
-    Rails.cache.delete('latest_supported_benchmarks')
   end
 
   desc 'Update compliance DB with data from an Xccdf datastream file'
