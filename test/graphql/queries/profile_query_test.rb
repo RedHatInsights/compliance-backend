@@ -274,7 +274,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
     (host3 = hosts(:two).dup).update!(name: 'host3')
     policies(:one).update(compliance_threshold: 95,
                           account: accounts(:test),
-                          hosts: [hosts(:one), hosts(:two), host3])
+                          hosts: [hosts(:one), host3])
 
     result = Schema.execute(
       query,
@@ -285,8 +285,12 @@ class ProfileQueryTest < ActiveSupport::TestCase
     profile1_result = result['data']['allProfiles'].find do |h|
       h['id'] == profiles(:one).id
     end
+    profile2_result = result['data']['allProfiles'].find do |h|
+      h['id'] == profiles(:two).id
+    end
     assert_equal policies(:one).name, profile1_result['name']
-    assert_equal 3, profile1_result['totalHostCount']
+    assert_equal 2, profile1_result['totalHostCount']
+    assert_equal 2, profile2_result['totalHostCount']
     assert_equal 1, profile1_result['testResultHostCount']
     assert_equal 1, profile1_result['compliantHostCount']
     assert_equal 1, profile1_result['unsupportedHostCount']
