@@ -3,14 +3,12 @@
 require_relative 'interfaces/rules_preload'
 require_relative 'concerns/test_results'
 require_relative 'concerns/profile_pseudo_policy'
-require_relative 'concerns/profile_scoring'
 
 module Types
   # Definition of the Profile type in GraphQL
   class Profile < Types::BaseObject
     include TestResults
     include ProfilePseudoPolicy
-    include ProfileScoring
 
     implements(::RulesPreload)
 
