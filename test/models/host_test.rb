@@ -171,4 +171,47 @@ class HostTest < ActiveSupport::TestCase
       assert_not_includes Host.search_for(search), hosts(:one)
     end
   end
+
+  context 'scope search for hosts with policy test results' do
+    setup do
+      profiles(:one).update!(policy_object: policies(:one),
+                             account: accounts(:one))
+      policies(:one).hosts << hosts(:one)
+    end
+
+    should 'find host with results using assigned policy id' do
+      search = "with_results_for_policy_id = #{policies(:one).id}"
+      assert_includes Host.search_for(search), hosts(:one)
+
+      policies(:one).update!(hosts: [])
+      assert_includes Host.search_for(search), hosts(:one)
+
+      test_results(:one).update!(host: hosts(:two))
+      assert_not_includes Host.search_for(search), hosts(:one)
+    end
+
+    should 'find host using a profile id assigned to the policy' do
+      search = "with_results_for_policy_id = #{profiles(:one).id}"
+      assert_includes Host.search_for(search), hosts(:one)
+
+      policies(:one).update!(hosts: [])
+      assert_includes Host.search_for(search), hosts(:one)
+
+      test_results(:one).update!(host: hosts(:two))
+      assert_not_includes Host.search_for(search), hosts(:one)
+    end
+
+    should 'find host using external profile id from its test result' do
+      profiles(:two).update!(policy_object: policies(:one),
+                             account: accounts(:one),
+                             external: true)
+      test_results(:one).update!(profile: profiles(:two))
+
+      search = "with_results_for_policy_id = #{policies(:two).id}"
+      assert_includes Host.search_for(search), hosts(:one)
+
+      policies(:one).update!(hosts: [])
+      assert_includes Host.search_for(search), hosts(:one)
+    end
+  end
 end
