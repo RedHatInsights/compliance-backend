@@ -16,10 +16,24 @@ module HostSearching
     scoped_search relation: :test_results, on: :profile_id
     scoped_search on: :policy_id, ext_method: 'filter_by_policy',
                   only_explicit: true, operators: ['=']
+    scoped_search on: :with_results_for_policy_id,
+                  ext_method: 'filter_with_results_for_policy',
+                  only_explicit: true, operators: ['=']
   end
 
   # class methods for Host searching
   module ClassMethods
+    def filter_with_results_for_policy(_filter, _operator, policy_or_profile_id)
+      profiles = Profile.where(id: policy_or_profile_id)
+      profiles = profiles
+                 .or(Profile.where(policy_id: policy_or_profile_id))
+                 .or(Profile.where(policy_id: profiles.select(:policy_id)))
+
+      { conditions: "hosts.id IN (#{
+        TestResult.where(profile: profiles).select(:host_id).to_sql
+      })" }
+    end
+
     def filter_by_policy(_filter, _operator, policy_or_profile_id)
       with_policy = with_policy_lookup(policy_or_profile_id).select('id')
       with_profile = with_external_profile_lookup(policy_or_profile_id)
