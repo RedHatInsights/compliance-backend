@@ -33,11 +33,15 @@ module Xccdf
       end
     end
 
+    def test_result_rules_unknown
+      selected_op_rule_results.map(&:id) - rule_ids.keys
+    end
+
     private
 
     def rule_ids
       @rule_ids ||= Rule.where(
-        benchmark: @benchmark, ref_id: selected_op_rule_results.map(&:id)
+        benchmark: benchmark, ref_id: selected_op_rule_results.map(&:id)
       ).pluck(:ref_id, :id).to_h
     end
   end
