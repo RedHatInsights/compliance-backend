@@ -65,16 +65,24 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   end
 
   context 'benchmark' do
-    should 'save a new benchmark' do
-      assert_difference('Xccdf::Benchmark.count', 1) do
-        @report_parser.save_benchmark
+    setup do
+      @report_parser.stubs(:external_report?)
+    end
+
+    should 'never save a new benchmark' do
+      assert_difference('Xccdf::Benchmark.count', 0) do
+        assert_raises(::UnknownBenchmarkError) do
+          @report_parser.save_all
+        end
       end
     end
 
     should 'find and return an existing benchmark' do
-      @report_parser.save_benchmark
+      @report_parser.save_all_benchmark_info
       assert_no_difference('Xccdf::Benchmark.count') do
-        @report_parser.save_benchmark
+        assert_nothing_raised do
+          @report_parser.save_all
+        end
       end
     end
   end
@@ -82,40 +90,15 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   context 'profile' do
     setup do
       @report_parser.save_benchmark
+      @report_parser.stubs(:external_report?)
     end
 
-    should 'save a new profile if it did not exist before' do
-      assert_difference('Profile.count', 1) do
-        @report_parser.save_profiles
-      end
-    end
-
-    should 'not save a new profile if it existed before' do
-      Profile.create(
-        ref_id: 'xccdf_org.ssgproject.content_profile_standard',
-        name: @profile['xccdf_org.ssgproject.content_profile_standard'],
-        benchmark: @report_parser.benchmark
-      )
+    should 'never save a new canonical profile if it did not exist before' do
       assert_difference('Profile.count', 0) do
-        @report_parser.save_profiles
+        assert_raises(::UnknownProfileError) do
+          @report_parser.save_all
+        end
       end
-    end
-
-    should 'save all benchmark profiles even when there are no test results' do
-      fake_report = file_fixture('rhel-xccdf-report.xml').read
-      @profile = {
-        'xccdf_org.ssgproject.content_profile_rht-ccp' =>
-        'Red Hat Corporate Profile for Certified Cloud Providers (RH CCP)'
-      }
-      @report_parser = TestParser
-                       .new(fake_report,
-                            'account' => accounts(:test).account_number,
-                            'id' => @host_id,
-                            'b64_identity' => 'b64_fake_identity',
-                            'metadata' => {
-                              'display_name' => 'lenovolobato.lobatolan.home'
-                            })
-      assert_equal 10, @report_parser.op_benchmark.profiles.count
     end
   end
 
@@ -196,6 +179,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   context 'rule results' do
     setup do
       @report_parser.stubs(:external_report?)
+      @report_parser.save_all_benchmark_info
     end
 
     should 'save them, associate them with a rule and a host' do
@@ -275,7 +259,8 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       assert_equal @profile.keys.first, rule.profiles.pluck(:ref_id).first
     end
 
-    should 'save new rules in the database, ignore old rules' do
+    should 'never save new rules in the database' do
+      @report_parser.stubs(:external_report?)
       Rule.new(
         ref_id: @arbitrary_rules[0],
         benchmark: @report_parser.benchmark
@@ -285,17 +270,11 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         benchmark: @report_parser.benchmark
       ).save(validate: false)
 
-      assert_difference('Rule.count', 365) do
-        @report_parser.save_rules
-      end
-
-      @report_parser.rules = nil
-
       assert_difference('Rule.count', 0) do
-        @report_parser.save_rules
+        assert_raises(UnknownRuleError) do
+          @report_parser.save_all
+        end
       end
-
-      assert_equal @report_parser.op_rules.count, @report_parser.rules.count
     end
 
     should 'not try to append already assigned profiles to a rule' do
