@@ -69,9 +69,18 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       @report_parser.stubs(:external_report?)
     end
 
-    should 'never save a new benchmark' do
+    should 'never save a new benchmark that is not in the support matrix' do
+      @report_parser.op_benchmark.stubs(:version).returns('0.1.15')
       assert_difference('Xccdf::Benchmark.count', 0) do
         assert_raises(::UnknownBenchmarkError) do
+          @report_parser.save_all
+        end
+      end
+    end
+
+    should 'save an unknown benchmark that is in the support matrix' do
+      assert_difference('Xccdf::Benchmark.count', 1) do
+        assert_nothing_raised do
           @report_parser.save_all
         end
       end
@@ -94,6 +103,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
 
     should 'never save a new canonical profile if it did not exist before' do
+      @report_parser.stubs(:save_missing_supported_benchmark)
       assert_difference('Profile.count', 0) do
         assert_raises(::UnknownProfileError) do
           @report_parser.save_all
@@ -260,6 +270,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
 
     should 'never save new rules in the database' do
+      @report_parser.stubs(:save_missing_supported_benchmark)
       @report_parser.stubs(:external_report?)
       Rule.new(
         ref_id: @arbitrary_rules[0],
