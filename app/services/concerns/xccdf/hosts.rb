@@ -35,12 +35,12 @@ module Xccdf
     private
 
     def test_result_profile
-      @test_result_profile ||= ::Profile.canonical.find_or_initialize_by(
+      @test_result_profile ||= ::Profile.canonical.create_with(
+        name: @test_result_file.test_result.profile_id
+      ).find_or_initialize_by(
         ref_id: @test_result_file.test_result.profile_id,
         benchmark: benchmark
-      ).tap do |profile|
-        profile.name ||= @test_result_file.test_result.profile_id
-      end
+      )
     end
 
     def inventory_host

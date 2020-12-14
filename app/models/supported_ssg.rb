@@ -28,6 +28,10 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
       )
     end
 
+    def versions
+      all.map(&:version).uniq
+    end
+
     def all
       raw_supported['supported'].map do |rhel, values|
         major, minor = os_version(rhel)
