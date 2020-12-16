@@ -6,6 +6,12 @@ require 'xccdf_report_parser'
 class ParseReportJob
   include Sidekiq::Worker
 
+  PARSE_ERRORS = [
+    ::MissingIdError, ::WrongFormatError, ::InventoryHostNotFound,
+    ::OSVersionMismatch, ::ActiveRecord::RecordInvalid, ::ExternalReportError,
+    ::UnknownBenchmarkError, ::UnknownProfileError, ::UnknownRuleError
+  ].freeze
+
   def perform(file, message)
     return if cancelled?
 
@@ -33,9 +39,7 @@ class ParseReportJob
     parser.save_all
     notify_remediation
     notify_payload_tracker(:success, "Job #{jid} has completed successfully")
-  rescue ::MissingIdError, ::WrongFormatError, ::InventoryHostNotFound,
-         ::OSVersionMismatch, ::ActiveRecord::RecordInvalid,
-         ::ExternalReportError => e
+  rescue *PARSE_ERRORS => e
     error_message = "Cannot parse report: #{e} - #{@msg_value.to_json}"
     notify_payload_tracker(:error, error_message)
     Sidekiq.logger.error(error_message)
