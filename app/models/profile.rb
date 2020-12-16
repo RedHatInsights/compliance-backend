@@ -72,8 +72,8 @@ class Profile < ApplicationRecord
     parent_profile_id.blank?
   end
 
-  def clone_to(account: nil, host: nil, external: true, policy: nil)
-    policy ||= find_policy(hosts: [host], account: account)&.policy_object
+  def clone_to(account:, host: nil, external: true, policy: nil)
+    policy ||= Policy.with_hosts(host).find_by(account: account)
 
     new_profile = in_account(account, policy)
     if new_profile.nil?
@@ -87,12 +87,6 @@ class Profile < ApplicationRecord
     new_profile
   end
 
-  def in_account(account, policy)
-    Profile.find_by(account: account, ref_id: ref_id,
-                    policy_object: policy,
-                    benchmark_id: benchmark_id)
-  end
-
   def major_os_version
     benchmark ? benchmark.inferred_os_major_version : 'N/A'
   end
@@ -102,5 +96,13 @@ class Profile < ApplicationRecord
     ref_id.downcase.split(
       'xccdf_org.ssgproject.content_profile_'
     )[1] || ref_id
+  end
+
+  private
+
+  def in_account(account, policy)
+    Profile.find_by(account: account, ref_id: ref_id,
+                    policy_object: policy,
+                    benchmark_id: benchmark_id)
   end
 end
