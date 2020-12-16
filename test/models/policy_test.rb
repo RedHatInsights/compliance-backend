@@ -12,6 +12,32 @@ class PolicyTest < ActiveSupport::TestCase
   should belong_to(:business_objective).optional
   should belong_to(:account)
 
+  context 'scopes' do
+    should '#with_hosts accepts multiple hosts' do
+      policies(:one).update!(hosts: [hosts(:one)])
+
+      assert_empty Policy.with_hosts([hosts(:two)])
+      assert_includes Policy.with_hosts([hosts(:one)]), policies(:one)
+
+      policies(:one).update!(hosts: [hosts(:one), hosts(:two)])
+
+      assert_includes Policy.with_hosts([hosts(:one), hosts(:two)]),
+                      policies(:one)
+    end
+
+    should '#with_hosts accepts single hosts' do
+      policies(:one).update!(hosts: [hosts(:one)])
+
+      assert_empty Policy.with_hosts(hosts(:two))
+      assert_includes Policy.with_hosts(hosts(:one)), policies(:one)
+
+      policies(:one).update!(hosts: [hosts(:one), hosts(:two)])
+
+      assert_includes Policy.with_hosts(hosts(:one)), policies(:one)
+      assert_includes Policy.with_hosts(hosts(:two)), policies(:one)
+    end
+  end
+
   should '#attrs_from(profile:)' do
     Policy::PROFILE_ATTRS.each do |attr|
       assert_equal profiles(:one).send(attr),
