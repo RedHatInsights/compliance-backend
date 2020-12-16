@@ -32,6 +32,7 @@ class Profile < ApplicationRecord
   validates :name, presence: true
   validates :benchmark_id, presence: true
   validates :account, presence: true, if: -> { hosts.any? }
+  validates :policy_object, presence: true, if: -> { policy_id }
 
   class << self
     def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)

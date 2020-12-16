@@ -68,7 +68,16 @@ class ProfileTest < ActiveSupport::TestCase
 
     p = profiles(:one).dup
     assert_not p.update(policy_id: policies(:two).id, benchmark: bm)
-    assert  p.errors.full_messages.join['Policy type must be unique']
+    assert p.errors.full_messages.join['Policy type must be unique']
+  end
+
+  test 'absence of a policy, but policy_id set' do
+    assert_nothing_raised do
+      profiles(:one).update!(policy_id: policies(:one).id)
+    end
+
+    assert_not profiles(:one).update(policy_id: UUID.generate)
+    assert_includes profiles(:one).errors[:policy_object], "can't be blank"
   end
 
   test 'coexistence of external profiles with and without a policy' do
@@ -186,7 +195,7 @@ class ProfileTest < ActiveSupport::TestCase
     bo = BusinessObjective.new(title: 'abcd')
     bo.save
     policies(:one).update(business_objective: bo)
-    assert profiles(:one).business_objective, bo
+    assert profiles(:one).reload.business_objective, bo
     policies(:one).update(business_objective: nil)
     assert_empty BusinessObjective.where(title: 'abcd')
   end

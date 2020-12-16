@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_16_160531) do
+ActiveRecord::Schema.define(version: 2020_12_16_190051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -216,5 +216,6 @@ ActiveRecord::Schema.define(version: 2020_11_16_160531) do
   add_foreign_key "policies", "business_objectives"
   add_foreign_key "policy_hosts", "hosts"
   add_foreign_key "policy_hosts", "policies"
+  add_foreign_key "profiles", "policies"
   add_foreign_key "profiles", "profiles", column: "parent_profile_id"
 end
