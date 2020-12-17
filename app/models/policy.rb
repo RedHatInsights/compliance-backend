@@ -31,6 +31,10 @@ class Policy < ApplicationRecord
     joins(:hosts).where(hosts: { id: hosts }).distinct
   }
 
+  scope :with_ref_ids, lambda { |ref_ids|
+    joins(:profiles).where(profiles: { ref_id: ref_ids }).distinct
+  }
+
   def self.attrs_from(profile:)
     profile.attributes.slice(*PROFILE_ATTRS)
   end

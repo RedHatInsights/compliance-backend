@@ -29,7 +29,8 @@ module Xccdf
     end
 
     def external_report?
-      test_result_profile.find_policy(account: @account, hosts: [@host]).nil?
+      Policy.with_hosts(@host).with_ref_ids(test_result_profile.ref_id)
+            .find_by(account: @account).nil?
     end
 
     private
