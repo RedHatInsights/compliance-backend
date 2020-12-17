@@ -34,7 +34,7 @@ module Xccdf
     test 'associate_rules_from_rule_results' do
       @parser.save_all_benchmark_info
       @parser.save_host
-      @parser.save_profile_host
+      @parser.save_host_profile
       @parser.save_test_result
       @parser.save_rule_results
 

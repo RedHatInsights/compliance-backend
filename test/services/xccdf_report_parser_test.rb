@@ -327,7 +327,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
           Profile.find_by(parent_profile: parent_profile)&.rules&.count || 0
         } => parent_profile.rules.count
       ) do
-        @report_parser.save_profile_host
+        @report_parser.save_host_profile
       end
     end
 
@@ -350,7 +350,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         @report_parser.save_rules
         @report_parser.save_profile_rules
         @report_parser.save_host
-        @report_parser.save_profile_host
+        @report_parser.save_host_profile
       end
     end
   end

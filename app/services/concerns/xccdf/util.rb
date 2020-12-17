@@ -30,7 +30,7 @@ module Xccdf
       end
 
       def save_all_test_result_info
-        save_profile_host
+        save_host_profile
         save_test_result
         save_rule_results
         associate_rules_from_rule_results
