@@ -14,7 +14,7 @@ module Xccdf
         account: @account, host: @host
       )
     end
-    alias save_profile_host host_profile
+    alias save_host_profile host_profile
 
     def associate_rules_from_rule_results
       ::ProfileRule.import!(
