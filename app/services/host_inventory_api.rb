@@ -3,15 +3,14 @@
 require 'uri'
 require 'json'
 
-# Error to raise if the OS release contains an invalid major or minor
-class InventoryInvalidOsRelease < StandardError; end
-
-# Error to raise if the inventory host could not be found
-class InventoryHostNotFound < StandardError; end
-
 # Interact with the Insights Host Inventory. Usually HTTP calls
 # are all that's needed.
 class HostInventoryAPI
+  # Error to raise if the inventory host could not be found
+  class InventoryHostNotFound < StandardError; end
+
+  ERRORS = [InventoryHostNotFound].freeze
+
   def initialize(account, url, b64_identity)
     @url = "#{URI.parse(url)}#{Settings.path_prefix}/inventory/v1/hosts"
     @account = account
@@ -29,7 +28,7 @@ class HostInventoryAPI
     return @inventory_host if @inventory_host.present?
 
     @inventory_host = host_already_in_inventory(host_id)
-    raise ::InventoryHostNotFound if @inventory_host.blank?
+    raise InventoryHostNotFound if @inventory_host.blank?
 
     if (os_release = system_profile([host_id]).first)
       @inventory_host['os_major_version'] = os_release['os_major_version']

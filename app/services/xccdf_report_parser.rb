@@ -1,29 +1,35 @@
 # frozen_string_literal: true
 
-# Error to raise if id is not available
-class MissingIdError < StandardError; end
-# Error to raise if the format of the report is wrong
-class WrongFormatError < StandardError; end
-# Error to raise if the OS version does not match benchmark's
-class OSVersionMismatch < StandardError; end
-# Error to raise if the incoming report belongs to no known policy
-class ExternalReportError < StandardError; end
-# Error to raise if the incoming report belongs to no known benchmark
-class UnknownBenchmarkError < StandardError; end
-# Error to raise if the incoming report belongs to no known profile
-class UnknownProfileError < StandardError; end
-# Error to raise if the incoming report contains an unknown rule
-class UnknownRuleError < StandardError; end
-
 # Takes in a path to an Xccdf file, returns all kinds of properties about it
 # and saves it in our database
 class XccdfReportParser
+  # Error to raise if id is not available
+  class MissingIdError < StandardError; end
+  # Error to raise if the format of the report is wrong
+  class WrongFormatError < StandardError; end
+  # Error to raise if the OS version does not match benchmark's
+  class OSVersionMismatch < StandardError; end
+  # Error to raise if the incoming report belongs to no known policy
+  class ExternalReportError < StandardError; end
+  # Error to raise if the incoming report belongs to no known benchmark
+  class UnknownBenchmarkError < StandardError; end
+  # Error to raise if the incoming report belongs to no known profile
+  class UnknownProfileError < StandardError; end
+  # Error to raise if the incoming report contains an unknown rule
+  class UnknownRuleError < StandardError; end
+
+  ERRORS = [
+    MissingIdError, WrongFormatError, OSVersionMismatch,
+    ActiveRecord::RecordInvalid, ExternalReportError, UnknownBenchmarkError,
+    UnknownProfileError, UnknownRuleError
+  ].freeze
+
   include ::Xccdf::Util
 
   attr_reader :report_path, :test_result_file
 
   def initialize(report_contents, message)
-    raise ::MissingIdError unless valid_message_format?(message)
+    raise MissingIdError unless valid_message_format?(message)
 
     @b64_identity = message['b64_identity']
     @account = Account.find_or_create_by(account_number: message['account'])

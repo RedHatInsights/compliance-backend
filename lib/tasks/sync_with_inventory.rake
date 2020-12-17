@@ -17,7 +17,7 @@ task sync_with_inventory: [:environment] do
         puts 'Inventory API error while syncing account '\
           "#{account.account_number}: System #{host.id} - #{host.name}. "
         puts e.full_message
-      rescue ::InventoryHostNotFound
+      rescue HostInventoryAPI::InventoryHostNotFound
         print "Account #{account.account_number}: "\
           "System #{host.id} - #{host.name} not found in the inventory. "\
           'Removing it from DB...'

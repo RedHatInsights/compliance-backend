@@ -72,7 +72,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     should 'never save a new benchmark that is not in the support matrix' do
       @report_parser.op_benchmark.stubs(:version).returns('0.1.15')
       assert_difference('Xccdf::Benchmark.count', 0) do
-        assert_raises(::UnknownBenchmarkError) do
+        assert_raises(XccdfReportParser::UnknownBenchmarkError) do
           @report_parser.save_all
         end
       end
@@ -105,7 +105,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     should 'never save a new canonical profile if it did not exist before' do
       @report_parser.stubs(:save_missing_supported_benchmark)
       assert_difference('Profile.count', 0) do
-        assert_raises(::UnknownProfileError) do
+        assert_raises(XccdfReportParser::UnknownProfileError) do
           @report_parser.save_all
         end
       end
@@ -180,7 +180,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       ).returns(OpenStruct.new(body: system_profile_body.to_json))
 
       @report_parser.save_host
-      assert_raises(::OSVersionMismatch) do
+      assert_raises(XccdfReportParser::OSVersionMismatch) do
         @report_parser.check_os_version
       end
     end
@@ -234,7 +234,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
 
   context 'missing ID' do
     should 'raise error if message ID is not present' do
-      assert_raises(::MissingIdError) do
+      assert_raises(XccdfReportParser::MissingIdError) do
         TestParser.new(
           'fakereport',
           'account' => accounts(:test).account_number,
@@ -282,7 +282,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       ).save(validate: false)
 
       assert_difference('Rule.count', 0) do
-        assert_raises(UnknownRuleError) do
+        assert_raises(XccdfReportParser::UnknownRuleError) do
           @report_parser.save_all
         end
       end
@@ -358,7 +358,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   context 'datastream-based reports only' do
     should 'raise an error if the report is not coming from a datastream' do
       fake_report = file_fixture('rhel-xccdf-report-wrong.xml').read
-      assert_raises(::WrongFormatError) do
+      assert_raises(XccdfReportParser::WrongFormatError) do
         TestParser.new(
           fake_report,
           'account' => accounts(:test).account_number,
@@ -376,7 +376,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     should 'raise an error and halt parsing (external report)' do
       @report_parser.stubs(:external_report?).returns(true)
       @report_parser.save_host
-      assert_raises(::ExternalReportError) do
+      assert_raises(XccdfReportParser::ExternalReportError) do
         @report_parser.check_for_external_reports
       end
     end
