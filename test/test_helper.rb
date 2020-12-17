@@ -2,22 +2,19 @@
 
 unless Rails.env.production?
   require 'simplecov'
-  SimpleCov.start 'rails' do
-    # don't test the schema!
-    # https://github.com/rmosolgo/graphql-ruby/blob/master/guides/schema/
-    # testing.md#dont-test-the-schema
-    add_filter 'db/schema.rb'
-    # these just contain the description of the attributes of the
-    # API responses, no code (https://github.com/Netflix/fast_jsonapi)
-    add_filter 'app/serializers'
-    # Skip testing empty module definition
-    add_filter 'app/models/xccdf.rb'
-    add_filter 'app/services/xccdf_report.rb'
-    # empty class that has to be there for prometheus integration
-    add_filter 'lib/'
+  SimpleCov.start do
+    add_filter 'config'
+    add_filter 'db'
+    add_filter 'spec'
+    add_filter 'test'
+
     add_group 'Consumers', 'app/consumers'
+    add_group 'Controllers', 'app/controllers'
     add_group 'GraphQL', 'app/graphql'
+    add_group 'Jobs', 'app/jobs'
+    add_group 'Models', 'app/models'
     add_group 'Policies', 'app/policies'
+    add_group 'Serializers', 'app/serializers'
     add_group 'Services', 'app/services'
   end
 
