@@ -47,7 +47,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
   end
 
   test 'inventory_host for host not already in inventory' do
-    assert_raises(::InventoryHostNotFound) do
+    assert_raises(HostInventoryAPI::InventoryHostNotFound) do
       @api.expects(:host_already_in_inventory).returns(nil)
       @api.inventory_host(@host.id)
     end
