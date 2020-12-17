@@ -36,6 +36,38 @@ class PolicyTest < ActiveSupport::TestCase
       assert_includes Policy.with_hosts(hosts(:one)), policies(:one)
       assert_includes Policy.with_hosts(hosts(:two)), policies(:one)
     end
+
+    should '#with_ref_ids accepts multiple ref_ids' do
+      profiles(:one).update!(account: accounts(:test))
+      profiles(:two).update!(account: accounts(:test))
+
+      policies(:one).update!(profiles: [profiles(:one)])
+
+      assert_empty Policy.with_ref_ids([profiles(:two).ref_id])
+      assert_includes Policy.with_ref_ids([profiles(:one).ref_id]),
+                      policies(:one)
+
+      policies(:one).update!(profiles: [profiles(:one), profiles(:two)])
+
+      assert_includes Policy.with_ref_ids([profiles(:one).ref_id,
+                                           profiles(:two).ref_id]),
+                      policies(:one)
+    end
+
+    should '#with_ref_ids accepts single ref_ids' do
+      profiles(:one).update!(account: accounts(:test))
+      profiles(:two).update!(account: accounts(:test))
+
+      policies(:one).update!(profiles: [profiles(:one)])
+
+      assert_empty Policy.with_ref_ids(profiles(:two).ref_id)
+      assert_includes Policy.with_ref_ids(profiles(:one).ref_id), policies(:one)
+
+      policies(:one).update!(profiles: [profiles(:one), profiles(:two)])
+
+      assert_includes Policy.with_ref_ids(profiles(:one).ref_id), policies(:one)
+      assert_includes Policy.with_ref_ids(profiles(:two).ref_id), policies(:one)
+    end
   end
 
   should '#attrs_from(profile:)' do
