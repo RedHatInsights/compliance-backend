@@ -72,14 +72,12 @@ class Profile < ApplicationRecord
     parent_profile_id.blank?
   end
 
-  def clone_to(account:, host: nil, external: true, policy: nil)
-    policy ||= Policy.with_hosts(host).find_by(account: account)
-
+  def clone_to(account:, policy:)
     new_profile = in_account(account, policy)
     if new_profile.nil?
       (new_profile = dup).update!(account: account,
                                   parent_profile: self,
-                                  external: external,
+                                  external: true,
                                   policy_object: policy)
       new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
     end

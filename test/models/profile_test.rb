@@ -600,7 +600,9 @@ class ProfileTest < ActiveSupport::TestCase
       assert_difference('Profile.count' => 0, 'Policy.count' => 0,
                         'PolicyHost.count' => 0) do
         cloned_profile = dupe.clone_to(
-          account: accounts(:one), host: hosts(:two)
+          account: accounts(:one),
+          policy: Policy.with_hosts(hosts(:two))
+                        .find_by(account: accounts(:one))
         )
 
         assert_equal cloned_profile.reload.policy_id, policies(:one).id
@@ -621,7 +623,9 @@ class ProfileTest < ActiveSupport::TestCase
       assert_difference('Profile.count' => 1, 'Policy.count' => 0,
                         'PolicyHost.count' => 0) do
         cloned_profile = dupe.clone_to(
-          account: accounts(:one), host: hosts(:two)
+          account: accounts(:one),
+          policy: Policy.with_hosts(hosts(:two))
+                        .find_by(account: accounts(:one))
         )
 
         assert_equal cloned_profile.reload.policy_id, policies(:one).id
@@ -633,7 +637,9 @@ class ProfileTest < ActiveSupport::TestCase
       assert profiles(:one).canonical?
       assert_difference('Profile.count', 1) do
         cloned_profile = profiles(:one).clone_to(
-          account: accounts(:test), host: hosts(:one)
+          account: accounts(:test),
+          policy: Policy.with_hosts(hosts(:one))
+                        .find_by(account: accounts(:test))
         )
 
         assert_equal profiles(:one), cloned_profile.parent_profile
@@ -644,35 +650,30 @@ class ProfileTest < ActiveSupport::TestCase
       profiles(:one).update!(account: nil, hosts: [])
       assert_difference('PolicyHost.count' => 0, 'Profile.count' => 1) do
         cloned_profile = profiles(:one).clone_to(
-          account: accounts(:one), host: hosts(:one)
+          account: accounts(:one),
+          policy: Policy.with_hosts(hosts(:one))
+                        .find_by(account: accounts(:one))
         )
         assert_not hosts(:one).assigned_profiles.include?(cloned_profile)
         assert_nil cloned_profile.policy_object
       end
     end
 
-    should 'clone profiles as internal if specified' do
-      profiles(:one).update!(account: nil, hosts: [])
-      assert_difference('PolicyHost.count' => 0, 'Profile.count' => 1) do
-        cloned_profile = profiles(:one).clone_to(
-          account: accounts(:one), host: hosts(:one), external: false
-        )
-        assert_not hosts(:one).assigned_profiles.include?(cloned_profile)
-        assert_not cloned_profile.external
-      end
-    end
-
     should 'not add rules to existing profiles' do
       assert_not_empty(profiles(:one).rules)
       profiles(:one).update!(account: nil, hosts: [])
-      existing_profile = profiles(:one).clone_to(account: accounts(:one),
-                                                 host: hosts(:one))
+      existing_profile = profiles(:one).clone_to(
+        account: accounts(:one),
+        policy: Policy.with_hosts(hosts(:one)).find_by(account: accounts(:one))
+      )
       existing_profile.update!(rules: [])
       assert_difference('PolicyHost.count' => 0,
                         'Profile.count' => 0,
                         'ProfileRule.count' => 0) do
         cloned_profile = profiles(:one).clone_to(
-          account: accounts(:one), host: hosts(:one)
+          account: accounts(:one),
+          policy: Policy.with_hosts(hosts(:one))
+                        .find_by(account: accounts(:one))
         )
         assert_not hosts(:one).assigned_profiles.include?(cloned_profile)
       end
@@ -686,8 +687,10 @@ class ProfileTest < ActiveSupport::TestCase
                                         ref_id: 'foo',
                                         name: 'foo profile')
       @parent_profile.update! rules: [rules(:one)]
-      @profile = @parent_profile.clone_to(account: accounts(:one),
-                                          host: hosts(:one))
+      @profile = @parent_profile.clone_to(
+        account: accounts(:one),
+        policy: Policy.with_hosts(hosts(:one)).find_by(account: accounts(:one))
+      )
       @profile.update! rules: [rules(:two)]
     end
 

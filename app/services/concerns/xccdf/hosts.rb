@@ -11,7 +11,8 @@ module Xccdf
 
     def host_profile
       @host_profile ||= test_result_profile.clone_to(
-        account: @account, host: @host
+        policy: Policy.with_hosts(@host).find_by(account: @account),
+        account: @account
       )
     end
     alias save_host_profile host_profile
