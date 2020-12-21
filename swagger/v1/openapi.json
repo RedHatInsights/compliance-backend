@@ -632,6 +632,7 @@
                       "canonical": true,
                       "tailored": false,
                       "total_host_count": 1,
+                      "ssg_version": "0.1.45",
                       "compliant_host_count": 0,
                       "test_result_host_count": 1,
                       "unsupported_host_count": 0,
@@ -689,6 +690,7 @@
                       "canonical": true,
                       "tailored": false,
                       "total_host_count": 1,
+                      "ssg_version": "0.1.45",
                       "compliant_host_count": 0,
                       "test_result_host_count": 1,
                       "unsupported_host_count": 0,
@@ -801,7 +803,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "7217745c-3b60-441d-912d-8729672436da",
+                  "id": "7e267141-a6fc-4f00-9dae-78fefd6f6f86",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -810,13 +812,14 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "7217745c-3b60-441d-912d-8729672436da",
+                    "policy_profile_id": "7e267141-a6fc-4f00-9dae-78fefd6f6f86",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "A custom name",
                     "description": null,
                     "canonical": false,
                     "tailored": true,
                     "total_host_count": 2,
+                    "ssg_version": "0.1.45",
                     "compliant_host_count": 0,
                     "test_result_host_count": 0,
                     "unsupported_host_count": 0,
@@ -1038,6 +1041,7 @@
                     "canonical": true,
                     "tailored": false,
                     "total_host_count": 1,
+                    "ssg_version": "0.1.45",
                     "compliant_host_count": 0,
                     "test_result_host_count": 1,
                     "unsupported_host_count": 0,
@@ -1047,7 +1051,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "892cf986-2182-4014-86a6-674d6e53aad5",
+                        "id": "857822c1-c3ce-40e0-b06f-122917302801",
                         "type": "account"
                       }
                     },
@@ -1231,7 +1235,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "167a7c11-f233-4e90-aec3-52c68a619193",
+                  "id": "848aa3ca-35c4-4482-aa17-d39815ba8574",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -1240,13 +1244,14 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "167a7c11-f233-4e90-aec3-52c68a619193",
+                    "policy_profile_id": "848aa3ca-35c4-4482-aa17-d39815ba8574",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "An updated custom name",
                     "description": null,
                     "canonical": false,
                     "tailored": true,
                     "total_host_count": 2,
+                    "ssg_version": "0.1.45",
                     "compliant_host_count": 0,
                     "test_result_host_count": 0,
                     "unsupported_host_count": 0,
@@ -1474,6 +1479,7 @@
                     "canonical": false,
                     "tailored": false,
                     "total_host_count": 0,
+                    "ssg_version": "0.1.45",
                     "compliant_host_count": 0,
                     "test_result_host_count": 0,
                     "unsupported_host_count": 0,
@@ -2933,6 +2939,10 @@
           "canonical": {
             "type": "boolean",
             "example": true
+          },
+          "ssg_version": {
+            "type": "string",
+            "example": "0.1.49"
           },
           "total_host_count": {
             "type": "integer",

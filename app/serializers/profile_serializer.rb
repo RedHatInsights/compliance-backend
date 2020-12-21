@@ -35,6 +35,7 @@ class ProfileSerializer
   attribute :canonical, &:canonical?
   attribute :tailored, &:tailored?
   attribute :total_host_count
+  attribute :ssg_version
   attribute :compliant_host_count
   attribute :test_result_host_count
   attribute :unsupported_host_count

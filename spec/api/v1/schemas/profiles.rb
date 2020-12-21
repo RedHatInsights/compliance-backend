@@ -53,6 +53,10 @@ module Api
               type: 'boolean',
               example: true
             },
+            ssg_version: {
+              type: 'string',
+              example: '0.1.49'
+            },
             total_host_count: {
               type: 'integer',
               example: 5

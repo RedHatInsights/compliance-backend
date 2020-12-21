@@ -498,6 +498,29 @@ class ProfileTest < ActiveSupport::TestCase
                  Set.new([p8] + profiles)
   end
 
+  context '#ssg_versions' do
+    setup do
+      profiles(:one).benchmark.update!(version: '0.1.234')
+    end
+
+    should 'scope should allow single values' do
+      assert_includes Profile.ssg_versions('0.1.234'), profiles(:one)
+      assert_includes Profile.search_for('ssg_version=0.1.234'), profiles(:one)
+    end
+
+    should 'scoped_search should allow single values' do
+      assert_includes Profile.search_for('ssg_version = 0.1.234'),
+                      profiles(:one)
+      assert_not_includes Profile.search_for('ssg_version != 0.1.234'),
+                          profiles(:one)
+    end
+
+    should 'scope should allow multiple values' do
+      assert_includes Profile.ssg_versions(['0.1.234', 'foo']), profiles(:one)
+      assert_not_includes Profile.ssg_versions(['foo']), profiles(:one)
+    end
+  end
+
   test 'short_ref_id' do
     profile1 = profiles(:one)
     profile1.update!(ref_id: 'xccdf_org.ssgproject.content_profile_one')
