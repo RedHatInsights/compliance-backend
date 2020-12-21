@@ -25,7 +25,12 @@ module ProfileSearching
     scoped_search on: :os_major_version, ext_method: 'os_major_version_search',
                   only_explicit: true, operators: ['=', '!='],
                   validator: ScopedSearch::Validators::INTEGER
+    scoped_search on: :ssg_version, ext_method: 'ssg_version_search',
+                  only_explicit: true, operators: ['=', '!=']
 
+    scope :ssg_versions, lambda { |ssg_versions|
+      joins(:benchmark).where(benchmarks: { version: ssg_versions })
+    }
     scope :canonical, lambda { |canonical = true|
       canonical && where(parent_profile_id: nil) ||
         where.not(parent_profile_id: nil)
@@ -79,7 +84,8 @@ module ProfileSearching
     }
   end
 
-  class_methods do
+  # class methods for profile searching
+  module ClassMethods
     def policy_object_search(_filter, _operator, value)
       profiles = Profile.with_policy(ActiveModel::Type::Boolean.new.cast(value))
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
@@ -107,5 +113,17 @@ module ProfileSearching
       benchmarks = Xccdf::Benchmark.os_major_version(value, operator == '=')
       { conditions: benchmark_id.in(benchmarks.pluck(:id)).to_sql }
     end
+
+    def ssg_version_search(_filter, operator, value)
+      benchmark_id = Profile.arel_table[:benchmark_id]
+      benchmarks = operator == '=' &&
+                   Xccdf::Benchmark.where(version: value) ||
+                   Xccdf::Benchmark.where.not(version: value)
+      { conditions: benchmark_id.in(benchmarks.pluck(:id)).to_sql }
+    end
+  end
+
+  class_methods do
+    extend ClassMethods
   end
 end
