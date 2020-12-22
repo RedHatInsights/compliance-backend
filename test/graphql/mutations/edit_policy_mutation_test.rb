@@ -19,7 +19,6 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
     users(:test).update account: accounts(:test)
     profiles(:one).update(account: accounts(:test),
                           hosts: [hosts(:one)],
-                          compliance_threshold: 90,
                           policy_object: policies(:one))
     assert_nil policies(:one).business_objective
 

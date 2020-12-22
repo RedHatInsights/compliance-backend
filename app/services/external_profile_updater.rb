@@ -6,9 +6,7 @@ class ExternalProfileUpdater
     # rubocop:disable Rails/SkipsModelValidations
     def run!(date = DateTime.now)
       Profile.where('created_at < ?', date)
-             .update_all(external: true,
-                         compliance_threshold: 100,
-                         business_objective_id: nil)
+             .update_all(external: true)
     end
     # rubocop:enable Rails/SkipsModelValidations
   end
