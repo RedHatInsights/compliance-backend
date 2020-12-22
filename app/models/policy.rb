@@ -5,8 +5,7 @@ class Policy < ApplicationRecord
   include ProfilePolicyScoring
 
   DEFAULT_COMPLIANCE_THRESHOLD = 100.0
-  PROFILE_ATTRS = %w[name description account_id compliance_threshold
-                     business_objective_id].freeze
+  PROFILE_ATTRS = %w[name description account_id].freeze
 
   has_many :profiles, dependent: :destroy, inverse_of: :policy_object
   has_many :benchmarks, through: :profiles

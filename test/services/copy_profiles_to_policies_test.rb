@@ -9,9 +9,7 @@ class CopyProfilesToPoliciesTest < ActiveSupport::TestCase
   setup do
     Policy.destroy_all
     profiles(:one).update!(parent_profile: profiles(:two),
-                           account: accounts(:test),
-                           compliance_threshold: 75.0,
-                           business_objective_id: business_objectives(:two).id)
+                           account: accounts(:test))
   end
 
   test 'copies profile attributes to new policies' do

@@ -3,8 +3,7 @@
 require 'test_helper'
 
 class ExternalProfileUpdaterTest < ActiveSupport::TestCase
-  test 'updates profiles before a certain date to be external with default '\
-       'threshold and business objective' do
+  test 'updates profiles before a certain date to be external' do
     expected_change = Profile.count
     date = DateTime.now
 

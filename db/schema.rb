@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_16_190051) do
+ActiveRecord::Schema.define(version: 2020_12_22_134736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -112,14 +112,11 @@ ActiveRecord::Schema.define(version: 2020_12_16_190051) do
     t.datetime "updated_at", null: false
     t.string "description"
     t.uuid "account_id"
-    t.float "compliance_threshold", default: 100.0
-    t.uuid "business_objective_id"
     t.uuid "benchmark_id", null: false
     t.uuid "parent_profile_id"
     t.boolean "external", default: false, null: false
     t.uuid "policy_id"
     t.index ["account_id"], name: "index_profiles_on_account_id"
-    t.index ["business_objective_id"], name: "index_profiles_on_business_objective_id"
     t.index ["external"], name: "index_profiles_on_external"
     t.index ["name"], name: "index_profiles_on_name"
     t.index ["parent_profile_id"], name: "index_profiles_on_parent_profile_id"

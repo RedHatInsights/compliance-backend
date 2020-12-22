@@ -208,12 +208,10 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal business_objectives(:one), profiles(:one).business_objective
   end
 
-  test 'compliance_threshold comes from policy for external profiles' do
+  test 'compliance_threshold comes from policy default for external profiles' do
     (bm = benchmarks(:one).dup).update!(version: '0.1.47')
     (external_profile = profiles(:one).dup).update!(benchmark: bm,
-                                                    compliance_threshold: 100,
                                                     policy_object: nil)
-    profiles(:one).update!(compliance_threshold: 30)
     assert_nil external_profile.policy_object
     assert_equal 100, external_profile.compliance_threshold
   end
