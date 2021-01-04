@@ -372,13 +372,32 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
   end
 
-  context 'missing policy' do
-    should 'raise an error and halt parsing (external report)' do
+  context 'finding an associated policy' do
+    should 'raise an error with no policy found (external report)' do
       @report_parser.stubs(:external_report?).returns(true)
       @report_parser.save_host
       assert_raises(XccdfReportParser::ExternalReportError) do
         @report_parser.check_for_external_reports
       end
+    end
+
+    should 'find a policy by hosts, account, and ref_id' do
+      @report_parser.stubs(:external_report?)
+      @report_parser.save_host
+      profiles(:one).update!(
+        ref_id: 'xccdf_org.ssgproject.content_profile_standard', hosts: []
+      )
+      policies(:one).hosts = [@report_parser.host]
+      policies(:two).hosts = [@report_parser.host]
+      Profile.any_instance.expects(:clone_to).with(policy: nil,
+                                                   account: accounts(:test))
+      @report_parser.save_host_profile
+
+      profiles(:one).update!(policy_object: policies(:one),
+                             account: accounts(:test))
+      Profile.any_instance.expects(:clone_to).with(policy: policies(:one),
+                                                   account: accounts(:test))
+      @report_parser.save_host_profile
     end
   end
 end

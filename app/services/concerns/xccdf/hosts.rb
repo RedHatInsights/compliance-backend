@@ -11,7 +11,9 @@ module Xccdf
 
     def host_profile
       @host_profile ||= test_result_profile.clone_to(
-        policy: Policy.with_hosts(@host).find_by(account: @account),
+        policy: Policy.with_hosts(@host)
+                      .with_ref_ids(test_result_profile.ref_id)
+                      .find_by(account: @account),
         account: @account
       )
     end
