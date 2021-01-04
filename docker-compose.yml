@@ -76,6 +76,7 @@ services:
       - INGRESS_VALIDTOPICS=testareno,advisor,buckit,compliance #if you test a different topic, add it here
       - INGRESS_INVENTORYURL=inventory-web:8081/api/inventory/v1/hosts
       - OPENSHIFT_BUILD_COMMIT=woopwoop
+      - INGRESS_PORT=8080
       - INGRESS_WEBPORT=8080
       - INGRESS_METRICSPORT=3001
       - INGRESS_MINIODEV=true
