@@ -28,6 +28,44 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
       )
     end
 
+    def past_ref_ids(os_major_version:, ref_id:, ssg_version:)
+      ref_id.gsub!(Profile::REF_ID_PREFIX, '')
+
+      ssg = all.each_with_index.find do |ssg, i|
+        ssg.os_major_version == os_major_version &&
+          ssg.version == ssg_version
+      end
+    end
+
+    def equivalent_ref_ids(ref_id:, os_major_version:, ssg_version:)
+      ref_id.gsub!(Profile::REF_ID_PREFIX, '')
+      equivalent_ref_ids = all.map do |ssg|
+        return unless ssg.os_major_version == os_major_version
+
+        if ssg.version == ssg_version
+          [ssg.version, [ref_id]]
+        else
+          [ssg.version, []]
+        end
+      end.compact.to_h
+
+      i = all.find_index do |ssg|
+        ssg.os_major_version == os_major_version && ssg.version == ssg_version
+      end
+
+      all.dig(i, 'profiles', ref_id, 'old_names')
+
+      require 'pry'; binding.pry
+
+      all.each_with_index.map do |ssg, i|
+        if ssg.version == ssg_version &&
+            ssg.os_major_version == os_major_version
+          {ssg_version: all[i-1].version,
+           ref_ids: ssg.dig('profiles', ref_id, 'old_names')}
+        end
+      end.compact
+    end
+
     def versions
       all.map(&:version).uniq
     end

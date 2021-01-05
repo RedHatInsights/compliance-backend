@@ -31,4 +31,8 @@ class Host < ApplicationRecord
               os_major_version: i_host['os_major_version'],
               os_minor_version: i_host['os_minor_version'] }.compact)
   end
+
+  def os_version
+    "#{os_major_version}.#{os_minor_version}"
+  end
 end

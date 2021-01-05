@@ -34,6 +34,12 @@ class Policy < ApplicationRecord
     joins(:profiles).where(profiles: { ref_id: ref_ids }).distinct
   }
 
+  scope :with_ssgs, lambda { |ssgs|
+    joins(profiles: :benchmark).where(
+      profiles: { benchmarks: {version: ssgs }}
+    ).distinct
+  }
+
   def self.attrs_from(profile:)
     profile.attributes.slice(*PROFILE_ATTRS)
   end

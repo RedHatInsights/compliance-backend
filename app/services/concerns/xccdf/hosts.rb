@@ -11,9 +11,7 @@ module Xccdf
 
     def host_profile
       @host_profile ||= test_result_profile.clone_to(
-        policy: Policy.with_hosts(@host)
-                      .with_ref_ids(test_result_profile.ref_id)
-                      .find_by(account: @account),
+        policy: find_policy,
         account: @account
       )
     end
@@ -37,6 +35,23 @@ module Xccdf
     end
 
     private
+
+    def find_policy
+      Policy.with_hosts(@host).where(account: @account)
+            .with_ref_ids(test_result_profile.ref_id)
+            .first
+
+      # SupportedSsg.equivalent_ref_ids(
+      #   ref_id: test_result_profile.ref_id,
+      #   os_major_version: benchmark.os_major_version,
+      #   ssg_version: benchmark.version
+      # ).map do |profile_info|
+      #   policies.with_ssgs(profile_info[:ssg_version])
+      #           .with_ref_ids(profile_info[:ref_ids])
+      # end.inject(Policy.none) do |rel, policies|
+      #   rel.or(Policy.where(id: policies))
+      # end.or(Policy.with_ref_ids(test_result_profile.ref_id)).first
+    end
 
     def test_result_profile
       @test_result_profile ||= ::Profile.canonical.create_with(

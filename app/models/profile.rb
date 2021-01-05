@@ -9,6 +9,8 @@ class Profile < ApplicationRecord
   include ProfileHosts
   include ProfileRules
 
+  REF_ID_PREFIX = 'xccdf_org.ssgproject.content_profile_'
+
   belongs_to :account, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
   belongs_to :parent_profile, class_name: 'Profile', optional: true
@@ -57,6 +59,12 @@ class Profile < ApplicationRecord
 
   def policy_type
     (parent_profile || self).name
+  end
+
+  def equivalent_ref_ids
+    SupportedSsg.equivalent_ref_ids(ref_id: ref_id,
+                                    os_major_version: os_major_version,
+                                    ssg_version: ssg_version)
   end
 
   def fill_from_parent
