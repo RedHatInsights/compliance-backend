@@ -8,6 +8,7 @@ class RuleResult < ApplicationRecord
   belongs_to :host
   belongs_to :rule
   belongs_to :test_result
+  has_one :profile, through: :test_result
 
   validates :test_result, presence: true,
                           uniqueness: { scope: %i[host_id rule_id] }

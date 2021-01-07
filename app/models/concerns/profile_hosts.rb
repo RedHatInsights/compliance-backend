@@ -8,6 +8,7 @@ module ProfileHosts
     has_many :test_results, dependent: :destroy
     has_many :test_result_hosts, -> { distinct },
              through: :test_results, source: :host
+    has_many :rule_results, through: :test_results
     has_many :profile_hosts, dependent: :destroy
     has_many :policy_hosts, through: :policy_object
     has_many :assigned_hosts, through: :policy_hosts, source: :host
