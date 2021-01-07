@@ -8,6 +8,8 @@ class ProfileTest < ActiveSupport::TestCase
   should have_many(:profile_host_hosts).through(:profile_hosts)
   should have_many(:assigned_hosts).through(:policy_hosts).source(:host)
   should have_many(:hosts).through(:test_results)
+  should have_many(:test_results).dependent(:destroy)
+  should have_many(:rule_results).through(:test_results)
   should belong_to(:policy_object).optional
   should validate_uniqueness_of(:ref_id)
     .scoped_to(%i[account_id benchmark_id external policy_id])
@@ -238,8 +240,15 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'also destroys its related test results' do
-      test_results(:one).update profile: profiles(:one), host: hosts(:one)
+      assert_equal 1, profiles(:one).test_results.count
       assert_difference('Profile.count' => -1, 'TestResult.count' => -1) do
+        profiles(:one).destroy
+      end
+    end
+
+    should 'also destroys its related rule results' do
+      assert_equal 1, profiles(:one).rule_results.count
+      assert_difference('Profile.count' => -1, 'RuleResult.count' => -1) do
         profiles(:one).destroy
       end
     end
