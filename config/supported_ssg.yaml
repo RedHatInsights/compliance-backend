@@ -1,5 +1,5 @@
 ---
-revision: '2020-09-24'
+revision: '2021-01-08'
 supported:
   RHEL-6.6:
     package: scap-security-guide-0.1.18-3.el6
@@ -208,10 +208,8 @@ supported:
         old_names:
           - stig-rhel7-disa
   RHEL-7.9:
-    package: scap-security-guide-0.1.49-13.el7
-    # RHEL 7 with CIS backported to 0.1.49 in downstream
-    version: 0.1.49
-    upstream_version: 0.1.50
+    package: scap-security-guide-0.1.52-2.el7_9
+    version: 0.1.52
     profiles:
       anssi_nt28_enhanced:
       anssi_nt28_high:
