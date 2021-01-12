@@ -3,6 +3,7 @@ Redis.exists_returns_integer = false # remove on sidekiq upgrade
 sidekiq_config = lambda do |config|
   config.redis = {
     url: "redis://#{Settings.redis_url}",
+    ssl: Settings.redis_ssl,
     network_timeout: 5
   }
   Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
