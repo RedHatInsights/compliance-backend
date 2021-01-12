@@ -81,6 +81,7 @@ Prerequisites:
   - environment variables: `POSTGRESQL_DATABASE`, `POSTGRESQL_SERVICE_HOST`, `POSTGRESQL_USER`, `POSTGRESQL_PASSWORD`, `POSTGRESQL_ADMIN_PASSWORD`, `DATABASE_SERVICE_NAME`
 * URL to Redis
   - `redis_url` and `redis_cache_url` configured in [settings](config/settings/development.yml)
+  - or, environment variables `SETTINGS__REDIS_URL` and `SETTINGS__REDIS_CACHE_URL`
 * URL to [Insights Inventory](https://github.com/RedHatInsights/insights-host-inventory)
   - or, `host_inventory_url` configured in [settings](config/settings/development.yml)
 * Basic authethication credentials set by
