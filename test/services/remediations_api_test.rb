@@ -3,7 +3,7 @@
 require 'test_helper'
 require 'remediations_api'
 
-class RemediationsAPITest < ActiveSupport::TestCase
+class RemediationsApiTest < ActiveSupport::TestCase
   setup do
     @rule = rules(:one)
     @rule.profiles << profiles(:one)
@@ -38,7 +38,7 @@ class RemediationsAPITest < ActiveSupport::TestCase
     end
     Platform.stubs(:connection).returns(test_conn)
     assert_not @rule.remediation_available
-    RemediationsAPI.new(accounts(:test)).import_remediations
+    RemediationsApi.new(accounts(:test)).import_remediations
     assert @rule.reload.remediation_available
   end
 
@@ -47,7 +47,7 @@ class RemediationsAPITest < ActiveSupport::TestCase
     Platform.stubs(:connection).returns(@connection)
     assert_not @rule.remediation_available
     @connection.expects(:post).raises(Faraday::ClientError, '400 error')
-    RemediationsAPI.new(accounts(:test)).import_remediations
+    RemediationsApi.new(accounts(:test)).import_remediations
     assert_not @rule.reload.remediation_available
   end
 
@@ -56,7 +56,7 @@ class RemediationsAPITest < ActiveSupport::TestCase
     Platform.stubs(:connection).returns(@connection)
     assert_not @rule.remediation_available
     @connection.expects(:post).raises(Faraday::ConnectionFailed, 'error')
-    RemediationsAPI.new(accounts(:test)).import_remediations
+    RemediationsApi.new(accounts(:test)).import_remediations
     assert_not @rule.reload.remediation_available
   end
 
@@ -66,7 +66,7 @@ class RemediationsAPITest < ActiveSupport::TestCase
     assert_not @rule.remediation_available
     @connection.expects(:post).raises(Faraday::ServerError, 'uncaught!')
     assert_raises Faraday::ServerError do
-      RemediationsAPI.new(accounts(:test)).import_remediations
+      RemediationsApi.new(accounts(:test)).import_remediations
     end
     assert_not @rule.reload.remediation_available
   end

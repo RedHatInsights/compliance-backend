@@ -7,7 +7,7 @@ class ImportRemediationsTest < ActiveSupport::TestCase
   test 'import_remediations fails on error' do
     ENV['JOBS_ACCOUNT_NUMBER'] = accounts(:test).account_number
 
-    RemediationsAPI.any_instance.expects(:import_remediations)
+    RemediationsApi.any_instance.expects(:import_remediations)
                    .raises(StandardError)
 
     assert_raises StandardError do

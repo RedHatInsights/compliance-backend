@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # This class is meant to contain all calls to the Remediations API.
-class RemediationsAPI
+class RemediationsApi
   def initialize(account)
     @url = URI.parse("#{URI.parse(Settings.remediations_url)}"\
                      "#{Settings.path_prefix}/remediations/v1/resolutions")

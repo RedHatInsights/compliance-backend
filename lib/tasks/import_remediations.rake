@@ -15,7 +15,7 @@ task import_remediations: :environment do
   begin
     start_time = Time.now.utc
     puts "Starting import_remediations job at #{start_time}"
-    RemediationsAPI.new(
+    RemediationsApi.new(
       Account.find_by!(account_number: ENV['JOBS_ACCOUNT_NUMBER'])
     ).import_remediations
     end_time = Time.now.utc
