@@ -12,7 +12,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     @host = hosts(:one)
     @url = 'http://localhost'
     @b64_identity = '1234abcd'
-    @api = HostInventoryAPI.new(@account, @url, @b64_identity)
+    @api = HostInventoryApi.new(@account, @url, @b64_identity)
     @connection = mock('faraday_connection')
     @system_profile_response = OpenStruct.new(body: {
       results: [{ id: @host.id, system_profile: { os_release: '8.2' } }]
@@ -47,7 +47,7 @@ class HostInventoryApiTest < ActiveSupport::TestCase
   end
 
   test 'inventory_host for host not already in inventory' do
-    assert_raises(HostInventoryAPI::InventoryHostNotFound) do
+    assert_raises(HostInventoryApi::InventoryHostNotFound) do
       @api.expects(:host_already_in_inventory).returns(nil)
       @api.inventory_host(@host.id)
     end

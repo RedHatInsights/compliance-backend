@@ -9,7 +9,7 @@ task sync_with_inventory: [:environment] do
     account.hosts.each do |host|
       begin
         host.update_from_inventory_host!(
-          ::HostInventoryAPI.new(
+          ::HostInventoryApi.new(
             account, ::Settings.host_inventory_url, account.b64_identity
           ).inventory_host(host.id)
         )
@@ -17,7 +17,7 @@ task sync_with_inventory: [:environment] do
         puts 'Inventory API error while syncing account '\
           "#{account.account_number}: System #{host.id} - #{host.name}. "
         puts e.full_message
-      rescue HostInventoryAPI::InventoryHostNotFound
+      rescue HostInventoryApi::InventoryHostNotFound
         print "Account #{account.account_number}: "\
           "System #{host.id} - #{host.name} not found in the inventory. "\
           'Removing it from DB...'

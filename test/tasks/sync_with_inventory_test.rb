@@ -5,7 +5,7 @@ require 'rake'
 
 class SyncWithInventoryTest < ActiveSupport::TestCase
   setup do
-    HostInventoryAPI.any_instance.stubs(:inventory_host).returns(
+    HostInventoryApi.any_instance.stubs(:inventory_host).returns(
       'display_name' => 'foo',
       'os_major_version' => 7,
       'os_minor_version' => 5
@@ -25,7 +25,7 @@ class SyncWithInventoryTest < ActiveSupport::TestCase
   end
 
   test 'sync_with_inventory handles Inventory API errors' do
-    HostInventoryAPI.any_instance.stubs(:inventory_host)
+    HostInventoryApi.any_instance.stubs(:inventory_host)
                     .raises(Faraday::ServerError.new(500))
 
     assert_nothing_raised do
@@ -34,7 +34,7 @@ class SyncWithInventoryTest < ActiveSupport::TestCase
   end
 
   test 'sync_with_inventory handles Forbidden errors' do
-    HostInventoryAPI.any_instance.stubs(:inventory_host)
+    HostInventoryApi.any_instance.stubs(:inventory_host)
                     .raises(Faraday::ForbiddenError.new(''))
 
     assert_nothing_raised do
@@ -43,7 +43,7 @@ class SyncWithInventoryTest < ActiveSupport::TestCase
   end
 
   test 'sync_with_inventory handles Client errors' do
-    HostInventoryAPI.any_instance.stubs(:inventory_host)
+    HostInventoryApi.any_instance.stubs(:inventory_host)
                     .raises(Faraday::ClientError.new(''))
 
     assert_nothing_raised do
@@ -52,7 +52,7 @@ class SyncWithInventoryTest < ActiveSupport::TestCase
   end
 
   test 'sync_with_inventory handles ConnectionFailed errors' do
-    HostInventoryAPI.any_instance.stubs(:inventory_host)
+    HostInventoryApi.any_instance.stubs(:inventory_host)
                     .raises(Faraday::ConnectionFailed.new(''))
 
     assert_nothing_raised do

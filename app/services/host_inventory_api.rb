@@ -5,7 +5,7 @@ require 'json'
 
 # Interact with the Insights Host Inventory. Usually HTTP calls
 # are all that's needed.
-class HostInventoryAPI
+class HostInventoryApi
   # Error to raise if the inventory host could not be found
   class InventoryHostNotFound < StandardError; end
 

@@ -62,8 +62,8 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     profiles(:two).update account: accounts(:test),
                           policy_object: policies(:two)
 
-    @api = mock('HostInventoryAPI')
-    HostInventoryAPI.expects(:new).returns(@api)
+    @api = mock('HostInventoryApi')
+    HostInventoryApi.expects(:new).returns(@api)
     @api.expects(:inventory_host).returns(
       'id' => NEW_ID,
       'display_name' => 'newhostname'

@@ -30,7 +30,7 @@ module InventoryServiceHelper
     end
 
     def inventory_host(id)
-      ::HostInventoryAPI.new(
+      ::HostInventoryApi.new(
         current_user.account,
         ::Settings.host_inventory_url,
         nil # infer identity from account

@@ -14,7 +14,7 @@ task import_host_os_releases: :environment do
     start_time = Time.now.utc
     puts "Starting import_host_os_releases job at #{start_time}"
     ::Account.includes(:hosts).find_each do |account|
-      inventory_api = HostInventoryAPI.new(
+      inventory_api = HostInventoryApi.new(
         account, ::Settings.host_inventory_url, account.b64_identity
       )
       ::Host.find_in_batches(batch_size: 50) do |hosts|
