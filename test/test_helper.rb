@@ -23,6 +23,12 @@ unless Rails.env.production?
     SimpleCov.formatter = SimpleCov::Formatter::Codecov
   end
 
+  module ActiveSupport
+    class TestCase
+      parallelize(workers: 4)
+    end
+  end
+
   ENV['RAILS_ENV'] ||= 'test'
   require_relative '../config/environment'
   require 'rails/test_help'
