@@ -17,15 +17,18 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
 
   class << self
     def supported?(ssg_version:, os_major_version:, os_minor_version:)
-      ssg_version == ssg_for_os(os_major_version, os_minor_version)
+      ssg_versions_for_os(os_major_version, os_minor_version)
+        .include?(ssg_version)
     end
 
-    def ssg_for_os(os_major_version, os_minor_version)
-      raw_supported.dig(
-        'supported',
-        "#{self::OS_NAME}-#{os_major_version}.#{os_minor_version}",
-        'version'
-      )
+    def ssg_versions_for_os(os_major_version, os_minor_version)
+      os_major_version = os_major_version.to_s
+      os_minor_version = os_minor_version.to_s
+
+      all.select do |ssg|
+        ssg.os_major_version == os_major_version &&
+          ssg.os_minor_version == os_minor_version
+      end.map(&:version)
     end
 
     def versions
@@ -33,15 +36,16 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
     end
 
     def all
-      raw_supported['supported'].map do |rhel, values|
+      raw_supported['supported'].flat_map do |rhel, packages|
         major, minor = os_version(rhel)
 
-        new(
-          id: rhel,
-          os_major_version: major,
-          os_minor_version: minor,
-          **map_attributes(values)
-        )
+        packages.map do |raw_attrs|
+          new(
+            os_major_version: major,
+            os_minor_version: minor,
+            **map_attributes(rhel, raw_attrs)
+          )
+        end
       end
     end
 
@@ -64,8 +68,9 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
 
     private
 
-    def map_attributes(values)
-      attrs = values.slice(*members.map(&:to_s))
+    def map_attributes(rhel, raw_attrs)
+      attrs = raw_attrs.slice(*members.map(&:to_s))
+      attrs[:id] = "#{rhel}:#{raw_attrs['package']}"
       attrs.symbolize_keys
     end
 
