@@ -58,7 +58,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
 
     def latest_per_os_major
       all.group_by(&:os_major_version).values.map do |ssgs|
-        ssgs.max_by { |ssg| ssg.os_minor_version.to_i }
+        ssgs.max_by { |ssg| Gem::Version.new(ssg.version) }
       end
     end
 
