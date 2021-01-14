@@ -101,8 +101,8 @@ class TestResultTest < ActiveSupport::TestCase
 
     should 'mark hosts with a mismatched OS as unsupported' do
       hosts(:one).update!(os_major_version: 7, os_minor_version: 4)
-      assert_not_equal SupportedSsg.ssg_for_os(7, 4),
-                       profiles(:one).ssg_version
+      assert_not_includes SupportedSsg.ssg_versions_for_os(7, 4),
+                          profiles(:one).ssg_version
 
       @mock.save_test_result
 
@@ -114,8 +114,8 @@ class TestResultTest < ActiveSupport::TestCase
     should 'mark hosts with a matched OS as supported' do
       hosts(:one).update!(os_major_version: 7, os_minor_version: 4)
       profiles(:one).benchmark.update!(version: '0.1.33')
-      assert_equal SupportedSsg.ssg_for_os(7, 4),
-                   profiles(:one).ssg_version
+      assert_includes SupportedSsg.ssg_versions_for_os(7, 4),
+                      profiles(:one).ssg_version
 
       @mock.save_test_result
 

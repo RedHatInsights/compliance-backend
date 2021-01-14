@@ -2,264 +2,264 @@
 revision: '2020-09-24'
 supported:
   RHEL-6.6:
-    package: scap-security-guide-0.1.18-3.el6
-    version: 0.1.18
-    upstream_version: N/A
-    profiles:
-      C2S:
-      common:
-      CS2:
-      CSCF-RHEL6-MLS:
-      rht-ccp:
-      server:
-      stig-rhel6-server-upstream:
-      test:
-      usgcb-rhel6-server:
+    - package: scap-security-guide-0.1.18-3.el6
+      version: 0.1.18
+      upstream_version: N/A
+      profiles:
+        C2S:
+        common:
+        CS2:
+        CSCF-RHEL6-MLS:
+        rht-ccp:
+        server:
+        stig-rhel6-server-upstream:
+        test:
+        usgcb-rhel6-server:
   RHEL-6.7:
-    package: scap-security-guide-0.1.21-3.el6
-    version: 0.1.21
-    upstream_version: N/A
-    profiles:
-      C2S:
-      common:
-      CS2:
-      CSCF-RHEL6-MLS:
-      rht-ccp:
-      server:
-      stig-rhel6-server-upstream:
-      usgcb-rhel6-server:
+    - package: scap-security-guide-0.1.21-3.el6
+      version: 0.1.21
+      upstream_version: N/A
+      profiles:
+        C2S:
+        common:
+        CS2:
+        CSCF-RHEL6-MLS:
+        rht-ccp:
+        server:
+        stig-rhel6-server-upstream:
+        usgcb-rhel6-server:
   RHEL-6.8:
-    package: scap-security-guide-0.1.28-2.el6
-    version: 0.1.28
-    profiles:
-      C2S:
-      common:
-      CS2:
-      CSCF-RHEL6-MLS:
-      nist-cl-il-al:
-      pci-dss:
-      rht-ccp:
-      server:
-      standard:
-      stig-rhel6-server-upstream:
-      usgcb-rhel6-server:
+    - package: scap-security-guide-0.1.28-2.el6
+      version: 0.1.28
+      profiles:
+        C2S:
+        common:
+        CS2:
+        CSCF-RHEL6-MLS:
+        nist-cl-il-al:
+        pci-dss:
+        rht-ccp:
+        server:
+        standard:
+        stig-rhel6-server-upstream:
+        usgcb-rhel6-server:
   RHEL-6.9:
-    package: scap-security-guide-0.1.28-3.el6
-    version: 0.1.28
-    profiles:
-      C2S:
-      common:
-      CS2:
-      CSCF-RHEL6-MLS:
-      nist-cl-il-al:
-      pci-dss:
-      rht-ccp:
-      server:
-      standard:
-      stig-rhel6-server-upstream:
-      usgcb-rhel6-server:
+    - package: scap-security-guide-0.1.28-3.el6
+      version: 0.1.28
+      profiles:
+        C2S:
+        common:
+        CS2:
+        CSCF-RHEL6-MLS:
+        nist-cl-il-al:
+        pci-dss:
+        rht-ccp:
+        server:
+        standard:
+        stig-rhel6-server-upstream:
+        usgcb-rhel6-server:
   RHEL-6.10:
-    package: scap-security-guide-0.1.28-4.el6
-    version: 0.1.28
-    profiles:
-      C2S:
-      common:
-      CS2:
-      CSCF-RHEL6-MLS:
-      nist-cl-il-al:
-      pci-dss:
-      rht-ccp:
-      server:
-      standard:
-      stig-rhel6-server-upstream:
-      usgcb-rhel6-server:
+    - package: scap-security-guide-0.1.28-4.el6
+      version: 0.1.28
+      profiles:
+        C2S:
+        common:
+        CS2:
+        CSCF-RHEL6-MLS:
+        nist-cl-il-al:
+        pci-dss:
+        rht-ccp:
+        server:
+        standard:
+        stig-rhel6-server-upstream:
+        usgcb-rhel6-server:
   RHEL-7.1:
-    package: scap-security-guide-0.1.19-2.el7
-    version: 0.1.19
-    upstream_version: N/A
-    profiles:
-      rht-ccp:
+    - package: scap-security-guide-0.1.19-2.el7
+      version: 0.1.19
+      upstream_version: N/A
+      profiles:
+        rht-ccp:
   RHEL-7.2:
-    package: scap-security-guide-0.1.25-3.el7
-    version: 0.1.25
-    profiles:
-      common:
-      pci-dss:
-      rht-ccp:
-      standard:
-      stig-rhel7-server-upstream:
+    - package: scap-security-guide-0.1.25-3.el7
+      version: 0.1.25
+      profiles:
+        common:
+        pci-dss:
+        rht-ccp:
+        standard:
+        stig-rhel7-server-upstream:
   RHEL-7.3:
-    package: scap-security-guide-0.1.30-5.el7_3
-    version: 0.1.30
-    profiles:
-      C2S:
-      cjis-rhel7-server:
-      common:
-      nist-cl-il-al:
-      ospp-rhel7-server:
-      pci-dss:
-      rht-ccp:
-      standard:
-      stig-rhel7-server-gui-upstream:
-      stig-rhel7-server-upstream:
-      stig-rhel7-workstation-upstream:
+    - package: scap-security-guide-0.1.30-5.el7_3
+      version: 0.1.30
+      profiles:
+        C2S:
+        cjis-rhel7-server:
+        common:
+        nist-cl-il-al:
+        ospp-rhel7-server:
+        pci-dss:
+        rht-ccp:
+        standard:
+        stig-rhel7-server-gui-upstream:
+        stig-rhel7-server-upstream:
+        stig-rhel7-workstation-upstream:
   RHEL-7.4:
-    package: scap-security-guide-0.1.33-6.el7_4
-    version: 0.1.33
-    profiles:
-      C2S:
-      cjis-rhel7-server:
-      common:
-      docker-host:
-      nist-800-171-cui:
-      ospp-rhel7:
-        old_names:
-          - ospp-rhel7-server
-          - nist-cl-il-al
-      pci-dss_centric:
-      pci-dss:
-      rht-ccp:
-      standard:
-      stig-rhel7-disa:
-        old_names:
-          - stig-rhel7-server-upstream
-      stig-rhevh-upstream:
+    - package: scap-security-guide-0.1.33-6.el7_4
+      version: 0.1.33
+      profiles:
+        C2S:
+        cjis-rhel7-server:
+        common:
+        docker-host:
+        nist-800-171-cui:
+        ospp-rhel7:
+          old_names:
+            - ospp-rhel7-server
+            - nist-cl-il-al
+        pci-dss_centric:
+        pci-dss:
+        rht-ccp:
+        standard:
+        stig-rhel7-disa:
+          old_names:
+            - stig-rhel7-server-upstream
+        stig-rhevh-upstream:
   RHEL-7.5:
-    package: scap-security-guide-0.1.36-10.el7_5
-    version: 0.1.36
-    profiles:
-      C2S:
-      cjis-rhel7-server:
-      common:
-      docker-host:
-      nist-800-171-cui:
-      ospp-rhel7:
-      pci-dss_centric:
-      pci-dss:
-      rht-ccp:
-      standard:
-      stig-rhel7-disa:
-      stig-rhevh-upstream:
+    - package: scap-security-guide-0.1.36-10.el7_5
+      version: 0.1.36
+      profiles:
+        C2S:
+        cjis-rhel7-server:
+        common:
+        docker-host:
+        nist-800-171-cui:
+        ospp-rhel7:
+        pci-dss_centric:
+        pci-dss:
+        rht-ccp:
+        standard:
+        stig-rhel7-disa:
+        stig-rhevh-upstream:
   RHEL-7.6:
-    package: scap-security-guide-0.1.40-13.el7_6
-    version: 0.1.40
-    profiles:
-      C2S:
-      cjis:
-        old_names:
-          - cjis-rhel7-server
-      hipaa:
-      nist-800-171-cui:
-      ospp42:
-      ospp:
-        old_names:
-          - ospp-rhel7
-      pci-dss_centric:
-      pci-dss:
-      rht-ccp:
-      standard:
-        old_names:
-          - common
-      stig-rhel7-disa:
+    - package: scap-security-guide-0.1.40-13.el7_6
+      version: 0.1.40
+      profiles:
+        C2S:
+        cjis:
+          old_names:
+            - cjis-rhel7-server
+        hipaa:
+        nist-800-171-cui:
+        ospp42:
+        ospp:
+          old_names:
+            - ospp-rhel7
+        pci-dss_centric:
+        pci-dss:
+        rht-ccp:
+        standard:
+          old_names:
+            - common
+        stig-rhel7-disa:
   RHEL-7.7:
-    package: scap-security-guide-0.1.43-13.el7
-    version: 0.1.43
-    profiles:
-      C2S:
-      cjis:
-      hipaa:
-      nist-800-171-cui:
-      ospp42:
-      ospp:
-      pci-dss_centric:
-      pci-dss:
-      rhelh-vpp:
-      rht-ccp:
-      standard:
-      stig-rhel7-disa:
+    - package: scap-security-guide-0.1.43-13.el7
+      version: 0.1.43
+      profiles:
+        C2S:
+        cjis:
+        hipaa:
+        nist-800-171-cui:
+        ospp42:
+        ospp:
+        pci-dss_centric:
+        pci-dss:
+        rhelh-vpp:
+        rht-ccp:
+        standard:
+        stig-rhel7-disa:
   RHEL-7.8:
-    package: scap-security-guide-0.1.46-11.el7
-    version: 0.1.46
-    profiles:
-      anssi_nt28_enhanced:
-      anssi_nt28_high:
-      anssi_nt28_intermediary:
-      anssi_nt28_minimal:
-      C2S:
-      cjis:
-      cui:
-        old_names:
-          - nist-800-171-cui
-      e8:
-      hipaa:
-      ncp:
-        old_names:
-          - ospp
-      ospp:
-        old_names:
-          - ospp42
-      pci-dss_centric:
-      pci-dss:
-      rhelh-stig:
-      rhelh-vpp:
-      rht-ccp:
-      standard:
-      stig:
-        old_names:
-          - stig-rhel7-disa
+    - package: scap-security-guide-0.1.46-11.el7
+      version: 0.1.46
+      profiles:
+        anssi_nt28_enhanced:
+        anssi_nt28_high:
+        anssi_nt28_intermediary:
+        anssi_nt28_minimal:
+        C2S:
+        cjis:
+        cui:
+          old_names:
+            - nist-800-171-cui
+        e8:
+        hipaa:
+        ncp:
+          old_names:
+            - ospp
+        ospp:
+          old_names:
+            - ospp42
+        pci-dss_centric:
+        pci-dss:
+        rhelh-stig:
+        rhelh-vpp:
+        rht-ccp:
+        standard:
+        stig:
+          old_names:
+            - stig-rhel7-disa
   RHEL-7.9:
-    package: scap-security-guide-0.1.49-13.el7
-    # RHEL 7 with CIS backported to 0.1.49 in downstream
-    version: 0.1.49
-    upstream_version: 0.1.50
-    profiles:
-      anssi_nt28_enhanced:
-      anssi_nt28_high:
-      anssi_nt28_intermediary:
-      anssi_nt28_minimal:
-      C2S:
-      cis:
-      cjis:
-      cui:
-      e8:
-      hipaa:
-      ncp:
-      ospp:
-      pci-dss_centric:
-      pci-dss:
-      rhelh-stig:
-      rhelh-vpp:
-      rht-ccp:
-      standard:
-      stig:
+    - package: scap-security-guide-0.1.49-13.el7
+      # RHEL 7 with CIS backported to 0.1.49 in downstream
+      version: 0.1.49
+      upstream_version: 0.1.50
+      profiles:
+        anssi_nt28_enhanced:
+        anssi_nt28_high:
+        anssi_nt28_intermediary:
+        anssi_nt28_minimal:
+        C2S:
+        cis:
+        cjis:
+        cui:
+        e8:
+        hipaa:
+        ncp:
+        ospp:
+        pci-dss_centric:
+        pci-dss:
+        rhelh-stig:
+        rhelh-vpp:
+        rht-ccp:
+        standard:
+        stig:
   RHEL-8.0:
-    package: scap-security-guide-0.1.42-11.el8
-    version: 0.1.42
-    profiles:
-      ospp:
-      pci-dss:
+    - package: scap-security-guide-0.1.42-11.el8
+      version: 0.1.42
+      profiles:
+        ospp:
+        pci-dss:
   RHEL-8.1:
-    package: scap-security-guide-0.1.46-1.el8
-    version: 0.1.46
-    profiles:
-      ospp:
-      pci-dss:
+    - package: scap-security-guide-0.1.46-1.el8
+      version: 0.1.46
+      profiles:
+        ospp:
+        pci-dss:
   RHEL-8.2:
-    package: scap-security-guide-0.1.48-7.el8
-    version: 0.1.48
-    profiles:
-      e8:
-      ospp:
-      pci-dss:
-      stig:
+    - package: scap-security-guide-0.1.48-7.el8
+      version: 0.1.48
+      profiles:
+        e8:
+        ospp:
+        pci-dss:
+        stig:
   RHEL-8.3:
-    package: scap-security-guide-0.1.50-14.el8
-    version: 0.1.50
-    profiles:
-      cis:
-      cui:
-      e8:
-      hipaa:
-      ospp:
-      pci-dss:
-      stig:
+    - package: scap-security-guide-0.1.50-14.el8
+      version: 0.1.50
+      profiles:
+        cis:
+        cui:
+        e8:
+        hipaa:
+        ospp:
+        pci-dss:
+        stig:
