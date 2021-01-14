@@ -13,8 +13,10 @@ rbac_url: http://rbac.rbac-ci.svc.cluster.local:9002
 prometheus_exporter_host: compliance-prometheus-exporter.compliance-ci.svc
 prometheus_exporter_port: 9394
 redis_url: compliance-redis.compliance-ci.svc.cluster.local:6379
+redis_password:
 redis_ssl: false
 redis_cache_url:
+redis_cache_password:
 redis_cache_ssl: false
 slack_webhook: 'this is set through a env var in Openshift and not shared for security reasons'
 disable_rbac: 'false'

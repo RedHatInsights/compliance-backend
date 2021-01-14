@@ -47,6 +47,7 @@ Rails.application.configure do
   # Use a different cache store in production.
   config.cache_store = :redis_cache_store, {
     url: "redis://#{Settings.redis_cache_url}",
+    password: Settings.redis_cache_password.present? ? Settings.redis_cache_password : nil,
     ssl: Settings.redis_cache_ssl
   }
 
