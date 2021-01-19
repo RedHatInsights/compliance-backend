@@ -8,12 +8,4 @@ class ProfileHost < ApplicationRecord
 
   validates :profile, presence: true
   validates :host, presence: true, uniqueness: { scope: :profile }
-
-  after_destroy :destroy_orphaned_external_profile
-
-  def destroy_orphaned_external_profile
-    return unless profile.external && profile.hosts.empty?
-
-    profile.destroy
-  end
 end

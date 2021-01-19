@@ -16,8 +16,6 @@ class TestResult < ApplicationRecord
   validates :end_time, presence: true,
                        uniqueness: { scope: %i[host_id profile_id] }
 
-  after_destroy :destroy_orphaned_external_profiles
-
   scope :latest, lambda {
     joins("JOIN (#{latest_without_ids.to_sql}) as tr on "\
           'test_results.profile_id = tr.profile_id AND '\
@@ -28,10 +26,6 @@ class TestResult < ApplicationRecord
   scope :supported, lambda { |supported = true|
     where(supported: supported)
   }
-
-  def destroy_orphaned_external_profiles
-    profile.destroy if profile&.policy_id.nil? && profile&.test_results&.empty?
-  end
 
   def self.latest_without_ids
     group(:profile_id, :host_id)
