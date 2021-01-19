@@ -11,7 +11,7 @@ class Policy < ApplicationRecord
   has_many :benchmarks, through: :profiles
   has_many :test_results, through: :profiles, dependent: :destroy
 
-  has_many :policy_hosts, dependent: :destroy
+  has_many :policy_hosts, dependent: :delete_all
   has_many :hosts, through: :policy_hosts, source: :host
   has_many :test_result_hosts, through: :test_results, source: :host
 

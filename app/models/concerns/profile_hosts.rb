@@ -9,7 +9,7 @@ module ProfileHosts
     has_many :test_result_hosts, -> { distinct },
              through: :test_results, source: :host
     has_many :rule_results, through: :test_results
-    has_many :profile_hosts, dependent: :destroy
+    has_many :profile_hosts, dependent: :delete_all
     has_many :policy_hosts, through: :policy_object
     has_many :assigned_hosts, through: :policy_hosts, source: :host
     has_many :profile_host_hosts, through: :profile_hosts, source: :host
@@ -18,7 +18,7 @@ module ProfileHosts
     def update_hosts(new_host_ids)
       return unless new_host_ids
 
-      profile_hosts.where.not(host_id: new_host_ids).destroy_all
+      profile_hosts.where.not(host_id: new_host_ids).delete_all
       ProfileHost.import((new_host_ids - host_ids).map do |host_id|
         { host_id: host_id, profile_id: id }
       end)
