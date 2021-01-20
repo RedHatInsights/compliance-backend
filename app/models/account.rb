@@ -16,6 +16,7 @@ class Account < ApplicationRecord
       'identity': {
         'account_number': account_number,
         'type': 'User',
+        'auth_type': 'basic-auth',
         'user': {
           'username': 'ComplianceSyncJob',
           'email': 'no-reply@redhat.com',
