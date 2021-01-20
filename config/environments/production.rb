@@ -77,6 +77,9 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  # Whitelist hosts
+  config.hosts << /((ci|qa)\.)?cloud\.(stage\.)?redhat\.com/
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
