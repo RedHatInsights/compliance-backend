@@ -26,12 +26,11 @@ def runStages() {
         }
 
         gitUtils.stageWithContext("Prepare-db", shortenURL = false) {
-            migrateStatus = sh(script: "bundle exec rake db:migrate --trace", returnStatus: true)
-            sh "bundle exec rake db:test:prepare"
+            migrateStatus = sh(script: "bundle exec rake db:test:prepare --trace", returnStatus: true)
         }
 
         if (migrateStatus != 0) {
-          error("DB migrations failed")
+          error("DB setup failed")
         }
 
         gitUtils.stageWithContext("Unit-tests", shortenURL = false) {
