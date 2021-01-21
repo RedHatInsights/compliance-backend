@@ -50,6 +50,12 @@ class HostInventoryAPI
     end
   end
 
+  def hosts
+    JSON.parse(Platform.connection.get(
+      @url, {}, X_RH_IDENTITY: @b64_identity
+    ).body)
+  end
+
   private
 
   def find_os_release(system_profile)

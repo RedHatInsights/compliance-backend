@@ -52,22 +52,36 @@ module Authentication
 
   def rbac_allowed?
     return true if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
-    return true if skip_rbac_for_cert_based_auth?
+    return valid_cert_auth? if identity_header.cert_based?
 
-    @rbac_api ||= ::RbacApi.new(request.headers['X-RH-IDENTITY'])
+    @rbac_api ||= ::RbacApi.new(raw_identity_header)
     @rbac_api.check_user
   end
 
   private
 
-  def skip_rbac_for_cert_based_auth?
-    identity_header.cert_based? &&
-      ALLOWED_CERT_BASED_RBAC_ACTIONS.include?(controller: controller_name,
-                                               action: action_name)
+  def valid_cert_endpoint?
+    ALLOWED_CERT_BASED_RBAC_ACTIONS.include?(
+      controller: controller_name, action: action_name
+    )
+  end
+
+  def valid_cert_auth?
+    valid_cert_endpoint? && HostInventoryAPI.new(
+      nil, Settings.host_inventory_url, raw_identity_header
+    ).hosts.dig('results').present?
+  rescue Faraday::Error => e
+    Rails.logger.error(e.full_message)
+
+    false
+  end
+
+  def raw_identity_header
+    request.headers['X-RH-IDENTITY']
   end
 
   def identity_header
-    @identity_header ||= IdentityHeader.new(request.headers['X-RH-IDENTITY'])
+    @identity_header ||= IdentityHeader.new(raw_identity_header)
   end
 
   def account_from_header
