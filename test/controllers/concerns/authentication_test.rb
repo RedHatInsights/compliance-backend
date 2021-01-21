@@ -208,6 +208,28 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
   end
 
   context 'disabled rbac via cert based auth' do
+    should 'disallows access when inventory errors' do
+      encoded_header = Base64.encode64(
+        {
+          'identity': {
+            'account_number': '1234',
+            'auth_type': IdentityHeader::CERT_AUTH
+          },
+          'entitlements':
+          {
+            'insights': {
+              'is_entitled': true
+            }
+          }
+        }.to_json
+      )
+      HostInventoryAPI.any_instance.expects(:hosts)
+                      .raises(Faraday::Error.new(''))
+      RbacApi.expects(:new).never
+      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      assert_response :forbidden
+    end
+
     should 'allow access to profiles#index' do
       encoded_header = Base64.encode64(
         {
@@ -223,9 +245,31 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
+      HostInventoryAPI.any_instance.expects(:hosts).returns('results' => [:foo])
       RbacApi.expects(:new).never
       get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
+    end
+
+    should 'disallow access to profiles#index with invalid identity' do
+      encoded_header = Base64.encode64(
+        {
+          'identity': {
+            'account_number': '1234',
+            'auth_type': IdentityHeader::CERT_AUTH
+          },
+          'entitlements':
+          {
+            'insights': {
+              'is_entitled': true
+            }
+          }
+        }.to_json
+      )
+      HostInventoryAPI.any_instance.expects(:hosts).returns('results' => [])
+      RbacApi.expects(:new).never
+      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      assert_response :forbidden
     end
 
     should 'allow access to profiles#tailoring_file' do
@@ -244,14 +288,39 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
+      HostInventoryAPI.any_instance.expects(:hosts).returns('results' => [:foo])
       RbacApi.expects(:new).never
       get tailoring_file_profile_url(profiles(:one)),
           headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
     end
 
+    should 'disallow access to profiles#tailoring_file with invalid identity' do
+      profiles(:one).update!(account: accounts(:one))
+      encoded_header = Base64.encode64(
+        {
+          'identity': {
+            'account_number': accounts(:one).account_number,
+            'auth_type': IdentityHeader::CERT_AUTH
+          },
+          'entitlements':
+          {
+            'insights': {
+              'is_entitled': true
+            }
+          }
+        }.to_json
+      )
+      HostInventoryAPI.any_instance.expects(:hosts).returns('results' => [])
+      RbacApi.expects(:new).never
+      get tailoring_file_profile_url(profiles(:one)),
+          headers: { 'X-RH-IDENTITY': encoded_header }
+      assert_response :forbidden
+    end
+
     should 'disallow access to profiles#show' do
-      RbacApi.any_instance.expects(:check_user)
+      HostInventoryAPI.any_instance.expects(:hosts).never
+      RbacApi.any_instance.expects(:check_user).never
       profiles(:one).update!(account: accounts(:one))
       encoded_header = Base64.encode64(
         {

@@ -53,6 +53,13 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     end
   end
 
+  test 'hosts queries inventory hosts endpoint' do
+    response = OpenStruct.new(body: { results: [@inventory_host] }.to_json)
+    @connection.expects(:get).returns(response)
+
+    assert_includes @api.hosts.dig('results').map { |h| h['id'] }, @host.id
+  end
+
   test 'find_results matches on ID' do
     assert_equal(
       @api.send(
