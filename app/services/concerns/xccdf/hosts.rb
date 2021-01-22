@@ -49,9 +49,7 @@ module Xccdf
 
     def inventory_host
       @inventory_host ||= ::HostInventoryAPI.new(
-        @account,
-        ::Settings.host_inventory_url,
-        @b64_identity
+        account: @account, b64_identity: @b64_identity
       ).inventory_host(@host_inventory_id)
     end
   end

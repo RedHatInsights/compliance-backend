@@ -11,17 +11,16 @@ class HostInventoryAPI
 
   ERRORS = [InventoryHostNotFound].freeze
 
-  def initialize(account, url, b64_identity)
+  def initialize(account: nil, url: Settings.host_inventory_url,
+                 b64_identity: account&.b64_identity)
     @url = "#{URI.parse(url)}#{Settings.path_prefix}/inventory/v1/hosts"
     @account = account
-    @b64_identity = b64_identity || @account.b64_identity
+    @b64_identity = b64_identity
   end
 
   def host_already_in_inventory(host_id)
-    response = Platform.connection.get(
-      "#{@url}/#{host_id}", {}, X_RH_IDENTITY: @b64_identity
-    )
-    find_results(JSON.parse(response.body), host_id)
+    response = get("/#{host_id}")
+    find_results(response, host_id)
   end
 
   def inventory_host(host_id)
@@ -38,11 +37,9 @@ class HostInventoryAPI
   end
 
   def system_profile(ids)
-    response = Platform.connection.get(
-      "#{@url}/#{ids.join(',')}/system_profile", { per_page: 50, page: 1 },
-      X_RH_IDENTITY: @b64_identity
-    )
-    JSON.parse(response.body)['results'].inject([]) do |acc, host|
+    response = get("/#{ids.join(',')}/system_profile",
+                   params: { per_page: 50, page: 1 })
+    response['results'].inject([]) do |acc, host|
       os_major, os_minor = find_os_release(host['system_profile'])
       acc << { 'id' => host['id'],
                'os_major_version' => os_major,
@@ -51,12 +48,14 @@ class HostInventoryAPI
   end
 
   def hosts
-    JSON.parse(Platform.connection.get(
-      @url, {}, X_RH_IDENTITY: @b64_identity
-    ).body)
+    get
   end
 
   private
+
+  def get(path = '', params: {}, headers: { X_RH_IDENTITY: @b64_identity })
+    JSON.parse(Platform.connection.get("#{@url}#{path}", params, headers).body)
+  end
 
   def find_os_release(system_profile)
     return [nil, nil] if system_profile['os_release'].blank?

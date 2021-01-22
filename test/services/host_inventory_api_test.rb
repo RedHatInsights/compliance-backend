@@ -12,7 +12,8 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     @host = hosts(:one)
     @url = 'http://localhost'
     @b64_identity = '1234abcd'
-    @api = HostInventoryAPI.new(@account, @url, @b64_identity)
+    @api = HostInventoryAPI.new(account: @account, url: @url,
+                                b64_identity: @b64_identity)
     @connection = mock('faraday_connection')
     @system_profile_response = OpenStruct.new(body: {
       results: [{ id: @host.id, system_profile: { os_release: '8.2' } }]

@@ -68,7 +68,7 @@ module Authentication
 
   def valid_cert_auth?
     valid_cert_endpoint? && HostInventoryAPI.new(
-      nil, Settings.host_inventory_url, raw_identity_header
+      b64_identity: raw_identity_header
     ).hosts.dig('results').present?
   rescue Faraday::Error => e
     Rails.logger.error(e.full_message)
