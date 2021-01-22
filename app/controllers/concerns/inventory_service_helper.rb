@@ -30,7 +30,7 @@ module InventoryServiceHelper
     end
 
     def inventory_host(id)
-      ::HostInventoryAPI.new(account: current_user.account).inventory_host(id)
+      ::HostInventoryApi.new(account: current_user.account).inventory_host(id)
     end
   end
 end

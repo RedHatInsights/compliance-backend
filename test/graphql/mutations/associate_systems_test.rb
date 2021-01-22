@@ -52,8 +52,8 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
 
     assert_empty profiles(:one).assigned_hosts
 
-    @api = mock('HostInventoryAPI')
-    HostInventoryAPI.expects(:new).returns(@api)
+    @api = mock('HostInventoryApi')
+    HostInventoryApi.expects(:new).returns(@api)
     @api.expects(:inventory_host).returns(
       'id' => NEW_ID,
       'display_name' => 'newhostname'

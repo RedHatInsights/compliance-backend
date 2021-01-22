@@ -5,7 +5,7 @@ require 'rake'
 
 class ImportDatastreamTest < ActiveSupport::TestCase
   setup do
-    HostInventoryAPI.any_instance.stubs(:inventory_host).returns(
+    HostInventoryApi.any_instance.stubs(:inventory_host).returns(
       'display_name' => 'foo',
       'os_major_version' => 7,
       'os_minor_version' => 5
