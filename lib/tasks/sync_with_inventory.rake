@@ -9,9 +9,7 @@ task sync_with_inventory: [:environment] do
     account.hosts.each do |host|
       begin
         host.update_from_inventory_host!(
-          ::HostInventoryAPI.new(
-            account, ::Settings.host_inventory_url, account.b64_identity
-          ).inventory_host(host.id)
+          ::HostInventoryAPI.new(account: account).inventory_host(host.id)
         )
       rescue Faraday::Error => e
         puts 'Inventory API error while syncing account '\
