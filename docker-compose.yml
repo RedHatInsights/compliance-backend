@@ -141,7 +141,12 @@ services:
   build-rails-db:
     image: compliance-backend-rails
     entrypoint: ''
-    command: 'bundle exec rake db:create db:migrate'
+    command: sh -c '
+      bundle exec rake db:create db:migrate;
+      bundle exec rake db:test:prepare;
+      bundle exec rails db < db/cyndi_setup.sql;
+      RAILS_ENV=test bundle exec rails db < db/cyndi_setup.sql;
+      '
     volumes:
       - .:/app:z
     depends_on:
