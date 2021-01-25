@@ -98,12 +98,34 @@ First, let's install all dependencies and initialize the database.
 ```shell
 bundle install
 bundle exec rake db:create db:migrate
+bundle exec rake db:test:prepare # for test DB setup
 ```
 
 Once you have database initialized, you might want to import SSG policies:
 
 ```shell
 bundle exec rake ssg:import_rhel_supported
+```
+
+#### Project Cyndi
+
+The compliance project integrates with project cyndi. For local development, a database view is created, built from the inventory database which runs alongside the compliance database. The Cyndi hosts view exists within an inventory schema within the compliance database.
+
+```shell
+bundle exec rails db < db/cyndi_setup.sql # syndicated (cyndi) hosts from inventory
+RAILS_ENV=test bundle exec rails db < db/cyndi_setup.sql # cyndi for test DB
+```
+
+You can verify everything worked as expected within psql for compliance_dev and
+compliance_test databases:
+
+```
+compliance_dev=# \dv inventory.
+          List of relations
+  Schema   | Name  | Type |  Owner
+-----------+-------+------+----------
+ inventory | hosts | view | insights
+(1 row)
 ```
 
 #### Kafka Consumers (XCCDF report consumers)
