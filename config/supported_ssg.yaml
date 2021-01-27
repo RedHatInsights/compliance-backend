@@ -1,5 +1,5 @@
 ---
-revision: '2021-01-18'
+revision: '2021-01-27'
 supported:
   RHEL-6.6:
     - package: scap-security-guide-0.1.18-3.el6
@@ -266,8 +266,13 @@ supported:
       profiles:
         ospp:
         pci-dss:
+    - package: scap-security-guide-0.1.47-8.el8_1
+      version: 0.1.47
+      profiles:
+        ospp:
+        pci-dss:
   RHEL-8.2:
-    - package: scap-security-guide-0.1.48-7.el8
+    - package: scap-security-guide-0.1.48-10.el8_2
       version: 0.1.48
       profiles:
         e8:
@@ -275,7 +280,7 @@ supported:
         pci-dss:
         stig:
   RHEL-8.3:
-    - package: scap-security-guide-0.1.50-14.el8
+    - package: scap-security-guide-0.1.50-16.el8_3
       version: 0.1.50
       profiles:
         cis:
