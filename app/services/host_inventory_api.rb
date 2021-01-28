@@ -12,10 +12,10 @@ class HostInventoryApi
   ERRORS = [InventoryHostNotFound].freeze
 
   def initialize(account: nil, url: Settings.host_inventory_url,
-                 b64_identity: account&.b64_identity)
+                 b64_identity: nil)
     @url = "#{URI.parse(url)}#{Settings.path_prefix}/inventory/v1/hosts"
     @account = account
-    @b64_identity = b64_identity
+    @b64_identity = b64_identity || account&.b64_identity
   end
 
   def host_already_in_inventory(host_id)

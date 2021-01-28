@@ -27,6 +27,12 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     assert_nil @api.host_already_in_inventory(@host.id)
   end
 
+  test 'works with nil b64_identity' do
+    api = HostInventoryApi.new(account: @account, b64_identity: nil)
+    assert_equal @account.b64_identity,
+                 api.instance_variable_get(:@b64_identity)
+  end
+
   test 'host_already_in_inventory host exists' do
     response = OpenStruct.new(body: { results: [@inventory_host] }.to_json)
     @connection.expects(:get).returns(response)
