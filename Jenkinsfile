@@ -28,6 +28,7 @@ def runStages() {
         gitUtils.stageWithContext("Prepare-db", shortenURL = false) {
             migrateStatus = sh(script: "bundle exec rake db:migrate --trace", returnStatus: true)
             sh "bundle exec rake db:test:prepare"
+            sh "POSTGRESQL_USER=postgres bundle exec rails db < db/grant_db_user.sql"
         }
 
         if (migrateStatus != 0) {
