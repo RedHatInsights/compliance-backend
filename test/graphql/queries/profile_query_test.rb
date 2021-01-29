@@ -90,7 +90,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
     profiles(:one).update account: accounts(:test),
                           parent_profile: profiles(:two)
-    users(:test).update account: nil
+    users(:test).update account: accounts(:two)
 
     assert_raises(Pundit::NotAuthorizedError) do
       Schema.execute(
@@ -271,10 +271,9 @@ class ProfileQueryTest < ActiveSupport::TestCase
                           policy_object: policies(:one))
     profiles(:two).update(account: accounts(:test),
                           policy_object: policies(:one))
-    (host3 = hosts(:two).dup).update!(name: 'host3')
     policies(:one).update(compliance_threshold: 95,
                           account: accounts(:test),
-                          hosts: [hosts(:one), host3])
+                          hosts: [hosts(:one)])
 
     result = Schema.execute(
       query,
@@ -289,8 +288,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
       h['id'] == profiles(:two).id
     end
     assert_equal policies(:one).name, profile1_result['name']
-    assert_equal 2, profile1_result['totalHostCount']
-    assert_equal 2, profile2_result['totalHostCount']
+    assert_equal 1, profile1_result['totalHostCount']
+    assert_equal 1, profile2_result['totalHostCount']
     assert_equal 1, profile1_result['testResultHostCount']
     assert_equal 1, profile1_result['compliantHostCount']
     assert_equal 1, profile1_result['unsupportedHostCount']

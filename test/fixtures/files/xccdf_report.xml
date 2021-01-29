@@ -24095,7 +24095,7 @@ chown 0 /boot/grub/grub.conf
     <title>OSCAP Scan Result</title>
     <identity authenticated="false" privileged="false">dlobatog</identity>
     <profile idref="xccdf_org.ssgproject.content_profile_standard"/>
-    <target>lenovolobato.lobatolan.home</target>
+    <target>MyStringone</target>
     <target-address>127.0.0.1</target-address>
     <target-address>192.168.0.102</target-address>
     <target-address>192.168.0.100</target-address>

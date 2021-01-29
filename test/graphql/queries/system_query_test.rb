@@ -5,11 +5,10 @@ require 'test_helper'
 class SystemQueryTest < ActiveSupport::TestCase
   setup do
     profiles(:one).update! policy_object: policies(:one),
-                           account: accounts(:test)
+                           account: accounts(:one)
     profiles(:two).update! policy_object: policies(:two),
-                           account: accounts(:test)
-    users(:test).update account: accounts(:test)
-    hosts(:one).update account: accounts(:test)
+                           account: accounts(:one)
+    users(:test).update account: accounts(:one)
   end
 
   test 'query host owned by the user' do
@@ -39,8 +38,7 @@ class SystemQueryTest < ActiveSupport::TestCase
       }
     GRAPHQL
 
-    hosts(:one).update account: accounts(:test)
-    users(:test).update account: nil
+    users(:test).update account: accounts(:two)
 
     assert_raises(Pundit::NotAuthorizedError) do
       Schema.execute(
@@ -477,7 +475,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     )
 
     hosts = result['data']['systems']['edges']
-    assert_equal 2, hosts.count
+    assert_equal 1, hosts.count
     hosts.each do |graphql_host|
       host = Host.find(graphql_host['node']['id'])
       %w[profiles testResultProfiles].each do |field|
@@ -596,7 +594,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     )['data']
 
     assert_equal false, result['systems']['pageInfo']['hasPreviousPage']
-    assert_equal true, result['systems']['pageInfo']['hasNextPage']
+    assert_equal false, result['systems']['pageInfo']['hasNextPage']
   end
 
   test 'limit and offset paginate the query' do
@@ -647,8 +645,6 @@ class SystemQueryTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )['data']
     graphql_host = Host.find(result['systems']['edges'].first['node']['id'])
-    assert_not_equal users(:test).account.hosts.count,
-                     result['systems']['totalCount']
     assert_equal 1, result['systems']['totalCount']
     assert graphql_host.assigned_profiles.pluck(:id).include?(profiles(:one).id)
   end
@@ -708,7 +704,6 @@ class SystemQueryTest < ActiveSupport::TestCase
     hosts(:two).policies << policies(:two)
     profiles(:one).rules << rules(:one)
     profiles(:two).rules << rules(:two)
-    hosts(:two).update(account: accounts(:test))
   end
   # rubocop:enable AbcSize
 end

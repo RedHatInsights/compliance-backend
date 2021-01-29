@@ -658,7 +658,7 @@
                       "hosts": {
                         "data": [
                           {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
                             "type": "host"
                           }
                         ]
@@ -716,7 +716,7 @@
                       "hosts": {
                         "data": [
                           {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                            "id": "328fb4c0-42fc-0139-06c0-6e70056f34f5",
                             "type": "host"
                           }
                         ]
@@ -803,7 +803,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "7e267141-a6fc-4f00-9dae-78fefd6f6f86",
+                  "id": "f0b9739f-dab0-4558-be83-4f64811fdabd",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -812,7 +812,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "7e267141-a6fc-4f00-9dae-78fefd6f6f86",
+                    "policy_profile_id": "f0b9739f-dab0-4558-be83-4f64811fdabd",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "A custom name",
                     "description": null,
@@ -860,11 +860,11 @@
                     "hosts": {
                       "data": [
                         {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
                           "type": "host"
                         },
                         {
-                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                          "id": "328fb4c0-42fc-0139-06c0-6e70056f34f5",
                           "type": "host"
                         }
                       ]
@@ -1051,7 +1051,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "857822c1-c3ce-40e0-b06f-122917302801",
+                        "id": "8400063e-938a-4dd6-b8d6-f0f10ad17953",
                         "type": "account"
                       }
                     },
@@ -1070,7 +1070,7 @@
                     "hosts": {
                       "data": [
                         {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
                           "type": "host"
                         }
                       ]
@@ -1235,7 +1235,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "848aa3ca-35c4-4482-aa17-d39815ba8574",
+                  "id": "2e834ec2-22e2-4fff-924b-d674734c5487",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -1244,7 +1244,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "848aa3ca-35c4-4482-aa17-d39815ba8574",
+                    "policy_profile_id": "2e834ec2-22e2-4fff-924b-d674734c5487",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "An updated custom name",
                     "description": null,
@@ -1292,11 +1292,11 @@
                     "hosts": {
                       "data": [
                         {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
                           "type": "host"
                         },
                         {
-                          "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
+                          "id": "328fb4c0-42fc-0139-06c0-6e70056f34f5",
                           "type": "host"
                         }
                       ]
@@ -1632,7 +1632,7 @@
                     "relationships": {
                       "host": {
                         "data": {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
                           "type": "host"
                         }
                       },
@@ -2008,7 +2008,7 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "RHEL-6.6",
+                    "id": "RHEL-6.6:scap-security-guide-0.1.18-3.el6",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.18-3.el6",
@@ -2029,7 +2029,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-6.7",
+                    "id": "RHEL-6.7:scap-security-guide-0.1.21-3.el6",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.21-3.el6",
@@ -2049,7 +2049,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-6.8",
+                    "id": "RHEL-6.8:scap-security-guide-0.1.28-2.el6",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.28-2.el6",
@@ -2072,7 +2072,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-6.9",
+                    "id": "RHEL-6.9:scap-security-guide-0.1.28-3.el6",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.28-3.el6",
@@ -2095,7 +2095,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-6.10",
+                    "id": "RHEL-6.10:scap-security-guide-0.1.28-4.el6",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.28-4.el6",
@@ -2118,7 +2118,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.1",
+                    "id": "RHEL-7.1:scap-security-guide-0.1.19-2.el7",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.19-2.el7",
@@ -2131,7 +2131,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.2",
+                    "id": "RHEL-7.2:scap-security-guide-0.1.25-3.el7",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.25-3.el7",
@@ -2148,7 +2148,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.3",
+                    "id": "RHEL-7.3:scap-security-guide-0.1.30-5.el7_3",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.30-5.el7_3",
@@ -2171,7 +2171,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.4",
+                    "id": "RHEL-7.4:scap-security-guide-0.1.33-6.el7_4",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.33-6.el7_4",
@@ -2195,7 +2195,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.5",
+                    "id": "RHEL-7.5:scap-security-guide-0.1.36-10.el7_5",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.36-10.el7_5",
@@ -2219,7 +2219,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.6",
+                    "id": "RHEL-7.6:scap-security-guide-0.1.40-13.el7_6",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.40-13.el7_6",
@@ -2242,7 +2242,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.7",
+                    "id": "RHEL-7.7:scap-security-guide-0.1.43-13.el7",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.43-13.el7",
@@ -2266,7 +2266,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.8",
+                    "id": "RHEL-7.8:scap-security-guide-0.1.46-11.el7",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.46-11.el7",
@@ -2296,7 +2296,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.9",
+                    "id": "RHEL-7.9:scap-security-guide-0.1.49-13.el7",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.49-13.el7",
@@ -2327,7 +2327,38 @@
                     }
                   },
                   {
-                    "id": "RHEL-8.0",
+                    "id": "RHEL-7.9:scap-security-guide-0.1.52-2.el7_9",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.52-2.el7_9",
+                      "version": "0.1.52",
+                      "os_major_version": "7",
+                      "os_minor_version": "9",
+                      "profiles": [
+                        "anssi_nt28_enhanced",
+                        "anssi_nt28_high",
+                        "anssi_nt28_intermediary",
+                        "anssi_nt28_minimal",
+                        "C2S",
+                        "cis",
+                        "cjis",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ncp",
+                        "ospp",
+                        "pci-dss_centric",
+                        "pci-dss",
+                        "rhelh-stig",
+                        "rhelh-vpp",
+                        "rht-ccp",
+                        "standard",
+                        "stig"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.0:scap-security-guide-0.1.42-11.el8",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.42-11.el8",
@@ -2341,7 +2372,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-8.1",
+                    "id": "RHEL-8.1:scap-security-guide-0.1.46-1.el8",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.46-1.el8",
@@ -2355,7 +2386,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-8.2",
+                    "id": "RHEL-8.2:scap-security-guide-0.1.48-7.el8",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.48-7.el8",
@@ -2371,7 +2402,7 @@
                     }
                   },
                   {
-                    "id": "RHEL-8.3",
+                    "id": "RHEL-8.3:scap-security-guide-0.1.50-14.el8",
                     "type": "supported_ssg",
                     "attributes": {
                       "package": "scap-security-guide-0.1.50-14.el8",
@@ -2391,8 +2422,8 @@
                   }
                 ],
                 "meta": {
-                  "total": 18,
-                  "revision": "2020-09-24"
+                  "total": 19,
+                  "revision": "2021-01-18"
                 }
               }
             },
@@ -2498,7 +2529,7 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                    "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
                     "type": "host",
                     "attributes": {
                       "name": "MyStringone",
@@ -2631,7 +2662,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                  "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
                   "type": "host",
                   "attributes": {
                     "name": "MyStringone",

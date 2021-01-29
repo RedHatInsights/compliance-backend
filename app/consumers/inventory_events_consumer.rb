@@ -15,8 +15,6 @@ class InventoryEventsConsumer < ApplicationConsumer
     case @msg_value['type']
     when 'delete'
       DeleteHost.perform_async(@msg_value)
-    when 'updated'
-      InventoryHostUpdatedJob.perform_async(@msg_value)
     end
 
     clear!

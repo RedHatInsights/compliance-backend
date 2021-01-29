@@ -3,10 +3,9 @@
 require 'swagger_helper'
 
 describe 'RuleResults API' do
-  fixtures :accounts, :rules, :hosts, :rule_results
+  fixtures :accounts, :rules, :rule_results
 
   before do
-    hosts(:one).update(account: accounts(:test))
     rule_results(:one).update(host: hosts(:one), rule: rules(:one))
   end
 
@@ -24,7 +23,7 @@ describe 'RuleResults API' do
       include_param
 
       response '200', 'lists all rule_results requested' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:test)) }
+        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {

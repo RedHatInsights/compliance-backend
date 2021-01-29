@@ -3,7 +3,6 @@
 module V1
   # API for Profiles
   class ProfilesController < ApplicationController
-    include InventoryServiceHelper
     include ProfileAttributes
 
     before_action only: %i[update] do
@@ -73,7 +72,6 @@ module V1
     end
 
     def update_relationships
-      add_inventory_hosts(new_host_ids || [])
       profile.policy_object.update_hosts(new_host_ids)
       profile.update_rules(ids: new_rule_ids)
     end

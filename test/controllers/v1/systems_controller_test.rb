@@ -26,33 +26,10 @@ module V1
       end
     end
 
-    context 'destroy' do
-      should 'destroy hosts with authorized user' do
-        User.current = users(:test)
-        users(:test).update(account: accounts(:test))
-        hosts(:one).update(account: accounts(:test))
-        assert_difference('Host.count', -1) do
-          delete "#{v1_systems_url}/#{hosts(:one).id}"
-        end
-        assert_response :success
-      end
-
-      should 'not destroy hosts that do not belong to the user' do
-        User.current = users(:test)
-        users(:test).update(account: accounts(:test))
-        hosts(:one).update(account: nil)
-        assert_difference('Host.count', 0) do
-          delete "#{v1_systems_url}/#{hosts(:one).id}"
-        end
-        assert_response :not_found
-      end
-    end
-
     context 'show' do
       setup do
-        users(:test).update!(account: accounts(:test))
+        users(:test).update!(account: accounts(:one))
         User.current = users(:test)
-        hosts(:one).update!(account: accounts(:test))
       end
 
       should 'show a host in the related account' do

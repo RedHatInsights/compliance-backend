@@ -11,11 +11,6 @@ module V1
       render_json host
     end
 
-    def destroy
-      authorize host
-      render_json host.destroy
-    end
-
     private
 
     def host

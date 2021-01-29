@@ -11,7 +11,6 @@ module Mutations
   # Helpers for host related mutations
   module HostHelper
     include UserHelper
-    include ::InventoryServiceHelper
   end
 
   # Helpers for profile related mutations

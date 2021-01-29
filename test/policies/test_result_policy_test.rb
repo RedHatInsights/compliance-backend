@@ -4,7 +4,6 @@ require 'test_helper'
 
 class TestResultPolicyTest < ActiveSupport::TestCase
   setup do
-    assert Pundit.policy_scope(users(:test), TestResult), []
     users(:test).account = accounts(:test)
     users(:test).save
     profiles(:two).update!(parent_profile: profiles(:one),
@@ -32,9 +31,10 @@ class TestResultPolicyTest < ActiveSupport::TestCase
   end
 
   test 'only test results within visible hosts are accessible' do
+    profiles(:one).update!(parent_profile: profiles(:two),
+                           account: accounts(:two))
+    users(:test).update!(account: accounts(:one))
     assert_not test_results(:two).profile.canonical?
-    hosts(:one).account = accounts(:test)
-    hosts(:one).save
     assert_includes Pundit.policy_scope(users(:test), Host), hosts(:one)
     test_results(:one).host = hosts(:one)
     rule_results(:one).host = hosts(:one)
@@ -43,6 +43,7 @@ class TestResultPolicyTest < ActiveSupport::TestCase
     # Save without validations to force a TestResult with a host
     # but without a profile
     test_results(:one).save(validate: false)
+    test_results(:two).update!(host: hosts(:two), profile: profiles(:one))
     assert_includes Pundit.policy_scope(users(:test), TestResult),
                     test_results(:one)
     assert Pundit.authorize(users(:test), test_results(:one), :index?)
