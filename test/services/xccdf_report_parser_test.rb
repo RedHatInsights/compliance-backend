@@ -15,53 +15,17 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       'xccdf_org.ssgproject.content_profile_standard' =>
       'Standard System Security Profile for Fedora'
     }
-    @host_id = SecureRandom.uuid
     @report_parser = TestParser
                      .new(fake_report,
                           'account' => accounts(:test).account_number,
                           'b64_identity' => 'b64_fake_identity',
-                          'id' => @host_id,
+                          'id' => hosts(:one).id,
                           'metadata' => {
-                            'display_name' => 'lenovolobato.lobatolan.home'
+                            'display_name' => hosts(:one).name
                           })
+    @report_parser.host.stubs(:os_major_version).returns(8)
+    @report_parser.host.stubs(:os_minor_version).returns(3)
     @report_parser.set_openscap_parser_data
-    # A hack to skip API calls in the test env for the time being
-    connection = mock('faraday_connection')
-    Platform.stubs(:connection).returns(connection)
-    get_body = {
-      'results' => [
-        { 'id' => @host_id,
-          'account' => accounts(:test).account_number,
-          'display_name' => @report_parser.test_result_file.test_result.host }
-      ]
-    }
-    connection.stubs(:get).with(
-      "#{::Settings.host_inventory_url}#{Settings.path_prefix}" \
-      "/inventory/v1/hosts/#{@host_id}",
-      {}, X_RH_IDENTITY: 'b64_fake_identity'
-    ).returns(OpenStruct.new(body: get_body.to_json))
-    post_body = {
-      'data' => [{ 'host' => {
-        'name' => @report_parser.test_result_file.test_result.host
-      } }]
-    }
-    connection.stubs(:post).returns(OpenStruct.new(body: post_body.to_json))
-    system_profile_body = {
-      'results' => [
-        {
-          'id' => @host_id,
-          'system_profile' => {
-            'os_release': '8.3'
-          }
-        }
-      ]
-    }
-    connection.stubs(:get).with(
-      "#{::Settings.host_inventory_url}#{Settings.path_prefix}" \
-      "/inventory/v1/hosts/#{[@host_id].join(',')}/system_profile",
-      { per_page: 50, page: 1 },
-      X_RH_IDENTITY: 'b64_fake_identity'
-    ).returns(OpenStruct.new(body: system_profile_body.to_json))
   end
 
   context 'benchmark' do
@@ -119,67 +83,13 @@ class XccdfReportParserTest < ActiveSupport::TestCase
 
     should 'be able to parse host name' do
       assert_equal(
-        'lenovolobato.lobatolan.home',
+        hosts(:one).name,
         @report_parser.test_result_file.test_result.host
       )
     end
 
-    should 'save the hostname in db' do
-      assert_difference('Host.count', 1) do
-        @report_parser.save_host
-        assert Host.find_by(
-          name: @report_parser.test_result_file.test_result.host
-        )
-      end
-    end
-
-    should 'return the host object even if it already existed' do
-      Host.create(id: @host_id,
-                  name: @report_parser.test_result_file.test_result.host,
-                  account: accounts(:test))
-
-      assert_difference('Host.count', 0) do
-        @report_parser.save_host
-        assert_equal(
-          @report_parser.host,
-          Host.find_by(name: @report_parser.test_result_file.test_result.host)
-        )
-      end
-    end
-
-    should 'update the name of an existing host' do
-      Host.create(id: @host_id, name: 'some.other.hostname',
-                  account: accounts(:test))
-
-      assert_difference('Host.count', 0) do
-        @profiles = []
-        @report_parser.save_host
-        assert_equal(
-          @report_parser.host,
-          Host.find_by(name: @report_parser.test_result_file.test_result.host)
-        )
-      end
-    end
-
     should 'raise on OS version mismatch' do
-      system_profile_body = {
-        'results' => [
-          {
-            'id' => @host_id,
-            'system_profile' => {
-              'os_release': '7.1'
-            }
-          }
-        ]
-      }
-      Platform.connection.stubs(:get).with(
-        "#{::Settings.host_inventory_url}#{Settings.path_prefix}" \
-        "/inventory/v1/hosts/#{[@host_id].join(',')}/system_profile",
-        { per_page: 50, page: 1 },
-        X_RH_IDENTITY: 'b64_fake_identity'
-      ).returns(OpenStruct.new(body: system_profile_body.to_json))
-
-      @report_parser.save_host
+      @report_parser.host.stubs(:os_major_version).returns(7)
       assert_raises(XccdfReportParser::OSVersionMismatch) do
         @report_parser.check_os_version
       end
@@ -193,7 +103,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
 
     should 'save them, associate them with a rule and a host' do
-      assert_difference('RuleResult.count', 59) do
+      assert_difference('RuleResult.count', 58) do
         @report_parser.save_all
         rule_results = @report_parser.rule_results
         op_rule_results = @report_parser.op_rule_results
@@ -319,7 +229,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
 
       @report_parser.save_rules
       @report_parser.save_profile_rules
-      @report_parser.save_host
       assert_empty(Profile.where(parent_profile: parent_profile))
       assert_difference(
         -> { Profile.count } => 1,
@@ -349,7 +258,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       ) do
         @report_parser.save_rules
         @report_parser.save_profile_rules
-        @report_parser.save_host
         @report_parser.save_host_profile
       end
     end
@@ -362,10 +270,10 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         TestParser.new(
           fake_report,
           'account' => accounts(:test).account_number,
-          'id' => @host_id,
+          'id' => hosts(:one).id,
           'b64_identity' => 'b64_fake_identity',
           'metadata' => {
-            'display_name' => 'lenovolobato.lobatolan.home'
+            'display_name' => hosts(:one).name
           }
         )
       end
@@ -375,7 +283,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   context 'finding an associated policy' do
     should 'raise an error with no policy found (external report)' do
       @report_parser.stubs(:external_report?).returns(true)
-      @report_parser.save_host
       assert_raises(XccdfReportParser::ExternalReportError) do
         @report_parser.check_for_external_reports
       end
@@ -383,7 +290,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
 
     should 'find a policy by hosts, account, and ref_id' do
       @report_parser.stubs(:external_report?)
-      @report_parser.save_host
       profiles(:one).update!(
         ref_id: 'xccdf_org.ssgproject.content_profile_standard', hosts: []
       )

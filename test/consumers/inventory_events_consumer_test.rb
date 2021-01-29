@@ -8,7 +8,6 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     @message = stub(:message)
     @consumer = InventoryEventsConsumer.new
     DeleteHost.clear
-    InventoryHostUpdatedJob.clear
   end
 
   test 'if message is delete, host is enqueued for deletion' do
@@ -29,18 +28,6 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     ).at_least_once
     @consumer.process(@message)
     assert_equal 0, DeleteHost.jobs.size
-    assert_equal 0, InventoryHostUpdatedJob.jobs.size
-  end
-
-  test 'if message is update, job is enqueued to update hosts' do
-    @message.expects(:value).returns(
-      '{"type": "updated", '\
-      '"host": { "id": "fe314be5-4091-412d-85f6-00cc68fc001b", '\
-      '          "display_name": "foo"}}'
-    ).at_least_once
-    @consumer.process(@message)
-    assert_equal 0, DeleteHost.jobs.size
-    assert_equal 1, InventoryHostUpdatedJob.jobs.size
   end
 
   context 'report upload messages' do

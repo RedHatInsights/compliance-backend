@@ -14,9 +14,6 @@ module Xccdf
         @test_result_file = test_result_file
         @host = host
         @account = account
-        @inventory_host = OpenStruct.new(id: @host.id, display_name: @host.name,
-                                         os_major_version: 8,
-                                         os_minor_version: 2)
         set_openscap_parser_data
       end
     end
@@ -33,7 +30,6 @@ module Xccdf
 
     test 'associate_rules_from_rule_results' do
       @parser.save_all_benchmark_info
-      @parser.save_host
       @parser.save_host_profile
       @parser.save_test_result
       @parser.save_rule_results
@@ -45,13 +41,6 @@ module Xccdf
       assert_difference('ProfileRule.count', 0) do
         @parser.associate_rules_from_rule_results
       end
-    end
-
-    test 'saves the OS attributes upon report parsing' do
-      @parser.save_host
-      parser_host = @parser.instance_variable_get('@host')
-      assert_equal 8, parser_host.reload.os_major_version
-      assert_equal 2, parser_host.reload.os_minor_version
     end
   end
 end

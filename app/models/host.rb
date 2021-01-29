@@ -17,16 +17,16 @@ class Host < ApplicationRecord
 
   validates :name, presence: true
   validates :account, presence: true
+  def readonly?
+    true
+  end
+
+  alias destroy save
+  alias delete save
 
   def all_profiles
     Profile.where(id: assigned_profiles)
            .or(Profile.where(id: test_result_profiles))
            .distinct
-  end
-
-  def update_from_inventory_host!(i_host)
-    update!({ name: i_host['display_name'],
-              os_major_version: i_host['os_major_version'],
-              os_minor_version: i_host['os_minor_version'] }.compact)
   end
 end

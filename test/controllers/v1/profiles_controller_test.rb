@@ -7,9 +7,8 @@ module V1
     setup do
       ProfilesController.any_instance.stubs(:authenticate_user)
       User.current = users(:test)
-      users(:test).update! account: accounts(:test)
-      profiles(:one).update! account: accounts(:test)
-      accounts(:test).hosts = hosts
+      users(:test).update! account: accounts(:one)
+      profiles(:one).update! account: accounts(:one)
       profiles(:two).test_results.destroy_all
     end
 
@@ -52,7 +51,7 @@ module V1
       test 'policy_profile_id is exposed' do
         profiles(:one).update!(external: false,
                                parent_profile: profiles(:two),
-                               account: accounts(:test))
+                               account: accounts(:one))
         get v1_profiles_url
         assert_response :success
 
@@ -93,7 +92,7 @@ module V1
       end
 
       test 'returns the policy_type attribute' do
-        profiles(:one).update!(account: accounts(:test),
+        profiles(:one).update!(account: accounts(:one),
                                parent_profile: profiles(:two))
 
         get v1_profiles_url
@@ -106,7 +105,7 @@ module V1
 
       test 'only contain internal profiles by default' do
         internal = Profile.create!(
-          account: accounts(:test), name: 'foo', ref_id: 'foo',
+          account: accounts(:one), name: 'foo', ref_id: 'foo',
           benchmark: benchmarks(:one),
           parent_profile: profiles(:one),
           policy_object: policies(:one)
@@ -121,13 +120,13 @@ module V1
       test 'all profile types can be requested at the same time' do
         profiles(:two).update! parent_profile_id: profiles(:one).id
         internal = Profile.create!(
-          account: accounts(:test), name: 'foo', ref_id: 'foo',
+          account: accounts(:one), name: 'foo', ref_id: 'foo',
           benchmark: benchmarks(:one),
           parent_profile: profiles(:one),
           policy_object: policies(:one)
         )
         external = Profile.create!(
-          account: accounts(:test), name: 'bar', ref_id: 'bar',
+          account: accounts(:one), name: 'bar', ref_id: 'bar',
           external: true,
           benchmark: benchmarks(:one),
           parent_profile: profiles(:one)
@@ -150,10 +149,10 @@ module V1
         host_ids = hosts.map(&:id).sort
 
         profiles(:one).update!(policy_object: policies(:one))
-        profiles(:two).update!(account: accounts(:test),
+        profiles(:two).update!(account: accounts(:one),
                                policy_object: policies(:one),
                                external: true)
-        policies(:one).update!(account: accounts(:test))
+        policies(:one).update!(account: accounts(:one))
         policies(:one).hosts = hosts
 
         get v1_profiles_url, params: { search: '' }
@@ -247,7 +246,7 @@ module V1
 
       test 'destroy an existing, not accessible profile' do
         profiles(:two).update! parent_profile: profiles(:one),
-                               account: accounts(:one)
+                               account: accounts(:two)
         assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
           delete v1_profile_path(profiles(:two).id)
         end
@@ -256,7 +255,7 @@ module V1
 
       test 'destroy an existing, accessible profile that is not authorized '\
            'to be deleted' do
-        profiles(:two).update!(account: accounts(:one))
+        profiles(:two).update!(account: accounts(:two))
         assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
           delete v1_profile_path(profiles(:two).id)
         end
@@ -345,7 +344,7 @@ module V1
           )
           assert_response :created
         end
-        assert_equal accounts(:test).id,
+        assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
       end
 
@@ -374,7 +373,7 @@ module V1
           )
           assert_response :created
         end
-        assert_equal accounts(:test).id,
+        assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal BUSINESS_OBJECTIVE,
                      parsed_data.dig('attributes', 'business_objective')
@@ -390,7 +389,7 @@ module V1
           )
         end
         assert_response :created
-        assert_equal accounts(:test).id,
+        assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal NAME, parsed_data.dig('attributes', 'name')
         assert_equal DESCRIPTION, parsed_data.dig('attributes', 'description')
@@ -408,7 +407,7 @@ module V1
           )
         end
         assert_response :created
-        assert_equal accounts(:test).id,
+        assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal NAME, parsed_data.dig('attributes', 'name')
         assert_equal DESCRIPTION, parsed_data.dig('attributes', 'description')
@@ -428,7 +427,7 @@ module V1
           )
         end
         assert_response :created
-        assert_equal accounts(:test).id,
+        assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal(
           Set.new(profiles(:two).rule_ids),
@@ -454,7 +453,7 @@ module V1
           )
         end
         assert_response :created
-        assert_equal accounts(:test).id,
+        assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal(
           Set.new(rule_ids),
@@ -486,7 +485,7 @@ module V1
           )
         end
         assert_response :created
-        assert_equal accounts(:test).id,
+        assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal(
           Set.new(bm.rule_ids),
@@ -519,7 +518,7 @@ module V1
           )
         end
         assert_response :created
-        assert_equal accounts(:test).id,
+        assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal(
           Set.new(profiles(:two).rule_ids),
@@ -546,41 +545,10 @@ module V1
           )
         end
         assert_response :created
-        assert_equal accounts(:test).id,
+        assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal(
           Set.new(hosts.pluck(:id)),
-          Set.new(parsed_data.dig('relationships', 'hosts', 'data')
-                             .map { |r| r['id'] })
-        )
-      end
-
-      test 'create allows hosts relationship of hosts only in inventory' do
-        HOST_ID = 'a035f646-e28c-44ef-89cb-de8f6e5ce5c0'
-        ProfilesController.any_instance.expects(:inventory_host).with(HOST_ID)
-                          .returns('id' => HOST_ID,
-                                   'display_name' => 'host.example.com')
-        profiles(:one).test_results.destroy_all
-        assert_empty(profiles(:one).hosts)
-        assert_difference('PolicyHost.count', hosts.count + 1) do
-          post profiles_path, params: params(
-            attributes: {
-              parent_profile_id: profiles(:two).id
-            },
-            relationships: {
-              hosts: {
-                data: hosts.map do |host|
-                  { id: host.id, type: 'host' }
-                end + [{ id: HOST_ID, type: 'host' }]
-              }
-            }
-          )
-        end
-        assert_response :created
-        assert_equal accounts(:test).id,
-                     parsed_data.dig('relationships', 'account', 'data', 'id')
-        assert_equal(
-          Set.new(hosts.pluck(:id) + [HOST_ID]),
           Set.new(parsed_data.dig('relationships', 'hosts', 'data')
                              .map { |r| r['id'] })
         )
@@ -597,7 +565,7 @@ module V1
 
       setup do
         @profile = Profile.new(parent_profile_id: profiles(:two).id,
-                               account_id: accounts(:test).id,
+                               account_id: accounts(:one).id,
                                policy_object: policies(:one)).fill_from_parent
         @profile.save
         @profile.update_rules
@@ -730,26 +698,6 @@ module V1
             }
           )
         end
-        assert_response :success
-      end
-
-      test 'update to update hosts relationships only in inventory' do
-        HOST_ID = 'a035f646-e28c-44ef-89cb-de8f6e5ce5c0'
-        ProfilesController.any_instance.expects(:inventory_host).with(HOST_ID)
-                          .returns('id' => HOST_ID,
-                                   'display_name' => 'host.example.com')
-        @profile.policy_object.update!(hosts: hosts[0...-1])
-        assert_difference('@profile.reload.hosts.count' => 0) do
-          patch profile_path(@profile.id), params: params(
-            attributes: {},
-            relationships: {
-              hosts: {
-                data: [{ id: HOST_ID, type: 'host' }]
-              }
-            }
-          )
-        end
-        assert_equal [HOST_ID], @profile.policy_object.hosts.pluck(:id)
         assert_response :success
       end
     end

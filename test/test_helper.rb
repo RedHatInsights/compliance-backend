@@ -24,6 +24,8 @@ unless Rails.env.production?
   end
 
   ENV['RAILS_ENV'] ||= 'test'
+
+  require 'host_fixtures'
   require_relative '../config/environment'
   require 'rails/test_help'
 

@@ -115,7 +115,6 @@ class XccdfReportParser
 
   def save_all
     Host.transaction do
-      save_host
       check_os_version
       check_for_external_reports unless Settings.features.parse_external_reports
       save_missing_supported_benchmark

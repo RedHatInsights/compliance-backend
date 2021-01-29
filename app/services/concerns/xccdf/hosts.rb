@@ -3,12 +3,6 @@
 module Xccdf
   # Methods related to saving Hosts from openscap_parser
   module Hosts
-    def save_host
-      @host = ::Host.find_or_initialize_by(id: inventory_host['id'],
-                                           account_id: @account.id)
-      @host.update_from_inventory_host!(inventory_host)
-    end
-
     def host_profile
       @host_profile ||= test_result_profile.clone_to(
         policy: Policy.with_hosts(@host)

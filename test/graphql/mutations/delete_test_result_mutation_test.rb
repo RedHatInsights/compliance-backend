@@ -20,9 +20,8 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
   GRAPHQL
 
   setup do
-    users(:test).update! account: accounts(:test)
-    profiles(:one).update! account: accounts(:test), hosts: [hosts(:one)]
-    hosts(:one).update! account: accounts(:test)
+    users(:test).update! account: accounts(:one)
+    profiles(:one).update! account: accounts(:one), hosts: [hosts(:one)]
     test_results(:one).update! host: hosts(:one), profile: profiles(:one)
   end
 
@@ -45,7 +44,6 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
 
   test 'delete test results from initial policy profile deletes all results'\
        'in the policy' do
-    hosts(:two).update! account: accounts(:test)
     profiles(:one).update!(policy_object: policies(:one), external: false)
     profiles(:two).update!(policy_object: policies(:one), external: true,
                            account: accounts(:test))

@@ -3,11 +3,7 @@
 require 'swagger_helper'
 
 describe 'Systems API' do
-  fixtures :accounts, :hosts
-
-  before do
-    hosts(:one).update!(account: accounts(:one))
-  end
+  fixtures :accounts
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/systems" do
     get 'List all hosts' do

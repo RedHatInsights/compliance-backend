@@ -10,8 +10,12 @@ class HostTest < ActiveSupport::TestCase
   should have_many(:policies).through(:policy_hosts)
   should have_many(:assigned_profiles).through(:policies).source(:profiles)
   should have_many(:test_result_profiles).through(:test_results)
-  should validate_presence_of :name
-  should validate_presence_of :account
+
+  test 'host is readonly' do
+    assert_raises(ActiveRecord::ReadOnlyRecord) do
+      Host.new.save
+    end
+  end
 
   test 'with_policy scope / has_policy filter' do
     assert_equal 0, PolicyHost.count
@@ -33,10 +37,11 @@ class HostTest < ActiveSupport::TestCase
 
   test 'host provides all profiles, assigned and from test results' do
     host = hosts(:one)
-    policies(:one).update!(account: host.account)
+    policies(:one).update!(account: host.account_object)
     policies(:one).hosts << host
 
-    profiles(:one).update!(account: host.account, policy_object: policies(:one))
+    profiles(:one).update!(account: host.account_object,
+                           policy_object: policies(:one))
     test_results(:two).update!(host: host, profile: profiles(:two))
 
     assert_equal host.all_profiles.count, 2
@@ -53,26 +58,6 @@ class HostTest < ActiveSupport::TestCase
       profiles(:two).ref_id.to_s => false
     }
     assert_equal expected_result, host.compliant
-  end
-
-  test 'update_from_inventory_host' do
-    hosts(:one).update_from_inventory_host!('display_name' => 'foo',
-                                            'os_major_version' => 7,
-                                            'os_minor_version' => 5)
-    assert_equal hosts(:one).name, 'foo'
-    assert_equal hosts(:one).os_major_version, 7
-    assert_equal hosts(:one).os_minor_version, 5
-  end
-
-  test 'update_from_inventory_host with nil fields' do
-    hosts(:one).update!(os_major_version: 7, os_minor_version: 5)
-
-    hosts(:one).update_from_inventory_host!('display_name' => 'foo',
-                                            'os_major_version' => nil,
-                                            'os_minor_version' => nil)
-    assert_equal hosts(:one).name, 'foo'
-    assert_equal hosts(:one).os_major_version, 7
-    assert_equal hosts(:one).os_minor_version, 5
   end
 
   context 'test result dependent search methods' do
