@@ -13,7 +13,9 @@ class HostPolicy < ApplicationPolicy
   # Only show hosts in our user account
   class Scope < ::ApplicationPolicy::Scope
     def resolve
-      only_matching_account
+      return scope.none if user.account_number.blank?
+
+      scope.where(account: user.account_number)
     end
   end
 end

@@ -4,7 +4,7 @@ require 'swagger_helper'
 require 'sidekiq/testing'
 
 describe 'Profiles API' do
-  fixtures :accounts, :hosts, :rules, :benchmarks, :profiles, :policies
+  fixtures :accounts, :rules, :benchmarks, :profiles, :policies
 
   before do
     policies(:one).update! account: accounts(:one)
@@ -77,10 +77,6 @@ describe 'Profiles API' do
     end
 
     post 'Create a profile' do
-      before do
-        accounts(:one).hosts = hosts
-      end
-
       tags 'profile'
       description 'Create a profile with the provided attributes'
       operationId 'CreateProfile'
@@ -277,9 +273,6 @@ describe 'Profiles API' do
     end
 
     patch 'Update a profile' do
-      before do
-        accounts(:one).hosts = hosts
-      end
       tags 'profile'
       description 'Updates a profile'
       operationId 'UpdateProfile'

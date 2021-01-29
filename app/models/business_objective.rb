@@ -6,6 +6,8 @@ class BusinessObjective < ApplicationRecord
   has_many :profiles, through: :policies
   has_many :accounts, through: :policies
 
+  delegate :account_number, to: :account
+
   validates :title, presence: true
 
   scope :in_account, lambda { |account_or_account_id|
