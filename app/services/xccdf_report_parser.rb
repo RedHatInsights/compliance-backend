@@ -33,7 +33,7 @@ class XccdfReportParser
 
     @b64_identity = message['b64_identity']
     @account = Account.find_or_create_by(account_number: message['account'])
-    @host_inventory_id = message['id']
+    @host = Host.find(message['id'])
     @test_result_file = OpenscapParser::TestResultFile.new(report_contents)
     set_openscap_parser_data
     check_report_format

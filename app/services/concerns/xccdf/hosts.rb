@@ -40,11 +40,5 @@ module Xccdf
         benchmark: benchmark
       )
     end
-
-    def inventory_host
-      @inventory_host ||= ::HostInventoryApi.new(
-        account: @account, b64_identity: @b64_identity
-      ).inventory_host(@host_inventory_id)
-    end
   end
 end

@@ -207,8 +207,7 @@
                   "Xccdf::Benchmark not found with ID invalid"
                 ]
               }
-            },
-            "content": {}
+            }
           },
           "200": {
             "description": "retrieves a benchmark",
@@ -484,8 +483,7 @@
                   "BusinessObjective not found with ID invalid"
                 ]
               }
-            },
-            "content": {}
+            }
           },
           "200": {
             "description": "retrieves a business_objective",
@@ -803,7 +801,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "f0b9739f-dab0-4558-be83-4f64811fdabd",
+                  "id": "238dc74f-3643-47de-a7a5-b0e464ba9428",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -812,7 +810,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "f0b9739f-dab0-4558-be83-4f64811fdabd",
+                    "policy_profile_id": "238dc74f-3643-47de-a7a5-b0e464ba9428",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "A custom name",
                     "description": null,
@@ -1017,8 +1015,7 @@
                   "Profile not found with ID invalid"
                 ]
               }
-            },
-            "content": {}
+            }
           },
           "200": {
             "description": "retrieves a profile with included benchmark",
@@ -1051,7 +1048,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "8400063e-938a-4dd6-b8d6-f0f10ad17953",
+                        "id": "8d095a7c-5eb5-4691-b371-d50d530d1f5b",
                         "type": "account"
                       }
                     },
@@ -1227,15 +1224,14 @@
                   "Profile not found with ID invalid"
                 ]
               }
-            },
-            "content": {}
+            }
           },
           "200": {
             "description": "updates a profile",
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "2e834ec2-22e2-4fff-924b-d674734c5487",
+                  "id": "59a24562-1d82-4f0b-ae73-81c18e1cfaed",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -1244,7 +1240,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "2e834ec2-22e2-4fff-924b-d674734c5487",
+                    "policy_profile_id": "59a24562-1d82-4f0b-ae73-81c18e1cfaed",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "An updated custom name",
                     "description": null,
@@ -1455,8 +1451,7 @@
                   "Profile not found with ID invalid"
                 ]
               }
-            },
-            "content": {}
+            }
           },
           "202": {
             "description": "destroys a profile",
@@ -1895,8 +1890,7 @@
                   "Rule not found with ID 37f7eeff-831b-5c41-984a-254965f58c0f"
                 ]
               }
-            },
-            "content": {}
+            }
           },
           "200": {
             "description": "retrieves a rule",
@@ -2386,10 +2380,24 @@
                     }
                   },
                   {
-                    "id": "RHEL-8.2:scap-security-guide-0.1.48-7.el8",
+                    "id": "RHEL-8.1:scap-security-guide-0.1.47-8.el8_1",
                     "type": "supported_ssg",
                     "attributes": {
-                      "package": "scap-security-guide-0.1.48-7.el8",
+                      "package": "scap-security-guide-0.1.47-8.el8_1",
+                      "version": "0.1.47",
+                      "os_major_version": "8",
+                      "os_minor_version": "1",
+                      "profiles": [
+                        "ospp",
+                        "pci-dss"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.2:scap-security-guide-0.1.48-10.el8_2",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.48-10.el8_2",
                       "version": "0.1.48",
                       "os_major_version": "8",
                       "os_minor_version": "2",
@@ -2402,10 +2410,10 @@
                     }
                   },
                   {
-                    "id": "RHEL-8.3:scap-security-guide-0.1.50-14.el8",
+                    "id": "RHEL-8.3:scap-security-guide-0.1.50-16.el8_3",
                     "type": "supported_ssg",
                     "attributes": {
-                      "package": "scap-security-guide-0.1.50-14.el8",
+                      "package": "scap-security-guide-0.1.50-16.el8_3",
                       "version": "0.1.50",
                       "os_major_version": "8",
                       "os_minor_version": "3",
@@ -2422,8 +2430,8 @@
                   }
                 ],
                 "meta": {
-                  "total": 19,
-                  "revision": "2021-01-18"
+                  "total": 20,
+                  "revision": "2021-01-27"
                 }
               }
             },
@@ -2654,8 +2662,7 @@
                   "Host not found with ID invalid"
                 ]
               }
-            },
-            "content": {}
+            }
           },
           "200": {
             "description": "retrieves a system",

@@ -40,7 +40,7 @@ class ApplicationPolicy
   end
 
   def match_account?
-    record.account_id == user.account_id
+    record.account_number == user.account_number
   end
 
   # Generic scope for all models - just matching the account ID.
@@ -51,12 +51,6 @@ class ApplicationPolicy
     def initialize(user, scope)
       @user = user
       @scope = scope
-    end
-
-    def only_matching_account
-      return scope.where('1=0') if user.account_id.blank?
-
-      scope.where(account_id: user.account_id)
     end
 
     def resolve

@@ -3,7 +3,10 @@
 # Represents a Insights account. An account can be composed of many users
 class Account < ApplicationRecord
   has_many :users, dependent: :nullify
-  has_many :hosts, dependent: :nullify
+  # rubocop:disable Rails/HasManyOrHasOneDependent
+  has_many :hosts, foreign_key: :account, primary_key: :account_number,
+                   inverse_of: :account_object
+  # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :profiles, dependent: :destroy
   has_many :policies, dependent: :destroy
   has_many :business_objectives, through: :policies

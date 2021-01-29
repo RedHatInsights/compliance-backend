@@ -3,6 +3,9 @@
 # Host representation in insights compliance backend. Most of the times
 # these hosts will also show up in the insights-platform host inventory.
 class Host < ApplicationRecord
+  self.table_name = 'inventory.hosts'
+  self.primary_key = 'id'
+
   include HostSearching
 
   has_many :rule_results, dependent: :delete_all
@@ -15,14 +18,24 @@ class Host < ApplicationRecord
   has_many :policies, through: :policy_hosts
   has_many :assigned_profiles, through: :policies, source: :profiles
 
-  validates :name, presence: true
-  validates :account, presence: true
   def readonly?
     true
   end
 
   alias destroy save
   alias delete save
+
+  def os_major_version
+    system_profile&.dig('operating_system', 'major')
+  end
+
+  def os_minor_version
+    system_profile&.dig('operating_system', 'minor')
+  end
+
+  def name
+    display_name
+  end
 
   def all_profiles
     Profile.where(id: assigned_profiles)

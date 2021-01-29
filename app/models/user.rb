@@ -7,6 +7,8 @@ class User < ApplicationRecord
 
   belongs_to :account
 
+  delegate :account_number, to: :account
+
   class << self
     def current
       Thread.current[:user]
