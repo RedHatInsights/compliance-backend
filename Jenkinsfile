@@ -26,9 +26,11 @@ def runStages() {
         }
 
         gitUtils.stageWithContext("Prepare-db", shortenURL = false) {
-            migrateStatus = sh(script: "bundle exec rake db:migrate --trace", returnStatus: true)
+            migrateStatus = sh(script: "bundle exec rake db:test:prepare --trace", returnStatus: true)
             sh "bundle exec rails db:environment:set RAILS_ENV=test"
-            sh "bundle exec rake db:test:prepare"
+            container("postgresql") {
+              sh("psql compliance < db/cyndi_setup_test.sql")
+            }
         }
 
         if (migrateStatus != 0) {
@@ -48,7 +50,7 @@ def runStages() {
         execSmokeTest (
             ocDeployerBuilderPath: "compliance/compliance-backend",
             ocDeployerComponentPath: "compliance",
-            ocDeployerServiceSets: "compliance,ingress,inventory,platform-mq,rbac",
+            ocDeployerServiceSets: "compliance,ingress,inventory,platform-mq,rbac,cyndi",
             iqePlugins: ["iqe-compliance-plugin"],
             pytestMarker: "compliance_smoke",
         )

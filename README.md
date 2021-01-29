@@ -112,8 +112,8 @@ bundle exec rake ssg:import_rhel_supported
 The compliance project integrates with project cyndi. For local development, a database view is created, built from the inventory database which runs alongside the compliance database. The Cyndi hosts view exists within an inventory schema within the compliance database.
 
 ```shell
-bundle exec rails db < db/cyndi_setup.sql # syndicated (cyndi) hosts from inventory
-RAILS_ENV=test bundle exec rails db < db/cyndi_setup.sql # cyndi for test DB
+bundle exec rails db < db/cyndi_setup_devel.sql # syndicated (cyndi) hosts from inventory
+RAILS_ENV=test bundle exec rails db < db/cyndi_setup_test.sql # cyndi for test DB
 ```
 
 You can verify everything worked as expected within psql for compliance_dev and
