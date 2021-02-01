@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_07_161848) do
+ActiveRecord::Schema.define(version: 2021_02_01_233645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -83,16 +83,6 @@ ActiveRecord::Schema.define(version: 2021_01_07_161848) do
     t.index ["host_id"], name: "index_policy_hosts_on_host_id"
     t.index ["policy_id", "host_id"], name: "index_policy_hosts_on_policy_id_and_host_id", unique: true
     t.index ["policy_id"], name: "index_policy_hosts_on_policy_id"
-  end
-
-  create_table "profile_hosts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "profile_id", null: false
-    t.uuid "host_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["host_id"], name: "index_profile_hosts_on_host_id"
-    t.index ["profile_id", "host_id"], name: "index_profile_hosts_on_profile_id_and_host_id", unique: true
-    t.index ["profile_id"], name: "index_profile_hosts_on_profile_id"
   end
 
   create_table "profile_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -23,29 +23,6 @@ class DuplicateProfileResolverTest < ActiveSupport::TestCase
     end
   end
 
-  test 'resolves profile_hosts from a duplicate profile with the different '\
-       'hosts' do
-    assert_difference('ProfileHost.count' => 2) do
-      ProfileHost.create!(profile: profiles(:one), host: hosts(:one))
-      ProfileHost.create!(profile: @dup_profile, host: hosts(:two))
-    end
-
-    assert_difference('ProfileHost.count' => 0) do
-      DuplicateProfileResolver.run!
-    end
-  end
-
-  test 'resolves profile_hosts from a duplicate profile with the same hosts' do
-    assert_difference('ProfileHost.count' => 2) do
-      ProfileHost.create!(profile: profiles(:one), host: hosts(:one))
-      ProfileHost.create!(profile: @dup_profile, host: hosts(:one))
-    end
-
-    assert_difference('ProfileHost.count' => -1) do
-      DuplicateProfileResolver.run!
-    end
-  end
-
   test 'resolves children profiles' do
     profiles(:two).update!(parent_profile: @dup_profile,
                            account: accounts(:test))

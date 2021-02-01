@@ -30,17 +30,15 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
     profiles(:one).update(policy_object: policies(:one), external: true)
     assert_difference('TestResult.count', -1) do
       assert_difference('Profile.count', 0) do
-        assert_difference('ProfileHost.count', 0) do
-          result = Schema.execute(
-            QUERY,
-            variables: { input: {
-              profileId: profiles(:one).id
-            } },
-            context: { current_user: users(:test) }
-          ).dig('data', 'deleteTestResults')
-          assert_equal profiles(:one).id, result.dig('profile', 'id')
-          assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
-        end
+        result = Schema.execute(
+          QUERY,
+          variables: { input: {
+            profileId: profiles(:one).id
+          } },
+          context: { current_user: users(:test) }
+        ).dig('data', 'deleteTestResults')
+        assert_equal profiles(:one).id, result.dig('profile', 'id')
+        assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
       end
     end
   end
@@ -54,17 +52,15 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
     test_results(:two).update! host: hosts(:two), profile: profiles(:two)
     assert_difference('TestResult.count', -2) do
       assert_difference('Profile.count', 0) do
-        assert_difference('ProfileHost.count', 0) do
-          result = Schema.execute(
-            QUERY,
-            variables: { input: {
-              profileId: profiles(:one).id
-            } },
-            context: { current_user: users(:test) }
-          ).dig('data', 'deleteTestResults')
-          assert_equal profiles(:one).id, result.dig('profile', 'id')
-          assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
-        end
+        result = Schema.execute(
+          QUERY,
+          variables: { input: {
+            profileId: profiles(:one).id
+          } },
+          context: { current_user: users(:test) }
+        ).dig('data', 'deleteTestResults')
+        assert_equal profiles(:one).id, result.dig('profile', 'id')
+        assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
       end
     end
   end

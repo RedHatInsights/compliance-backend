@@ -5,7 +5,6 @@ require 'sidekiq/testing'
 
 class ProfileTest < ActiveSupport::TestCase
   should have_many(:policy_hosts).through(:policy_object)
-  should have_many(:profile_host_hosts).through(:profile_hosts)
   should have_many(:assigned_hosts).through(:policy_hosts).source(:host)
   should have_many(:hosts).through(:test_results)
   should have_many(:test_results).dependent(:destroy)
