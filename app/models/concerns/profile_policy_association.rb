@@ -14,7 +14,7 @@ module ProfilePolicyAssociation
                                    source: :test_results
     has_many :policy_test_result_hosts, -> { distinct },
              through: :policy_test_results, source: :host
-    delegate :business_objective, :business_objective_id, :update_hosts,
+    delegate :business_objective, :business_objective_id,
              to: :policy_object, allow_nil: true
     validate :no_duplicate_policy_types, on: :create
 

@@ -11,7 +11,6 @@ class TestResultTest < ActiveSupport::TestCase
   end
 
   setup do
-    ProfileHost.create!(host: hosts(:one), profile: profiles(:one))
     @end_time = DateTime.now
     @mock = Mock.new
     @mock.host = hosts(:one)

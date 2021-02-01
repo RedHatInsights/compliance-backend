@@ -31,7 +31,6 @@ class DuplicateProfileResolver
     end
 
     def migrate_profile(existing_p, duplicate_p)
-      migrate_profile_hosts(existing_p, duplicate_p)
       migrate_test_results(existing_p, duplicate_p)
       migrate_child_profiles(existing_p, duplicate_p)
       duplicate_p.destroy # BusinessObjectives, ProfileRules
@@ -53,12 +52,6 @@ class DuplicateProfileResolver
     end
 
     # rubocop:disable Rails/SkipsModelValidations
-    def migrate_profile_hosts(existing_p, duplicate_p)
-      duplicate_p.profile_hosts.where.not(
-        host_id: existing_p.profile_hosts.select(:host_id)
-      ).update(profile_id: existing_p.id)
-    end
-
     def migrate_test_results(existing_p, duplicate_p)
       duplicate_p.test_results.update_all(profile_id: existing_p.id)
     end
