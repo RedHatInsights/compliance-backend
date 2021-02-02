@@ -27,6 +27,7 @@ def runStages() {
 
         gitUtils.stageWithContext("Prepare-db", shortenURL = false) {
             migrateStatus = sh(script: "bundle exec rake db:migrate --trace", returnStatus: true)
+            sh "bundle exec rails db:environment:set RAILS_ENV=test"
             sh "bundle exec rake db:test:prepare"
         }
 
