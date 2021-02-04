@@ -19,10 +19,22 @@ module HostSearching
     scoped_search on: :with_results_for_policy_id,
                   ext_method: 'filter_with_results_for_policy',
                   only_explicit: true, operators: ['=']
+    scoped_search on: :has_policy, ext_method: 'filter_has_policy',
+                  only_explicit: true, operators: ['=']
+
+    scope :with_policy, lambda { |with_policy = true|
+      with_policy && where(id: PolicyHost.select(:host_id)) ||
+        where.not(id: PolicyHost.select(:host_id))
+    }
   end
 
   # class methods for Host searching
   module ClassMethods
+    def filter_has_policy(_filter, _operator, value)
+      hosts = Host.with_policy(ActiveModel::Type::Boolean.new.cast(value))
+      { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
+    end
+
     def filter_with_results_for_policy(_filter, _operator, policy_or_profile_id)
       profiles = Profile.where(id: policy_or_profile_id)
       profiles = profiles

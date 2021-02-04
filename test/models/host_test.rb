@@ -13,6 +13,24 @@ class HostTest < ActiveSupport::TestCase
   should validate_presence_of :name
   should validate_presence_of :account
 
+  test 'with_policy scope / has_policy filter' do
+    assert_equal 0, PolicyHost.count
+
+    PolicyHost.create!(policy: policies(:one), host: hosts(:one))
+
+    assert_includes Host.with_policy, hosts(:one)
+    assert_includes Host.search_for('has_policy=true'), hosts(:one)
+
+    assert_not_includes Host.with_policy(false), hosts(:one)
+    assert_not_includes Host.search_for('has_policy=false'), hosts(:one)
+
+    assert_includes Host.with_policy(false), hosts(:two)
+    assert_includes Host.search_for('has_policy=false'), hosts(:two)
+
+    assert_not_includes Host.with_policy, hosts(:two)
+    assert_not_includes Host.search_for('has_policy=true'), hosts(:two)
+  end
+
   test 'host provides all profiles, assigned and from test results' do
     host = hosts(:one)
     policies(:one).update!(account: host.account)
