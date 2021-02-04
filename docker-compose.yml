@@ -142,7 +142,11 @@ services:
     image: compliance-backend-rails
     entrypoint: ''
     command: sh -c '
-      bundle exec rake db:create db:migrate;
+      if bundle exec rake db:version 2> /dev/null; then
+        bundle exec rake db:migrate;
+      else
+        bundle exec rake db:setup;
+      fi;
       bundle exec rake db:test:prepare;
       bundle exec rails db < db/cyndi_setup.sql;
       RAILS_ENV=test bundle exec rails db < db/cyndi_setup.sql;
