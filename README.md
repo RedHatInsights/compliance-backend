@@ -97,7 +97,7 @@ First, let's install all dependencies and initialize the database.
 
 ```shell
 bundle install
-bundle exec rake db:create db:migrate
+bundle exec rake db:setup # invoke only on first setup!
 bundle exec rake db:test:prepare # for test DB setup
 ```
 
