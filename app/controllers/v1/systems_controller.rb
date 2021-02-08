@@ -4,6 +4,7 @@ module V1
   # API for Systems (only Hosts for the moment)
   class SystemsController < ApplicationController
     def index
+      params[:search] ||= 'has_test_results=true or has_policy=true'
       render_json scope_search
     end
 
