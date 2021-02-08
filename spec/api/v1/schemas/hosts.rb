@@ -20,6 +20,10 @@ module Api
               type: 'boolean',
               example: true
             },
+            has_policy: {
+              type: 'boolean',
+              example: true
+            },
             os_major_version: {
               type: 'integer',
               example: 7,

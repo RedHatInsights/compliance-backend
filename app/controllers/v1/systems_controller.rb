@@ -25,5 +25,9 @@ module V1
     def resource
       Host
     end
+
+    def includes
+      %i[policy_hosts]
+    end
   end
 end

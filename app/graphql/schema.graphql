@@ -366,6 +366,7 @@ A System registered in Insights Compliance
 """
 type System implements Node {
   globalId: ID!
+  hasPolicy: Boolean!
   id: ID!
   lastScanned(
     """

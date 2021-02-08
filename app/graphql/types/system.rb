@@ -15,6 +15,7 @@ module Types
     field :name, String, null: false
     field :os_major_version, Int, null: true
     field :os_minor_version, Int, null: true
+    field :has_policy, Boolean, null: false
     field :profiles, [::Types::Profile], null: true do
       argument :policy_id, ID, 'Filter results by policy or profile ID',
                required: false

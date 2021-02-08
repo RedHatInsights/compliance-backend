@@ -5,7 +5,7 @@ class HostSerializer
   include FastJsonapi::ObjectSerializer
   set_type :host
   attributes :name, :os_major_version, :os_minor_version, :last_scanned,
-             :rules_passed, :rules_failed
+             :rules_passed, :rules_failed, :has_policy
   attribute :compliant do |host|
     host.compliant.values.all?
   end
