@@ -22,8 +22,8 @@ gem 'rack-cors'
 gem 'rack', '>= 2.1.4'
 
 # Swagger
-gem 'rswag-api', '~> 2.3'
-gem 'rswag-ui', '~> 2.3'
+gem 'rswag-api'
+gem 'rswag-ui'
 
 # Config YAML files for all environments
 gem 'config'
@@ -75,7 +75,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'pry-remote'
   gem 'rspec-rails'
-  gem 'rswag-specs', '~> 2.3'
+  gem 'rswag-specs'
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
   gem 'shoulda-context'
