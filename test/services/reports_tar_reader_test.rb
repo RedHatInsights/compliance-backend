@@ -14,7 +14,7 @@ class ReportsTarReaderTest < ActiveSupport::TestCase
           'id' => Host.first.id,
           'b64_identity' => 'b64_fake_identity',
           'metadata' => {
-            'display_name' => 'lenovolobato.lobatolan.home'
+            'display_name' => 'foo.example.com'
           }
         )
       end
