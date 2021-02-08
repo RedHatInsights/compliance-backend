@@ -60,6 +60,9 @@ gem 'uuid'
 # Prometheus exporter
 gem 'prometheus_exporter', '>= 0.5'
 
+# Logging, incl. CloudWatch
+gem 'manageiq-loggers', '~> 0.6.0'
+
 # Parsing OpenSCAP reports library
 gem 'openscap_parser', '~> 1.0.0'
 
