@@ -157,6 +157,10 @@ GEM
       systemu (~> 2.6.5)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
+    manageiq-loggers (0.6.0)
+      activesupport (>= 5.0)
+      manageiq-password (~> 0.1)
+    manageiq-password (0.3.0)
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
@@ -357,6 +361,7 @@ DEPENDENCIES
   graphql-batch
   irb (>= 1.2)
   listen (>= 3.0.5, < 3.2)
+  manageiq-loggers (~> 0.6.0)
   minitest-reporters
   mocha
   oj
