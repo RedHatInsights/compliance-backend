@@ -801,7 +801,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "c666a420-523e-4779-ab60-6fba04dd3fbc",
+                  "id": "42f0536e-913d-44ef-a08f-42c72a18cbeb",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -810,7 +810,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "c666a420-523e-4779-ab60-6fba04dd3fbc",
+                    "policy_profile_id": "42f0536e-913d-44ef-a08f-42c72a18cbeb",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "A custom name",
                     "description": null,
@@ -1048,7 +1048,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "c6860b27-45c5-41fd-ba2c-b397bc449cff",
+                        "id": "2beaa501-0d19-4808-95bf-3f39dfcb8d4b",
                         "type": "account"
                       }
                     },
@@ -1231,7 +1231,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "e08d0001-2384-48bc-89da-a397ec7a3940",
+                  "id": "3b2531c3-3f18-408d-af2e-44b695654595",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -1240,7 +1240,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "e08d0001-2384-48bc-89da-a397ec7a3940",
+                    "policy_profile_id": "3b2531c3-3f18-408d-af2e-44b695654595",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "An updated custom name",
                     "description": null,
@@ -2546,6 +2546,7 @@
                       "last_scanned": "2020-03-25T14:51:17Z",
                       "rules_passed": 1,
                       "rules_failed": 0,
+                      "has_policy": false,
                       "compliant": false
                     },
                     "relationships": {
@@ -2570,13 +2571,13 @@
                 ],
                 "meta": {
                   "total": 1,
-                  "search": null,
+                  "search": "has_test_results=true or has_policy=true",
                   "limit": 10,
                   "offset": 1
                 },
                 "links": {
-                  "first": "/api/compliance/systems?limit=10&offset=1",
-                  "last": "/api/compliance/systems?limit=10&offset=1"
+                  "first": "/api/compliance/systems?limit=10&search=has_test_results=true or has_policy=true&offset=1",
+                  "last": "/api/compliance/systems?limit=10&search=has_test_results=true or has_policy=true&offset=1"
                 }
               }
             },
@@ -2678,6 +2679,7 @@
                     "last_scanned": "2020-03-25T14:51:17Z",
                     "rules_passed": 1,
                     "rules_failed": 0,
+                    "has_policy": false,
                     "compliant": false
                   },
                   "relationships": {
@@ -2828,6 +2830,10 @@
             "example": "cloud.redhat.com"
           },
           "compliant": {
+            "type": "boolean",
+            "example": true
+          },
+          "has_policy": {
             "type": "boolean",
             "example": true
           },

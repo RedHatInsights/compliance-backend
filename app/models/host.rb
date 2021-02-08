@@ -25,6 +25,11 @@ class Host < ApplicationRecord
   alias destroy save
   alias delete save
 
+  def policy_hosts?
+    policy_hosts.any?
+  end
+  alias has_policy policy_hosts?
+
   def os_major_version
     system_profile&.dig('operating_system', 'major')
   end
