@@ -12,6 +12,7 @@ module Insights
           ALLOWED_PAYLOAD_KEYS = %i[message account_number controller remote_ip
                                     transaction_id].freeze
 
+          # rubocop:disable Metrics/MethodLength
           def call(severity, time, progname, msg)
             payload = {
               '@timestamp': format_datetime(time),
@@ -22,7 +23,19 @@ module Insights
               level: translate_error(severity),
               account_number: account_number
             }
+            payload.merge!(framework_evidence)
             JSON.generate(merge_message(payload, msg).compact) << "\n"
+          end
+          # rubocop:enable Metrics/MethodLength
+
+          def framework_evidence
+            sidekiq_ctx = sidekiq_current_ctx
+            if sidekiq_ctx
+              { controller: sidekiq_ctx[:class],
+                transaction_id: sidekiq_ctx[:jid] }
+            else
+              { transaction_id: rails_transation_id }
+            end
           end
 
           def merge_message(payload, msg)
@@ -31,13 +44,23 @@ module Insights
             else
               payload[:message] = msg2str(msg)
             end
-            if payload[:transaction_id].blank?
-              payload[:transaction_id] = transaction_id
-            end
             payload
           end
 
           private
+
+          def sidekiq_current_ctx
+            return unless Module.const_defined?(:Sidekiq)
+
+            if ::Sidekiq.const_defined?(:Context)
+              Sidekiq::Context.current
+            else
+              # versions up to 6.0.0
+              Thread.current[:sidekiq_context]
+            end
+          rescue NoMethodError
+            nil
+          end
 
           def format_datetime(time)
             time.utc.strftime('%Y-%m-%dT%H:%M:%S.%6NZ')
@@ -47,7 +70,7 @@ module Insights
             Thread.current[:audit_account_number]
           end
 
-          def transaction_id
+          def rails_transation_id
             ActiveSupport::Notifications.instrumenter.id
           end
         end
