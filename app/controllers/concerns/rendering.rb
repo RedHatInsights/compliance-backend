@@ -6,9 +6,8 @@ module Rendering
 
   included do
     def render_json(model, **args)
-      opts = ['index'].include?(action_name) ? metadata : {}
-      opts.merge!(include: params[:include].split(',')) if params[:include]
-      render({ json: serializer.new(model, opts) }.merge(args))
+      model = model.includes(includes) if index? && includes
+      render({ json: serializer.new(model, serializer_opts) }.merge(args))
     end
 
     def render_error(messages, status: :not_acceptable, **opts)
@@ -25,6 +24,17 @@ module Rendering
 
     private
 
+    def serializer_opts
+      opts = index? ? metadata : {}
+      opts.merge!(include: params[:include].split(',')) if params[:include]
+
+      opts
+    end
+
+    def index?
+      ['index'].include?(action_name)
+    end
+
     def model_errors(models = [])
       models = [models].flatten
       models.flat_map do |model|
@@ -38,5 +48,7 @@ module Rendering
     def serializer
       raise NotImplementedError
     end
+
+    def includes; end
   end
 end
