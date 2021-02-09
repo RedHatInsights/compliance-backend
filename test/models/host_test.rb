@@ -35,6 +35,39 @@ class HostTest < ActiveSupport::TestCase
     assert_not_includes Host.search_for('has_policy=true'), hosts(:two)
   end
 
+  test 'OS major version scope and filter' do
+    assert_includes Host.os_major_version(7), hosts(:one)
+    assert_includes Host.search_for('os_major_version = 7'), hosts(:one)
+
+    assert_not_includes Host.os_major_version(7, false), hosts(:one)
+    assert_not_includes Host.search_for('os_major_version != 7'), hosts(:one)
+
+    assert_includes Host.os_major_version(7, false), hosts(:two)
+    assert_includes Host.search_for('os_major_version != 7'), hosts(:two)
+
+    assert_not_includes Host.os_major_version(7), hosts(:two)
+    assert_not_includes Host.search_for('os_major_version = 7'), hosts(:two)
+  end
+
+  test 'OS minor version scope and filter' do
+    assert_includes Host.os_minor_version(4), hosts(:one)
+    assert_includes Host.search_for('os_minor_version = 4'), hosts(:one)
+
+    assert_not_includes Host.os_minor_version(4, false), hosts(:one)
+    assert_not_includes Host.search_for('os_minor_version != 4'), hosts(:one)
+
+    assert_includes Host.os_minor_version(4, false), hosts(:two)
+    assert_includes Host.search_for('os_minor_version != 4'), hosts(:two)
+
+    assert_not_includes Host.os_minor_version(4), hosts(:two)
+    assert_not_includes Host.search_for('os_minor_version = 4'), hosts(:two)
+  end
+
+  test 'loose filter search' do
+    host = hosts(:one)
+    assert_includes Host.search_for(host.display_name), host
+  end
+
   test 'host provides all profiles, assigned and from test results' do
     host = hosts(:one)
     policies(:one).update!(account: host.account_object)

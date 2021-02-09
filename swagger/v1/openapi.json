@@ -801,7 +801,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "238dc74f-3643-47de-a7a5-b0e464ba9428",
+                  "id": "c666a420-523e-4779-ab60-6fba04dd3fbc",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -810,7 +810,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "238dc74f-3643-47de-a7a5-b0e464ba9428",
+                    "policy_profile_id": "c666a420-523e-4779-ab60-6fba04dd3fbc",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "A custom name",
                     "description": null,
@@ -1048,7 +1048,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "8d095a7c-5eb5-4691-b371-d50d530d1f5b",
+                        "id": "c6860b27-45c5-41fd-ba2c-b397bc449cff",
                         "type": "account"
                       }
                     },
@@ -1231,7 +1231,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "59a24562-1d82-4f0b-ae73-81c18e1cfaed",
+                  "id": "e08d0001-2384-48bc-89da-a397ec7a3940",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -1240,7 +1240,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "59a24562-1d82-4f0b-ae73-81c18e1cfaed",
+                    "policy_profile_id": "e08d0001-2384-48bc-89da-a397ec7a3940",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "An updated custom name",
                     "description": null,
@@ -2541,8 +2541,8 @@
                     "type": "host",
                     "attributes": {
                       "name": "MyStringone",
-                      "os_major_version": null,
-                      "os_minor_version": null,
+                      "os_major_version": 7,
+                      "os_minor_version": 4,
                       "last_scanned": "2020-03-25T14:51:17Z",
                       "rules_passed": 1,
                       "rules_failed": 0,
@@ -2673,8 +2673,8 @@
                   "type": "host",
                   "attributes": {
                     "name": "MyStringone",
-                    "os_major_version": null,
-                    "os_minor_version": null,
+                    "os_major_version": 7,
+                    "os_minor_version": 4,
                     "last_scanned": "2020-03-25T14:51:17Z",
                     "rules_passed": 1,
                     "rules_failed": 0,
@@ -2832,13 +2832,13 @@
             "example": true
           },
           "os_major_version": {
-            "type": "string",
-            "example": "7",
+            "type": "integer",
+            "example": 7,
             "nullable": true
           },
           "os_minor_version": {
-            "type": "string",
-            "example": "3",
+            "type": "integer",
+            "example": 3,
             "nullable": true
           },
           "last_scanned": {

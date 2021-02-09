@@ -88,8 +88,8 @@ class TestResultTest < ActiveSupport::TestCase
     end
 
     should 'mark hosts without an OS as unsupported' do
-      assert_nil hosts(:one).os_major_version
-      assert_nil hosts(:one).os_minor_version
+      @mock.host.stubs(:os_major_version)
+      @mock.host.stubs(:os_minor_version)
 
       @mock.save_test_result
 
