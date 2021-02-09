@@ -5,7 +5,7 @@ module HostSearching
   extend ActiveSupport::Concern
 
   included do
-    scoped_search on: %i[display_name os_major_version os_minor_version]
+    scoped_search on: %i[id display_name]
     scoped_search on: :display_name, rename: :name
     scoped_search on: :compliant, ext_method: 'filter_by_compliance',
                   only_explicit: true

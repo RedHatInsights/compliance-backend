@@ -6,7 +6,6 @@ module SystemLike
   extend ActiveSupport::Concern
 
   included do
-    scoped_search on: %i[id name]
     has_many :rule_results, dependent: :destroy
     has_many :rules, through: :rule_results, source: :rule
     belongs_to :account_object, optional: true, foreign_key: :account,

@@ -17,6 +17,11 @@ class HostTest < ActiveSupport::TestCase
     end
   end
 
+  test 'loose filter search' do
+    host = hosts(:one)
+    assert_includes Host.search_for(host.display_name), host
+  end
+
   test 'with_policy scope / has_policy filter' do
     assert_equal 0, PolicyHost.count
 
