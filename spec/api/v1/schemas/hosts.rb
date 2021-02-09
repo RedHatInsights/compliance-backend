@@ -21,13 +21,13 @@ module Api
               example: true
             },
             os_major_version: {
-              type: 'string',
-              example: '7',
+              type: 'integer',
+              example: 7,
               nullable: true
             },
             os_minor_version: {
-              type: 'string',
-              example: '3',
+              type: 'integer',
+              example: 3,
               nullable: true
             },
             last_scanned: {
