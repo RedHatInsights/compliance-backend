@@ -22,6 +22,7 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
               title
               refId
               version
+              osMajorVersion
               profiles {
                   id
               }
@@ -45,5 +46,7 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
                  result['data']['latestBenchmarks'].first['refId']
     assert_equal latest_benchmark.version,
                  result['data']['latestBenchmarks'].first['version']
+    assert_equal latest_benchmark.os_major_version,
+                 result['data']['latestBenchmarks'].first['osMajorVersion']
   end
 end
