@@ -5,6 +5,7 @@ type Benchmark implements Node {
   description: String
   globalId: ID!
   id: ID!
+  osMajorVersion: String!
   profiles: [Profile!]
   refId: String!
   rules: [Rule!]
