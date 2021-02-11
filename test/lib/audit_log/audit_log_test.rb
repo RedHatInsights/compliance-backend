@@ -19,6 +19,7 @@ class AuditLogTest < ActiveSupport::TestCase
   test 'logs a general message formatted into JSON' do
     log_msg = capture_log('Audit message')
     assert_equal 'Audit message', log_msg['message']
+    assert_equal 'audit', log_msg['level']
   end
 
   test 'logs include general evidence' do
