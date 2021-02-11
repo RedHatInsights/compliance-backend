@@ -86,6 +86,7 @@ Prerequisites:
   - or, `host_inventory_url` configured in [settings](config/settings/development.yml)
 * Basic authethication credentials set by
   [option `platform_basic_auth`](config/settings/development.yml)
+  - or, environment variables `SETTINGS__PLATFORM_BASIC_AUTH_USERNAME` and `SETTINGS__PLATFORM_BASIC_AUTH_PASSWORD`
 * Generated minio credentials (for Ingress)
   - environment variables: `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`
 
