@@ -4,7 +4,8 @@ require 'faraday'
 
 # Methods related to connecting to other platform services
 module Platform
-  BASIC_AUTH = Settings.platform_basic_auth
+  BASIC_AUTH = [Settings.platform_basic_auth_username,
+                Settings.platform_basic_auth_password].freeze
   RETRY_OPTIONS = {
     max: 3,
     interval: 0.05,
@@ -22,7 +23,7 @@ module Platform
       f.request :retry, RETRY_OPTIONS
       f.adapter Faraday.default_adapter # this must be the last middleware
       f.ssl[:verify] = Rails.env.production?
-      f.basic_auth(*BASIC_AUTH) if BASIC_AUTH
+      f.basic_auth(*BASIC_AUTH) if BASIC_AUTH[0].present?
     end
     faraday
   end
