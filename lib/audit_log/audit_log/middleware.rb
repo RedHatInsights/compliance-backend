@@ -63,13 +63,8 @@ module Insights
           end
 
           def log(payload)
-            if status < 400
-              logger.info(payload)
-            elsif status < 500
-              logger.warn(payload)
-            else
-              logger.error(payload)
-            end
+            payload[:status] = status < 400 ? 'success' : 'fail'
+            logger.info(payload)
           end
 
           def subscribe

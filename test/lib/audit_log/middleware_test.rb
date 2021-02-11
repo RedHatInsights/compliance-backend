@@ -47,7 +47,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     log_msg = capture_log
     assert_equal 'GET / -> 200 OK', log_msg['message']
     assert_equal '172.1.2.3', log_msg['remote_ip']
-    assert_equal 'info', log_msg['level']
+    assert_equal 'success', log_msg['status']
   end
 
   test 'log forbidden request' do
@@ -60,7 +60,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     log_msg = capture_log
     assert_equal 'GET / -> 403 Forbidden', log_msg['message']
     assert_equal '172.1.2.3', log_msg['remote_ip']
-    assert_equal 'warning', log_msg['level']
+    assert_equal 'fail', log_msg['status']
   end
 
   test 'log error request' do
@@ -73,7 +73,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     log_msg = capture_log
     assert_equal 'GET / -> 500 Internal Server Error', log_msg['message']
     assert_equal '172.1.2.3', log_msg['remote_ip']
-    assert_equal 'err', log_msg['level']
+    assert_equal 'fail', log_msg['status']
   end
 
   test 'capture process_action' do
@@ -91,7 +91,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     assert_equal 'GET / -> 200 OK', log_msg['message']
     assert_equal 'MyController#index', log_msg['controller']
     assert_equal '172.1.2.3', log_msg['remote_ip']
-    assert_equal 'info', log_msg['level']
+    assert_equal 'success', log_msg['status']
   end
 
   test 'capture halted_callback' do
@@ -108,7 +108,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     assert_includes log_msg['message'], 'GET / -> 400 Bad Request'
     assert_includes log_msg['message'], 'filter chain halted by :halting_filter'
     assert_equal '172.1.2.3', log_msg['remote_ip']
-    assert_equal 'warning', log_msg['level']
+    assert_equal 'fail', log_msg['status']
   end
 
   test 'capture unpermitted_parameters' do
@@ -125,6 +125,6 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     assert_includes log_msg['message'], 'GET / -> 400 Bad Request'
     assert_includes log_msg['message'], 'unpermitted params :paramname'
     assert_equal '172.1.2.3', log_msg['remote_ip']
-    assert_equal 'warning', log_msg['level']
+    assert_equal 'fail', log_msg['status']
   end
 end

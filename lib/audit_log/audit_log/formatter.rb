@@ -9,18 +9,18 @@ module Insights
       class AuditLog
         # Audit Log formatter with evidence capture
         class Formatter < ManageIQ::Loggers::Container::Formatter
-          ALLOWED_PAYLOAD_KEYS = %i[message account_number controller remote_ip
-                                    transaction_id].freeze
+          ALLOWED_PAYLOAD_KEYS = %i[message status account_number controller
+                                    remote_ip transaction_id].freeze
 
           # rubocop:disable Metrics/MethodLength
-          def call(severity, time, progname, msg)
+          def call(_, time, progname, msg)
             payload = {
               '@timestamp': format_datetime(time),
               hostname: hostname,
               pid: $PROCESS_ID,
               thread_id: thread_id,
               service: progname,
-              level: translate_error(severity),
+              level: 'audit',
               account_number: account_number
             }
             payload.merge!(framework_evidence)
