@@ -4,14 +4,15 @@
 module Insights
   module API
     module Common
-      class AuditLog
+      module AuditLog
         # Request events listener, capturing for evidence
         class Middleware
-          attr_reader :logger, :evidence, :request, :status
+          attr_accessor :logger
+          attr_reader :evidence, :request, :status
 
           def initialize(app)
             @app = app
-            @logger = AuditLog.logger
+            @logger = Rails.logger
             @subscribers = []
             @evidence = {}
           end
@@ -64,7 +65,12 @@ module Insights
 
           def log(payload)
             payload[:status] = status < 400 ? 'success' : 'fail'
-            logger.info(payload)
+            if logger.respond_to?(:audit)
+              logger.audit(payload)
+            else
+              # fallback
+              logger.info(payload)
+            end
           end
 
           def subscribe

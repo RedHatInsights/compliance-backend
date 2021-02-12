@@ -29,10 +29,11 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
   setup do
     @output = StringIO.new
     @logger = Logger.new(@output)
-    @audit = Insights::API::Common::AuditLog.setup(@logger)
+    @audit = Insights::API::Common::AuditLog.new(nil, @logger)
   end
 
   def capture_log
+    assert @output.size.positive?, 'No ouput in the log'
     @output.rewind # logger seems to read what it's writing?
     JSON.parse @output.readlines[-1]
   end
@@ -40,6 +41,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
   test 'log successful request' do
     app = MockRackApp.new
     mw = Insights::API::Common::AuditLog::Middleware.new(app)
+    mw.logger = @audit
     request = Rack::MockRequest.new(mw)
 
     request.get('/', 'HTTP_X_FORWARDED_FOR' => '172.1.2.3')
@@ -53,6 +55,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
   test 'log forbidden request' do
     app = MockRackApp.new([403, {}, ['Forbidden Access']])
     mw = Insights::API::Common::AuditLog::Middleware.new(app)
+    mw.logger = @audit
     request = Rack::MockRequest.new(mw)
 
     request.get('/', 'HTTP_X_FORWARDED_FOR' => '172.1.2.3')
@@ -66,6 +69,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
   test 'log error request' do
     app = MockRackApp.new([500, {}, ['some Server Error']])
     mw = Insights::API::Common::AuditLog::Middleware.new(app)
+    mw.logger = @audit
     request = Rack::MockRequest.new(mw)
 
     request.get('/', 'HTTP_X_FORWARDED_FOR' => '172.1.2.3')
@@ -83,6 +87,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
                                              action: 'index' }]
     )
     mw = Insights::API::Common::AuditLog::Middleware.new(app)
+    mw.logger = @audit
     request = Rack::MockRequest.new(mw)
 
     request.get('/', 'HTTP_X_FORWARDED_FOR' => '172.1.2.3')
@@ -100,6 +105,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
       ['halted_callback.action_controller', { filter: 'halting_filter' }]
     )
     mw = Insights::API::Common::AuditLog::Middleware.new(app)
+    mw.logger = @audit
     request = Rack::MockRequest.new(mw)
 
     request.get('/', 'HTTP_X_FORWARDED_FOR' => '172.1.2.3')
@@ -117,6 +123,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
       ['unpermitted_parameters.action_controller', { keys: ['paramname'] }]
     )
     mw = Insights::API::Common::AuditLog::Middleware.new(app)
+    mw.logger = @audit
     request = Rack::MockRequest.new(mw)
 
     request.get('/', 'HTTP_X_FORWARDED_FOR' => '172.1.2.3')
@@ -126,5 +133,21 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     assert_includes log_msg['message'], 'unpermitted params :paramname'
     assert_equal '172.1.2.3', log_msg['remote_ip']
     assert_equal 'fail', log_msg['status']
+  end
+
+  test 'fallbacks to info loging' do
+    basic_output = StringIO.new
+    basic_logger = Logger.new(basic_output)
+    app = MockRackApp.new
+    mw = Insights::API::Common::AuditLog::Middleware.new(app)
+    mw.logger = basic_logger
+    request = Rack::MockRequest.new(mw)
+
+    request.get('/', 'HTTP_X_FORWARDED_FOR' => '172.1.2.3')
+
+    log_msg = basic_output.string
+    assert_includes log_msg, 'GET / -> 200 OK'
+    assert_includes log_msg, '172.1.2.3'
+    assert_includes log_msg, 'success'
   end
 end
