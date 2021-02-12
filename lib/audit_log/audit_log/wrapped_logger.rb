@@ -7,6 +7,9 @@ module Insights
       module AuditLog
         # Wrapper and combiner of a base and audit logger
         class WrappedLogger
+          AUDIT_SUCCESS = 'success'
+          AUDIT_FAIL = 'fail'
+
           attr_reader :base_logger
 
           delegate :add, :debug, :info, :warn, :error, :fatal,
@@ -20,6 +23,16 @@ module Insights
 
           def audit(payload)
             @audit_logger.info(payload)
+          end
+
+          def audit_success(payload)
+            payload = hash_payload(payload).merge(status: AUDIT_SUCCESS)
+            audit(payload)
+          end
+
+          def audit_fail(payload)
+            payload = hash_payload(payload).merge(status: AUDIT_FAIL)
+            audit(payload)
           end
 
           def audit_with_account(account_number, &block)
@@ -59,6 +72,12 @@ module Insights
             logger.level = Logger::INFO
             logger.formatter = Formatter.new
             logger
+          end
+
+          def hash_payload(payload)
+            return payload if payload.is_a?(Hash)
+
+            { message: payload }
           end
         end
       end

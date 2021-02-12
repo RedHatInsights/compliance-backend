@@ -13,6 +13,8 @@ class AuditLogTest < ActiveSupport::TestCase
     assert wrapped.respond_to?(:error)
     assert wrapped.respond_to?(:fatal)
     assert wrapped.respond_to?(:audit)
+    assert wrapped.respond_to?(:audit_success)
+    assert wrapped.respond_to?(:audit_fail)
   end
 
   test 'setting account number context' do
