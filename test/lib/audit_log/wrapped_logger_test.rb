@@ -16,17 +16,33 @@ class AuditLogWrappedLoggerTest < ActiveSupport::TestCase
     )
   end
 
-  def capture_log(msg)
-    @wrapped.audit(msg)
+  def capture_log
     assert @output.size.positive?, 'No ouput in the log'
     @output.rewind # logger seems to read what it's writing?
     JSON.parse @output.readlines[-1]
   end
 
   test 'logs a general audit message formatted into JSON' do
-    log_msg = capture_log('Audit message')
+    @wrapped.audit('Audit message')
+    log_msg = capture_log
     assert_equal 'Audit message', log_msg['message']
     assert_equal 'audit', log_msg['level']
+  end
+
+  test 'logs a success audit message' do
+    @wrapped.audit_success('Audit success message')
+    log_msg = capture_log
+    assert_equal 'Audit success message', log_msg['message']
+    assert_equal 'audit', log_msg['level']
+    assert_equal 'success', log_msg['status']
+  end
+
+  test 'logs a fail audit message' do
+    @wrapped.audit_fail('Audit fail message')
+    log_msg = capture_log
+    assert_equal 'Audit fail message', log_msg['message']
+    assert_equal 'audit', log_msg['level']
+    assert_equal 'fail', log_msg['status']
   end
 
   test 'logs audit with general evidence included' do
@@ -44,6 +60,15 @@ class AuditLogWrappedLoggerTest < ActiveSupport::TestCase
       transaction_id
       message
     ].sort
+  end
+
+  test 'logs a fail audit message with additional evidence' do
+    @wrapped.audit_fail(message: 'Audit fail message', controller: 'MyCtrl')
+    log_msg = capture_log
+    assert_equal 'Audit fail message', log_msg['message']
+    assert_equal 'audit', log_msg['level']
+    assert_equal 'fail', log_msg['status']
+    assert_equal 'MyCtrl', log_msg['controller']
   end
 
   test 'other logs passed to base logger' do
@@ -91,16 +116,19 @@ class AuditLogWrappedLoggerTest < ActiveSupport::TestCase
   test 'setting account number' do
     begin
       @wrapped.audit_with_account('1')
-      log_msg = capture_log('Audit message')
+      @wrapped.audit('Audit message')
+      log_msg = capture_log
       assert_equal '1', log_msg['account_number']
 
       @wrapped.audit_with_account('2') do
-        log_msg = capture_log('Audit message')
+        @wrapped.audit('Audit message')
+        log_msg = capture_log
         assert_equal '2', log_msg['account_number']
       end
 
       @wrapped.audit_with_account(nil)
-      log_msg = capture_log('Audit message')
+      @wrapped.audit('Audit message')
+      log_msg = capture_log
       assert_not log_msg['account_number']
     ensure
       @wrapped.audit_with_account(nil)

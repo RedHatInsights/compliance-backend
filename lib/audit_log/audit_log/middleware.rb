@@ -66,7 +66,11 @@ module Insights
           def log(payload)
             payload[:status] = status < 400 ? 'success' : 'fail'
             if logger.respond_to?(:audit)
-              logger.audit(payload)
+              if status < 400
+                logger.audit_success(payload)
+              else
+                logger.audit_fail(payload)
+              end
             else
               # fallback
               logger.info(payload)
