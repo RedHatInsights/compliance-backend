@@ -6,7 +6,7 @@ require 'manageiq/loggers'
 module Insights
   module API
     module Common
-      class AuditLog
+      module AuditLog
         # Audit Log formatter with evidence capture
         class Formatter < ManageIQ::Loggers::Container::Formatter
           ALLOWED_PAYLOAD_KEYS = %i[message status account_number controller
