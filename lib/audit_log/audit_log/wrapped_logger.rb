@@ -13,7 +13,7 @@ module Insights
           attr_reader :base_logger
 
           delegate :add, :debug, :info, :warn, :error, :fatal,
-                   :datetime_format, :datetime_format=,
+                   :datetime_format, :datetime_format=, :extend,
                    to: :base_logger
 
           def initialize(base_logger, audit_logger = nil)
