@@ -100,6 +100,20 @@ class AuditLogWrappedLoggerTest < ActiveSupport::TestCase
     @wrapped.close
   end
 
+  test 'supports Rails broadcasting' do
+    base_logger = ActiveSupport::Logger.new(StringIO.new)
+    wrapped = Insights::API::Common::AuditLog::WrappedLogger.new(
+      base_logger, @audit_logger
+    )
+
+    secondary_output = StringIO.new
+    secondary = ActiveSupport::Logger.new(secondary_output)
+    wrapped.extend(ActiveSupport::Logger.broadcast(secondary))
+
+    wrapped.info('Test broadcast')
+    assert_includes secondary_output.string, 'Test broadcast'
+  end
+
   test 'missing methods passed to base logger' do
     @wrapped << 'RAW MESSAGE'
 
