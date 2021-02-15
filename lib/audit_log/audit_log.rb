@@ -14,6 +14,15 @@ module Insights
           WrappedLogger.new(base_logger, audit_logger)
         end
 
+        def self.new_to_file(base_logger, filepath, autoflush = true)
+          f = File.open(filepath, 'a')
+          f.binmode
+          f.sync = autoflush
+
+          audit_logger = ::Logger.new(f)
+          new(base_logger, audit_logger)
+        end
+
         def self.audit_with_account(account_number)
           original = Thread.current[:audit_account_number]
           Thread.current[:audit_account_number] = account_number

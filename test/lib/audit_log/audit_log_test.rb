@@ -17,6 +17,20 @@ class AuditLogTest < ActiveSupport::TestCase
     assert wrapped.respond_to?(:audit_fail)
   end
 
+  test 'new to file' do
+    Dir.mktmpdir('audit_log_test') do |dir|
+      base_logger = Logger.new(StringIO.new)
+      filepath = "#{dir}/audit.log"
+      wrapped = Insights::API::Common::AuditLog.new_to_file(
+        base_logger, filepath
+      )
+      wrapped.audit('Test message')
+
+      content = File.read(filepath)
+      assert_includes content, 'Test message'
+    end
+  end
+
   test 'setting account number context' do
     begin
       Insights::API::Common::AuditLog.audit_with_account('1')
