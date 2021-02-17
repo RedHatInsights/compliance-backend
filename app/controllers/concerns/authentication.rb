@@ -12,7 +12,7 @@ module Authentication
   ].freeze
 
   included do
-    before_action :authenticate_user
+    around_action :authenticate_user
   end
 
   def authenticate_user
@@ -25,6 +25,9 @@ module Authentication
     return if performed?
 
     User.current = user
+    yield
+  ensure
+    User.current = nil
   end
 
   def current_user

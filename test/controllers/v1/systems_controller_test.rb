@@ -5,7 +5,7 @@ require 'test_helper'
 module V1
   class SystemsControllerTest < ActionDispatch::IntegrationTest
     setup do
-      SystemsController.any_instance.expects(:authenticate_user)
+      SystemsController.any_instance.expects(:authenticate_user).yields
     end
 
     context 'index' do

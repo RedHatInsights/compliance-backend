@@ -9,7 +9,7 @@ require 'securerandom'
 # instead for the time being
 class MetadataTest < ActionDispatch::IntegrationTest
   def authenticate
-    V1::ProfilesController.any_instance.expects(:authenticate_user)
+    V1::ProfilesController.any_instance.expects(:authenticate_user).yields
     users(:test).account = accounts(:test)
     User.current = users(:test)
   end
