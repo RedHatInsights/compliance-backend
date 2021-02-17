@@ -16,14 +16,15 @@ module Authentication
   end
 
   def authenticate_user
+    if identity_header.blank?
+      return unauthenticated(error: 'Error parsing the X-RH-IDENTITY header')
+    end
     return unauthenticated unless identity_header.valid?
     return unauthorized unless rbac_allowed?
 
     return if performed?
 
     User.current = user
-  rescue JSON::ParserError, NoMethodError
-    unauthenticated error: 'Error parsing the X-RH-IDENTITY header'
   end
 
   def current_user
