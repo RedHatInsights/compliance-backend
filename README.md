@@ -237,6 +237,20 @@ podman logs -f compliance-backend_sidekiq_1
 
 ## Development notes
 
+### Running Sonarqube
+
+Follow instructions to set up self-signed certs, as described [here](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/).
+
+In order to get coverage to properly report, you must manually edit the
+coverage/.resultset.json and update the paths to `/usr/src/...` from whatever
+local paths are listed there.
+
+Use the docker image:
+
+```
+podman run -itv $PWD:/usr/src -v $PWD/cacerts:/opt/java/openjdk/lib/security/cacerts --rm --name sonar-scanner-cli -e SONAR_HOST_URL='<sonarqube host>' -e SONAR_LOGIN=<token> sonarsource/sonar-scanner-cli
+```
+
 ### Creating hosts in the inventory
 
 To create hosts in the inventory the `kafka_producer.py` script can be used from the `inventory` container:

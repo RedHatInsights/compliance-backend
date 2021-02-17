@@ -73,6 +73,7 @@ group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'codecov', :require => false
+  gem 'simplecov', '~> 0.17.0'
   gem 'minitest-reporters'
   gem 'mocha'
   gem 'pry-byebug'

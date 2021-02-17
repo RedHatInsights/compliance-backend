@@ -144,6 +144,7 @@ GEM
     irb (1.2.4)
       reline (>= 0.0.1)
     jaro_winkler (1.5.4)
+    json (2.5.1)
     json-schema (2.8.1)
       addressable (>= 2.4)
     king_konf (1.0.0)
@@ -305,12 +306,11 @@ GEM
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
     silent_stream (1.0.6)
-    simplecov (0.21.2)
+    simplecov (0.17.1)
       docile (~> 1.1)
-      simplecov-html (~> 0.11)
-      simplecov_json_formatter (~> 0.1)
-    simplecov-html (0.12.3)
-    simplecov_json_formatter (0.1.2)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.2)
     slack-notifier (2.3.2)
     slop (3.6.0)
     spring (2.1.0)
@@ -395,6 +395,7 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq
   silent_stream
+  simplecov (~> 0.17.0)
   slack-notifier
   spring
   spring-watcher-listen (~> 2.0.0)
