@@ -5,7 +5,7 @@ require 'test_helper'
 module V1
   class RuleResultsControllerTest < ActionDispatch::IntegrationTest
     setup do
-      RuleResultsController.any_instance.expects(:authenticate_user)
+      RuleResultsController.any_instance.expects(:authenticate_user).yields
     end
 
     test 'index lists all rule results' do

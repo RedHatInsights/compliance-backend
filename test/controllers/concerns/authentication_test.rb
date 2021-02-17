@@ -3,28 +3,47 @@
 require 'test_helper'
 
 # This class tests a "dummy" controller for authentication.
-class AuthenticationTest < ActionDispatch::IntegrationTest
-  setup do
-    User.current = nil
-    ApplicationController.any_instance.stubs(:index).returns('Response Body')
-    Rails.application.routes.draw do
-      root 'application#index'
+class AuthenticationTest < ActionController::TestCase
+  # rubocop:disable Rails/ApplicationController
+  class AuthenticatedMockController < ActionController::Base
+    include Authentication
+
+    def index
+      user = User.current
+      return false unless user
+
+      render plain: user.account_number
+    end
+
+    def raising
+      raise 'Error'
+    end
+  end
+  # rubocop:enable Rails/ApplicationController
+
+  MockedRoutes = ActionDispatch::Routing::RouteSet.new
+  MockedRoutes.draw do
+    ActiveSupport::Deprecation.silence do
+      get ':controller(/:action)'
     end
   end
 
-  teardown do
-    Rails.application.reload_routes!
+  setup do
+    @routes = MockedRoutes
+    @controller = AuthenticatedMockController.new
   end
 
   context 'unauthorized access' do
     should 'rh-identity header not found' do
-      get '/'
+      process_test
       assert_response :unauthorized
+      assert_not User.current, 'current user must be reset after request'
     end
 
     should 'error parsing rh-identity' do
-      get '/', headers: { 'X-RH-IDENTITY': 'this should be a hash' }
+      process_test(headers: { 'X-RH-IDENTITY': 'this should be a hash' })
       assert_response :unauthorized
+      assert_not User.current, 'current user must be reset after request'
     end
 
     should 'missing entitlement info completely' do
@@ -37,9 +56,9 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :unauthorized
-      assert_not User.current
+      assert_not User.current, 'current user must be reset after request'
     end
 
     should 'missing insights entitlement' do
@@ -58,9 +77,9 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :unauthorized
-      assert_not User.current
+      assert_not User.current, 'current user must be reset after request'
     end
 
     should 'missing RBAC access for compliance' do
@@ -82,9 +101,9 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         'data': [{ 'permission': 'advisor:*:*' }]
       }.to_json)
       ::Faraday::Connection.any_instance.expects(:get).returns(rbac_request)
-      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :forbidden
-      assert_not User.current
+      assert_not User.current, 'current user must be reset after request'
     end
   end
 
@@ -111,14 +130,15 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :success
+      assert_equal '1234', response.body
       assert Account.find_by(account_number: '1234')
       assert_equal(
         Account.find_by(account_number: '1234').account_number,
         '1234'
       )
-      assert_equal Account.find_by(account_number: '1234'), User.current.account
+      assert_not User.current, 'current user must be reset after request'
     end
 
     should 'user not found, creates a new user' do
@@ -137,9 +157,14 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :success
-      assert_equal Account.find_by(account_number: '1234'), User.current.account
+      assert_equal '1234', response.body
+      assert_equal(
+        Account.find_by(account_number: '1234').account_number,
+        '1234'
+      )
+      assert_not User.current, 'current user must be reset after request'
     end
 
     should 'user not found, creates a new account, username missing' do
@@ -158,9 +183,10 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :success
-      assert_not_nil User.current
+      assert_equal '1234', response.body
+      assert_not User.current, 'current user must be reset after request'
     end
 
     should 'successful authentication sets User.current' do
@@ -179,9 +205,37 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :success
-      assert_equal Account.find_by(account_number: '1234'), User.current.account
+      assert_equal '1234', response.body
+      assert_equal(
+        Account.find_by(account_number: '1234').account_number,
+        '1234'
+      )
+      assert_not User.current, 'current user must be reset after request'
+    end
+
+    should 'reset current user after an exeption' do
+      encoded_header = Base64.encode64(
+        {
+          'identity':
+          {
+            'account_number': '1234',
+            'user': { 'username': 'username' }
+          },
+          'entitlements':
+          {
+            'insights': {
+              'is_entitled': true
+            }
+          }
+        }.to_json
+      )
+      assert_raises StandardError do
+        process_test(action: 'raising',
+                     headers: { 'X-RH-IDENTITY': encoded_header })
+      end
+      assert_not User.current, 'current user must be reset after request'
     end
   end
 
@@ -204,8 +258,10 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         )
         Settings.disable_rbac = 'true'
         RbacApi.expects(:new).never
-        get '/', headers: { 'X-RH-IDENTITY': encoded_header }
+        process_test(headers: { 'X-RH-IDENTITY': encoded_header })
         assert_response :success
+        assert_equal '1234', response.body
+        assert_not User.current, 'current user must be reset after request'
       ensure
         Settings.disable_rbac = 'false'
       end
@@ -228,12 +284,30 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      ApplicationController.any_instance.stubs(:valid_cert_endpoint?).returns(true)
+      AuthenticatedMockController.any_instance
+                                 .stubs(:valid_cert_endpoint?)
+                                 .returns(true)
       HostInventoryApi.any_instance.expects(:hosts)
                       .raises(Faraday::Error.new(''))
       RbacApi.expects(:new).never
-      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :forbidden
+      assert_not User.current, 'current user must be reset after request'
     end
+  end
+
+  private
+
+  def process_test(params = {})
+    headers = params.delete(:headers)
+    action_name = params.delete(:action) || 'index'
+
+    if headers
+
+      @request = ActionDispatch::TestRequest.create
+      headers.each { |key, val| @request.headers[key] = val }
+    end
+
+    process(action_name, params)
   end
 end

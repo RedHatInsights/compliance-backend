@@ -5,7 +5,7 @@ require 'test_helper'
 module V1
   class RulesControllerTest < ActionDispatch::IntegrationTest
     setup do
-      RulesController.any_instance.stubs(:authenticate_user)
+      RulesController.any_instance.stubs(:authenticate_user).yields
       User.current = users(:test)
       users(:test).update account: accounts(:test)
       profiles(:one).update(

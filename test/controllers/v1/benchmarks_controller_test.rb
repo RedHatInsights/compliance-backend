@@ -5,7 +5,7 @@ require 'test_helper'
 module V1
   class BenchmarksControllerTest < ActionDispatch::IntegrationTest
     setup do
-      BenchmarksController.any_instance.stubs(:authenticate_user)
+      BenchmarksController.any_instance.stubs(:authenticate_user).yields
       User.current = users(:test)
       users(:test).update! account: accounts(:test)
     end

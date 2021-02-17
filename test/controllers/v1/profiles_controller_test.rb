@@ -148,7 +148,7 @@ module V1
 
   class ProfilesControllerTest < ActionDispatch::IntegrationTest
     setup do
-      ProfilesController.any_instance.stubs(:authenticate_user)
+      ProfilesController.any_instance.stubs(:authenticate_user).yields
       User.current = users(:test)
       users(:test).update! account: accounts(:one)
       profiles(:one).update! account: accounts(:one)

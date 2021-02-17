@@ -4,7 +4,7 @@ require 'test_helper'
 
 class GraphqlControllerTest < ActionDispatch::IntegrationTest
   test 'calls the schema executor with a query, variables, and user' do
-    GraphqlController.any_instance.expects(:authenticate_user)
+    GraphqlController.any_instance.expects(:authenticate_user).yields
     query = 'gqlquery'
     variables = ['samplevar']
     User.current = users(:test)

@@ -5,7 +5,7 @@ require 'test_helper'
 module V1
   class BusinessObjectivesControllerTest < ActionDispatch::IntegrationTest
     setup do
-      BusinessObjectivesController.any_instance.stubs(:authenticate_user)
+      BusinessObjectivesController.any_instance.stubs(:authenticate_user).yields
       User.current = users(:test)
       users(:test).update! account: accounts(:test)
       policies(:one).update!(account: accounts(:test),

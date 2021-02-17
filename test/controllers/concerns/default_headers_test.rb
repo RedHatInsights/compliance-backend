@@ -4,7 +4,7 @@ require 'test_helper'
 
 class DefaultHeadersTest < ActionDispatch::IntegrationTest
   setup do
-    ApplicationController.any_instance.expects(:authenticate_user)
+    ApplicationController.any_instance.expects(:authenticate_user).yields
     ApplicationController.any_instance.stubs(:index).returns('Response Body')
     Rails.application.routes.draw do
       root 'application#index'
