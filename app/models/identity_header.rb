@@ -10,14 +10,21 @@ class IdentityHeader
     @b64_identity = b64_identity
   end
 
+  def blank?
+    @b64_identity.blank?
+  end
+
   def valid?
     identity.present? && entitled?
   end
 
   def content
-    return @content if @content.present?
-
-    @content = JSON.parse(Base64.decode64(@b64_identity))
+    @content ||=
+      begin
+        JSON.parse(Base64.decode64(@b64_identity))
+      rescue JSON::ParserError
+        {}
+      end
   end
 
   def identity
