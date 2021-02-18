@@ -3,22 +3,27 @@
 require 'test_helper'
 
 # This class tests a "dummy" controller for authentication.
-# Since testing Dummy controllers became quite complicated with
-# ActionDispatch::IntegrationTest, it is testing the Profiles controller
-# instead for the time being
 class AuthenticationTest < ActionDispatch::IntegrationTest
   setup do
     User.current = nil
+    ApplicationController.any_instance.stubs(:index).returns('Response Body')
+    Rails.application.routes.draw do
+      root 'application#index'
+    end
+  end
+
+  teardown do
+    Rails.application.reload_routes!
   end
 
   context 'unauthorized access' do
     should 'rh-identity header not found' do
-      get profiles_url
+      get '/'
       assert_response :unauthorized
     end
 
     should 'error parsing rh-identity' do
-      get profiles_url, headers: { 'X-RH-IDENTITY': 'this should be a hash' }
+      get '/', headers: { 'X-RH-IDENTITY': 'this should be a hash' }
       assert_response :unauthorized
     end
 
@@ -32,7 +37,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :unauthorized
       assert_not User.current
     end
@@ -53,7 +58,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :unauthorized
       assert_not User.current
     end
@@ -77,7 +82,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         'data': [{ 'permission': 'advisor:*:*' }]
       }.to_json)
       ::Faraday::Connection.any_instance.expects(:get).returns(rbac_request)
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :forbidden
       assert_not User.current
     end
@@ -106,7 +111,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
       assert Account.find_by(account_number: '1234')
       assert_equal(
@@ -132,7 +137,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
       assert_equal Account.find_by(account_number: '1234'), User.current.account
     end
@@ -153,7 +158,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
       assert_not_nil User.current
     end
@@ -174,7 +179,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
       assert_equal Account.find_by(account_number: '1234'), User.current.account
     end
@@ -199,7 +204,7 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
         )
         Settings.disable_rbac = 'true'
         RbacApi.expects(:new).never
-        get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
+        get '/', headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :success
       ensure
         Settings.disable_rbac = 'false'
@@ -223,121 +228,11 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
           }
         }.to_json
       )
+      ApplicationController.any_instance.stubs(:valid_cert_endpoint?).returns(true)
       HostInventoryApi.any_instance.expects(:hosts)
                       .raises(Faraday::Error.new(''))
       RbacApi.expects(:new).never
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
-      assert_response :forbidden
-    end
-
-    should 'allow access to profiles#index' do
-      encoded_header = Base64.encode64(
-        {
-          'identity': {
-            'account_number': '1234',
-            'auth_type': IdentityHeader::CERT_AUTH
-          },
-          'entitlements':
-          {
-            'insights': {
-              'is_entitled': true
-            }
-          }
-        }.to_json
-      )
-      HostInventoryApi.any_instance.expects(:hosts).returns('results' => [:foo])
-      RbacApi.expects(:new).never
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
-      assert_response :success
-    end
-
-    should 'disallow access to profiles#index with invalid identity' do
-      encoded_header = Base64.encode64(
-        {
-          'identity': {
-            'account_number': '1234',
-            'auth_type': IdentityHeader::CERT_AUTH
-          },
-          'entitlements':
-          {
-            'insights': {
-              'is_entitled': true
-            }
-          }
-        }.to_json
-      )
-      HostInventoryApi.any_instance.expects(:hosts).returns('results' => [])
-      RbacApi.expects(:new).never
-      get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
-      assert_response :forbidden
-    end
-
-    should 'allow access to profiles#tailoring_file' do
-      profiles(:one).update!(account: accounts(:one))
-      encoded_header = Base64.encode64(
-        {
-          'identity': {
-            'account_number': accounts(:one).account_number,
-            'auth_type': IdentityHeader::CERT_AUTH
-          },
-          'entitlements':
-          {
-            'insights': {
-              'is_entitled': true
-            }
-          }
-        }.to_json
-      )
-      HostInventoryApi.any_instance.expects(:hosts).returns('results' => [:foo])
-      RbacApi.expects(:new).never
-      get tailoring_file_profile_url(profiles(:one)),
-          headers: { 'X-RH-IDENTITY': encoded_header }
-      assert_response :success
-    end
-
-    should 'disallow access to profiles#tailoring_file with invalid identity' do
-      profiles(:one).update!(account: accounts(:one))
-      encoded_header = Base64.encode64(
-        {
-          'identity': {
-            'account_number': accounts(:one).account_number,
-            'auth_type': IdentityHeader::CERT_AUTH
-          },
-          'entitlements':
-          {
-            'insights': {
-              'is_entitled': true
-            }
-          }
-        }.to_json
-      )
-      HostInventoryApi.any_instance.expects(:hosts).returns('results' => [])
-      RbacApi.expects(:new).never
-      get tailoring_file_profile_url(profiles(:one)),
-          headers: { 'X-RH-IDENTITY': encoded_header }
-      assert_response :forbidden
-    end
-
-    should 'disallow access to profiles#show' do
-      HostInventoryApi.any_instance.expects(:hosts).never
-      RbacApi.any_instance.expects(:check_user).never
-      profiles(:one).update!(account: accounts(:one))
-      encoded_header = Base64.encode64(
-        {
-          'identity': {
-            'account_number': accounts(:one).account_number,
-            'auth_type': IdentityHeader::CERT_AUTH
-          },
-          'entitlements':
-          {
-            'insights': {
-              'is_entitled': true
-            }
-          }
-        }.to_json
-      )
-      get profile_url(profiles(:one)),
-          headers: { 'X-RH-IDENTITY': encoded_header }
+      get '/', headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :forbidden
     end
   end
