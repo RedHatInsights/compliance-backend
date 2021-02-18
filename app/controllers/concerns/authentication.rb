@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rbac_api'
+require 'audit_log/audit_log'
 
 # Authentication logic for all controllers
 module Authentication
@@ -24,7 +25,7 @@ module Authentication
 
     return if performed?
 
-    User.current = user
+    set_authenticated_user
     yield
   ensure
     User.current = nil
@@ -63,6 +64,13 @@ module Authentication
   end
 
   private
+
+  def set_authenticated_user
+    User.current = user
+    Insights::API::Common::AuditLog.audit_with_account(
+      current_user.account_number
+    )
+  end
 
   def valid_cert_endpoint?
     ALLOWED_CERT_BASED_RBAC_ACTIONS.include?(
