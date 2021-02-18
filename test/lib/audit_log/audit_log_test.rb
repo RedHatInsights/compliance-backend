@@ -17,12 +17,13 @@ class AuditLogTest < ActiveSupport::TestCase
     assert wrapped.respond_to?(:audit_fail)
   end
 
-  test 'new to file' do
+  test 'new to a file' do
     Dir.mktmpdir('audit_log_test') do |dir|
       base_logger = Logger.new(StringIO.new)
       filepath = "#{dir}/audit.log"
-      wrapped = Insights::API::Common::AuditLog.new_to_file(
-        base_logger, filepath
+      audit_logger = Insights::API::Common::AuditLog.new_file_logger(filepath)
+      wrapped = Insights::API::Common::AuditLog.new(
+        base_logger, audit_logger
       )
       wrapped.audit('Test message')
 

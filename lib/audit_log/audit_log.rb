@@ -14,13 +14,12 @@ module Insights
           WrappedLogger.new(base_logger, audit_logger)
         end
 
-        def self.new_to_file(base_logger, filepath, autoflush = true)
+        def self.new_file_logger(filepath, autoflush = true)
           f = File.open(filepath, 'a')
           f.binmode
           f.sync = autoflush
 
-          audit_logger = ::Logger.new(f)
-          new(base_logger, audit_logger)
+          ::Logger.new(f)
         end
 
         def self.audit_with_account(account_number)
