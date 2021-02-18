@@ -21,7 +21,7 @@ module Insights
             subscribe
             @request = ActionDispatch::Request.new(env)
             @app.call(env).tap do |status, _headers, _body|
-              @status = status
+              @status = status.to_i
               response_finished
             end
           ensure
