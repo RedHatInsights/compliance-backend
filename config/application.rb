@@ -39,6 +39,10 @@ module ComplianceBackend
     config.api_only = true
     config.active_job.queue_adapter = :sidekiq
 
+    # Attach audit logging for requests
+    require 'audit_log/audit_log'
+    config.middleware.use Insights::API::Common::AuditLog::Middleware
+
     # GraphiQL
     if Rails.env.development?
       config.middleware.use Rack::MethodOverride
