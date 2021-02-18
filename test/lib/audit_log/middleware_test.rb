@@ -135,6 +135,25 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     assert_equal 'fail', log_msg['status']
   end
 
+  test 'setting account number context' do
+    app = MockRackApp.new
+    mw = Insights::API::Common::AuditLog::Middleware.new(app)
+    mw.logger = @audit
+    request = Rack::MockRequest.new(mw)
+
+    Insights::API::Common::AuditLog.audit_with_account('1234')
+    request.get('/', 'HTTP_X_FORWARDED_FOR' => '127.1.2.3')
+
+    log_msg = capture_log
+    assert_equal 'GET / -> 200 OK', log_msg['message']
+    assert_equal '1234', log_msg['account_number']
+    assert_equal '127.1.2.3', log_msg['remote_ip']
+    assert_equal 'success', log_msg['status']
+
+    assert_not Thread.current[:audit_account_number],
+               'account number should be reset after request is done'
+  end
+
   test 'fallbacks to info loging' do
     basic_output = StringIO.new
     basic_logger = Logger.new(basic_output)

@@ -26,6 +26,7 @@ module Insights
             end
           ensure
             unsubscribe
+            reset_context
           end
 
           private
@@ -103,6 +104,10 @@ module Insights
               ActiveSupport::Notifications.unsubscribe(sub)
             end
             @subscribers.clear
+          end
+
+          def reset_context
+            AuditLog.audit_with_account(nil)
           end
 
           def fmt_controller(payload)
