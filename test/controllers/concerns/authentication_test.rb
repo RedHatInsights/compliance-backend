@@ -215,6 +215,28 @@ class AuthenticationTest < ActionController::TestCase
       assert_not User.current, 'current user must be reset after request'
     end
 
+    should 'successful authentication sets audit account context' do
+      encoded_header = Base64.encode64(
+        {
+          'identity':
+          {
+            'account_number': '1234',
+            'user': { 'username': 'username' }
+          },
+          'entitlements':
+          {
+            'insights': {
+              'is_entitled': true
+            }
+          }
+        }.to_json
+      )
+      Insights::API::Common::AuditLog.expects(:audit_with_account).with('1234')
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
+      assert_response :success
+      assert_not User.current, 'current user must be reset after request'
+    end
+
     should 'reset current user after an exeption' do
       encoded_header = Base64.encode64(
         {
