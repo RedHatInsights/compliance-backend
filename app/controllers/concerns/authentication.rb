@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rbac_api'
-require 'audit_log/audit_log'
 
 # Authentication logic for all controllers
 module Authentication

@@ -60,13 +60,4 @@ Rails.application.configure do
     Bullet.rails_logger = true
     Bullet.add_footer = true
   end
-
-  logger = ActiveSupport::Logger.new('log/development.log')
-  logger.formatter = config.log_formatter
-  logger = ActiveSupport::TaggedLogging.new(logger)
-
-  # Use our custom audit logger
-  require 'audit_log/audit_log'
-  config.logger = Insights::API::Common::AuditLog.new_to_file(logger, 'log/audit.log')
-  config.middleware.use Insights::API::Common::AuditLog::Middleware
 end
