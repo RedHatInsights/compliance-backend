@@ -15,9 +15,11 @@ module Mutations
       def resolve(args = {})
         profile = scoped_profiles.find(args[:profile_id])
         profiles = profile.external ? [profile] : profile.policy_object.profiles
-        test_results = scoped_test_results(profile_id: profiles).destroy_all
-        profile.destroy! unless profile.policy_id
 
+        test_results = scoped_test_results(profile_id: profiles).destroy_all
+        audit_mutation(profile, test_results)
+
+        profile.destroy! unless profile.policy_id
         { profile: profile, test_results: test_results }
       end
 
@@ -29,6 +31,16 @@ module Mutations
 
       def scoped_profiles
         Pundit.policy_scope(current_user, ::Profile)
+      end
+
+      def audit_mutation(profile, test_results)
+        msg = "Removed all user scoped test results (#{test_results.count})"
+        msg += if profile.external
+                 " of profile #{profile.id}"
+               else
+                 " of policy #{profile.policy_id}"
+               end
+        audit_success(msg)
       end
 
       def current_user

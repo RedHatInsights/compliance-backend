@@ -40,6 +40,9 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
         assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
       end
     end
+    assert_audited 'Removed all user scoped test results'
+    assert_audited 'of profile'
+    assert_audited profiles(:one).id
   end
 
   test 'delete test results from initial policy profile deletes all results'\
@@ -61,6 +64,9 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
         assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
       end
     end
+    assert_audited 'Removed all user scoped test results'
+    assert_audited 'of policy'
+    assert_audited policies(:one).id
   end
 
   test 'deleting results for external policy removes profile and profilehost' do
@@ -78,5 +84,8 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
         assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
       end
     end
+    assert_audited 'Removed all user scoped test results'
+    assert_audited 'of profile'
+    assert_audited profiles(:one).id
   end
 end
