@@ -27,6 +27,8 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
       )['data']['deleteProfile']['profile']
       assert_equal profiles(:one).id, result['id']
     end
+    assert_audited 'Removed profile'
+    assert_audited profiles(:one).id
   end
 
   test 'deleting internal profile detroys its policy with profiles' do
@@ -59,6 +61,9 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
       )['data']['deleteProfile']['profile']
       assert_equal profile_id, result['id']
     end
+    assert_audited 'Removed profile'
+    assert_audited profiles(:one).id
+    assert_audited policies(:one).id
   end
 
   test 'deleting other policy profile keeps policy and its profiles' do
@@ -91,5 +96,7 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
       )['data']['deleteProfile']['profile']
       assert_equal profile_id, result['id']
     end
+    assert_audited 'Removed profile'
+    assert_audited profiles(:one).id
   end
 end

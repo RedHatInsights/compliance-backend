@@ -27,6 +27,7 @@ module Mutations
           profile.update_rules(ref_ids: args[:selected_rule_ref_ids])
         end
 
+        audit_mutation(profile, policy)
         { profile: profile }
       end
 
@@ -57,6 +58,13 @@ module Mutations
           account_id: context[:current_user].account_id,
           parent_profile_id: args[:clone_from_profile_id]
         }
+      end
+
+      def audit_mutation(profile, policy)
+        audit_success(
+          "Created policy #{policy.id} with initial profile #{profile.id}" \
+          ' including tailoring (no systems assigned yet)'
+        )
       end
     end
   end

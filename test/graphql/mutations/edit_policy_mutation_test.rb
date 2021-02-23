@@ -34,6 +34,9 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
 
     assert_equal business_objectives(:one).id, result['businessObjectiveId']
     assert_equal 80.0, result['complianceThreshold']
+    assert_audited 'Updated profile'
+    assert_audited profiles(:one).id
+    assert_audited policies(:one).id
   end
 
   test 'unset the business objective' do
@@ -63,5 +66,8 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
     )['data']['updateProfile']['profile']
 
     assert_nil policies(:one).reload.business_objective
+    assert_audited 'Updated profile'
+    assert_audited profiles(:one).id
+    assert_audited policies(:one).id
   end
 end

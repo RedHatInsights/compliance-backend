@@ -187,6 +187,8 @@ module V1
         get tailoring_file_v1_profile_url(profiles(:one).id)
         assert_response :success
         assert_equal Mime[:xml].to_s, @response.content_type
+        assert_audited 'Sent computed tailoring file'
+        assert_audited profiles(:one).id
       end
     end
 
@@ -350,6 +352,8 @@ module V1
         assert_equal 202, response.status, 'Response should be 202 accepted'
         assert_equal profile_id, JSON.parse(response.body).dig('data', 'id'),
                      'Profile ID did not match deleted profile'
+        assert_audited 'Removed profile'
+        assert_audited profile_id
       end
 
       test 'v1 destroy an existing, accessible profile' do
@@ -361,6 +365,8 @@ module V1
         assert_equal 202, response.status, 'Response should be 202 accepted'
         assert_equal profile_id, JSON.parse(response.body).dig('data', 'id'),
                      'Profile ID did not match deleted profile'
+        assert_audited 'Removed profile'
+        assert_audited profile_id
       end
 
       test 'destroing internal profile detroys its policy with profiles' do
@@ -376,6 +382,9 @@ module V1
         assert_equal 202, response.status, 'Response should be 202 accepted'
         assert_equal profile_id, JSON.parse(response.body).dig('data', 'id'),
                      'Profile ID did not match deleted profile'
+        assert_audited 'Removed profile'
+        assert_audited profile_id
+        assert_audited policies(:one).id
       end
 
       test 'destroy a non-existant profile' do
@@ -489,6 +498,7 @@ module V1
         end
         assert_equal accounts(:one).id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_audited 'Created policy'
       end
 
       test 'create with an exisiting profile type for a major OS' do
@@ -520,6 +530,7 @@ module V1
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal BUSINESS_OBJECTIVE,
                      parsed_data.dig('attributes', 'business_objective')
+        assert_audited 'Created policy'
       end
 
       test 'create with some customized profile attributes' do
@@ -536,6 +547,7 @@ module V1
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal NAME, parsed_data.dig('attributes', 'name')
         assert_equal DESCRIPTION, parsed_data.dig('attributes', 'description')
+        assert_audited 'Created policy'
       end
 
       test 'create with all customized profile attributes' do
@@ -558,6 +570,7 @@ module V1
                      parsed_data.dig('attributes', 'compliance_threshold')
         assert_equal BUSINESS_OBJECTIVE,
                      parsed_data.dig('attributes', 'business_objective')
+        assert_audited 'Created policy'
       end
 
       test 'create copies rules from the parent profile' do
@@ -577,6 +590,7 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
+        assert_audited 'Created policy'
       end
 
       test 'create allows custom rules' do
@@ -603,6 +617,7 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
+        assert_audited 'Created policy'
       end
 
       test 'create only adds custom rules from the parent profile benchmark' do
@@ -635,6 +650,7 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
+        assert_audited 'Created policy'
       end
 
       test 'create only adds custom rules from the parent profile benchmark'\
@@ -668,6 +684,7 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
+        assert_audited 'Created policy'
       end
 
       test 'create allows hosts relationship' do
@@ -695,6 +712,7 @@ module V1
           Set.new(parsed_data.dig('relationships', 'hosts', 'data')
                              .map { |r| r['id'] })
         )
+        assert_audited 'Created policy'
       end
     end
 
@@ -707,9 +725,10 @@ module V1
       BUSINESS_OBJECTIVE = 'LATAM Expansion'
 
       setup do
+        @policy = policies(:one)
         @profile = Profile.new(parent_profile_id: profiles(:two).id,
                                account_id: accounts(:one).id,
-                               policy_object: policies(:one)).fill_from_parent
+                               policy_object: @policy).fill_from_parent
         @profile.save
         @profile.update_rules
       end
@@ -743,6 +762,9 @@ module V1
         end
         assert_response :success
         assert_equal NAME, @profile.policy_object.reload.name
+        assert_audited 'Updated profile'
+        assert_audited @profile.id
+        assert_audited @policy.id
       end
 
       test 'update with multiple attributes' do
@@ -761,6 +783,9 @@ module V1
         assert_equal DESCRIPTION, @profile.policy_object.description
         assert_equal COMPLIANCE_THRESHOLD, @profile.compliance_threshold
         assert_equal BUSINESS_OBJECTIVE, @profile.business_objective.title
+        assert_audited 'Updated profile'
+        assert_audited @profile.id
+        assert_audited @policy.id
       end
 
       test 'update with attributes and rules relationships' do
@@ -783,6 +808,9 @@ module V1
         assert_response :success
         assert_equal BUSINESS_OBJECTIVE,
                      @profile.reload.business_objective.title
+        assert_audited 'Updated profile'
+        assert_audited @profile.id
+        assert_audited @policy.id
       end
 
       test 'update to remove rules relationships' do
@@ -806,6 +834,9 @@ module V1
         assert_response :success
         assert_equal BUSINESS_OBJECTIVE,
                      @profile.reload.business_objective.title
+        assert_audited 'Updated profile'
+        assert_audited @profile.id
+        assert_audited @policy.id
       end
 
       test 'update to update hosts relationships' do
@@ -823,6 +854,9 @@ module V1
           )
         end
         assert_response :success
+        assert_audited 'Updated profile'
+        assert_audited @profile.id
+        assert_audited @policy.id
       end
 
       test 'update to remove hosts relationships' do
@@ -842,6 +876,9 @@ module V1
           )
         end
         assert_response :success
+        assert_audited 'Updated profile'
+        assert_audited @profile.id
+        assert_audited @policy.id
       end
     end
   end
