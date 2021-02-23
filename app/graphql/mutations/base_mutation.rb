@@ -31,6 +31,12 @@ module Mutations
     end
   end
 
+  # Common class for all GraphQL mutations
   class BaseMutation < GraphQL::Schema::RelayClassicMutation
+    protected
+
+    def audit_success(msg)
+      Rails.logger.audit_success(msg)
+    end
   end
 end

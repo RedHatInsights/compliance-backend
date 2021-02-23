@@ -57,4 +57,10 @@ class ApplicationController < ActionController::API
     render_error error.message,
                  status: :unprocessable_entity
   end
+
+  protected
+
+  def audit_success(msg)
+    Rails.logger.audit_success(msg)
+  end
 end
