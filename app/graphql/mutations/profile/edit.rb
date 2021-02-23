@@ -20,6 +20,7 @@ module Mutations
       def resolve(args = {})
         profile = authorized_profile(args)
         profile.policy_object.update(args.slice(*POLICY_ATTRIBUTES))
+        audit_mutation(profile)
         { profile: profile }
       end
 
@@ -30,6 +31,13 @@ module Mutations
           context[:current_user],
           ::Profile.find(args[:id]),
           :edit?
+        )
+      end
+
+      def audit_mutation(profile)
+        audit_success(
+          "Updated profile #{profile.id} and" \
+          " its policy #{profile.policy_id}"
         )
       end
     end

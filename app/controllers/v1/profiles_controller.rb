@@ -4,6 +4,7 @@ module V1
   # API for Profiles
   class ProfilesController < ApplicationController
     include ProfileAttributes
+    include ProfileAudit
 
     before_action only: %i[update] do
       error = 'Editing an external profile is forbidden.'
@@ -25,7 +26,9 @@ module V1
 
     def destroy
       authorize profile
-      render_json profile.destroy, status: :accepted
+      destroyed_profile = profile.destroy
+      audit_removal(destroyed_profile)
+      render_json destroyed_profile, status: :accepted
     end
 
     def create
@@ -38,6 +41,7 @@ module V1
           raise ActiveRecord::Rollback
         end
       end
+      audit_creation
     end
 
     def update
@@ -45,6 +49,7 @@ module V1
         if profile.policy_object.update(policy_update_attributes)
           update_relationships
           render_json profile
+          audit_update
         else
           render_model_errors profile
         end
@@ -58,6 +63,8 @@ module V1
         profile: profile,
         rule_ref_ids: profile.tailored_rule_ref_ids
       ).to_xml, filename: tailoring_filename, type: Mime[:xml]
+
+      audit_tailoring_file
     end
 
     private

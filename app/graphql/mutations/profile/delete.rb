@@ -16,7 +16,16 @@ module Mutations
           :destroy?
         )
         profile.destroy!
+        audit_mutation(profile)
         { profile: profile }
+      end
+
+      private
+
+      def audit_mutation(profile)
+        audit_success(
+          "Removed profile #{profile.id} of policy #{profile.policy_id}"
+        )
       end
     end
   end
