@@ -15,6 +15,7 @@ module Api
         {
           openapi: '3.0.3',
           info: info,
+          basePath: "#{Settings.path_prefix}/#{Settings.app_name}",
           paths: {},
           components: {
             schemas: SCHEMAS

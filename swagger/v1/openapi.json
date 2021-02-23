@@ -5,8 +5,9 @@
     "version": "v1",
     "description": "This is the API for Cloud Services for RHEL Compliance. You can find out more about Red Hat Cloud Services for RHEL at [https://cloud.redhat.com/](https://cloud.redhat.com/)"
   },
+  "basePath": "/api/compliance",
   "paths": {
-    "/api/compliance/benchmarks": {
+    "/benchmarks": {
       "get": {
         "summary": "List all benchmarks",
         "tags": [
@@ -87,28 +88,10 @@
                     },
                     "relationships": {
                       "rules": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "rule"
-                          },
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "rule"
-                          }
-                        ]
+                        "data": []
                       },
                       "profiles": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "profile"
-                          },
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "profile"
-                          }
-                        ]
+                        "data": []
                       }
                     }
                   }
@@ -163,7 +146,7 @@
         }
       }
     },
-    "/api/compliance/benchmarks/{id}": {
+    "/benchmarks/{id}": {
       "get": {
         "summary": "Retrieve a benchmark",
         "tags": [
@@ -288,7 +271,7 @@
         }
       }
     },
-    "/api/compliance/business_objectives": {
+    "/business_objectives": {
       "get": {
         "summary": "List all business_objectives",
         "tags": [
@@ -439,7 +422,7 @@
         }
       }
     },
-    "/api/compliance/business_objectives/{id}": {
+    "/business_objectives/{id}": {
       "get": {
         "summary": "Retrieve a business_objective",
         "tags": [
@@ -544,7 +527,7 @@
         }
       }
     },
-    "/api/compliance/profiles": {
+    "/profiles": {
       "get": {
         "summary": "List all profiles",
         "tags": [
@@ -618,7 +601,7 @@
                     "type": "profile",
                     "attributes": {
                       "ref_id": "xccdf_org.ssgproject.profile1",
-                      "score": 98.0,
+                      "score": 0,
                       "parent_profile_id": null,
                       "external": false,
                       "compliance_threshold": 100.0,
@@ -629,10 +612,10 @@
                       "description": null,
                       "canonical": true,
                       "tailored": false,
-                      "total_host_count": 1,
+                      "total_host_count": 0,
                       "ssg_version": "0.1.45",
                       "compliant_host_count": 0,
-                      "test_result_host_count": 1,
+                      "test_result_host_count": 0,
                       "unsupported_host_count": 0,
                       "business_objective": null,
                       "policy_type": "profile1"
@@ -654,20 +637,10 @@
                         "data": []
                       },
                       "hosts": {
-                        "data": [
-                          {
-                            "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
-                            "type": "host"
-                          }
-                        ]
+                        "data": []
                       },
                       "test_results": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "test_result"
-                          }
-                        ]
+                        "data": []
                       }
                     }
                   },
@@ -676,7 +649,7 @@
                     "type": "profile",
                     "attributes": {
                       "ref_id": "xccdf_org.ssgproject.profile2",
-                      "score": 98.0,
+                      "score": 0,
                       "parent_profile_id": null,
                       "external": false,
                       "compliance_threshold": 100.0,
@@ -687,10 +660,10 @@
                       "description": null,
                       "canonical": true,
                       "tailored": false,
-                      "total_host_count": 1,
+                      "total_host_count": 0,
                       "ssg_version": "0.1.45",
                       "compliant_host_count": 0,
-                      "test_result_host_count": 1,
+                      "test_result_host_count": 0,
                       "unsupported_host_count": 0,
                       "business_objective": null,
                       "policy_type": "profile2"
@@ -712,20 +685,10 @@
                         "data": []
                       },
                       "hosts": {
-                        "data": [
-                          {
-                            "id": "328fb4c0-42fc-0139-06c0-6e70056f34f5",
-                            "type": "host"
-                          }
-                        ]
+                        "data": []
                       },
                       "test_results": {
-                        "data": [
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "test_result"
-                          }
-                        ]
+                        "data": []
                       }
                     }
                   }
@@ -801,7 +764,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "42f0536e-913d-44ef-a08f-42c72a18cbeb",
+                  "id": "db53a575-03f9-4782-952a-41a1845e5a92",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -810,7 +773,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "42f0536e-913d-44ef-a08f-42c72a18cbeb",
+                    "policy_profile_id": "db53a575-03f9-4782-952a-41a1845e5a92",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "A custom name",
                     "description": null,
@@ -971,7 +934,7 @@
         }
       }
     },
-    "/api/compliance/profiles/{id}": {
+    "/profiles/{id}": {
       "get": {
         "summary": "Retrieve a profile",
         "tags": [
@@ -1026,7 +989,7 @@
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile1",
-                    "score": 98.0,
+                    "score": 0,
                     "parent_profile_id": null,
                     "external": false,
                     "compliance_threshold": 100.0,
@@ -1037,10 +1000,10 @@
                     "description": null,
                     "canonical": true,
                     "tailored": false,
-                    "total_host_count": 1,
+                    "total_host_count": 0,
                     "ssg_version": "0.1.45",
                     "compliant_host_count": 0,
-                    "test_result_host_count": 1,
+                    "test_result_host_count": 0,
                     "unsupported_host_count": 0,
                     "business_objective": null,
                     "policy_type": "profile1"
@@ -1048,7 +1011,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "2beaa501-0d19-4808-95bf-3f39dfcb8d4b",
+                        "id": "c7c49d49-2b70-4e05-96c2-0d608cbce978",
                         "type": "account"
                       }
                     },
@@ -1065,20 +1028,10 @@
                       "data": []
                     },
                     "hosts": {
-                      "data": [
-                        {
-                          "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
-                          "type": "host"
-                        }
-                      ]
+                      "data": []
                     },
                     "test_results": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "test_result"
-                        }
-                      ]
+                      "data": []
                     }
                   }
                 },
@@ -1231,7 +1184,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "3b2531c3-3f18-408d-af2e-44b695654595",
+                  "id": "77363eec-9581-4368-a14b-c09e7e15579d",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -1240,7 +1193,7 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "3b2531c3-3f18-408d-af2e-44b695654595",
+                    "policy_profile_id": "77363eec-9581-4368-a14b-c09e7e15579d",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "An updated custom name",
                     "description": null,
@@ -1549,7 +1502,7 @@
         }
       }
     },
-    "/api/compliance/rule_results": {
+    "/rule_results": {
       "get": {
         "summary": "List all rule_results",
         "tags": [
@@ -1691,7 +1644,7 @@
         }
       }
     },
-    "/api/compliance/rules": {
+    "/rules": {
       "get": {
         "summary": "List all rules",
         "tags": [
@@ -1846,7 +1799,7 @@
         }
       }
     },
-    "/api/compliance/rules/{id}": {
+    "/rules/{id}": {
       "get": {
         "summary": "Retrieve a rule",
         "tags": [
@@ -1968,7 +1921,7 @@
         }
       }
     },
-    "/api/compliance/supported_ssgs": {
+    "/supported_ssgs": {
       "get": {
         "summary": "List all supported SSGs",
         "tags": [
@@ -2467,7 +2420,7 @@
         }
       }
     },
-    "/api/compliance/systems": {
+    "/systems": {
       "get": {
         "summary": "List all hosts",
         "tags": [
@@ -2535,49 +2488,16 @@
             "description": "lists all hosts requested",
             "examples": {
               "application/vnd.api+json": {
-                "data": [
-                  {
-                    "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
-                    "type": "host",
-                    "attributes": {
-                      "name": "MyStringone",
-                      "os_major_version": 7,
-                      "os_minor_version": 4,
-                      "last_scanned": "2020-03-25T14:51:17Z",
-                      "rules_passed": 1,
-                      "rules_failed": 0,
-                      "has_policy": false,
-                      "compliant": false
-                    },
-                    "relationships": {
-                      "test_results": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "test_result"
-                          }
-                        ]
-                      },
-                      "profiles": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "profile"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ],
+                "data": [],
                 "meta": {
-                  "total": 1,
+                  "total": 0,
                   "search": "has_test_results=true or has_policy=true",
                   "limit": 10,
                   "offset": 1
                 },
                 "links": {
                   "first": "/api/compliance/systems?limit=10&search=has_test_results=true or has_policy=true&offset=1",
-                  "last": "/api/compliance/systems?limit=10&search=has_test_results=true or has_policy=true&offset=1"
+                  "last": "/api/compliance/systems?limit=10&search=has_test_results=true or has_policy=true&offset=0"
                 }
               }
             },
@@ -2619,7 +2539,7 @@
         }
       }
     },
-    "/api/compliance/systems/{id}": {
+    "/systems/{id}": {
       "get": {
         "summary": "Retrieve a system",
         "tags": [
@@ -2676,28 +2596,18 @@
                     "name": "MyStringone",
                     "os_major_version": 7,
                     "os_minor_version": 4,
-                    "last_scanned": "2020-03-25T14:51:17Z",
-                    "rules_passed": 1,
+                    "last_scanned": "Never",
+                    "rules_passed": 0,
                     "rules_failed": 0,
                     "has_policy": false,
-                    "compliant": false
+                    "compliant": true
                   },
                   "relationships": {
                     "test_results": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "test_result"
-                        }
-                      ]
+                      "data": []
                     },
                     "profiles": {
-                      "data": [
-                        {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                          "type": "profile"
-                        }
-                      ]
+                      "data": []
                     }
                   }
                 }

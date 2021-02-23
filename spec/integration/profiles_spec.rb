@@ -10,7 +10,7 @@ describe 'Profiles API' do
     policies(:one).update! account: accounts(:one)
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/profiles" do
+  path '/profiles' do
     get 'List all profiles' do
       tags 'profile'
       description 'Lists all profiles requested'
@@ -175,7 +175,7 @@ describe 'Profiles API' do
     end
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/profiles/{id}" do
+  path '/profiles/{id}' do
     get 'Retrieve a profile' do
       tags 'profile'
       description 'Retrieves data for a profile'

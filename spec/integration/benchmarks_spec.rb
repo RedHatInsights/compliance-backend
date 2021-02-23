@@ -3,7 +3,7 @@
 require 'swagger_helper'
 
 describe 'Benchmarks API' do
-  path "#{Settings.path_prefix}/#{Settings.app_name}/benchmarks" do
+  path '/benchmarks' do
     get 'List all benchmarks' do
       fixtures :benchmarks
       tags 'benchmark'
@@ -44,7 +44,7 @@ describe 'Benchmarks API' do
     end
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/benchmarks/{id}" do
+  path '/benchmarks/{id}' do
     get 'Retrieve a benchmark' do
       fixtures :benchmarks, :profiles, :rules
       tags 'benchmark'

@@ -5,7 +5,7 @@ require 'swagger_helper'
 describe 'SupportedSsgs API' do
   fixtures :accounts
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/supported_ssgs" do
+  path '/supported_ssgs' do
     get 'List all supported SSGs' do
       tags 'supported_ssg'
       description 'List all supported SSGs mapped to RHEL minor version'

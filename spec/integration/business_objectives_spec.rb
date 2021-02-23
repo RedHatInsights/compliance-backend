@@ -16,7 +16,7 @@ describe 'Business Objectives API' do
                            policy_object: policies(:two))
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/business_objectives" do
+  path '/business_objectives' do
     get 'List all business_objectives' do
       tags 'business_objective'
       description 'Lists all business_objectives requested'
@@ -55,8 +55,7 @@ describe 'Business Objectives API' do
     end
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/"\
-       'business_objectives/{id}' do
+  path '/business_objectives/{id}' do
     get 'Retrieve a business_objective' do
       tags 'business_objective'
       description 'Retrieves data for a business_objective'

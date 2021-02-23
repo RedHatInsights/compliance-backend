@@ -9,7 +9,7 @@ describe 'RuleResults API' do
     rule_results(:one).update(host: hosts(:one), rule: rules(:one))
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/rule_results" do
+  path '/rule_results' do
     get 'List all rule_results' do
       tags 'rule_result'
       description 'Lists all rule_results requested'
