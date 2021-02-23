@@ -18,10 +18,8 @@ module Mutations
       field :profile, Types::Profile, null: false
 
       def resolve(args = {})
-        policy = ::Policy.new(new_policy_options(args)).fill_from(
-          profile: ::Profile.find(args[:clone_from_profile_id])
-        )
-        profile = ::Profile.new(new_profile_options(args)).fill_from_parent
+        policy = new_policy(args)
+        profile = new_profile(args)
 
         Policy.transaction do
           policy.save!
@@ -33,6 +31,16 @@ module Mutations
       end
 
       private
+
+      def new_policy(args)
+        ::Policy.new(new_policy_options(args)).fill_from(
+          profile: ::Profile.find(args[:clone_from_profile_id])
+        )
+      end
+
+      def new_profile(args)
+        ::Profile.new(new_profile_options(args)).fill_from_parent
+      end
 
       def new_policy_options(args)
         {
