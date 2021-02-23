@@ -7,13 +7,15 @@ require 'audit_log/audit_log'
 # It can be configured with `config.audit_logger`.
 def init_audit_logging
   logsetup = Insights::API::Common::AuditLog
-  config = Rails.application.config
-  audit_logger = if defined?(config.audit_logger)
-                   config.audit_logger
-                 else
-                   logsetup.new_file_logger('log/audit.log')
-                 end
+  audit_logger =
+    configured_audit_logger || logsetup.new_file_logger('log/audit.log')
   Rails.logger = logsetup.new(Rails.logger, audit_logger)
+end
+
+def configured_audit_logger
+  Rails.application.config.audit_logger
+rescue NoMethodError
+  nil
 end
 
 init_audit_logging
