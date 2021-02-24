@@ -58,5 +58,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
     )['data']['associateSystems']['profile']
 
     assert_empty profiles(:one).policy_object.reload.hosts
+    assert_audited 'Updated system associaton of policy'
+    assert_audited policies(:one).id
   end
 end
