@@ -68,5 +68,9 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
 
     assert_equal Set.new([policies(:one), policies(:two)]),
                  Set.new(hosts(:one).reload.policies)
+    assert_audited 'Associated host'
+    assert_audited hosts(:one).id
+    assert_audited policies(:one).id
+    assert_audited profiles(:two).id
   end
 end

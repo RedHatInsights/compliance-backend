@@ -12,12 +12,23 @@ module Mutations
 
       def resolve(args = {})
         profile = find_profile(args[:id])
-        profile&.policy_object&.update_hosts(args[:system_ids])
+        if profile&.policy_object
+          profile.policy_object.update_hosts(args[:system_ids])
+          audit_mutation(profile)
+        end
         { profile: profile }
       end
 
       include HostHelper
       include ProfileHelper
+
+      private
+
+      def audit_mutation(profile)
+        audit_success(
+          "Updated system associaton of policy #{profile.policy_id}"
+        )
+      end
     end
   end
 end

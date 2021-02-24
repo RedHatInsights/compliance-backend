@@ -17,11 +17,20 @@ module Mutations
           policy.hosts << host
         end
 
+        audit_mutation(host, policies)
         { system: host }
       end
 
       include HostHelper
       include ProfileHelper
+
+      private
+
+      def audit_mutation(host, policies)
+        msg = "Associated host #{host.id} to policies "
+        msg += policies.map(&:id).join(', ')
+        audit_success(msg)
+      end
     end
   end
 end
