@@ -385,6 +385,8 @@ module V1
         assert_audited 'Removed profile'
         assert_audited profile_id
         assert_audited policies(:one).id
+        assert_audited 'Autoremoved policy'
+        assert_audited 'with the initial/main profile'
       end
 
       test 'destroy a non-existant profile' do

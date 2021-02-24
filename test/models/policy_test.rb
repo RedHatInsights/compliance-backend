@@ -139,12 +139,14 @@ class PolicyTest < ActiveSupport::TestCase
       assert_difference('BusinessObjective.count' => -1) do
         policies(:one).update!(business_objective: nil)
       end
+      assert_audited 'Autoremoved orphaned Business Objectives'
     end
 
     should 'destroy business objectives without policies on destroy' do
       assert_difference('BusinessObjective.count' => -1) do
         Policy.where(id: policies(:one)).destroy_all
       end
+      assert_audited 'Autoremoved orphaned Business Objectives'
     end
   end
 
