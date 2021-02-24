@@ -531,6 +531,7 @@ module V1
         assert_equal BUSINESS_OBJECTIVE,
                      parsed_data.dig('attributes', 'business_objective')
         assert_audited 'Created policy'
+        assert_audited 'Created Business Objective'
       end
 
       test 'create with some customized profile attributes' do

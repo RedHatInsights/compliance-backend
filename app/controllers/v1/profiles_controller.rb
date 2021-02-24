@@ -100,7 +100,9 @@ module V1
     def business_objective
       @business_objective ||= Pundit.policy_scope(
         current_user, BusinessObjective
-      ).from_title(resource_attributes&.dig(:business_objective))
+      ).from_title(resource_attributes&.dig(:business_objective)) do |new_bo|
+        audit_bo_creation(new_bo)
+      end
     end
 
     def new_host_ids

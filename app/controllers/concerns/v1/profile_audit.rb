@@ -14,6 +14,10 @@ module V1
       )
     end
 
+    def audit_bo_creation(business_objective)
+      audit_success("Created Business Objective #{business_objective.id}")
+    end
+
     def audit_tailoring_file
       audit_success(
         "Sent computed tailoring file #{tailoring_filename}" \

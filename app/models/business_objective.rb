@@ -18,7 +18,7 @@ class BusinessObjective < ApplicationRecord
     includes(:policies).where(policies: { id: nil })
   }
 
-  def self.from_title(title)
-    find_or_create_by(title: title) if title
+  def self.from_title(title, &block)
+    find_or_create_by(title: title, &block) if title
   end
 end

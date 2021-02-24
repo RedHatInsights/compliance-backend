@@ -26,5 +26,6 @@ class CreateBusinessObjectiveMutationTest < ActiveSupport::TestCase
     )['data']['createBusinessObjective']['businessObjective']
 
     assert_equal result['title'], 'foobar'
+    assert_audited 'Created Business Objective'
   end
 end
