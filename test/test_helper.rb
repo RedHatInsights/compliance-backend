@@ -50,6 +50,24 @@ unless Rails.env.production?
     class TestCase
       fixtures :all
       self.use_transactional_tests = true
+
+      setup do
+        audit_log_capturing
+      end
+
+      def audit_log_capturing
+        audit_logger = Rails.application.config.audit_logger
+        @audit_log = StringIO.new
+        audit_logger.reopen(@audit_log)
+      end
+
+      def assert_audited(msg)
+        msg_json = ::JSON.generate(msg)[1..-2]
+
+        assert_includes @audit_log.string,
+                        msg_json,
+                        "Message '#{msg}' not audited"
+      end
     end
   end
 
