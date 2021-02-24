@@ -64,6 +64,8 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
     assert_audited 'Removed profile'
     assert_audited profiles(:one).id
     assert_audited policies(:one).id
+    assert_audited 'Autoremoved policy'
+    assert_audited 'with the initial/main profile'
   end
 
   test 'deleting other policy profile keeps policy and its profiles' do

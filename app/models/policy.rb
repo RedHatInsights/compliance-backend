@@ -73,6 +73,19 @@ class Policy < ApplicationRecord
     bo_changes = (previous_changes.fetch(:business_objective_id, []) +
                   changes.fetch(:business_objective_id, []) +
                   [business_objective_id]).compact
-    BusinessObjective.without_policies.where(id: bo_changes).destroy_all
+    removed_bos = BusinessObjective.without_policies
+                                   .where(id: bo_changes)
+                                   .destroy_all
+    audit_bo_autoremove(removed_bos)
+  end
+
+  private
+
+  def audit_bo_autoremove(removed_bos)
+    return if removed_bos.empty?
+
+    msg = 'Autoremoved orphaned Business Objectives: '
+    msg += removed_bos.map(&:id).join(', ')
+    Rails.logger.audit_success(msg)
   end
 end
