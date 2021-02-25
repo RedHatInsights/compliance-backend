@@ -572,12 +572,14 @@ class ProfileTest < ActiveSupport::TestCase
     should 'add new rules to an empty rule set' do
       profiles(:one).update!(rules: [])
       assert_empty(profiles(:one).rules)
+      benchmark_rules_count = profiles(:one).benchmark.rules.count
       assert_difference(
-        'profiles(:one).rules.count', profiles(:one).benchmark.rules.count
+        'profiles(:one).rules.count', benchmark_rules_count
       ) do
-        profiles(:one).update_rules(
+        changes = profiles(:one).update_rules(
           ids: profiles(:one).benchmark.rules.pluck(:id)
         )
+        assert_equal [benchmark_rules_count, 0], changes
       end
     end
 
@@ -585,19 +587,21 @@ class ProfileTest < ActiveSupport::TestCase
       profiles(:one).update!(rules: profiles(:one).rules[0...-1])
       assert_not_empty(profiles(:one).rules)
       assert_difference('profiles(:one).rules.count', 1) do
-        profiles(:one).update_rules(
+        changes = profiles(:one).update_rules(
           ids: profiles(:one).benchmark.rules.pluck(:id)
         )
+        assert_equal [1, 0], changes
       end
     end
 
     should 'remove old rules from an existing rule set' do
       assert_not_empty(profiles(:one).rules)
-      assert_difference('profiles(:one).rules.count',
-                        -profiles(:one).rules.count) do
-        profiles(:one).update_rules(
+      rules_count = profiles(:one).rules.count
+      assert_difference('profiles(:one).rules.count', -rules_count) do
+        changes = profiles(:one).update_rules(
           ids: []
         )
+        assert_equal [0, rules_count], changes
       end
     end
 
@@ -606,9 +610,10 @@ class ProfileTest < ActiveSupport::TestCase
       profiles(:one).update!(rule_ids: original_rule_ids[0...-1])
       assert_not_empty(profiles(:one).rules)
       assert_difference('profiles(:one).rules.count', 0) do
-        profiles(:one).update_rules(
+        changes = profiles(:one).update_rules(
           ids: original_rule_ids[1..-1]
         )
+        assert_equal [1, 1], changes
       end
     end
   end
