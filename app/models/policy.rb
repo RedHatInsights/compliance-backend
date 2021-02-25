@@ -49,10 +49,11 @@ class Policy < ApplicationRecord
   def update_hosts(new_host_ids)
     return unless new_host_ids
 
-    policy_hosts.where.not(host_id: new_host_ids).destroy_all
-    PolicyHost.import((new_host_ids - host_ids).map do |host_id|
+    removed = policy_hosts.where.not(host_id: new_host_ids).destroy_all
+    imported = PolicyHost.import((new_host_ids - host_ids).map do |host_id|
       { host_id: host_id, policy_id: id }
     end)
+    [imported.ids.count, removed.count]
   end
 
   def compliant?(host)
