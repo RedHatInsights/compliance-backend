@@ -14,6 +14,23 @@ class MetadataTest < ActionDispatch::IntegrationTest
     User.current = users(:test)
   end
 
+  test 'meta adds includes to JSON response' do
+    authenticate
+    3.times do
+      Profile.create(ref_id: "foo#{SecureRandom.uuid}", name: SecureRandom.uuid,
+                     benchmark: benchmarks(:one),
+                     account: accounts(:test))
+    end
+    get profiles_url, params: { include: 'rules', limit: 1, offset: 2,
+                                search: '' }
+    assert_response :success
+    assert_match(/include=rules/, json_body['links']['first'])
+    assert_match(/include=rules/, json_body['links']['last'])
+    assert_match(/include=rules/, json_body['links']['next'])
+    assert_match(/include=rules/, json_body['links']['previous'])
+    assert json_body.dig('included')
+  end
+
   test 'meta adds total and search to JSON response' do
     authenticate
     3.times do
