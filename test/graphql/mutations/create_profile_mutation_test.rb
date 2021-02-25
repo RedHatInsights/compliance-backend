@@ -63,5 +63,8 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
                  Set.new(Rule.where(ref_id: tailored_rules))
     assert_equal cloned_profile.parent_profile, @original_profile
     assert_audited 'Created policy'
+    assert_audited 'Updated tailoring of profile'
+    assert_audited "#{tailored_rules.count} rules added"
+    assert_audited '0 rules removed'
   end
 end

@@ -10,8 +10,10 @@ module V1
     def audit_creation
       audit_success(
         "Created policy #{new_policy.id} with initial profile" \
-        " #{new_profile.id} including host assignment and tailoring"
+        " #{new_profile.id}"
       )
+      audit_host_assignment
+      audit_tailoring
     end
 
     def audit_bo_creation(business_objective)
@@ -27,8 +29,28 @@ module V1
 
     def audit_update
       audit_success(
-        "Updated profile #{profile.id} and its policy #{profile.policy_id}" \
-        ' including host assignment and tailoring'
+        "Updated profile #{profile.id} and its policy #{profile.policy_id}"
+      )
+      audit_host_assignment
+      audit_tailoring
+    end
+
+    def audit_host_assignment
+      return unless hosts_added&.nonzero? || hosts_removed&.nonzero?
+
+      audit_success(
+        "Updated systems assignment on policy #{profile.policy_id}," \
+        " #{hosts_added} added, #{hosts_removed} removed"
+      )
+    end
+
+    def audit_tailoring
+      return unless rules_added&.nonzero? || rules_removed&.nonzero?
+
+      audit_success(
+        "Updated tailoring of profile #{profile.id}" \
+        " of policy #{profile.policy_id}," \
+        " #{rules_added} rules added, #{rules_removed} rules removed"
       )
     end
 
