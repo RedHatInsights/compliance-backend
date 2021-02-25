@@ -62,11 +62,16 @@ module Metadata
 
     private
 
+    def includes_link
+      "&include=#{params[:include]}" if params[:include].present?
+    end
+
     def base_link
       base_url = "#{path_prefix}/#{Settings.app_name}"\
                  "/#{controller_name}"
       base = "#{base_url}?limit=#{pagination_limit}"
       base += "&search=#{params[:search]}" if params[:search].present?
+      base += includes_link.to_s
       base
     end
   end
