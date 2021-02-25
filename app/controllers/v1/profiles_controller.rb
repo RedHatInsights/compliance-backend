@@ -6,6 +6,8 @@ module V1
     include ProfileAttributes
     include ProfileAudit
 
+    attr_reader :hosts_added, :hosts_removed, :rules_added, :rules_removed
+
     before_action only: %i[update] do
       error = 'Editing an external profile is forbidden.'
       render json: { errors: error }, status: :forbidden if profile.external?
@@ -79,8 +81,10 @@ module V1
     end
 
     def update_relationships
-      profile.policy_object.update_hosts(new_host_ids)
-      profile.update_rules(ids: new_rule_ids)
+      @hosts_added, @hosts_removed =
+        profile.policy_object.update_hosts(new_host_ids)
+      @rules_added, @rules_removed =
+        profile.update_rules(ids: new_rule_ids)
     end
 
     def tailoring_filename
