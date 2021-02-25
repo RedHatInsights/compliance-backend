@@ -90,7 +90,8 @@ class PolicyTest < ActiveSupport::TestCase
       policies(:one).update!(hosts: [])
       assert_empty(policies(:one).hosts)
       assert_difference('policies(:one).hosts.count', hosts.count) do
-        policies(:one).update_hosts(hosts.pluck(:id))
+        changes = policies(:one).update_hosts(hosts.pluck(:id))
+        assert_equal [hosts.count, 0], changes
       end
     end
 
@@ -98,7 +99,8 @@ class PolicyTest < ActiveSupport::TestCase
       policies(:one).update!(hosts: hosts[0...-1])
       assert_not_empty(policies(:one).hosts)
       assert_difference('policies(:one).hosts.count', 1) do
-        policies(:one).update_hosts(hosts.pluck(:id))
+        changes = policies(:one).update_hosts(hosts.pluck(:id))
+        assert_equal [1, 0], changes
       end
     end
 
@@ -106,7 +108,8 @@ class PolicyTest < ActiveSupport::TestCase
       policies(:one).update!(hosts: hosts)
       assert_equal hosts.count, policies(:one).hosts.count
       assert_difference('policies(:one).reload.hosts.count', -hosts.count) do
-        policies(:one).update_hosts([])
+        changes = policies(:one).update_hosts([])
+        assert_equal [0, hosts.count], changes
       end
     end
 
@@ -114,7 +117,8 @@ class PolicyTest < ActiveSupport::TestCase
       policies(:one).update!(host_ids: hosts.pluck(:id)[0...-1])
       assert_not_empty(policies(:one).hosts)
       assert_difference('policies(:one).hosts.count', 0) do
-        policies(:one).update_hosts(hosts.pluck(:id)[1..-1])
+        changes = policies(:one).update_hosts(hosts.pluck(:id)[1..-1])
+        assert_equal [1, 1], changes
       end
     end
   end
