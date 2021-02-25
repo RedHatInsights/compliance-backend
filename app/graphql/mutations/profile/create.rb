@@ -20,18 +20,24 @@ module Mutations
       def resolve(args = {})
         policy = new_policy(args)
         profile = new_profile(args)
+        rule_changes = create(profile, policy, args[:selected_rule_ref_ids])
 
-        Policy.transaction do
-          policy.save!
-          profile.update!(policy_object: policy, external: false)
-          profile.update_rules(ref_ids: args[:selected_rule_ref_ids])
-        end
-
-        audit_mutation(profile, policy)
+        audit_mutation(profile, policy, *rule_changes)
         { profile: profile }
       end
 
       private
+
+      def create(profile, policy, rule_ref_ids)
+        rule_changes = nil
+        Policy.transaction do
+          policy.save!
+          profile.update!(policy_object: policy, external: false)
+          rule_changes =
+            profile.update_rules(ref_ids: rule_ref_ids)
+        end
+        rule_changes
+      end
 
       def new_policy(args)
         ::Policy.new(new_policy_options(args)).fill_from(
@@ -60,10 +66,18 @@ module Mutations
         }
       end
 
-      def audit_mutation(profile, policy)
+      def audit_mutation(profile, policy, rules_added, rules_removed)
         audit_success(
           "Created policy #{policy.id} with initial profile #{profile.id}" \
           ' including tailoring (no systems assigned yet)'
+        )
+
+        return unless rules_added&.nonzero? || rules_removed&.nonzero?
+
+        audit_success(
+          "Updated tailoring of profile #{profile.id}" \
+          " of policy #{profile.policy_id}," \
+          " #{rules_added} rules added, #{rules_removed} rules removed"
         )
       end
     end

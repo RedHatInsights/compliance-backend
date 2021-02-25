@@ -621,6 +621,9 @@ module V1
                              .map { |r| r['id'] })
         )
         assert_audited 'Created policy'
+        assert_audited 'Updated tailoring of profile'
+        assert_audited "#{rule_ids.count} rules added"
+        assert_audited '0 rules removed'
       end
 
       test 'create only adds custom rules from the parent profile benchmark' do
@@ -654,6 +657,9 @@ module V1
                              .map { |r| r['id'] })
         )
         assert_audited 'Created policy'
+        assert_audited 'Updated tailoring of profile'
+        assert_audited "#{bm2.rules.count} rules added"
+        assert_audited '0 rules removed'
       end
 
       test 'create only adds custom rules from the parent profile benchmark'\
@@ -688,6 +694,9 @@ module V1
                              .map { |r| r['id'] })
         )
         assert_audited 'Created policy'
+        assert_audited 'Updated tailoring of profile'
+        assert_audited "#{bm2.rules.count} rules added"
+        assert_audited '0 rules removed'
       end
 
       test 'create allows hosts relationship' do
@@ -716,6 +725,9 @@ module V1
                              .map { |r| r['id'] })
         )
         assert_audited 'Created policy'
+        assert_audited 'Updated systems assignment on policy'
+        assert_audited "#{hosts.count} added"
+        assert_audited '0 removed'
       end
     end
 
@@ -792,8 +804,9 @@ module V1
       end
 
       test 'update with attributes and rules relationships' do
+        benchmark_rules = @profile.benchmark.rules
         assert_difference(
-          '@profile.rules.count' => @profile.benchmark.rules.count
+          '@profile.rules.count' => benchmark_rules.count
         ) do
           patch profile_path(@profile.id), params: params(
             attributes: {
@@ -801,7 +814,7 @@ module V1
             },
             relationships: {
               rules: {
-                data: @profile.benchmark.rules.map do |rule|
+                data: benchmark_rules.map do |rule|
                   { id: rule.id, type: 'rule' }
                 end
               }
@@ -814,10 +827,14 @@ module V1
         assert_audited 'Updated profile'
         assert_audited @profile.id
         assert_audited @policy.id
+        assert_audited 'Updated tailoring of profile'
+        assert_audited "#{benchmark_rules.count} rules added"
+        assert_audited '0 rules removed'
       end
 
       test 'update to remove rules relationships' do
-        @profile.update!(rules: @profile.benchmark.rules)
+        benchmark_rules = @profile.benchmark.rules
+        @profile.update!(rules: benchmark_rules)
         assert_difference(
           '@profile.reload.rules.count' => -1
         ) do
@@ -827,7 +844,7 @@ module V1
             },
             relationships: {
               rules: {
-                data: @profile.benchmark.rules[0...-1].map do |rule|
+                data: benchmark_rules[0...-1].map do |rule|
                   { id: rule.id, type: 'rule' }
                 end
               }
@@ -840,6 +857,8 @@ module V1
         assert_audited 'Updated profile'
         assert_audited @profile.id
         assert_audited @policy.id
+        assert_audited 'Updated tailoring of profile'
+        assert_audited '0 rules added, 1 rules removed'
       end
 
       test 'update to update hosts relationships' do
@@ -860,6 +879,8 @@ module V1
         assert_audited 'Updated profile'
         assert_audited @profile.id
         assert_audited @policy.id
+        assert_audited 'Updated systems assignment on policy'
+        assert_audited '1 added, 1 removed'
       end
 
       test 'update to remove hosts relationships' do
@@ -882,6 +903,8 @@ module V1
         assert_audited 'Updated profile'
         assert_audited @profile.id
         assert_audited @policy.id
+        assert_audited 'Updated systems assignment on policy'
+        assert_audited '0 added, 1 removed'
       end
     end
   end
