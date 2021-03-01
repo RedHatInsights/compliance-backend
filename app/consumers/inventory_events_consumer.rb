@@ -13,6 +13,16 @@ class InventoryEventsConsumer < ApplicationConsumer
   def process(message)
     super
 
+    Insights::API::Common::AuditLog.audit_with_account(
+      @msg_value['account']
+    ) do
+      dispatch
+    end
+  ensure
+    clear!
+  end
+
+  def dispatch
     if service == 'compliance'
       handle_report_parsing
     elsif @msg_value['type'] == 'delete'
@@ -20,8 +30,6 @@ class InventoryEventsConsumer < ApplicationConsumer
     else
       logger.debug { "Skipped message of type #{@msg_value['type']}" }
     end
-  ensure
-    clear!
   end
 
   def handle_report_parsing
