@@ -8,21 +8,20 @@ class InventoryEventsConsumer < ApplicationConsumer
   include ReportParsing
 
   def process(message)
-    super(message)
+    super
 
-    handle_report_parsing
-
-    case @msg_value['type']
-    when 'delete'
+    if service == 'compliance'
+      handle_report_parsing
+    elsif @msg_value['type'] == 'delete'
       DeleteHost.perform_async(@msg_value)
+    else
+      logger.debug { "Skipped message of type #{@msg_value['type']}" }
     end
-
+  ensure
     clear!
   end
 
   def handle_report_parsing
-    return unless service == 'compliance'
-
     produce(parse_report,
             topic: Settings.kafka_producer_topics.upload_validation)
   end
