@@ -184,6 +184,7 @@ services:
       - POSTGRESQL_PASSWORD=insights
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
   rails:
+    env_file: .env
     build: .
     image: compliance-backend-rails
     tty: true
