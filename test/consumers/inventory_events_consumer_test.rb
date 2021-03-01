@@ -18,6 +18,22 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     ).at_least_once
     @consumer.process(@message)
     assert_equal 1, DeleteHost.jobs.size
+    assert_audited 'Enqueued DeleteHost job for host'
+    assert_audited 'fe314be5-4091-412d-85f6-00cc68fc001b'
+  end
+
+  test 'if message is delete, and enqueue for deletion fails' do
+    @message.expects(:value).returns(
+      '{"type": "delete", '\
+      '"id": "fe314be5-4091-412d-85f6-00cc68fc001b", '\
+      '"timestamp": "2019-05-13 21:18:15.797921"}'
+    ).at_least_once
+    DeleteHost.stubs(:perform_async).raises(:StandardError)
+    assert_raises StandardError do
+      @consumer.process(@message)
+    end
+    assert_audited 'Failed to enqueue DeleteHost'
+    assert_audited 'fe314be5-4091-412d-85f6-00cc68fc001b'
   end
 
   test 'if message is not known, no job is enqueued' do

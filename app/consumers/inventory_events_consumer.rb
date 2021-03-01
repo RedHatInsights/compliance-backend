@@ -26,7 +26,7 @@ class InventoryEventsConsumer < ApplicationConsumer
     if service == 'compliance'
       handle_report_parsing
     elsif @msg_value['type'] == 'delete'
-      DeleteHost.perform_async(@msg_value)
+      handle_host_delete
     else
       logger.debug { "Skipped message of type #{@msg_value['type']}" }
     end
@@ -35,6 +35,19 @@ class InventoryEventsConsumer < ApplicationConsumer
   def handle_report_parsing
     produce(parse_report,
             topic: Settings.kafka_producer_topics.upload_validation)
+  end
+
+  def handle_host_delete
+    DeleteHost.perform_async(@msg_value)
+  rescue StandardError => e
+    logger.audit_fail(
+      "Failed to enqueue DeleteHost job for host #{@msg_value['id']}: #{e}"
+    )
+    raise
+  else
+    logger.audit_success(
+      "Enqueued DeleteHost job for host #{@msg_value['id']}"
+    )
   end
 
   # NB: This consumer object stays around between messages
