@@ -203,6 +203,7 @@ services:
       - POSTGRESQL_PASSWORD=insights
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
+      - HOSTNAME=rails
     ports:
       - 3000:3000
     volumes:
@@ -230,6 +231,7 @@ services:
       - POSTGRESQL_PASSWORD=insights
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
+      - HOSTNAME=inventory-consumer
     volumes:
       - .:/app:z
     depends_on:
@@ -252,6 +254,7 @@ services:
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - RAILS_ENV=development
       - RAILS_LOG_TO_STDOUT=true
+      - HOSTNAME=prometheus
     restart: on-failure
     volumes:
       - .:/app:z
@@ -280,6 +283,7 @@ services:
       - POSTGRESQL_USER=insights
       - POSTGRESQL_PASSWORD=insights
       - SIDEKIQ_CONCURRENCY=1
+      - HOSTNAME=sidekiq
   redis:
     image: redis:latest
     ports:
