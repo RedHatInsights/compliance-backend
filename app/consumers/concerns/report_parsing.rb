@@ -15,11 +15,7 @@ module ReportParsing
 
       enqueue_parse_report_job
     rescue EntitlementError, SafeDownloader::DownloadError => e
-      error_message = "Error parsing report: #{request_id} - #{e.message}"
-      logger.error error_message
-      notify_payload_tracker(:error, error_message)
-
-      validation_payload(request_id, 'failure')
+      handle_report_error(e)
     end
 
     def enqueue_parse_report_job
@@ -50,6 +46,26 @@ module ReportParsing
     end
 
     private
+
+    def handle_report_error(exc)
+      error_message = msg_for_exception(exc)
+      logger.error error_message
+      notify_payload_tracker(:error, error_message)
+
+      validation_payload(request_id, 'failure')
+    end
+
+    def msg_for_exception(exc)
+      case exc
+      when EntitlementError
+        "Rejected report with request id #{request_id}:" \
+        ' invalid identity or missing insights entitlement'
+      when SafeDownloader::DownloadError
+        "Failed to dowload report with request id #{request_id}: #{e.message}"
+      else
+        "Error parsing report: #{request_id} - #{e.message}"
+      end
+    end
 
     def id
       @msg_value.dig('host', 'id')
