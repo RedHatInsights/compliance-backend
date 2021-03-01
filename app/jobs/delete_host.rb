@@ -8,7 +8,13 @@ class DeleteHost
 
   def perform(message)
     host_id = message['id']
-    remove_related(host_id)
+    begin
+      num_removed = remove_related(host_id)
+    rescue StandardError => e
+      audit_fail(host_id, e)
+      raise
+    end
+    audit_success(host_id) if num_removed.positive?
   end
 
   private
@@ -22,5 +28,17 @@ class DeleteHost
       end
     end
     num_removed
+  end
+
+  def audit_success(host_id)
+    Rails.logger.audit_success(
+      "Deleteted related records for host #{host_id}"
+    )
+  end
+
+  def audit_fail(host_id, exc)
+    Rails.logger.audit_fail(
+      "Failed to delete related records for host #{host_id}: #{exc}"
+    )
   end
 end

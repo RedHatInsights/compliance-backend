@@ -18,5 +18,18 @@ class DeleteHostTest < ActiveSupport::TestCase
     assert_difference('RuleResult.count' => -1, 'TestResult.count' => -1) do
       DeleteHost.drain
     end
+    assert_audited 'Deleteted related records for host'
+    assert_audited hosts(:one).id
+  end
+
+  test 'delete of a host fails and is audited' do
+    DeleteHost.perform_async(@message)
+    DeleteHost.any_instance.stubs(:remove_related).raises(StandardError)
+    assert_equal 1, DeleteHost.jobs.size
+    assert_raises StandardError do
+      DeleteHost.drain
+    end
+    assert_audited 'Failed to delete related records for host'
+    assert_audited hosts(:one).id
   end
 end
