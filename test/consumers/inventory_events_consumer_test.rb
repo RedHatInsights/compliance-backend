@@ -46,7 +46,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        }
+        },
+        account: '1234'
       }.to_json)
       @consumer.stubs(:validated_reports).returns([%w[profile report]])
       @consumer.stubs(:produce)
@@ -67,7 +68,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        }
+        },
+        account: '1234'
       }.to_json)
       @consumer.stubs(:validated_reports).returns([%w[profile report]])
       @consumer.expects(:produce).with(
@@ -92,7 +94,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        }
+        },
+        account: '1234'
       }.to_json)
       # Mock the actual 'sending the validation' to Kafka
       XccdfReportParser.stubs(:new).raises(StandardError.new)
@@ -119,7 +122,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        }
+        },
+        account: '1234'
       }.to_json)
       @consumer.expects(:validated_reports).never
       @consumer.expects(:produce).with(
@@ -144,7 +148,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        }
+        },
+        account: '1234'
       }.to_json)
       @consumer.stubs(:download_file)
       parsed_stub = OpenStruct.new(
