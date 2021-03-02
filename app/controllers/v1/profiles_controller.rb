@@ -8,11 +8,6 @@ module V1
 
     attr_reader :hosts_added, :hosts_removed, :rules_added, :rules_removed
 
-    before_action only: %i[update] do
-      error = 'Editing an external profile is forbidden.'
-      render json: { errors: error }, status: :forbidden if profile.external?
-    end
-
     before_action only: %i[show update] do
       authorize profile
     end
