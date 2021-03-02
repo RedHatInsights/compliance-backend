@@ -335,6 +335,20 @@ module V1
       end
     end
 
+    class ShowTest < ProfilesControllerTest
+      test 'a single profile may be requested' do
+        profiles(:one).update!(external: false,
+                               parent_profile: profiles(:two),
+                               account: accounts(:one))
+        get v1_profile_url(profiles(:one).id)
+        assert_response :success
+
+        body = JSON.parse(response.body)
+        assert_equal profiles(:one).policy_profile_id,
+                     body.dig('data', 'attributes', 'policy_profile_id')
+      end
+    end
+
     class DestroyTest < ProfilesControllerTest
       require 'sidekiq/testing'
       Sidekiq::Testing.inline!
