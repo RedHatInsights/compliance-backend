@@ -48,14 +48,13 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         }
       }.to_json)
-      @consumer.stubs(:validation_message).returns('success')
+      @consumer.stubs(:validated_reports).returns(['report'])
       @consumer.stubs(:produce)
 
       @consumer.process(@message)
 
       assert_equal 1, ParseReportJob.jobs.size
       assert_nil @consumer.instance_variable_get(:@report_contents)
-      assert_nil @consumer.instance_variable_get(:@validation_message)
       assert_nil @consumer.instance_variable_get(:@msg_value)
     end
 
@@ -70,7 +69,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         }
       }.to_json)
-      @consumer.stubs(:validation_message).returns('success')
+      @consumer.stubs(:validated_reports).returns(['report'])
       @consumer.expects(:produce).with(
         {
           'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
