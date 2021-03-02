@@ -12,7 +12,7 @@ class ProfilePolicyTest < ActiveSupport::TestCase
     users(:test).account = accounts(:test)
     policies(:one).update!(account: accounts(:test))
     profiles(:one).update!(account: accounts(:test),
-                           policy_object: policies(:one))
+                           policy: policies(:one))
     policies(:one).hosts = [hosts(:one)]
     assert_includes Pundit.policy_scope(users(:test), Profile), profiles(:one)
     assert Pundit.authorize(users(:test), profiles(:one), :index?)

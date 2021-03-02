@@ -8,18 +8,17 @@ module ProfilePolicyAssociation
     after_destroy :destroy_policy_with_internal
     after_destroy :destroy_empty_policy
 
-    belongs_to :policy_object, class_name: :Policy, foreign_key: :policy_id,
-                               optional: true, inverse_of: :profiles
-    has_many :policy_test_results, through: :policy_object,
+    belongs_to :policy, optional: true, inverse_of: :profiles
+    has_many :policy_test_results, through: :policy,
                                    source: :test_results
     has_many :policy_test_result_hosts, -> { distinct },
              through: :policy_test_results, source: :host
     delegate :business_objective, :business_objective_id,
-             to: :policy_object, allow_nil: true
+             to: :policy, allow_nil: true
     validate :no_duplicate_policy_types, on: :create
 
     def policy_profile
-      policy_object&.initial_profile
+      policy&.initial_profile
     end
 
     def policy_profile_id
@@ -40,22 +39,22 @@ module ProfilePolicyAssociation
     end
 
     def compliance_threshold
-      policy_object&.compliance_threshold ||
+      policy&.compliance_threshold ||
         Policy::DEFAULT_COMPLIANCE_THRESHOLD
     end
 
     def destroy_policy_with_internal
       return if external?
 
-      policy = policy_object&.destroy
-      audit_policy_with_main_autoremove(policy)
+      destroyed_policy = policy&.destroy
+      audit_policy_with_main_autoremove(destroyed_policy)
     end
 
     def destroy_empty_policy
-      return unless policy_object&.profiles&.empty?
+      return unless policy&.profiles&.empty?
 
-      policy = policy_object.destroy
-      audit_empty_policy_autoremove(policy)
+      destroyed_policy = policy.destroy
+      audit_empty_policy_autoremove(destroyed_policy)
     end
 
     private

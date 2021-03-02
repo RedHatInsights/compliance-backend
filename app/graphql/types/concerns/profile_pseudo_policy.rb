@@ -6,25 +6,25 @@ module Types
     extend ActiveSupport::Concern
 
     def name
-      object.policy_object&.name || object.name
+      object.policy&.name || object.name
     end
 
     def description
-      object.policy_object&.description || object.description
+      object.policy&.description || object.description
     end
 
     # Pseudo policy with a Profile type
     def policy
-      return if object.canonical? || object.policy_object.nil?
+      return if object.canonical? || object.policy.nil?
 
-      object.policy_object.initial_profile
+      object.policy.initial_profile
     end
 
     # policy profiles
     def profiles
       return if object.canonical?
 
-      object.policy_object&.profiles
+      object.policy&.profiles
     end
   end
 end

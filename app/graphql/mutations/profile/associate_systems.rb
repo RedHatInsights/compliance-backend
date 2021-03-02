@@ -12,8 +12,8 @@ module Mutations
 
       def resolve(args = {})
         profile = find_profile(args[:id])
-        if profile&.policy_object
-          profile.policy_object.update_hosts(args[:system_ids])
+        if profile&.policy
+          profile.policy.update_hosts(args[:system_ids])
           audit_mutation(profile)
         end
         { profile: profile }

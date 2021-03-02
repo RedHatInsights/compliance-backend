@@ -13,7 +13,7 @@ class ExternalPolicyRemoverTest < ActiveSupport::TestCase
 
   test 'removes all external policies' do
     profiles(:one).dup.update!(external: true, account: accounts(:test))
-    profiles(:two).dup.update!(external: true, policy_object: policies(:one),
+    profiles(:two).dup.update!(external: true, policy: policies(:one),
                                account: accounts(:test))
     assert_equal 1, Profile.external.where(policy_id: nil).count
     assert_difference('Profile.count' => -1) do

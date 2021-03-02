@@ -18,10 +18,10 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     users(:test).update account: accounts(:one)
     policies(:one).update account: accounts(:one)
     profiles(:one).update account: accounts(:one),
-                          policy_object: policies(:one)
+                          policy: policies(:one)
     policies(:two).update account: accounts(:one)
     profiles(:two).update account: accounts(:one),
-                          policy_object: policies(:two)
+                          policy: policies(:two)
 
     assert_empty hosts(:one).policies
 
@@ -52,10 +52,10 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     users(:test).update account: accounts(:one)
     policies(:one).update account: accounts(:one)
     profiles(:one).update account: accounts(:one),
-                          policy_object: policies(:one)
+                          policy: policies(:one)
     policies(:two).update account: accounts(:one)
     profiles(:two).update account: accounts(:one),
-                          policy_object: policies(:two)
+                          policy: policies(:two)
 
     Schema.execute(
       query,

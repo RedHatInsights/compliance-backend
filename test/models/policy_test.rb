@@ -124,7 +124,7 @@ class PolicyTest < ActiveSupport::TestCase
   end
 
   should 'return an OS major version' do
-    profiles(:one).update!(policy_object: policies(:one),
+    profiles(:one).update!(policy: policies(:one),
                            account: accounts(:test))
     assert_equal '7', policies(:one).os_major_version
   end
@@ -154,7 +154,7 @@ class PolicyTest < ActiveSupport::TestCase
     should 'be compliant if score is above compliance threshold' do
       policies(:one).update!(compliance_threshold: 90)
       policies(:one).stubs(:score).returns(95)
-      profiles(:one).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one),
                              account: accounts(:test))
 
       assert policies(:one).compliant?(hosts(:one))
@@ -167,9 +167,9 @@ class PolicyTest < ActiveSupport::TestCase
 
   context 'score' do
     should 'return the associated profile score' do
-      profiles(:one).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one),
                              account: accounts(:test))
-      profiles(:two).update!(policy_object: policies(:one),
+      profiles(:two).update!(policy: policies(:one),
                              account: accounts(:test))
 
       assert_equal test_results(:one).score,

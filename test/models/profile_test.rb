@@ -4,12 +4,12 @@ require 'test_helper'
 require 'sidekiq/testing'
 
 class ProfileTest < ActiveSupport::TestCase
-  should have_many(:policy_hosts).through(:policy_object)
+  should have_many(:policy_hosts).through(:policy)
   should have_many(:assigned_hosts).through(:policy_hosts).source(:host)
   should have_many(:hosts).through(:test_results)
   should have_many(:test_results).dependent(:destroy)
   should have_many(:rule_results).through(:test_results)
-  should belong_to(:policy_object).optional
+  should belong_to(:policy).optional
   should validate_uniqueness_of(:ref_id)
     .scoped_to(%i[account_id benchmark_id external policy_id])
   should validate_presence_of :ref_id
@@ -78,7 +78,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     assert_not profiles(:one).update(policy_id: UUID.generate)
-    assert_includes profiles(:one).errors[:policy_object], "can't be blank"
+    assert_includes profiles(:one).errors[:policy], "can't be blank"
   end
 
   test 'coexistence of external profiles with and without a policy' do
@@ -105,11 +105,11 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'policy_profile finds the initial profile of a policy' do
-    profiles(:two).update!(account: accounts(:test), policy_object: nil)
+    profiles(:two).update!(account: accounts(:test), policy: nil)
     assert_nil profiles(:two).policy_profile
-    profiles(:one).update!(policy_object: policies(:one), external: false)
+    profiles(:one).update!(policy: policies(:one), external: false)
     assert_equal profiles(:one), profiles(:one).policy_profile
-    profiles(:two).update!(policy_object: policies(:one), external: true)
+    profiles(:two).update!(policy: policies(:one), external: true)
     assert_equal profiles(:one), profiles(:one).policy_profile
     assert_equal profiles(:one), profiles(:two).policy_profile
   end
@@ -169,7 +169,7 @@ class ProfileTest < ActiveSupport::TestCase
       test_results(:one).update(host: hosts(:one), profile: profiles(:one),
                                 score: 50)
       profiles(:one).update!(policy_id: policies(:one).id)
-      assert_equal policies(:one), profiles(:one).policy_object
+      assert_equal policies(:one), profiles(:one).policy
     end
 
     should 'host is compliant if 50% of rules pass with a threshold of 50' do
@@ -183,7 +183,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'host is compliant if it is compliant on some policy profile' do
-      profiles(:two).update!(policy_object: policies(:one),
+      profiles(:two).update!(policy: policies(:one),
                              account: accounts(:one))
       policies(:one).update(compliance_threshold: 50)
       assert policies(:one).compliant?(hosts(:one))
@@ -203,17 +203,17 @@ class ProfileTest < ActiveSupport::TestCase
 
   test 'business_objective comes from policy' do
     policies(:one).update!(business_objective: business_objectives(:one))
-    profiles(:one).update!(policy_object: nil)
+    profiles(:one).update!(policy: nil)
     assert_nil profiles(:one).business_objective
-    profiles(:one).update!(policy_object: policies(:one))
+    profiles(:one).update!(policy: policies(:one))
     assert_equal business_objectives(:one), profiles(:one).business_objective
   end
 
   test 'compliance_threshold comes from policy default for external profiles' do
     (bm = benchmarks(:one).dup).update!(version: '0.1.47')
     (external_profile = profiles(:one).dup).update!(benchmark: bm,
-                                                    policy_object: nil)
-    assert_nil external_profile.policy_object
+                                                    policy: nil)
+    assert_nil external_profile.policy
     assert_equal 100, external_profile.compliance_threshold
   end
 
@@ -277,12 +277,12 @@ class ProfileTest < ActiveSupport::TestCase
 
   context 'in_policy scope' do
     setup do
-      profiles(:one).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one),
                              account: accounts(:one))
     end
 
     should 'find by exact profile id' do
-      profiles(:two).update!(policy_object: nil,
+      profiles(:two).update!(policy: nil,
                              account: accounts(:one))
       assert_includes Profile.in_policy(profiles(:two).id),
                       profiles(:two)
@@ -290,11 +290,11 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'find all policy profiles with policy id provided' do
-      profiles(:two).update!(policy_object: policies(:one),
+      profiles(:two).update!(policy: policies(:one),
                              external: true,
                              account: accounts(:one))
 
-      profiles(:two).dup.update!(policy_object: policies(:two),
+      profiles(:two).dup.update!(policy: policies(:two),
                                  account: accounts(:one))
 
       returned_profiles = Profile.in_policy(policies(:one).id)
@@ -308,11 +308,11 @@ class ProfileTest < ActiveSupport::TestCase
       # the same labels/uuids with policies.
       profiles(:one).update!(id: SecureRandom.uuid)
       profiles(:two).update!(id: SecureRandom.uuid,
-                             policy_object: policies(:one),
+                             policy: policies(:one),
                              external: true,
                              account: accounts(:one))
 
-      profiles(:two).dup.update!(policy_object: policies(:two).dup,
+      profiles(:two).dup.update!(policy: policies(:two).dup,
                                  account: accounts(:one))
 
       returned_profiles = Profile.in_policy(profiles(:two).id)
@@ -343,8 +343,8 @@ class ProfileTest < ActiveSupport::TestCase
 
   context 'policy_test_results' do
     should 'return all test results on the policy' do
-      profiles(:one).update!(policy_object: policies(:one))
-      profiles(:two).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one))
+      profiles(:two).update!(policy: policies(:one),
                              account: accounts(:one))
 
       assert_not_empty policies(:one).test_results
@@ -357,8 +357,8 @@ class ProfileTest < ActiveSupport::TestCase
 
   context 'policy_test_result_hosts' do
     should 'return all test result hosts on the policy' do
-      profiles(:one).update!(policy_object: policies(:one))
-      profiles(:two).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one))
+      profiles(:two).update!(policy: policies(:one),
                              account: accounts(:one))
 
       assert_not_empty policies(:one).test_result_hosts
@@ -376,7 +376,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'find a policy profile if it has a test result' do
-      profiles(:one).update!(policy_object: policies(:one))
+      profiles(:one).update!(policy: policies(:one))
       assert profiles(:one).test_results.present?
       assert profiles(:two).test_results.empty?
 
@@ -391,7 +391,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'find a policy profile if it has a test result on a scope change' do
-      profiles(:one).update!(policy_object: policies(:one))
+      profiles(:one).update!(policy: policies(:one))
       profiles(:two).update!(account: accounts(:one))
 
       assert profiles(:one).test_results.present?
@@ -414,9 +414,9 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'find all policy profiles if one has a test result' do
-      profiles(:one).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one),
                              external: true)
-      profiles(:two).update!(policy_object: policies(:one),
+      profiles(:two).update!(policy: policies(:one),
                              external: false)
 
       assert profiles(:one).test_results.present?
@@ -439,8 +439,8 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'external is searchable' do
-    profiles(:one).update!(policy_object: nil, external: true)
-    assert_nil profiles(:one).policy_object
+    profiles(:one).update!(policy: nil, external: true)
+    assert_nil profiles(:one).policy
     assert_includes Profile.search_for('external = true'), profiles(:one)
     assert_includes Profile.external, profiles(:one)
     assert_not_includes Profile.search_for('external = false'), profiles(:one)
@@ -625,7 +625,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'use the same profile when the host is assinged' do
-      policy = profiles(:one).policy_object
+      policy = profiles(:one).policy
       policy.hosts << hosts(:two)
 
       dupe = profiles(:one).dup
@@ -645,7 +645,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'assign different SSG profile to a policy the host is part of' do
-      policy = profiles(:one).policy_object
+      policy = profiles(:one).policy
       policy.hosts << hosts(:two)
 
       second_benchmark = benchmarks(:one).dup
@@ -689,7 +689,7 @@ class ProfileTest < ActiveSupport::TestCase
                         .find_by(account: accounts(:one))
         )
         assert_not hosts(:one).assigned_profiles.include?(cloned_profile)
-        assert_nil cloned_profile.policy_object
+        assert_nil cloned_profile.policy
       end
     end
 

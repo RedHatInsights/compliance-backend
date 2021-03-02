@@ -5,7 +5,7 @@ require 'test_helper'
 class AssociateSystemsMutationTest < ActiveSupport::TestCase
   setup do
     profiles(:one).update account: accounts(:one),
-                          policy_object: policies(:one)
+                          policy: policies(:one)
     users(:test).update account: accounts(:one)
   end
 
@@ -31,7 +31,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )['data']['associateSystems']['profile']
 
-    assert_equal Set.new(profiles(:one).policy_object.reload.hosts),
+    assert_equal Set.new(profiles(:one).policy.reload.hosts),
                  Set.new([hosts(:one)])
   end
 
@@ -57,7 +57,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
       context: { current_user: users(:test) }
     )['data']['associateSystems']['profile']
 
-    assert_empty profiles(:one).policy_object.reload.hosts
+    assert_empty profiles(:one).policy.reload.hosts
     assert_audited 'Updated system associaton of policy'
     assert_audited policies(:one).id
   end

@@ -9,8 +9,8 @@ class ProfileSerializer
   belongs_to :parent_profile, record_type: :profile
   has_many :rules
   has_many :hosts do |profile|
-    if profile.policy_object
-      profile.policy_object.hosts
+    if profile.policy
+      profile.policy.hosts
     else
       # external profile
       profile.test_result_hosts
@@ -25,11 +25,11 @@ class ProfileSerializer
   end
 
   attribute :name do |profile|
-    profile.policy_object&.name || profile.name
+    profile.policy&.name || profile.name
   end
 
   attribute :description do |profile|
-    profile.policy_object&.description || profile.description
+    profile.policy&.description || profile.description
   end
 
   attribute :canonical, &:canonical?
@@ -40,7 +40,7 @@ class ProfileSerializer
   attribute :test_result_host_count
   attribute :unsupported_host_count
   attribute :business_objective do |profile|
-    profile&.policy_object&.business_objective&.title
+    profile&.policy&.business_objective&.title
   end
   attribute :policy_type
 end

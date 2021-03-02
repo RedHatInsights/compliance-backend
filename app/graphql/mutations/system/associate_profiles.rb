@@ -12,7 +12,7 @@ module Mutations
 
       def resolve(args = {})
         host = Host.find(args[:id])
-        policies = find_profiles(args[:profile_ids]).map(&:policy_object).uniq
+        policies = find_profiles(args[:profile_ids]).map(&:policy).uniq
         policies.map do |policy|
           policy.hosts << host
         end

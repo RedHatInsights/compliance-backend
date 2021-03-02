@@ -65,7 +65,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
         Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
                        benchmark: benchmarks(:one),
                        account: accounts(:test), parent_profile: profiles(:one),
-                       policy_object: policies(:one))
+                       policy: policies(:one))
       end
       get profiles_url, params: { limit: 1, offset: 3 }
       assert_response :success
@@ -104,7 +104,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
                      benchmark: benchmarks(:one),
                      parent_profile: profiles(:one),
                      account: accounts(:test),
-                     policy_object: policies(:one))
+                     policy: policies(:one))
       get profiles_url, params: { limit: 1, offset: 2 }
       assert_response :success
       assert_match(/limit=1/, json_body['links']['first'])
@@ -123,7 +123,7 @@ class MetadataTest < ActionDispatch::IntegrationTest
                        benchmark: benchmarks(:one),
                        parent_profile: profiles(:one),
                        account: accounts(:test),
-                       policy_object: policies(:one))
+                       policy: policies(:one))
       end
       get profiles_url, params: { limit: 2, offset: 1 }
       assert_response :success

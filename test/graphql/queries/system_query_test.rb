@@ -4,9 +4,9 @@ require 'test_helper'
 
 class SystemQueryTest < ActiveSupport::TestCase
   setup do
-    profiles(:one).update! policy_object: policies(:one),
+    profiles(:one).update! policy: policies(:one),
                            account: accounts(:one)
-    profiles(:two).update! policy_object: policies(:two),
+    profiles(:two).update! policy: policies(:two),
                            account: accounts(:one)
     users(:test).update account: accounts(:one)
   end
@@ -174,7 +174,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       (second_benchmark = benchmarks(:one).dup).update!(version: '1.2.3')
       other_profile = profiles(:one).dup
-      other_profile.update!(policy_object: policies(:one),
+      other_profile.update!(policy: policies(:one),
                             external: true,
                             benchmark: second_benchmark,
                             account: accounts(:test))
@@ -265,7 +265,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       (second_benchmark = benchmarks(:one).dup).update!(version: '1.2.3')
       other_profile = profiles(:one).dup
-      other_profile.update!(policy_object: policies(:one),
+      other_profile.update!(policy: policies(:one),
                             external: true,
                             benchmark: second_benchmark,
                             account: accounts(:test))
@@ -308,7 +308,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       (second_benchmark = benchmarks(:one).dup).update!(version: '1.2.3')
       other_profile = profiles(:one).dup
-      other_profile.update!(policy_object: policies(:one),
+      other_profile.update!(policy: policies(:one),
                             external: true,
                             benchmark: second_benchmark,
                             account: accounts(:test))
@@ -512,7 +512,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     }
     GRAPHQL
 
-    profiles(:one).update!(policy_object: nil)
+    profiles(:one).update!(policy: nil)
     profiles(:one).rules << rules(:one)
     rule_results(:one).update(
       host: hosts(:one), rule: rules(:one), test_result: test_results(:one)

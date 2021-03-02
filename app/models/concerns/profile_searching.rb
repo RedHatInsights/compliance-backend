@@ -21,7 +21,7 @@ module ProfileSearching
                   only_explicit: true, operators: ['=']
     scoped_search on: :canonical, ext_method: 'canonical?', only_explicit: true,
                   operators: ['=']
-    scoped_search on: :has_policy, ext_method: 'policy_object_search',
+    scoped_search on: :has_policy, ext_method: 'policy_search',
                   only_explicit: true, operators: ['=']
     scoped_search on: :os_major_version, ext_method: 'os_major_version_search',
                   only_explicit: true, operators: ['=', '!='],
@@ -53,7 +53,7 @@ module ProfileSearching
       # that must have a different order in the resulting query
       # of a scoped_search
       with_policy_test_results = default_scoped.joins(
-        policy_object: :test_results
+        policy: :test_results
       )
 
       if has_policy_test_results
@@ -70,14 +70,14 @@ module ProfileSearching
 
       policy_cond = { policy_id: policy_or_profile_id }
       profile_cond = {
-        policy_object: {
+        policy: {
           profiles_policies: {
             id: policy_or_profile_id
           }
         }
       }
 
-      search = left_outer_joins(policy_object: :profiles)
+      search = left_outer_joins(policy: :profiles)
       search.where(id: policy_or_profile_id)
             .or(search.where(policy_cond))
             .or(search.where(profile_cond))
@@ -87,7 +87,7 @@ module ProfileSearching
 
   # class methods for profile searching
   module ClassMethods
-    def policy_object_search(_filter, _operator, value)
+    def policy_search(_filter, _operator, value)
       profiles = Profile.with_policy(ActiveModel::Type::Boolean.new.cast(value))
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end

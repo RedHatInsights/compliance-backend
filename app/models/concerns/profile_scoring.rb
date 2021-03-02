@@ -5,7 +5,7 @@ module ProfileScoring
   include ProfilePolicyScoring
 
   def total_host_count
-    if policy_object
+    if policy
       Host.where(id: assigned_hosts).count
     else
       Host.where(id: hosts).count
@@ -32,7 +32,7 @@ module ProfileScoring
   end
 
   def compliant?(host)
-    return policy_object.compliant?(host) if policy_id
+    return policy.compliant?(host) if policy_id
 
     score(host: host) >= compliance_threshold
   end

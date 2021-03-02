@@ -299,7 +299,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
                                                    account: accounts(:test))
       @report_parser.save_host_profile
 
-      profiles(:one).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one),
                              account: accounts(:test))
       Profile.any_instance.expects(:clone_to).with(policy: policies(:one),
                                                    account: accounts(:test))

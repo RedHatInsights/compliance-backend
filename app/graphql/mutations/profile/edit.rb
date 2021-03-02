@@ -19,7 +19,7 @@ module Mutations
 
       def resolve(args = {})
         profile = authorized_profile(args)
-        profile.policy_object.update(args.slice(*POLICY_ATTRIBUTES))
+        profile.policy.update(args.slice(*POLICY_ATTRIBUTES))
         audit_mutation(profile)
         { profile: profile }
       end

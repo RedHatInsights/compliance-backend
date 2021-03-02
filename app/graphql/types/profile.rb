@@ -98,7 +98,7 @@ module Types
     private
 
     def policy_or_report
-      object.policy_object || object
+      object.policy || object
     end
 
     def system_id(args)

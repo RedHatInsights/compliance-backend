@@ -74,7 +74,7 @@ class HostTest < ActiveSupport::TestCase
     policies(:one).hosts << host
 
     profiles(:one).update!(account: host.account_object,
-                           policy_object: policies(:one))
+                           policy: policies(:one))
     test_results(:two).update!(host: host, profile: profiles(:two))
 
     assert_equal host.all_profiles.count, 2
@@ -159,7 +159,7 @@ class HostTest < ActiveSupport::TestCase
 
   context 'scope search by a policy' do
     setup do
-      profiles(:one).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one),
                              account: accounts(:one))
       policies(:one).hosts << hosts(:one)
     end
@@ -189,7 +189,7 @@ class HostTest < ActiveSupport::TestCase
 
     should 'NOT find host unassigned to the policy even with test results' do
       policies(:one).hosts = []
-      profiles(:two).update!(policy_object: policies(:one),
+      profiles(:two).update!(policy: policies(:one),
                              external: true,
                              account: accounts(:one))
       rules(:one).profiles << profiles(:two)
@@ -207,7 +207,7 @@ class HostTest < ActiveSupport::TestCase
 
   context 'scope search for hosts with policy test results' do
     setup do
-      profiles(:one).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one),
                              account: accounts(:one))
       policies(:one).hosts << hosts(:one)
     end
@@ -235,7 +235,7 @@ class HostTest < ActiveSupport::TestCase
     end
 
     should 'find host using external profile id from its test result' do
-      profiles(:two).update!(policy_object: policies(:one),
+      profiles(:two).update!(policy: policies(:one),
                              account: accounts(:one),
                              external: true)
       test_results(:one).update!(profile: profiles(:two))

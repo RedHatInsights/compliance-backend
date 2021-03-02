@@ -14,7 +14,7 @@ class IncorrectProfileRemover
   end
 
   def self.find_incorrect_profiles(policy)
-    Profile.where(policy_object: policy)
+    Profile.where(policy: policy)
            .where.not(ref_id: policy.initial_profile.ref_id)
   end
 end
