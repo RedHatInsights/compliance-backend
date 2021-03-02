@@ -512,7 +512,6 @@ class SystemQueryTest < ActiveSupport::TestCase
     }
     GRAPHQL
 
-    profiles(:one).update!(policy: nil)
     profiles(:one).rules << rules(:one)
     rule_results(:one).update(
       host: hosts(:one), rule: rules(:one), test_result: test_results(:one)

@@ -317,7 +317,7 @@ module V1
 
       test 'returns test result hosts for external profiles' do
         test_results(:one).update(host: hosts(:one), profile: profiles(:one))
-        profiles(:one).update!(policy: nil, external: true)
+        profiles(:one).update!(external: true)
 
         get v1_profiles_url, params: { search: 'external = true' }
         assert_response :success

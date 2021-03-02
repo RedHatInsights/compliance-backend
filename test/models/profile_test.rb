@@ -105,11 +105,10 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'policy_profile finds the initial profile of a policy' do
-    profiles(:two).update!(account: accounts(:test), policy: nil)
-    assert_nil profiles(:two).policy_profile
     profiles(:one).update!(policy: policies(:one), external: false)
     assert_equal profiles(:one), profiles(:one).policy_profile
-    profiles(:two).update!(policy: policies(:one), external: true)
+    profiles(:two).update!(policy: policies(:one), external: true,
+                           account: accounts(:test))
     assert_equal profiles(:one), profiles(:one).policy_profile
     assert_equal profiles(:one), profiles(:two).policy_profile
   end
@@ -203,18 +202,8 @@ class ProfileTest < ActiveSupport::TestCase
 
   test 'business_objective comes from policy' do
     policies(:one).update!(business_objective: business_objectives(:one))
-    profiles(:one).update!(policy: nil)
-    assert_nil profiles(:one).business_objective
     profiles(:one).update!(policy: policies(:one))
     assert_equal business_objectives(:one), profiles(:one).business_objective
-  end
-
-  test 'compliance_threshold comes from policy default for external profiles' do
-    (bm = benchmarks(:one).dup).update!(version: '0.1.47')
-    (external_profile = profiles(:one).dup).update!(benchmark: bm,
-                                                    policy: nil)
-    assert_nil external_profile.policy
-    assert_equal 100, external_profile.compliance_threshold
   end
 
   context 'destroying' do
@@ -282,8 +271,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'find by exact profile id' do
-      profiles(:two).update!(policy: nil,
-                             account: accounts(:one))
+      profiles(:two).update!(account: accounts(:one))
       assert_includes Profile.in_policy(profiles(:two).id),
                       profiles(:two)
       assert_equal 1, Profile.in_policy(profiles(:two).id).length
@@ -439,8 +427,7 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'external is searchable' do
-    profiles(:one).update!(policy: nil, external: true)
-    assert_nil profiles(:one).policy
+    profiles(:one).update!(external: true)
     assert_includes Profile.search_for('external = true'), profiles(:one)
     assert_includes Profile.external, profiles(:one)
     assert_not_includes Profile.search_for('external = false'), profiles(:one)
