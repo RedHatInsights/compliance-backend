@@ -61,27 +61,6 @@ class TestResultTest < ActiveSupport::TestCase
     assert_equal TestResult.find_by(host: hosts(:one)), @mock.test_result
   end
 
-  test 'old external test results are replaced by the new test result' do
-    profiles(:two).update!(policy: nil, account: accounts(:test))
-    profiles(:one).update!(policy: nil, account: accounts(:test))
-    TestResult.where(host: hosts(:one), profile: profiles(:one)).destroy_all
-
-    assert_difference('TestResult.count' => 2) do
-      TestResult.create!(host: hosts(:one),
-                         profile: profiles(:one),
-                         end_time: @end_time - 3.minutes)
-
-      TestResult.create!(host: hosts(:one),
-                         profile: profiles(:two),
-                         end_time: @end_time - 8.minutes)
-    end
-
-    assert_difference('TestResult.count' => -1) do
-      @mock.save_test_result
-    end
-    assert_equal TestResult.find_by(host: hosts(:one)), @mock.test_result
-  end
-
   context 'supportability' do
     should 'default to supported' do
       assert test_results(:one).supported
