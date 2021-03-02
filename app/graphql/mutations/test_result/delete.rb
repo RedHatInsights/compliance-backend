@@ -14,7 +14,7 @@ module Mutations
 
       def resolve(args = {})
         profile = scoped_profiles.find(args[:profile_id])
-        profiles = profile.external ? [profile] : profile.policy.profiles
+        profiles = profile.policy.profiles
 
         test_results = scoped_test_results(profile_id: profiles).destroy_all
         audit_mutation(profile, test_results)
@@ -34,12 +34,8 @@ module Mutations
       end
 
       def audit_mutation(profile, test_results)
-        msg = "Removed all user scoped test results (#{test_results.count})"
-        msg += if profile.external
-                 " of profile #{profile.id}"
-               else
-                 " of policy #{profile.policy_id}"
-               end
+        msg = "Removed all user scoped test results (#{test_results.count}) "\
+          "of policy #{profile.policy_id}"
         audit_success(msg)
       end
 
