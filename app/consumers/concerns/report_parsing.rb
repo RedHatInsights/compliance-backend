@@ -24,10 +24,7 @@ module ReportParsing
       reports.each do |profile_id, report|
         job = ParseReportJob
               .perform_async(ActiveSupport::Gzip.compress(report), metadata)
-        logger.info("Message enqueued: #{request_id} as #{job}" \
-                    " for #{profile_id}")
-        notify_payload_tracker(:received,
-                               "File is valid. Job #{job} enqueued")
+        notify_report_success(profile_id, job)
       end
 
       validation_payload(request_id, valid: true)
@@ -35,9 +32,22 @@ module ReportParsing
 
     private
 
+    def notify_report_success(profile_id, job)
+      msg = "Enqueued report parsing of #{profile_id}"
+      msg += " from request #{request_id} as job #{job}"
+      logger.info(msg)
+      logger.audit_success(msg)
+
+      notify_payload_tracker(
+        :received,
+        "File of #{profile_id} is valid. Job #{job} enqueued"
+      )
+    end
+
     def handle_report_error(exc)
       error_message = msg_for_exception(exc)
       logger.error error_message
+      logger.audit_fail error_message
       notify_payload_tracker(:error, error_message)
 
       validation_payload(request_id, valid: false)
