@@ -87,7 +87,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         },
         account: '1234'
       }.to_json)
-      @consumer.stubs(:validated_reports).returns([%w[profile report]])
+      @consumer.stubs(:validated_reports).returns([%w[profileid report]])
       @consumer.expects(:produce).with(
         {
           'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
@@ -99,6 +99,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
       @consumer.process(@message)
       assert_equal 1, ParseReportJob.jobs.size
+      assert_audited 'Enqueued report parsing of profileid'
     end
 
     should 'not parse reports when validation fails' do
@@ -126,6 +127,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
       @consumer.process(@message)
       assert_equal 0, ParseReportJob.jobs.size
+      assert_audited 'Invalid Report'
     end
 
     should 'not parse reports if the entitlement check fails' do
@@ -153,6 +155,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
       @consumer.process(@message)
       assert_equal 0, ParseReportJob.jobs.size
+      assert_audited 'Rejected report'
     end
 
     should 'notify payload tracker when a report is received' do
@@ -170,7 +173,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       @consumer.stubs(:download_file)
       parsed_stub = OpenStruct.new(
         test_result_file: OpenStruct.new(
-          test_result: OpenStruct.new(profile_id: 'profile')
+          test_result: OpenStruct.new(profile_id: 'profileid')
         )
       )
       XccdfReportParser.stubs(:new).returns(parsed_stub)
@@ -184,6 +187,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       )
 
       @consumer.process(@message)
+      assert_audited 'Enqueued report parsing of profileid'
     end
   end
 end
