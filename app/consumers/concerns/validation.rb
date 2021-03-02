@@ -5,11 +5,22 @@ module Validation
   extend ActiveSupport::Concern
 
   included do
-    def validation_payload(request_id, result)
+    def validated_reports(report_contents, metadata)
+      report_contents.map do |report|
+        begin
+          XccdfReportParser.new(report, metadata)
+        rescue StandardError
+          raise InventoryEventsConsumer::ReportValidationError
+        end
+        report
+      end
+    end
+
+    def validation_payload(request_id, valid:)
       {
         'request_id': request_id,
         'service': 'compliance',
-        'validation': result
+        'validation': valid ? 'success' : 'failure'
       }.to_json
     end
 

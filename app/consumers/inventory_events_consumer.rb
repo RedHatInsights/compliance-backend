@@ -5,6 +5,9 @@
 class InventoryEventsConsumer < ApplicationConsumer
   subscribes_to Settings.kafka_consumer_topics.inventory_events
 
+  # Raise an error with a cause if a report isn't valid
+  class ReportValidationError < StandardError; end
+
   include ReportParsing
 
   def process(message)
@@ -28,6 +31,6 @@ class InventoryEventsConsumer < ApplicationConsumer
 
   # NB: This consumer object stays around between messages
   def clear!
-    @report_contents, @validation_message, @msg_value = nil
+    @report_contents, @msg_value = nil
   end
 end

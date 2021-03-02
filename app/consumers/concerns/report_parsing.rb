@@ -13,36 +13,23 @@ module ReportParsing
     def parse_report
       raise EntitlementError unless identity.valid?
 
-      enqueue_parse_report_job
-    rescue EntitlementError, SafeDownloader::DownloadError => e
+      reports = validated_reports(report_contents, metadata)
+      enqueue_parse_report_job(reports)
+    rescue EntitlementError, SafeDownloader::DownloadError,
+           InventoryEventsConsumer::ReportValidationError => e
       handle_report_error(e)
     end
 
-    def enqueue_parse_report_job
-      if validation_message == 'success'
-        report_contents.each do |report|
-          job = ParseReportJob
-                .perform_async(ActiveSupport::Gzip.compress(report), metadata)
-          logger.info "Message enqueued: #{request_id} as #{job}"
-          notify_payload_tracker(:received,
-                                 "File is valid. Job #{job} enqueued")
-        end
+    def enqueue_parse_report_job(reports)
+      reports.each do |report|
+        job = ParseReportJob
+              .perform_async(ActiveSupport::Gzip.compress(report), metadata)
+        logger.info "Message enqueued: #{request_id} as #{job}"
+        notify_payload_tracker(:received,
+                               "File is valid. Job #{job} enqueued")
       end
 
-      validation_payload(request_id, validation_message)
-    end
-
-    def validation_message
-      return @validation_message if @validation_message
-
-      report_contents.each do |report|
-        XccdfReportParser.new(report, metadata)
-      end
-      @validation_message = 'success'
-    rescue StandardError => e
-      logger.error "Error validating report: #{request_id}"\
-        " - #{e.message}"
-      @validation_message = 'failure'
+      validation_payload(request_id, valid: true)
     end
 
     private
@@ -52,20 +39,24 @@ module ReportParsing
       logger.error error_message
       notify_payload_tracker(:error, error_message)
 
-      validation_payload(request_id, 'failure')
+      validation_payload(request_id, valid: false)
     end
 
+    # rubocop:disable Metrics/MethodLength
     def msg_for_exception(exc)
       case exc
       when EntitlementError
         "Rejected report with request id #{request_id}:" \
         ' invalid identity or missing insights entitlement'
       when SafeDownloader::DownloadError
-        "Failed to dowload report with request id #{request_id}: #{e.message}"
+        "Failed to dowload report with request id #{request_id}: #{exc.message}"
+      when InventoryEventsConsumer::ReportValidationError
+        "Invalid Report: #{exc.cause.message}"
       else
-        "Error parsing report: #{request_id} - #{e.message}"
+        "Error parsing report: #{request_id} - #{exc.message}"
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def id
       @msg_value.dig('host', 'id')
