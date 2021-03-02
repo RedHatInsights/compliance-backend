@@ -253,7 +253,7 @@ module V1
           account: accounts(:one), name: 'foo', ref_id: 'foo',
           benchmark: benchmarks(:one),
           parent_profile: profiles(:one),
-          policy_object: policies(:one)
+          policy: policies(:one)
         )
         get v1_profiles_url
         assert_response :success
@@ -268,7 +268,7 @@ module V1
           account: accounts(:one), name: 'foo', ref_id: 'foo',
           benchmark: benchmarks(:one),
           parent_profile: profiles(:one),
-          policy_object: policies(:one)
+          policy: policies(:one)
         )
         external = Profile.create!(
           account: accounts(:one), name: 'bar', ref_id: 'bar',
@@ -293,9 +293,9 @@ module V1
         assert hosts
         host_ids = hosts.map(&:id).sort
 
-        profiles(:one).update!(policy_object: policies(:one))
+        profiles(:one).update!(policy: policies(:one))
         profiles(:two).update!(account: accounts(:one),
-                               policy_object: policies(:one),
+                               policy: policies(:one),
                                external: true)
         policies(:one).update!(account: accounts(:one))
         policies(:one).hosts = hosts
@@ -317,7 +317,7 @@ module V1
 
       test 'returns test result hosts for external profiles' do
         test_results(:one).update(host: hosts(:one), profile: profiles(:one))
-        profiles(:one).update!(policy_object: nil, external: true)
+        profiles(:one).update!(policy: nil, external: true)
 
         get v1_profiles_url, params: { search: 'external = true' }
         assert_response :success
@@ -354,7 +354,7 @@ module V1
       Sidekiq::Testing.inline!
 
       setup do
-        profiles(:one).update!(policy_object: policies(:one))
+        profiles(:one).update!(policy: policies(:one))
       end
 
       test 'destroy an existing, accessible profile' do
@@ -757,7 +757,7 @@ module V1
         @policy = policies(:one)
         @profile = Profile.new(parent_profile_id: profiles(:two).id,
                                account_id: accounts(:one).id,
-                               policy_object: @policy).fill_from_parent
+                               policy: @policy).fill_from_parent
         @profile.save
         @profile.update_rules
       end
@@ -790,7 +790,7 @@ module V1
           )
         end
         assert_response :success
-        assert_equal NAME, @profile.policy_object.reload.name
+        assert_equal NAME, @profile.policy.reload.name
         assert_audited 'Updated profile'
         assert_audited @profile.id
         assert_audited @policy.id
@@ -808,8 +808,8 @@ module V1
           )
         end
         assert_response :success
-        assert_equal NAME, @profile.policy_object.reload.name
-        assert_equal DESCRIPTION, @profile.policy_object.description
+        assert_equal NAME, @profile.policy.reload.name
+        assert_equal DESCRIPTION, @profile.policy.description
         assert_equal COMPLIANCE_THRESHOLD, @profile.compliance_threshold
         assert_equal BUSINESS_OBJECTIVE, @profile.business_objective.title
         assert_audited 'Updated profile'
@@ -876,8 +876,8 @@ module V1
       end
 
       test 'update to update hosts relationships' do
-        @profile.policy_object.update!(hosts: hosts[0...-1])
-        assert_difference('@profile.policy_object.reload.hosts.count' => 0) do
+        @profile.policy.update!(hosts: hosts[0...-1])
+        assert_difference('@profile.policy.reload.hosts.count' => 0) do
           patch profile_path(@profile.id), params: params(
             attributes: {},
             relationships: {
@@ -898,9 +898,9 @@ module V1
       end
 
       test 'update to remove hosts relationships' do
-        @profile.policy_object.update!(hosts: hosts)
+        @profile.policy.update!(hosts: hosts)
         assert_difference(
-          '@profile.policy_object.reload.hosts.count' => -1
+          '@profile.policy.reload.hosts.count' => -1
         ) do
           patch profile_path(@profile.id), params: params(
             attributes: {},

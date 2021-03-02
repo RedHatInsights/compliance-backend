@@ -26,7 +26,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
   end
 
   test 'delete a test result keeps the profile if part of a policy' do
-    profiles(:one).update(policy_object: policies(:one), external: true)
+    profiles(:one).update(policy: policies(:one), external: true)
     assert_difference('TestResult.count', -1) do
       assert_difference('Profile.count', 0) do
         result = Schema.execute(
@@ -47,8 +47,8 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
 
   test 'delete test results from initial policy profile deletes all results'\
        'in the policy' do
-    profiles(:one).update!(policy_object: policies(:one), external: false)
-    profiles(:two).update!(policy_object: policies(:one), external: true,
+    profiles(:one).update!(policy: policies(:one), external: false)
+    profiles(:two).update!(policy: policies(:one), external: true,
                            account: accounts(:test))
     test_results(:two).update! host: hosts(:two), profile: profiles(:two)
     assert_difference('TestResult.count', -2) do
@@ -70,7 +70,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
   end
 
   test 'deleting results for external policy removes profile and profilehost' do
-    profiles(:one).update(policy_object: nil, external: true)
+    profiles(:one).update(policy: nil, external: true)
     assert_difference('TestResult.count', -1) do
       assert_difference('Profile.count', -1) do
         result = Schema.execute(

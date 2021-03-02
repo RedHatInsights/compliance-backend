@@ -32,7 +32,7 @@ module Mutations
         rule_changes = nil
         Policy.transaction do
           policy.save!
-          profile.update!(policy_object: policy, external: false)
+          profile.update!(policy: policy, external: false)
           rule_changes =
             profile.update_rules(ref_ids: rule_ref_ids)
         end

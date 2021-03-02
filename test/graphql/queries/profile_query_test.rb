@@ -107,13 +107,13 @@ class ProfileQueryTest < ActiveSupport::TestCase
                              hosts: [hosts(:one), hosts(:two)])
 
       (parent = profiles(:one).dup).update!(account: nil, hosts: [])
-      profiles(:one).update!(policy_object: policies(:one),
+      profiles(:one).update!(policy: policies(:one),
                              external: false,
                              parent_profile: parent)
       profiles(:two).update!(account: accounts(:test),
                              external: true,
                              parent_profile: parent,
-                             policy_object: policies(:one))
+                             policy: policies(:one))
     end
 
     should 'query profile with a policy owned by the user' do
@@ -257,6 +257,9 @@ class ProfileQueryTest < ActiveSupport::TestCase
             businessObjective {
                title
             }
+            hosts {
+               id
+            }
         }
     }
     GRAPHQL
@@ -268,9 +271,9 @@ class ProfileQueryTest < ActiveSupport::TestCase
     profiles(:one).rules << rules(:one)
     profiles(:one).rules << rules(:two)
     profiles(:one).update(account: accounts(:test),
-                          policy_object: policies(:one))
+                          policy: policies(:one))
     profiles(:two).update(account: accounts(:test),
-                          policy_object: policies(:one))
+                          policy: policies(:one))
     policies(:one).update(compliance_threshold: 95,
                           account: accounts(:test),
                           hosts: [hosts(:one)])
@@ -293,6 +296,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
     assert_equal 1, profile1_result['testResultHostCount']
     assert_equal 1, profile1_result['compliantHostCount']
     assert_equal 1, profile1_result['unsupportedHostCount']
+    assert_equal 1, profile1_result['hosts'].length
     assert_not profile1_result['businessObjective']
   end
 end

@@ -4,9 +4,9 @@ require 'test_helper'
 
 class IncorrectProfileRemoverTest < ActiveSupport::TestCase
   setup do
-    profiles(:one).update!(policy_object: policies(:one),
+    profiles(:one).update!(policy: policies(:one),
                            account: accounts(:test))
-    profiles(:two).update!(policy_object: policies(:two),
+    profiles(:two).update!(policy: policies(:two),
                            account: accounts(:test))
   end
 

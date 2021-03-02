@@ -14,7 +14,7 @@ module Mutations
 
       def resolve(args = {})
         profile = scoped_profiles.find(args[:profile_id])
-        profiles = profile.external ? [profile] : profile.policy_object.profiles
+        profiles = profile.external ? [profile] : profile.policy.profiles
 
         test_results = scoped_test_results(profile_id: profiles).destroy_all
         audit_mutation(profile, test_results)

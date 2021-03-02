@@ -39,9 +39,9 @@ class TestResultTest < ActiveSupport::TestCase
   end
 
   test 'old test results within a policy replaced by the new test result' do
-    profiles(:two).update!(policy_object: policies(:one),
+    profiles(:two).update!(policy: policies(:one),
                            account: accounts(:test))
-    profiles(:one).update!(policy_object: policies(:one),
+    profiles(:one).update!(policy: policies(:one),
                            account: accounts(:test))
     TestResult.where(host: hosts(:one), profile: profiles(:one)).destroy_all
 
@@ -62,8 +62,8 @@ class TestResultTest < ActiveSupport::TestCase
   end
 
   test 'old external test results are replaced by the new test result' do
-    profiles(:two).update!(policy_object: nil, account: accounts(:test))
-    profiles(:one).update!(policy_object: nil, account: accounts(:test))
+    profiles(:two).update!(policy: nil, account: accounts(:test))
+    profiles(:one).update!(policy: nil, account: accounts(:test))
     TestResult.where(host: hosts(:one), profile: profiles(:one)).destroy_all
 
     assert_difference('TestResult.count' => 2) do

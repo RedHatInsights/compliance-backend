@@ -32,7 +32,7 @@ class Profile < ApplicationRecord
   validates :name, presence: true
   validates :benchmark_id, presence: true
   validates :account, presence: true, if: -> { hosts.any? }
-  validates :policy_object, presence: true, if: -> { policy_id }
+  validates :policy, presence: true, if: -> { policy_id }
 
   delegate :account_number, to: :account, allow_nil: true
 
@@ -80,7 +80,7 @@ class Profile < ApplicationRecord
       (new_profile = dup).update!(account: account,
                                   parent_profile: self,
                                   external: true,
-                                  policy_object: policy)
+                                  policy: policy)
       new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
     end
 
@@ -102,7 +102,7 @@ class Profile < ApplicationRecord
 
   def in_account(account, policy)
     Profile.find_by(account: account, ref_id: ref_id,
-                    policy_object: policy,
+                    policy: policy,
                     benchmark_id: benchmark_id)
   end
 end

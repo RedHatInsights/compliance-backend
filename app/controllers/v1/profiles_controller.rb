@@ -30,7 +30,7 @@ module V1
 
     def create
       Policy.transaction do
-        if new_policy.save && new_profile.update(policy_object: new_policy)
+        if new_policy.save && new_profile.update(policy: new_policy)
           update_relationships
           render_json new_profile, status: :created
         else
@@ -43,7 +43,7 @@ module V1
 
     def update
       Policy.transaction do
-        if profile.policy_object.update(policy_update_attributes)
+        if profile.policy.update(policy_update_attributes)
           update_relationships
           render_json profile
           audit_update
@@ -77,7 +77,7 @@ module V1
 
     def update_relationships
       @hosts_added, @hosts_removed =
-        profile.policy_object.update_hosts(new_host_ids)
+        profile.policy.update_hosts(new_host_ids)
       @rules_added, @rules_removed =
         profile.update_rules(ids: new_rule_ids)
     end

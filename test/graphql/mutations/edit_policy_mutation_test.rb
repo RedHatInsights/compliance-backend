@@ -19,7 +19,7 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
     users(:test).update account: accounts(:test)
     profiles(:one).update(account: accounts(:test),
                           hosts: [hosts(:one)],
-                          policy_object: policies(:one))
+                          policy: policies(:one))
     assert_nil policies(:one).business_objective
 
     result = Schema.execute(
@@ -54,7 +54,7 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
     policies(:one).update!(business_objective: business_objectives(:one))
     profiles(:one).update(account: accounts(:test),
                           hosts: [hosts(:one)],
-                          policy_object: policies(:one))
+                          policy: policies(:one))
 
     Schema.execute(
       query,

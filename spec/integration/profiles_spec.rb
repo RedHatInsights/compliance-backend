@@ -27,7 +27,7 @@ describe 'Profiles API' do
         before do
           policies(:one).update!(account: accounts(:one))
           profiles(:one).update!(account: accounts(:one),
-                                 policy_object: policies(:one))
+                                 policy: policies(:one))
         end
 
         let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
@@ -342,7 +342,7 @@ describe 'Profiles API' do
         let(:id) do
           new_profile = Profile.new(parent_profile_id: profiles(:two).id,
                                     account_id: accounts(:one).id,
-                                    policy_object: policies(:one))
+                                    policy: policies(:one))
                                .fill_from_parent
           new_profile.save
           new_profile.update_rules
