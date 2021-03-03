@@ -13,6 +13,7 @@ module Types
     field :deleteTestResults, mutation: Mutations::TestResult::Delete
     field :associateSystems, mutation: Mutations::Profile::AssociateSystems
     field :associateProfiles, mutation: Mutations::System::AssociateProfiles
+    field :associateRules, mutation: Mutations::Profile::AssociateRules
     field :createBusinessObjective,
           mutation: Mutations::BusinessObjective::Create
   end
