@@ -697,12 +697,12 @@ class SystemQueryTest < ActiveSupport::TestCase
 
   private
 
-  # rubocop:disable AbcSize
+  # rubocop:disable Metrics/AbcSize
   def setup_two_hosts
     hosts(:one).policies << policies(:one)
     hosts(:two).policies << policies(:two)
     profiles(:one).rules << rules(:one)
     profiles(:two).rules << rules(:two)
   end
-  # rubocop:enable AbcSize
+  # rubocop:enable Metrics/AbcSize
 end
