@@ -15,7 +15,9 @@ class ParseReportJob
       "Parsing report for account #{@msg_value['account']}, "\
       "system #{@msg_value['id']}"
     )
-    save_all
+    Rails.logger.audit_with_account(@msg_value['account']) do
+      save_all
+    end
   end
 
   def cancelled?
