@@ -7,14 +7,16 @@ class DeleteHost
   MODELS = [RuleResult, TestResult, PolicyHost].freeze
 
   def perform(message)
-    host_id = message['id']
-    begin
-      num_removed = remove_related(host_id)
-    rescue StandardError => e
-      audit_fail(host_id, e)
-      raise
+    Rails.logger.audit_with_account(message['account']) do
+      host_id = message['id']
+      begin
+        num_removed = remove_related(host_id)
+      rescue StandardError => e
+        audit_fail(host_id, e)
+        raise
+      end
+      audit_success(host_id) if num_removed.positive?
     end
-    audit_success(host_id) if num_removed.positive?
   end
 
   private
