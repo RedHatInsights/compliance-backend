@@ -34,14 +34,18 @@ class ParseReportJob
     notify_remediation
     notify_payload_tracker(:success, "Job #{jid} has completed successfully")
   rescue *XccdfReportParser::ERRORS => e
-    error_message = "Cannot parse report: #{e} - #{@msg_value.to_json}"
-    notify_payload_tracker(:error, error_message)
-    Sidekiq.logger.error(error_message)
+    handle_error(e)
   end
 
   def parser
     @parser ||= XccdfReportParser.new(ActiveSupport::Gzip.decompress(@file),
                                       @msg_value)
+  end
+
+  def handle_error(exc)
+    error_message = "Cannot parse report: #{exc} - #{@msg_value.to_json}"
+    notify_payload_tracker(:error, error_message)
+    Sidekiq.logger.error(error_message)
   end
 
   def notify_payload_tracker(status, status_msg = '')
