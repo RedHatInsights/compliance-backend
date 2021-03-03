@@ -21,10 +21,11 @@ module ReportParsing
     end
 
     def enqueue_parse_report_job(reports)
-      reports.each do |report|
+      reports.each do |profile_id, report|
         job = ParseReportJob
               .perform_async(ActiveSupport::Gzip.compress(report), metadata)
-        logger.info "Message enqueued: #{request_id} as #{job}"
+        logger.info("Message enqueued: #{request_id} as #{job}" \
+                    " for #{profile_id}")
         notify_payload_tracker(:received,
                                "File is valid. Job #{job} enqueued")
       end

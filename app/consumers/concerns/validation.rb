@@ -6,13 +6,15 @@ module Validation
 
   included do
     def validated_reports(report_contents, metadata)
-      report_contents.map do |report|
+      report_contents.map do |raw_report|
         begin
-          XccdfReportParser.new(report, metadata)
+          parsed = XccdfReportParser.new(raw_report, metadata)
+          test_result = parsed.test_result_file.test_result
         rescue StandardError
           raise InventoryEventsConsumer::ReportValidationError
         end
-        report
+
+        [test_result.profile_id, raw_report]
       end
     end
 

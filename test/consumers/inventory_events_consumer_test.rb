@@ -48,7 +48,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         }
       }.to_json)
-      @consumer.stubs(:validated_reports).returns(['report'])
+      @consumer.stubs(:validated_reports).returns([%w[profile report]])
       @consumer.stubs(:produce)
 
       @consumer.process(@message)
@@ -69,7 +69,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         }
       }.to_json)
-      @consumer.stubs(:validated_reports).returns(['report'])
+      @consumer.stubs(:validated_reports).returns([%w[profile report]])
       @consumer.expects(:produce).with(
         {
           'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
@@ -121,6 +121,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         }
       }.to_json)
+      @consumer.expects(:validated_reports).never
       @consumer.expects(:produce).with(
         {
           'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
@@ -146,7 +147,12 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         }
       }.to_json)
       @consumer.stubs(:download_file)
-      XccdfReportParser.stubs(:new)
+      parsed_stub = OpenStruct.new(
+        test_result_file: OpenStruct.new(
+          test_result: OpenStruct.new(profile_id: 'profile')
+        )
+      )
+      XccdfReportParser.stubs(:new).returns(parsed_stub)
       @consumer.expects(:produce).with(
         {
           'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
