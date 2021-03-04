@@ -5,7 +5,7 @@ require 'sidekiq/testing'
 
 class InventoryEventsConsumerTest < ActiveSupport::TestCase
   setup do
-    @message = stub(:message)
+    @message = stub(message: nil)
     @consumer = InventoryEventsConsumer.new
     DeleteHost.clear
   end
