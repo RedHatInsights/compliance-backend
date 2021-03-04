@@ -58,7 +58,7 @@ module Insights
               # versions up to 6.0.0
               parse_sidekiq_ctx(Thread.current[:sidekiq_context])
             end
-          rescue NoMethodError
+          rescue StandardError
             nil
           end
 
