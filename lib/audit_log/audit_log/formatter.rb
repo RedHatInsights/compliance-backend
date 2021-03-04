@@ -56,10 +56,16 @@ module Insights
               Sidekiq::Context.current
             else
               # versions up to 6.0.0
-              Thread.current[:sidekiq_context]
+              parse_sidekiq_ctx(Thread.current[:sidekiq_context])
             end
           rescue NoMethodError
             nil
+          end
+
+          def parse_sidekiq_ctx(ctx)
+            return unless ctx
+
+            ctx.last.match(/^(?<class>[^\s]+) JID-(?<jid>[^\s]+)/)
           end
 
           def format_datetime(time)
