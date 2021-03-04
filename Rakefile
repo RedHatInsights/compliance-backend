@@ -9,4 +9,6 @@ task :log => :environment do
   ActiveRecord::Base.logger = Logger.new(STDOUT)
 end
 
+task :default => [:'test:validate']
+
 Rails.application.load_tasks
