@@ -5,9 +5,9 @@ module Xccdf
   module RuleReferencesRules
     extend ActiveSupport::Concern
 
-    included do
-      RuleReferencesRuleStruct = Struct.new(:rule_id, :rule_reference_id)
+    RuleReferencesRuleStruct = Struct.new(:rule_id, :rule_reference_id)
 
+    included do
       def save_rule_references_rules
         @rule_references_rules = new_rule_references_rules +
                                  existing_rule_references_rules
