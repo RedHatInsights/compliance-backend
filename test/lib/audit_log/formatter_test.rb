@@ -64,11 +64,12 @@ class AuditLogFormatterTest < ActiveSupport::TestCase
 
     should 'log sidekiq job id from thread local context' do
       begin
-        Thread.current[:sidekiq_context] = { jid: '123' }
+        Thread.current[:sidekiq_context] =
+          ['AppJob JID-f7568a74a93aaa8d17d5f3a4']
 
         line = @formatter.call('info', Time.zone.now, 'prog', 'Audit message')
         log_msg = JSON.parse(line)
-        assert_equal '123', log_msg['transaction_id']
+        assert_equal 'f7568a74a93aaa8d17d5f3a4', log_msg['transaction_id']
       ensure
         Thread.current[:sidekiq_context] = nil
       end
