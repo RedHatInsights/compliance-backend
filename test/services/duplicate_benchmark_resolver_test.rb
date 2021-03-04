@@ -8,7 +8,9 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
   setup do
     # rubocop:disable Lint/SuppressedException
     begin
-      AddUniqueIndexToBenchmarks.new.down
+      ActiveRecord::Migration.suppress_messages do
+        AddUniqueIndexToBenchmarks.new.down
+      end
     rescue ArgumentError # if index doesn't exist
     end
     # rubocop:enable Lint/SuppressedException

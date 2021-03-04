@@ -12,7 +12,9 @@ class ImportDatastreamTest < ActiveSupport::TestCase
     DatastreamImporter.any_instance.expects(:import!).raises(StandardError)
 
     assert_raises StandardError do
-      Rake::Task['ssg:import'].execute
+      capture_io do
+        Rake::Task['ssg:import'].execute
+      end
     end
   end
 end

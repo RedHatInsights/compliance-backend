@@ -4,6 +4,12 @@ require 'test_helper'
 
 # A class to test removal of external policies
 class ExternalPolicyRemoverTest < ActiveSupport::TestCase
+  setup do
+    logger = mock
+    Logger.stubs(:new).returns(logger)
+    logger.stubs(:info)
+  end
+
   test 'does nothing if no external policies exist' do
     assert_empty Profile.external.where(policy_id: nil)
     assert_difference('Profile.count' => 0) do

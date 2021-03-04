@@ -16,7 +16,9 @@ class CleanupDbTest < ActiveSupport::TestCase
       'TestResult.count' => -1, 'RuleResult.count' => -1,
       'PolicyHost.count' => -1
     ) do
-      Rake::Task['cleanup_db'].execute
+      capture_io do
+        Rake::Task['cleanup_db'].execute
+      end
     end
   end
 
@@ -27,7 +29,9 @@ class CleanupDbTest < ActiveSupport::TestCase
     policies(:one).update!(account: account)
     accounts(:one).dup.update!(account_number: hosts(:one).account_number)
     assert_difference('Account.count' => 0) do
-      Rake::Task['cleanup_db'].execute
+      capture_io do
+        Rake::Task['cleanup_db'].execute
+      end
     end
   end
 end

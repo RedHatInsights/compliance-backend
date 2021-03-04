@@ -10,6 +10,11 @@ class DeleteHostTest < ActiveSupport::TestCase
       'type': 'delete'
     }
     DeleteHost.clear
+
+    @logger = mock
+    Sidekiq.stubs(:logger).returns(@logger)
+    @logger.stubs(:info)
+    @logger.stubs(:debug)
   end
 
   test 'deletes a host if the passed ID is found' do

@@ -8,6 +8,10 @@ class IncorrectProfileRemoverTest < ActiveSupport::TestCase
                            account: accounts(:test))
     profiles(:two).update!(policy: policies(:two),
                            account: accounts(:test))
+
+    logger = mock
+    Logger.stubs(:new).returns(logger)
+    logger.stubs(:info)
   end
 
   test 'removes profiles with a mismatched ref_id' do
