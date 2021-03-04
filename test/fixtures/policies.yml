@@ -3,7 +3,9 @@
 one:
   name: policy1
   account: test
+  description: foo
 
 two:
   name: policy2
   account: test
+  description: bar

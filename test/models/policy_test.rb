@@ -71,6 +71,8 @@ class PolicyTest < ActiveSupport::TestCase
   end
 
   should '#attrs_from(profile:)' do
+    profiles(:one).update!(account: accounts(:one))
+
     Policy::PROFILE_ATTRS.each do |attr|
       assert_equal profiles(:one).send(attr),
                    Policy.attrs_from(profile: profiles(:one))[attr]

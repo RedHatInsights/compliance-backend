@@ -196,6 +196,7 @@ module V1
       test 'policy_profile_id is exposed' do
         profiles(:one).update!(external: false,
                                parent_profile: profiles(:two),
+                               policy: policies(:one),
                                account: accounts(:one))
         get v1_profiles_url
         assert_response :success
