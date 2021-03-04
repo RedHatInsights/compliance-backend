@@ -24,6 +24,12 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @parse_report_job
       .stubs(:remediation_issue_ids)
       .returns([@issue_id])
+    profile_stub = OpenStruct.new(
+      test_result: OpenStruct.new(profile_id: 'profileid')
+    )
+    @parser.stubs(:test_result_file).returns(profile_stub)
+    @parser.stubs(:host_profile)
+           .returns(OpenStruct.new(policy_id: 'policyUUID'))
     PayloadTracker.expects(:deliver).with(
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: :processing,
@@ -35,11 +41,18 @@ class ParseReportJobTest < ActiveSupport::TestCase
       status_msg: 'Job 1 has completed successfully'
     )
     @parse_report_job.perform(@file, @msg_value)
+    assert_audited 'Successful report of profileid policy policyUUID'
   end
 
   test 'remediation service is notified about results with failed issues' do
     XccdfReportParser.stubs(:new).returns(@parser)
     @parser.stubs(:save_all)
+    profile_stub = OpenStruct.new(
+      test_result: OpenStruct.new(profile_id: 'profileid')
+    )
+    @parser.stubs(:test_result_file).returns(profile_stub)
+    @parser.stubs(:host_profile)
+           .returns(OpenStruct.new(policy_id: 'policyUUID'))
     Sidekiq.stubs(:redis).returns(false)
     @parse_report_job.stubs(:jid).returns('1')
     @parse_report_job
@@ -77,5 +90,6 @@ class ParseReportJobTest < ActiveSupport::TestCase
       " Wrong format or benchmark - #{error_msg}"
     )
     @parse_report_job.perform(@file, @msg_value)
+    assert_audited 'Failed to parse report profileid'
   end
 end
