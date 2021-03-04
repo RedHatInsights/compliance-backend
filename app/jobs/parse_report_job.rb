@@ -34,6 +34,7 @@ class ParseReportJob
     notify_payload_tracker(:processing, "Job #{jid} is now processing")
     parser.save_all
     notify_remediation
+    audit_success
     notify_payload_tracker(:success, "Job #{jid} has completed successfully")
   rescue *XccdfReportParser::ERRORS => e
     handle_error(e)
@@ -45,9 +46,11 @@ class ParseReportJob
   end
 
   def handle_error(exc)
-    msg_with_values = "#{error_message(exc)} - #{@msg_value.to_json}"
+    msg = error_message(exc)
+    msg_with_values = "#{msg} - #{@msg_value.to_json}"
     notify_payload_tracker(:error, msg_with_values)
     Sidekiq.logger.error(msg_with_values)
+    Rails.logger.audit_fail(msg)
   end
 
   def error_message(exc)
@@ -84,5 +87,13 @@ class ParseReportJob
           .includes(profiles: :benchmark)
           .collect(&:remediation_issue_id)
           .compact
+  end
+
+  def audit_success
+    Rails.logger.audit_success(
+      "Successful report of #{report_profile_id}" \
+      " policy #{parser.host_profile.policy_id}" \
+      " from host #{@msg_value['id']}"
+    )
   end
 end
