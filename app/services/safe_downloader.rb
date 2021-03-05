@@ -41,7 +41,7 @@ class SafeDownloader
     def report_contents(downloaded_file)
       case downloaded_file
       when StringIO
-        downloaded_file.string
+        [downloaded_file.string]
       else
         ReportsTarReader.new(downloaded_file).reports
       end
