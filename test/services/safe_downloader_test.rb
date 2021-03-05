@@ -8,20 +8,22 @@ class SafeDownloaderTest < ActiveSupport::TestCase
   end
 
   test 'download success with small file' do
-    strio = StringIO.new('a')
+    strio = StringIO.new('report')
     URI::HTTP.any_instance.expects(:open).returns(strio)
     IO.expects(:read).never
-    strio.expects(:string)
+    strio.expects(:string).returns('report')
 
-    SafeDownloader.download(@url)
+    downloaded = SafeDownloader.download(@url)
+    assert_equal 1, downloaded.count
   end
 
   test 'download success with large file' do
     file = File.new(file_fixture('insights-archive.tar.gz'))
     URI::HTTP.any_instance.expects(:open).returns(file)
-    ReportsTarReader.any_instance.expects(:reports)
+    ReportsTarReader.any_instance.expects(:reports).returns(['report'])
 
-    SafeDownloader.download(@url)
+    downloaded = SafeDownloader.download(@url)
+    assert_equal 1, downloaded.count
   end
 
   test 'download with empty file fails' do
