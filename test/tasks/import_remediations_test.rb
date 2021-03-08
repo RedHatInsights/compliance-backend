@@ -11,7 +11,9 @@ class ImportRemediationsTest < ActiveSupport::TestCase
                    .raises(StandardError)
 
     assert_raises StandardError do
-      Rake::Task['import_remediations'].execute
+      capture_io do
+        Rake::Task['import_remediations'].execute
+      end
     end
   end
 end

@@ -8,7 +8,9 @@ class DuplicateRuleResultResolverTest < ActiveSupport::TestCase
   setup do
     # rubocop:disable Lint/SuppressedException
     begin
-      AddUniqueIndexToRuleResults.new.down
+      ActiveRecord::Migration.suppress_messages do
+        AddUniqueIndexToRuleResults.new.down
+      end
     rescue ArgumentError # if index doesn't exist
     end
     # rubocop:enable Lint/SuppressedException

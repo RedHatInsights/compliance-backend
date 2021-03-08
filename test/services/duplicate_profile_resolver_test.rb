@@ -7,7 +7,9 @@ class DuplicateProfileResolverTest < ActiveSupport::TestCase
   setup do
     # rubocop:disable Lint/SuppressedException
     begin
-      AddUniqueIndexToProfiles.new.down
+      ActiveRecord::Migration.suppress_messages do
+        AddUniqueIndexToProfiles.new.down
+      end
     rescue ArgumentError # if index doesn't exist
     end
     # rubocop:enable Lint/SuppressedException

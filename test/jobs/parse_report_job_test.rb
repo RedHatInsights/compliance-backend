@@ -9,6 +9,11 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @file = file_fixture('report.tar.gz').read
     @parser = mock('XccdfReportParser')
     @issue_id = 'ssg:rhel7|short_profile_ref_id|rule_ref_id'
+    @logger = mock
+
+    Sidekiq.stubs(:logger).returns(@logger)
+    @logger.stubs(:info)
+    @logger.stubs(:error)
   end
 
   test 'payload tracker is notified about successful processing' do

@@ -28,4 +28,9 @@ class ApplicationProducerTest < ActiveSupport::TestCase
 
     assert_equal config, MockProducer.send(:kafka_config)
   end
+
+  teardown do
+    # Prevents warnings coming from constant redefinition
+    MockProducer.send(:remove_const, :SECURITY_PROTOCOL)
+  end
 end
