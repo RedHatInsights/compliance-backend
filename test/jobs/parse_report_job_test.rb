@@ -92,4 +92,15 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @parse_report_job.perform(@file, @msg_value)
     assert_audited 'Failed to parse report profileid'
   end
+
+  test 'no parsed data with parsing failure' do
+    XccdfReportParser.stubs(:new).raises(XccdfReportParser::WrongFormatError)
+    Sidekiq.stubs(:redis).returns(false)
+    @parse_report_job.stubs(:jid).returns('1')
+    @parse_report_job
+      .stubs(:remediation_issue_ids)
+      .returns([@issue_id])
+    @parse_report_job.perform(@file, @msg_value)
+    assert_audited 'Failed to parse report'
+  end
 end
