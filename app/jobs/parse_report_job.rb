@@ -45,9 +45,23 @@ class ParseReportJob
   end
 
   def handle_error(exc)
-    error_message = "Cannot parse report: #{exc} - #{@msg_value.to_json}"
-    notify_payload_tracker(:error, error_message)
-    Sidekiq.logger.error(error_message)
+    msg_with_values = "#{error_message(exc)} - #{@msg_value.to_json}"
+    notify_payload_tracker(:error, msg_with_values)
+    Sidekiq.logger.error(msg_with_values)
+  end
+
+  def error_message(exc)
+    "#{error_msg_base}: #{exc.class}: #{exc.message}"
+  end
+
+  def error_msg_base
+    msg = "Failed to parse report #{report_profile_id}"
+    msg += " from host #{@msg_value['id']}" if @msg_value['id'].present?
+    msg
+  end
+
+  def report_profile_id
+    @parser&.test_result_file&.test_result&.profile_id
   end
 
   def notify_payload_tracker(status, status_msg = '')
