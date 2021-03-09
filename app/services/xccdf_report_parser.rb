@@ -28,8 +28,12 @@ class XccdfReportParser
 
   attr_reader :report_path, :test_result_file
 
+  BENCHMARK_PREFIX = 'xccdf_org.ssgproject.content_benchmark_'
+
   def initialize(report_contents, message)
-    raise MissingIdError unless valid_message_format?(message)
+    unless valid_message_format?(message)
+      raise MissingIdError, 'Missing Host id in message'
+    end
 
     @b64_identity = message['b64_identity']
     @account = Account.find_or_create_by(account_number: message['account'])
@@ -40,9 +44,9 @@ class XccdfReportParser
   end
 
   def check_report_format
-    raise WrongFormatError unless @test_result_file.benchmark.id.match?(
-      'xccdf_org.ssgproject.content_benchmark_'
-    )
+    return if @test_result_file.benchmark.id.match?(BENCHMARK_PREFIX)
+
+    raise WrongFormatError, 'Wrong format or benchmark'
   end
 
   def valid_message_format?(message)

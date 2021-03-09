@@ -54,7 +54,13 @@ class ParseReportJobTest < ActiveSupport::TestCase
 
   test 'payload tracker is notified about errored processing' do
     XccdfReportParser.stubs(:new).returns(@parser)
-    @parser.stubs(:save_all).raises(XccdfReportParser::WrongFormatError)
+    @parser.stubs(:save_all).raises(
+      XccdfReportParser::WrongFormatError.new('Wrong format or benchmark')
+    )
+    profile_stub = OpenStruct.new(
+      test_result: OpenStruct.new(profile_id: 'profileid')
+    )
+    @parser.stubs(:test_result_file).returns(profile_stub)
     Sidekiq.stubs(:redis).returns(false)
     @parse_report_job.stubs(:jid).returns('1')
     PayloadTracker.expects(:deliver).with(
@@ -67,7 +73,8 @@ class ParseReportJobTest < ActiveSupport::TestCase
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: :error,
       status_msg:
-      "Cannot parse report: XccdfReportParser::WrongFormatError - #{error_msg}"
+      'Failed to parse report profileid: XccdfReportParser::WrongFormatError:' \
+      " Wrong format or benchmark - #{error_msg}"
     )
     @parse_report_job.perform(@file, @msg_value)
   end
