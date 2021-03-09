@@ -88,38 +88,42 @@ module ProfileSearching
   # class methods for profile searching
   module ClassMethods
     def policy_search(_filter, _operator, value)
-      profiles = Profile.with_policy(ActiveModel::Type::Boolean.new.cast(value))
+      profiles = ::Profile.with_policy(
+        ::ActiveModel::Type::Boolean.new.cast(value)
+      )
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def canonical?(_filter, _operator, value)
-      profiles = Profile.canonical(ActiveModel::Type::Boolean.new.cast(value))
+      profiles = ::Profile.canonical(
+        ::ActiveModel::Type::Boolean.new.cast(value)
+      )
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def test_results?(_filter, _operator, value)
       has_test_results = ActiveModel::Type::Boolean.new.cast(value)
-      profiles = Profile.has_test_results(has_test_results)
+      profiles = ::Profile.has_test_results(has_test_results)
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def policy_test_results?(_filter, _operator, value)
       has_test_results = ActiveModel::Type::Boolean.new.cast(value)
-      profiles = Profile.has_policy_test_results(has_test_results)
+      profiles = ::Profile.has_policy_test_results(has_test_results)
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def os_major_version_search(_filter, operator, value)
-      benchmark_id = Profile.arel_table[:benchmark_id]
+      benchmark_id = ::Profile.arel_table[:benchmark_id]
       benchmarks = Xccdf::Benchmark.os_major_version(value, operator == '=')
       { conditions: benchmark_id.in(benchmarks.pluck(:id)).to_sql }
     end
 
     def ssg_version_search(_filter, operator, value)
-      benchmark_id = Profile.arel_table[:benchmark_id]
+      benchmark_id = ::Profile.arel_table[:benchmark_id]
       benchmarks = operator == '=' &&
-                   Xccdf::Benchmark.where(version: value) ||
-                   Xccdf::Benchmark.where.not(version: value)
+                   ::Xccdf::Benchmark.where(version: value) ||
+                   ::Xccdf::Benchmark.where.not(version: value)
       { conditions: benchmark_id.in(benchmarks.pluck(:id)).to_sql }
     end
   end

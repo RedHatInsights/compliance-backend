@@ -48,28 +48,28 @@ module HostSearching
   # class methods for Host searching
   module ClassMethods
     def filter_os_major_version(_filter, operator, value)
-      hosts = Host.os_major_version(value, operator == '=')
+      hosts = ::Host.os_major_version(value, operator == '=')
       { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def filter_os_minor_version(_filter, operator, value)
-      hosts = Host.os_minor_version(value, operator == '=')
+      hosts = ::Host.os_minor_version(value, operator == '=')
       { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def filter_has_policy(_filter, _operator, value)
-      hosts = Host.with_policy(ActiveModel::Type::Boolean.new.cast(value))
+      hosts = ::Host.with_policy(::ActiveModel::Type::Boolean.new.cast(value))
       { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def filter_with_results_for_policy(_filter, _operator, policy_or_profile_id)
-      profiles = Profile.where(id: policy_or_profile_id)
+      profiles = ::Profile.where(id: policy_or_profile_id)
       profiles = profiles
-                 .or(Profile.where(policy_id: policy_or_profile_id))
-                 .or(Profile.where(policy_id: profiles.select(:policy_id)))
+                 .or(::Profile.where(policy_id: policy_or_profile_id))
+                 .or(::Profile.where(policy_id: profiles.select(:policy_id)))
 
       { conditions: "hosts.id IN (#{
-        TestResult.where(profile: profiles).select(:host_id).to_sql
+        ::TestResult.where(profile: profiles).select(:host_id).to_sql
       })" }
     end
 
@@ -85,8 +85,8 @@ module HostSearching
     end
 
     def filter_by_compliance(_filter, operator, value)
-      ids = Host.includes(test_results: :profile).select do |host|
-        host.compliant.values.all?(ActiveModel::Type::Boolean.new.cast(value))
+      ids = ::Host.includes(test_results: :profile).select do |host|
+        host.compliant.values.all?(::ActiveModel::Type::Boolean.new.cast(value))
       end
       ids = ids.pluck(:id).map { |id| "'#{id}'" }
 
@@ -100,7 +100,7 @@ module HostSearching
     end
 
     def filter_by_compliance_score(_filter, operator, score)
-      ids = Host.includes(:test_result_profiles).select do |host|
+      ids = ::Host.includes(:test_result_profiles).select do |host|
         host.compliance_score.public_send(operator, score.to_f)
       end
       ids = ids.pluck(:id).map { |id| "'#{id}'" }
@@ -110,8 +110,8 @@ module HostSearching
     end
 
     def test_results?(_filter, _operator, value)
-      operator = ActiveModel::Type::Boolean.new.cast(value) ? '' : 'NOT'
-      host_ids = TestResult.select(:host_id).distinct.where.not(host_id: nil)
+      operator = ::ActiveModel::Type::Boolean.new.cast(value) ? '' : 'NOT'
+      host_ids = ::TestResult.select(:host_id).distinct.where.not(host_id: nil)
       {
         conditions: "hosts.id #{operator} "\
                     "IN(#{host_ids.to_sql})"
