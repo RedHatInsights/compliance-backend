@@ -13,14 +13,16 @@ module Mutations
       field :profile, Types::Profile, null: true
 
       def resolve(args = {})
-        profile = find_profile(args[:id])
-        if profile
-          rules_added, rules_removed = profile.update_rules(
-            ids: args[:rule_ids]
-          )
-          audit_mutation(profile, rules_added, rules_removed)
+        ::Profile.transaction do
+          profile = find_profile(args[:id])
+          if profile
+            rules_added, rules_removed = profile.update_rules(
+              ids: args[:rule_ids]
+            )
+            audit_mutation(profile, rules_added, rules_removed)
+          end
+          { profile: profile }
         end
-        { profile: profile }
       end
 
       private

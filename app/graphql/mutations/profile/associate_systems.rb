@@ -11,12 +11,14 @@ module Mutations
       field :profile, Types::Profile, null: true
 
       def resolve(args = {})
-        profile = find_profile(args[:id])
-        if profile&.policy
-          profile.policy.update_hosts(args[:system_ids])
-          audit_mutation(profile)
+        ::Profile.transaction do
+          profile = find_profile(args[:id])
+          if profile&.policy
+            profile.policy.update_hosts(args[:system_ids])
+            audit_mutation(profile)
+          end
+          { profile: profile }
         end
-        { profile: profile }
       end
 
       include HostHelper
