@@ -51,8 +51,21 @@ class Policy < ApplicationRecord
 
     removed = policy_hosts.where.not(host_id: new_host_ids).destroy_all
     imported = PolicyHost.import_from_policy(id, new_host_ids - host_ids)
+    update_os_minor_versions
 
     [imported.ids.count, removed.count]
+  end
+
+  def update_os_minor_versions
+    unassigned_minor_versions.each do |os_minor_version|
+      Profile.canonical_for_os(
+        initial_profile.os_major_version, os_minor_version
+      ).find_by(ref_id: initial_profile.ref_id)&.clone_to(
+        account: account,
+        os_minor_version: os_minor_version,
+        policy: self
+      )
+    end
   end
 
   def compliant?(host)
@@ -79,6 +92,14 @@ class Policy < ApplicationRecord
   end
 
   private
+
+  def unassigned_minor_versions
+    stored_versions = profiles.pluck(:os_minor_version)
+    Host.os_minor_versions(hosts).reject do |version|
+      # Ignore already stored minor versions
+      stored_versions.include?(version.to_s)
+    end
+  end
 
   def audit_bo_autoremove(removed_bos)
     return if removed_bos.empty?

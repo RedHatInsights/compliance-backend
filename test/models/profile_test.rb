@@ -11,7 +11,8 @@ class ProfileTest < ActiveSupport::TestCase
   should have_many(:rule_results).through(:test_results)
   should belong_to(:policy).optional
   should validate_uniqueness_of(:ref_id)
-    .scoped_to(%i[account_id benchmark_id external policy_id])
+    .scoped_to(%i[account_id benchmark_id os_minor_version policy_id])
+    .with_message('must be unique in a policy OS version')
   should validate_presence_of :ref_id
   should validate_presence_of :name
 
@@ -19,19 +20,6 @@ class ProfileTest < ActiveSupport::TestCase
     policies(:one).update!(hosts: [hosts(:one)], account: accounts(:one))
     profiles(:one).update!(rules: [rules(:one), rules(:two)],
                            account: accounts(:one))
-  end
-
-  test 'uniqness by external without a policy' do
-    orig = profiles(:one)
-    assert_nil orig.policy_id
-
-    (dupe = orig.dup).update!(external: !orig.external)
-    assert_nil dupe.policy_id
-    assert dupe.external != orig.external
-
-    assert_raises ActiveRecord::RecordInvalid do
-      orig.dup.save!
-    end
   end
 
   test 'unqiness by ref_id for an internal profile' do
