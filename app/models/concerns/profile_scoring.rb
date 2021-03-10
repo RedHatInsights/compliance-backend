@@ -6,9 +6,9 @@ module ProfileScoring
 
   def total_host_count
     if policy
-      Host.where(id: assigned_hosts).count
+      ::Host.where(id: assigned_hosts).count
     else
-      Host.where(id: hosts).count
+      ::Host.where(id: hosts).count
     end
   end
 
@@ -21,8 +21,9 @@ module ProfileScoring
   end
 
   def unsupported_host_count
-    Host.where(id: latest_policy_test_results.supported(false).select(:host_id))
-        .count
+    ::Host.where(
+      id: latest_policy_test_results.supported(false).select(:host_id)
+    ).count
   end
 
   def compliance_score(host)
@@ -40,9 +41,9 @@ module ProfileScoring
   # Disabling MethodLength because it measures things wrong
   # for a multi-line string SQL query.
   def results(host)
-    Rails.cache.fetch("#{id}/#{host.id}/results") do
-      rule_results = TestResult.where(profile: self, host: host)
-                               .order('created_at DESC')&.first&.rule_results
+    ::Rails.cache.fetch("#{id}/#{host.id}/results") do
+      rule_results = ::TestResult.where(profile: self, host: host)
+                                 .order('created_at DESC')&.first&.rule_results
       return [] if rule_results.blank?
 
       rule_results.map do |rule_result|
@@ -54,12 +55,12 @@ module ProfileScoring
   private
 
   def latest_supported_policy_test_result_hosts
-    Host.where(id: latest_policy_test_results.supported.select(:host_id))
+    ::Host.where(id: latest_policy_test_results.supported.select(:host_id))
   end
 
   def latest_policy_test_results
-    TestResult.where(id: test_results)
-              .or(TestResult.where(id: policy_test_results))
-              .latest
+    ::TestResult.where(id: test_results)
+                .or(::TestResult.where(id: policy_test_results))
+                .latest
   end
 end

@@ -28,8 +28,8 @@ module HostSearching
                   only_explicit: true, operators: ['=']
 
     scope :with_policy, lambda { |with_policy = true|
-      with_policy && where(id: PolicyHost.select(:host_id)) ||
-        where.not(id: PolicyHost.select(:host_id))
+      with_policy && where(id: ::PolicyHost.select(:host_id)) ||
+        where.not(id: ::PolicyHost.select(:host_id))
     }
 
     scope :os_major_version, lambda { |version, equal = true|

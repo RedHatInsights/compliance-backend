@@ -25,7 +25,7 @@ module ProfileSearching
                   only_explicit: true, operators: ['=']
     scoped_search on: :os_major_version, ext_method: 'os_major_version_search',
                   only_explicit: true, operators: ['=', '!='],
-                  validator: ScopedSearch::Validators::INTEGER
+                  validator: ::ScopedSearch::Validators::INTEGER
     scoped_search on: :ssg_version, ext_method: 'ssg_version_search',
                   only_explicit: true, operators: ['=', '!=']
 
@@ -44,7 +44,7 @@ module ProfileSearching
       where(external: external)
     }
     scope :has_test_results, lambda { |has_test_results = true|
-      test_results = TestResult.select(:profile_id).distinct
+      test_results = ::TestResult.select(:profile_id).distinct
       has_test_results && where(id: test_results) || where.not(id: test_results)
     }
     scope :has_policy_test_results, lambda { |has_policy_test_results = true|
@@ -63,10 +63,10 @@ module ProfileSearching
       end
     }
     scope :os_major_version, lambda { |major, equals = true|
-      where(benchmark: Xccdf::Benchmark.os_major_version(major, equals))
+      where(benchmark: ::Xccdf::Benchmark.os_major_version(major, equals))
     }
     scope :in_policy, lambda { |policy_or_profile_id|
-      return none unless UUID.validate(policy_or_profile_id)
+      return none unless ::UUID.validate(policy_or_profile_id)
 
       policy_cond = { policy_id: policy_or_profile_id }
       profile_cond = {
@@ -102,20 +102,20 @@ module ProfileSearching
     end
 
     def test_results?(_filter, _operator, value)
-      has_test_results = ActiveModel::Type::Boolean.new.cast(value)
+      has_test_results = ::ActiveModel::Type::Boolean.new.cast(value)
       profiles = ::Profile.has_test_results(has_test_results)
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def policy_test_results?(_filter, _operator, value)
-      has_test_results = ActiveModel::Type::Boolean.new.cast(value)
+      has_test_results = ::ActiveModel::Type::Boolean.new.cast(value)
       profiles = ::Profile.has_policy_test_results(has_test_results)
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def os_major_version_search(_filter, operator, value)
       benchmark_id = ::Profile.arel_table[:benchmark_id]
-      benchmarks = Xccdf::Benchmark.os_major_version(value, operator == '=')
+      benchmarks = ::Xccdf::Benchmark.os_major_version(value, operator == '=')
       { conditions: benchmark_id.in(benchmarks.pluck(:id)).to_sql }
     end
 

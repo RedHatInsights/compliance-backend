@@ -9,13 +9,13 @@ module ProfileRules
     has_many :rules, through: :profile_rules, source: :rule
 
     def update_rules(ids: nil, ref_ids: nil)
-      removed = ProfileRule.where(
+      removed = ::ProfileRule.where(
         rule_id: rule_ids_to_destroy(ids, ref_ids), profile_id: id
       ).destroy_all
 
       ids_to_add = rule_ids_to_add(ids, ref_ids)
-      imported = ProfileRule.import!(ids_to_add.map do |rule_id|
-        ProfileRule.new(profile_id: id, rule_id: rule_id)
+      imported = ::ProfileRule.import!(ids_to_add.map do |rule_id|
+        ::ProfileRule.new(profile_id: id, rule_id: rule_id)
       end)
 
       [imported.ids.count, removed.count]
