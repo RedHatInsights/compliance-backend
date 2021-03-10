@@ -2,6 +2,7 @@
 
 require './spec/api/v1/schemas/util'
 
+# rubocop:disable Metrics/ModuleLength
 module Api
   module V1
     module Schemas
@@ -89,6 +90,14 @@ module Api
               type: 'string',
               example: '7'
             },
+            os_minor_version: {
+              type: 'string',
+              example: '4'
+            },
+            os_version: {
+              type: 'string',
+              example: '7.4'
+            },
             policy_type: {
               type: 'string',
               example: 'Australian Cyber Security Centre (ACSC) Essential Eight'
@@ -111,3 +120,4 @@ module Api
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

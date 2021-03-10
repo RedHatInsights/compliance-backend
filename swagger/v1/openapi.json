@@ -623,10 +623,12 @@
                       "external": false,
                       "compliance_threshold": 100.0,
                       "os_major_version": "7",
+                      "os_minor_version": "",
+                      "os_version": "7",
                       "policy_profile_id": null,
                       "parent_profile_ref_id": null,
                       "name": "profile1",
-                      "description": null,
+                      "description": "foo",
                       "canonical": true,
                       "tailored": false,
                       "total_host_count": 1,
@@ -681,10 +683,12 @@
                       "external": false,
                       "compliance_threshold": 100.0,
                       "os_major_version": "7",
+                      "os_minor_version": "",
+                      "os_version": "7",
                       "policy_profile_id": null,
                       "parent_profile_ref_id": null,
                       "name": "profile2",
-                      "description": null,
+                      "description": "bar",
                       "canonical": true,
                       "tailored": false,
                       "total_host_count": 1,
@@ -801,7 +805,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "42f0536e-913d-44ef-a08f-42c72a18cbeb",
+                  "id": "f44daeab-86c5-4d6c-8820-29eb3a6614fa",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -810,10 +814,12 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "42f0536e-913d-44ef-a08f-42c72a18cbeb",
+                    "os_minor_version": "",
+                    "os_version": "7",
+                    "policy_profile_id": "f44daeab-86c5-4d6c-8820-29eb3a6614fa",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "A custom name",
-                    "description": null,
+                    "description": "bar",
                     "canonical": false,
                     "tailored": true,
                     "total_host_count": 2,
@@ -1031,10 +1037,12 @@
                     "external": false,
                     "compliance_threshold": 100.0,
                     "os_major_version": "7",
+                    "os_minor_version": "",
+                    "os_version": "7",
                     "policy_profile_id": null,
                     "parent_profile_ref_id": null,
                     "name": "profile1",
-                    "description": null,
+                    "description": "foo",
                     "canonical": true,
                     "tailored": false,
                     "total_host_count": 1,
@@ -1048,7 +1056,7 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "2beaa501-0d19-4808-95bf-3f39dfcb8d4b",
+                        "id": "a78d8f6b-daaa-4c69-a8fb-85039b0f5500",
                         "type": "account"
                       }
                     },
@@ -1231,7 +1239,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "3b2531c3-3f18-408d-af2e-44b695654595",
+                  "id": "3b54dd9d-0154-47b5-aa99-3aa7d1b20116",
                   "type": "profile",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.profile2",
@@ -1240,10 +1248,12 @@
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
-                    "policy_profile_id": "3b2531c3-3f18-408d-af2e-44b695654595",
+                    "os_minor_version": "",
+                    "os_version": "7",
+                    "policy_profile_id": "3b54dd9d-0154-47b5-aa99-3aa7d1b20116",
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "An updated custom name",
-                    "description": null,
+                    "description": "foo",
                     "canonical": false,
                     "tailored": true,
                     "total_host_count": 2,
@@ -1467,10 +1477,12 @@
                     "external": false,
                     "compliance_threshold": 100.0,
                     "os_major_version": "7",
+                    "os_minor_version": "",
+                    "os_version": "7",
                     "policy_profile_id": null,
                     "parent_profile_ref_id": "xccdf_org.ssgproject.profile2",
                     "name": "profile1",
-                    "description": null,
+                    "description": "foo",
                     "canonical": false,
                     "tailored": false,
                     "total_host_count": 0,
@@ -1765,6 +1777,7 @@
                     "type": "rule",
                     "attributes": {
                       "ref_id": "MyStringOne",
+                      "remediation_issue_id": "ssg:rhel7|xccdf_org.ssgproject.profile1|MyStringOne",
                       "title": "MyString",
                       "rationale": "MyText",
                       "description": "MyText",
@@ -1901,6 +1914,7 @@
                   "type": "rule",
                   "attributes": {
                     "ref_id": "MyStringOne",
+                    "remediation_issue_id": "ssg:rhel7|xccdf_org.ssgproject.profile1|MyStringOne",
                     "title": "MyString",
                     "rationale": "MyText",
                     "description": "MyText",
@@ -3019,6 +3033,14 @@
           "os_major_version": {
             "type": "string",
             "example": "7"
+          },
+          "os_minor_version": {
+            "type": "string",
+            "example": "4"
+          },
+          "os_version": {
+            "type": "string",
+            "example": "7.4"
           },
           "policy_type": {
             "type": "string",
