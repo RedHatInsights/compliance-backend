@@ -25,7 +25,10 @@ module ProfileSearching
                   only_explicit: true, operators: ['=']
     scoped_search on: :os_major_version, ext_method: 'os_major_version_search',
                   only_explicit: true, operators: ['=', '!='],
-                  validator: ::ScopedSearch::Validators::INTEGER
+                  validator: ScopedSearch::Validators::INTEGER
+    scoped_search on: :os_minor_version, only_explicit: true,
+                  operators: ['=', '!='],
+                  validator: ScopedSearch::Validators::INTEGER
     scoped_search on: :ssg_version, ext_method: 'ssg_version_search',
                   only_explicit: true, operators: ['=', '!=']
 

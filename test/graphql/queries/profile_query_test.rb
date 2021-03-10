@@ -254,6 +254,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
             testResultHostCount
             compliantHostCount
             unsupportedHostCount
+            osMinorVersion
+            osVersion
             businessObjective {
                title
             }
@@ -271,7 +273,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
     profiles(:one).rules << rules(:one)
     profiles(:one).rules << rules(:two)
     profiles(:one).update(account: accounts(:test),
-                          policy: policies(:one))
+                          policy: policies(:one),
+                          os_minor_version: 4)
     profiles(:two).update(account: accounts(:test),
                           policy: policies(:one))
     policies(:one).update(compliance_threshold: 95,
@@ -297,6 +300,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
     assert_equal 1, profile1_result['compliantHostCount']
     assert_equal 1, profile1_result['unsupportedHostCount']
     assert_equal 1, profile1_result['hosts'].length
+    assert_equal '4', profile1_result['osMinorVersion']
+    assert_equal '7.4', profile1_result['osVersion']
     assert_not profile1_result['businessObjective']
   end
 end

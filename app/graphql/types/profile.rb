@@ -78,6 +78,9 @@ module Types
     field :compliant_host_count, Int, null: false
 
     field :major_os_version, String, null: false
+    field :os_major_version, String, null: false
+    field :os_minor_version, String, null: false
+    field :os_version, String, null: false
     field :policy_type, String, null: false
 
     def last_scanned(args = {})
