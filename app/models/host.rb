@@ -3,6 +3,8 @@
 # Host representation in insights compliance backend. Most of the times
 # these hosts will also show up in the insights-platform host inventory.
 class Host < ApplicationRecord
+  OS_MINOR_VERSION = Arel.sql("system_profile->'operating_system'->'minor'")
+
   self.table_name = 'inventory.hosts'
   self.primary_key = 'id'
 
@@ -17,6 +19,10 @@ class Host < ApplicationRecord
   has_many :test_result_profiles, through: :test_results, source: :profile
   has_many :policies, through: :policy_hosts
   has_many :assigned_profiles, through: :policies, source: :profiles
+
+  def self.os_minor_versions(hosts)
+    distinct.where(id: hosts).pluck(OS_MINOR_VERSION)
+  end
 
   def readonly?
     true
