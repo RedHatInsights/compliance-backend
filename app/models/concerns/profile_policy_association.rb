@@ -30,7 +30,7 @@ module ProfilePolicyAssociation
 
       error_msg = 'must be unique. Another policy with '\
                   'this policy type already exists.'
-      profile = Profile.includes(:benchmark).find_by(
+      profile = ::Profile.includes(:benchmark).find_by(
         ref_id: ref_id, account: account, external: false,
         benchmarks: { ref_id: benchmark.ref_id }
       )
@@ -40,7 +40,7 @@ module ProfilePolicyAssociation
 
     def compliance_threshold
       policy&.compliance_threshold ||
-        Policy::DEFAULT_COMPLIANCE_THRESHOLD
+        ::Policy::DEFAULT_COMPLIANCE_THRESHOLD
     end
 
     def destroy_policy_with_internal
@@ -63,12 +63,12 @@ module ProfilePolicyAssociation
       return unless policy
 
       msg = "Autoremoved policy #{policy.id} with the initial/main profile"
-      Rails.logger.audit_success(msg)
+      ::Rails.logger.audit_success(msg)
     end
 
     def audit_empty_policy_autoremove(policy)
       msg = "Autoremoved policy #{policy.id} with the last profile"
-      Rails.logger.audit_success(msg)
+      ::Rails.logger.audit_success(msg)
     end
   end
 end
