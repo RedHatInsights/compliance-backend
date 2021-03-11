@@ -33,7 +33,6 @@ module Xccdf
         save_host_profile
         save_test_result
         save_rule_results
-        associate_rules_from_rule_results
         invalidate_cache
       end
 

@@ -13,18 +13,6 @@ module Xccdf
     end
     alias save_host_profile host_profile
 
-    def associate_rules_from_rule_results
-      ::ProfileRule.import!(
-        ::Rule.where(
-          ref_id: selected_op_rule_results.map(&:id),
-          benchmark_id: @benchmark.id
-        ).pluck(:id).map do |rule_id|
-          ::ProfileRule.new(profile_id: @host_profile.id,
-                            rule_id: rule_id)
-        end, ignore: true
-      )
-    end
-
     def external_report?
       Policy.with_hosts(@host).with_ref_ids(test_result_profile.ref_id)
             .find_by(account: @account).nil?

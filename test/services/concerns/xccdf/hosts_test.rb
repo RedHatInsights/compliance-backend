@@ -27,20 +27,5 @@ module Xccdf
         account: accounts(:one)
       )
     end
-
-    test 'associate_rules_from_rule_results' do
-      @parser.save_all_benchmark_info
-      @parser.save_host_profile
-      @parser.save_test_result
-      @parser.save_rule_results
-
-      assert_difference('ProfileRule.count', 5) do
-        @parser.associate_rules_from_rule_results
-      end
-
-      assert_difference('ProfileRule.count', 0) do
-        @parser.associate_rules_from_rule_results
-      end
-    end
   end
 end
