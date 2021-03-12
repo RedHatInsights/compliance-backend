@@ -12,6 +12,9 @@ class Profile < ApplicationRecord
   belongs_to :account, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
   belongs_to :parent_profile, class_name: 'Profile', optional: true
+  has_many :child_profiles, class_name: 'Profile', dependent: :destroy,
+                            foreign_key: :parent_profile_id,
+                            inverse_of: :parent_profile
 
   validates :ref_id, uniqueness: {
     scope: %i[account_id benchmark_id os_minor_version policy_id],
@@ -119,7 +122,6 @@ class Profile < ApplicationRecord
 
   def in_account(account, policy)
     Profile.find_by(account: account, ref_id: ref_id,
-                    policy: policy,
-                    benchmark_id: benchmark_id)
+                    policy: policy, benchmark_id: benchmark_id)
   end
 end
