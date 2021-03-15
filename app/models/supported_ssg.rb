@@ -31,6 +31,11 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
       end.map(&:version)
     end
 
+    def latest_ssg_version_for_os(os_major_version, os_minor_version)
+      ssg_versions_for_os(os_major_version, os_minor_version)
+        .max_by { |ssg_v| Gem::Version.new(ssg_v) }
+    end
+
     def versions
       all.map(&:version).uniq
     end

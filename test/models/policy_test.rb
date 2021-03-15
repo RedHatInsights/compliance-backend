@@ -90,6 +90,10 @@ class PolicyTest < ActiveSupport::TestCase
   context 'update_hosts' do
     should 'add new hosts to an empty host set' do
       policies(:one).update!(hosts: [])
+      profiles(:one).update!(account: accounts(:test))
+      policies(:one).update!(profiles: [profiles(:one)])
+      profiles(:one).update!(parent_profile: profiles(:two))
+
       assert_empty(policies(:one).hosts)
       assert_difference('policies(:one).hosts.count', hosts.count) do
         changes = policies(:one).update_hosts(hosts.pluck(:id))
@@ -99,6 +103,9 @@ class PolicyTest < ActiveSupport::TestCase
 
     should 'add new hosts to an existing host set' do
       policies(:one).update!(hosts: hosts[0...-1])
+      profiles(:one).update!(account: accounts(:test))
+      policies(:one).update!(profiles: [profiles(:one)])
+
       assert_not_empty(policies(:one).hosts)
       assert_difference('policies(:one).hosts.count', 1) do
         changes = policies(:one).update_hosts(hosts.pluck(:id))
@@ -117,6 +124,9 @@ class PolicyTest < ActiveSupport::TestCase
 
     should 'add new and remove old hosts from an existing host set' do
       policies(:one).update!(host_ids: hosts.pluck(:id)[0...-1])
+      profiles(:one).update!(account: accounts(:test))
+      policies(:one).update!(profiles: [profiles(:one)])
+
       assert_not_empty(policies(:one).hosts)
       assert_difference('policies(:one).hosts.count', 0) do
         changes = policies(:one).update_hosts(hosts.pluck(:id)[1..-1])
@@ -178,6 +188,82 @@ class PolicyTest < ActiveSupport::TestCase
                    policies(:one).score(host: hosts(:one))
       assert_equal test_results(:two).score,
                    policies(:one).score(host: hosts(:two))
+    end
+  end
+
+  context 'update_os_minor_versions' do
+    setup do
+      @profile = Profile.new(parent_profile: profiles(:two),
+                             account: accounts(:one),
+                             policy: policies(:one)).fill_from_parent
+      policies(:one).update!(account: accounts(:one))
+      @profile.save!
+
+      @policy_host = PolicyHost.create!(
+        policy: @profile.policy,
+        host: hosts(:one)
+      )
+    end
+
+    should 'update initial_profile when host has the latest minor version' do
+      @profile.benchmark.update!(version: '0.1.33')
+
+      @profile.policy.update_os_minor_versions
+
+      assert_equal @profile.reload.os_minor_version, '4'
+    end
+
+    context 'child profiles' do
+      setup do
+        @new_benchmark = benchmarks(:one).dup
+        @new_benchmark.assign_attributes(version: '0.1.33')
+        @new_benchmark.save!
+
+        @new_profile = profiles(:two).dup
+        @new_profile.assign_attributes(benchmark: @new_benchmark)
+        @new_profile.save!
+      end
+
+      should 'create a new profile when it does not exist' do
+        @profile.policy.update_os_minor_versions
+
+        assert_equal @profile.reload.os_minor_version, ''
+        assert_equal @profile.policy.profiles.external(true)
+                             .first.os_minor_version, '4'
+      end
+
+      should 'update existing profile according the minor version' do
+        child_profile = @new_profile.clone_to(
+          account: accounts(:one),
+          policy: @profile.policy
+        )
+
+        @profile.policy.update_os_minor_versions
+
+        assert_equal @profile.reload.os_minor_version, ''
+        assert_equal child_profile.reload.os_minor_version, '4'
+      end
+
+      context 'multiple supported benchmarks with older assigned version' do
+        should 'not touch the newer profile' do
+          @profile.benchmark.update!(version: '0.1.49')
+          @profile.update!(os_minor_version: '9')
+
+          @new_benchmark.update!(version: '0.1.52')
+
+          child_profile = @new_profile.clone_to(
+            account: accounts(:one),
+            policy: @profile.policy
+          )
+
+          Host.expects(:os_minor_versions).returns([9])
+
+          @profile.policy.update_os_minor_versions
+
+          assert_equal @profile.reload.os_minor_version, '9'
+          assert_equal child_profile.reload.os_minor_version, ''
+        end
+      end
     end
   end
 end

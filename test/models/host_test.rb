@@ -247,4 +247,8 @@ class HostTest < ActiveSupport::TestCase
       assert_includes Host.search_for(search), hosts(:one)
     end
   end
+
+  test '#os_minor_versions' do
+    assert_equal Host.os_minor_versions([hosts(:one)]), [4]
+  end
 end
