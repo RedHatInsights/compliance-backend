@@ -19,7 +19,8 @@ class ProfileSerializer
   has_many :test_results
   attributes :ref_id, :score, :parent_profile_id,
              :external, :compliance_threshold, :os_major_version,
-             :os_minor_version, :os_version, :policy_profile_id
+             :os_version, :policy_profile_id
+  attribute :os_minor_version, if: proc { Settings.feature_133_os_tailoring }
   attribute :parent_profile_ref_id do |profile|
     profile.parent_profile&.ref_id
   end
