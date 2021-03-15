@@ -88,6 +88,22 @@ class PolicyTest < ActiveSupport::TestCase
   end
 
   context 'update_hosts' do
+    should 'update_os_minor_versions' do
+      Settings.feature_133_os_tailoring = true
+
+      policies(:one).expects(:update_os_minor_versions)
+
+      policies(:one).update_hosts([])
+    end
+
+    should 'not update_os_minor_versions if COMP-E-133 feature is disabled' do
+      Settings.feature_133_os_tailoring = false
+
+      policies(:one).expects(:update_os_minor_versions).never
+
+      policies(:one).update_hosts([])
+    end
+
     should 'add new hosts to an empty host set' do
       policies(:one).update!(hosts: [])
       profiles(:one).update!(account: accounts(:test))

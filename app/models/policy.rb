@@ -51,7 +51,7 @@ class Policy < ApplicationRecord
 
     removed = policy_hosts.where.not(host_id: new_host_ids).destroy_all
     imported = PolicyHost.import_from_policy(id, new_host_ids - host_ids)
-    update_os_minor_versions
+    update_os_minor_versions if Settings.feature_133_os_tailoring
 
     [imported.ids.count, removed.count]
   end

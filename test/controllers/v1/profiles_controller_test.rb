@@ -337,17 +337,38 @@ module V1
     end
 
     class ShowTest < ProfilesControllerTest
-      test 'a single profile may be requested' do
+      setup do
         profiles(:one).update!(external: false,
                                parent_profile: profiles(:two),
                                policy: policies(:one),
                                account: accounts(:one))
+      end
+
+      test 'a single profile may be requested' do
         get v1_profile_url(profiles(:one).id)
         assert_response :success
 
         body = JSON.parse(response.body)
         assert_equal profiles(:one).policy_profile_id,
                      body.dig('data', 'attributes', 'policy_profile_id')
+      end
+
+      test 'os_minor_version is not serialized when COMP-E-133 is disabled' do
+        Settings.feature_133_os_tailoring = false
+        get v1_profile_url(profiles(:one).id)
+        assert_response :success
+
+        assert_nil JSON.parse(response.body).dig('data', 'attributes',
+                                                 'os_minor_version')
+      end
+
+      test 'os_minor_version is serialized when COMP-E-133 is enabled' do
+        Settings.feature_133_os_tailoring = true
+        get v1_profile_url(profiles(:one).id)
+        assert_response :success
+
+        assert_not_nil JSON.parse(response.body).dig('data', 'attributes',
+                                                     'os_minor_version')
       end
     end
 
