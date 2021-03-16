@@ -33,6 +33,11 @@ class AuthenticationTest < ActionController::TestCase
     @controller = AuthenticatedMockController.new
   end
 
+  teardown do
+    # expected to be cleared out by the middleware
+    Thread.current[:audit_account_number] = nil
+  end
+
   context 'unauthorized access' do
     should 'rh-identity header not found' do
       process_test
