@@ -340,6 +340,7 @@ module V1
       test 'a single profile may be requested' do
         profiles(:one).update!(external: false,
                                parent_profile: profiles(:two),
+                               policy: policies(:one),
                                account: accounts(:one))
         get v1_profile_url(profiles(:one).id)
         assert_response :success
