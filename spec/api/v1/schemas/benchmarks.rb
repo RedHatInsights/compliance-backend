@@ -30,6 +30,12 @@ module Api
             },
             os_major_version: {
               type: 'string'
+            },
+            supported_os_minor_versions: {
+              type: :array,
+              items: {
+                type: :string
+              }
             }
           }
         }.freeze
