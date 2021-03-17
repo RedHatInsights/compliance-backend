@@ -33,6 +33,15 @@ module Xccdf
       end
     }
 
+    def supported_os_minor_versions
+      latest_per_minor = SupportedSsg.latest_map[os_major_version]
+      return [] unless latest_per_minor
+
+      latest_per_minor.select do |_k, ssg|
+        ssg.version == version
+      end.keys
+    end
+
     class << self
       def os_major_version_like_condition(major)
         "%RHEL-#{major}"
