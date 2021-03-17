@@ -15,25 +15,34 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
     ".content_benchmark_#{OS_NAME}-#{os_major_version}"
   end
 
+  def comparable_version
+    Gem::Version.new(version)
+  end
+
   class << self
     def supported?(ssg_version:, os_major_version:, os_minor_version:)
       ssg_versions_for_os(os_major_version, os_minor_version)
         .include?(ssg_version)
     end
 
-    def ssg_versions_for_os(os_major_version, os_minor_version)
+    def for_os(os_major_version, os_minor_version)
       os_major_version = os_major_version.to_s
       os_minor_version = os_minor_version.to_s
 
       all.select do |ssg|
         ssg.os_major_version == os_major_version &&
           ssg.os_minor_version == os_minor_version
-      end.map(&:version)
+      end
+    end
+
+    def ssg_versions_for_os(os_major_version, os_minor_version)
+      for_os(os_major_version, os_minor_version).map(&:version)
     end
 
     def latest_ssg_version_for_os(os_major_version, os_minor_version)
-      ssg_versions_for_os(os_major_version, os_minor_version)
-        .max_by { |ssg_v| Gem::Version.new(ssg_v) }
+      for_os(os_major_version, os_minor_version)
+        .max_by(&:comparable_version)
+        .version
     end
 
     def versions
@@ -67,7 +76,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
 
     def latest_per_os_major
       all.group_by(&:os_major_version).values.map do |ssgs|
-        ssgs.max_by { |ssg| Gem::Version.new(ssg.version) }
+        ssgs.max_by(&:comparable_version)
       end
     end
 
