@@ -31,6 +31,39 @@ module Xccdf
       assert_equal '7', benchmark.inferred_os_major_version
     end
 
+    context '#supported_os_minor_versions' do
+      setup do
+        SupportedSsg.expects(:latest_map).returns(
+          '7' => {
+            '8' => SupportedSsg.new(version: '0.1.48'),
+            '9' => SupportedSsg.new(version: '0.1.52')
+          },
+          '6' => {
+            '9' => SupportedSsg.new(version: '0.1.32'),
+            '10' => SupportedSsg.new(version: '0.1.32')
+          }
+        ).at_least_once
+      end
+
+      should 'should return list of latest support minor versions' do
+        bm = Xccdf::Benchmark.new(ref_id: 'RHEL-7', version: '0.1.52',
+                                  title: 'foo1', description: 'a')
+        assert_equal '7', bm.os_major_version
+        assert_equal ['9'], bm.supported_os_minor_versions
+
+        bm = Xccdf::Benchmark.new(ref_id: 'RHEL-6', version: '0.1.32',
+                                  title: 'foo2', description: 'a')
+        assert_equal '6', bm.os_major_version
+        assert_equal %w[10 9], bm.supported_os_minor_versions.sort
+      end
+
+      should 'should return empty list on unmatched entries' do
+        bm = Xccdf::Benchmark.new(ref_id: 'RHEL-7', version: '0.0.0',
+                                  title: 'foo1', description: 'a')
+        assert_equal [], bm.supported_os_minor_versions
+      end
+    end
+
     test 'return latest benchmarks for all ref_ids' do
       Xccdf::Benchmark.create(ref_id: 'rhel7', version: '0.1.40',
                               title: 'foo1', description: 'a')
