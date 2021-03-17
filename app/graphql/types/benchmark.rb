@@ -12,6 +12,7 @@ module Types
     field :ref_id, String, null: false
     field :version, String, null: false
     field :osMajorVersion, String, null: false
+    field :supportedOsMinorVersions, [String], null: false
     field :profiles, [::Types::Profile], null: true
     field :rules, [::Types::Rule], null: true
 
