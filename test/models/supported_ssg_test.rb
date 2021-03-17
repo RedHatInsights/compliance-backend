@@ -16,6 +16,8 @@ class SupportedSsgTest < ActiveSupport::TestCase
       loaded = [
         SupportedSsg.new(version: '0.1.50',
                          os_major_version: '7', os_minor_version: '3'),
+        SupportedSsg.new(version: '0.1.52',
+                         os_major_version: '7', os_minor_version: '3'),
         SupportedSsg.new(version: '0.1.24',
                          os_major_version: '7', os_minor_version: '2'),
         SupportedSsg.new(upstream_version: '0.1.25', version: '0.1.22',
@@ -34,16 +36,33 @@ class SupportedSsgTest < ActiveSupport::TestCase
     should 'provide models available upstream' do
       in_upstream = SupportedSsg.available_upstream
       versions = in_upstream.map(&:version)
+      assert_includes versions, '0.1.52'
       assert_includes versions, '0.1.50'
       assert_includes versions, '0.1.24'
-      assert_includes versions, '0.1.22' # upstream version is higher
-      assert_equal in_upstream.count, 3
+      assert_includes versions, '0.1.22'
+      assert_equal in_upstream.count, 4
+    end
+
+    should 'provide a map of latest supported SSG for combination of OS major' \
+           ' an minor version' do
+      SupportedSsg.instance_variable_set(:@latest_map, nil)
+      latest_map = SupportedSsg.latest_map
+
+      assert_equal %w[6 7], latest_map.keys.sort
+      assert_equal %w[10 9], latest_map['6'].keys.sort
+      assert_equal %w[2 3], latest_map['7'].keys.sort
+
+      assert_equal '0.1.52', latest_map.dig('7', '3').version
+      assert_equal '0.1.24', latest_map.dig('7', '2').version
+      assert_equal '0.1.22', latest_map.dig('6', '10').version
+      assert_equal '0.1.1', latest_map.dig('6', '9').version
     end
 
     should 'provide models by latest in each OS major version' do
+      SupportedSsg.instance_variable_set(:@latest_map, nil)
       latest = SupportedSsg.latest_per_os_major
       versions = latest.map(&:version)
-      assert_includes versions, '0.1.50'
+      assert_includes versions, '0.1.52'
       assert_includes versions, '0.1.22'
       assert_equal latest.count, 2
     end
