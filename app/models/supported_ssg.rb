@@ -74,9 +74,14 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
       end
     end
 
+    # Multilevel map of latest supported SSG for OS major and minor version
+    def latest_map
+      @latest_map ||= build_latest_map
+    end
+
     def latest_per_os_major
-      all.group_by(&:os_major_version).values.map do |ssgs|
-        ssgs.max_by(&:comparable_version)
+      latest_map.values.map do |major_ssgs|
+        major_ssgs.values.max_by(&:comparable_version)
       end
     end
 
@@ -95,6 +100,16 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
     def raw_supported
       # cached for the whole runtime
       @raw_supported ||= YAML.load_file(self::SUPPORTED_FILE)
+    end
+
+    def build_latest_map
+      all.group_by(&:os_major_version).transform_values do |major_ssgs|
+        major_ssgs
+          .group_by(&:os_minor_version)
+          .transform_values do |minor_ssgs|
+            minor_ssgs.max_by(&:comparable_version)
+          end.freeze
+      end.freeze
     end
   end
 end
