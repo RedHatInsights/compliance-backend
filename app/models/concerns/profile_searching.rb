@@ -134,4 +134,12 @@ module ProfileSearching
   class_methods do
     extend ClassMethods
   end
+
+  private
+
+  def in_account(account, policy)
+    Profile.find_by(account: account, ref_id: ref_id,
+                    policy: policy,
+                    benchmark_id: benchmark_id)
+  end
 end

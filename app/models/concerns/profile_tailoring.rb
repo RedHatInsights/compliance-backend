@@ -23,4 +23,10 @@ module ProfileTailoring
   def removed_rules
     parent_profile.rules - rules
   end
+
+  def update_os_minor_version(version)
+    return unless version && os_minor_version.empty?
+
+    update!(os_minor_version: version)
+  end
 end
