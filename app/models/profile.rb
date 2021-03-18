@@ -85,13 +85,7 @@ class Profile < ApplicationRecord
 
   def clone_to(account:, policy:, os_minor_version: nil)
     new_profile = in_account(account, policy)
-    if new_profile.nil?
-      (new_profile = dup).update!(account: account,
-                                  parent_profile: self,
-                                  external: true,
-                                  policy: policy)
-      new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
-    end
+    new_profile ||= create_child_profile(account, policy)
 
     # Update the os minor version if not already set
     new_profile.update_os_minor_version(os_minor_version)
@@ -114,14 +108,14 @@ class Profile < ApplicationRecord
     )[1] || ref_id
   end
 
-  def update_os_minor_version(version)
-    update!(os_minor_version: version) if version && os_minor_version.empty?
-  end
-
   private
 
-  def in_account(account, policy)
-    Profile.find_by(account: account, ref_id: ref_id,
-                    policy: policy, benchmark_id: benchmark_id)
+  def create_child_profile(account, policy)
+    new_profile = dup
+    new_profile.update!(account: account, parent_profile: self,
+                        external: true, policy: policy)
+    new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
+
+    new_profile
   end
 end
