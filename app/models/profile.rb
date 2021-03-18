@@ -116,6 +116,11 @@ class Profile < ApplicationRecord
                         external: true, policy: policy)
     new_profile.update_rules(ref_ids: rules.pluck(:ref_id))
 
+    Rails.logger.audit_success(%(
+      Created profile #{new_profile.id} from canonical profile #{id}
+      under policy #{policy&.id}
+    ).gsub(/\s+/, ' ').strip)
+
     new_profile
   end
 end
