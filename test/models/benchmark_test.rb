@@ -136,6 +136,70 @@ module Xccdf
       )
     end
 
+    context 'supported_os_minor_versions' do
+      setup do
+        ref_prefix = 'foo_bar.ssgproject.benchmark_RHEL-'
+        @rhel_6_ref = "#{ref_prefix}6"
+        @rhel_7_ref = "#{ref_prefix}7"
+        @rhel_8_ref = "#{ref_prefix}8"
+
+        # RHEL 6
+        Xccdf::Benchmark.create!(
+          ref_id: @rhel_6_ref, version: '0.1.32', title: 'A', description: 'A'
+        )
+        Xccdf::Benchmark.create!(
+          ref_id: @rhel_6_ref, version: '0.1.40', title: 'A', description: 'A'
+        )
+        # RHEL 7
+        Xccdf::Benchmark.create!(
+          ref_id: @rhel_7_ref, version: '0.1.40', title: 'A', description: 'A'
+        )
+        Xccdf::Benchmark.create!(
+          ref_id: @rhel_7_ref, version: '0.1.50', title: 'A', description: 'A'
+        )
+        # RHEL 8
+        Xccdf::Benchmark.create!(
+          ref_id: @rhel_8_ref, version: '0.1.70', title: 'A', description: 'A'
+        )
+
+        SupportedSsg.expects(:latest_map).returns(
+          '6' => {
+            '8' => SupportedSsg.new(version: '0.1.32'),
+            '9' => SupportedSsg.new(version: '0.1.32'),
+            '10' => SupportedSsg.new(version: '0.1.40')
+          },
+          '7' => {
+            '1' => SupportedSsg.new(version: '0.1.40'),
+            '9' => SupportedSsg.new(version: '0.1.50')
+          }
+        ).at_least_once
+      end
+
+      should 'scope all supported minor versions' do
+        result = Xccdf::Benchmark.supported_os_minor_versions('8')
+        assert_equal 1, result.count
+        assert_equal @rhel_6_ref, result.first.ref_id
+        assert_equal '0.1.32', result.first.version
+
+        result = Xccdf::Benchmark.supported_os_minor_versions('9')
+        assert_equal 2, result.count
+        tuples = result.sort_by(&:version).map { |bm| [bm.ref_id, bm.version] }
+        assert_equal [@rhel_6_ref, '0.1.32'], tuples[0]
+        assert_equal [@rhel_7_ref, '0.1.50'], tuples[1]
+
+        result = Xccdf::Benchmark.supported_os_minor_versions('100')
+        assert_equal 0, result.count
+      end
+
+      should 'scope supported minor versions for selected major version' do
+        result = Xccdf::Benchmark.os_major_version('7')
+                                 .supported_os_minor_versions('9')
+        assert_equal 1, result.count
+        assert_equal @rhel_7_ref, result.first.ref_id
+        assert_equal '0.1.50', result.first.version
+      end
+    end
+
     test 'latest_supported scope' do
       rhel7_latest_ver = '0.1.50'
       rhel8_latest_ver = '0.1.40'
