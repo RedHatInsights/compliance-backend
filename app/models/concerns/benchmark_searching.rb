@@ -19,6 +19,12 @@ module BenchmarkSearching
       where(os_major_version_query(major, equals))
     }
 
+    scope :supported_os_minor_versions, lambda { |minor_versions|
+      supported_os_minor_clauses(minor_versions).reduce(none) do |ors, clause|
+        ors.or(where(*clause))
+      end
+    }
+
     scope :latest_supported, lambda {
       SupportedSsg.latest_per_os_major.inject(none) do |supported, ssg|
         supported.or(
@@ -45,6 +51,22 @@ module BenchmarkSearching
       equals = operator == '=' ? ' ' : ' NOT '
       { conditions: "ref_id#{equals}like ?",
         parameter: [os_major_version_like_condition(value)] }
+    end
+
+    def supported_os_minor_clauses(minor_versions)
+      minor_versions = [minor_versions].flatten.map(&:to_s)
+
+      SupportedSsg.latest_map.map do |major, major_ssgs|
+        ssg_versions = minor_versions.map do |minor_version|
+          major_ssgs[minor_version]&.version
+        end.compact.uniq
+
+        next if ssg_versions.count.zero?
+
+        ['benchmarks.ref_id LIKE ? AND benchmarks.version IN (?)',
+         os_major_version_like_condition(major),
+         ssg_versions]
+      end.compact
     end
 
     def latest
