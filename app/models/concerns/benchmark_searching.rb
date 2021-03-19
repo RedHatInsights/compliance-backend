@@ -14,6 +14,10 @@ module BenchmarkSearching
                   ext_method: 'os_major_version_search',
                   only_explicit: true, operators: ['=', '!='],
                   validator: ScopedSearch::Validators::INTEGER
+    scoped_search on: :supported_os_minor_version,
+                  ext_method: 'supported_os_minor_search',
+                  only_explicit: true, operators: ['=', '^'],
+                  validator: ScopedSearch::Validators::INTEGER
 
     scope :os_major_version, lambda { |major, equals = true|
       where(os_major_version_query(major, equals))
@@ -67,6 +71,21 @@ module BenchmarkSearching
          os_major_version_like_condition(major),
          ssg_versions]
       end.compact
+    end
+
+    def supported_os_minor_search(_filter, _operator, value)
+      minor_versions = value.split(',') # splits set of values
+      conditions = []
+      parameters = []
+
+      supported_os_minor_clauses(minor_versions).each do |clause|
+        conditions << clause.first
+        parameters.append(*clause[1..-1])
+      end
+
+      conditions << '1=0' if conditions.count.zero?
+      { conditions: "(#{conditions.join(') OR (')})",
+        parameter: parameters }
     end
 
     def latest
