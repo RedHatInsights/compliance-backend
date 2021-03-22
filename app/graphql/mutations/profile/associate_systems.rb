@@ -9,6 +9,7 @@ module Mutations
       argument :id, ID, required: true
       argument :system_ids, [ID], required: true
       field :profile, Types::Profile, null: true
+      field :profiles, [Types::Profile], null: true
 
       def resolve(args = {})
         ::Profile.transaction do
@@ -17,7 +18,7 @@ module Mutations
             profile.policy.update_hosts(args[:system_ids])
             audit_mutation(profile)
           end
-          { profile: profile }
+          { profile: profile, profiles: profile.policy.profiles }
         end
       end
 

@@ -596,6 +596,7 @@ type associateSystemsPayload {
   """
   clientMutationId: String
   profile: Profile
+  profiles: [Profile!]
 }
 
 """
