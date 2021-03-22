@@ -28,13 +28,16 @@ class EngineeringCollector < PrometheusExporter::Server::TypeCollector
   end
 
   def dangling(model)
-    model.where.not(host_id: Host.select(:id))
+    model.where.not(host_id: Host.with_policies_or_test_results.select(:id))
+  end
+
+  def dangling_accounts
+    Account.where.not(account_number: Host.with_policies_or_test_results
+                                          .select(:account).distinct)
   end
 
   def collect
-    @dangling_accounts.observe(
-      Account.where.not(account_number: Host.select(:account)).count
-    )
+    @dangling_accounts.observe(dangling_accounts.count)
     @dangling_test_results.observe(dangling(TestResult).count)
     @dangling_rule_results.observe(dangling(RuleResult).count)
     @dangling_policy_hosts.observe(dangling(PolicyHost).count)
