@@ -51,7 +51,7 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     )
     @client_accounts.observe client_accounts.count
     @client_accounts_with_hosts.observe(
-      Host.where(
+      Host.with_policies_or_test_results.where(
         account: client_accounts.select(:account_number)
       ).select(:account).distinct.count
     )
@@ -59,9 +59,10 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_policies.observe(
       Profile.where(account_id: client_accounts.select(:id)).count
     )
-    @total_systems.observe Host.count
+    @total_systems.observe Host.with_policies_or_test_results.count
     @client_systems.observe(
-      Host.where(account: client_accounts.select(:account_number)).count
+      Host.with_policies_or_test_results
+          .where(account: client_accounts.select(:account_number)).count
     )
   end
 
