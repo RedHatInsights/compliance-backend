@@ -16,20 +16,33 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
              profile {
                  id
              }
+             profiles {
+                 id
+             }
           }
        }
     GRAPHQL
 
     assert_empty profiles(:one).assigned_hosts
 
-    Schema.execute(
+    result = Schema.execute(
       query,
       variables: { input: {
         id: profiles(:one).id,
         systemIds: [hosts(:one).id]
       } },
       context: { current_user: users(:test) }
-    )['data']['associateSystems']['profile']
+    )
+
+    assert_equal(
+      result['data']['associateSystems']['profile']['id'],
+      profiles(:one).id
+    )
+
+    assert_equal(
+      result['data']['associateSystems']['profiles'],
+      [{ 'id' => profiles(:one).id }]
+    )
 
     assert_equal Set.new(profiles(:one).policy.reload.hosts),
                  Set.new([hosts(:one)])
@@ -42,20 +55,33 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
              profile {
                  id
              }
+             profiles {
+                 id
+             }
           }
        }
     GRAPHQL
 
     assert_not_empty profiles(:one).hosts
 
-    Schema.execute(
+    result = Schema.execute(
       query,
       variables: { input: {
         id: profiles(:one).id,
         systemIds: []
       } },
       context: { current_user: users(:test) }
-    )['data']['associateSystems']['profile']
+    )
+
+    assert_equal(
+      result['data']['associateSystems']['profile']['id'],
+      profiles(:one).id
+    )
+
+    assert_equal(
+      result['data']['associateSystems']['profiles'],
+      [{ 'id' => profiles(:one).id }]
+    )
 
     assert_empty profiles(:one).policy.reload.hosts
     assert_audited 'Updated system associaton of policy'
