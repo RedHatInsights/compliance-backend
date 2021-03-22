@@ -144,11 +144,15 @@ class HostTest < ActiveSupport::TestCase
       assert hosts(:one).test_results.present?
       assert hosts(:two).test_results.empty?
       assert_includes Host.search_for('has_test_results = true'), hosts(:one)
+      assert_includes Host.with_test_results, hosts(:one)
       assert_not_includes(Host.search_for('has_test_results = true'),
                           hosts(:two))
+      assert_not_includes Host.with_test_results, hosts(:two)
       assert_includes Host.search_for('has_test_results = false'), hosts(:two)
+      assert_includes Host.with_test_results(false), hosts(:two)
       assert_not_includes(Host.search_for('has_test_results = false'),
                           hosts(:one))
+      assert_not_includes(Host.with_test_results(false), hosts(:one))
     end
 
     should 'be able to filter by profile_id from test results' do

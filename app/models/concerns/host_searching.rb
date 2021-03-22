@@ -32,6 +32,11 @@ module HostSearching
         where.not(id: ::PolicyHost.select(:host_id))
     }
 
+    scope :with_test_results, lambda { |with_test_results = true|
+      with_test_results && where(id: ::TestResult.select(:host_id)) ||
+        where.not(id: ::TestResult.select(:host_id))
+    }
+
     scope :os_major_version, lambda { |version, equal = true|
       condition = ['system_profile @> ?',
                    { operating_system: { major: version.to_i } }.to_json]
@@ -110,12 +115,11 @@ module HostSearching
     end
 
     def test_results?(_filter, _operator, value)
-      operator = ::ActiveModel::Type::Boolean.new.cast(value) ? '' : 'NOT'
-      host_ids = ::TestResult.select(:host_id).distinct.where.not(host_id: nil)
-      {
-        conditions: "hosts.id #{operator} "\
-                    "IN(#{host_ids.to_sql})"
-      }
+      hosts = ::Host.with_test_results(
+        ::ActiveModel::Type::Boolean.new.cast(value)
+      )
+
+      { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
     end
 
     private
