@@ -161,6 +161,30 @@ class HostTest < ActiveSupport::TestCase
     end
   end
 
+  context 'with_policies_or_test_results' do
+    should 'return hosts either associated to a policy or with test results' do
+      assert_equal [test_results(:one)], hosts(:one).test_results
+      assert_equal [test_results(:two)], hosts(:two).test_results
+      assert_empty hosts(:one).policies
+      assert_empty hosts(:two).policies
+
+      assert_includes Host.with_policies_or_test_results, hosts(:one)
+      assert_includes Host.with_policies_or_test_results, hosts(:two)
+
+      test_results(:two).destroy
+      assert_includes Host.with_policies_or_test_results, hosts(:one)
+      assert_not_includes Host.with_policies_or_test_results, hosts(:two)
+
+      policies(:two).update!(hosts: [hosts(:two)])
+      assert_includes Host.with_policies_or_test_results, hosts(:two)
+      assert_includes Host.with_policies_or_test_results, hosts(:one)
+
+      test_results(:one).destroy
+      assert_not_includes Host.with_policies_or_test_results, hosts(:one)
+      assert_includes Host.with_policies_or_test_results, hosts(:two)
+    end
+  end
+
   context 'scope search by a policy' do
     setup do
       profiles(:one).update!(policy: policies(:one),

@@ -37,6 +37,10 @@ module HostSearching
         where.not(id: ::TestResult.select(:host_id))
     }
 
+    scope :with_policies_or_test_results, lambda {
+      with_policy.or(with_test_results)
+    }
+
     scope :os_major_version, lambda { |version, equal = true|
       condition = ['system_profile @> ?',
                    { operating_system: { major: version.to_i } }.to_json]
