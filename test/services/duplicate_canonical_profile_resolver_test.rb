@@ -21,6 +21,7 @@ class DuplicateCanonicalProfileResolverTest < ActiveSupport::TestCase
   end
 
   test 'removes duplicate entities' do
+    STDOUT.stubs(:puts)
     assert_difference('Profile.count' => -4) do
       ActiveRecord::Migration.suppress_messages do
         DeduplicateCanonicalProfiles.new.up
