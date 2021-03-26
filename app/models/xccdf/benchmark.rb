@@ -13,7 +13,7 @@ module Xccdf
 
     include ::BenchmarkSearching
 
-    def supported_os_minor_versions
+    def latest_supported_os_minor_versions
       latest_per_minor = SupportedSsg.latest_map[os_major_version]
       return [] unless latest_per_minor
 

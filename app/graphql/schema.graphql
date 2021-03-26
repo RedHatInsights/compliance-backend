@@ -5,11 +5,11 @@ type Benchmark implements Node {
   description: String
   globalId: ID!
   id: ID!
+  latestSupportedOsMinorVersions: [String!]!
   osMajorVersion: String!
   profiles: [Profile!]
   refId: String!
   rules: [Rule!]
-  supportedOsMinorVersions: [String!]!
   title: String!
   version: String!
 }
