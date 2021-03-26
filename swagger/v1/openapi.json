@@ -84,7 +84,7 @@
                       "version": "0.1.45",
                       "description": "The first benchmark",
                       "os_major_version": "7",
-                      "supported_os_minor_versions": []
+                      "latest_supported_os_minor_versions": []
                     },
                     "relationships": {
                       "rules": {
@@ -223,7 +223,7 @@
                     "version": "0.1.45",
                     "description": "The first benchmark",
                     "os_major_version": "7",
-                    "supported_os_minor_versions": []
+                    "latest_supported_os_minor_versions": []
                   },
                   "relationships": {
                     "rules": {
@@ -1102,7 +1102,7 @@
                       "version": "0.1.45",
                       "description": "The first benchmark",
                       "os_major_version": "7",
-                      "supported_os_minor_versions": []
+                      "latest_supported_os_minor_versions": []
                     },
                     "relationships": {
                       "rules": {
@@ -2924,7 +2924,7 @@
           "os_major_version": {
             "type": "string"
           },
-          "supported_os_minor_versions": {
+          "latest_supported_os_minor_versions": {
             "type": "array",
             "items": {
               "type": "string"

@@ -31,7 +31,7 @@ module Xccdf
       assert_equal '7', benchmark.inferred_os_major_version
     end
 
-    context '#supported_os_minor_versions' do
+    context '#latest_supported_os_minor_versions' do
       setup do
         SupportedSsg.expects(:latest_map).returns(
           '7' => {
@@ -49,18 +49,18 @@ module Xccdf
         bm = Xccdf::Benchmark.new(ref_id: 'RHEL-7', version: '0.1.52',
                                   title: 'foo1', description: 'a')
         assert_equal '7', bm.os_major_version
-        assert_equal ['9'], bm.supported_os_minor_versions
+        assert_equal ['9'], bm.latest_supported_os_minor_versions
 
         bm = Xccdf::Benchmark.new(ref_id: 'RHEL-6', version: '0.1.32',
                                   title: 'foo2', description: 'a')
         assert_equal '6', bm.os_major_version
-        assert_equal %w[10 9], bm.supported_os_minor_versions.sort
+        assert_equal %w[10 9], bm.latest_supported_os_minor_versions.sort
       end
 
       should 'should return empty list on unmatched entries' do
         bm = Xccdf::Benchmark.new(ref_id: 'RHEL-7', version: '0.0.0',
                                   title: 'foo1', description: 'a')
-        assert_equal [], bm.supported_os_minor_versions
+        assert_equal [], bm.latest_supported_os_minor_versions
       end
     end
 
@@ -136,7 +136,7 @@ module Xccdf
       )
     end
 
-    context 'supported_os_minor_versions' do
+    context 'latest_supported_os_minor_versions' do
       setup do
         ref_prefix = 'foo_bar.ssgproject.benchmark_RHEL-'
         @rhel_6_ref = "#{ref_prefix}6"
@@ -176,55 +176,61 @@ module Xccdf
       end
 
       should 'scope all supported minor versions' do
-        result = Xccdf::Benchmark.supported_os_minor_versions('8')
+        result = Xccdf::Benchmark.latest_supported_os_minor_versions('8')
         assert_equal 1, result.count
         assert_equal @rhel_6_ref, result.first.ref_id
         assert_equal '0.1.32', result.first.version
 
-        result = Xccdf::Benchmark.supported_os_minor_versions('9')
+        result = Xccdf::Benchmark.latest_supported_os_minor_versions('9')
         assert_equal 2, result.count
         tuples = result.sort_by(&:version).map { |bm| [bm.ref_id, bm.version] }
         assert_equal [@rhel_6_ref, '0.1.32'], tuples[0]
         assert_equal [@rhel_7_ref, '0.1.50'], tuples[1]
 
-        result = Xccdf::Benchmark.supported_os_minor_versions('100')
+        result = Xccdf::Benchmark.latest_supported_os_minor_versions('100')
         assert_equal 0, result.count
       end
 
       should 'scope supported minor versions for selected major version' do
         result = Xccdf::Benchmark.os_major_version('7')
-                                 .supported_os_minor_versions('9')
+                                 .latest_supported_os_minor_versions('9')
         assert_equal 1, result.count
         assert_equal @rhel_7_ref, result.first.ref_id
         assert_equal '0.1.50', result.first.version
       end
 
       should 'search by a supported minor version' do
-        result = Xccdf::Benchmark.search_for('supported_os_minor_version = 8')
+        result = Xccdf::Benchmark.search_for(
+          'latest_supported_os_minor_version = 8'
+        )
         assert_equal 1, result.count
         assert_equal @rhel_6_ref, result.first.ref_id
         assert_equal '0.1.32', result.first.version
 
-        result = Xccdf::Benchmark.search_for('supported_os_minor_version = 9')
+        result = Xccdf::Benchmark.search_for(
+          'latest_supported_os_minor_version = 9'
+        )
         assert_equal 2, result.count
         tuples = result.sort_by(&:version).map { |bm| [bm.ref_id, bm.version] }
         assert_equal [@rhel_6_ref, '0.1.32'], tuples[0]
         assert_equal [@rhel_7_ref, '0.1.50'], tuples[1]
 
-        result = Xccdf::Benchmark.search_for('supported_os_minor_version = 100')
+        result = Xccdf::Benchmark.search_for(
+          'latest_supported_os_minor_version = 100'
+        )
         assert_equal 0, result.count
       end
 
       should 'search by a list of supported minor version' do
         result = Xccdf::Benchmark.search_for(
-          'supported_os_minor_version ^ (1, 100)'
+          'latest_supported_os_minor_version ^ (1, 100)'
         )
         assert_equal 1, result.count
         assert_equal @rhel_7_ref, result.first.ref_id
         assert_equal '0.1.40', result.first.version
 
         result = Xccdf::Benchmark.search_for(
-          'supported_os_minor_version ^ (1, 10)'
+          'latest_supported_os_minor_version ^ (1, 10)'
         )
         assert_equal 2, result.count
         tuples = result.sort_by(&:ref_id).map { |bm| [bm.ref_id, bm.version] }
@@ -232,7 +238,7 @@ module Xccdf
         assert_equal [@rhel_7_ref, '0.1.40'], tuples[1]
 
         result = Xccdf::Benchmark.search_for(
-          'supported_os_minor_version ^ (8, 9)'
+          'latest_supported_os_minor_version ^ (8, 9)'
         )
         assert_equal 2, result.count
         tuples = result.sort_by(&:version).map { |bm| [bm.ref_id, bm.version] }
@@ -240,7 +246,7 @@ module Xccdf
         assert_equal [@rhel_7_ref, '0.1.50'], tuples[1]
 
         result = Xccdf::Benchmark.search_for(
-          'supported_os_minor_version ^ (100, 200)'
+          'latest_supported_os_minor_version ^ (100, 200)'
         )
         assert_equal 0, result.count
       end
@@ -248,21 +254,22 @@ module Xccdf
       should 'search by a list of supported minor version ' \
              ' for selected major version' do
         result = Xccdf::Benchmark.search_for(
-          'os_major_version = 7 and supported_os_minor_version ^ (1, 100)'
+          'os_major_version = 7' \
+          ' and latest_supported_os_minor_version ^ (1, 100)'
         )
         assert_equal 1, result.count
         assert_equal @rhel_7_ref, result.first.ref_id
         assert_equal '0.1.40', result.first.version
 
         result = Xccdf::Benchmark.search_for(
-          'os_major_version = 6 and supported_os_minor_version = 9'
+          'os_major_version = 6 and latest_supported_os_minor_version = 9'
         )
         assert_equal 1, result.count
         assert_equal @rhel_6_ref, result.first.ref_id
         assert_equal '0.1.32', result.first.version
 
         result = Xccdf::Benchmark.search_for(
-          'os_major_version = 6 and supported_os_minor_version ^ (9, 10)'
+          'os_major_version = 6 and latest_supported_os_minor_version ^ (9, 10)'
         )
         assert_equal 2, result.count
         tuples = result.sort_by(&:ref_id).map { |bm| [bm.ref_id, bm.version] }
@@ -270,14 +277,15 @@ module Xccdf
         assert_equal [@rhel_6_ref, '0.1.40'], tuples[1]
 
         result = Xccdf::Benchmark.search_for(
-          'os_major_version = 6 and supported_os_minor_version ^ (8, 9)'
+          'os_major_version = 6 and latest_supported_os_minor_version ^ (8, 9)'
         )
         assert_equal 1, result.count
         assert_equal @rhel_6_ref, result.first.ref_id
         assert_equal '0.1.32', result.first.version
 
         result = Xccdf::Benchmark.search_for(
-          'os_major_version = 8 and supported_os_minor_version ^ (1, 9, 10)'
+          'os_major_version = 8' \
+          ' and latest_supported_os_minor_version ^ (1, 9, 10)'
         )
         assert_equal 0, result.count
       end

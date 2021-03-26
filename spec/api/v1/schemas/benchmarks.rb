@@ -31,7 +31,7 @@ module Api
             os_major_version: {
               type: 'string'
             },
-            supported_os_minor_versions: {
+            latest_supported_os_minor_versions: {
               type: :array,
               items: {
                 type: :string

@@ -14,7 +14,7 @@ module BenchmarkSearching
                   ext_method: 'os_major_version_search',
                   only_explicit: true, operators: ['=', '!='],
                   validator: ScopedSearch::Validators::INTEGER
-    scoped_search on: :supported_os_minor_version,
+    scoped_search on: :latest_supported_os_minor_version,
                   ext_method: 'supported_os_minor_search',
                   only_explicit: true, operators: ['=', '^'],
                   validator: ScopedSearch::Validators::INTEGER
@@ -23,7 +23,7 @@ module BenchmarkSearching
       where(os_major_version_query(major, equals))
     }
 
-    scope :supported_os_minor_versions, lambda { |minor_versions|
+    scope :latest_supported_os_minor_versions, lambda { |minor_versions|
       supported_os_minor_clauses(minor_versions).reduce(none) do |ors, clause|
         ors.or(where(*clause))
       end
