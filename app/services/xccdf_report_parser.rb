@@ -75,7 +75,13 @@ class XccdfReportParser
   end
 
   def save_missing_supported_benchmark
-    save_all_benchmark_info if SupportedSsg.versions.include?(benchmark.version)
+    save_all_benchmark_info if SupportedSsg.all.find do |ssg|
+      # There's a version mismatch in some SSGs that has to be compensated
+      if ssg.real_version.present? && ssg.real_version.to_s == benchmark.version
+        benchmark.version = ssg.version
+      end
+      ssg.version == benchmark.version
+    end
   end
 
   def check_for_missing_benchmark

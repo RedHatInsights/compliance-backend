@@ -42,6 +42,16 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       end
     end
 
+    should 'normalize the benchmark version if it is incorrectly set' do
+      @report_parser.host.stubs(:os_major_version).returns(7)
+      @report_parser.host.stubs(:os_minor_version).returns(2)
+      @report_parser.benchmark.version = '0.9'
+
+      @report_parser.expects(:save_all_benchmark_info)
+      @report_parser.save_missing_supported_benchmark
+      assert_equal(@report_parser.benchmark.version, '0.1.25')
+    end
+
     should 'save an unknown benchmark that is in the support matrix' do
       assert_difference('Xccdf::Benchmark.count', 1) do
         assert_nothing_raised do

@@ -82,6 +82,7 @@ supported:
   RHEL-7.2:
     - package: scap-security-guide-0.1.25-3.el7
       version: 0.1.25
+      real_version: 0.9
       profiles:
         common:
         pci-dss:
