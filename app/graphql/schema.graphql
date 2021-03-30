@@ -561,7 +561,8 @@ input associateRulesInput {
   """
   clientMutationId: String
   id: ID!
-  ruleIds: [ID!]!
+  ruleIds: [ID!]
+  ruleRefIds: [String!]
 }
 
 """
