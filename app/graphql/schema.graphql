@@ -638,7 +638,7 @@ input createProfileInput {
   description: String
   name: String!
   refId: ID!
-  selectedRuleRefIds: [String!]!
+  selectedRuleRefIds: [String!]
 }
 
 """
