@@ -14,7 +14,7 @@ module Mutations
       argument :description, String, required: false
       argument :business_objective_id, String, required: false
       argument :compliance_threshold, Float, required: false
-      argument :selected_rule_ref_ids, [String], required: true
+      argument :selected_rule_ref_ids, [String], required: false
       field :profile, Types::Profile, null: false
 
       def resolve(args = {})
