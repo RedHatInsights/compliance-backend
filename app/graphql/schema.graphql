@@ -107,6 +107,7 @@ type Profile implements Node & RulesPreload {
   osMajorVersion: String!
   osMinorVersion: String!
   osVersion: String!
+  parentProfileId: ID
   policy: Profile
   policyType: String!
   profiles: [Profile!]

@@ -53,6 +53,28 @@ class ProfileQueryTest < ActiveSupport::TestCase
                  result['data']['profile']['policyType']
   end
 
+  test 'query profile parentProfileId' do
+    profiles(:one).update!(parent_profile: profiles(:two))
+
+    query = <<-GRAPHQL
+      query Profile($id: String!){
+          profile(id: $id) {
+              id
+              parentProfileId
+          }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { id: profiles(:one).id },
+      context: { current_user: users(:test) }
+    )
+
+    assert_equal profiles(:one).parent_profile_id,
+                 result['data']['profile']['parentProfileId']
+  end
+
   test 'query profile with SSG version' do
     query = <<-GRAPHQL
       query Profile($id: String!){

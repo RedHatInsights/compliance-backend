@@ -41,6 +41,7 @@ module Types
     field :test_result_host_count, Int, null: false
     field :unsupported_host_count, Int, null: false
     field :external, Boolean, null: false
+    field :parent_profile_id, ID, null: true
 
     field :score, Float, null: false do
       argument :system_id, String,
