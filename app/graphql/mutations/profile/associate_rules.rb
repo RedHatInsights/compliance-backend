@@ -40,7 +40,8 @@ module Mutations
         elsif args[:rule_ref_ids]
           { ref_ids: args[:rule_ref_ids] }
         else
-          raise ArgumentError, 'Missing argument identifying rules'
+          raise(ActionController::ParameterMissing,
+                'Missing argument identifying rules')
         end
       end
     end

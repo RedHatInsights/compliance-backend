@@ -81,7 +81,7 @@ class AssociateRulesMutationTest < ActiveSupport::TestCase
        }
     GRAPHQL
 
-    assert_raises ArgumentError do
+    assert_raises ActionController::ParameterMissing do
       Schema.execute(
         query,
         variables: { input: {
