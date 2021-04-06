@@ -21,4 +21,4 @@ redis_cache_ssl: false
 slack_webhook: 'this is set through a env var in Openshift and not shared for security reasons'
 disable_rbac: 'false'
 async: true
-feature_133_os_tailoring: false
+feature_133_os_tailoring: true
