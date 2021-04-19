@@ -3,6 +3,63 @@
 require 'test_helper'
 
 class BenchmarkQueryTest < ActiveSupport::TestCase
+  test 'query all benchmarks' do
+    query = <<-GRAPHQL
+      query Benchmarks {
+          benchmarks {
+              nodes {
+                  id
+              }
+          }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: {},
+      context: { current_user: users(:test) }
+    )
+
+    assert_equal(
+      benchmarks.count, result.dig('data', 'benchmarks', 'nodes').count
+    )
+    assert_equal(
+      benchmarks.pluck(:id).sort,
+      result.dig('data', 'benchmarks', 'nodes').map { |n| n['id'] }.sort
+    )
+  end
+
+  test 'query benchmarks with a filter' do
+    query = <<-GRAPHQL
+      query Benchmarks {
+          benchmarks {
+              nodes {
+                  id
+              }
+          }
+      }
+    GRAPHQL
+
+    os_major_version = benchmarks.first.os_major_version
+    filtered_benchmarks = Xccdf::Benchmark.os_major_version(os_major_version)
+    result = Schema.execute(
+      query,
+      variables: {
+        filter: "os_major_version=#{os_major_version}"
+      },
+      context: { current_user: users(:test) }
+    )
+
+    assert_equal(
+      filtered_benchmarks.count,
+      result.dig('data', 'benchmarks', 'nodes').count
+    )
+    assert_equal(
+      filtered_benchmarks.pluck(:id).sort,
+      result.dig('data', 'benchmarks', 'nodes').map { |n| n['id'] }.sort
+    )
+  end
+
   test 'query benchmark owned by the user' do
     supported_ssg = SupportedSsg.new(version: '0.1.50',
                                      os_major_version: '7',
