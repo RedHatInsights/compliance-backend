@@ -11,6 +11,7 @@ module Types
     collection_field :systems, Types::System
     collection_field :profiles, Types::Profile
     collection_field :test_results, Types::TestResult
+    collection_field :benchmarks, Types::Benchmark
     record_field :profile, Types::Profile
     record_field :test_result, Types::TestResult
 

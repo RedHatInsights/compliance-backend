@@ -15,6 +15,42 @@ type Benchmark implements Node {
 }
 
 """
+The connection type for Benchmark.
+"""
+type BenchmarkConnection {
+  """
+  A list of edges.
+  """
+  edges: [BenchmarkEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Benchmark]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type BenchmarkEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Benchmark
+}
+
+"""
 A Business Objective registered in Insights Compliance
 """
 type BusinessObjective implements Node {
@@ -203,6 +239,42 @@ type Query implements Node {
   """
   allProfiles: [Profile!]
   benchmark(id: String!): Benchmark
+  benchmarks(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Pagination limit
+    """
+    limit: Int
+
+    """
+    Pagination offset
+    """
+    offset: Int
+
+    """
+    Search query
+    """
+    search: String
+  ): BenchmarkConnection!
 
   """
   All business objectives visible by the user

@@ -3,6 +3,7 @@
 module Types
   # Definition of Benchmark as a GraphQL type
   class Benchmark < Types::BaseObject
+    model_class ::Xccdf::Benchmark
     graphql_name 'Benchmark'
     description 'A representation of a SCAP Security Guide version'
 
