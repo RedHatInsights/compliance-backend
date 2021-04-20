@@ -288,7 +288,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       end
     end
 
-    should 'find a policy by hosts, account, and ref_id' do
+    should 'find a policy profile by hosts, account, and ref_id' do
       @report_parser.stubs(:external_report?)
       profiles(:one).update!(
         ref_id: 'xccdf_org.ssgproject.content_profile_standard', hosts: []
@@ -296,13 +296,15 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       policies(:one).hosts = [@report_parser.host]
       policies(:two).hosts = [@report_parser.host]
       Profile.any_instance.expects(:clone_to).with(policy: nil,
-                                                   account: accounts(:test))
+                                                   account: accounts(:test),
+                                                   os_minor_version: '3')
       @report_parser.save_host_profile
 
       profiles(:one).update!(policy: policies(:one),
                              account: accounts(:test))
       Profile.any_instance.expects(:clone_to).with(policy: policies(:one),
-                                                   account: accounts(:test))
+                                                   account: accounts(:test),
+                                                   os_minor_version: '3')
       @report_parser.save_host_profile
     end
   end
