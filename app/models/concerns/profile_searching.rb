@@ -90,6 +90,12 @@ module ProfileSearching
 
   # class methods for profile searching
   module ClassMethods
+    def first_by_os_minor_version_preferred(os_minor_version)
+      where(os_minor_version: ['', os_minor_version])
+        .order(:os_minor_version)
+        .last
+    end
+
     def policy_search(_filter, _operator, value)
       profiles = ::Profile.with_policy(
         ::ActiveModel::Type::Boolean.new.cast(value)
@@ -137,9 +143,15 @@ module ProfileSearching
 
   private
 
-  def in_account(account, policy)
-    Profile.find_by(account: account, ref_id: ref_id,
-                    policy: policy,
-                    benchmark_id: benchmark_id)
+  def in_account(account, policy, os_minor_version = nil)
+    search = Profile.where(account: account, ref_id: ref_id,
+                           policy: policy,
+                           benchmark_id: benchmark_id)
+
+    if os_minor_version
+      search.first_by_os_minor_version_preferred(os_minor_version)
+    else
+      search.first
+    end
   end
 end

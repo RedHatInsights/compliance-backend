@@ -58,13 +58,15 @@ class Policy < ApplicationRecord
 
   def update_os_minor_versions
     unassigned_minor_versions.each do |os_minor_version|
-      Profile.canonical_for_os(
+      policy_profile = Profile.canonical_for_os(
         initial_profile.os_major_version, os_minor_version
       ).find_by(ref_id: initial_profile.ref_id)&.clone_to(
         account: account,
-        os_minor_version: os_minor_version,
         policy: self
       )
+      next unless policy_profile
+
+      policy_profile.update_os_minor_version(os_minor_version)
     end
   end
 

@@ -302,6 +302,25 @@ class ProfileTest < ActiveSupport::TestCase
     end
   end
 
+  context 'first_by_os_minor_version_preferred' do
+    setup do
+      @os_minor_version = '1'
+      profiles(:one).update!(os_minor_version: @os_minor_version)
+    end
+
+    should 'prefer profile with exact OS minor' do
+      scoped = Profile.where(id: [profiles(:one), profiles(:two)])
+      assert_equal profiles(:one),
+                   scoped.first_by_os_minor_version_preferred(@os_minor_version)
+    end
+
+    should 'fallbacks to empty OS minor version' do
+      scoped = Profile.where(id: [profiles(:two)])
+      assert_equal profiles(:two),
+                   scoped.first_by_os_minor_version_preferred(@os_minor_version)
+    end
+  end
+
   test 'has_test_results filters by test results available' do
     test_results(:one).update profile: profiles(:one), host: hosts(:one)
     profiles(:two).test_results.destroy_all
