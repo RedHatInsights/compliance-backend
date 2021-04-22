@@ -8,9 +8,9 @@ RUN apt-get update && apt-get install -y qt5-default libqt5webkit5-dev \
 
 COPY vendor/ ./vendor
 COPY Gemfile* ./
-COPY entrypoint.sh ./
+COPY devel.entrypoint.sh ./
 
 RUN bundle -j4
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/app/devel.entrypoint.sh"]
 CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]

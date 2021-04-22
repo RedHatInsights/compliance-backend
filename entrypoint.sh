@@ -1,7 +1,52 @@
 #!/bin/bash
+
 set -e
 
-# Remove a potentially pre-existing server.pid for Rails.
-rm -f /app/tmp/pids/server.pid
+function is_puma_installed() {
+	[ ! -f Gemfile.lock ] && return 1
+	grep ' puma ' Gemfile.lock >/dev/null
+}
 
-exec "$@"
+function check_number() {
+	if [[ ! "$2" =~ ^[0-9]+$ ]]; then
+		echo "$1 needs to be a non-negative number"
+		exit 1
+	fi
+}
+
+if [ "$APPLICATION_TYPE" = "compliance-backend" ]; then
+	check_number PUMA_WORKERS     "${PUMA_WORKERS:-0}"
+	check_number PUMA_MIN_THREADS "${PUMA_MIN_THREADS:-0}"
+	check_number PUMA_MAX_THREADS "${PUMA_MAX_THREADS:-0}"
+
+	export RACK_ENV=${RACK_ENV:-"production"}
+
+	if is_puma_installed; then
+		export_vars=$(cgroup-limits) ; export $export_vars
+
+		exec bundle exec "puma --config ../etc/puma.cfg"
+	else
+		echo "You might consider adding 'puma' into your Gemfile."
+
+		if bundle exec rackup -h &>/dev/null; then
+			if [ -f Gemfile ]; then
+				exec bundle exec "rackup -E ${RAILS_ENV:-$RACK_ENV} -P /tmp/rack.pid --host 0.0.0.0 --port 8080"
+			else
+				exec rackup -E "${RAILS_ENV:-$RACK_ENV}" -P /tmp/rack.pid --host 0.0.0.0 --port 8080
+			fi
+		else
+			echo "ERROR: Rubygem Rack is not installed in the present image."
+			echo "       Add rack to your Gemfile in order to start the web server."
+		fi
+	fi
+elif [ "$APPLICATION_TYPE" = "compliance-inventory" ]; then
+	exec bundle exec racecar InventoryEventsConsumer
+elif [ "$APPLICATION_TYPE" = "compliance-sidekiq" ]; then
+	exec bundle exec sidekiq
+elif [ "$APPLICATION_TYPE" = "compliance-prometheus-exporter" ]; then
+	exec bundle exec prometheus_exporter -b 0.0.0.0 --prefix compliance_ -t 50 --verbose -a lib/prometheus/graphql_collector.rb -a lib/prometheus/business_collector.rb
+elif [ "$APPLICATION_TYPE" = "compliance-import-remediations" ]; then
+	exec bundle exec rake import_remediations --trace
+elif [ "$APPLICATION_TYPE" = "compliance-import-ssg" ]; then
+	exec bundle exec rake ssg:import_rhel_supported --trace
+fi
