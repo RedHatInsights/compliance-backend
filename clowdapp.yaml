@@ -1,0 +1,260 @@
+---
+apiVersion: v1
+kind: Template
+metadata:
+  name: "${APP_NAME}"
+objects:
+- apiVersion: cloud.redhat.com/v1alpha1
+  kind: ClowdApp
+  metadata:
+    name: compliance-prometheus-exporter
+    annotations:
+      prometheus.io/path: /metrics
+      prometheus.io/port: "9394"
+      prometheus.io/scrape: "true"
+  spec:
+    envName: ${ENV_NAME}
+# We need to add a shared DB definition here ...
+# Perhaps on the defintion of compliance-backend we
+# should create the DB , and make all services depend
+# on it. The "source DB" for every other service must
+# be the one in charge of running DB migrations. I'd not
+# like it to be compliance-prometheus-exporter. That would
+# look VERY weird ...
+#    database:
+#      sharedDbAppName: compliance-backend
+#      version: 12
+#    dependencies:
+#      compliance-backend
+    database:
+      name: compliance
+    inMemoryDb: true
+#    optionalDependencies:
+#    - rbac
+    deployments:
+    - name: service
+      minReplicas: ${{REPLICAS_PROMETHEUS}}
+#      webServices:
+#        public:
+#          enabled: true
+      podSpec:
+        image: ${IMAGE}:${IMAGE_TAG}
+        initContainers:
+        - name: run-migrations
+          image: " "
+          imagePullPolicy: Always
+          command:
+            - bash
+            - -c
+            - |
+              set -e
+              RAILS_ENV="${RAILS_ENV}" bundle exec rake --trace db:debug db:migrate
+          env:
+          - name: RAILS_ENV
+            value: "${RAILS_ENV}"
+          - name: PATH_PREFIX
+            value: "${PATH_PREFIX}"
+          - name: RAILS_LOG_TO_STDOUT
+            value: "${RAILS_LOG_TO_STDOUT}"
+          - name: POSTGRESQL_MAX_CONNECTIONS
+            value: ${POSTGRESQL_MAX_CONNECTIONS}
+#          - name: DATABASE_SERVICE_NAME
+#            value: "${DATABASE_SERVICE_NAME}"
+#          - name: POSTGRESQL_USER
+#            valueFrom:
+#              secretKeyRef:
+#                key: db.user
+#                name: compliance-db
+#          - name: POSTGRESQL_PASSWORD
+#            valueFrom:
+#              secretKeyRef:
+#                key: db.password
+#                name: compliance-db
+#          - name: COMPLIANCE_DB_SERVICE_HOST
+#            valueFrom:
+#              secretKeyRef:
+#                key: db.host
+#                name: compliance-db
+#          - name: POSTGRESQL_DATABASE
+#            valueFrom:
+#              secretKeyRef:
+#                key: db.name
+#                name: compliance-db
+#          - name: SECRET_KEY_BASE
+#            valueFrom:
+#              secretKeyRef:
+#                key: secret_key_base
+#                name: compliance-backend
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /playbooks
+            port: web
+            scheme: HTTP
+          initialDelaySeconds: 35
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 120
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /playbooks
+            port: web
+            scheme: HTTP
+          initialDelaySeconds: 35
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 120
+        env:
+        - name: APPLICATION_TYPE
+          value: compliance-prometheus-exporter
+        - name: RAILS_ENV
+          value: "${RAILS_ENV}"
+        - name: PATH_PREFIX
+          value: "${PATH_PREFIX}"
+        - name: APP_NAME
+          value: "${APP_NAME}"
+        - name: PGSSLMODE
+          value: ${PGSSLMODE}
+        - name: PGSSLROOTCERT
+          value: /etc/rds-certs/rds-cacert
+        - name: POSTGRESQL_MAX_CONNECTIONS
+          value: ${POSTGRESQL_MAX_CONNECTIONS}
+        - name: RAILS_LOG_TO_STDOUT
+          value: "${RAILS_LOG_TO_STDOUT}"
+        - name: SETTINGS__REDIS_SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__REDIS_CACHE_SSL
+          value: "${REDIS_SSL}"
+#        - name: DATABASE_SERVICE_NAME
+#          value: "${DATABASE_SERVICE_NAME}"
+#        - name: POSTGRESQL_USER
+#          valueFrom:
+#            secretKeyRef:
+#              key: db.user
+#              name: compliance-db
+#        - name: POSTGRESQL_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              key: db.password
+#              name: compliance-db
+#        - name: COMPLIANCE_DB_SERVICE_HOST
+#          valueFrom:
+#            secretKeyRef:
+#              key: db.host
+#              name: compliance-db
+#        - name: POSTGRESQL_DATABASE
+#          valueFrom:
+#            secretKeyRef:
+#              key: db.name
+#              name: compliance-db
+#        - name: REDIS_HOST
+#          valueFrom:
+#            secretKeyRef:
+#              key: db.endpoint
+#              name: compliance-elasticache-redis
+#        - name: REDIS_PORT
+#          valueFrom:
+#            secretKeyRef:
+#              key: db.port
+#              name: compliance-elasticache-redis
+#        - name: SETTINGS__REDIS_URL
+#          value: "$(REDIS_HOST):$(REDIS_PORT)"
+#        - name: SETTINGS__REDIS_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              key: db.auth_token
+#              name: compliance-elasticache-redis
+#        - name: SETTINGS__REDIS_CACHE_URL
+#          value: "$(REDIS_HOST):$(REDIS_PORT)"
+#        - name: SETTINGS__REDIS_CACHE_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              key: db.auth_token
+#              name: compliance-elasticache-redis
+#        - name: SECRET_KEY_BASE
+#          valueFrom:
+#            secretKeyRef:
+#              key: secret_key_base
+#              name: compliance-backend
+        livenessProbe:
+#          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 9394
+            scheme: HTTP
+#          initialDelaySeconds: 120
+#          periodSeconds: 60
+#          successThreshold: 1
+#          timeoutSeconds: 15
+        readinessProbe:
+#          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 9394
+            scheme: HTTP
+#          initialDelaySeconds: 60
+#          periodSeconds: 10
+#          successThreshold: 1
+#          timeoutSeconds: 15
+        resources:
+          limits:
+            cpu: "${CPU_LIMIT_PROM}"
+            memory: "${MEMORY_LIMIT_PROM}"
+          requests:
+            cpu: "${CPU_REQUEST_PROM}"
+            memory: "${MEMORY_REQUEST_PROM}"
+        volumeMounts:
+        - mountPath: /etc/rds-certs
+          name: rds-client-ca
+          readOnly: true
+        volumes:
+        - name: rds-client-ca
+          secret:
+            secretName: rds-client-ca
+
+parameters:
+- name: MIN_REPLICAS
+  value: '1'
+- description: Image tag
+  name: IMAGE_TAG
+  required: true
+  value: latest
+- description: Image name
+  name: IMAGE
+  value: quay.io/cloudservices/compliance-ssg
+- description: ClowdEnv Name
+  name: ENV_NAME
+  requred: false
+- description: Replica count for prometheus-exporter
+  name: REPLICAS_PROMETHEUS
+  value: "1"
+- name: RAILS_ENV
+  required: true
+  value: production
+- name: PATH_PREFIX
+  required: true
+  value: /api
+- name: RAILS_LOG_TO_STDOUT
+  value: "true"
+- name: APP_NAME
+  required: true
+  value: compliance
+- name: PGSSLMODE
+  description: 'Options can be found in the doc: https://www.postgresql.org/docs/current/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS'
+  displayName: Postgres SSL mode
+  value: verify-full
+- name: MEMORY_LIMIT_PROM
+  value: 300Mi
+- name: MEMORY_REQUEST_PROM
+  value: 200Mi
+- name: CPU_LIMIT_PROM
+  value: 400m
+- name: CPU_REQUEST_PROM
+  value: 100m
+- name: POSTGRESQL_MAX_CONNECTIONS
+  description: Number of maximum database connections
+  value: "50"
+- name: REDIS_SSL
+  description: 'Whether to use secured connection to Redis. Use string values of true or false'
+  value: "true"
