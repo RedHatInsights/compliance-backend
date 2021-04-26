@@ -119,6 +119,13 @@ GEM
     exception_notification (4.4.0)
       actionmailer (>= 4.0, < 7)
       activesupport (>= 4.0, < 7)
+    factory_bot (6.1.0)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.1.0)
+      factory_bot (~> 6.1.0)
+      railties (>= 5.0.0)
+    faker (2.17.0)
+      i18n (>= 1.6, < 2)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
     fast_jsonapi (1.5)
@@ -359,6 +366,8 @@ DEPENDENCIES
   config
   dotenv-rails
   exception_notification
+  factory_bot_rails
+  faker
   faraday
   fast_jsonapi
   friendly_id (~> 5.2.4)
