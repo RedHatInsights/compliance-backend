@@ -1,5 +1,5 @@
 ---
-revision: '2021-01-27'
+revision: '2021-03-08'
 supported:
   RHEL-6.6:
     - package: scap-security-guide-0.1.18-3.el6
@@ -234,6 +234,28 @@ supported:
         stig:
     - package: scap-security-guide-0.1.52-2.el7_9
       version: 0.1.52
+      profiles:
+        anssi_nt28_enhanced:
+        anssi_nt28_high:
+        anssi_nt28_intermediary:
+        anssi_nt28_minimal:
+        C2S:
+        cis:
+        cjis:
+        cui:
+        e8:
+        hipaa:
+        ncp:
+        ospp:
+        pci-dss_centric:
+        pci-dss:
+        rhelh-stig:
+        rhelh-vpp:
+        rht-ccp:
+        standard:
+        stig:
+    - package: scap-security-guide-0.1.54-3.el7_9
+      version: 0.1.54
       profiles:
         anssi_nt28_enhanced:
         anssi_nt28_high:
