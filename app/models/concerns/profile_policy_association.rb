@@ -30,6 +30,7 @@ module ProfilePolicyAssociation
 
       error_msg = 'must be unique. Another policy with '\
                   'this policy type already exists.'
+
       profile = ::Profile.includes(:benchmark).find_by(
         ref_id: ref_id, account: account, external: false,
         benchmarks: { ref_id: benchmark.ref_id }

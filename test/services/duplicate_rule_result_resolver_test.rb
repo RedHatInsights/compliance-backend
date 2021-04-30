@@ -15,8 +15,12 @@ class DuplicateRuleResultResolverTest < ActiveSupport::TestCase
     end
     # rubocop:enable Lint/SuppressedException
 
+    User.current = FactoryBot.create(:user)
+    rr = FactoryBot.create(:rule_result)
+    User.current = nil
+
     assert_difference('RuleResult.count' => 1) do
-      (@dup_result = rule_results(:one).dup).save(validate: false)
+      (@dup_result = rr.dup).save(validate: false)
     end
   end
 

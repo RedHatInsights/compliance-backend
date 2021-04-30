@@ -48,7 +48,6 @@ unless Rails.env.production?
 
   module ActiveSupport
     class TestCase
-      fixtures :all
       self.use_transactional_tests = true
 
       setup do

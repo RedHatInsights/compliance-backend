@@ -4,7 +4,7 @@ require 'test_helper'
 
 class CreateBusinessObjectiveMutationTest < ActiveSupport::TestCase
   test 'create business objective' do
-    query = <<-GRAPHQL
+    QUERY = <<-GRAPHQL
        mutation createBusinessObjective($input: createBusinessObjectiveInput!) {
           createBusinessObjective(input: $input) {
              businessObjective {
@@ -15,14 +15,14 @@ class CreateBusinessObjectiveMutationTest < ActiveSupport::TestCase
        }
     GRAPHQL
 
-    users(:test).update account: accounts(:test)
+    user = FactoryBot.create(:user)
 
     result = Schema.execute(
-      query,
+      QUERY,
       variables: { input: {
         title: 'foobar'
       } },
-      context: { current_user: users(:test) }
+      context: { current_user: user }
     )['data']['createBusinessObjective']['businessObjective']
 
     assert_equal result['title'], 'foobar'

@@ -20,52 +20,66 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
   GRAPHQL
 
   setup do
-    users(:test).update! account: accounts(:one)
-    profiles(:one).update! account: accounts(:one), hosts: [hosts(:one)]
-    test_results(:one).update! host: hosts(:one), profile: profiles(:one)
+    @user = FactoryBot.create(:user)
+    @profile = FactoryBot.create(:profile, account: @user.account)
+    @host = FactoryBot.create(:host, account: @user.account.account_number)
+    @tr = FactoryBot.create(
+      :test_result,
+      profile: @profile,
+      host: @host
+    )
+    @profile.policy.update(hosts: [@host])
   end
 
   test 'delete a test result keeps the profile if part of a policy' do
-    profiles(:one).update(policy: policies(:one), external: true)
+    @profile.update(external: true)
     assert_difference('TestResult.count', -1) do
       assert_difference('Profile.count', 0) do
         result = Schema.execute(
           QUERY,
           variables: { input: {
-            profileId: profiles(:one).id
+            profileId: @profile.id
           } },
-          context: { current_user: users(:test) }
+          context: { current_user: @user }
         ).dig('data', 'deleteTestResults')
-        assert_equal profiles(:one).id, result.dig('profile', 'id')
-        assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
+        assert_equal @profile.id, result.dig('profile', 'id')
+        assert_equal @tr.id, result.dig('testResults', 0, 'id')
       end
     end
     assert_audited 'Removed all user scoped test results'
     assert_audited 'of policy'
-    assert_audited profiles(:one).id
+    assert_audited @profile.policy.id
   end
 
   test 'delete test results from initial policy profile deletes all results'\
        'in the policy' do
-    profiles(:one).update!(policy: policies(:one), external: false)
-    profiles(:two).update!(policy: policies(:one), external: true,
-                           account: accounts(:test))
-    test_results(:two).update! host: hosts(:two), profile: profiles(:two)
+    profile2 = FactoryBot.create(
+      :profile,
+      account: @user.account,
+      parent_profile: @profile.parent_profile,
+      policy: @profile.policy,
+      external: true
+    )
+
+    host2 = FactoryBot.create(:host, account: @user.account.account_number)
+    profile2.policy.update(hosts: [@host, host2])
+    FactoryBot.create(:test_result, profile: profile2, host: host2)
+
     assert_difference('TestResult.count', -2) do
       assert_difference('Profile.count', 0) do
         result = Schema.execute(
           QUERY,
           variables: { input: {
-            profileId: profiles(:one).id
+            profileId: @profile.id
           } },
-          context: { current_user: users(:test) }
+          context: { current_user: @user }
         ).dig('data', 'deleteTestResults')
-        assert_equal profiles(:one).id, result.dig('profile', 'id')
-        assert_equal test_results(:one).id, result.dig('testResults', 0, 'id')
+        assert_equal @profile.id, result.dig('profile', 'id')
+        assert_includes result.dig('testResults').map { |tr| tr['id'] }, @tr.id
       end
     end
     assert_audited 'Removed all user scoped test results'
     assert_audited 'of policy'
-    assert_audited policies(:one).id
+    assert_audited @profile.policy.id
   end
 end

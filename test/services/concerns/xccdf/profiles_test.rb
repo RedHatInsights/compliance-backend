@@ -17,9 +17,9 @@ module Xccdf
     include Xccdf::Profiles
 
     setup do
-      @account = accounts(:test)
-      @host = hosts(:one)
-      @benchmark = benchmarks(:one)
+      @account = FactoryBot.create(:account)
+      @host = FactoryBot.create(:host, account: @account.account_number)
+      @benchmark = FactoryBot.create(:canonical_profile, :with_rules).benchmark
       parser = OpenscapParser::TestResultFile.new(
         file_fixture('xccdf_report.xml').read
       )

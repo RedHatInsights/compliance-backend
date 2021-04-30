@@ -1,13 +1,1 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  host_id: '5e65ac3f-8b44-4f60-9e99-abdafb31740c'
-  rule: one
-  test_result: one
-  result: pass
-
-two:
-  host_id: '328fb4c0-42fc-0139-06c0-6e70056f34f5'
-  rule: two
-  test_result: two
-  result: fail

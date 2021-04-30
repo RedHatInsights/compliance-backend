@@ -4,8 +4,13 @@ require 'test_helper'
 
 class ProfileQueryTest < ActiveSupport::TestCase
   setup do
-    users(:test).update account: accounts(:test)
-    profiles(:one).update account: accounts(:test)
+    @user = FactoryBot.create(:user)
+    @profile = FactoryBot.create(
+      :profile,
+      :with_rules,
+      rule_count: 2,
+      account: @user.account
+    )
   end
 
   test 'query profile owned by the user' do
@@ -21,17 +26,15 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
     result = Schema.execute(
       query,
-      variables: { id: profiles(:one).id },
-      context: { current_user: users(:test) }
+      variables: { id: @profile.id },
+      context: { current_user: @user }
     )
 
-    assert_equal profiles(:one).name, result['data']['profile']['name']
-    assert_equal profiles(:one).ref_id, result['data']['profile']['refId']
+    assert_equal @profile.name, result['data']['profile']['name']
+    assert_equal @profile.ref_id, result['data']['profile']['refId']
   end
 
   test 'query profile policyType' do
-    profiles(:one).update!(parent_profile: profiles(:two))
-
     query = <<-GRAPHQL
       query Profile($id: String!){
           profile(id: $id) {
@@ -45,17 +48,15 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
     result = Schema.execute(
       query,
-      variables: { id: profiles(:one).id },
-      context: { current_user: users(:test) }
+      variables: { id: @profile.id },
+      context: { current_user: @user }
     )
 
-    assert_equal profiles(:one).parent_profile.name,
+    assert_equal @profile.parent_profile.name,
                  result['data']['profile']['policyType']
   end
 
   test 'query profile parentProfileId' do
-    profiles(:one).update!(parent_profile: profiles(:two))
-
     query = <<-GRAPHQL
       query Profile($id: String!){
           profile(id: $id) {
@@ -67,11 +68,11 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
     result = Schema.execute(
       query,
-      variables: { id: profiles(:one).id },
-      context: { current_user: users(:test) }
+      variables: { id: @profile.id },
+      context: { current_user: @user }
     )
 
-    assert_equal profiles(:one).parent_profile_id,
+    assert_equal @profile.parent_profile_id,
                  result['data']['profile']['parentProfileId']
   end
 
@@ -86,16 +87,16 @@ class ProfileQueryTest < ActiveSupport::TestCase
       }
     GRAPHQL
 
-    assert profiles(:one).benchmark.version
+    assert @profile.benchmark.version
 
     result = Schema.execute(
       query,
-      variables: { id: profiles(:one).id },
-      context: { current_user: users(:test) }
+      variables: { id: @profile.id },
+      context: { current_user: @user }
     )
 
-    assert_equal profiles(:one).ref_id, result['data']['profile']['refId']
-    assert_equal profiles(:one).benchmark.version,
+    assert_equal @profile.ref_id, result['data']['profile']['refId']
+    assert_equal @profile.benchmark.version,
                  result['data']['profile']['ssgVersion']
   end
 
@@ -110,32 +111,35 @@ class ProfileQueryTest < ActiveSupport::TestCase
       }
     GRAPHQL
 
-    profiles(:one).update account: accounts(:test),
-                          parent_profile: profiles(:two)
-    users(:test).update account: accounts(:two)
+    @profile.update!(account: FactoryBot.create(:account))
 
     assert_raises(Pundit::NotAuthorizedError) do
       Schema.execute(
         query,
-        variables: { id: profiles(:one).id },
-        context: { current_user: users(:test) }
+        variables: { id: @profile.id },
+        context: { current_user: @user }
       )
     end
   end
 
   context 'policy profiles' do
     setup do
-      policies(:one).update!(account: accounts(:test),
-                             hosts: [hosts(:one), hosts(:two)])
+      @hosts = FactoryBot.create_list(
+        :host,
+        2,
+        account: @user.account.account_number
+      )
 
-      (parent = profiles(:one).dup).update!(account: nil, hosts: [])
-      profiles(:one).update!(policy: policies(:one),
-                             external: false,
-                             parent_profile: parent)
-      profiles(:two).update!(account: accounts(:test),
-                             external: true,
-                             parent_profile: parent,
-                             policy: policies(:one))
+      @profile2 = FactoryBot.create(
+        :profile,
+        policy: @profile.policy,
+        ref_id: @profile.ref_id,
+        name: @profile.name,
+        account: @user.account,
+        external: true
+      )
+
+      @profile.policy.update!(hosts: @hosts)
     end
 
     should 'query profile with a policy owned by the user' do
@@ -156,18 +160,18 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
       result = Schema.execute(
         query,
-        variables: { id: profiles(:two).id },
-        context: { current_user: users(:test) }
+        variables: { id: @profile2.id },
+        context: { current_user: @user }
       )
 
-      assert_equal policies(:one).name, result['data']['profile']['name']
-      assert_equal profiles(:two).ref_id, result['data']['profile']['refId']
+      assert_equal @profile.policy.name, result['data']['profile']['name']
+      assert_equal @profile2.ref_id, result['data']['profile']['refId']
 
-      assert_equal profiles(:one).id,
+      assert_equal @profile.id,
                    result['data']['profile']['policy']['id']
-      assert_equal profiles(:one).ref_id,
+      assert_equal @profile.ref_id,
                    result['data']['profile']['policy']['refId']
-      assert_equal policies(:one).name,
+      assert_equal @profile.name,
                    result['data']['profile']['policy']['name']
     end
 
@@ -194,29 +198,29 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
       result = Schema.execute(
         query,
-        variables: { id: profiles(:one).id },
-        context: { current_user: users(:test) }
+        variables: { id: @profile.id },
+        context: { current_user: @user }
       )
 
-      assert_equal policies(:one).name, result['data']['profile']['name']
-      assert_equal policies(:one).description,
+      assert_equal @profile.policy.name, result['data']['profile']['name']
+      assert_equal @profile.policy.description,
                    result['data']['profile']['description']
-      assert_equal profiles(:one).ref_id, result['data']['profile']['refId']
+      assert_equal @profile.ref_id, result['data']['profile']['refId']
 
       returned_profiles = result['data']['profile']['policy']['profiles']
       assert_equal returned_profiles.count, 2
 
       policy_profile =
-        returned_profiles.find { |rp| rp['id'] == profiles(:one).id }
-      assert_equal profiles(:one).ref_id, policy_profile['refId']
-      assert_equal policies(:one).name, policy_profile['name']
-      assert_equal policies(:one).description, policy_profile['description']
+        returned_profiles.find { |rp| rp['id'] == @profile.id }
+      assert_equal @profile.ref_id, policy_profile['refId']
+      assert_equal @profile.policy.name, policy_profile['name']
+      assert_equal @profile.policy.description, policy_profile['description']
 
       second_profile =
-        returned_profiles.find { |rp| rp['id'] == profiles(:two).id }
-      assert_equal profiles(:two).ref_id, second_profile['refId']
-      assert_equal policies(:one).name, second_profile['name']
-      assert_equal policies(:one).description, second_profile['description']
+        returned_profiles.find { |rp| rp['id'] == @profile2.id }
+      assert_equal @profile2.ref_id, second_profile['refId']
+      assert_equal @profile.policy.name, second_profile['name']
+      assert_equal @profile.policy.description, second_profile['description']
     end
 
     should 'query profile with a policy profiles using any policy profile' \
@@ -242,88 +246,91 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
       result = Schema.execute(
         query,
-        variables: { id: profiles(:two).id },
-        context: { current_user: users(:test) }
+        variables: { id: @profile2.id },
+        context: { current_user: @user }
       )
 
-      assert_equal policies(:one).name, result['data']['profile']['name']
-      assert_equal profiles(:two).ref_id, result['data']['profile']['refId']
+      assert_equal @profile.policy.name, result['data']['profile']['name']
+      assert_equal @profile2.ref_id, result['data']['profile']['refId']
 
       returned_profiles = result['data']['profile']['policy']['profiles']
       assert_equal returned_profiles.count, 2
 
       policy_profile =
-        returned_profiles.find { |rp| rp['id'] == profiles(:one).id }
-      assert_equal profiles(:one).ref_id, policy_profile['refId']
-      assert_equal policies(:one).name, policy_profile['name']
-      assert_equal policies(:one).description, policy_profile['description']
+        returned_profiles.find { |rp| rp['id'] == @profile.id }
+      assert_equal @profile.ref_id, policy_profile['refId']
+      assert_equal @profile.policy.name, policy_profile['name']
+      assert_equal @profile.policy.description, policy_profile['description']
 
       second_profile =
-        returned_profiles.find { |rp| rp['id'] == profiles(:two).id }
-      assert_equal profiles(:two).ref_id, second_profile['refId']
-      assert_equal policies(:one).name, second_profile['name']
-      assert_equal policies(:one).description, second_profile['description']
+        returned_profiles.find { |rp| rp['id'] == @profile2.id }
+      assert_equal @profile2.ref_id, second_profile['refId']
+      assert_equal @profile.policy.name, second_profile['name']
+      assert_equal @profile.policy.description, second_profile['description']
     end
-  end
 
-  test 'query all profiles' do
-    query = <<-GRAPHQL
-    {
-        allProfiles {
-            id
-            name
-            totalHostCount
-            testResultHostCount
-            compliantHostCount
-            unsupportedHostCount
-            osMinorVersion
-            osVersion
-            businessObjective {
-               title
-            }
-            hosts {
-               id
-            }
-        }
-    }
-    GRAPHQL
+    should 'query all profiles' do
+      query = <<-GRAPHQL
+      {
+          allProfiles {
+              id
+              name
+              totalHostCount
+              testResultHostCount
+              compliantHostCount
+              unsupportedHostCount
+              osMinorVersion
+              osVersion
+              businessObjective {
+                 title
+              }
+              hosts {
+                 id
+              }
+          }
+      }
+      GRAPHQL
 
-    test_results(:one).update(profile: profiles(:one), host: hosts(:one),
-                              score: 100)
-    test_results(:two).update(profile: profiles(:two), host: hosts(:two),
-                              score: 90, supported: false)
-    profiles(:one).rules << rules(:one)
-    profiles(:one).rules << rules(:two)
-    profiles(:one).update(account: accounts(:test),
-                          policy: policies(:one),
-                          os_minor_version: 4)
-    profiles(:two).update(account: accounts(:test),
-                          policy: policies(:one))
-    policies(:one).update(compliance_threshold: 95,
-                          account: accounts(:test),
-                          hosts: [hosts(:one)])
+      FactoryBot.create(
+        :test_result,
+        profile: @profile,
+        host: @hosts.first,
+        score: 100
+      )
 
-    result = Schema.execute(
-      query,
-      variables: {},
-      context: { current_user: users(:test) }
-    )
+      FactoryBot.create(
+        :test_result,
+        profile: @profile2,
+        host: @hosts.last,
+        score: 90,
+        supported: false
+      )
 
-    profile1_result = result['data']['allProfiles'].find do |h|
-      h['id'] == profiles(:one).id
+      @profile.update!(os_minor_version: 4)
+      @profile.policy.update!(compliance_threshold: 95, hosts: [@hosts.first])
+
+      result = Schema.execute(
+        query,
+        variables: {},
+        context: { current_user: @user }
+      )
+
+      profile1_result = result['data']['allProfiles'].find do |h|
+        h['id'] == @profile.id
+      end
+      profile2_result = result['data']['allProfiles'].find do |h|
+        h['id'] == @profile2.id
+      end
+      assert_equal @profile.policy.name, profile1_result['name']
+      assert_equal 1, profile1_result['totalHostCount']
+      assert_equal 1, profile2_result['totalHostCount']
+      assert_equal 1, profile1_result['testResultHostCount']
+      assert_equal 1, profile1_result['compliantHostCount']
+      assert_equal 1, profile1_result['unsupportedHostCount']
+      assert_equal 1, profile1_result['hosts'].length
+      assert_equal '4', profile1_result['osMinorVersion']
+      assert_equal '7.4', profile1_result['osVersion']
+      assert_not profile1_result['businessObjective']
     end
-    profile2_result = result['data']['allProfiles'].find do |h|
-      h['id'] == profiles(:two).id
-    end
-    assert_equal policies(:one).name, profile1_result['name']
-    assert_equal 1, profile1_result['totalHostCount']
-    assert_equal 1, profile2_result['totalHostCount']
-    assert_equal 1, profile1_result['testResultHostCount']
-    assert_equal 1, profile1_result['compliantHostCount']
-    assert_equal 1, profile1_result['unsupportedHostCount']
-    assert_equal 1, profile1_result['hosts'].length
-    assert_equal '4', profile1_result['osMinorVersion']
-    assert_equal '7.4', profile1_result['osVersion']
-    assert_not profile1_result['businessObjective']
   end
 end

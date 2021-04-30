@@ -9,84 +9,95 @@ class RuleTest < ActiveSupport::TestCase
   setup do
     fake_report = file_fixture('xccdf_report.xml').read
     @op_rules = OpenscapParser::TestResultFile.new(fake_report).benchmark.rules
+
+    account = FactoryBot.create(:account)
+    @profile = FactoryBot.create(
+      :profile,
+      :with_rules,
+      account: account,
+      rule_count: 1
+    )
+
+    @rule = @profile.rules.first
+
+    @host = FactoryBot.create(:host, account: account.account_number)
   end
 
   test 'creates rules from openscap_parser Rule object' do
     assert Rule.from_openscap_parser(@op_rules.first,
-                                     benchmark_id: benchmarks(:one).id).save
+                                     benchmark_id: @profile.benchmark.id).save
   end
 
   test 'host one is not compliant?' do
-    assert_not rules(:one).compliant?(hosts(:one), rules(:one).profiles.first)
+    assert_not @rule.compliant?(@host, @profile)
   end
 
   test 'host one is compliant?' do
-    rules(:one).profiles << profiles(:one)
-    rule_results(:one).update(host: hosts(:one), rule: rules(:one))
-    test_result = TestResult.create(profile: profiles(:one), host: hosts(:one),
-                                    end_time: DateTime.now)
-    test_result.rule_results << rule_results(:one)
-    assert rules(:one).compliant?(hosts(:one), profiles(:one))
+    tr = FactoryBot.create(:test_result, profile: @profile, host: @host)
+    FactoryBot.create(:rule_result, rule: @rule, test_result: tr, host: @host)
+
+    assert @rule.compliant?(@host, @profile)
   end
 
   test 'rule is found with_references' do
-    rules(:one).update(rule_references: [rule_references(:one)])
-    assert Rule.with_references(rule_references(:one).label)
-               .include?(rules(:one)),
+    rr = FactoryBot.create(:rule_reference, rules: [@rule])
+
+    assert Rule.with_references(rr.label)
+               .include?(@rule),
            'Expected rule not found by references'
   end
 
   test 'rule is found with_identifier' do
-    rules(:one).update(rule_identifier: rule_identifiers(:one))
-    assert Rule.with_identifier(rule_identifiers(:one).label)
-               .include?(rules(:one)),
+    ri = FactoryBot.create(:rule_identifier, rule: @rule)
+    assert Rule.with_identifier(ri.label).include?(@rule),
            'Expected rule not found by identifier'
   end
 
   test 'rule is identified properly as canonical' do
-    assert_not rules(:one).canonical?,
+    rule = FactoryBot.create(:rule, benchmark: @profile.benchmark)
+
+    assert_not rule.canonical?,
                'Rule :one should not be canonical to start'
-    rules(:one).profiles << Profile.create!(
-      ref_id: 'foo', name: 'foo', benchmark: benchmarks(:one)
-    )
-    assert rules(:one).canonical?, 'Rule :one should be canonical'
+    rule.update!(profiles: [@profile.parent_profile])
+    assert rule.canonical?, 'Rule :one should be canonical'
   end
 
   test 'canonical rules are found via canonical scope' do
+    @rule.update(profiles: [])
     assert_empty Rule.canonical, 'No canonical rules should exist'
-    rules(:one).profiles << Profile.create!(
-      ref_id: 'foo', name: 'foo', benchmark: benchmarks(:one)
-    )
-    assert_equal [rules(:one)], Rule.canonical
+    @rule.update(profiles: [@profile.parent_profile])
+    assert_equal [@rule], Rule.canonical
   end
 
   test 'rule generates remediation issue id' do
-    rule = rules(:one)
-    profiles(:one).test_results.destroy_all
-    profiles(:one).update!(
+    rule = @profile.rules.first
+    rule.update!(ref_id: 'MyStringOne')
+    @profile.test_results.destroy_all
+    @profile.parent_profile.update!(
       ref_id: 'xccdf_org.ssgproject.content_profile_profile1'
     )
-    rule.profiles << profiles(:one)
 
     assert_equal rule.remediation_issue_id, 'ssg:rhel7|profile1|MyStringOne'
   end
 
   test 'rule generates remediation issue id for RHEL8' do
-    profiles(:one).test_results.destroy_all
-    benchmark = benchmarks(:one)
-    benchmark.update!(ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-8')
+    @profile.benchmark.update!(
+      ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-8'
+    )
 
-    rule = rules(:one)
-    profiles(:one).update!(
+    @profile.parent_profile.update!(
       ref_id: 'xccdf_org.ssgproject.content_profile_profile1'
     )
-    rule.profiles << profiles(:one)
 
-    assert_equal rule.remediation_issue_id, 'ssg:rhel8|profile1|MyStringOne'
+    @rule.update!(
+      ref_id: 'hello'
+    )
+
+    assert_equal @rule.remediation_issue_id, 'ssg:rhel8|profile1|hello'
   end
 
   test 'rule empty remediation issue id for a rule without a profile' do
-    rule = rules(:one)
-    assert_nil rule.remediation_issue_id
+    @rule.update(profiles: [])
+    assert_nil @rule.remediation_issue_id
   end
 end

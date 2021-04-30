@@ -4,228 +4,305 @@ require 'test_helper'
 require 'sidekiq/testing'
 
 class ProfileTest < ActiveSupport::TestCase
+  context 'model' do
+    setup { FactoryBot.create(:canonical_profile) }
+
+    should validate_presence_of :ref_id
+    should validate_uniqueness_of(:ref_id)
+      .scoped_to(%i[account_id benchmark_id os_minor_version policy_id])
+      .with_message('must be unique in a policy OS version')
+  end
+
   should have_many(:policy_hosts).through(:policy)
   should have_many(:assigned_hosts).through(:policy_hosts).source(:host)
   should have_many(:hosts).through(:test_results)
   should have_many(:test_results).dependent(:destroy)
   should have_many(:rule_results).through(:test_results)
   should belong_to(:policy).optional
-  should validate_uniqueness_of(:ref_id)
-    .scoped_to(%i[account_id benchmark_id os_minor_version policy_id])
-    .with_message('must be unique in a policy OS version')
-  should validate_presence_of :ref_id
   should validate_presence_of :name
 
   setup do
-    policies(:one).update!(hosts: [hosts(:one)], account: accounts(:one))
-    profiles(:one).update!(rules: [rules(:one), rules(:two)],
-                           account: accounts(:one))
+    @account = FactoryBot.create(:account)
+    @host = FactoryBot.create(:host, account: @account.account_number)
+    @policy = FactoryBot.create(:policy, account: @account, hosts: [@host])
   end
 
   test 'unqiness by ref_id for an internal profile' do
-    profiles(:one).update!(external: false)
+    profile = FactoryBot.create(:profile, account: @account)
 
     assert_raises ActiveRecord::RecordInvalid do
-      profiles(:one).dup.update!(policy_id: policies(:one).id)
+      profile.dup.update!(policy_id: @policy.id)
     end
   end
 
   test 'uniqness by ref_id in a policy, the same external boolean value' do
-    profiles(:one).update!(policy_id: policies(:one).id)
-    assert profiles(:one).policy_id
+    profile = FactoryBot.create(:profile, policy: @policy, account: @account)
+    assert profile.policy_id
 
     assert_raises ActiveRecord::RecordInvalid do
-      profiles(:one).dup.save!
+      profile.dup.save!
     end
   end
 
   test 'uniqness by ref_id in a policy, different external boolean value' do
-    profiles(:one).update!(policy_id: policies(:one).id)
-    assert profiles(:one).policy_id
+    profile = FactoryBot.create(:profile, policy: @policy, account: @account)
+    assert profile.policy_id
 
     assert_raises ActiveRecord::RecordInvalid do
-      profiles(:one).dup.update!(external: !profiles(:one).external)
+      profile.dup.update!(external: !profile.external)
     end
   end
 
   test 'uniqness of policy profiles by policy type' do
-    (bm = benchmarks(:one).dup).update!(version: '123')
-    profiles(:one).update!(policy_id: policies(:one).id,
-                           parent_profile: profiles(:two))
-    assert profiles(:one).policy_id
-    assert_not profiles(:one).external
+    profile = FactoryBot.create(:profile, account: @account, policy: @policy)
 
-    p = profiles(:one).dup
-    assert_not p.update(policy_id: policies(:two).id, benchmark: bm)
+    (bm = profile.benchmark.dup).update!(version: '123')
+
+    assert profile.policy_id
+    assert_not profile.external
+
+    policy = FactoryBot.create(:policy, account: @account)
+
+    p = profile.dup
+    assert_not p.update(policy_id: policy.id, benchmark: bm)
     assert p.errors.full_messages.join['Policy type must be unique']
   end
 
   test 'absence of a policy, but policy_id set' do
-    assert_nothing_raised do
-      profiles(:one).update!(policy_id: policies(:one).id)
-    end
+    profile = FactoryBot.create(:profile, account: @account)
 
-    assert_not profiles(:one).update(policy_id: UUID.generate)
-    assert_includes profiles(:one).errors[:policy], "can't be blank"
+    assert_not profile.update(policy_id: UUID.generate)
+    assert_includes profile.errors[:policy], "can't be blank"
   end
 
   test 'coexistence of external profiles with and without a policy' do
-    dupe1 = profiles(:one).dup
-    dupe1.update!(external: true, policy_id: policies(:one).id)
+    profile = FactoryBot.create(:profile, account: @account, policy: nil)
+    policy = FactoryBot.create(:policy, account: @account)
+
+    dupe1 = profile.dup
+    dupe1.update!(external: true, policy_id: @policy.id)
     assert dupe1.policy_id
 
-    profiles(:one).update!(external: true)
-    assert_not profiles(:one).policy_id
-    assert profiles(:one).external
+    profile.update!(external: true)
+    assert_not profile.policy_id
+    assert profile.external
 
-    dupe2 = profiles(:one).dup
-    dupe2.update!(external: true, policy_id: policies(:two).id)
+    dupe2 = profile.dup
+    dupe2.update!(external: true, policy_id: policy.id)
     assert dupe2.policy_id
   end
 
   test 'allows external profiles with same ref_id in two policies' do
-    profiles(:one).update!(external: true, policy_id: policies(:one).id)
-    assert profiles(:one).policy_id
+    profile = FactoryBot.create(
+      :profile,
+      policy: @policy,
+      account: @account,
+      external: true
+    )
 
-    dupe = profiles(:one).dup
-    dupe.update!(policy_id: policies(:two).id)
+    assert profile.policy_id
+
+    dupe = profile.dup
+    policy = FactoryBot.create(:policy, account: @account)
+    dupe.update!(policy_id: policy.id)
     assert dupe.policy_id
   end
 
   test 'policy_profile finds the initial profile of a policy' do
-    profiles(:one).update!(policy: policies(:one), external: false)
-    assert_equal profiles(:one), profiles(:one).policy_profile
-    profiles(:two).update!(policy: policies(:one), external: true,
-                           account: accounts(:test))
-    assert_equal profiles(:one), profiles(:one).policy_profile
-    assert_equal profiles(:one), profiles(:two).policy_profile
+    profile1 = FactoryBot.create(:profile, account: @account, policy: @policy)
+    profile2 = FactoryBot.create(
+      :profile,
+      account: @account,
+      parent_profile: profile1.parent_profile,
+      policy: @policy,
+      external: true
+    )
+
+    assert_equal profile1, profile1.policy_profile
+    assert_equal profile1, profile2.policy_profile
   end
 
   test 'creation of internal profile with a policy, external profile exists' do
-    profiles(:one).update!(external: true)
-    dupe = profiles(:one).dup
-    dupe.update!(external: false, policy_id: policies(:one).id)
+    profile = FactoryBot.create(:profile, account: @account, external: true)
+
+    dupe = profile.dup
+    dupe.update!(external: false, policy_id: @policy.id)
     assert dupe.policy_id
   end
 
-  test 'host is not compliant there are no results for all rules' do
-    assert_not profiles(:one).compliant?(hosts(:one))
-  end
+  context 'compliance' do
+    setup do
+      @host = FactoryBot.create(:host, account: @account.account_number)
+      @policy.hosts << @host
+      @profile = FactoryBot.create(
+        :profile,
+        :with_rules,
+        policy: @policy,
+        account: @account
+      )
 
-  test 'host is not compliant if some rules are "fail" or "error"' do
-    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
-                      test_result: test_results(:one))
-    RuleResult.create(rule: rules(:two), host: hosts(:one),
-                      test_result: test_results(:one), result: 'error')
-    assert_not profiles(:one).compliant?(hosts(:one))
+      @tr = FactoryBot.create(:test_result, profile: @profile, host: @host)
+    end
 
-    RuleResult.find_by(rule: rules(:two), host: hosts(:one),
-                       test_result: test_results(:one))
-              .update(result: 'fail')
-    assert_not profiles(:one).compliant?(hosts(:one))
-  end
+    should 'host not compliant if there are no results for all rules' do
+      assert_not @profile.compliant?(@host)
+    end
 
-  test 'compliance score in terms of percentage' do
-    test_results(:one).update(host: hosts(:one), profile: profiles(:one))
-    RuleResult.create(rule: rules(:one), host: hosts(:one), result: 'pass',
-                      test_result: test_results(:one))
-    RuleResult.create(rule: rules(:two), host: hosts(:one), result: 'fail',
-                      test_result: test_results(:one))
-    assert 0.5, profiles(:one).compliance_score(hosts(:one))
-  end
+    should 'host not compliant if some rules are "fail" or "error"' do
+      %w[pass error].each_with_index do |status, idx|
+        FactoryBot.create(
+          :rule_result,
+          rule: @profile.rules[idx],
+          test_result: @tr,
+          host: @host,
+          result: status
+        )
+      end
 
-  test 'score with non-blank test results' do
-    test_results(:one).update!(profile: profiles(:one), host: hosts(:one),
-                               score: 0.5, end_time: DateTime.now)
-    test_results(:two).update!(profile: profiles(:one), host: hosts(:two),
-                               score: 0.2, end_time: DateTime.now)
-    assert_equal 0.35, profiles(:one).score
-  end
+      assert_not @profile.compliant?(@host)
+    end
 
-  test 'score returns at least one decimal' do
-    test_results(:one).update!(profile: profiles(:one), host: hosts(:one),
-                               score: 1, end_time: DateTime.now)
-    test_results(:two).update!(profile: profiles(:one), host: hosts(:two),
-                               score: 0, end_time: DateTime.now)
-    assert_equal 0.5, profiles(:one).score
+    should 'compliance score in terms of percentage' do
+      %w[pass error].each_with_index do |status, idx|
+        FactoryBot.create(
+          :rule_result,
+          rule: @profile.rules[idx],
+          test_result: @tr,
+          host: @host,
+          result: status
+        )
+      end
+      assert 0.5, @profile.compliance_score(@host)
+    end
+
+    should 'score with non-blank test results' do
+      @tr.update(score: 0.5)
+      FactoryBot.create(
+        :test_result,
+        host: FactoryBot.create(:host, account: @account.account_number),
+        profile: @profile,
+        score: 0.2
+      )
+      assert_equal 0.35, @profile.score
+    end
+
+    should 'score returns at least one decimal' do
+      @tr.update(score: 1)
+      FactoryBot.create(
+        :test_result,
+        host: FactoryBot.create(:host, account: @account.account_number),
+        profile: @profile,
+        score: 0
+      )
+      assert_equal 0.5, @profile.score
+    end
   end
 
   context 'threshold' do
     setup do
-      test_results(:one).update(host: hosts(:one), profile: profiles(:one),
-                                score: 50)
-      profiles(:one).update!(policy_id: policies(:one).id)
-      assert_equal policies(:one), profiles(:one).policy
+      @profile = FactoryBot.create(:profile, account: @account, policy: @policy)
+      @host = FactoryBot.create(:host, account: @account.account_number)
+      FactoryBot.create(
+        :test_result,
+        host: @host,
+        profile: @profile,
+        score: 50
+      )
     end
 
     should 'host is compliant if 50% of rules pass with a threshold of 50' do
-      policies(:one).update(compliance_threshold: 50)
-      assert profiles(:one).reload.compliant?(hosts(:one))
+      @policy.update(compliance_threshold: 50)
+      assert @profile.reload.compliant?(@host)
     end
 
     should 'host is not compliant if 50% rules pass with a threshold of 51' do
-      policies(:one).update(compliance_threshold: 51)
-      assert_not profiles(:one).reload.compliant?(hosts(:one))
+      @policy.update(compliance_threshold: 51)
+      assert_not @profile.reload.compliant?(@host)
     end
 
     should 'host is compliant if it is compliant on some policy profile' do
-      profiles(:two).update!(policy: policies(:one),
-                             account: accounts(:one))
-      policies(:one).update(compliance_threshold: 50)
-      assert policies(:one).compliant?(hosts(:one))
-      assert profiles(:two).reload.compliant?(hosts(:one))
+      p2 = FactoryBot.create(:profile, policy: @policy, account: @account)
+      @policy.update(compliance_threshold: 50)
+      assert @policy.compliant?(@host)
+      assert p2.reload.compliant?(@host)
     end
   end
 
   test 'orphaned business objectives' do
-    profiles(:one).update!(policy_id: policies(:one).id)
-    bo = BusinessObjective.new(title: 'abcd')
-    bo.save
-    policies(:one).update(business_objective: bo)
-    assert profiles(:one).reload.business_objective, bo
-    policies(:one).update(business_objective: nil)
-    assert_empty BusinessObjective.where(title: 'abcd')
+    profile = FactoryBot.create(:profile, account: @account)
+    bo = FactoryBot.create(:business_objective)
+    title = bo.title
+    profile.policy.update!(business_objective: bo)
+    assert profile.reload.business_objective, bo
+    profile.policy.update!(business_objective: nil)
+    assert_empty BusinessObjective.where(title: title)
   end
 
   test 'business_objective comes from policy' do
-    policies(:one).update!(business_objective: business_objectives(:one))
-    profiles(:one).update!(policy: policies(:one))
-    assert_equal business_objectives(:one), profiles(:one).business_objective
+    profile = FactoryBot.create(:profile, account: @account)
+    bo = FactoryBot.create(:business_objective)
+    profile.policy.update!(business_objective: bo)
+    assert_equal bo, profile.business_objective
   end
 
   context 'destroying' do
     setup do
-      profiles(:one).update!(policy_id: policies(:one).id)
+      @profile = FactoryBot.create(
+        :profile,
+        :with_rules,
+        policy: @policy,
+        account: @account
+      )
     end
 
     should 'also destroys its policy if empty' do
       assert_difference('Profile.count' => -1, 'Policy.count' => -1) do
-        profiles(:one).destroy
+        @profile.destroy
       end
     end
 
     should 'also destroys its policy having more profiles' do
-      profiles(:two).update!(account: accounts(:one),
-                             external: true,
-                             policy_id: policies(:one).id)
+      FactoryBot.create(
+        :profile,
+        account: @account,
+        policy: @policy,
+        external: true
+      )
 
       assert_difference('Profile.count' => -2, 'Policy.count' => -1) do
-        profiles(:one).destroy
+        @profile.destroy
       end
     end
 
     should 'also destroys its related test results' do
-      assert_equal 1, profiles(:one).test_results.count
+      FactoryBot.create(
+        :test_result,
+        profile: @profile,
+        host: FactoryBot.create(:host, account: @account.account_number)
+      )
+
+      assert_equal 1, @profile.test_results.count
       assert_difference('Profile.count' => -1, 'TestResult.count' => -1) do
-        profiles(:one).destroy
+        @profile.destroy
       end
     end
 
     should 'also destroys its related rule results' do
-      assert_equal 1, profiles(:one).rule_results.count
+      tr = FactoryBot.create(
+        :test_result,
+        profile: @profile,
+        host: FactoryBot.create(:host, account: @account.account_number)
+      )
+
+      FactoryBot.create(
+        :rule_result,
+        host: tr.host,
+        rule: @profile.rules.first,
+        test_result: tr
+      )
+      assert_equal 1, @profile.rule_results.count
       assert_difference('Profile.count' => -1, 'RuleResult.count' => -1) do
-        profiles(:one).destroy
+        @profile.destroy
       end
     end
   end
@@ -235,65 +312,56 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'non-canonical profiles have a parent_profile_id' do
-    assert_not Profile.new(
-      parent_profile_id: profiles(:one).id
-    ).canonical?, 'non-nil parent_profile_id should not be canonical'
+    assert_not FactoryBot.create(:profile, account: @account).canonical?,
+               'non-nil parent_profile_id should not be canonical'
   end
 
   test 'canonical scope finds only canonical profiles' do
-    p1 = Profile.create!(ref_id: 'p1_foo_ref_id',
-                         name: 'p1 foo',
-                         benchmark_id: benchmarks(:one).id,
-                         parent_profile_id: profiles(:one).id)
-    p2 = Profile.create!(ref_id: 'p2_foo_ref_id',
-                         name: 'p2 foo',
-                         benchmark_id: benchmarks(:one).id)
+    p1 = FactoryBot.create(:profile, account: @account)
+    p2 = FactoryBot.create(:canonical_profile)
     assert_includes Profile.canonical, p2
     assert_not_includes Profile.canonical, p1
   end
 
   context 'in_policy scope' do
     setup do
-      profiles(:one).update!(policy: policies(:one),
-                             account: accounts(:one))
+      @profile = FactoryBot.create(:profile, account: @account, policy: @policy)
     end
 
     should 'find by exact profile id' do
-      profiles(:two).update!(account: accounts(:one))
-      assert_includes Profile.in_policy(profiles(:two).id),
-                      profiles(:two)
-      assert_equal 1, Profile.in_policy(profiles(:two).id).length
+      assert_includes Profile.in_policy(@profile.id), @profile
+      assert_equal 1, Profile.in_policy(@profile.id).length
     end
 
     should 'find all policy profiles with policy id provided' do
-      profiles(:two).update!(policy: policies(:one),
-                             external: true,
-                             account: accounts(:one))
+      p2 = FactoryBot.create(
+        :profile,
+        parent_profile: @profile.parent_profile,
+        external: true,
+        account: @account,
+        policy: @policy
+      )
 
-      profiles(:two).dup.update!(policy: policies(:two),
-                                 account: accounts(:one))
-
-      returned_profiles = Profile.in_policy(policies(:one).id)
-      assert_includes returned_profiles, profiles(:one)
-      assert_includes returned_profiles, profiles(:two)
+      returned_profiles = Profile.in_policy(@policy.id)
+      assert_includes returned_profiles, @profile
+      assert_includes returned_profiles, p2
       assert_equal 2, returned_profiles.length
     end
 
     should 'find all policy profiles with any policy profile id provided' do
       # set different UUIDs on profiles, as they share
       # the same labels/uuids with policies.
-      profiles(:one).update!(id: SecureRandom.uuid)
-      profiles(:two).update!(id: SecureRandom.uuid,
-                             policy: policies(:one),
-                             external: true,
-                             account: accounts(:one))
+      p2 = FactoryBot.create(
+        :profile,
+        parent_profile: @profile.parent_profile,
+        external: true,
+        account: @account,
+        policy: @policy
+      )
 
-      profiles(:two).dup.update!(policy: policies(:two).dup,
-                                 account: accounts(:one))
-
-      returned_profiles = Profile.in_policy(profiles(:two).id)
-      assert_includes returned_profiles, profiles(:one)
-      assert_includes returned_profiles, profiles(:two)
+      returned_profiles = Profile.in_policy(p2.id)
+      assert_includes returned_profiles, @profile
+      assert_includes returned_profiles, p2
       assert_equal 2, returned_profiles.length
     end
 
@@ -305,244 +373,252 @@ class ProfileTest < ActiveSupport::TestCase
   context 'first_by_os_minor_version_preferred' do
     setup do
       @os_minor_version = '1'
-      profiles(:one).update!(os_minor_version: @os_minor_version)
+      @profile1 = FactoryBot.create(
+        :profile,
+        os_minor_version: @os_minor_version,
+        account: @account
+      )
+      @profile2 = FactoryBot.create(
+        :profile,
+        parent_profile: @profile1.parent_profile,
+        account: @account,
+        policy: @policy
+      )
     end
 
     should 'prefer profile with exact OS minor' do
-      scoped = Profile.where(id: [profiles(:one), profiles(:two)])
-      assert_equal profiles(:one),
+      scoped = Profile.where(id: [@profile1, @profile2])
+      assert_equal @profile1,
                    scoped.first_by_os_minor_version_preferred(@os_minor_version)
     end
 
     should 'fallbacks to empty OS minor version' do
-      scoped = Profile.where(id: [profiles(:two)])
-      assert_equal profiles(:two),
+      scoped = Profile.where(id: [@profile2])
+      assert_equal @profile2,
                    scoped.first_by_os_minor_version_preferred(@os_minor_version)
     end
   end
 
   test 'has_test_results filters by test results available' do
-    test_results(:one).update profile: profiles(:one), host: hosts(:one)
-    profiles(:two).test_results.destroy_all
-    assert profiles(:one).test_results.present?
-    assert profiles(:two).test_results.empty?
-    assert_includes(Profile.search_for('has_test_results = true'),
-                    profiles(:one))
-    assert_not_includes(Profile.search_for('has_test_results = true'),
-                        profiles(:two))
-    assert_includes(Profile.search_for('has_test_results = false'),
-                    profiles(:two))
+    host = FactoryBot.create(:host, account: @account.account_number)
+    profile1 = FactoryBot.create(:profile, account: @account)
+    profile2 = FactoryBot.create(:profile, account: @account)
+    FactoryBot.create(:test_result, profile: profile1, host: host)
+
+    assert profile1.test_results.present?
+    assert profile2.test_results.empty?
+    assert_includes(Profile.search_for('has_test_results = true'), profile1)
+    assert_not_includes(Profile.search_for('has_test_results = true'), profile2)
+    assert_includes(Profile.search_for('has_test_results = false'), profile2)
     assert_not_includes(Profile.search_for('has_test_results = false'),
-                        profiles(:one))
+                        profile1)
   end
 
-  context 'policy_test_results' do
-    should 'return all test results on the policy' do
-      profiles(:one).update!(policy: policies(:one))
-      profiles(:two).update!(policy: policies(:one),
-                             account: accounts(:one))
+  context 'with hosts and test results' do
+    setup do
+      @profile1, @profile2 = FactoryBot.create_list(:profile, 2,
+                                                    account: @account,
+                                                    policy: @policy)
 
-      assert_not_empty policies(:one).test_results
-      assert_equal policies(:one).test_results,
-                   profiles(:one).policy_test_results
-      assert_equal policies(:one).test_results,
-                   profiles(:two).policy_test_results
+      host = FactoryBot.create(:host, account: @account.account_number)
+      FactoryBot.create_list(:test_result, 2, profile: @profile1, host: host)
     end
-  end
 
-  context 'policy_test_result_hosts' do
-    should 'return all test result hosts on the policy' do
-      profiles(:one).update!(policy: policies(:one))
-      profiles(:two).update!(policy: policies(:one),
-                             account: accounts(:one))
+    context 'policy_test_results' do
+      should 'return all test results on the policy' do
+        assert_not_empty @policy.test_results
+        assert_equal @policy.test_results,
+                     @profile1.policy_test_results
+        assert_equal @policy.test_results,
+                     @profile2.policy_test_results
+      end
+    end
 
-      assert_not_empty policies(:one).test_result_hosts
-      assert_equal Set.new(policies(:one).test_result_hosts),
-                   Set.new(profiles(:one).policy_test_result_hosts)
-      assert_equal Set.new(policies(:one).test_result_hosts),
-                   Set.new(profiles(:two).policy_test_result_hosts)
+    context 'policy_test_result_hosts' do
+      should 'return all test result hosts on the policy' do
+        assert_not_empty @policy.test_result_hosts
+        assert_equal Set.new(@policy.test_result_hosts),
+                     Set.new(@profile1.policy_test_result_hosts)
+        assert_equal Set.new(@policy.test_result_hosts),
+                     Set.new(@profile2.policy_test_result_hosts)
+      end
     end
   end
 
   context 'has_policy_test_results filter' do
     setup do
-      test_results(:one).update(profile: profiles(:one), host: hosts(:one))
-      profiles(:two).test_results.destroy_all
+      @profile1 = FactoryBot.create(:profile, account: @account)
+      @profile2 = FactoryBot.create(:profile, account: @account)
+      host = FactoryBot.create(:host, account: @account.account_number)
+      FactoryBot.create(:test_result, profile: @profile1, host: host)
     end
 
     should 'find a policy profile if it has a test result' do
-      profiles(:one).update!(policy: policies(:one))
-      assert profiles(:one).test_results.present?
-      assert profiles(:two).test_results.empty?
+      @profile1.update!(policy: @policy)
+
+      assert @profile1.test_results.present?
+      assert @profile2.test_results.empty?
 
       assert_includes(Profile.search_for('has_policy_test_results = true'),
-                      profiles(:one))
+                      @profile1)
       assert_not_includes(Profile.search_for('has_policy_test_results = true'),
-                          profiles(:two))
+                          @profile2)
       assert_includes(Profile.search_for('has_policy_test_results = false'),
-                      profiles(:two))
+                      @profile2)
       assert_not_includes(Profile.search_for('has_policy_test_results = false'),
-                          profiles(:one))
+                          @profile1)
     end
 
     should 'find a policy profile if it has a test result on a scope change' do
-      profiles(:one).update!(policy: policies(:one))
-      profiles(:two).update!(account: accounts(:one))
+      @profile1.update!(policy: @policy)
 
-      assert profiles(:one).test_results.present?
-      assert profiles(:two).test_results.empty?
+      assert @profile1.test_results.present?
+      assert @profile2.test_results.empty?
 
-      Profile.where(account: accounts(:one)).scoping do
+      Profile.where(account: @account).scoping do
         assert_includes(Profile.search_for('has_policy_test_results = true'),
-                        profiles(:one))
+                        @profile1)
         assert_not_includes(
           Profile.search_for('has_policy_test_results = true'),
-          profiles(:two)
+          @profile2
         )
         assert_includes(Profile.search_for('has_policy_test_results = false'),
-                        profiles(:two))
+                        @profile2)
         assert_not_includes(
           Profile.search_for('has_policy_test_results = false'),
-          profiles(:one)
+          @profile1
         )
       end
     end
 
     should 'find all policy profiles if one has a test result' do
-      profiles(:one).update!(policy: policies(:one),
-                             external: true)
-      profiles(:two).update!(policy: policies(:one),
-                             external: false)
+      @profile1.update!(policy: @policy, external: true)
+      @profile2.update!(policy: @policy, external: false)
 
-      assert profiles(:one).test_results.present?
-      assert profiles(:two).test_results.empty?
+      assert @profile1.test_results.present?
+      assert @profile2.test_results.empty?
       assert_includes(Profile.search_for('has_policy_test_results = true'),
-                      profiles(:two))
+                      @profile2)
       assert_not_includes(Profile.search_for('has_policy_test_results = false'),
-                          profiles(:two))
+                          @profile2)
       assert_includes(Profile.search_for('has_policy_test_results = true'),
-                      profiles(:one))
+                      @profile1)
       assert_not_includes(Profile.search_for('has_policy_test_results = false'),
-                          profiles(:one))
+                          @profile1)
     end
   end
 
   test 'canonical is searchable' do
-    assert profiles(:one).canonical?
-    assert_includes Profile.search_for('canonical = true'), profiles(:one)
-    assert_not_includes Profile.search_for('canonical = false'), profiles(:one)
+    profile = FactoryBot.create(:profile, account: @account).parent_profile
+
+    assert_includes Profile.search_for('canonical = true'), profile
+    assert_not_includes Profile.search_for('canonical = false'), profile
   end
 
   test 'external is searchable' do
-    profiles(:one).update!(external: true)
-    assert_includes Profile.search_for('external = true'), profiles(:one)
-    assert_includes Profile.external, profiles(:one)
-    assert_not_includes Profile.search_for('external = false'), profiles(:one)
-    assert_not_includes Profile.external(false), profiles(:one)
+    profile = FactoryBot.create(:profile, account: @account, external: true)
+
+    assert_includes Profile.search_for('external = true'), profile
+    assert_includes Profile.external, profile
+    assert_not_includes Profile.search_for('external = false'), profile
+    assert_not_includes Profile.external(false), profile
   end
 
   test 'os_major_version scope' do
-    bm61 = Xccdf::Benchmark.create!(
-      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
-      version: '1', title: 'A', description: 'A'
-    )
-    bm62 = Xccdf::Benchmark.create!(
-      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
-      version: '2', title: 'A', description: 'A'
-    )
-    bm8 = Xccdf::Benchmark.create!(
-      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-8',
-      version: '1', title: 'A', description: 'A'
-    )
-    p61a = Profile.create!(benchmark: bm61, ref_id: 'A', name: 'A')
-    p61b = Profile.create!(benchmark: bm61, ref_id: 'B', name: 'B')
-    p62 = Profile.create!(benchmark: bm62, ref_id: 'A', name: 'A')
-    p8 = Profile.create!(benchmark: bm8, ref_id: 'A', name: 'A')
+    Profile.delete_all # FIXME: remove this after cleaning up the fixtures
+
+    p61a = FactoryBot.create(:canonical_profile, os_major_version: 6)
+    p61b = FactoryBot.create(:canonical_profile, os_major_version: 6)
+    p62 = FactoryBot.create(:canonical_profile, os_major_version: 6)
+    p7 = FactoryBot.create(:canonical_profile, os_major_version: 7)
+    p8 = FactoryBot.create(:canonical_profile, os_major_version: 8)
+
     assert_equal Set.new(Profile.os_major_version(6).to_a),
                  Set.new([p61a, p61b, p62])
-    assert_equal Set.new(Profile.os_major_version(7).to_a), Set.new(profiles)
+    assert_equal Profile.os_major_version(7).to_a, [p7]
     assert_equal Profile.os_major_version(8).to_a, [p8]
 
     assert_equal Set.new(Profile.os_major_version(8, false).to_a),
                  Set.new(Profile.where.not(id: p8.id).to_a)
     assert_equal Set.new(Profile.os_major_version(6, false).to_a),
-                 Set.new([p8] + profiles)
+                 Set.new([p7, p8])
   end
 
   test 'os_major_version scoped_search' do
-    bm61 = Xccdf::Benchmark.create!(
-      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
-      version: '1', title: 'A', description: 'A'
-    )
-    bm62 = Xccdf::Benchmark.create!(
-      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
-      version: '2', title: 'A', description: 'A'
-    )
-    bm8 = Xccdf::Benchmark.create!(
-      ref_id: 'foo_bar.ssgproject.benchmark_RHEL-8',
-      version: '1', title: 'A', description: 'A'
-    )
-    p61a = Profile.create!(benchmark: bm61, ref_id: 'A', name: 'A')
-    p61b = Profile.create!(benchmark: bm61, ref_id: 'B', name: 'B')
-    p62 = Profile.create!(benchmark: bm62, ref_id: 'A', name: 'A')
-    p8 = Profile.create!(benchmark: bm8, ref_id: 'A', name: 'A')
+    Profile.delete_all # FIXME: remove this after cleaning up the fixtures
+
+    p61a = FactoryBot.create(:canonical_profile, os_major_version: 6)
+    p61b = FactoryBot.create(:canonical_profile, os_major_version: 6)
+    p62 = FactoryBot.create(:canonical_profile, os_major_version: 6)
+    p7 = FactoryBot.create(:canonical_profile, os_major_version: 7)
+    p8 = FactoryBot.create(:canonical_profile, os_major_version: 8)
+
     assert_equal Set.new(Profile.search_for('os_major_version = 6').to_a),
                  Set.new([p61a, p61b, p62])
     assert_equal Set.new(Profile.search_for('os_major_version = 7').to_a),
-                 Set.new(profiles)
+                 Set.new([p7])
     assert_equal Profile.search_for('os_major_version = 8').to_a, [p8]
 
     assert_equal Set.new(Profile.search_for('os_major_version != 8').to_a),
                  Set.new(Profile.where.not(id: p8.id).to_a)
     assert_equal Set.new(Profile.search_for('os_major_version != 6').to_a),
-                 Set.new([p8] + profiles)
+                 Set.new([p7, p8])
   end
 
   context '#ssg_versions' do
     setup do
-      profiles(:one).benchmark.update!(version: '0.1.234')
+      @profile = FactoryBot.create(:profile, account: @account)
+      @profile.benchmark.update!(version: '0.1.234')
     end
 
     should 'scope should allow single values' do
-      assert_includes Profile.ssg_versions('0.1.234'), profiles(:one)
-      assert_includes Profile.search_for('ssg_version=0.1.234'), profiles(:one)
+      assert_includes Profile.ssg_versions('0.1.234'), @profile
+      assert_includes Profile.search_for('ssg_version=0.1.234'), @profile
     end
 
     should 'scoped_search should allow single values' do
       assert_includes Profile.search_for('ssg_version = 0.1.234'),
-                      profiles(:one)
+                      @profile
       assert_not_includes Profile.search_for('ssg_version != 0.1.234'),
-                          profiles(:one)
+                          @profile
     end
 
     should 'scope should allow multiple values' do
-      assert_includes Profile.ssg_versions(['0.1.234', 'foo']), profiles(:one)
-      assert_not_includes Profile.ssg_versions(['foo']), profiles(:one)
+      assert_includes Profile.ssg_versions(['0.1.234', 'foo']), @profile
+      assert_not_includes Profile.ssg_versions(['foo']), @profile
     end
   end
 
   test 'short_ref_id' do
-    profile1 = profiles(:one)
-    profile1.update!(ref_id: 'xccdf_org.ssgproject.content_profile_one')
-    assert_equal profile1.short_ref_id, 'one'
+    profile = FactoryBot.create(
+      :profile,
+      account: @account,
+      ref_id: 'xccdf_org.ssgproject.content_profile_one'
+    )
 
-    profile2 = profiles(:two)
-    assert_equal profile2.short_ref_id, 'xccdf_org.ssgproject.profile2'
+    assert_equal profile.short_ref_id, 'one'
+
+    profile.update!(ref_id: 'xccdf_org.ssgproject.profile')
+    assert_equal profile.short_ref_id, 'xccdf_org.ssgproject.profile'
   end
 
   context 'fill_from_parent' do
     NAME = 'Customized profile'
     DESCRIPTION = 'The best profile ever'
 
+    setup do
+      @parent = FactoryBot.create(:canonical_profile)
+    end
+
     should 'copy attributes from the parent profile' do
       profile = Profile.new(
-        parent_profile_id: profiles(:one).id, account_id: accounts(:one).id
+        parent_profile_id: @parent.id, account_id: @account.id
       ).fill_from_parent
 
-      assert_equal profiles(:one).ref_id, profile.ref_id
-      assert_equal profiles(:one).name, profile.name
-      assert_equal profiles(:one).description, profile.description
-      assert_equal profiles(:one).benchmark_id, profile.benchmark_id
+      assert_equal @parent.ref_id, profile.ref_id
+      assert_equal @parent.name, profile.name
+      assert_equal @parent.description, profile.description
+      assert_equal @parent.benchmark_id, profile.benchmark_id
       assert_not profile.external
     end
 
@@ -551,48 +627,55 @@ class ProfileTest < ActiveSupport::TestCase
                             description: DESCRIPTION,
                             ref_id: 'this should be a noop',
                             benchmark_id: 'this should be a noop',
-                            parent_profile_id: profiles(:one).id)
+                            parent_profile_id: @parent.id)
                        .fill_from_parent
 
-      assert_equal profiles(:one).ref_id, profile.ref_id
+      assert_equal @parent.ref_id, profile.ref_id
       assert_equal NAME, profile.name
       assert_equal DESCRIPTION, profile.description
-      assert_equal profiles(:one).benchmark_id, profile.benchmark_id
+      assert_equal @parent.benchmark_id, profile.benchmark_id
       assert_not profile.external
     end
   end
 
   context 'update_rules' do
+    setup do
+      @profile = FactoryBot.create(:profile, :with_rules, account: @account)
+    end
+
     should 'add new rules to an empty rule set' do
-      profiles(:one).update!(rules: [])
-      assert_empty(profiles(:one).rules)
-      benchmark_rules_count = profiles(:one).benchmark.rules.count
+      @profile.update!(rules: [])
+      assert_empty(@profile.rules)
+      benchmark_rules_count = @profile.benchmark.rules.count
       assert_difference(
-        'profiles(:one).rules.count', benchmark_rules_count
+        '@profile.rules.count', benchmark_rules_count
       ) do
-        changes = profiles(:one).update_rules(
-          ids: profiles(:one).benchmark.rules.pluck(:id)
+        changes = @profile.update_rules(
+          ids: @profile.benchmark.rules.pluck(:id)
         )
         assert_equal [benchmark_rules_count, 0], changes
       end
     end
 
     should 'add new rules to an existing rule set' do
-      profiles(:one).update!(rules: profiles(:one).rules[0...-1])
-      assert_not_empty(profiles(:one).rules)
-      assert_difference('profiles(:one).rules.count', 1) do
-        changes = profiles(:one).update_rules(
-          ids: profiles(:one).benchmark.rules.pluck(:id)
+      @profile.update!(rules: @profile.rules[0...-1])
+      assert_not_empty(@profile.rules)
+      assert_difference('@profile.rules.count', 1) do
+        changes = @profile.update_rules(
+          ids: @profile.benchmark.rules.pluck(:id)
         )
         assert_equal [1, 0], changes
       end
     end
 
     should 'remove old rules from an existing rule set' do
-      assert_not_empty(profiles(:one).rules)
-      rules_count = profiles(:one).rules.count
-      assert_difference('profiles(:one).rules.count', -rules_count) do
-        changes = profiles(:one).update_rules(
+      @profile.rules = @profile.benchmark.rules
+      @profile.parent_profile.rules.delete_all
+      assert_not_empty(@profile.rules)
+
+      rules_count = @profile.rules.count
+      assert_difference('@profile.rules.count', -rules_count) do
+        changes = @profile.update_rules(
           ids: []
         )
         assert_equal [0, rules_count], changes
@@ -600,11 +683,11 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'add new and remove old rules from an existing rule set' do
-      original_rule_ids = profiles(:one).rules.pluck(:id)
-      profiles(:one).update!(rule_ids: original_rule_ids[0...-1])
-      assert_not_empty(profiles(:one).rules)
-      assert_difference('profiles(:one).rules.count', 0) do
-        changes = profiles(:one).update_rules(
+      original_rule_ids = @profile.rules.pluck(:id)
+      @profile.update!(rule_ids: original_rule_ids[0...-1])
+      assert_not_empty(@profile.rules)
+      assert_difference('@profile.rules.count', 0) do
+        changes = @profile.update_rules(
           ids: original_rule_ids[1..-1]
         )
         assert_equal [1, 1], changes
@@ -615,95 +698,118 @@ class ProfileTest < ActiveSupport::TestCase
   context 'cloning profile to account' do
     setup do
       PolicyHost.destroy_all
-      profiles(:one).update!(policy_id: policies(:one).id)
+      @profile = FactoryBot.create(
+        :canonical_profile,
+        :with_rules,
+        policy: @policy
+      )
     end
 
     should 'use the same profile when the host is assinged' do
-      policy = profiles(:one).policy
-      policy.hosts << hosts(:two)
+      host = FactoryBot.create(:host, account: @account.account_number)
+      @policy.hosts << host
 
-      dupe = profiles(:one).dup
+      FactoryBot.create(
+        :test_result,
+        profile: FactoryBot.create(
+          :profile,
+          policy: @policy,
+          parent_profile: @profile,
+          account: @account,
+          ref_id: @profile.ref_id,
+          benchmark: @profile.benchmark
+        ),
+        host: host
+      )
+
+      dupe = @profile.dup
       dupe.assign_attributes(external: true)
 
       assert_difference('Profile.count' => 0, 'Policy.count' => 0,
                         'PolicyHost.count' => 0) do
         cloned_profile = dupe.clone_to(
-          account: accounts(:one),
-          policy: Policy.with_hosts(hosts(:two))
-                        .find_by(account: accounts(:one))
+          account: @account,
+          policy: Policy.with_hosts(host)
+                        .find_by(account: @account)
         )
 
-        assert_equal cloned_profile.reload.policy_id, policies(:one).id
-        assert_includes policy.reload.profiles, profiles(:one)
+        assert_equal cloned_profile.reload.policy_id, @policy.id
+        assert_includes @policy.reload.profiles, @profile
       end
     end
 
     should 'assign different SSG profile to a policy the host is part of' do
-      policy = profiles(:one).policy
-      policy.hosts << hosts(:two)
+      host = FactoryBot.create(:host, account: @account.account_number)
+      @policy.hosts << host
 
-      second_benchmark = benchmarks(:one).dup
+      second_benchmark = @profile.benchmark.dup
       second_benchmark.update!(version: '0.0.7')
 
-      dupe = profiles(:one).dup
+      dupe = @profile.dup
       dupe.update!(account: nil, benchmark: second_benchmark)
 
       assert_difference('Profile.count' => 1, 'Policy.count' => 0,
                         'PolicyHost.count' => 0) do
         cloned_profile = dupe.clone_to(
-          account: accounts(:one),
-          policy: Policy.with_hosts(hosts(:two))
-                        .find_by(account: accounts(:one))
+          account: @account,
+          policy: Policy.with_hosts(host)
+                        .find_by(account: @account)
         )
 
-        assert_equal cloned_profile.reload.policy_id, policies(:one).id
-        assert_includes policy.reload.profiles, cloned_profile
+        assert_equal cloned_profile.reload.policy_id, @policy.id
+        assert_includes @policy.reload.profiles, cloned_profile
       end
     end
 
     should 'set the parent profile ID to the original profile' do
-      assert profiles(:one).canonical?
+      host = FactoryBot.create(:host, account: @account.account_number)
+
+      assert @profile.canonical?
       assert_difference('Profile.count', 1) do
-        cloned_profile = profiles(:one).clone_to(
-          account: accounts(:test),
-          policy: Policy.with_hosts(hosts(:one))
-                        .find_by(account: accounts(:test))
+        cloned_profile = @profile.clone_to(
+          account: @account,
+          policy: Policy.with_hosts(host)
+                        .find_by(account: @account)
         )
 
-        assert_equal profiles(:one), cloned_profile.parent_profile
+        assert_equal @profile, cloned_profile.parent_profile
       end
     end
 
     should 'clone profiles as external by default' do
-      profiles(:one).update!(account: nil, hosts: [])
+      host = FactoryBot.create(:host, account: @account.account_number)
       assert_difference('PolicyHost.count' => 0, 'Profile.count' => 1) do
-        cloned_profile = profiles(:one).clone_to(
-          account: accounts(:one),
-          policy: Policy.with_hosts(hosts(:one))
-                        .find_by(account: accounts(:one))
+        cloned_profile = @profile.clone_to(
+          account: @account,
+          policy: Policy.with_hosts(host)
+                        .find_by(account: @account)
         )
-        assert_not hosts(:one).assigned_profiles.include?(cloned_profile)
+        assert_not host.assigned_profiles.include?(cloned_profile)
         assert_nil cloned_profile.policy
       end
     end
 
     should 'not add rules to existing profiles' do
-      assert_not_empty(profiles(:one).rules)
-      profiles(:one).update!(account: nil, hosts: [])
-      existing_profile = profiles(:one).clone_to(
-        account: accounts(:one),
-        policy: Policy.with_hosts(hosts(:one)).find_by(account: accounts(:one))
+      assert_not_empty(@profile.rules)
+      host = FactoryBot.create(:host, account: @account.account_number)
+      @policy.hosts << host
+
+      existing_profile = @profile.clone_to(
+        account: @account,
+        policy: Policy.with_hosts(host).find_by(account: @account)
       )
+
       existing_profile.update!(rules: [])
       assert_difference('PolicyHost.count' => 0,
                         'Profile.count' => 0,
                         'ProfileRule.count' => 0) do
-        cloned_profile = profiles(:one).clone_to(
-          account: accounts(:one),
-          policy: Policy.with_hosts(hosts(:one))
-                        .find_by(account: accounts(:one))
+        cloned_profile = @profile.clone_to(
+          account: @account,
+          policy: Policy.with_hosts(host)
+                        .find_by(account: @account)
         )
-        assert_not hosts(:one).assigned_profiles.include?(cloned_profile)
+
+        assert host.assigned_profiles.include?(cloned_profile)
       end
       assert_empty(existing_profile.rules)
     end
@@ -711,28 +817,33 @@ class ProfileTest < ActiveSupport::TestCase
 
   context 'profile tailoring' do
     setup do
-      @parent_profile = Profile.create!(benchmark: benchmarks(:one),
-                                        ref_id: 'foo',
-                                        name: 'foo profile')
-      @parent_profile.update! rules: [rules(:one)]
-      @profile = @parent_profile.clone_to(
-        account: accounts(:one),
-        policy: Policy.with_hosts(hosts(:one)).find_by(account: accounts(:one))
+      @parent = FactoryBot.create(
+        :canonical_profile,
+        :with_rules,
+        rule_count: 1
       )
-      @profile.update! rules: [rules(:two)]
+
+      @rule1 = @parent.rules.first
+      @rule2 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+
+      @profile = @parent.clone_to(
+        account: @account,
+        policy: @policy
+      )
+      @profile.update! rules: [@rule2]
     end
 
     should 'send the correct rule ref ids to the tailoring file service' do
-      assert_equal({ rules(:one).ref_id => false, rules(:two).ref_id => true },
+      assert_equal({ @rule1.ref_id => false, @rule2.ref_id => true },
                    @profile.tailored_rule_ref_ids)
     end
 
     should 'properly detects added_rules' do
-      assert_equal [rules(:two)], @profile.added_rules
+      assert_equal [@rule2], @profile.added_rules
     end
 
     should 'properly detects removed_rules' do
-      assert_equal [rules(:one)], @profile.removed_rules
+      assert_equal [@rule1], @profile.removed_rules
     end
   end
 end

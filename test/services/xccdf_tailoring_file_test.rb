@@ -3,9 +3,14 @@
 require 'test_helper'
 
 class XccdfTailoringFileTest < ActiveSupport::TestCase
+  setup do
+    @account = FactoryBot.create(:account)
+    @parent = FactoryBot.create(:canonical_profile, :with_rules)
+  end
+
   test 'builds a valid tailoring file' do
-    profile = profiles(:one)
-    profile.parent_profile = profile
+    profile = FactoryBot.create(:profile, :with_rules, account: @account)
+    # profile.parent_profile = profile
     tailoring_file = XccdfTailoringFile.new(profile: profile)
     op_tailoring = OpenscapParser::TailoringFile.new(tailoring_file.to_xml)
                                                 .tailoring
@@ -23,8 +28,8 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
     profile = Profile.create!(
       ref_id: 'test',
       name: 'test profile',
-      benchmark_id: profiles(:one).benchmark.id,
-      parent_profile_id: profiles(:one).id
+      benchmark_id: @parent.benchmark.id,
+      parent_profile_id: @parent.id
     )
     tailoring_file = XccdfTailoringFile.new(profile: profile)
     op_tailoring = OpenscapParser::TailoringFile.new(tailoring_file.to_xml)
@@ -37,29 +42,30 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
     profile = Profile.create!(
       ref_id: 'test',
       name: 'test profile',
-      benchmark_id: profiles(:one).benchmark.id,
-      parent_profile_id: profiles(:one).id
+      benchmark_id: @parent.benchmark.id,
+      parent_profile_id: @parent.id
     )
-    profiles(:one).benchmark.update!(rules: [rules(:one), rules(:two)])
+    rules = @parent.rules.take(2)
+    @parent.benchmark.update!(rules: rules)
     tailoring_file = XccdfTailoringFile.new(
       profile: profile,
       rule_ref_ids: {
-        rules(:one).ref_id => false,
-        rules(:two).ref_id => true
+        rules.first.ref_id => false,
+        rules.last.ref_id => true
       }
     )
     op_tailoring = OpenscapParser::TailoringFile.new(tailoring_file.to_xml)
                                                 .tailoring
     assert_equal(
       op_tailoring.profiles.first.selected_rule_ids,
-      [rules(:two).ref_id]
+      [rules.last.ref_id]
     )
 
     assert_equal(
       op_tailoring.profiles.first.xpath(
         "select[@selected='false']/@idref"
       ).text,
-      rules(:one).ref_id
+      rules.first.ref_id
     )
   end
 
@@ -67,8 +73,8 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
     profile = Profile.create!(
       ref_id: 'test',
       name: 'test profile',
-      benchmark_id: profiles(:one).benchmark.id,
-      parent_profile_id: profiles(:one).id
+      benchmark_id: @parent.benchmark.id,
+      parent_profile_id: @parent.id
     )
     assert_raises(ArgumentError) do
       XccdfTailoringFile.new(profile: profile,

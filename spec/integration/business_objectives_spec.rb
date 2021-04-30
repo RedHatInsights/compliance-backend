@@ -3,17 +3,18 @@
 require 'swagger_helper'
 
 describe 'Business Objectives API' do
-  fixtures :business_objectives, :accounts, :policies, :profiles
-
   before do
-    policies(:one).update!(account: accounts(:one),
-                           business_objective: business_objectives(:one))
-    profiles(:one).update!(account: accounts(:one),
-                           policy: policies(:one))
-    policies(:two).update!(account: accounts(:one),
-                           business_objective: business_objectives(:two))
-    profiles(:two).update!(account: accounts(:one),
-                           policy: policies(:two))
+    @account = FactoryBot.create(:account)
+    profiles = FactoryBot.create_list(
+      :profile,
+      2,
+      account: @account
+    )
+    @bos = profiles.map do |profile|
+      bo = FactoryBot.create(:business_objective)
+      profile.policy.update!(business_objective: bo)
+      bo
+    end
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/business_objectives" do
@@ -30,7 +31,7 @@ describe 'Business Objectives API' do
       include_param
 
       response '200', 'lists all business_objectives requested' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {
@@ -70,7 +71,7 @@ describe 'Business Objectives API' do
 
       response '404', 'business_objective not found' do
         let(:id) { 'invalid' }
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
 
         after { |e| autogenerate_examples(e) }
@@ -79,8 +80,8 @@ describe 'Business Objectives API' do
       end
 
       response '200', 'retrieves a business_objective' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
-        let(:id) { business_objectives(:one).id }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
+        let(:id) { @bos.first.id }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {

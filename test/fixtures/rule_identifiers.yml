@@ -1,9 +1,1 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  system: https://nvd.nist.gov/cce/index.cfm
-  label: CCE-27209-6
-
-two:
-  system: https://nvd.nist.gov/cce/index.cfm
-  label: CCE-27339-1

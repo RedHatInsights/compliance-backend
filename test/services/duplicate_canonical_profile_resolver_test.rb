@@ -9,12 +9,14 @@ class DuplicateCanonicalProfileResolverTest < ActiveSupport::TestCase
       DeduplicateCanonicalProfiles.new.down
     end
 
+    @benchmark = FactoryBot.create(:benchmark)
+
     assert_difference('Profile.count' => 5) do
       5.times do |n|
         Profile.new(
           name: "foo #{n}",
           ref_id: 'bar',
-          benchmark: benchmarks(:one)
+          benchmark: @benchmark
         ).save(validate: false)
       end
     end
@@ -30,9 +32,10 @@ class DuplicateCanonicalProfileResolverTest < ActiveSupport::TestCase
   end
 
   test 'fails if there are child profiles' do
+    account = FactoryBot.create(:account)
     Profile.find_by(name: 'foo 2').clone_to(
-      account: accounts(:one),
-      policy: policies(:one)
+      account: account,
+      policy: FactoryBot.create(:policy, account: account)
     )
 
     assert_raises ActiveRecord::StatementInvalid do

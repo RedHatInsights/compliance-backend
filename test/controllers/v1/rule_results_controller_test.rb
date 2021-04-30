@@ -9,6 +9,11 @@ module V1
     end
 
     test 'index lists all rule results' do
+      RuleResult.delete_all # FIXME: remove this after cleaning up the fixtures
+
+      User.current = FactoryBot.create(:user)
+      FactoryBot.create_list(:rule_result, 10)
+
       RuleResultsController.any_instance.expects(:policy_scope)
                            .with(RuleResult)
                            .returns(RuleResult.all).at_least_once

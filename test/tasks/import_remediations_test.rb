@@ -5,7 +5,7 @@ require 'rake'
 
 class ImportRemediationsTest < ActiveSupport::TestCase
   test 'import_remediations fails on error' do
-    ENV['JOBS_ACCOUNT_NUMBER'] = accounts(:test).account_number
+    ENV['JOBS_ACCOUNT_NUMBER'] = FactoryBot.create(:account).account_number
 
     RemediationsAPI.any_instance.expects(:import_remediations)
                    .raises(StandardError)

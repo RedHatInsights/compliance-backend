@@ -3,7 +3,10 @@
 require 'swagger_helper'
 
 describe 'Systems API' do
-  fixtures :accounts
+  before do
+    @account = FactoryBot.create(:account)
+    @host = FactoryBot.create(:host, account: @account.account_number)
+  end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/systems" do
     get 'List all hosts' do
@@ -19,7 +22,7 @@ describe 'Systems API' do
       include_param
 
       response '200', 'lists all hosts requested' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {
@@ -66,8 +69,8 @@ describe 'Systems API' do
       end
 
       response '200', 'retrieves a system' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
-        let(:id) { hosts(:one).id }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
+        let(:id) { @host.id }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {

@@ -4,87 +4,80 @@ require 'test_helper'
 
 class AssociateSystemsMutationTest < ActiveSupport::TestCase
   setup do
-    profiles(:one).update account: accounts(:one),
-                          policy: policies(:one)
-    users(:test).update account: accounts(:one)
+    @user = FactoryBot.create(:user)
+    @profile = FactoryBot.create(:profile, account: @user.account)
+    @host = FactoryBot.create(:host, account: @user.account.account_number)
   end
 
-  test 'provide all required arguments' do
-    query = <<-GRAPHQL
-       mutation associateSystems($input: associateSystemsInput!) {
-          associateSystems(input: $input) {
-             profile {
-                 id
-             }
-             profiles {
-                 id
-             }
-          }
-       }
-    GRAPHQL
+  QUERY = <<-GRAPHQL
+     mutation associateSystems($input: associateSystemsInput!) {
+        associateSystems(input: $input) {
+           profile {
+               id
+           }
+           profiles {
+               id
+           }
+        }
+     }
+  GRAPHQL
 
-    assert_empty profiles(:one).assigned_hosts
+  test 'provide all required arguments' do
+    assert_empty @profile.assigned_hosts
 
     result = Schema.execute(
-      query,
+      QUERY,
       variables: { input: {
-        id: profiles(:one).id,
-        systemIds: [hosts(:one).id]
+        id: @profile.id,
+        systemIds: [@host.id]
       } },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )
 
     assert_equal(
       result['data']['associateSystems']['profile']['id'],
-      profiles(:one).id
+      @profile.id
     )
 
     assert_equal(
       result['data']['associateSystems']['profiles'],
-      [{ 'id' => profiles(:one).id }]
+      [{ 'id' => @profile.id }]
     )
 
-    assert_equal Set.new(profiles(:one).policy.reload.hosts),
-                 Set.new([hosts(:one)])
+    assert_equal Set.new(@profile.policy.reload.hosts),
+                 Set.new([Host.find(@host.id)])
   end
 
   test 'removes systems from a profile' do
-    query = <<-GRAPHQL
-       mutation associateSystems($input: associateSystemsInput!) {
-          associateSystems(input: $input) {
-             profile {
-                 id
-             }
-             profiles {
-                 id
-             }
-          }
-       }
-    GRAPHQL
-
-    assert_not_empty profiles(:one).hosts
+    @profile.policy.hosts = [@host]
+    FactoryBot.create(
+      :test_result,
+      profile: @profile,
+      host: @host
+    )
+    assert_not_empty @profile.hosts
 
     result = Schema.execute(
-      query,
+      QUERY,
       variables: { input: {
-        id: profiles(:one).id,
+        id: @profile.id,
         systemIds: []
       } },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )
 
     assert_equal(
       result['data']['associateSystems']['profile']['id'],
-      profiles(:one).id
+      @profile.id
     )
 
     assert_equal(
       result['data']['associateSystems']['profiles'],
-      [{ 'id' => profiles(:one).id }]
+      [{ 'id' => @profile.id }]
     )
 
-    assert_empty profiles(:one).policy.reload.hosts
+    assert_empty @profile.policy.reload.hosts
     assert_audited 'Updated system associaton of policy'
-    assert_audited policies(:one).id
+    assert_audited @profile.policy.id
   end
 end

@@ -11,6 +11,23 @@ class HostTest < ActiveSupport::TestCase
   should have_many(:assigned_profiles).through(:policies).source(:profiles)
   should have_many(:test_result_profiles).through(:test_results)
 
+  setup do
+    @account = FactoryBot.create(:account)
+    @host1 = Host.find(FactoryBot.create(
+      :host,
+      account: @account.account_number,
+      os_major_version: 7,
+      os_minor_version: 4
+    ).id)
+
+    @host2 = Host.find(FactoryBot.create(
+      :host,
+      account: @account.account_number,
+      os_major_version: 8,
+      os_minor_version: 3
+    ).id)
+  end
+
   test 'host is readonly' do
     assert_raises(ActiveRecord::ReadOnlyRecord) do
       Host.new.save
@@ -20,263 +37,309 @@ class HostTest < ActiveSupport::TestCase
   test 'with_policy scope / has_policy filter' do
     assert_equal 0, PolicyHost.count
 
-    PolicyHost.create!(policy: policies(:one), host: hosts(:one))
+    FactoryBot.create(:policy, account: @account, hosts: [@host1])
 
-    assert_includes Host.with_policy, hosts(:one)
-    assert_includes Host.search_for('has_policy=true'), hosts(:one)
+    assert_includes Host.with_policy, @host1
+    assert_includes Host.search_for('has_policy=true'), @host1
 
-    assert_not_includes Host.with_policy(false), hosts(:one)
-    assert_not_includes Host.search_for('has_policy=false'), hosts(:one)
+    assert_not_includes Host.with_policy(false), @host1
+    assert_not_includes Host.search_for('has_policy=false'), @host1
 
-    assert_includes Host.with_policy(false), hosts(:two)
-    assert_includes Host.search_for('has_policy=false'), hosts(:two)
+    assert_includes Host.with_policy(false), @host2
+    assert_includes Host.search_for('has_policy=false'), @host2
 
-    assert_not_includes Host.with_policy, hosts(:two)
-    assert_not_includes Host.search_for('has_policy=true'), hosts(:two)
+    assert_not_includes Host.with_policy, @host2
+    assert_not_includes Host.search_for('has_policy=true'), @host2
   end
 
   test 'OS major version scope and filter' do
-    assert_includes Host.os_major_version(7), hosts(:one)
-    assert_includes Host.search_for('os_major_version = 7'), hosts(:one)
+    assert_includes Host.os_major_version(7), @host1
+    assert_includes Host.search_for('os_major_version = 7'), @host1
 
-    assert_not_includes Host.os_major_version(7, false), hosts(:one)
-    assert_not_includes Host.search_for('os_major_version != 7'), hosts(:one)
+    assert_not_includes Host.os_major_version(7, false), @host1
+    assert_not_includes Host.search_for('os_major_version != 7'), @host1
 
-    assert_includes Host.os_major_version(7, false), hosts(:two)
-    assert_includes Host.search_for('os_major_version != 7'), hosts(:two)
+    assert_includes Host.os_major_version(7, false), @host2
+    assert_includes Host.search_for('os_major_version != 7'), @host2
 
-    assert_not_includes Host.os_major_version(7), hosts(:two)
-    assert_not_includes Host.search_for('os_major_version = 7'), hosts(:two)
+    assert_not_includes Host.os_major_version(7), @host2
+    assert_not_includes Host.search_for('os_major_version = 7'), @host2
   end
 
   test 'OS minor version scope and filter' do
-    assert_includes Host.os_minor_version(4), hosts(:one)
-    assert_includes Host.search_for('os_minor_version = 4'), hosts(:one)
+    assert_includes Host.os_minor_version(4), @host1
+    assert_includes Host.search_for('os_minor_version = 4'), @host1
 
-    assert_not_includes Host.os_minor_version(4, false), hosts(:one)
-    assert_not_includes Host.search_for('os_minor_version != 4'), hosts(:one)
+    assert_not_includes Host.os_minor_version(4, false), @host1
+    assert_not_includes Host.search_for('os_minor_version != 4'), @host1
 
-    assert_includes Host.os_minor_version(4, false), hosts(:two)
-    assert_includes Host.search_for('os_minor_version != 4'), hosts(:two)
+    assert_includes Host.os_minor_version(4, false), @host2
+    assert_includes Host.search_for('os_minor_version != 4'), @host2
 
-    assert_not_includes Host.os_minor_version(4), hosts(:two)
-    assert_not_includes Host.search_for('os_minor_version = 4'), hosts(:two)
+    assert_not_includes Host.os_minor_version(4), @host2
+    assert_not_includes Host.search_for('os_minor_version = 4'), @host2
   end
 
   test 'loose filter search' do
-    host = hosts(:one)
-    assert_includes Host.search_for(host.display_name), host
+    assert_includes Host.search_for(@host1.display_name), @host1
   end
 
   test 'host provides all profiles, assigned and from test results' do
-    host = hosts(:one)
-    policies(:one).update!(account: host.account_object)
-    policies(:one).hosts << host
+    profile1 = FactoryBot.create(:profile, account: @account)
+    profile2 = FactoryBot.create(:profile, :with_rules, account: @account)
 
-    profiles(:one).update!(account: host.account_object,
-                           policy: policies(:one))
-    test_results(:two).update!(host: host, profile: profiles(:two))
+    FactoryBot.create(:test_result, profile: profile2, host: @host1)
+    profile1.policy.hosts << @host1
 
-    assert_equal host.all_profiles.count, 2
-    assert_includes host.all_profiles.map(&:id), profiles(:one).id
-    assert_includes host.all_profiles.map(&:id), profiles(:two).id
+    assert_equal @host1.all_profiles.count, 2
+    assert_includes @host1.all_profiles.map(&:id), profile1.id
+    assert_includes @host1.all_profiles.map(&:id), profile2.id
   end
 
   test 'compliant returns a hash with all compliance statuses' do
-    host = hosts(:one)
-    test_results(:one).update!(host: host, profile: profiles(:one))
-    test_results(:two).update!(host: host, profile: profiles(:two))
-    expected_result = {
-      profiles(:one).ref_id.to_s => false,
-      profiles(:two).ref_id.to_s => false
-    }
-    assert_equal expected_result, host.compliant
+    expected_result = 2.times.each_with_object({}) do |_, obj|
+      profile = FactoryBot.create(
+        :profile,
+        :with_rules,
+        account: @account
+      )
+
+      FactoryBot.create(
+        :test_result,
+        profile: profile,
+        host: @host1
+      )
+
+      obj[profile.ref_id.to_s] = false
+    end
+
+    assert_equal expected_result, @host1.compliant
   end
 
   context 'test result dependent search methods' do
     setup do
-      @host = hosts(:one)
-      rules(:one).profiles << profiles(:one)
-      rules(:two).profiles << profiles(:one)
-      test_results(:one).update(host: hosts(:one), profile: profiles(:one))
-      RuleResult.create(host: @host, rule: rules(:one),
-                        test_result: test_results(:one), result: 'pass')
-      RuleResult.create(host: @host, rule: rules(:two),
-                        test_result: test_results(:one), result: 'fail')
+      @profile = FactoryBot.create(
+        :profile,
+        :with_rules,
+        account: @account,
+        rule_count: 2
+      )
+
+      tr = FactoryBot.create(:test_result, profile: @profile, host: @host1)
+
+      %w[pass fail].each_with_index do |status, idx|
+        FactoryBot.create(
+          :rule_result,
+          host: @host1,
+          test_result: tr,
+          rule: @profile.rules[idx],
+          result: status
+        )
+      end
     end
 
     should 'total_rules returns the number of rules' do
-      assert_equal 2, @host.last_scan_results.count
+      assert_equal 2, @host1.last_scan_results.count
     end
 
     should 'rules_passed returns the number of rules that passed' do
-      assert_equal 1, @host.rules_passed
+      assert_equal 1, @host1.rules_passed
     end
 
     should 'rules_failed returns the number of rules that failed' do
-      assert_equal 1, @host.rules_failed
+      assert_equal 1, @host1.rules_failed
     end
 
     should 'compliance_score returns the percentage of rules that passed' do
-      assert_equal 50.0, @host.compliance_score
+      assert_equal 50.0, @host1.compliance_score
     end
 
     should 'be able to find based on compliance score' do
       assert_includes(
         Host.search_for('compliance_score >= 40 and compliance_score <= 60'),
-        hosts(:one)
+        @host1
       )
       assert_not_includes(
         Host.search_for('compliance_score >= 0 and compliance_score <= 39'),
-        hosts(:one)
+        @host1
       )
     end
 
     should 'be able to find based on compliance true/false' do
-      assert_not_includes Host.search_for('compliant = true'), hosts(:one)
-      assert_includes Host.search_for('compliant = false'), hosts(:one)
-      assert_includes Host.search_for('compliant != true'), hosts(:one)
-      assert_not_includes Host.search_for('compliant != false'), hosts(:one)
+      assert_not_includes Host.search_for('compliant = true'), @host1
+      assert_includes Host.search_for('compliant = false'), @host1
+      assert_includes Host.search_for('compliant != true'), @host1
+      assert_not_includes Host.search_for('compliant != false'), @host1
     end
 
     should 'be able to filter by "has test results"' do
-      hosts(:two).test_results.destroy_all
-      assert hosts(:one).test_results.present?
-      assert hosts(:two).test_results.empty?
-      assert_includes Host.search_for('has_test_results = true'), hosts(:one)
-      assert_includes Host.with_test_results, hosts(:one)
+      assert @host1.test_results.present?
+      assert @host2.test_results.empty?
+      assert_includes Host.search_for('has_test_results = true'), @host1
+      assert_includes Host.with_test_results, @host1
       assert_not_includes(Host.search_for('has_test_results = true'),
-                          hosts(:two))
-      assert_not_includes Host.with_test_results, hosts(:two)
-      assert_includes Host.search_for('has_test_results = false'), hosts(:two)
-      assert_includes Host.with_test_results(false), hosts(:two)
+                          @host2)
+      assert_not_includes Host.with_test_results, @host2
+      assert_includes Host.search_for('has_test_results = false'), @host2
+      assert_includes Host.with_test_results(false), @host2
       assert_not_includes(Host.search_for('has_test_results = false'),
-                          hosts(:one))
-      assert_not_includes(Host.with_test_results(false), hosts(:one))
+                          @host1)
+      assert_not_includes(Host.with_test_results(false), @host1)
     end
 
     should 'be able to filter by profile_id from test results' do
-      assert_includes Host.search_for("profile_id = #{profiles(:one).id}"),
-                      hosts(:one)
+      assert_includes Host.search_for("profile_id = #{@profile.id}"),
+                      @host1
     end
   end
 
   context 'with_policies_or_test_results' do
     should 'return hosts either associated to a policy or with test results' do
-      assert_equal [test_results(:one)], hosts(:one).test_results
-      assert_equal [test_results(:two)], hosts(:two).test_results
-      assert_empty hosts(:one).policies
-      assert_empty hosts(:two).policies
+      profile = FactoryBot.create(:profile, account: @account)
+      tr1 = FactoryBot.create(:test_result, host: @host1, profile: profile)
+      tr2 = FactoryBot.create(:test_result, host: @host2, profile: profile)
 
-      assert_includes Host.with_policies_or_test_results, hosts(:one)
-      assert_includes Host.with_policies_or_test_results, hosts(:two)
+      assert_equal [tr1], @host1.test_results
+      assert_equal [tr2], @host2.test_results
+      assert_empty @host1.policies
+      assert_empty @host2.policies
 
-      test_results(:two).destroy
-      assert_includes Host.with_policies_or_test_results, hosts(:one)
-      assert_not_includes Host.with_policies_or_test_results, hosts(:two)
+      assert_includes Host.with_policies_or_test_results, @host1
+      assert_includes Host.with_policies_or_test_results, @host2
 
-      policies(:two).update!(hosts: [hosts(:two)])
-      assert_includes Host.with_policies_or_test_results, hosts(:two)
-      assert_includes Host.with_policies_or_test_results, hosts(:one)
+      tr2.destroy
+      assert_includes Host.with_policies_or_test_results, @host1
+      assert_not_includes Host.with_policies_or_test_results, @host2
 
-      test_results(:one).destroy
-      assert_not_includes Host.with_policies_or_test_results, hosts(:one)
-      assert_includes Host.with_policies_or_test_results, hosts(:two)
+      profile.policy.update!(hosts: [@host2])
+      assert_includes Host.with_policies_or_test_results, @host2
+      assert_includes Host.with_policies_or_test_results, @host1
+
+      tr1.destroy
+      assert_not_includes Host.with_policies_or_test_results, @host1
+      assert_includes Host.with_policies_or_test_results, @host2
     end
   end
 
   context 'scope search by a policy' do
     setup do
-      profiles(:one).update!(policy: policies(:one),
-                             account: accounts(:one))
-      policies(:one).hosts << hosts(:one)
+      @profile = FactoryBot.create(
+        :profile,
+        :with_rules,
+        rule_count: 2,
+        account: @account
+      )
+
+      @profile.policy.update(hosts: [@host1])
     end
 
     should 'find host using assigned policy id' do
-      search = "policy_id = #{policies(:one).id}"
-      assert_includes Host.search_for(search), hosts(:one)
+      search = "policy_id = #{@profile.policy.id}"
+      assert_includes Host.search_for(search), @host1
     end
 
     should 'find host using a profile id assigned to the policy' do
-      search = "policy_id = #{profiles(:one).id}"
-      assert_includes Host.search_for(search), hosts(:one)
+      search = "policy_id = #{@profile.id}"
+      assert_includes Host.search_for(search), @host1
     end
 
     should 'find host using external profile id from its test result' do
-      rules(:one).profiles << profiles(:two)
-      rules(:two).profiles << profiles(:two)
-      test_results(:one).update(host: hosts(:one), profile: profiles(:two))
-      RuleResult.create(host: @host, rule: rules(:one),
-                        test_result: test_results(:one), result: 'pass')
-      RuleResult.create(host: @host, rule: rules(:two),
-                        test_result: test_results(:one), result: 'fail')
+      tr = FactoryBot.create(:test_result, host: @host1, profile: @profile)
 
-      search = "policy_id = #{policies(:two).id}"
-      assert_includes Host.search_for(search), hosts(:one)
+      %w[pass fail].each_with_index do |status, idx|
+        FactoryBot.create(
+          :rule_result,
+          host: @host1,
+          test_result: tr,
+          rule: @profile.rules[idx],
+          result: status
+        )
+      end
+
+      search = "policy_id = #{@profile.policy.id}"
+      assert_includes Host.search_for(search), @host1
     end
 
     should 'NOT find host unassigned to the policy even with test results' do
-      policies(:one).hosts = []
-      profiles(:two).update!(policy: policies(:one),
-                             external: true,
-                             account: accounts(:one))
-      rules(:one).profiles << profiles(:two)
-      rules(:two).profiles << profiles(:two)
-      test_results(:one).update(host: hosts(:one), profile: profiles(:two))
-      RuleResult.create(host: @host, rule: rules(:one),
-                        test_result: test_results(:one), result: 'pass')
-      RuleResult.create(host: @host, rule: rules(:two),
-                        test_result: test_results(:one), result: 'fail')
+      pr2 = FactoryBot.create(
+        :profile,
+        policy: @profile.policy,
+        account: @account,
+        external: true,
+        parent_profile: @profile,
+        rules: @profile.rules
+      )
 
-      search = "policy_id = #{policies(:two).id}"
-      assert_not_includes Host.search_for(search), hosts(:one)
+      @profile.policy.update(hosts: [])
+      tr = FactoryBot.create(:test_result, host: @host1, profile: pr2)
+
+      %w[pass fail].each_with_index do |status, idx|
+        FactoryBot.create(
+          :rule_result,
+          host: @host1,
+          test_result: tr,
+          rule: pr2.rules[idx],
+          result: status
+        )
+      end
+
+      search = "policy_id = #{pr2.id}"
+      assert_not_includes Host.search_for(search), @host1
     end
   end
 
   context 'scope search for hosts with policy test results' do
     setup do
-      profiles(:one).update!(policy: policies(:one),
-                             account: accounts(:one))
-      policies(:one).hosts << hosts(:one)
+      @profile = FactoryBot.create(:profile, account: @account)
+      @profile.policy.update(hosts: [@host1])
+      @tr = FactoryBot.create(:test_result, host: @host1, profile: @profile)
     end
 
     should 'find host with results using assigned policy id' do
-      search = "with_results_for_policy_id = #{policies(:one).id}"
-      assert_includes Host.search_for(search), hosts(:one)
+      search = "with_results_for_policy_id = #{@profile.policy.id}"
+      assert_includes Host.search_for(search), @host1
 
-      policies(:one).update!(hosts: [])
-      assert_includes Host.search_for(search), hosts(:one)
+      @profile.policy.update!(hosts: [])
+      assert_includes Host.search_for(search), @host1
 
-      test_results(:one).update!(host: hosts(:two))
-      assert_not_includes Host.search_for(search), hosts(:one)
+      @tr.update(host: @host2)
+      assert_not_includes Host.search_for(search), @host1
     end
 
     should 'find host using a profile id assigned to the policy' do
-      search = "with_results_for_policy_id = #{profiles(:one).id}"
-      assert_includes Host.search_for(search), hosts(:one)
+      search = "with_results_for_policy_id = #{@profile.id}"
+      assert_includes Host.search_for(search), @host1
 
-      policies(:one).update!(hosts: [])
-      assert_includes Host.search_for(search), hosts(:one)
+      @profile.policy.update!(hosts: [])
+      assert_includes Host.search_for(search), @host1
 
-      test_results(:one).update!(host: hosts(:two))
-      assert_not_includes Host.search_for(search), hosts(:one)
+      @tr.update!(host: @host2)
+      assert_not_includes Host.search_for(search), @host1
     end
 
     should 'find host using external profile id from its test result' do
-      profiles(:two).update!(policy: policies(:one),
-                             account: accounts(:one),
-                             external: true)
-      test_results(:one).update!(profile: profiles(:two))
+      profile = FactoryBot.create(
+        :profile,
+        account: @account,
+        external: true,
+        parent_profile: @profile.parent_profile
+      )
 
-      search = "with_results_for_policy_id = #{policies(:two).id}"
-      assert_includes Host.search_for(search), hosts(:one)
+      FactoryBot.create(
+        :test_result,
+        profile: profile,
+        host: @host1
+      )
 
-      policies(:one).update!(hosts: [])
-      assert_includes Host.search_for(search), hosts(:one)
+      search = "with_results_for_policy_id = #{@profile.policy.id}"
+      assert_includes Host.search_for(search), @host1
+
+      @profile.policy.update!(hosts: [])
+      assert_includes Host.search_for(search), @host1
     end
   end
 
   test '#os_minor_versions' do
-    assert_equal Host.os_minor_versions([hosts(:one)]), [4]
+    assert_equal Host.os_minor_versions([@host1]), [4]
   end
 end

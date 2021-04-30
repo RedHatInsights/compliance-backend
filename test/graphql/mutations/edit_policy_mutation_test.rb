@@ -3,6 +3,15 @@
 require 'test_helper'
 
 class EditPolicyMutationTest < ActiveSupport::TestCase
+  setup do
+    @user = FactoryBot.create(:user)
+    @profile = FactoryBot.create(:profile, account: @user.account)
+    @host = FactoryBot.create(:host, account: @user.account.account_number)
+    @tr = FactoryBot.create(:test_result, host: @host, profile: @profile)
+    @profile.policy.update(hosts: [@host])
+    @bo = FactoryBot.create(:business_objective)
+  end
+
   test 'query host owned by the user' do
     query = <<-GRAPHQL
         mutation updateProfile($input: UpdateProfileInput!) {
@@ -16,27 +25,23 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
         }
     GRAPHQL
 
-    users(:test).update account: accounts(:test)
-    profiles(:one).update(account: accounts(:test),
-                          hosts: [hosts(:one)],
-                          policy: policies(:one))
-    assert_nil policies(:one).business_objective
+    assert_nil @profile.policy.business_objective
 
     result = Schema.execute(
       query,
       variables: { input: {
-        id: profiles(:one).id,
+        id: @profile.id,
         complianceThreshold: 80.0,
-        businessObjectiveId: business_objectives(:one).id
+        businessObjectiveId: @bo.id
       } },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )['data']['updateProfile']['profile']
 
-    assert_equal business_objectives(:one).id, result['businessObjectiveId']
+    assert_equal @bo.id, result['businessObjectiveId']
     assert_equal 80.0, result['complianceThreshold']
     assert_audited 'Updated profile'
-    assert_audited profiles(:one).id
-    assert_audited policies(:one).id
+    assert_audited @profile.id
+    assert_audited @profile.policy.id
   end
 
   test 'unset the business objective' do
@@ -50,24 +55,20 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
         }
     GRAPHQL
 
-    users(:test).update account: accounts(:test)
-    policies(:one).update!(business_objective: business_objectives(:one))
-    profiles(:one).update(account: accounts(:test),
-                          hosts: [hosts(:one)],
-                          policy: policies(:one))
+    @profile.policy.update(business_objective: @bo)
 
     Schema.execute(
       query,
       variables: { input: {
-        id: profiles(:one).id,
+        id: @profile.id,
         businessObjectiveId: nil
       } },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )['data']['updateProfile']['profile']
 
-    assert_nil policies(:one).reload.business_objective
+    assert_nil @profile.policy.reload.business_objective
     assert_audited 'Updated profile'
-    assert_audited profiles(:one).id
-    assert_audited policies(:one).id
+    assert_audited @profile.id
+    assert_audited @profile.policy.id
   end
 end
