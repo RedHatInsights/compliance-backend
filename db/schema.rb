@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(version: 2021_03_16_092758) do
     t.index ["parent_profile_id"], name: "index_profiles_on_parent_profile_id"
     t.index ["policy_id"], name: "index_profiles_on_policy_id"
     t.index ["ref_id", "account_id", "benchmark_id", "os_minor_version", "policy_id"], name: "uniqueness", unique: true
-    t.index ["ref_id", "benchmark_id"], name: "index_profiles_on_ref_id_and_benchmark_id", unique: true, where: "(account_id IS NULL)"
+    t.index ["ref_id", "benchmark_id"], name: "index_profiles_on_ref_id_and_benchmark_id", unique: true, where: "(parent_profile_id IS NULL)"
   end
 
   create_table "rule_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
