@@ -4,8 +4,6 @@ require 'test_helper'
 
 class SystemQueryTest < ActiveSupport::TestCase
   setup do
-    # FIXME: remove this after cleaning up the fixtures
-    WHost.delete_all
     @user = FactoryBot.create(:user)
     @host1 = FactoryBot.create(:host, account: @user.account.account_number)
 

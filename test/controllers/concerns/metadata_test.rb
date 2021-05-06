@@ -8,10 +8,6 @@ require 'securerandom'
 # ActionDispatch::IntegrationTest, it is testing the Profiles controller
 # instead for the time being
 class MetadataTest < ActionDispatch::IntegrationTest
-  setup do
-    Profile.delete_all # FIXME: remove this after cleaning up the fixtures
-  end
-
   def authenticate
     V1::ProfilesController.any_instance.expects(:authenticate_user).yields
     User.current = FactoryBot.create(:user)

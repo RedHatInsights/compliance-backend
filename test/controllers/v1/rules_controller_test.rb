@@ -5,9 +5,6 @@ require 'test_helper'
 module V1
   class RulesControllerTest < ActionDispatch::IntegrationTest
     setup do
-      # FIXME: remove this after cleaning up the fixtures
-      Rule.delete_all
-
       RulesController.any_instance.stubs(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
       @profile = FactoryBot.create(:profile, :with_rules)

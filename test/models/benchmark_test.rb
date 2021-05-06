@@ -90,8 +90,6 @@ module Xccdf
     end
 
     test 'os_major_version scope' do
-      Benchmark.delete_all # FIXME: remove this after cleaning up the fixtures
-
       bm61 = Xccdf::Benchmark.create!(
         ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
         version: '1', title: 'A', description: 'A'
@@ -119,8 +117,6 @@ module Xccdf
     end
 
     test 'os_major_version scoped_search' do
-      Benchmark.delete_all # FIXME: remove this after cleaning up the fixtures
-
       bm61 = Xccdf::Benchmark.create!(
         ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
         version: '1', title: 'A', description: 'A'

@@ -156,9 +156,6 @@ module V1
     setup do
       ProfilesController.any_instance.stubs(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
-      # FIXME: remove this after cleaning up the fixtures
-      Profile.delete_all
-      TestResult.delete_all
     end
 
     def params(data)

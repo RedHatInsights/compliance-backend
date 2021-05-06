@@ -525,8 +525,6 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'os_major_version scope' do
-    Profile.delete_all # FIXME: remove this after cleaning up the fixtures
-
     p61a = FactoryBot.create(:canonical_profile, os_major_version: 6)
     p61b = FactoryBot.create(:canonical_profile, os_major_version: 6)
     p62 = FactoryBot.create(:canonical_profile, os_major_version: 6)
@@ -545,8 +543,6 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'os_major_version scoped_search' do
-    Profile.delete_all # FIXME: remove this after cleaning up the fixtures
-
     p61a = FactoryBot.create(:canonical_profile, os_major_version: 6)
     p61b = FactoryBot.create(:canonical_profile, os_major_version: 6)
     p62 = FactoryBot.create(:canonical_profile, os_major_version: 6)

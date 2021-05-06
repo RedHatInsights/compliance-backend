@@ -5,9 +5,6 @@ require 'test_helper'
 module V1
   class BusinessObjectivesControllerTest < ActionDispatch::IntegrationTest
     setup do
-      # FIXME: remove this after cleaning up the fixtures
-      BusinessObjective.delete_all
-
       BusinessObjectivesController.any_instance.stubs(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
 
