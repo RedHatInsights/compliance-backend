@@ -23,11 +23,9 @@ class DeleteHost
 
   def remove_related(host_id)
     num_removed = 0
-    Host.transaction do
-      Sidekiq.logger.info("Deleting related records for host #{host_id}")
-      MODELS.each do |model|
-        num_removed += model.where(host_id: host_id).delete_all
-      end
+    Sidekiq.logger.info("Deleting related records for host #{host_id}")
+    MODELS.each do |model|
+      num_removed += model.where(host_id: host_id).delete_all
     end
     num_removed
   end
