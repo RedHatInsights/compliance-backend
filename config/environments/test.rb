@@ -52,4 +52,6 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   config.audit_logger = Logger.new(File::NULL)
+
+  config.factory_bot.definition_file_paths = ["test/factories"]
 end

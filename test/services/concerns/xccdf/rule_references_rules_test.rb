@@ -8,11 +8,11 @@ class RuleReferencesRulesTest < ActiveSupport::TestCase
   include Xccdf::RuleReferencesRules
 
   test 'only new rule references rules are saved' do
-    @rules = [rules(:one), rules(:two)]
-    @rule_references = [rule_references(:one), rule_references(:two)]
+    @rules = FactoryBot.create_list(:rule, 2)
+    @rule_references = FactoryBot.create_list(:rule_reference, 2)
     @op_rules = [
-      OpenStruct.new(id: rules(:one).ref_id,
-                     rule_references: [rule_references(:one)])
+      OpenStruct.new(id: @rules.first.ref_id,
+                     rule_references: [@rule_references.first])
     ]
 
     assert_difference('RuleReferencesRule.count', 1) do
@@ -23,10 +23,10 @@ class RuleReferencesRulesTest < ActiveSupport::TestCase
       @existing_rule_references_rules,
       @op_rule_references_rules = nil # un-cache it from ||=
     @op_rules = [
-      OpenStruct.new(id: rules(:one).ref_id,
-                     rule_references: [rule_references(:one)]),
-      OpenStruct.new(id: rules(:two).ref_id,
-                     rule_references: [rule_references(:two)])
+      OpenStruct.new(id: @rules.first.ref_id,
+                     rule_references: [@rule_references.first]),
+      OpenStruct.new(id: @rules.last.ref_id,
+                     rule_references: [@rule_references.last])
     ]
 
     assert_difference('RuleReferencesRule.count', 1) do

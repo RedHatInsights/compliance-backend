@@ -4,11 +4,16 @@ require 'test_helper'
 
 class SystemQueryTest < ActiveSupport::TestCase
   setup do
-    profiles(:one).update! policy: policies(:one),
-                           account: accounts(:one)
-    profiles(:two).update! policy: policies(:two),
-                           account: accounts(:one)
-    users(:test).update account: accounts(:one)
+    @user = FactoryBot.create(:user)
+    @host1 = FactoryBot.create(:host, account: @user.account.account_number)
+
+    @profile1, @profile2 = FactoryBot.create_list(
+      :profile,
+      2,
+      :with_rules,
+      rule_count: 1,
+      account: @user.account
+    )
   end
 
   test 'query host owned by the user' do
@@ -22,11 +27,11 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     result = Schema.execute(
       query,
-      variables: { inventoryId: hosts(:one).id },
-      context: { current_user: users(:test) }
+      variables: { inventoryId: @host1.id },
+      context: { current_user: @user }
     )
 
-    assert_equal hosts(:one).name, result['data']['system']['name']
+    assert_equal @host1.name, result['data']['system']['name']
   end
 
   test 'query host owned by another user' do
@@ -38,34 +43,50 @@ class SystemQueryTest < ActiveSupport::TestCase
       }
     GRAPHQL
 
-    users(:test).update account: accounts(:two)
+    @user.update(account: FactoryBot.create(:account))
 
     assert_raises(Pundit::NotAuthorizedError) do
       Schema.execute(
         query,
-        variables: { inventoryId: hosts(:one).id },
-        context: { current_user: users(:test) }
+        variables: { inventoryId: @host1.id },
+        context: { current_user: @user }
       )
     end
   end
 
   context 'policy id querying' do
     setup do
-      rule_results(:one).update(
-        host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+      [@profile1, @profile2].each do |p|
+        p.policy.update(compliance_threshold: 95)
+        @host1.policies << p.policy
+      end
+
+      FactoryBot.create(
+        :rule_result,
+        host: @host1,
+        rule: @profile1.rules.first,
+        result: 'pass',
+        test_result: FactoryBot.create(
+          :test_result,
+          profile: @profile1,
+          host: @host1,
+          score: 98
+        )
       )
-      rule_results(:two).update(
-        host: hosts(:one), rule: rules(:two), test_result: test_results(:two)
+
+      FactoryBot.create(
+        :rule_result,
+        host: @host1,
+        rule: @profile2.rules.first,
+        result: 'fail',
+        test_result: FactoryBot.create(
+          :test_result,
+          profile: @profile2,
+          host: @host1,
+          supported: false,
+          score: 98
+        )
       )
-      test_results(:one).update(profile: profiles(:one), host: hosts(:one))
-      test_results(:two).update(profile: profiles(:two), host: hosts(:one),
-                                supported: false)
-      profiles(:one).rules << rules(:one)
-      profiles(:two).rules << rules(:two)
-      policies(:one).update(compliance_threshold: 95)
-      policies(:two).update(compliance_threshold: 95)
-      hosts(:one).policies << policies(:one)
-      hosts(:one).policies << policies(:two)
     end
 
     should 'return systems belonging to a policy' do
@@ -91,20 +112,20 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       result = Schema.execute(
         query,
-        variables: { search: "policy_id = #{profiles(:one).id}" },
-        context: { current_user: users(:test) }
+        variables: { search: "policy_id = #{@profile1.id}" },
+        context: { current_user: @user }
       )['data']['systems']['edges']
 
       result_profiles = result.first['node']['testResultProfiles']
       assert_equal 2, result_profiles.length
 
-      passed_profile = result_profiles.find { |p| p['id'] == profiles(:one).id }
+      passed_profile = result_profiles.find { |p| p['id'] == @profile1.id }
       assert_equal 1, passed_profile['rulesPassed']
       assert_equal 0, passed_profile['rulesFailed']
       assert passed_profile
       assert passed_profile
 
-      failed_profile = result_profiles.find { |p| p['id'] == profiles(:two).id }
+      failed_profile = result_profiles.find { |p| p['id'] == @profile2.id }
       assert_equal 0, failed_profile['rulesPassed']
       assert_equal 1, failed_profile['rulesFailed']
       assert failed_profile
@@ -134,8 +155,8 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       result = Schema.execute(
         query,
-        variables: { policyId: profiles(:one).id },
-        context: { current_user: users(:test) }
+        variables: { policyId: @profile1.id },
+        context: { current_user: @user }
       )['data']['systems']['edges']
 
       result_profiles = result.first['node']['profiles']
@@ -146,7 +167,7 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert result_profiles.first['compliant']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
-      assert_includes result_profile_ids, profiles(:one).id
+      assert_includes result_profile_ids, @profile1.id
       assert_equal 1, result_profile_ids.length
     end
 
@@ -172,19 +193,19 @@ class SystemQueryTest < ActiveSupport::TestCase
       }
       GRAPHQL
 
-      (second_benchmark = benchmarks(:one).dup).update!(version: '1.2.3')
-      other_profile = profiles(:one).dup
-      other_profile.update!(policy: policies(:one),
+      (second_benchmark = @profile1.benchmark.dup).update!(version: '1.2.3')
+      other_profile = @profile1.dup
+      other_profile.update!(policy: @profile1.policy,
                             external: true,
                             benchmark: second_benchmark,
-                            account: accounts(:test))
+                            account: @user.account)
 
-      test_results(:one).update!(profile: other_profile)
+      @profile1.test_results.first.update!(profile: other_profile)
 
       result = Schema.execute(
         query,
-        variables: { policyId: profiles(:one).id },
-        context: { current_user: users(:test) }
+        variables: { policyId: @profile1.id },
+        context: { current_user: @user }
       )['data']['systems']['edges']
 
       result_profiles = result.first['node']['testResultProfiles']
@@ -221,12 +242,12 @@ class SystemQueryTest < ActiveSupport::TestCase
       }
       GRAPHQL
 
-      hosts(:one).policies.delete(policies(:one))
+      @host1.policies.delete(@profile1.policy)
 
       result = Schema.execute(
         query,
-        variables: { policyId: profiles(:one).id },
-        context: { current_user: users(:test) }
+        variables: { policyId: @profile1.id },
+        context: { current_user: @user }
       )['data']['systems']['edges']
 
       result_profiles = result.first['node']['testResultProfiles']
@@ -237,7 +258,7 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert result_profiles.first['compliant']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
-      assert_includes result_profile_ids, profiles(:one).id
+      assert_includes result_profile_ids, @profile1.id
       assert_equal 1, result_profile_ids.length
     end
 
@@ -263,24 +284,24 @@ class SystemQueryTest < ActiveSupport::TestCase
       }
       GRAPHQL
 
-      (second_benchmark = benchmarks(:one).dup).update!(version: '1.2.3')
-      other_profile = profiles(:one).dup
-      other_profile.update!(policy: policies(:one),
+      (second_benchmark = @profile1.benchmark.dup).update!(version: '1.2.3')
+      other_profile = @profile1.dup
+      other_profile.update!(policy: @profile1.policy,
                             external: true,
                             benchmark: second_benchmark,
-                            account: accounts(:test))
+                            account: @user.account)
 
       result = Schema.execute(
         query,
         variables: { policyId: other_profile.id },
-        context: { current_user: users(:test) }
+        context: { current_user: @user }
       )['data']['systems']['edges']
 
       result_profiles = result.first['node']['profiles']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
       assert_includes result_profile_ids, other_profile.id
-      assert_includes result_profile_ids, profiles(:one).id
+      assert_includes result_profile_ids, @profile1.id
       assert_equal 2, result_profile_ids.length
     end
 
@@ -306,23 +327,23 @@ class SystemQueryTest < ActiveSupport::TestCase
       }
       GRAPHQL
 
-      (second_benchmark = benchmarks(:one).dup).update!(version: '1.2.3')
-      other_profile = profiles(:one).dup
-      other_profile.update!(policy: policies(:one),
+      (second_benchmark = @profile1.benchmark.dup).update!(version: '1.2.3')
+      other_profile = @profile1.dup
+      other_profile.update!(policy: @profile1.policy,
                             external: true,
                             benchmark: second_benchmark,
-                            account: accounts(:test))
+                            account: @user.account)
 
       result = Schema.execute(
         query,
         variables: { policyId: other_profile.id },
-        context: { current_user: users(:test) }
+        context: { current_user: @user }
       )['data']['systems']['edges']
 
       result_profiles = result.first['node']['testResultProfiles']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
-      assert_includes result_profile_ids, profiles(:one).id
+      assert_includes result_profile_ids, @profile1.id
       assert_equal 1, result_profile_ids.length
     end
 
@@ -348,12 +369,12 @@ class SystemQueryTest < ActiveSupport::TestCase
       }
       GRAPHQL
 
-      profiles(:one).update!(policy_id: nil)
+      @profile1.update!(policy_id: nil)
 
       result = Schema.execute(
         query,
-        variables: { policyId: profiles(:one).id },
-        context: { current_user: users(:test) }
+        variables: { policyId: @profile1.id },
+        context: { current_user: @user }
       )['data']['systems']['edges']
 
       result_profiles = result.first['node']['profiles']
@@ -363,7 +384,7 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert result_profiles.first['lastScanned']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
-      assert_includes result_profile_ids, profiles(:one).id
+      assert_includes result_profile_ids, @profile1.id
       assert_equal 1, result_profile_ids.length
     end
 
@@ -387,15 +408,15 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       result = Schema.execute(
         query,
-        variables: { policyId: profiles(:one).id },
-        context: { current_user: users(:test) }
+        variables: { policyId: @profile1.id },
+        context: { current_user: @user }
       )['data']['systems']['edges']
 
       returned_policies = result.first['node']['policies']
       assert_equal 1, returned_policies.length
 
-      assert_equal returned_policies.dig(0, 'id'), profiles(:one).id
-      assert_equal returned_policies.dig(0, 'name'), policies(:one).name
+      assert_equal returned_policies.dig(0, 'id'), @profile1.id
+      assert_equal returned_policies.dig(0, 'name'), @profile1.policy.name
     end
 
     should 'return suppotability and SSG information' do
@@ -423,17 +444,18 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       result = Schema.execute(
         query,
-        variables: { policyId: profiles(:one).id },
-        context: { current_user: users(:test) }
+        variables: { policyId: @profile1.id },
+        context: { current_user: @user }
       )['data']['systems']['edges']
 
       returned_profiles = result.dig(0, 'node', 'testResultProfiles')
       assert_equal 1, returned_profiles.length
 
-      assert_equal test_results(:one).score, returned_profiles.dig(0, 'score')
-      assert_equal test_results(:one).supported,
+      assert_equal @profile1.test_results.first.score,
+                   returned_profiles.dig(0, 'score')
+      assert_equal @profile1.test_results.first.supported,
                    returned_profiles.dig(0, 'supported')
-      assert_equal profiles(:one).ssg_version,
+      assert_equal @profile1.ssg_version,
                    returned_profiles.dig(0, 'ssgVersion')
     end
   end
@@ -469,9 +491,10 @@ class SystemQueryTest < ActiveSupport::TestCase
     GRAPHQL
 
     setup_two_hosts
+
     result = Schema.execute(
       query,
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )
 
     hosts = result['data']['systems']['edges']
@@ -512,27 +535,32 @@ class SystemQueryTest < ActiveSupport::TestCase
     }
     GRAPHQL
 
-    profiles(:one).rules << rules(:one)
-    rule_results(:one).update(
-      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    FactoryBot.create(
+      :rule_result,
+      host: @host1,
+      rule: @profile1.rules.first,
+      test_result: FactoryBot.create(
+        :test_result,
+        host: @host1,
+        profile: @profile1
+      )
     )
-    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
 
     result = Schema.execute(
       query,
-      variables: { systemId: hosts(:one).id },
-      context: { current_user: users(:test) }
+      variables: { systemId: @host1.id },
+      context: { current_user: @user }
     )
 
     returned_profiles = result.dig('data', 'system', 'profiles')
     assert returned_profiles.any?
-    assert_includes returned_profiles.map { |p| p['id'] }, profiles(:one).id
+    assert_includes returned_profiles.map { |p| p['id'] }, @profile1.id
 
     returned_result_profiles = result.dig('data', 'system',
                                           'testResultProfiles')
     assert returned_result_profiles.any?
     assert_includes returned_result_profiles.map { |p| p['id'] },
-                    profiles(:one).id
+                    @profile1.id
   end
 
   test 'system returns assigned policies' do
@@ -549,19 +577,19 @@ class SystemQueryTest < ActiveSupport::TestCase
     }
     GRAPHQL
 
-    hosts(:one).policies << policies(:one)
+    @host1.policies << @profile1.policy
 
     result = Schema.execute(
       query,
-      variables: { systemId: hosts(:one).id },
-      context: { current_user: users(:test) }
+      variables: { systemId: @host1.id },
+      context: { current_user: @user }
     )
 
     returned_policies = result.dig('data', 'system', 'policies')
     assert_equal 1, returned_policies.length
 
-    assert_equal returned_policies.dig(0, 'id'), profiles(:one).id
-    assert_equal returned_policies.dig(0, 'name'), policies(:one).name
+    assert_equal returned_policies.dig(0, 'id'), @profile1.id
+    assert_equal returned_policies.dig(0, 'name'), @profile1.policy.name
   end
 
   test 'page info can be obtained on system query' do
@@ -589,7 +617,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     result = Schema.execute(
       query,
       variables: { first: 1 },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )['data']
 
     assert_equal false, result['systems']['pageInfo']['hasPreviousPage']
@@ -615,10 +643,10 @@ class SystemQueryTest < ActiveSupport::TestCase
     result = Schema.execute(
       query,
       variables: { perPage: 1, page: 1 },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )['data']
 
-    assert_equal users(:test).account.hosts.count,
+    assert_equal @user.account.hosts.count,
                  result['systems']['totalCount']
     assert_equal 1, result['systems']['edges'].count
   end
@@ -640,12 +668,12 @@ class SystemQueryTest < ActiveSupport::TestCase
     setup_two_hosts
     result = Schema.execute(
       query,
-      variables: { search: "policy_id = #{profiles(:one).id}" },
-      context: { current_user: users(:test) }
+      variables: { search: "policy_id = #{@profile1.id}" },
+      context: { current_user: @user }
     )['data']
     graphql_host = Host.find(result['systems']['edges'].first['node']['id'])
     assert_equal 1, result['systems']['totalCount']
-    assert graphql_host.assigned_profiles.pluck(:id).include?(profiles(:one).id)
+    assert graphql_host.assigned_profiles.pluck(:id).include?(@profile1.id)
   end
 
   test 'query system rules when results contain wrong rule_ids' do
@@ -672,37 +700,50 @@ class SystemQueryTest < ActiveSupport::TestCase
 	}
     }
     GRAPHQL
-    hosts(:one).policies << policies(:one)
-    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
-    rule_results(:one).update(
-      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    @host1.policies << @profile1.policy
+
+    tr = FactoryBot.create(:test_result, profile: @profile1, host: @host1)
+    rule1 = @profile1.rules.first
+    rule2 = FactoryBot.create(:rule, benchmark: @profile1.rules.first.benchmark)
+    @profile1.rules << rule2
+
+    FactoryBot.create(
+      :rule_result,
+      rule: rule1,
+      host: @host1,
+      test_result: tr
     )
-    rule_results(:two).update(
-      host: hosts(:one), rule: rules(:two), test_result: test_results(:one)
+    FactoryBot.create(
+      :rule_result,
+      host: @host1,
+      test_result: tr,
+      rule: rule2
     )
-    rules(:one).delete
+
+    rule1.delete
 
     assert_nothing_raised do
       result = Schema.execute(
         query,
-        variables: { systemId: hosts(:one).id },
-        context: { current_user: users(:test) }
+        variables: { systemId: @host1.id },
+        context: { current_user: @user }
       )
       response_rules = result['data']['system']['profiles'][0]['rules']
 
       assert_equal 1, response_rules.length
-      assert_equal rules(:two).ref_id, response_rules[0]['refId']
+      assert_equal rule2.ref_id, response_rules[0]['refId']
     end
   end
 
   private
 
-  # rubocop:disable Metrics/AbcSize
   def setup_two_hosts
-    hosts(:one).policies << policies(:one)
-    hosts(:two).policies << policies(:two)
-    profiles(:one).rules << rules(:one)
-    profiles(:two).rules << rules(:two)
+    @host2 = FactoryBot.create(
+      :host,
+      policies: [@profile2.policy],
+      account: FactoryBot.create(:account).account_number
+    )
+
+    @host1.update!(policies: [@profile1.policy])
   end
-  # rubocop:enable Metrics/AbcSize
 end

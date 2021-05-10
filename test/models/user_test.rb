@@ -8,7 +8,8 @@ class UserTest < ActiveSupport::TestCase
   should belong_to :account
 
   test 'can be created from a X-RH-IDENTITY JSON' do
-    Account.create(account_number: '1333331')
+    FactoryBot.create(:account, account_number: '1333331')
+
     user = User.from_x_rh_identity(
       JSON.parse(
         <<~X_RH_IDENTITY

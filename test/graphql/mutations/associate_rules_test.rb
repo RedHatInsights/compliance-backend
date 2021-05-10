@@ -4,10 +4,26 @@ require 'test_helper'
 
 class AssociateRulesMutationTest < ActiveSupport::TestCase
   setup do
-    profiles(:one).update account: accounts(:one),
-                          policy: policies(:one)
-    users(:test).update account: accounts(:one)
+    @user = FactoryBot.create(:user)
+    parent = FactoryBot.create(:canonical_profile, :with_rules, rule_count: 1)
+    @profile = FactoryBot.create(
+      :profile,
+      account: @user.account,
+      parent_profile: parent,
+      benchmark: parent.benchmark
+    )
+    @rule = parent.rules.first
   end
+
+  QUERY = <<-GRAPHQL
+     mutation associateRules($input: associateRulesInput!) {
+        associateRules(input: $input) {
+           profile {
+               id
+           }
+        }
+     }
+  GRAPHQL
 
   {
     ruleIds: :id,
@@ -15,79 +31,56 @@ class AssociateRulesMutationTest < ActiveSupport::TestCase
   }.each do |key, field|
     context key do
       should 'provide all required arguments' do
-        query = <<-GRAPHQL
-           mutation associateRules($input: associateRulesInput!) {
-              associateRules(input: $input) {
-                 profile {
-                     id
-                 }
-              }
-           }
-        GRAPHQL
-
-        assert_empty profiles(:one).rules
+        assert_empty @profile.rules
 
         Schema.execute(
-          query,
+          QUERY,
           variables: { input: {
-            id: profiles(:one).id,
-            key => [rules(:one).send(field)]
+            id: @profile.id,
+            key => [@rule.send(field)]
           } },
-          context: { current_user: users(:test) }
+          context: { current_user: @user }
         )['data']['associateRules']['profile']
 
-        assert_equal Set.new(profiles(:one).reload.rules),
-                     Set.new([rules(:one)])
+        assert_equal Set.new(@profile.reload.rules),
+                     Set.new([@rule])
       end
 
       should 'removes rules from a profile' do
-        query = <<-GRAPHQL
-           mutation associateRules($input: associateRulesInput!) {
-              associateRules(input: $input) {
-                 profile {
-                     id
-                 }
-              }
-           }
-        GRAPHQL
+        profile = FactoryBot.create(
+          :profile,
+          :with_rules,
+          account: @user.account,
+          rule_count: 1
+        )
+        profile.parent_profile.update!(rules: [])
 
-        profiles(:one).update!(rules: [profiles(:one).benchmark.rules.first])
-        assert_not_empty profiles(:one).rules
+        assert_not_empty profile.rules
 
         Schema.execute(
-          query,
+          QUERY,
           variables: { input: {
-            id: profiles(:one).id,
+            id: profile.id,
             key => []
           } },
-          context: { current_user: users(:test) }
+          context: { current_user: @user }
         )['data']['associateRules']['profile']
 
-        assert_empty profiles(:one).reload.rules
+        assert_empty profile.reload.rules
         assert_audited 'Updated rule assignments of profile'
-        assert_audited policies(:one).id
+        assert_audited profile.id
       end
     end
   end
 
   test 'fails if no rules are passed' do
-    query = <<-GRAPHQL
-       mutation associateRules($input: associateRulesInput!) {
-          associateRules(input: $input) {
-             profile {
-                 id
-             }
-          }
-       }
-    GRAPHQL
-
     assert_raises ActionController::ParameterMissing do
       Schema.execute(
-        query,
+        QUERY,
         variables: { input: {
-          id: profiles(:one).id
+          id: @profile.id
         } },
-        context: { current_user: users(:test) }
+        context: { current_user: @user }
       )['data']['associateRules']['profile']
     end
   end

@@ -3,10 +3,22 @@
 require 'swagger_helper'
 
 describe 'RuleResults API' do
-  fixtures :accounts, :rules, :rule_results
-
   before do
-    rule_results(:one).update(host: hosts(:one), rule: rules(:one))
+    @account = FactoryBot.create(:account)
+    host = FactoryBot.create(:host, account: @account.account_number)
+    profile = FactoryBot.create(
+      :profile,
+      :with_rules,
+      account: @account,
+      rule_count: 1
+    )
+    tr = FactoryBot.create(:test_result, profile: profile, host: host)
+    FactoryBot.create(
+      :rule_result,
+      test_result: tr,
+      host: host,
+      rule: profile.rules.first
+    )
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/rule_results" do
@@ -23,7 +35,7 @@ describe 'RuleResults API' do
       include_param
 
       response '200', 'lists all rule_results requested' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {

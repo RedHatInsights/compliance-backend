@@ -17,8 +17,13 @@ class DuplicateTestResultResolverTest < ActiveSupport::TestCase
     end
     # rubocop:enable Lint/SuppressedException
 
+    User.current = FactoryBot.create(:user)
+    @rr1 = FactoryBot.create(:rule_result)
+    @rr2 = FactoryBot.create(:rule_result)
+    User.current = nil
+
     assert_difference('TestResult.count' => 1) do
-      (@dup_result = test_results(:one).dup).save(validate: false)
+      (@dup_result = @rr1.test_result.dup).save(validate: false)
     end
   end
 
@@ -30,7 +35,7 @@ class DuplicateTestResultResolverTest < ActiveSupport::TestCase
 
   test 'resolves identical rule results of identical test results' do
     assert_difference('RuleResult.count' => 1) do
-      rule_results(:one).dup.update!(test_result: @dup_result)
+      @rr1.dup.update!(test_result: @dup_result)
     end
 
     assert_difference('RuleResult.count' => -1) do
@@ -40,7 +45,7 @@ class DuplicateTestResultResolverTest < ActiveSupport::TestCase
 
   test 'resolves different rule results of identical test results' do
     assert_difference('RuleResult.count' => 1) do
-      rule_results(:two).dup.update!(test_result: @dup_result)
+      @rr2.dup.update!(test_result: @dup_result)
     end
 
     assert_difference('RuleResult.count' => 0) do

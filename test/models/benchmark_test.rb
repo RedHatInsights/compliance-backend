@@ -5,9 +5,14 @@ require 'test_helper'
 module Xccdf
   # To test the Xccdf::Benchmark model
   class BenchmarkTest < ActiveSupport::TestCase
-    should validate_uniqueness_of(:ref_id).scoped_to(:version)
-    should validate_presence_of :ref_id
-    should validate_presence_of :version
+    context 'model' do
+      setup { FactoryBot.create(:benchmark) }
+
+      should validate_uniqueness_of(:ref_id).scoped_to(:version)
+      should validate_presence_of :ref_id
+      should validate_presence_of :version
+    end
+
     should have_many(:profiles)
     should have_many(:rules)
 
@@ -77,11 +82,10 @@ module Xccdf
                               title: 'foo5', description: 'a')
 
       latest = Xccdf::Benchmark.latest
-      assert latest.count == 4
-      assert_equal %w[rhel6 rhel7 rhel8
-                      xccdf_org.ssgproject.content_benchmark_RHEL-7],
+      assert latest.count == 3
+      assert_equal %w[rhel6 rhel7 rhel8],
                    latest.map(&:ref_id).sort
-      assert_equal %w[0.1.42 0.1.45 0.2.0 0.2.2],
+      assert_equal %w[0.1.42 0.2.0 0.2.2],
                    latest.map(&:version).sort
     end
 
@@ -94,6 +98,10 @@ module Xccdf
         ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
         version: '2', title: 'A', description: 'A'
       )
+      bm7 = Xccdf::Benchmark.create!(
+        ref_id: 'xccdf_org.ssgproject.benchmark_RHEL-7',
+        version: '1', title: 'A', description: 'A'
+      )
       bm8 = Xccdf::Benchmark.create!(
         ref_id: 'foo_bar.ssgproject.benchmark_RHEL-8',
         version: '1', title: 'A', description: 'A'
@@ -101,11 +109,11 @@ module Xccdf
 
       assert_equal Set.new(Xccdf::Benchmark.os_major_version(6).to_a),
                    Set.new([bm61, bm62])
-      assert_equal Xccdf::Benchmark.os_major_version(7).to_a, [benchmarks(:one)]
+      assert_equal Xccdf::Benchmark.os_major_version(7).to_a, [bm7]
       assert_equal Xccdf::Benchmark.os_major_version(8).to_a, [bm8]
 
       assert_equal Set.new(Xccdf::Benchmark.os_major_version(6, false).to_a),
-                   Set.new([benchmarks(:one), bm8])
+                   Set.new([bm7, bm8])
     end
 
     test 'os_major_version scoped_search' do
@@ -117,6 +125,10 @@ module Xccdf
         ref_id: 'foo_bar.ssgproject.benchmark_RHEL-6',
         version: '2', title: 'A', description: 'A'
       )
+      bm7 = Xccdf::Benchmark.create!(
+        ref_id: 'xccdf_org.ssgproject.benchmark_RHEL-7',
+        version: '1', title: 'A', description: 'A'
+      )
       bm8 = Xccdf::Benchmark.create!(
         ref_id: 'foo_bar.ssgproject.benchmark_RHEL-8',
         version: '1', title: 'A', description: 'A'
@@ -127,12 +139,12 @@ module Xccdf
         Set.new([bm61, bm62])
       )
       assert_equal Xccdf::Benchmark.search_for('os_major_version = 7').to_a,
-                   [benchmarks(:one)]
+                   [bm7]
       assert_equal Xccdf::Benchmark.search_for('os_major_version = 8').to_a,
                    [bm8]
       assert_equal(
         Set.new(Xccdf::Benchmark.search_for('os_major_version != 6').to_a),
-        Set.new([benchmarks(:one), bm8])
+        Set.new([bm7, bm8])
       )
     end
 

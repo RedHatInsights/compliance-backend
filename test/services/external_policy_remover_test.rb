@@ -8,9 +8,11 @@ class ExternalPolicyRemoverTest < ActiveSupport::TestCase
     logger = mock
     Logger.stubs(:new).returns(logger)
     logger.stubs(:info)
+    User.current = FactoryBot.create(:user)
   end
 
   test 'does nothing if no external policies exist' do
+    FactoryBot.create_list(:profile, 10)
     assert_empty Profile.external.where(policy_id: nil)
     assert_difference('Profile.count' => 0) do
       ExternalPolicyRemover.run!
@@ -18,9 +20,9 @@ class ExternalPolicyRemoverTest < ActiveSupport::TestCase
   end
 
   test 'removes all external policies' do
-    profiles(:one).dup.update!(external: true, account: accounts(:test))
-    profiles(:two).dup.update!(external: true, policy: policies(:one),
-                               account: accounts(:test))
+    FactoryBot.create(:profile, external: true)
+    FactoryBot.create(:profile, external: true, policy: nil)
+
     assert_equal 1, Profile.external.where(policy_id: nil).count
     assert_difference('Profile.count' => -1) do
       ExternalPolicyRemover.run!

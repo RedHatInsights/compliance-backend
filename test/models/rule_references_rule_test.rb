@@ -10,9 +10,12 @@ class RuleReferencesRuleTest < ActiveSupport::TestCase
   should validate_presence_of(:rule_reference)
 
   test 'validate uniqueness scoped to rule' do
-    rules(:one).references << rule_references(:one)
+    rule = FactoryBot.create(:rule)
+    rref = FactoryBot.create(:rule_reference)
+
+    rule.references << rref
     assert_raises(ActiveRecord::RecordInvalid) do
-      rules(:one).references << rule_references(:one)
+      rule.references << rref
     end
   end
 end

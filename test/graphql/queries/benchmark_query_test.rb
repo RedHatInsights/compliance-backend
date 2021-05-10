@@ -3,7 +3,13 @@
 require 'test_helper'
 
 class BenchmarkQueryTest < ActiveSupport::TestCase
+  setup do
+    @user = FactoryBot.create(:user)
+  end
+
   test 'query all benchmarks' do
+    benchmarks = FactoryBot.create_list(:benchmark, 3)
+
     query = <<-GRAPHQL
       query Benchmarks {
           benchmarks {
@@ -17,7 +23,7 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
     result = Schema.execute(
       query,
       variables: {},
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )
 
     assert_equal(
@@ -40,14 +46,14 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
       }
     GRAPHQL
 
-    os_major_version = benchmarks.first.os_major_version
+    os_major_version = FactoryBot.create(:benchmark).os_major_version
     filtered_benchmarks = Xccdf::Benchmark.os_major_version(os_major_version)
     result = Schema.execute(
       query,
       variables: {
         filter: "os_major_version=#{os_major_version}"
       },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )
 
     assert_equal(
@@ -87,12 +93,10 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
       }
     GRAPHQL
 
-    users(:test).update account: accounts(:test)
-
     result = Schema.execute(
       query,
       variables: {},
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )
 
     assert_equal latest_benchmark.id,

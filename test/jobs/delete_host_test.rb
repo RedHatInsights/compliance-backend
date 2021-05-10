@@ -5,8 +5,18 @@ require 'sidekiq/testing'
 
 class DeleteHostTest < ActiveSupport::TestCase
   setup do
+    user = FactoryBot.create(:user)
+    @host = FactoryBot.create(:host, account: user.account.account_number)
+    profile = FactoryBot.create(:profile, :with_rules, account: user.account)
+    tr = FactoryBot.create(:test_result, profile: profile, host: @host)
+    FactoryBot.create(
+      :rule_result,
+      rule: profile.rules.sample,
+      test_result: tr, host: @host
+    )
+
     @message = {
-      'id': hosts(:one).id,
+      'id': @host.id,
       'type': 'delete'
     }
     DeleteHost.clear
@@ -24,7 +34,7 @@ class DeleteHostTest < ActiveSupport::TestCase
       DeleteHost.drain
     end
     assert_audited 'Deleteted related records for host'
-    assert_audited hosts(:one).id
+    assert_audited @host.id
   end
 
   test 'delete of a host fails and is audited' do
@@ -35,6 +45,6 @@ class DeleteHostTest < ActiveSupport::TestCase
       DeleteHost.drain
     end
     assert_audited 'Failed to delete related records for host'
-    assert_audited hosts(:one).id
+    assert_audited @host.id
   end
 end

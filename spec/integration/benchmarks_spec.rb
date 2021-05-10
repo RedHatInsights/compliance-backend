@@ -5,7 +5,8 @@ require 'swagger_helper'
 describe 'Benchmarks API' do
   path "#{Settings.path_prefix}/#{Settings.app_name}/benchmarks" do
     get 'List all benchmarks' do
-      fixtures :benchmarks
+      before { FactoryBot.create_list(:benchmark, 2) }
+
       tags 'benchmark'
       description 'Lists all benchmarks requested'
       operationId 'ListBenchmarks'
@@ -46,7 +47,10 @@ describe 'Benchmarks API' do
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/benchmarks/{id}" do
     get 'Retrieve a benchmark' do
-      fixtures :benchmarks, :profiles, :rules
+      before do
+        @profile = FactoryBot.create(:canonical_profile, :with_rules)
+      end
+
       tags 'benchmark'
       description 'Retrieves data for a benchmark'
       operationId 'ShowBenchmark'
@@ -69,7 +73,7 @@ describe 'Benchmarks API' do
 
       response '200', 'retrieves a benchmark' do
         let(:'X-RH-IDENTITY') { encoded_header }
-        let(:id) { benchmarks(:one).id }
+        let(:id) { @profile.benchmark.id }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {

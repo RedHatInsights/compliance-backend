@@ -13,20 +13,20 @@ class BusinessObjectiveTest < ActiveSupport::TestCase
       }
     GRAPHQL
 
-    users(:test).update account: accounts(:test)
-    profiles(:one).update(account: accounts(:test), hosts: [hosts(:one)],
-                          policy: policies(:one))
-    policies(:one).update(business_objective: business_objectives(:one))
+    user = FactoryBot.create(:user)
+    profile = FactoryBot.create(:profile, account: user.account)
+    bo = FactoryBot.create(:business_objective)
+    profile.policy.update!(business_objective: bo)
 
     result = Schema.execute(
       query,
       variables: {},
-      context: { current_user: users(:test) }
+      context: { current_user: user }
     )
 
-    assert_equal business_objectives(:one).id,
+    assert_equal bo.id,
                  result['data']['businessObjectives'].first['id']
-    assert_equal business_objectives(:one).title,
+    assert_equal bo.title,
                  result['data']['businessObjectives'].first['title']
   end
 end

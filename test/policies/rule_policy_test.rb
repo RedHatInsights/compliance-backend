@@ -4,42 +4,51 @@ require 'test_helper'
 
 class RulePolicyTest < ActiveSupport::TestCase
   setup do
-    users(:test).account = accounts(:test)
+    @user = FactoryBot.create(:user)
+
+    # FactoryBot.create(:canonical_profile, :with_rules)
   end
 
   test 'disallows rules not in the current_user account' do
-    assert_empty Pundit.policy_scope(users(:test), Rule)
-    Profile.create!(name: 'test', ref_id: 'test',
-                    parent_profile: profiles(:one),
-                    benchmark: benchmarks(:one), rules: [rules(:one)])
-    assert_empty Pundit.policy_scope(users(:test), Rule)
+    assert_empty Pundit.policy_scope(@user, Rule)
+
+    profile = FactoryBot.create(
+      :profile,
+      :with_rules,
+      account: FactoryBot.create(:account)
+    )
+
+    profile.rules = profile.parent_profile.rules
+    profile.parent_profile.rules.delete_all
+
+    assert_empty Pundit.policy_scope(@user, Rule)
     assert_raises(Pundit::NotAuthorizedError) do
-      Pundit.authorize(users(:test), rules(:one), :index?)
+      Pundit.authorize(@user, profile.rules.sample, :index?)
     end
     assert_raises(Pundit::NotAuthorizedError) do
-      Pundit.authorize(users(:test), rules(:one), :show?)
+      Pundit.authorize(@user, profile.rules.sample, :show?)
     end
   end
 
   test 'allows rules in the current_user account' do
-    assert_empty Pundit.policy_scope(users(:test), Rule)
-    profile = Profile.create!(name: 'test', ref_id: 'test',
-                              parent_profile: profiles(:one),
-                              benchmark: benchmarks(:one),
-                              account: accounts(:test), rules: [rules(:one)])
-    TestResult.create!(host: hosts(:one), profile: profile,
-                       end_time: DateTime.now)
-    assert_includes Pundit.policy_scope(users(:test), Rule), rules(:one)
-    assert Pundit.authorize(users(:test), rules(:one), :index?)
-    assert Pundit.authorize(users(:test), rules(:one), :show?)
+    assert_empty Pundit.policy_scope(@user, Rule)
+
+    profile = FactoryBot.create(:profile, :with_rules, account: @user.account)
+    host = FactoryBot.create(:host, account: @user.account.account_number)
+    FactoryBot.create(:test_result, host: host, profile: profile)
+
+    assert_includes Pundit.policy_scope(@user, Rule), profile.rules.sample
+    assert Pundit.authorize(@user, profile.rules.sample, :index?)
+    assert Pundit.authorize(@user, profile.rules.sample, :show?)
   end
 
   test 'allows rules from canonical profiles' do
-    assert_empty Pundit.policy_scope(users(:test), Rule)
-    Profile.create!(name: 'test', ref_id: 'test',
-                    benchmark: benchmarks(:one), rules: [rules(:one)])
-    assert_includes Pundit.policy_scope(users(:test), Rule), rules(:one)
-    assert Pundit.authorize(users(:test), rules(:one), :index?)
-    assert Pundit.authorize(users(:test), rules(:one), :show?)
+    assert_empty Pundit.policy_scope(@user, Rule)
+
+    profile = FactoryBot.create(:canonical_profile, :with_rules, rule_count: 1)
+
+    assert_includes Pundit.policy_scope(@user, Rule), profile.rules.first
+    assert Pundit.authorize(@user, profile.rules.first, :index?)
+    assert Pundit.authorize(@user, profile.rules.first, :show?)
   end
 end

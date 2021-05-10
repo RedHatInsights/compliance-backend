@@ -4,15 +4,28 @@ require 'test_helper'
 
 class RuleQueryTest < ActiveSupport::TestCase
   setup do
-    users(:test).update account: accounts(:test)
-    profiles(:one).update(account: accounts(:test), hosts: [hosts(:one)])
-    profiles(:one).update rules: [rules(:one)]
-    rules(:one).update rule_identifier: rule_identifiers(:one)
-    rules(:one).update rule_references: [rule_references(:one)]
-    rule_results(:one).update(
-      host: hosts(:one), rule: rules(:one), test_result: test_results(:one)
+    @user = FactoryBot.create(:user)
+    @host = FactoryBot.create(:host, account: @user.account.account_number)
+    @profile = FactoryBot.create(
+      :profile,
+      :with_rules,
+      rule_count: 1,
+      account: @user.account
     )
-    test_results(:one).update(profile: profiles(:one), host: hosts(:one))
+    rule = @profile.rules.first
+
+    tr = FactoryBot.create(:test_result, host: @host, profile: @profile)
+    FactoryBot.create(
+      :rule_result,
+      host: @host,
+      rule: rule,
+      test_result: tr
+    )
+    @rr = FactoryBot.create(:rule_reference)
+    @ri = FactoryBot.create(:rule_identifier, rule: rule)
+    @profile.rules.first.update!(
+      rule_references: [@rr]
+    )
   end
 
   test 'rules are filtered by system ID' do
@@ -32,10 +45,10 @@ class RuleQueryTest < ActiveSupport::TestCase
     result = Schema.execute(
       query,
       variables: {
-        id: profiles(:one).id,
-        systemId: hosts(:one).id
+        id: @profile.id,
+        systemId: @host.id
       },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )
     assert_not result.dig('errors'),
                "Query was unsuccessful: #{result.dig('errors')}"
@@ -60,17 +73,17 @@ class RuleQueryTest < ActiveSupport::TestCase
     result = Schema.execute(
       query,
       variables: {
-        id: profiles(:one).id,
-        identifier: rule_identifiers(:one).label
+        id: @profile.id,
+        identifier: @ri.label
       },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )
     assert_not result.dig('errors'),
                "Query was unsuccessful: #{result.dig('errors')}"
     assert result.dig('data', 'profile', 'rules').any?, 'No rules returned!'
     assert_equal(
-      { label: rule_identifiers(:one).label,
-        system: rule_identifiers(:one).system }.to_json,
+      { label: @ri.label,
+        system: @ri.system }.to_json,
       result.dig('data', 'profile', 'rules', 0, 'identifier')
     )
   end
@@ -93,16 +106,16 @@ class RuleQueryTest < ActiveSupport::TestCase
     result = Schema.execute(
       query,
       variables: {
-        id: profiles(:one).id,
-        references: [rule_references(:one).label]
+        id: @profile.id,
+        references: [@rr.label]
       },
-      context: { current_user: users(:test) }
+      context: { current_user: @user }
     )
     assert_not result.dig('errors'),
                "Query was unsuccessful: #{result.dig('errors')}"
     assert result.dig('data', 'profile', 'rules').any?, 'No rules returned!'
-    assert_equal [{ href: rule_references(:one).href,
-                    label: rule_references(:one).label }].to_json,
+    assert_equal [{ href: @rr.href,
+                    label: @rr.label }].to_json,
                  result.dig('data', 'profile', 'rules',
                             0, 'references')
   end

@@ -4,10 +4,13 @@ require 'swagger_helper'
 require 'sidekiq/testing'
 
 describe 'Profiles API' do
-  fixtures :accounts, :rules, :benchmarks, :profiles, :policies
-
   before do
-    policies(:one).update! account: accounts(:one)
+    @account = FactoryBot.create(:account)
+    @policy = FactoryBot.create(:policy, account: @account)
+    @parent = FactoryBot.create(:canonical_profile)
+    @hosts = FactoryBot.create_list(
+      :host, 2, account: @account.account_number
+    )
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/profiles" do
@@ -25,12 +28,10 @@ describe 'Profiles API' do
 
       response '200', 'lists all profiles requested' do
         before do
-          policies(:one).update!(account: accounts(:one))
-          profiles(:one).update!(account: accounts(:one),
-                                 policy: policies(:one))
+          FactoryBot.create(:profile, account: @account, policy: @policy)
         end
 
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {
@@ -128,25 +129,25 @@ describe 'Profiles API' do
       }
 
       response '201', 'creates a profile' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
         let(:data) do
           {
             data: {
               attributes: {
-                parent_profile_id: profiles(:two).id,
+                parent_profile_id: @parent.id,
                 name: 'A custom name',
                 compliance_threshold: 93.5,
                 business_objective: 'LATAM Expansion'
               },
               relationships: {
                 rules: {
-                  data: profiles(:two).benchmark.rules.map do |rule|
+                  data: @parent.benchmark.rules.map do |rule|
                     { id: rule.id, type: 'rule' }
                   end
                 },
                 hosts: {
-                  data: hosts.map do |host|
+                  data: @hosts.map do |host|
                     { id: host.id, type: 'host' }
                   end
                 }
@@ -196,16 +197,14 @@ describe 'Profiles API' do
       end
 
       response '200', 'retrieves a profile' do
-        let(:'X-RH-IDENTITY') { encoded_header }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:id) do
-          Account.create(
-            account_number: x_rh_identity[:identity][:account_number]
-          )
-          user = User.from_x_rh_identity(x_rh_identity[:identity])
-          user.save
-          profiles(:one).update(account: user.account,
-                                parent_profile_id: profiles(:two).id)
-          profiles(:one).id
+          FactoryBot.create(
+            :profile,
+            parent_profile: @profile,
+            policy: @policy,
+            account: @account
+          ).id
         end
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
@@ -228,15 +227,9 @@ describe 'Profiles API' do
       end
 
       response '200', 'retrieves a profile with included benchmark' do
-        let(:'X-RH-IDENTITY') { encoded_header }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:id) do
-          Account.create(
-            account_number: x_rh_identity[:identity][:account_number]
-          )
-          user = User.from_x_rh_identity(x_rh_identity[:identity])
-          user.save
-          profiles(:one).update(account: user.account)
-          profiles(:one).id
+          @parent.id
         end
         let(:include) { 'benchmark' }
         schema type: :object,
@@ -338,15 +331,15 @@ describe 'Profiles API' do
       end
 
       response '200', 'updates a profile' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:id) do
-          new_profile = Profile.new(parent_profile_id: profiles(:two).id,
-                                    account_id: accounts(:one).id,
-                                    policy: policies(:one))
-                               .fill_from_parent
-          new_profile.save
-          new_profile.update_rules
-          new_profile.id
+          FactoryBot.create(
+            :profile,
+            :with_rules,
+            account: @account,
+            policy: @policy,
+            parent_profile: @parent
+          ).id
         end
         let(:include) { '' } # work around buggy rswag
         let(:data) do
@@ -359,12 +352,12 @@ describe 'Profiles API' do
               },
               relationships: {
                 rules: {
-                  data: profiles(:two).benchmark.rules.map do |rule|
+                  data: @parent.benchmark.rules.map do |rule|
                     { id: rule.id, type: 'rule' }
                   end
                 },
                 hosts: {
-                  data: hosts.map do |host|
+                  data: @hosts.map do |host|
                     { id: host.id, type: 'host' }
                   end
                 }
@@ -416,14 +409,9 @@ describe 'Profiles API' do
       end
 
       response '202', 'destroys a profile' do
-        before do
-          profiles(:one).update!(account: accounts(:one))
-        end
-
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:one)) }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:id) do
-          profiles(:one).update(parent_profile_id: profiles(:two).id)
-          profiles(:one).id
+          FactoryBot.create(:profile, account: @account).id
         end
         let(:include) { '' } # work around buggy rswag
 

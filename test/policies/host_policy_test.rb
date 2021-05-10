@@ -4,20 +4,27 @@ require 'test_helper'
 
 class HostPolicyTest < ActiveSupport::TestCase
   test 'only hosts matching the account are accessible' do
-    users(:test).update!(account: accounts(:one))
+    user = FactoryBot.create(:user)
+    h1 = Host.find(
+      FactoryBot.create(:host, account: user.account.account_number).id
+    )
+    h2 = Host.find(FactoryBot.create(
+      :host,
+      account: FactoryBot.create(:account).account_number
+    ).id)
 
-    assert Pundit.authorize(users(:test), hosts(:one), :index?)
-    assert Pundit.authorize(users(:test), hosts(:one), :show?)
-    assert_includes Pundit.policy_scope(users(:test), Host), hosts(:one)
+    assert Pundit.authorize(user, h1, :index?)
+    assert Pundit.authorize(user, h1, :show?)
+    assert_includes Pundit.policy_scope(user, Host), h1
 
     assert_raises(Pundit::NotAuthorizedError) do
-      Pundit.authorize(users(:test), hosts(:two), :index?)
+      Pundit.authorize(user, h2, :index?)
     end
 
     assert_raises(Pundit::NotAuthorizedError) do
-      Pundit.authorize(users(:test), hosts(:two), :show?)
+      Pundit.authorize(user, h2, :show?)
     end
 
-    assert_not_includes Pundit.policy_scope(users(:test), Host), hosts(:two)
+    assert_not_includes Pundit.policy_scope(user, Host), h2
   end
 end

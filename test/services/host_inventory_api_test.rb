@@ -5,10 +5,15 @@ require 'host_inventory_api'
 
 class HostInventoryApiTest < ActiveSupport::TestCase
   setup do
-    @inventory_host = { 'id' => hosts(:one).id,
-                        'display_name' => hosts(:one).name,
-                        'account' => hosts(:one).account_number }
-    @account = hosts(:one).account_object
+    @host = FactoryBot.create(
+      :host,
+      account: FactoryBot.create(:account).account_number
+    )
+
+    @inventory_host = { 'id' => @host.id,
+                        'display_name' => @host.name,
+                        'account' => @host.account_number }
+    @account = @host.account_object
     @b64_identity = '1234abcd'
     @api = HostInventoryApi.new(b64_identity: @b64_identity)
     @connection = mock('faraday_connection')
@@ -26,6 +31,6 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     @connection.expects(:get).returns(response)
 
     assert_includes @api.hosts.dig('results').map { |h| h['id'] },
-                    hosts(:one).id
+                    @host.id
   end
 end

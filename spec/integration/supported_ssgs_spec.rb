@@ -3,8 +3,6 @@
 require 'swagger_helper'
 
 describe 'SupportedSsgs API' do
-  fixtures :accounts
-
   path "#{Settings.path_prefix}/#{Settings.app_name}/supported_ssgs" do
     get 'List all supported SSGs' do
       tags 'supported_ssg'
@@ -17,7 +15,7 @@ describe 'SupportedSsgs API' do
       include_param
 
       response '200', 'lists all supported_ssgs requested' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:test)) }
+        let(:'X-RH-IDENTITY') { encoded_header(FactoryBot.create(:account)) }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {

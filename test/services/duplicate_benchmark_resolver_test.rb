@@ -15,9 +15,13 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
     end
     # rubocop:enable Lint/SuppressedException
 
+    @benchmark = FactoryBot.create(:benchmark)
+    @rule = FactoryBot.create(:rule, benchmark: @benchmark)
+    @profile = FactoryBot.create(:canonical_profile, benchmark: @benchmark)
+
     assert_difference('Xccdf::Benchmark.count' => 1) do
-      (@dup_benchmark = benchmarks(:one).dup)
-        .assign_attributes(created_at: benchmarks(:one).created_at + 1.minute)
+      (@dup_benchmark = @benchmark.dup)
+        .assign_attributes(created_at: @benchmark.created_at + 1.minute)
       @dup_benchmark.save(validate: false)
     end
   end
@@ -30,10 +34,8 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
 
   test 'resolves rules from a duplicate benchmark with the same rule ref_id' do
     assert_difference('Rule.count' => 2) do
-      rules(:one).dup.update!(ref_id: 'foo',
-                              benchmark: benchmarks(:one))
-      rules(:one).dup.update!(ref_id: 'foo',
-                              benchmark: @dup_benchmark)
+      @rule.dup.update!(ref_id: 'foo', benchmark: @benchmark)
+      @rule.dup.update!(ref_id: 'foo', benchmark: @dup_benchmark)
     end
 
     assert_difference('Rule.count' => -1) do
@@ -43,10 +45,8 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
 
   test 'resolves rules from a duplicate benchmark with different rule ref_id' do
     assert_difference('Rule.count' => 2) do
-      rules(:one).dup.update!(ref_id: 'foo',
-                              benchmark: benchmarks(:one))
-      rules(:one).dup.update!(ref_id: 'foo2',
-                              benchmark: @dup_benchmark)
+      @rule.dup.update!(ref_id: 'foo', benchmark: @benchmark)
+      @rule.dup.update!(ref_id: 'foo2', benchmark: @dup_benchmark)
     end
 
     assert_difference('Rule.count' => 0) do
@@ -57,10 +57,8 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
   test 'resolves profiles from a duplicate benchmark '\
        'with the same profile ref_id' do
     assert_difference('Profile.count' => 2) do
-      profiles(:one).dup.update!(ref_id: 'foo',
-                                 benchmark: benchmarks(:one))
-      profiles(:one).dup.update!(ref_id: 'foo',
-                                 benchmark: @dup_benchmark)
+      @profile.dup.update!(ref_id: 'foo', benchmark: @benchmark)
+      @profile.dup.update!(ref_id: 'foo', benchmark: @dup_benchmark)
     end
 
     assert_difference('Profile.count' => -1) do
@@ -71,10 +69,8 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
   test 'resolves profiles from a duplicate benchmark '\
        'with different profile ref_id' do
     assert_difference('Profile.count' => 2) do
-      profiles(:one).dup.update!(ref_id: 'foo',
-                                 benchmark: benchmarks(:one))
-      profiles(:one).dup.update!(ref_id: 'foo2',
-                                 benchmark: @dup_benchmark)
+      @profile.dup.update!(ref_id: 'foo', benchmark: @benchmark)
+      @profile.dup.update!(ref_id: 'foo2', benchmark: @dup_benchmark)
     end
 
     assert_difference('Profile.count' => 0) do
@@ -83,13 +79,13 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
   end
 
   test 'fails if parent_profile of migrated profile is not found' do
-    parent = profiles(:one).dup
-    p = profiles(:one).dup
-    dup_parent = profiles(:one).dup
-    dup_p = profiles(:one).dup
+    parent = @profile.dup
+    p = @profile.dup
+    dup_parent = @profile.dup
+    dup_p = @profile.dup
     assert_difference('Profile.count' => 4) do
-      parent.update!(ref_id: 'bar', benchmark: benchmarks(:one))
-      p.update!(ref_id: 'bar2', benchmark: benchmarks(:one),
+      parent.update!(ref_id: 'bar', benchmark: @benchmark)
+      p.update!(ref_id: 'bar2', benchmark: @benchmark,
                 parent_profile_id: parent.id)
 
       dup_parent.update!(ref_id: 'foo',
@@ -107,19 +103,21 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
   end
 
   test 'resolves parent_profile of migrated profiles' do
-    parent = profiles(:one).dup
-    p = profiles(:one).dup
-    dup_parent = profiles(:one).dup
-    dup_p = profiles(:one).dup
+    account1 = FactoryBot.create(:account)
+    account2 = FactoryBot.create(:account)
+    parent = @profile.dup
+    p = @profile.dup
+    dup_parent = @profile.dup
+    dup_p = @profile.dup
     assert_difference('Profile.count' => 4) do
-      parent.update!(ref_id: 'foo', benchmark: benchmarks(:one))
-      p.update!(ref_id: 'foo2', benchmark: benchmarks(:one),
-                account: accounts(:test), parent_profile_id: parent.id)
+      parent.update!(ref_id: 'foo', benchmark: @benchmark)
+      p.update!(ref_id: 'foo2', benchmark: @benchmark,
+                account: account1, parent_profile_id: parent.id)
 
       dup_parent.update!(ref_id: 'foo',
                          benchmark: @dup_benchmark)
       dup_p.update!(ref_id: 'foo2', benchmark: @dup_benchmark,
-                    account: accounts(:one), parent_profile_id: dup_parent.id)
+                    account: account2, parent_profile_id: dup_parent.id)
     end
 
     assert_equal parent.id, p.parent_profile_id
