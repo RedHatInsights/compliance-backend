@@ -238,53 +238,103 @@ class PolicyTest < ActiveSupport::TestCase
   context '#clone_to' do
     setup do
       @canonical = FactoryBot.create(:canonical_profile)
-      @profile = Profile.new(parent_profile: @canonical,
-                             account: @account,
-                             policy: @policy).fill_from_parent
-      @profile.save!
       @host = FactoryBot.create(:host, account: @account.account_number)
       @policy.update(hosts: [@host])
       @os_minor_version = '3'
     end
 
-    should 'use existing profile' do
-      assert_difference('Profile.count', 0) do
-        child_profile = @canonical.clone_to(
-          account: @account,
-          policy: @policy,
+    context 'with existing profile' do
+      setup do
+        @profile = Profile.new(parent_profile: @canonical,
+                               account: @account,
+                               policy: @policy).fill_from_parent
+        @profile.save!
+      end
+
+      should 'use existing profile' do
+        assert_difference('Profile.count', 0) do
+          child_profile = @canonical.clone_to(
+            account: @account,
+            policy: @policy,
+            os_minor_version: @os_minor_version
+          )
+
+          assert_equal @profile, child_profile
+          assert_equal @profile.os_minor_version, child_profile.os_minor_version
+        end
+      end
+
+      should 'use existing profile even without providing OS minor version' do
+        assert_difference('Profile.count', 0) do
+          child_profile = @canonical.clone_to(
+            account: @account,
+            policy: @policy
+          )
+          assert_equal @profile, child_profile
+          assert_equal @profile.os_minor_version, child_profile.os_minor_version
+        end
+      end
+
+      should 'prefer existing profiles by OS version' do
+        (second_profile = @profile.dup).update!(
+          external: true,
           os_minor_version: @os_minor_version
         )
 
-        assert_equal @profile, child_profile
-        assert_equal @profile.os_minor_version, child_profile.os_minor_version
-      end
-    end
-
-    should 'use existing profile even without providing OS minor version' do
-      assert_difference('Profile.count', 0) do
         child_profile = @canonical.clone_to(
           account: @account,
-          policy: @policy
+          policy: @profile.policy,
+          os_minor_version: @os_minor_version
         )
-        assert_equal @profile, child_profile
-        assert_equal @profile.os_minor_version, child_profile.os_minor_version
+        assert_equal second_profile, child_profile
+        assert_equal second_profile.os_minor_version,
+                     child_profile.os_minor_version
+      end
+
+      should 'set OS minor version on existing policy profile' do
+        assert_difference('Profile.count', 0) do
+          child_profile = @canonical.clone_to(
+            account: @account,
+            policy: @policy,
+            set_os_minor_version: @os_minor_version
+          )
+
+          assert_equal @profile, child_profile
+          assert_equal @os_minor_version, child_profile.os_minor_version
+        end
+      end
+
+      should 'create new profile on OS minor missmatch' do
+        @profile.update!(os_minor_version: '4')
+
+        assert_difference('Profile.count', 1) do
+          child_profile = @canonical.clone_to(
+            account: @account,
+            policy: @policy,
+            set_os_minor_version: @os_minor_version
+          )
+
+          assert_not_equal @profile, child_profile
+          assert_equal @account, child_profile.account
+          assert_equal @policy, child_profile.policy
+          assert_equal @os_minor_version, child_profile.os_minor_version
+        end
       end
     end
 
-    should 'prefer existing profiles by OS version' do
-      (second_profile = @profile.dup).update!(
-        external: true,
-        os_minor_version: @os_minor_version
-      )
+    should 'create new profile and set OS minor version' do
+      assert_difference('Profile.count', 1) do
+        child_profile = @canonical.clone_to(
+          account: @account,
+          policy: @policy,
+          set_os_minor_version: @os_minor_version
+        )
 
-      child_profile = @canonical.clone_to(
-        account: @account,
-        policy: @profile.policy,
-        os_minor_version: @os_minor_version
-      )
-      assert_equal second_profile, child_profile
-      assert_equal second_profile.os_minor_version,
-                   child_profile.os_minor_version
+        assert child_profile
+        assert_equal @account, child_profile.account
+        assert_equal @policy, child_profile.policy
+        assert_equal @os_minor_version, child_profile.os_minor_version
+      end
     end
   end
 

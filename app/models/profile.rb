@@ -72,9 +72,18 @@ class Profile < ApplicationRecord
     self
   end
 
-  def clone_to(account:, policy:, os_minor_version: nil)
-    new_profile = in_account(account, policy, os_minor_version)
+  def clone_to(account:, policy:,
+               os_minor_version: nil, set_os_minor_version: nil)
+    new_profile = in_account(
+      account, policy,
+      os_minor_version || set_os_minor_version
+    )
     new_profile ||= create_child_profile(account, policy)
+
+    if set_os_minor_version
+      # Update the os minor version if not already set
+      new_profile.update_os_minor_version(set_os_minor_version)
+    end
     new_profile
   end
 
