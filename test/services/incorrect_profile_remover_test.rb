@@ -4,10 +4,8 @@ require 'test_helper'
 
 class IncorrectProfileRemoverTest < ActiveSupport::TestCase
   setup do
-    profiles(:one).update!(policy: policies(:one),
-                           account: accounts(:test))
-    profiles(:two).update!(policy: policies(:two),
-                           account: accounts(:test))
+    account = FactoryBot.create(:account)
+    @profile = FactoryBot.create(:profile, account: account)
 
     logger = mock
     Logger.stubs(:new).returns(logger)
@@ -15,8 +13,8 @@ class IncorrectProfileRemoverTest < ActiveSupport::TestCase
   end
 
   test 'removes profiles with a mismatched ref_id' do
-    profiles(:one).dup.update!(ref_id: 'foo', external: true)
-    assert_equal 2, policies(:one).profiles.count
+    @profile.dup.update!(ref_id: 'foo', external: true)
+    assert_equal 2, @profile.policy.profiles.count
     assert_difference('Profile.count' => -1) do
       IncorrectProfileRemover.run!
     end
@@ -29,9 +27,9 @@ class IncorrectProfileRemoverTest < ActiveSupport::TestCase
   end
 
   test 'does nothing to policies with no mismatched profiles' do
-    (bm2 = benchmarks(:one).dup).update!(version: '0.1.23')
-    profiles(:one).dup.update!(benchmark: bm2, external: true)
-    assert_equal 2, policies(:one).profiles.count
+    (bm2 = @profile.benchmark.dup).update!(version: '0.1.23')
+    @profile.dup.update!(benchmark: bm2, external: true)
+    assert_equal 2, @profile.policy.profiles.count
     assert_difference('Profile.count' => 0) do
       IncorrectProfileRemover.run!
     end

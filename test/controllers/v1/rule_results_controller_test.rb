@@ -9,6 +9,9 @@ module V1
     end
 
     test 'index lists all rule results' do
+      User.current = FactoryBot.create(:user)
+      FactoryBot.create_list(:rule_result, 10)
+
       RuleResultsController.any_instance.expects(:policy_scope)
                            .with(RuleResult)
                            .returns(RuleResult.all).at_least_once

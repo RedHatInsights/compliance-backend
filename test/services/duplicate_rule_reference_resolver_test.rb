@@ -15,8 +15,10 @@ class DuplicateRuleReferenceResolverTest < ActiveSupport::TestCase
     end
     # rubocop:enable Lint/SuppressedException
 
+    @rule_reference = FactoryBot.create(:rule_reference)
+
     assert_difference('RuleReference.count' => 1) do
-      (@dup_reference = rule_references(:one).dup).save(validate: false)
+      (@dup_reference = @rule_reference.dup).save(validate: false)
     end
   end
 
@@ -27,9 +29,10 @@ class DuplicateRuleReferenceResolverTest < ActiveSupport::TestCase
   end
 
   test 'resolves identical rules of identical references' do
+    rule = FactoryBot.create(:rule)
     assert_difference('RuleReferencesRule.count' => 2) do
-      rule_references(:one).rules << rules(:one)
-      @dup_reference.rules << rules(:one)
+      @rule_reference.rules << rule
+      @dup_reference.rules << rule
     end
 
     assert_difference('RuleReferencesRule.count' => -1) do
@@ -39,8 +42,8 @@ class DuplicateRuleReferenceResolverTest < ActiveSupport::TestCase
 
   test 'resolves different rules of identical references' do
     assert_difference('RuleReferencesRule.count' => 2) do
-      rule_references(:one).rules << rules(:one)
-      @dup_reference.rules << rules(:two)
+      @rule_reference.rules << FactoryBot.create(:rule)
+      @dup_reference.rules << FactoryBot.create(:rule)
     end
 
     assert_difference('RuleReferencesRule.count' => 0) do

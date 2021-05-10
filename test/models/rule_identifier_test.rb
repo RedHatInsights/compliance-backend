@@ -16,12 +16,14 @@ class RuleIdentifierTest < ActiveSupport::TestCase
 
   test 'builds a RuleIdentifier from_openscap_parser' \
     'OpenscapParser::RuleIdentifier' do
+    rule = FactoryBot.create(:rule)
+
     rule_identifier = RuleIdentifier.from_openscap_parser(OP_RULE_IDENTIFIER,
-                                                          rules(:one).id)
+                                                          rule.id)
     assert_equal OP_RULE_IDENTIFIER.system, rule_identifier.system
     assert_equal OP_RULE_IDENTIFIER.label, rule_identifier.label
     assert rule_identifier.save
     assert_equal rule_identifier.id, RuleIdentifier
-      .from_openscap_parser(OP_RULE_IDENTIFIER, rules(:one).id).id
+      .from_openscap_parser(OP_RULE_IDENTIFIER, rule.id).id
   end
 end

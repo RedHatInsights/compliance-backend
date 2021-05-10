@@ -10,6 +10,8 @@ class EngineeringCollectorTest < ActiveSupport::TestCase
   end
 
   test 'metrics' do
+    FactoryBot.create(:account)
+
     assert_nothing_raised do
       metrics = @collector.metrics.map do |metric|
         [metric.name, metric.data.values.first]

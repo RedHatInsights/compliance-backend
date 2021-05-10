@@ -6,12 +6,8 @@ module V1
   class RulesControllerTest < ActionDispatch::IntegrationTest
     setup do
       RulesController.any_instance.stubs(:authenticate_user).yields
-      User.current = users(:test)
-      users(:test).update account: accounts(:test)
-      profiles(:one).update(
-        account: accounts(:test),
-        rules: [rules(:one)]
-      )
+      User.current = FactoryBot.create(:user)
+      @profile = FactoryBot.create(:profile, :with_rules)
     end
 
     test 'index lists all rules' do
@@ -23,32 +19,32 @@ module V1
     end
 
     test 'finds a rule within the user scope' do
-      get v1_rule_url(rules(:one).ref_id)
+      get v1_rule_url(@profile.rules.first.ref_id)
       assert_response :success
     end
 
     test 'finds a rule with similar slug within the user scope' do
-      rules(:two).update(slug: "#{rules(:two).ref_id}-#{SecureRandom.uuid}")
-      profiles(:one).update rules: [rules(:two)]
-      get v1_rule_url(rules(:two).ref_id)
+      @profile.rules.first.update(
+        slug: "#{@profile.rules.first.ref_id}-#{SecureRandom.uuid}"
+      )
 
+      get v1_rule_url(@profile.rules.first.ref_id)
       assert_response :success
     end
 
     test 'finds a rule by ID' do
-      get v1_rule_url(rules(:one).id)
+      get v1_rule_url(@profile.rules.first.id)
 
       assert_response :success
     end
 
     test 'finds latest canonical rules' do
-      assert(profiles(:one).canonical?)
-      profiles(:one).rules << rules(:two)
-      assert(rules(:two).canonical?)
-      assert_includes(Rule.latest, rules(:two))
-      assert_not_includes(accounts(:test).profiles.map(&:rules).uniq,
-                          rules(:two))
-      get v1_rule_url(rules(:two).ref_id)
+      parent = FactoryBot.create(:canonical_profile, :with_rules, rule_count: 1)
+
+      assert_includes(Rule.latest, parent.rules.last)
+      assert_not_includes(User.current.account.profiles.map(&:rules).uniq,
+                          parent.rules.last)
+      get v1_rule_url(parent.rules.last.ref_id)
 
       assert_response :success
     end

@@ -3,102 +3,80 @@
 require 'test_helper'
 
 class DeleteProfileMutationTest < ActiveSupport::TestCase
+  setup do
+    @user = FactoryBot.create(:user)
+    @profile = FactoryBot.create(:profile, account: @user.account)
+  end
+
+  QUERY = <<-GRAPHQL
+      mutation DeleteProfile($input: deleteProfileInput!) {
+          deleteProfile(input: $input) {
+              profile {
+                  id
+              }
+          }
+      }
+  GRAPHQL
+
   test 'delete a profile provided an ID' do
-    query = <<-GRAPHQL
-        mutation DeleteProfile($input: deleteProfileInput!) {
-            deleteProfile(input: $input) {
-                profile {
-                    id
-                }
-            }
-        }
-    GRAPHQL
-
-    users(:test).update account: accounts(:test)
-    profiles(:one).update(account: accounts(:test))
-
     assert_difference('Profile.count', -1) do
       result = Schema.execute(
-        query,
+        QUERY,
         variables: { input: {
-          id: profiles(:one).id
+          id: @profile.id
         } },
-        context: { current_user: users(:test) }
+        context: { current_user: @user }
       )['data']['deleteProfile']['profile']
-      assert_equal profiles(:one).id, result['id']
+      assert_equal @profile.id, result['id']
     end
     assert_audited 'Removed profile'
-    assert_audited profiles(:one).id
+    assert_audited @profile.id
   end
 
   test 'deleting internal profile detroys its policy with profiles' do
-    query = <<-GRAPHQL
-        mutation DeleteProfile($input: deleteProfileInput!) {
-            deleteProfile(input: $input) {
-                profile {
-                    id
-                }
-            }
-        }
-    GRAPHQL
+    FactoryBot.create(
+      :profile,
+      account: @user.account,
+      policy: @profile.policy,
+      external: true
+    )
 
-    users(:test).update account: accounts(:test)
-    profiles(:one).update!(account: accounts(:test),
-                           policy_id: policies(:one).id)
-
-    profiles(:two).update!(account: accounts(:test),
-                           external: true,
-                           policy_id: policies(:one).id)
-
-    profile_id = profiles(:one).id
     assert_difference('Profile.count' => -2, 'Policy.count' => -1) do
       result = Schema.execute(
-        query,
+        QUERY,
         variables: { input: {
-          id: profile_id
+          id: @profile.id
         } },
-        context: { current_user: users(:test) }
+        context: { current_user: @user }
       )['data']['deleteProfile']['profile']
-      assert_equal profile_id, result['id']
+      assert_equal @profile.id, result['id']
     end
     assert_audited 'Removed profile'
-    assert_audited profiles(:one).id
-    assert_audited policies(:one).id
+    assert_audited @profile.id
+    assert_audited @profile.policy.id
     assert_audited 'Autoremoved policy'
     assert_audited 'with the initial/main profile'
   end
 
   test 'deleting other policy profile keeps policy and its profiles' do
-    query = <<-GRAPHQL
-        mutation DeleteProfile($input: deleteProfileInput!) {
-            deleteProfile(input: $input) {
-                profile {
-                    id
-                }
-            }
-        }
-    GRAPHQL
+    second = FactoryBot.create(
+      :profile,
+      account: @user.account,
+      policy: @profile.policy,
+      external: true
+    )
 
-    users(:test).update account: accounts(:test)
-    profiles(:one).update!(account: accounts(:test),
-                           policy_id: policies(:one).id)
-
-    profiles(:two).update!(account: accounts(:test),
-                           external: true,
-                           policy_id: policies(:one).id)
-
-    profile_id = profiles(:two).id
     assert_difference('Profile.count' => -1, 'Policy.count' => 0) do
       result = Schema.execute(
-        query,
+        QUERY,
         variables: { input: {
-          id: profile_id
+          id: second.id
         } },
-        context: { current_user: users(:test) }
+        context: { current_user: @user }
       )['data']['deleteProfile']['profile']
-      assert_equal profile_id, result['id']
+      assert_equal second.id, result['id']
     end
     assert_audited 'Removed profile'
-    assert_audited profiles(:one).id
+    assert_audited @profile.policy.id
   end
 end

@@ -15,13 +15,19 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       'xccdf_org.ssgproject.content_profile_standard' =>
       'Standard System Security Profile for Fedora'
     }
+    @account = FactoryBot.create(:account)
+    @host = FactoryBot.create(
+      :host,
+      account: @account.account_number,
+      display_name: 'MyStringone'
+    )
     @report_parser = TestParser
                      .new(fake_report,
-                          'account' => accounts(:test).account_number,
+                          'account' => @account.account_number,
                           'b64_identity' => 'b64_fake_identity',
-                          'id' => hosts(:one).id,
+                          'id' => @host.id,
                           'metadata' => {
-                            'display_name' => hosts(:one).name
+                            'display_name' => @host.name
                           })
     @report_parser.host.stubs(:os_major_version).returns(8)
     @report_parser.host.stubs(:os_minor_version).returns(3)
@@ -83,7 +89,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
 
     should 'be able to parse host name' do
       assert_equal(
-        hosts(:one).name,
+        @host.name,
         @report_parser.test_result_file.test_result.host
       )
     end
@@ -103,6 +109,17 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
 
     should 'save them, associate them with a rule and a host' do
+      profile = FactoryBot.create(
+        :profile, :with_rules, rule_count: 1, account: @account, policy: nil
+      )
+      tr = FactoryBot.create(:test_result, host: @host, profile: profile)
+      FactoryBot.create(
+        :rule_result,
+        rule: profile.rules.first,
+        test_result: tr,
+        host: @host
+      )
+
       assert_difference('RuleResult.count', 58) do
         @report_parser.save_all
         rule_results = @report_parser.rule_results
@@ -147,7 +164,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       assert_raises(XccdfReportParser::MissingIdError) do
         TestParser.new(
           'fakereport',
-          'account' => accounts(:test).account_number,
+          'account' => @account.account_number,
           'b64_identity' => 'b64_fake_identity',
           'metadata' => { 'display_name': '123' }
         )
@@ -202,14 +219,14 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       profile = Profile.create!(
         ref_id: @profile.keys[0],
         name: @profile.values[0],
-        benchmark: benchmarks(:one)
+        benchmark: FactoryBot.create(:benchmark)
       )
       rule = Rule.create!(
         ref_id: @arbitrary_rules[0],
         title: 'foo',
         description: 'foo',
         severity: 'low',
-        benchmark: benchmarks(:one),
+        benchmark: profile.benchmark,
         profiles: [profile]
       )
       assert_nothing_raised do
@@ -247,7 +264,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       )
       (profile = Profile.new(
         parent_profile: parent_profile,
-        account: accounts(:test)
+        account: @account
       ).fill_from_parent).update!(rules: [])
 
       assert profile.persisted?
@@ -269,11 +286,11 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       assert_raises(XccdfReportParser::WrongFormatError) do
         TestParser.new(
           fake_report,
-          'account' => accounts(:test).account_number,
-          'id' => hosts(:one).id,
+          'account' => @account.account_number,
+          'id' => @host.id,
           'b64_identity' => 'b64_fake_identity',
           'metadata' => {
-            'display_name' => hosts(:one).name
+            'display_name' => @host.name
           }
         )
       end
@@ -289,21 +306,31 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
 
     should 'find a policy profile by hosts, account, and ref_id' do
-      @report_parser.stubs(:external_report?)
-      profiles(:one).update!(
-        ref_id: 'xccdf_org.ssgproject.content_profile_standard', hosts: []
+      profile = FactoryBot.create(
+        :canonical_profile,
+        ref_id: 'xccdf_org.ssgproject.content_profile_standard'
       )
-      policies(:one).hosts = [@report_parser.host]
-      policies(:two).hosts = [@report_parser.host]
+
+      policy = FactoryBot.create(
+        :policy,
+        account: @account,
+        hosts: [@report_parser.host]
+      )
+      FactoryBot.create(
+        :policy,
+        account: @account,
+        hosts: [@report_parser.host]
+      )
+
+      @report_parser.stubs(:external_report?)
       Profile.any_instance.expects(:clone_to).with(policy: nil,
-                                                   account: accounts(:test),
+                                                   account: @account,
                                                    os_minor_version: '3')
       @report_parser.save_host_profile
 
-      profiles(:one).update!(policy: policies(:one),
-                             account: accounts(:test))
-      Profile.any_instance.expects(:clone_to).with(policy: policies(:one),
-                                                   account: accounts(:test),
+      profile.update!(policy: policy, account: @account)
+      Profile.any_instance.expects(:clone_to).with(policy: policy,
+                                                   account: @account,
                                                    os_minor_version: '3')
       @report_parser.save_host_profile
     end

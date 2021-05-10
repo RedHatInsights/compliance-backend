@@ -6,9 +6,10 @@ class ExternalProfileUpdaterTest < ActiveSupport::TestCase
   test 'updates profiles before a certain date to be external' do
     expected_change = Profile.count
     date = DateTime.now
+    profile = FactoryBot.create(:profile, account: FactoryBot.create(:account))
 
     assert_difference('Profile.where(external: false).count' => 1) do
-      profiles(:one).dup.update(ref_id: 'foo')
+      profile.dup.update(ref_id: 'foo')
     end
 
     assert_difference('Profile.where(external: true).count' =>

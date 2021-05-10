@@ -10,16 +10,13 @@ require 'securerandom'
 class MetadataTest < ActionDispatch::IntegrationTest
   def authenticate
     V1::ProfilesController.any_instance.expects(:authenticate_user).yields
-    users(:test).account = accounts(:test)
-    User.current = users(:test)
+    User.current = FactoryBot.create(:user)
   end
 
   test 'meta adds includes to JSON response' do
     authenticate
     3.times do
-      Profile.create(ref_id: "foo#{SecureRandom.uuid}", name: SecureRandom.uuid,
-                     benchmark: benchmarks(:one),
-                     account: accounts(:test))
+      FactoryBot.create(:profile)
     end
     get profiles_url, params: { include: 'rules', limit: 1, offset: 2,
                                 search: '' }
@@ -34,11 +31,11 @@ class MetadataTest < ActionDispatch::IntegrationTest
   test 'meta adds total and search to JSON response' do
     authenticate
     3.times do
-      Profile.create(ref_id: "foo#{SecureRandom.uuid}", name: SecureRandom.uuid,
-                     benchmark: benchmarks(:one),
-                     account: accounts(:test))
+      FactoryBot.create(:profile)
     end
-    profiles(:one).update(account: accounts(:test))
+
+    FactoryBot.create(:profile)
+
     search_query = 'ref_id~foo'
     get profiles_url, params: { search: search_query, limit: 1, offset: 2 }
     assert_response :success
@@ -54,18 +51,15 @@ class MetadataTest < ActionDispatch::IntegrationTest
   context 'pagination' do
     setup do
       authenticate
-      Profile.all.find_each do |p|
-        p.update!(account_id: accounts(:test).id,
-                  parent_profile: profiles(:one))
+      @parent = FactoryBot.create(:canonical_profile)
+      2.times do
+        FactoryBot.create(:profile, parent_profile: @parent)
       end
     end
 
     should 'return correct pagination links' do
       3.times do
-        Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
-                       benchmark: benchmarks(:one),
-                       account: accounts(:test), parent_profile: profiles(:one),
-                       policy: policies(:one))
+        FactoryBot.create(:profile, parent_profile: @parent)
       end
       get profiles_url, params: { limit: 1, offset: 3 }
       assert_response :success
@@ -76,7 +70,8 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_match(/limit=1/, json_body['links']['next'])
       assert_match(/offset=4/, json_body['links']['next'])
       assert_match(/limit=1/, json_body['links']['last'])
-      assert_match(/offset=#{Profile.count}/, json_body['links']['last'])
+      assert_match(/offset=#{Profile.canonical(false).count}/,
+                   json_body['links']['last'])
     end
 
     should 'return correct pagination links when there are two pages' do
@@ -87,24 +82,26 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_match(/limit=1/, json_body['links']['next'])
       assert_match(/offset=2/, json_body['links']['next'])
       assert_match(/limit=1/, json_body['links']['last'])
-      assert_match(/offset=#{Profile.count}/, json_body['links']['last'])
+      assert_match(/offset=#{Profile.canonical(false).count}/,
+                   json_body['links']['last'])
     end
 
     should 'return correct pagination links when there is one page' do
-      get profiles_url, params: { limit: Profile.count, offset: 1 }
+      get profiles_url, params: {
+        limit: Profile.canonical(false).count, offset: 1
+      }
       assert_response :success
-      assert_match(/limit=#{Profile.count}/, json_body['links']['first'])
+      assert_match(/limit=#{Profile.canonical(false).count}/,
+                   json_body['links']['first'])
       assert_match(/offset=1/, json_body['links']['first'])
-      assert_match(/limit=#{Profile.count}/, json_body['links']['last'])
+      assert_match(/limit=#{Profile.canonical(false).count}/,
+                   json_body['links']['last'])
       assert_match(/offset=1/, json_body['links']['last'])
     end
 
     should 'return correct pagination links when there are three pages' do
-      Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
-                     benchmark: benchmarks(:one),
-                     parent_profile: profiles(:one),
-                     account: accounts(:test),
-                     policy: policies(:one))
+      FactoryBot.create(:profile, parent_profile: @parent)
+
       get profiles_url, params: { limit: 1, offset: 2 }
       assert_response :success
       assert_match(/limit=1/, json_body['links']['first'])
@@ -114,16 +111,13 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_match(/limit=1/, json_body['links']['next'])
       assert_match(/offset=3/, json_body['links']['next'])
       assert_match(/limit=1/, json_body['links']['last'])
-      assert_match(/offset=#{Profile.count}/, json_body['links']['last'])
+      assert_match(/offset=#{Profile.canonical(false).count}/,
+                   json_body['links']['last'])
     end
 
     should 'return correct pagination links with partially filled last page' do
       3.times do
-        Profile.create(ref_id: SecureRandom.uuid, name: SecureRandom.uuid,
-                       benchmark: benchmarks(:one),
-                       parent_profile: profiles(:one),
-                       account: accounts(:test),
-                       policy: policies(:one))
+        FactoryBot.create(:profile, parent_profile: @parent)
       end
       get profiles_url, params: { limit: 2, offset: 1 }
       assert_response :success
@@ -166,7 +160,8 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_equal(1203, json_body['meta']['offset'])
       assert_not json_body['links']['previous']
       assert_match(/offset=1/, json_body['links']['first'])
-      assert_match(/offset=#{Profile.count}/, json_body['links']['last'])
+      assert_match(/offset=#{Profile.canonical(false).count}/,
+                   json_body['links']['last'])
     end
   end
 end

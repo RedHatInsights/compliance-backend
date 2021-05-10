@@ -23,8 +23,10 @@ class RulesTest < ActiveSupport::TestCase
 
   setup do
     @mock = Mock.new(file_fixture('xccdf_report.xml').read)
-    @mock.benchmark = benchmarks(:one)
-    @mock.account = accounts(:test)
+    @mock.benchmark = FactoryBot.create(
+      :canonical_profile, :with_rules
+    ).benchmark
+    @mock.account = FactoryBot.create(:account)
   end
 
   test 'save all rules as new' do

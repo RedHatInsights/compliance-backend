@@ -1,8 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-_fixture:
-  model_class: Xccdf::Benchmark
-one:
-  ref_id: xccdf_org.ssgproject.content_benchmark_RHEL-7
-  title: Benchmark One
-  description: The first benchmark
-  version: 0.1.45

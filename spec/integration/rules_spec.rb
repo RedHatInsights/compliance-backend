@@ -3,10 +3,14 @@
 require 'swagger_helper'
 
 describe 'Rules API' do
-  fixtures :accounts, :profiles, :rules
-
   before do
-    profiles(:one).update!(rules: rules[0...-1], account: accounts(:test))
+    @account = FactoryBot.create(:account)
+    @profile = FactoryBot.create(
+      :profile,
+      :with_rules,
+      rule_count: 1,
+      account: @account
+    )
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/rules" do
@@ -23,7 +27,7 @@ describe 'Rules API' do
       include_param
 
       response '200', 'lists all rules requested' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:test)) }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {
@@ -62,8 +66,8 @@ describe 'Rules API' do
       include_param
 
       response '404', 'rule not found' do
-        let(:id) { rules.last.id }
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:test)) }
+        let(:id) { FactoryBot.create(:rule).id }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
 
         after { |e| autogenerate_examples(e) }
@@ -72,8 +76,8 @@ describe 'Rules API' do
       end
 
       response '200', 'retrieves a rule' do
-        let(:'X-RH-IDENTITY') { encoded_header(accounts(:test)) }
-        let(:id) { rules(:one).id }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
+        let(:id) { @profile.rules.first.id }
         let(:include) { '' } # work around buggy rswag
         schema type: :object,
                properties: {

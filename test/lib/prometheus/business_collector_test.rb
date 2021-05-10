@@ -10,6 +10,14 @@ class BusinessCollectorTest < ActiveSupport::TestCase
   end
 
   test 'metrics' do
+    account, = FactoryBot.create_list(:account, 3)
+    FactoryBot.create_list(
+      :host,
+      2,
+      account: account.account_number,
+      policies: [FactoryBot.create(:policy, account: account)]
+    )
+
     assert_nothing_raised do
       metrics = @collector.metrics.map do |metric|
         [metric.name, metric.data.values.first]

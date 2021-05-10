@@ -4,18 +4,49 @@ require 'test_helper'
 
 class RuleResultPolicyTest < ActiveSupport::TestCase
   test 'only rules within visible hosts are accessible' do
-    users(:test).account = accounts(:one)
-    users(:test).save
-    assert_includes Pundit.policy_scope(users(:test), Host), hosts(:one)
-    rule_results(:one).host = hosts(:one)
-    rule_results(:one).rule = rules(:one)
-    rule_results(:one).test_result = test_results(:one)
-    rule_results(:one).save
-    assert_includes Pundit.policy_scope(users(:test), RuleResult),
-                    rule_results(:one)
-    assert Pundit.authorize(users(:test), rule_results(:one), :index?)
-    assert Pundit.authorize(users(:test), rule_results(:one), :show?)
-    assert_not_includes Pundit.policy_scope(users(:test), RuleResult),
-                        rule_results(:two)
+    user = FactoryBot.create(:user)
+    host1 = Host.find(
+      FactoryBot.create(:host, account: user.account.account_number).id
+    )
+    assert_includes Pundit.policy_scope(user, Host), host1
+
+    profile1 = FactoryBot.create(
+      :profile,
+      :with_rules,
+      rule_count: 1,
+      account: user.account
+    )
+
+    tr1 = FactoryBot.create(:test_result, profile: profile1, host: host1)
+
+    rr1 = FactoryBot.create(
+      :rule_result,
+      host: host1,
+      test_result: tr1,
+      rule: profile1.rules.first
+    )
+
+    account2 = FactoryBot.create(:account)
+    host2 = FactoryBot.create(:host, account: account2.account_number)
+    profile2 = FactoryBot.create(
+      :profile,
+      :with_rules,
+      rule_count: 1,
+      account: account2
+    )
+
+    tr2 = FactoryBot.create(:test_result, profile: profile2, host: host2)
+
+    rr2 = FactoryBot.create(
+      :rule_result,
+      host: host2,
+      test_result: tr2,
+      rule: profile2.rules.first
+    )
+
+    assert_includes Pundit.policy_scope(user, RuleResult), rr1
+    assert Pundit.authorize(user, rr1, :index?)
+    assert Pundit.authorize(user, rr1, :show?)
+    assert_not_includes Pundit.policy_scope(user, RuleResult), rr2
   end
 end

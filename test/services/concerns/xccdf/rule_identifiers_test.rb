@@ -13,7 +13,7 @@ class RuleReferencesTest < ActiveSupport::TestCase
 
   test 'identifiers of new rules are saved' do
     parser = MockParser.new
-    rule = rules(:one)
+    rule = FactoryBot.create(:rule)
     rule.op_source = OpenStruct.new(
       identifier: OpenStruct.new(
         label: 'foo label',

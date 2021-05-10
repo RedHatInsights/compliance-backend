@@ -7,9 +7,10 @@ class GraphqlControllerTest < ActionDispatch::IntegrationTest
     GraphqlController.any_instance.expects(:authenticate_user).yields
     query = 'gqlquery'
     variables = ['samplevar']
-    User.current = users(:test)
+    user = FactoryBot.create(:user)
+    User.current = user
     Schema.expects(:execute).with(
-      query, variables: variables, context: { current_user: users(:test) }
+      query, variables: variables, context: { current_user: user }
     )
     post graphql_url, params: { variables: variables, query: query }
     assert_response :success
