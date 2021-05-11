@@ -22,10 +22,6 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:32181
   puptoo:
     image: quay.io/cloudservices/insights-puptoo:latest
-    command:
-      - python
-      - -m
-      - puptoo.app
     ports:
       - 8001:8001 #for prometheus endpoint
     environment:
