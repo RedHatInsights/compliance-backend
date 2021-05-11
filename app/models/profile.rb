@@ -2,6 +2,7 @@
 
 # OpenSCAP profile
 class Profile < ApplicationRecord
+  include ProfileFields
   include ProfileTailoring
   include ProfileScoring
   include ProfilePolicyAssociation
@@ -62,14 +63,6 @@ class Profile < ApplicationRecord
     end
   end
 
-  def ssg_version
-    benchmark.version
-  end
-
-  def policy_type
-    (parent_profile || self).name
-  end
-
   def fill_from_parent
     self.ref_id = parent_profile.ref_id
     self.benchmark_id = parent_profile.benchmark_id
@@ -79,29 +72,10 @@ class Profile < ApplicationRecord
     self
   end
 
-  def canonical?
-    parent_profile_id.blank?
-  end
-
   def clone_to(account:, policy:, os_minor_version: nil)
     new_profile = in_account(account, policy, os_minor_version)
     new_profile ||= create_child_profile(account, policy)
     new_profile
-  end
-
-  def major_os_version
-    benchmark&.inferred_os_major_version
-  end
-  alias os_major_version major_os_version
-
-  def os_version
-    "#{os_major_version}#{'.' + os_minor_version if os_minor_version.present?}"
-  end
-
-  def short_ref_id
-    ref_id.downcase.split(
-      'xccdf_org.ssgproject.content_profile_'
-    )[1] || ref_id
   end
 
   private
