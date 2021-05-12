@@ -1985,6 +1985,62 @@
         }
       }
     },
+    "/api/compliance/status": {
+      "get": {
+        "summary": "status",
+        "tags": [
+          "status"
+        ],
+        "description": "Display Compliance status",
+        "operationId": "Status",
+        "responses": {
+          "200": {
+            "description": "successful status",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "api": true
+                }
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/status"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unsuccessful status",
+            "examples": {
+              "application/vnd.api+json": {
+                "data": {
+                  "api": false
+                }
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/status"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/compliance/supported_ssgs": {
       "get": {
         "summary": "List all supported SSGs",
@@ -3150,6 +3206,17 @@
           },
           "rule_references": {
             "$ref": "#/components/schemas/relationship_collection"
+          }
+        }
+      },
+      "status": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "api": {
+              "type": "boolean",
+              "example": true
+            }
           }
         }
       },
