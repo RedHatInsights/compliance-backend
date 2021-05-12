@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     scope "#{prefix}/#{Settings.app_name}" do
       concern :rest_api_v1 do
         scope module: 'v1' do
+          resource 'status', only: :show
           resources :benchmarks, only: [:index, :show]
           resources :business_objectives, only: [:index, :show]
           resources :profiles do
