@@ -1,5 +1,5 @@
 ---
-revision: '2021-03-08'
+revision: '2021-03-29'
 supported:
   RHEL-6.6:
     - package: scap-security-guide-0.1.18-3.el6
@@ -305,6 +305,20 @@ supported:
     - package: scap-security-guide-0.1.50-16.el8_3
       version: 0.1.50
       profiles:
+        cis:
+        cui:
+        e8:
+        hipaa:
+        ospp:
+        pci-dss:
+        stig:
+  RHEL-8.4:
+    - package: scap-security-guide-0.1.54-5.el8
+      version: 0.1.54
+      profiles:
+        anssi_bp28_enhanced:
+        anssi_bp28_intermediary:
+        anssi_bp28_minimal:
         cis:
         cui:
         e8:
