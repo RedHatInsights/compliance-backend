@@ -2425,6 +2425,37 @@
                     }
                   },
                   {
+                    "id": "RHEL-7.9:scap-security-guide-0.1.54-3.el7_9",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.54-3.el7_9",
+                      "version": "0.1.54",
+                      "os_major_version": "7",
+                      "os_minor_version": "9",
+                      "profiles": [
+                        "anssi_nt28_enhanced",
+                        "anssi_nt28_high",
+                        "anssi_nt28_intermediary",
+                        "anssi_nt28_minimal",
+                        "C2S",
+                        "cis",
+                        "cjis",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ncp",
+                        "ospp",
+                        "pci-dss_centric",
+                        "pci-dss",
+                        "rhelh-stig",
+                        "rhelh-vpp",
+                        "rht-ccp",
+                        "standard",
+                        "stig"
+                      ]
+                    }
+                  },
+                  {
                     "id": "RHEL-8.0:scap-security-guide-0.1.42-11.el8",
                     "type": "supported_ssg",
                     "attributes": {
@@ -2500,11 +2531,33 @@
                         "stig"
                       ]
                     }
+                  },
+                  {
+                    "id": "RHEL-8.4:scap-security-guide-0.1.54-5.el8",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.54-5.el8",
+                      "version": "0.1.54",
+                      "os_major_version": "8",
+                      "os_minor_version": "4",
+                      "profiles": [
+                        "anssi_bp28_enhanced",
+                        "anssi_bp28_intermediary",
+                        "anssi_bp28_minimal",
+                        "cis",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ospp",
+                        "pci-dss",
+                        "stig"
+                      ]
+                    }
                   }
                 ],
                 "meta": {
-                  "total": 20,
-                  "revision": "2021-01-27"
+                  "total": 22,
+                  "revision": "2021-03-29"
                 }
               }
             },
