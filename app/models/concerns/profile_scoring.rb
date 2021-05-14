@@ -33,9 +33,7 @@ module ProfileScoring
   end
 
   def compliant?(host)
-    return policy.compliant?(host) if policy_id
-
-    score(host: host) >= compliance_threshold
+    policy&.compliant?(host) || false
   end
 
   # Disabling MethodLength because it measures things wrong

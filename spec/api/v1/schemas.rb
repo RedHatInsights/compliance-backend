@@ -9,6 +9,7 @@ require './spec/api/v1/schemas/business_objectives'
 require './spec/api/v1/schemas/profiles'
 require './spec/api/v1/schemas/rule_results'
 require './spec/api/v1/schemas/rules'
+require './spec/api/v1/schemas/status'
 require './spec/api/v1/schemas/supported_ssgs'
 
 module Api
@@ -23,6 +24,7 @@ module Api
       include Profiles
       include RuleResults
       include Rules
+      include Status
       include SupportedSggs
 
       SCHEMAS = {
@@ -44,6 +46,7 @@ module Api
         rule_result_relationships: RULE_RESULT_RELATIONSHIPS,
         rule: RULE,
         rule_relationships: RULE_RELATIONSHIPS,
+        status: STATUS,
         supported_ssg: SUPPORTED_SSG
       }.freeze
     end
