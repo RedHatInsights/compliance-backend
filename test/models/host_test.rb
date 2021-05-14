@@ -81,7 +81,7 @@ class HostTest < ActiveSupport::TestCase
   end
 
   test 'loose filter search' do
-    assert_includes Host.search_for(@host1.display_name), @host1
+    assert_includes Host.search_for("\"#{@host1.display_name}\""), @host1
   end
 
   test 'host provides all profiles, assigned and from test results' do
