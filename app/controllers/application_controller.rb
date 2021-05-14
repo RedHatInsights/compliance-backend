@@ -9,8 +9,7 @@ class ApplicationController < ActionController::API
   include ExceptionNotifierCustomData
   include Metadata
   include Pagination
-  include Search
-  include Sorting
+  include Collection
   include Rendering
   include Parameters
 

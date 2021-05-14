@@ -14,7 +14,7 @@ module V1
     private
 
     def benchmarks
-      @benchmarks ||= authorize(scope_search)
+      @benchmarks ||= authorize(resolve_collection)
     end
 
     def benchmark
