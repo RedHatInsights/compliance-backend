@@ -6,11 +6,14 @@ module Resolvers
     module Collection
       extend ActiveSupport::Concern
 
+      include Sorting
+
       included do
         type ["Types::#{self::MODEL_CLASS}".safe_constantize], null: false
         argument :search, String, 'Search query', required: false
         argument :limit, Integer, 'Pagination limit', required: false
         argument :offset, Integer, 'Pagination offset', required: false
+        argument :sort_by, [String], 'Sort results', required: false
       end
 
       def resolve(**kwargs)
@@ -21,9 +24,11 @@ module Resolvers
 
       private
 
-      def filter_list(search: nil, offset: nil, limit: nil)
+      def filter_list(search: nil, sort_by: nil, offset: nil, limit: nil)
         filters = []
         filters << search_filter(search: search) if search.present?
+
+        filters << sort_filter(sort_by: sort_by) if sort_by.present?
 
         if offset.present? || limit.present?
           filters << pagination_filter(offset: offset, limit: limit)
@@ -49,6 +54,12 @@ module Resolvers
           rescue ScopedSearch::QueryNotSupported => e
             raise GraphQL::ExecutionError, e.message
           end
+        end
+      end
+
+      def sort_filter(sort_by:)
+        lambda do |scope|
+          scope.order(build_order_by(scope.klass, sort_by))
         end
       end
 
