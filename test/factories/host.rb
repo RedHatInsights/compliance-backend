@@ -58,14 +58,21 @@ FactoryBot.define do
       end
     end
 
-    transient do
-      os_version_arr do
-        ssg = SSGS.sample
-        [ssg.os_major_version, ssg.os_minor_version]
+    trait :random_os_version do
+      transient do
+        os_version_arr do
+          ssg = SSGS.sample
+          [ssg.os_major_version, ssg.os_minor_version]
+        end
       end
+    end
+
+    transient do
+      os_version_arr { [7, 9] }
       os_version { os_version_arr.join('.') }
       os_major_version { os_version_arr[0].to_i }
       os_minor_version { os_version_arr[1].to_i }
+
       system_profile_data do
         {
           'os_release' => os_version,
