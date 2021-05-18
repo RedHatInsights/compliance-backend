@@ -10,6 +10,11 @@ class Profile < ApplicationRecord
   include ProfileHosts
   include ProfileRules
 
+  SORTABLE_BY = {
+    name: :name,
+    os_minor_version: :os_minor_version
+  }.freeze
+
   belongs_to :account, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
   belongs_to :parent_profile, class_name: 'Profile', optional: true

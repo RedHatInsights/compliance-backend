@@ -14,7 +14,7 @@ module V1
 
     def index
       params[:search] ||= 'external=false and canonical=false'
-      render_json scope_search.sort_by(&:score)
+      render_json resolve_collection.sort_by(&:score)
     end
 
     def show

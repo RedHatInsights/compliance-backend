@@ -13,7 +13,7 @@ module Metadata
     end
 
     def metadata(opts = {})
-      opts[:total] ||= scope_search.count
+      opts[:total] ||= resolve_collection.count
       options = {}
       options[:meta] = { total: opts[:total], search: params[:search],
                          limit: pagination_limit, offset: pagination_offset }

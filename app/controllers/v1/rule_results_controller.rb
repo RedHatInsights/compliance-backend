@@ -4,7 +4,7 @@ module V1
   # API for RuleResults
   class RuleResultsController < ApplicationController
     def index
-      render_json scope_search
+      render_json resolve_collection
     end
 
     private

@@ -87,6 +87,17 @@ def search_params
             schema: { type: :string, default: '' }
 end
 
+def sort_params
+  parameter name: :sort_by, in: :query, required: false,
+            type: { oneOf: [{ type: :string }, { type: :array }] },
+            description: 'An array of fields with an optional direction '\
+             '(:asc or :desc) to sort the results.',
+            schema: {
+              type: { oneOf: [{ type: :string }, { type: :array }] },
+              default: ''
+            }
+end
+
 def content_types
   consumes 'application/vnd.api+json'
   produces 'application/vnd.api+json'

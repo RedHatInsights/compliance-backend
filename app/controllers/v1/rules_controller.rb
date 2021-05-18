@@ -4,7 +4,7 @@ module V1
   # REST API for Rules
   class RulesController < ApplicationController
     def index
-      render_json scope_search
+      render_json resolve_collection
     end
 
     def show

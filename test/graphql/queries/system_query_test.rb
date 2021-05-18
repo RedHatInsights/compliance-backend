@@ -460,6 +460,36 @@ class SystemQueryTest < ActiveSupport::TestCase
     end
   end
 
+  should 'sort results' do
+    query = <<-GRAPHQL
+      {
+        systems(sortBy: ["osMinorVersion", "name"]) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    setup_two_hosts
+    @host1.update!(display_name: 'b')
+    @host2.update!(display_name: 'a', account: @user.account.account_number)
+
+    result = Schema.execute(
+      query,
+      variables: {},
+      context: { current_user: @user }
+    )
+
+    systems = result['data']['systems']['edges']
+
+    assert_equal 'a', systems.first['node']['name']
+    assert_equal 'b', systems.second['node']['name']
+  end
+
   test 'query children profile only returns profiles owned by host' do
     query = <<-GRAPHQL
     query getSystems {

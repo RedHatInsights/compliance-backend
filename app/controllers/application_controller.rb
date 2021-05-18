@@ -9,7 +9,7 @@ class ApplicationController < ActionController::API
   include ExceptionNotifierCustomData
   include Metadata
   include Pagination
-  include Search
+  include Collection
   include Rendering
   include Parameters
 
@@ -53,6 +53,18 @@ class ApplicationController < ActionController::API
   end
 
   rescue_from StrongerParameters::InvalidParameter do |error|
+    logger.info "#{error.message} (#{error.class})"
+    render_error error.message,
+                 status: :unprocessable_entity
+  end
+
+  rescue_from ::Exceptions::InvalidSortingDirection do |error|
+    logger.info "#{error.message} (#{error.class})"
+    render_error error.message,
+                 status: :unprocessable_entity
+  end
+
+  rescue_from ::Exceptions::InvalidSortingColumn do |error|
     logger.info "#{error.message} (#{error.class})"
     render_error error.message,
                  status: :unprocessable_entity
