@@ -183,7 +183,9 @@ services:
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
   rails:
     env_file: .env
-    build: .
+    build:
+      context: .
+      dockerfile: devel.Dockerfile
     image: compliance-backend-rails
     tty: true
     stdin_open: true
