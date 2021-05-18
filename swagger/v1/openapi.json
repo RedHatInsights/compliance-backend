@@ -59,6 +59,35 @@
             }
           },
           {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "type": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "schema": {
+              "type": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array"
+                  }
+                ]
+              },
+              "default": ""
+            }
+          },
+          {
             "name": "include",
             "in": "query",
             "type": "string",
@@ -343,6 +372,35 @@
             }
           },
           {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "type": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "schema": {
+              "type": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array"
+                  }
+                ]
+              },
+              "default": ""
+            }
+          },
+          {
             "name": "include",
             "in": "query",
             "type": "string",
@@ -595,6 +653,35 @@
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "type": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "schema": {
+              "type": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array"
+                  }
+                ]
+              },
               "default": ""
             }
           },
@@ -1617,6 +1704,35 @@
             }
           },
           {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "type": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "schema": {
+              "type": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array"
+                  }
+                ]
+              },
+              "default": ""
+            }
+          },
+          {
             "name": "include",
             "in": "query",
             "type": "string",
@@ -1755,6 +1871,35 @@
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "type": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "schema": {
+              "type": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array"
+                  }
+                ]
+              },
               "default": ""
             }
           },
@@ -2642,6 +2787,35 @@
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
+              "default": ""
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "type": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array"
+                }
+              ]
+            },
+            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "schema": {
+              "type": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array"
+                  }
+                ]
+              },
               "default": ""
             }
           },

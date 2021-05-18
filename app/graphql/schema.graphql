@@ -274,6 +274,11 @@ type Query implements Node {
     Search query
     """
     search: String
+
+    """
+    Sort results
+    """
+    sortBy: [String!]
   ): BenchmarkConnection!
 
   """
@@ -323,6 +328,11 @@ type Query implements Node {
     Search query
     """
     search: String
+
+    """
+    Sort results
+    """
+    sortBy: [String!]
   ): ProfileConnection!
 
   """
@@ -364,6 +374,11 @@ type Query implements Node {
     Search query
     """
     search: String
+
+    """
+    Sort results
+    """
+    sortBy: [String!]
   ): SystemConnection!
   testResult(
     """
@@ -406,6 +421,11 @@ type Query implements Node {
     Search query
     """
     search: String
+
+    """
+    Sort results
+    """
+    sortBy: [String!]
   ): TestResultConnection!
 }
 

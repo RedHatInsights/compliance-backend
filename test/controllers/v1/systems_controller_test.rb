@@ -30,6 +30,33 @@ module V1
         assert_response :success
       end
 
+      should 'systems can be sorted' do
+        policy = FactoryBot.create(:policy, hosts: Host.all)
+
+        get v1_systems_url, params: {
+          sort_by: %w[os_minor_version name:desc],
+          policy_id: policy.id
+        }
+        assert_response :success
+
+        result = JSON.parse(response.body)
+        hosts = policy.hosts.pluck(:display_name).sort.reverse
+
+        assert_equal(hosts, result['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
+      should 'fail if wrong sort order is set' do
+        get v1_systems_url, params: { sort_by: ['name:foo'] }
+        assert_response :unprocessable_entity
+      end
+
+      should 'fail if sorting by wrong column' do
+        get v1_systems_url, params: { sort_by: ['foo'] }
+        assert_response :unprocessable_entity
+      end
+
       should 'provide a default search' do
         SystemsController.any_instance.expects(:policy_scope).with(Host)
                          .returns(Host.all).at_least_once

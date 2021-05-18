@@ -5,7 +5,7 @@ module V1
   class SystemsController < ApplicationController
     def index
       params[:search] ||= 'has_test_results=true or has_policy=true'
-      render_json scope_search
+      render_json resolve_collection
     end
 
     def show

@@ -27,6 +27,7 @@ describe 'Business Objectives API' do
       auth_header
       pagination_params
       search_params
+      sort_params
 
       include_param
 

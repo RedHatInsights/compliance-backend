@@ -206,6 +206,54 @@ module V1
                      profiles.dig('data', 0, 'attributes', 'policy_profile_id')
       end
 
+      test 'profiles can be sorted by a single dimension' do
+        FactoryBot.create(:profile, name: 'a')
+        FactoryBot.create(:profile, name: 'b')
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false',
+          sort_by: 'name:desc'
+        }
+
+        assert_response :success
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(%w[b a], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
+      test 'profiles can be sorted' do
+        Settings.feature_133_os_tailoring = true
+
+        FactoryBot.create(:profile, name: 'a', os_minor_version: '1')
+        FactoryBot.create(:profile, name: 'a', os_minor_version: '2')
+        FactoryBot.create(:profile, name: 'b', os_minor_version: '3')
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false',
+          sort_by: %w[name os_minor_version:desc]
+        }
+        assert_response :success
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(%w[2 1 3], profiles['data'].map do |profile|
+          profile['attributes']['os_minor_version']
+        end)
+      end
+
+      should 'fail if wrong sort order is set' do
+        get v1_profiles_url, params: { sort_by: ['name:foo'] }
+        assert_response :unprocessable_entity
+      end
+
+      should 'fail if sorting by wrong column' do
+        get v1_profiles_url, params: { sort_by: ['foo'] }
+        assert_response :unprocessable_entity
+      end
+
       test 'external profiles can be requested' do
         profile = FactoryBot.create(:profile, external: true)
         search_query = 'external=true'

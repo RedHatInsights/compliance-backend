@@ -269,6 +269,36 @@ class ProfileQueryTest < ActiveSupport::TestCase
       assert_equal @profile.policy.description, second_profile['description']
     end
 
+    should 'sort results' do
+      query = <<-GRAPHQL
+      {
+        profiles(search: "canonical=false", sortBy: ["name", "osMinorVersion:desc"]) {
+          edges {
+            node {
+              id
+              name
+              osMinorVersion
+            }
+          }
+        }
+      }
+      GRAPHQL
+
+      @profile.update!(os_minor_version: 2, name: 'foo')
+      @profile2.update!(os_minor_version: 3, name: 'foo')
+
+      result = Schema.execute(
+        query,
+        variables: {},
+        context: { current_user: @user }
+      )
+
+      profiles = result['data']['profiles']['edges']
+
+      assert_equal '3', profiles.first['node']['osMinorVersion']
+      assert_equal '2', profiles.second['node']['osMinorVersion']
+    end
+
     should 'query all profiles' do
       query = <<-GRAPHQL
       {
