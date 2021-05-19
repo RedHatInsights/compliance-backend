@@ -27,6 +27,7 @@ module Rendering
     def serializer_opts
       opts = index? ? metadata : {}
       opts.merge!(include: params[:include].split(',')) if params[:include]
+      opts.merge!(params: pagination)
 
       opts
     end
@@ -50,5 +51,14 @@ module Rendering
     end
 
     def includes; end
+
+    def pagination
+      {
+        limit:
+          params[:include_limit].present? ? params[:include_limit].to_i : 10,
+        offset:
+          params[:include_offset].present? ? params[:include_offset].to_i : 1
+      }
+    end
   end
 end
