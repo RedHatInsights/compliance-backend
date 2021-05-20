@@ -4,8 +4,8 @@ FactoryBot.define do
   factory :benchmark, class: Xccdf::Benchmark do
     title { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
-    ref_id { "#{SecureRandom.uuid}_RHEL-#{os_major_version}" }
-    version { 3.times.map { SecureRandom.rand(10) }.join('.') }
+    ref_id { "xccdf_org.ssgproject.content_benchmark_RHEL-#{os_major_version}" }
+    sequence(:version) { |n| "0.#{(n / 50).floor}.#{n % 50}" }
 
     transient do
       os_major_version { '7' }
