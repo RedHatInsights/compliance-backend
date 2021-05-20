@@ -29,6 +29,14 @@ module BenchmarkSearching
       end
     }
 
+    scope :latest_supported, lambda {
+      SupportedSsg.by_os_major.inject(none) do |union, (os_major_version, ssgs)|
+        ssg_versions = ssgs.map { |ssg| ssg.upstream_version || ssg.version }
+        union.or(where(id: order_by_version.os_major_version(os_major_version)
+                                           .find_by(version: ssg_versions)))
+      end
+    }
+
     scope :latest_for_os, lambda { |os_major_version, os_minor_version|
       ssgs = SupportedSsg.for_os(os_major_version, os_minor_version)
       ssg_versions = ssgs.map { |ssg| ssg.upstream_version || ssg.version }
@@ -48,17 +56,6 @@ module BenchmarkSearching
 
   # class methods for benchmark searching
   module ClassMethods
-    def latest_supported
-      SupportedSsg.by_os_major.inject(none) do |union, (os_major_version, ssgs)|
-        ssg_versions = ssgs.map { |ssg| ssg.upstream_version || ssg.version }
-        union |
-          where(version: ssg_versions)
-          .os_major_version(os_major_version)
-          .order_by_version
-          .limit(1)
-      end
-    end
-
     def os_major_version_like_condition(major)
       "%RHEL-#{major}"
     end
