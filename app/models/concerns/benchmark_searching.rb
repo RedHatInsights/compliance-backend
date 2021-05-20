@@ -29,6 +29,16 @@ module BenchmarkSearching
       end
     }
 
+    scope :latest_for_os, lambda { |os_major_version, os_minor_version|
+      ssgs = SupportedSsg.for_os(os_major_version, os_minor_version)
+      ssg_versions = ssgs.map { |ssg| ssg.upstream_version || ssg.version }
+
+      where(version: ssg_versions)
+        .os_major_version(os_major_version)
+        .order_by_version
+        .limit(1)
+    }
+
     scope :order_by_version, lambda {
       order(
         Arel.sql("string_to_array(benchmarks.version, '.')::int[] DESC")
