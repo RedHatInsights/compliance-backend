@@ -3,6 +3,22 @@
 # Stores information about rules, such as which profiles can it be
 # found in, what hosts are associated with it, etceter
 class Rule < ApplicationRecord
+  SORTED_SEVERITIES = Arel.sql(
+    <<-SQL
+    CASE WHEN severity = 'high' THEN 3
+         WHEN severity = 'medium' THEN 2
+         WHEN severity = 'low' THEN 1
+         ELSE 0
+    END
+    SQL
+  )
+
+  SORTABLE_BY = {
+    title: :title,
+    severity: SORTED_SEVERITIES,
+    remediation_available: :remediation_available
+  }.freeze
+
   extend FriendlyId
   friendly_id :ref_id, use: :slugged
   scoped_search on: %i[id ref_id severity]
