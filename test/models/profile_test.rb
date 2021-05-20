@@ -323,6 +323,23 @@ class ProfileTest < ActiveSupport::TestCase
     assert_not_includes Profile.canonical, p1
   end
 
+  test 'canonical_for_os scope' do
+    @os_minor_version = '1'
+    profile = FactoryBot.create(:canonical_profile)
+    os_major_version = profile.os_major_version
+    assert os_major_version
+
+    Xccdf::Benchmark
+      .expects(:latest_for_os)
+      .with(os_major_version, @os_minor_version)
+      .returns(Xccdf::Benchmark.where(id: profile.benchmark.id))
+
+    found = Profile.canonical_for_os(
+      profile.os_major_version, @os_minor_version
+    ).first
+    assert_equal profile, found
+  end
+
   context 'in_policy scope' do
     setup do
       @profile = FactoryBot.create(:profile, account: @account, policy: @policy)

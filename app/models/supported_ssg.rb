@@ -39,12 +39,6 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
       for_os(os_major_version, os_minor_version).map(&:version)
     end
 
-    def latest_ssg_version_for_os(os_major_version, os_minor_version)
-      for_os(os_major_version, os_minor_version)
-        .max_by(&:comparable_version)
-        .version
-    end
-
     def versions
       all.map(&:version).uniq
     end
