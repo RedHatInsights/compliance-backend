@@ -66,11 +66,12 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
     )
   end
 
-  test 'query benchmark owned by the user' do
+  test 'query latest benchmarks' do
     supported_ssg = SupportedSsg.new(version: '0.1.50',
                                      os_major_version: '7',
                                      os_minor_version: '3')
-    SupportedSsg.stubs(:latest_per_os_major).returns([supported_ssg])
+    SupportedSsg.stubs(:by_os_major)
+                .returns('7' => [supported_ssg])
 
     latest_benchmark = ::Xccdf::Benchmark.create(
       ref_id: supported_ssg.ref_id,

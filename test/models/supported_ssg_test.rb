@@ -58,13 +58,11 @@ class SupportedSsgTest < ActiveSupport::TestCase
       assert_equal '0.1.1', latest_map.dig('6', '9').version
     end
 
-    should 'provide models by latest in each OS major version' do
-      SupportedSsg.instance_variable_set(:@latest_map, nil)
-      latest = SupportedSsg.latest_per_os_major
-      versions = latest.map(&:version)
-      assert_includes versions, '0.1.52'
-      assert_includes versions, '0.1.22'
-      assert_equal latest.count, 2
+    should 'provide models by grouped by OS major' do
+      by_os_major = SupportedSsg.by_os_major
+      assert_equal %w[6 7], by_os_major.keys.sort
+      assert_equal 2, by_os_major['6'].count
+      assert_equal 3, by_os_major['7'].count
     end
   end
 
