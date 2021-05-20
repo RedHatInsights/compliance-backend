@@ -26,7 +26,9 @@ namespace :ssg do
   desc 'Update compliance DB with the supported SCAP Security Guide versions'
   task import_rhel_supported: [:environment] do
     # DATASTREAM_FILENAMES from openscap_parser's ssg:sync
-    ENV['DATASTREAMS'] = ::SupportedSsg.available_upstream.map do |ssg|
+    ENV['DATASTREAMS'] = ::SupportedSsg.available_upstream
+                                       .sort_by(&:comparable_version)
+                                       .reverse.map do |ssg|
       "v#{ssg.upstream_version || ssg.version}:rhel#{ssg.os_major_version}"
     end.uniq.join(',')
     Rake::Task['ssg:sync'].invoke
