@@ -303,36 +303,101 @@ module Xccdf
       end
     end
 
-    test 'latest_supported scope' do
-      rhel7_latest_ver = '0.1.50'
-      rhel8_latest_ver = '0.1.40'
-      ssg_matched_ver = SupportedSsg.new(version: rhel7_latest_ver,
-                                         os_major_version: '7',
-                                         os_minor_version: '3')
-      ssg_unmatched_ver = SupportedSsg.new(version: '0.1.39',
-                                           upstream_version: rhel8_latest_ver,
-                                           os_major_version: '8',
-                                           os_minor_version: '2')
-      SupportedSsg.stubs(:latest_per_os_major)
-                  .returns([ssg_matched_ver, ssg_unmatched_ver])
+    test 'order_by_version' do
+      versions = ['9.0.0', '0.1.10', '0.1.1', '0.1.0']
+      versions.shuffle.each do |version|
+        FactoryBot.create(:benchmark, version: version)
+      end
 
-      bm7 = Xccdf::Benchmark.create!(
-        ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-7',
-        version: rhel7_latest_ver, title: 'A', description: 'A'
-      )
-      bm8 = Xccdf::Benchmark.create!(
-        ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-8',
-        version: rhel8_latest_ver, title: 'A', description: 'A'
-      )
-      Xccdf::Benchmark.create!(
-        ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-8',
-        version: '0.1.39', title: 'A', description: 'A'
-      )
+      benchmarks = Xccdf::Benchmark.order_by_version
+      bm_versions = benchmarks.map(&:version)
+      assert_equal versions.count, benchmarks.count
+      assert_equal versions, bm_versions
+    end
 
-      returned = Xccdf::Benchmark.latest_supported
-      assert_includes returned, bm7
-      assert_includes returned, bm8
-      assert_equal 2, returned.count
+    context '#latest_supported' do
+      setup do
+        rhel6_supported = [
+          SupportedSsg.new(
+            version: '1.6.1', upstream_version: '1.6.0',
+            os_major_version: '6', os_minor_version: '10'
+          )
+        ]
+        rhel7_supported = [
+          SupportedSsg.new(
+            version: '1.7.1', os_major_version: '7', os_minor_version: '3'
+          ),
+          SupportedSsg.new(
+            version: '1.7.2', os_major_version: '7', os_minor_version: '9'
+          ),
+          SupportedSsg.new(
+            version: '1.7.3', os_major_version: '7', os_minor_version: '9'
+          )
+        ]
+        rhel8_supported = [
+          SupportedSsg.new(
+            version: '1.8.1', os_major_version: '8', os_minor_version: '1'
+          ),
+          SupportedSsg.new(
+            version: '1.8.3', os_major_version: '8', os_minor_version: '4'
+          ),
+          SupportedSsg.new(
+            version: '1.8.20', os_major_version: '8', os_minor_version: '3'
+          )
+        ]
+
+        SupportedSsg
+          .stubs(:by_os_major)
+          .returns(
+            '6' => rhel6_supported,
+            '7' => rhel7_supported,
+            '8' => rhel8_supported
+          )
+      end
+
+      should 'return latest from extisting benchmarks' do
+        bm6 = FactoryBot.create(
+          :benchmark, os_major_version: '6', version: '1.6.0'
+        )
+        FactoryBot.create(:benchmark, os_major_version: '7', version: '1.7.1')
+        FactoryBot.create(:benchmark, os_major_version: '7', version: '1.7.2')
+        bm7 = FactoryBot.create(
+          :benchmark, os_major_version: '7', version: '1.7.3'
+        )
+        FactoryBot.create(:benchmark, os_major_version: '8', version: '1.8.1')
+        FactoryBot.create(:benchmark, os_major_version: '8', version: '1.8.3')
+        bm8 = FactoryBot.create(
+          :benchmark, os_major_version: '8', version: '1.8.20'
+        )
+
+        returned = Xccdf::Benchmark.latest_supported
+        assert_includes returned, bm6
+        assert_includes returned, bm7
+        assert_includes returned, bm8
+        assert_equal 3, returned.count
+      end
+
+      should 'return prefers upstream version' do
+        FactoryBot.create(:benchmark, os_major_version: '6', version: '1.6.1')
+        bm6 = FactoryBot.create(
+          :benchmark, os_major_version: '6', version: '1.6.0'
+        )
+
+        returned = Xccdf::Benchmark.latest_supported
+        assert_includes returned, bm6
+        assert_equal 1, returned.count
+      end
+
+      should 'fallbacks to previous existing benchmark' do
+        FactoryBot.create(:benchmark, os_major_version: '7', version: '1.7.1')
+        bm7 = FactoryBot.create(
+          :benchmark, os_major_version: '7', version: '1.7.2'
+        )
+
+        returned = Xccdf::Benchmark.latest_supported
+        assert_includes returned, bm7
+        assert_equal 1, returned.count
+      end
     end
   end
 end

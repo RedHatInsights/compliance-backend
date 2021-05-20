@@ -79,10 +79,8 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
       @latest_map ||= build_latest_map
     end
 
-    def latest_per_os_major
-      latest_map.values.map do |major_ssgs|
-        major_ssgs.values.max_by(&:comparable_version)
-      end
+    def by_os_major
+      all.group_by(&:os_major_version)
     end
 
     private

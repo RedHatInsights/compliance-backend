@@ -29,18 +29,26 @@ module BenchmarkSearching
       end
     }
 
-    scope :latest_supported, lambda {
-      SupportedSsg.latest_per_os_major.inject(none) do |supported, ssg|
-        supported.or(
-          where(ref_id: ssg.ref_id,
-                version: ssg.upstream_version || ssg.version)
-        )
-      end
+    scope :order_by_version, lambda {
+      order(
+        Arel.sql("string_to_array(benchmarks.version, '.')::int[] DESC")
+      )
     }
   end
 
   # class methods for benchmark searching
   module ClassMethods
+    def latest_supported
+      SupportedSsg.by_os_major.inject(none) do |union, (os_major_version, ssgs)|
+        ssg_versions = ssgs.map { |ssg| ssg.upstream_version || ssg.version }
+        union |
+          where(version: ssg_versions)
+          .os_major_version(os_major_version)
+          .order_by_version
+          .limit(1)
+      end
+    end
+
     def os_major_version_like_condition(major)
       "%RHEL-#{major}"
     end
