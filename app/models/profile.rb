@@ -44,9 +44,10 @@ class Profile < ApplicationRecord
   validates :policy, presence: true, if: -> { policy_id }
 
   scope :canonical_for_os, lambda { |os_major_version, os_minor_version|
-    canonical.ssg_versions(
-      SupportedSsg.latest_ssg_version_for_os(os_major_version, os_minor_version)
-    ).os_major_version(os_major_version)
+    benchmarks = Xccdf::Benchmark.latest_for_os(
+      os_major_version, os_minor_version
+    )
+    canonical.where(benchmark_id: benchmarks)
   }
 
   delegate :account_number, to: :account, allow_nil: true
