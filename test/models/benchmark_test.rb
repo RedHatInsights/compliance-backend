@@ -315,6 +315,69 @@ module Xccdf
       assert_equal versions, bm_versions
     end
 
+    context 'latest_for_os scope' do
+      setup do
+        @os_major_version = '7'
+        @os_minor_version = '3'
+        @ssg_versions = ['1.7.10', '1.7.1', '1.7.4']
+
+        ssgs = @ssg_versions.map do |version|
+          SupportedSsg.new(
+            version: version,
+            os_major_version: @os_major_version,
+            os_minor_version: @os_minor_version
+          )
+        end
+
+        FactoryBot.create(
+          :benchmark,
+          os_major_version: @os_major_version,
+          version: '9.9.9'
+        )
+
+        SupportedSsg
+          .expects(:for_os)
+          .with(@os_major_version, @os_minor_version)
+          .returns(ssgs)
+      end
+
+      should 'return the latest benchmark for supported SSG' do
+        @ssg_versions.each do |version|
+          FactoryBot.create(
+            :benchmark,
+            os_major_version: @os_major_version,
+            version: version
+          )
+        end
+
+        latest_for_os = Xccdf::Benchmark.latest_for_os(
+          @os_major_version, @os_minor_version
+        )
+        assert_equal 1, latest_for_os.count
+        assert_equal '1.7.10', latest_for_os.first.version
+      end
+
+      should 'fallback to previous existing' do
+        FactoryBot.create(
+          :benchmark,
+          os_major_version: @os_major_version,
+          version: '1.7.1'
+        )
+        bm = FactoryBot.create(
+          :benchmark,
+          os_major_version: @os_major_version,
+          version: '1.7.4'
+        )
+
+        latest_for_os = Xccdf::Benchmark.latest_for_os(
+          @os_major_version, @os_minor_version
+        )
+        assert_equal 1, latest_for_os.count
+        assert_equal '1.7.4', latest_for_os.first.version
+        assert_equal bm, latest_for_os.first
+      end
+    end
+
     context '#latest_supported' do
       setup do
         rhel6_supported = [
