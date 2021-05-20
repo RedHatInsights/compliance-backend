@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails'
+
 unless Rails.env.production?
   require 'simplecov'
   SimpleCov.start do
