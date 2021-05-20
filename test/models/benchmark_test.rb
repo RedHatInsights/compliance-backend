@@ -284,9 +284,10 @@ module Xccdf
           'os_major_version = 6 and latest_supported_os_minor_version ^ (9, 10)'
         )
         assert_equal 2, result.count
-        tuples = result.sort_by(&:ref_id).map { |bm| [bm.ref_id, bm.version] }
-        assert_equal [@rhel_6_ref, '0.1.32'], tuples[0]
-        assert_equal [@rhel_6_ref, '0.1.40'], tuples[1]
+        tuples = result.map { |bm| [bm.ref_id, bm.version] }
+        assert_includes tuples, [@rhel_6_ref, '0.1.32']
+        assert_includes tuples, [@rhel_6_ref, '0.1.40']
+        assert_equal 2, tuples.count
 
         result = Xccdf::Benchmark.search_for(
           'os_major_version = 6 and latest_supported_os_minor_version ^ (8, 9)'
