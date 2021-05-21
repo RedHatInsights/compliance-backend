@@ -16,16 +16,6 @@ class DatastreamImporter
   def import!
     Xccdf::Benchmark.transaction do
       save_all_benchmark_info
-      import_remediations
     end
-  end
-
-  private
-
-  def import_remediations
-    RemediationsAPI.new(
-      Account.find_by(account_number: ENV['JOBS_ACCOUNT_NUMBER']) ||
-        Account.new
-    ).import_remediations
   end
 end

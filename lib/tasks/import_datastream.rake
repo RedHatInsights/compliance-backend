@@ -36,6 +36,7 @@ namespace :ssg do
       ENV['DATASTREAM_FILE'] = filename
       Rake::Task['ssg:import'].execute
     end
+    Rake::Task['import_remediations'].execute
   end
 
   desc 'Update compliance DB with data from an Xccdf datastream file'
