@@ -42,8 +42,25 @@ module V1
         result = JSON.parse(response.body)
         hosts = policy.hosts.pluck(:display_name).sort.reverse
 
-        assert_equal(hosts, result['data'].map do |profile|
-          profile['attributes']['name']
+        assert_equal(hosts, result['data'].map do |host|
+          host['attributes']['name']
+        end)
+      end
+
+      should 'systems are sorted in lowercase by name' do
+        policy = FactoryBot.create(:policy)
+        FactoryBot.create(:host, policies: [policy], display_name: 'AbB')
+        FactoryBot.create(:host, policies: [policy], display_name: 'aBa')
+
+        get v1_systems_url, params: {
+          sort_by: 'name',
+          policy_id: policy.id
+        }
+        assert_response :success
+
+        result = JSON.parse(response.body)
+        assert_equal(%w[aBa AbB], result['data'].map do |host|
+          host['attributes']['name']
         end)
       end
 

@@ -11,7 +11,7 @@ class Profile < ApplicationRecord
   include ProfileRules
 
   SORTABLE_BY = {
-    name: :name,
+    name: Arel.sql('LOWER(name)'),
     os_minor_version: :os_minor_version
   }.freeze
 

@@ -224,6 +224,21 @@ module V1
         end)
       end
 
+      should 'profiles are sorted in lowercase by name' do
+        FactoryBot.create(:profile, name: 'AbB')
+        FactoryBot.create(:profile, name: 'aBa')
+
+        get v1_profiles_url, params: {
+          sort_by: 'name'
+        }
+        assert_response :success
+
+        result = JSON.parse(response.body)
+        assert_equal(%w[aBa AbB], result['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
       test 'profiles can be sorted' do
         Settings.feature_133_os_tailoring = true
 

@@ -7,7 +7,7 @@ class Host < ApplicationRecord
   OS_MAJOR_VERSION = Arel.sql("system_profile->'operating_system'->'major'")
 
   SORTABLE_BY = {
-    name: :display_name,
+    name: Arel.sql('LOWER(display_name)'),
     os_minor_version: OS_MINOR_VERSION,
     os_major_version: OS_MAJOR_VERSION
   }.freeze

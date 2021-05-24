@@ -23,6 +23,25 @@ module V1
       assert_response :success
     end
 
+    should 'rules are sorted lowercase by name' do
+      rule1, rule2 = @profile.rules
+      rule1.update!(title: 'AbB')
+      rule2.update!(title: 'aBa')
+      @profile.rules.where.not(id: [rule1, rule2].map(&:id)).map(&:destroy)
+
+      get v1_rules_url, params: {
+        sort_by: 'title',
+        policy_id: @profile.policy.id
+      }
+      assert_response :success
+
+      result = JSON.parse(response.body)
+
+      assert_equal(%w[aBa AbB], result['data'].map do |rule|
+        rule['attributes']['title']
+      end)
+    end
+
     should 'rules can be sorted' do
       medium, high, u1, low, u2 = @profile.rules
       high.update!(severity: 'high')

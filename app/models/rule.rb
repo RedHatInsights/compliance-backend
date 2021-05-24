@@ -14,7 +14,7 @@ class Rule < ApplicationRecord
   )
 
   SORTABLE_BY = {
-    title: :title,
+    title: Arel.sql('LOWER(rules.title)'),
     severity: SORTED_SEVERITIES,
     remediation_available: :remediation_available
   }.freeze
