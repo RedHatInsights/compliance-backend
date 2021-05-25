@@ -2,7 +2,7 @@
 
 # JSON API serialization for Hosts
 class HostSerializer
-  include FastJsonapi::ObjectSerializer
+  include JSONAPI::Serializer
   set_type :host
   attributes :name, :os_major_version, :os_minor_version, :last_scanned,
              :rules_passed, :rules_failed, :has_policy

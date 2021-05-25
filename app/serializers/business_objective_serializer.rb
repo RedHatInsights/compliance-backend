@@ -2,7 +2,7 @@
 
 # JSON API serialization for a BusinessObjective
 class BusinessObjectiveSerializer
-  include FastJsonapi::ObjectSerializer
+  include JSONAPI::Serializer
   attributes :title
   has_many :profiles
 end

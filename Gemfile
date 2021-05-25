@@ -29,7 +29,7 @@ gem 'rswag-ui'
 gem 'config'
 
 # JSON API serializer
-gem 'fast_jsonapi'
+gem 'jsonapi-serializer'
 
 # GraphQL support
 gem 'graphql'
