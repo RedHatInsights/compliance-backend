@@ -2,7 +2,7 @@
 
 # JSON API serialization for an OpenSCAP RuleResult
 class RuleResultSerializer
-  include FastJsonapi::ObjectSerializer
+  include JSONAPI::Serializer
   attributes :result
   belongs_to :host
   belongs_to :rule

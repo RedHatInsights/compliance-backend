@@ -2,7 +2,7 @@
 
 # JSON API serialization for an OpenSCAP Profile
 class ProfileSerializer
-  include FastJsonapi::ObjectSerializer
+  include JSONAPI::Serializer
   set_type :profile
   belongs_to :account
   belongs_to :benchmark

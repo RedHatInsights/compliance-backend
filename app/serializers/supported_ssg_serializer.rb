@@ -2,7 +2,7 @@
 
 # JSON API serialization of Supported SSGs
 class SupportedSsgSerializer
-  include FastJsonapi::ObjectSerializer
+  include JSONAPI::Serializer
   attributes :package, :version, :os_major_version, :os_minor_version
 
   attribute :profiles do |obj|

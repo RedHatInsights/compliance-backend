@@ -2,7 +2,7 @@
 
 # JSON API serialization for an OpenSCAP Benchmark
 class BenchmarkSerializer
-  include FastJsonapi::ObjectSerializer
+  include JSONAPI::Serializer
   attributes :ref_id, :title, :version, :description, :os_major_version,
              :latest_supported_os_minor_versions
   has_many :rules
