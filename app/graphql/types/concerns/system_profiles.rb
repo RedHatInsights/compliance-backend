@@ -12,13 +12,18 @@ module Types
 
     def test_result_profiles(policy_id: nil)
       context_parent
-      scope_profiles(object.test_result_profiles, policy_id)
+      ::CollectionLoader.for(object.class, :test_result_profiles)
+                        .load(object).then do |profiles|
+        scope_profiles(profiles, policy_id)
+      end
     end
 
     def policies(policy_id: nil)
       context_parent
-      policy_profiles = object.assigned_profiles.external(false)
-      scope_profiles(policy_profiles, policy_id)
+      ::CollectionLoader.for(object.class, :assigned_internal_profiles)
+                        .load(object).then do |profiles|
+        scope_profiles(profiles, policy_id)
+      end
     end
 
     private
