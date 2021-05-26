@@ -16,6 +16,8 @@ module Validation
     def validate_report(raw_report, metadata)
       parsed = XccdfReportParser.new(raw_report, metadata)
       parsed.test_result_file.test_result
+    rescue PG::Error, ActiveRecord::StatementInvalid
+      raise
     rescue StandardError
       raise InventoryEventsConsumer::ReportValidationError
     end
