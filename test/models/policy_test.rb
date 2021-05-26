@@ -103,19 +103,9 @@ class PolicyTest < ActiveSupport::TestCase
     end
 
     should 'update_os_minor_versions' do
-      Settings.feature_133_os_tailoring = true
       @policy.update(hosts: [@hosts.first])
 
       @policy.expects(:update_os_minor_versions)
-
-      @policy.update_hosts([])
-    end
-
-    should 'not update_os_minor_versions if COMP-E-133 feature is disabled' do
-      Settings.feature_133_os_tailoring = false
-      @policy.update(hosts: [@hosts.first])
-
-      @policy.expects(:update_os_minor_versions).never
 
       @policy.update_hosts([])
     end
