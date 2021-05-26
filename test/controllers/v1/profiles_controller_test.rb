@@ -225,8 +225,6 @@ module V1
       end
 
       test 'profiles can be sorted' do
-        Settings.feature_133_os_tailoring = true
-
         FactoryBot.create(:profile, name: 'a', os_minor_version: '1')
         FactoryBot.create(:profile, name: 'a', os_minor_version: '2')
         FactoryBot.create(:profile, name: 'b', os_minor_version: '3')
@@ -403,17 +401,7 @@ module V1
                      body.dig('data', 'attributes', 'policy_profile_id')
       end
 
-      test 'os_minor_version is not serialized when COMP-E-133 is disabled' do
-        Settings.feature_133_os_tailoring = false
-        get v1_profile_url(@profile.id)
-        assert_response :success
-
-        assert_nil JSON.parse(response.body).dig('data', 'attributes',
-                                                 'os_minor_version')
-      end
-
-      test 'os_minor_version is serialized when COMP-E-133 is enabled' do
-        Settings.feature_133_os_tailoring = true
+      test 'os_minor_version is serialized' do
         get v1_profile_url(@profile.id)
         assert_response :success
 
