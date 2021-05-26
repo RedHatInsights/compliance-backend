@@ -14,6 +14,11 @@ function check_number() {
 	fi
 }
 
+if [ -z "$APPLICATION_TYPE" ]; then
+    echo "APPLICATION_TYPE not defined!"
+    exit 1
+fi
+
 if [ "$APPLICATION_TYPE" = "compliance-backend" ]; then
 	check_number PUMA_WORKERS     "${PUMA_WORKERS:-0}"
 	check_number PUMA_MIN_THREADS "${PUMA_MIN_THREADS:-0}"
@@ -49,4 +54,6 @@ elif [ "$APPLICATION_TYPE" = "compliance-import-remediations" ]; then
 	exec bundle exec rake import_remediations --trace
 elif [ "$APPLICATION_TYPE" = "compliance-import-ssg" ]; then
 	exec bundle exec rake ssg:import_rhel_supported --trace
+else
+    echo "Application type '$APPLICATION_TYPE' not supported"
 fi
