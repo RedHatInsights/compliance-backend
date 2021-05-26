@@ -48,6 +48,21 @@ class MetadataTest < ActionDispatch::IntegrationTest
     assert_equal search_query, json_body['meta']['search']
   end
 
+  test 'meta escapes parameter values in links' do
+    authenticate
+    3.times do
+      FactoryBot.create(:profile)
+    end
+
+    search_query = 'name != ""'
+    get profiles_url, params: { search: search_query, limit: 1, offset: 2 }
+    assert_response :success
+    assert_includes json_body['links']['first'], 'search=name+%21%3D+%22%22'
+    assert_includes json_body['links']['last'], 'search=name+%21%3D+%22%22'
+    assert_includes json_body['links']['next'], 'search=name+%21%3D+%22%22'
+    assert_includes json_body['links']['previous'], 'search=name+%21%3D+%22%22'
+  end
+
   context 'pagination' do
     setup do
       authenticate
