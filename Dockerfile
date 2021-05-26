@@ -3,8 +3,7 @@ FROM registry.access.redhat.com/ubi8/ruby-27
 # Install dependencies and clean cache to make the image cleaner
 
 USER 0
-RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
-    yum install -y hostname shared-mime-info && \
+RUN yum install -y hostname shared-mime-info && \
     yum clean all -y
 
 COPY --chown=1001:0 . /tmp/src
