@@ -104,6 +104,7 @@ tag_and_push_for_backwards_compatibility() {
 }
 
 LOCAL_BUILD="${LOCAL_BUILD:-false}"
+WORKDIR="$PWD"
 BACKWARDS_COMPATIBILITY="${BACKWARDS_COMPATIBILITY:-true}"
 CONTAINER_ENGINE_CMD=''
 DOCKER_CONF="${WORKDIR}/.docker"
@@ -113,7 +114,6 @@ IMAGE_REGISTRY="${IMAGE_REGISTRY:-quay.io}"
 IMAGE_REPOSITORY="${IMAGE_REPOSITORY:-cloudservices/compliance-backend}"
 IMAGE_TAG=$(get_7_chars_commit_hash)
 # Requires to be in a cloned git repo. directory
-WORKDIR="$PWD"
 
 check_required_registry_credentials && initialize_container_engine_cmd && initialize_image_config
 build_image
