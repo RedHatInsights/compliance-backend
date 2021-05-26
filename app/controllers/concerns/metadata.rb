@@ -23,8 +23,8 @@ module Metadata
 
     def links(last_offset)
       {
-        first: "#{base_link}&offset=1",
-        last: "#{base_link}&offset=#{last_offset}",
+        first: meta_link(offset: 1),
+        last: meta_link(offset: last_offset),
         previous: previous_link(last_offset),
         next: next_link(last_offset)
       }.compact
@@ -37,13 +37,13 @@ module Metadata
     def previous_link(last_offset)
       return unless pagination_offset > 1 && pagination_offset <= last_offset
 
-      "#{base_link}&offset=#{previous_offset}"
+      meta_link(offset: previous_offset)
     end
 
     def next_link(last_offset)
       return unless pagination_offset < last_offset
 
-      "#{base_link}&offset=#{next_offset(last_offset)}"
+      meta_link(offset: next_offset(last_offset))
     end
 
     def previous_offset
@@ -62,17 +62,21 @@ module Metadata
 
     private
 
-    def includes_link
-      "&include=#{params[:include]}" if params[:include].present?
+    def base_link_url
+      "#{path_prefix}/#{Settings.app_name}/#{controller_name}"
     end
 
-    def base_link
-      base_url = "#{path_prefix}/#{Settings.app_name}"\
-                 "/#{controller_name}"
-      base = "#{base_url}?limit=#{pagination_limit}"
-      base += "&search=#{params[:search]}" if params[:search].present?
-      base += includes_link.to_s
-      base
+    def base_link_params
+      {
+        search: params[:search],
+        include: params[:include],
+        limit: pagination_limit
+      }
+    end
+
+    def meta_link(other_params = {})
+      link_params = base_link_params.merge(other_params).compact
+      "#{base_link_url}?#{link_params.to_query}"
     end
   end
 end
