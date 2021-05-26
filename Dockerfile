@@ -7,8 +7,7 @@ RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.
     yum install -y hostname shared-mime-info && \
     yum clean all -y
 
-COPY . /tmp/src
-RUN chown -R 1001:0 /tmp/src
+COPY --chown=1001:0 . /tmp/src
 
 USER 1001
 
