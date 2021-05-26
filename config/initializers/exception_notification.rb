@@ -22,7 +22,7 @@ ExceptionNotification.configure do |config|
   #
 
   config.add_notifier :slack, {
-    webhook_url: Settings.slack_webhook,
+    webhook_url: Settings.slack_webhook[%r{^https://.*$}],
     channel: '#forum-cloudservices-compliance',
     additional_parameters: {
       mrkdwn: true
