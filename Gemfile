@@ -69,6 +69,9 @@ gem 'openscap_parser', '~> 1.0.0'
 # REST API parameter type checking
 gem 'stronger_parameters'
 
+# Clowder config
+gem 'clowder-common-ruby'
+
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
