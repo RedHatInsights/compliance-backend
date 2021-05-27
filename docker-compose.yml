@@ -163,13 +163,8 @@ services:
       - db
       - prometheus
     environment:
-      - DATABASE_SERVICE_NAME=postgres
-      - POSTGRES_SERVICE_HOST=db
-      - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_TEST_DATABASE=compliance_test
-      - POSTGRESQL_USER=insights
-      - POSTGRESQL_PASSWORD=insights
-      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+      - ACG_CONFIG=/app/devel.json
   ssg-import-rhel-supported:
     image: compliance-backend-rails
     entrypoint: ''
@@ -185,13 +180,9 @@ services:
       - prometheus
       - compliance-ssg
     environment:
-      - DATABASE_SERVICE_NAME=postgres
-      - POSTGRES_SERVICE_HOST=db
-      - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_TEST_DATABASE=compliance_test
-      - POSTGRESQL_USER=insights
-      - POSTGRESQL_PASSWORD=insights
       - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
+      - ACG_CONFIG=/app/devel.json
   rails:
     env_file: .env
     build:
@@ -202,16 +193,10 @@ services:
     stdin_open: true
     restart: on-failure
     environment:
-      - SETTINGS__KAFKA__BROKERS=kafka:29092
-      - DATABASE_SERVICE_NAME=postgres
-      - POSTGRES_SERVICE_HOST=db
-      - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_TEST_DATABASE=compliance_test
-      - POSTGRESQL_USER=insights
-      - POSTGRESQL_PASSWORD=insights
-      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
       - HOSTNAME=rails
+      - ACG_CONFIG=/app/devel.json
     ports:
       - 3000:3000
     volumes:
@@ -232,16 +217,10 @@ services:
     entrypoint: ''
     command: 'bundle exec racecar -l log/inventory-consumer.log InventoryEventsConsumer'
     environment:
-      - SETTINGS__KAFKA__BROKERS=kafka:29092
-      - DATABASE_SERVICE_NAME=postgres
-      - POSTGRES_SERVICE_HOST=db
-      - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_TEST_DATABASE=compliance_test
-      - POSTGRESQL_USER=insights
-      - POSTGRESQL_PASSWORD=insights
-      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
       - HOSTNAME=inventory-consumer
+      - ACG_CONFIG=/app/devel.json
     volumes:
       - .:/app:z
     depends_on:
@@ -256,16 +235,10 @@ services:
     image: compliance-backend-rails
     tty: true
     environment:
-      - SETTINGS__KAFKA__BROKERS=kafka:29092
-      - DATABASE_SERVICE_NAME=postgres
-      - POSTGRES_SERVICE_HOST=db
-      - POSTGRESQL_DATABASE=compliance_dev
-      - POSTGRESQL_USER=insights
-      - POSTGRESQL_PASSWORD=insights
-      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
       - RAILS_ENV=development
       - RAILS_LOG_TO_STDOUT=true
       - HOSTNAME=prometheus
+      - ACG_CONFIG=/app/devel.json
     restart: on-failure
     volumes:
       - .:/app:z
@@ -284,17 +257,10 @@ services:
     command: bundle exec sidekiq
     environment:
       - MALLOC_ARENA_MAX=2
-      - SETTINGS__REDIS_URL=redis:6379
-      - SETTINGS__PROMETHEUS_EXPORTER_HOST=prometheus
-      - SETTINGS__KAFKA__BROKERS=kafka:29092
-      - DATABASE_SERVICE_NAME=postgres
-      - POSTGRES_SERVICE_HOST=db
-      - POSTGRESQL_DATABASE=compliance_dev
       - POSTGRESQL_TEST_DATABASE=compliance_test
-      - POSTGRESQL_USER=insights
-      - POSTGRESQL_PASSWORD=insights
       - SIDEKIQ_CONCURRENCY=1
       - HOSTNAME=sidekiq
+      - ACG_CONFIG=/app/devel.json
   redis:
     image: quay.io/cloudservices/redis:latest
     ports:
