@@ -7,15 +7,17 @@ module Validation
   included do
     def validated_reports(report_contents, metadata)
       report_contents.map do |raw_report|
-        begin
-          parsed = XccdfReportParser.new(raw_report, metadata)
-          test_result = parsed.test_result_file.test_result
-        rescue StandardError
-          raise InventoryEventsConsumer::ReportValidationError
-        end
+        test_result = validate_report(raw_report, metadata)
 
         [test_result.profile_id, raw_report]
       end
+    end
+
+    def validate_report(raw_report, metadata)
+      parsed = XccdfReportParser.new(raw_report, metadata)
+      parsed.test_result_file.test_result
+    rescue StandardError
+      raise InventoryEventsConsumer::ReportValidationError
     end
 
     def validation_payload(request_id, valid:)
