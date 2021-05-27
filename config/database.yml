@@ -1,20 +1,34 @@
-<% user = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? "postgres" : ENV["POSTGRESQL_USER"] %>
-<% password = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? ENV["POSTGRESQL_ADMIN_PASSWORD"] : ENV["POSTGRESQL_PASSWORD"] %>
-<% db_service = ENV.fetch("DATABASE_SERVICE_NAME","").upcase.sub("-", "_") %>
+<%
+  if ClowderCommonRuby::Config.clowder_enabled?
 
+    config = ClowderCommonRuby::Config.load
+
+    username = config.database.username
+    password = config.database.password
+    host = config.database.hostname
+    database = config.database.name
+  else
+
+    db_service = ENV.fetch("DATABASE_SERVICE_NAME","").upcase.sub("-", "_")
+
+    username = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? "postgres" : ENV["POSTGRESQL_USER"]
+    password = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? ENV["POSTGRESQL_ADMIN_PASSWORD"] : ENV["POSTGRESQL_PASSWORD"]
+    host = ENV.fetch("#{db_service}_SERVICE_HOST")
+    database = Rails.env.test? ? ENV['POSTGRESQL_TEST_DATABASE'] || ENV["POSTGRESQL_DATABASE"] : ENV["POSTGRESQL_DATABASE"]
+  end
+ %>
 
 default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV["POSTGRESQL_MAX_CONNECTIONS"] || 5 %>
-  username: <%= user %>
+  username: <%= username %>
   password: <%= password %>
-  host: <%= ENV["#{db_service}_SERVICE_HOST"] %>
-  database: <%= ENV["POSTGRESQL_DATABASE"] %>
+  host: <%= host %>
+  database: <%= database %>
 
 test:
   <<: *default
-  database: <%= ENV['POSTGRESQL_TEST_DATABASE'] || ENV['POSTGRESQL_DATABASE'] %>
 
 production:
   <<: *default
