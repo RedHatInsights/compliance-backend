@@ -109,6 +109,7 @@ services:
     links:
       - db
       - kafka
+    restart: on-failure
   inventory-web:
     image: quay.io/cloudservices/insights-inventory:latest
     command: bash -c 'sleep 10 && make upgrade_db && python run_gunicorn.py'
