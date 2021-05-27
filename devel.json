@@ -1,0 +1,86 @@
+{
+    "webPort": 8000,
+    "metricsPort": 9000,
+    "metricsPath": "/metrics",
+    "logging": {
+        "type": "cloudwatch",
+        "cloudwatch": {
+            "accessKeyId": "ACCESS_KEY",
+            "secretAccessKey": "SECRET_ACCESS_KEY",
+            "region": "EU",
+            "logGroup": "base_app"
+            }
+        },
+    "kafka": {
+        "brokers": [
+            {
+                "hostname": "kafka",
+                "port": 29092
+            }
+        ],
+        "topics": [
+            {
+                "requestedName": "platform.inventory.events",
+                "name": "platform.inventory.events",
+                "consumerGroup": "someGroupName"
+            },
+            {
+                "requestedName": "platform.upload.compliance",
+                "name": "platform.upload.compliance",
+                "consumerGroup": "someGroupName"
+            },
+            {
+                "requestedName": "platform.payload-status",
+                "name": "platform.payload-status",
+                "consumerGroup": "someGroupName"
+            },
+            {
+                "requestedName": "platform.remediations.events",
+                "name": "platform.remediations.events",
+                "consumerGroup": "someGroupName"
+            },
+            {
+                "requestedName": "originalName",
+                "name": "someTopic",
+                "consumerGroup": "someGroupName"
+            }
+        ]
+    },
+    "inMemoryDb": {
+        "hostname": "redis",
+        "port": "6379"
+    },
+    "database": {
+        "name": "compliance_dev",
+        "username": "insights",
+        "password": "insights",
+        "hostname": "db",
+        "port": 5432,
+        "adminUsername": "postgres",
+        "adminPassword": "insights",
+        "rdsCa": "ca",
+        "sslMode": "disable"
+    },
+    "endpoints": [
+        {
+            "name": "service",
+            "app": "rbac",
+            "hostname": "rbac",
+            "port": 8000
+        },
+        {
+            "name": "service",
+            "app": "host-inventory",
+            "hostname": "host-inventory.svc",
+            "port": 8000
+        }
+    ],
+    "privateEndpoints": [
+        {
+            "name": "prometheus-exporter",
+            "app": "compliance",
+            "hostname": "prometheus",
+            "port": 9394
+        }
+    ]
+}

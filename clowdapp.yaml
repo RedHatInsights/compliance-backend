@@ -7,32 +7,103 @@ objects:
 - apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdApp
   metadata:
-    name: compliance-prometheus-exporter
-    annotations:
-      prometheus.io/path: /metrics
-      prometheus.io/port: "9394"
-      prometheus.io/scrape: "true"
+    name: "${APP_NAME}"
   spec:
     envName: ${ENV_NAME}
-# We need to add a shared DB definition here ...
-# Perhaps on the defintion of compliance-backend we
-# should create the DB , and make all services depend
-# on it. The "source DB" for every other service must
-# be the one in charge of running DB migrations. I'd not
-# like it to be compliance-prometheus-exporter. That would
-# look VERY weird ...
-#    database:
-#      sharedDbAppName: compliance-backend
-#      version: 12
-#    dependencies:
-#      compliance-backend
+    dependencies:
+    - host-inventory
+    - ingress
+    - rbac
+#  blocked https://issues.redhat.com/browse/RHCLOUD-10212
+#    - remediations
     database:
       name: compliance
+      version: 12
+    kafkaTopics:
+      - topicName: platform.upload.compliance
+        partitions: 1
+      - topicName: platform.payload-status
+        partitions: 1
+      - topicName: platform.inventory.events
+        partitions: 1
+      - topicName: platform.remediations.events
+        partitions: 1
     inMemoryDb: true
 #    optionalDependencies:
-#    - rbac
+#    - remediations
+    cyndi:
+      enabled: true
+      appName: "compliance"
+      insightsOnly: true
     deployments:
     - name: service
+      # TODO: Check how to auto-scale with Clowder
+      minReplicas: ${{REPLICAS_SERVICE}}
+      webServices:
+        public:
+          enabled: true
+      podSpec:
+        image: ${IMAGE}:${IMAGE_TAG}
+        initContainers:
+        - name: wait-on-migrations
+          image: " "
+          imagePullPolicy: Always
+          command:
+            - bash
+            - -c
+            - |
+              for i in {1..120}; do sleep 1;
+              if bundle exec rake --trace db:abort_if_pending_migrations;
+              then exit 0; fi; done; exit 1
+          env:
+          - name: RAILS_ENV
+            value: "${RAILS_ENV}"
+          - name: PATH_PREFIX
+            value: "${PATH_PREFIX}"
+        env:
+        - name: APPLICATION_TYPE
+          value: compliance-backend
+        - name: RAILS_ENV
+          value: "${RAILS_ENV}"
+        - name: PATH_PREFIX
+          value: "${PATH_PREFIX}"
+        - name: APP_NAME
+          value: "${APP_NAME}"
+        - name: RAILS_LOG_TO_STDOUT
+          value: "${RAILS_LOG_TO_STDOUT}"
+        - name: SETTINGS__REDIS_SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__REDIS_CACHE_SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__DISABLE_RBAC
+          value: ${DISABLE_RBAC}
+        - name: PUMA_WORKERS
+          value: "${PUMA_WORKERS}"
+        - name: PUMA_MAX_THREADS
+          value: "${PUMA_MAX_THREADS}"
+        - name: OLD_PATH_PREFIX
+          value: "${OLD_PATH_PREFIX}"
+# If we can configure the metrics endpoint to listen to 9000 this definitions should go away
+        livenessProbe:
+          httpGet:
+            path: /api/compliance/v1/openapi.json
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/compliance/v1/status
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+        resources:
+          limits:
+            cpu: "${CPU_LIMIT_SERV}"
+            memory: "${MEMORY_LIMIT_SERV}"
+          requests:
+            cpu: "${CPU_REQUEST_SERV}"
+            memory: "${MEMORY_REQUEST_SERV}"
+    - name: prometheus-exporter
       minReplicas: ${{REPLICAS_PROMETHEUS}}
 #      webServices:
 #        public:
@@ -56,55 +127,6 @@ objects:
             value: "${PATH_PREFIX}"
           - name: RAILS_LOG_TO_STDOUT
             value: "${RAILS_LOG_TO_STDOUT}"
-          - name: POSTGRESQL_MAX_CONNECTIONS
-            value: ${POSTGRESQL_MAX_CONNECTIONS}
-#          - name: DATABASE_SERVICE_NAME
-#            value: "${DATABASE_SERVICE_NAME}"
-#          - name: POSTGRESQL_USER
-#            valueFrom:
-#              secretKeyRef:
-#                key: db.user
-#                name: compliance-db
-#          - name: POSTGRESQL_PASSWORD
-#            valueFrom:
-#              secretKeyRef:
-#                key: db.password
-#                name: compliance-db
-#          - name: COMPLIANCE_DB_SERVICE_HOST
-#            valueFrom:
-#              secretKeyRef:
-#                key: db.host
-#                name: compliance-db
-#          - name: POSTGRESQL_DATABASE
-#            valueFrom:
-#              secretKeyRef:
-#                key: db.name
-#                name: compliance-db
-#          - name: SECRET_KEY_BASE
-#            valueFrom:
-#              secretKeyRef:
-#                key: secret_key_base
-#                name: compliance-backend
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /playbooks
-            port: web
-            scheme: HTTP
-          initialDelaySeconds: 35
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 120
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /playbooks
-            port: web
-            scheme: HTTP
-          initialDelaySeconds: 35
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 120
         env:
         - name: APPLICATION_TYPE
           value: compliance-prometheus-exporter
@@ -114,89 +136,23 @@ objects:
           value: "${PATH_PREFIX}"
         - name: APP_NAME
           value: "${APP_NAME}"
-        - name: PGSSLMODE
-          value: ${PGSSLMODE}
-        - name: PGSSLROOTCERT
-          value: /etc/rds-certs/rds-cacert
-        - name: POSTGRESQL_MAX_CONNECTIONS
-          value: ${POSTGRESQL_MAX_CONNECTIONS}
         - name: RAILS_LOG_TO_STDOUT
           value: "${RAILS_LOG_TO_STDOUT}"
         - name: SETTINGS__REDIS_SSL
           value: "${REDIS_SSL}"
         - name: SETTINGS__REDIS_CACHE_SSL
           value: "${REDIS_SSL}"
-#        - name: DATABASE_SERVICE_NAME
-#          value: "${DATABASE_SERVICE_NAME}"
-#        - name: POSTGRESQL_USER
-#          valueFrom:
-#            secretKeyRef:
-#              key: db.user
-#              name: compliance-db
-#        - name: POSTGRESQL_PASSWORD
-#          valueFrom:
-#            secretKeyRef:
-#              key: db.password
-#              name: compliance-db
-#        - name: COMPLIANCE_DB_SERVICE_HOST
-#          valueFrom:
-#            secretKeyRef:
-#              key: db.host
-#              name: compliance-db
-#        - name: POSTGRESQL_DATABASE
-#          valueFrom:
-#            secretKeyRef:
-#              key: db.name
-#              name: compliance-db
-#        - name: REDIS_HOST
-#          valueFrom:
-#            secretKeyRef:
-#              key: db.endpoint
-#              name: compliance-elasticache-redis
-#        - name: REDIS_PORT
-#          valueFrom:
-#            secretKeyRef:
-#              key: db.port
-#              name: compliance-elasticache-redis
-#        - name: SETTINGS__REDIS_URL
-#          value: "$(REDIS_HOST):$(REDIS_PORT)"
-#        - name: SETTINGS__REDIS_PASSWORD
-#          valueFrom:
-#            secretKeyRef:
-#              key: db.auth_token
-#              name: compliance-elasticache-redis
-#        - name: SETTINGS__REDIS_CACHE_URL
-#          value: "$(REDIS_HOST):$(REDIS_PORT)"
-#        - name: SETTINGS__REDIS_CACHE_PASSWORD
-#          valueFrom:
-#            secretKeyRef:
-#              key: db.auth_token
-#              name: compliance-elasticache-redis
-#        - name: SECRET_KEY_BASE
-#          valueFrom:
-#            secretKeyRef:
-#              key: secret_key_base
-#              name: compliance-backend
+# If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
-#          failureThreshold: 3
           httpGet:
             path: /metrics
             port: 9394
             scheme: HTTP
-#          initialDelaySeconds: 120
-#          periodSeconds: 60
-#          successThreshold: 1
-#          timeoutSeconds: 15
         readinessProbe:
-#          failureThreshold: 3
           httpGet:
             path: /metrics
             port: 9394
             scheme: HTTP
-#          initialDelaySeconds: 60
-#          periodSeconds: 10
-#          successThreshold: 1
-#          timeoutSeconds: 15
         resources:
           limits:
             cpu: "${CPU_LIMIT_PROM}"
@@ -204,14 +160,114 @@ objects:
           requests:
             cpu: "${CPU_REQUEST_PROM}"
             memory: "${MEMORY_REQUEST_PROM}"
-        volumeMounts:
-        - mountPath: /etc/rds-certs
-          name: rds-client-ca
-          readOnly: true
-        volumes:
-        - name: rds-client-ca
-          secret:
-            secretName: rds-client-ca
+
+    - name: compliance-inventory
+      # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
+      minReplicas: ${{REPLICAS_CONSUMER}}
+      podSpec:
+        image: ${IMAGE}:${IMAGE_TAG}
+        initContainers:
+        - name: wait-on-migrations
+          image: " "
+          imagePullPolicy: Always
+          command:
+            - bash
+            - -c
+            - |
+              for i in {1..120}; do sleep 1;
+              if bundle exec rake --trace db:abort_if_pending_migrations;
+              then exit 0; fi; done; exit 1
+          env:
+          - name: RAILS_ENV
+            value: "${RAILS_ENV}"
+          - name: PATH_PREFIX
+            value: "${PATH_PREFIX}"
+          - name: POSTGRESQL_MAX_CONNECTIONS
+            value: ${POSTGRESQL_MAX_CONNECTIONS}
+          - name: RAILS_LOG_TO_STDOUT
+            value: "${RAILS_LOG_TO_STDOUT}"
+        env:
+        - name: APPLICATION_TYPE
+          value: compliance-inventory
+        - name: RAILS_ENV
+          value: "${RAILS_ENV}"
+        - name: RAILS_LOG_TO_STDOUT
+          value: "${RAILS_LOG_TO_STDOUT}"
+        - name: PATH_PREFIX
+          value: "${PATH_PREFIX}"
+        - name: APP_NAME
+          value: "${APP_NAME}"
+        - name: RACECAR_MIN_MESSAGE_QUEUE_SIZE
+          value: "${RACECAR_QUEUE_SIZE}"
+        - name: RACECAR_OFFSET_COMMIT_INTERVAL
+          value: "${RACECAR_OFFSET_COMMIT_INTERVAL}"
+        readinessProbe:
+          timeoutSeconds: 5
+          exec:
+            command:
+              - bundle
+              - exec
+              - rake
+              - db:status
+              - redis:status
+              - kafka:status
+        resources:
+          limits:
+            cpu: "${CPU_LIMIT_CONS}"
+            memory: "${MEMORY_LIMIT_CONS}"
+          requests:
+            cpu: "${CPU_REQUEST_CONS}"
+            memory: "${MEMORY_REQUEST_CONS}"
+
+    - name: compliance-sidekiq
+      # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
+      minReplicas: ${{REPLICAS_CONSUMER}}
+      podSpec:
+        image: ${IMAGE}:${IMAGE_TAG}
+        initContainers:
+        - name: wait-on-migrations
+          image: " "
+          imagePullPolicy: Always
+          command:
+            - bash
+            - -c
+            - |
+              for i in {1..120}; do sleep 1;
+              if bundle exec rake --trace db:abort_if_pending_migrations;
+              then exit 0; fi; done; exit 1
+          env:
+          - name: RAILS_ENV
+            value: "${RAILS_ENV}"
+          - name: PATH_PREFIX
+            value: "${PATH_PREFIX}"
+          - name: POSTGRESQL_MAX_CONNECTIONS
+            value: ${POSTGRESQL_MAX_CONNECTIONS}
+          - name: RAILS_LOG_TO_STDOUT
+            value: "${RAILS_LOG_TO_STDOUT}"
+        env:
+        - name: APPLICATION_TYPE
+          value: compliance-sidekiq
+        - name: RAILS_ENV
+          value: "${RAILS_ENV}"
+        - name: RAILS_LOG_TO_STDOUT
+          value: "${RAILS_LOG_TO_STDOUT}"
+        - name: PATH_PREFIX
+          value: "${PATH_PREFIX}"
+        - name: APP_NAME
+          value: "${APP_NAME}"
+        - name: SIDEKIQ_CONCURRENCY
+          value: "${SIDEKIQ_CONCURRENCY}"
+        - name: RAILS_MAX_THREADS
+          value: "${RAILS_MAX_THREADS}"
+        - name: JOBS_ACCOUNT_NUMBER
+          value: ${JOBS_ACCOUNT_NUMBER}
+        resources:
+          limits:
+            cpu: "${CPU_LIMIT_SIDE}"
+            memory: "${MEMORY_LIMIT_SIDE}"
+          requests:
+            cpu: "${CPU_REQUEST_SIDE}"
+            memory: "${MEMORY_REQUEST_SIDE}"
 
 parameters:
 - name: MIN_REPLICAS
@@ -219,15 +275,18 @@ parameters:
 - description: Image tag
   name: IMAGE_TAG
   required: true
-  value: latest
+  value: latest-new
 - description: Image name
   name: IMAGE
-  value: quay.io/cloudservices/compliance-ssg
+  value: quay.io/cloudservices/compliance-backend
 - description: ClowdEnv Name
   name: ENV_NAME
   requred: false
 - description: Replica count for prometheus-exporter
   name: REPLICAS_PROMETHEUS
+  value: "1"
+- description: Replica count for backend service
+  name: REPLICAS_SERVICE
   value: "1"
 - name: RAILS_ENV
   required: true
@@ -252,9 +311,49 @@ parameters:
   value: 400m
 - name: CPU_REQUEST_PROM
   value: 100m
-- name: POSTGRESQL_MAX_CONNECTIONS
-  description: Number of maximum database connections
-  value: "50"
+- name: MEMORY_LIMIT_SERV
+  value: 800Mi
+- name: MEMORY_REQUEST_SERV
+  value: 400Mi
+- name: CPU_LIMIT_SERV
+  value: 700m
+- name: CPU_REQUEST_SERV
+  value: 400m
+- name: MEMORY_LIMIT_CONS
+  value: 800Mi
+- name: MEMORY_REQUEST_CONS
+  value: 400Mi
+- name: CPU_LIMIT_CONS
+  value: 500m
+- name: CPU_REQUEST_CONS
+  value: 50m
+- name: MEMORY_LIMIT_SIDE
+  value: 1000Mi
+- name: MEMORY_REQUEST_SIDE
+  value: 500Mi
+- name: CPU_LIMIT_SIDE
+  value: 500m
+- name: CPU_REQUEST_SIDE
+  value: 50m
 - name: REDIS_SSL
   description: 'Whether to use secured connection to Redis. Use string values of true or false'
   value: "true"
+- name: PUMA_MAX_THREADS
+  value: "5"
+- name: POSTGRESQL_MAX_CONNECTIONS
+  description: Number of maximum database connections
+  value: "50"
+- name: RACECAR_OFFSET_COMMIT_INTERVAL
+  required: true
+  value: "5"
+- name: RACECAR_QUEUE_SIZE
+  required: true
+  value: "5"
+- name: SIDEKIQ_CONCURRENCY
+  value: "1"
+- name: JOBS_ACCOUNT_NUMBER
+  displayName: "Account number used in the import remediations job"
+  value: "6212377"
+  required: true
+- name: RAILS_MAX_THREADS
+  value: "1"

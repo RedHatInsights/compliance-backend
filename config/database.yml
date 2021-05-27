@@ -3,18 +3,19 @@
 
     config = ClowderCommonRuby::Config.load
 
+    db_service = config.database.hostname
     username = config.database.username
     password = config.database.password
     host = config.database.hostname
     database = config.database.name
+    port = config.database.port
   else
-
     db_service = ENV.fetch("DATABASE_SERVICE_NAME","").upcase.sub("-", "_")
-
     username = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? "postgres" : ENV["POSTGRESQL_USER"]
     password = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? ENV["POSTGRESQL_ADMIN_PASSWORD"] : ENV["POSTGRESQL_PASSWORD"]
     host = ENV.fetch("#{db_service}_SERVICE_HOST")
     database = Rails.env.test? ? ENV['POSTGRESQL_TEST_DATABASE'] || ENV["POSTGRESQL_DATABASE"] : ENV["POSTGRESQL_DATABASE"]
+    port = ENV.key?("POSTGRESQL_PORT") ? ENV["POSTGRESQL_PORT"] : 5432
   end
  %>
 
@@ -26,6 +27,7 @@ default: &default
   password: <%= password %>
   host: <%= host %>
   database: <%= database %>
+  port: <%= port %>
 
 test:
   <<: *default
