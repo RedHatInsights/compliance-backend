@@ -32,5 +32,11 @@ module V1
     def serializer
       BenchmarkSerializer
     end
+
+    def includes
+      return unless params[:include]&.split(',')&.include?('rules')
+
+      { rules: %i[profiles rule_identifier rule_references] }
+    end
   end
 end
