@@ -3,9 +3,7 @@
 # Common Kafka producer client
 # https://www.rubydoc.info/gems/ruby-kafka/Kafka/Producer
 class ApplicationProducer < Kafka::Client
-  BROKERS = [ENV['KAFKAMQ']].compact.freeze
-  SSL_CA_LOCATION = ENV['RACECAR_SSL_CA_LOCATION']
-  SECURITY_PROTOCOL = ENV['RACECAR_SECURITY_PROTOCOL']
+  BROKERS = Settings.kafka.brokers.split(',').freeze
   CLIENT_ID = 'compliance-backend'
   SERVICE = 'compliance'
   # Define TOPIC in the inherited class.
@@ -29,7 +27,9 @@ class ApplicationProducer < Kafka::Client
     end
 
     def kafka_ca_cert
-      File.read(self::SSL_CA_LOCATION) if self::SECURITY_PROTOCOL == 'ssl'
+      return unless Settings.kafka.security_protocol == 'ssl'
+
+      File.read(Settings.kafka.ssl_ca_location)
     end
 
     def kafka_config
