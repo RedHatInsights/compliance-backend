@@ -5,6 +5,8 @@ kafka:
   brokers: ''
   security_protocol: plaintext
   ssl_ca_location:
+  sasl_username:
+  sasl_password:
 kafka_consumer_topics:
   inventory_events: 'platform.inventory.events'
 kafka_producer_topics:
