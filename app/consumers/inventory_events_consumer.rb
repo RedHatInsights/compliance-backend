@@ -18,6 +18,8 @@ class InventoryEventsConsumer < ApplicationConsumer
     ) do
       dispatch
     end
+  rescue PG::Error, ActiveRecord::StatementInvalid
+    handle_db_error
   ensure
     clear!
   end
@@ -48,6 +50,14 @@ class InventoryEventsConsumer < ApplicationConsumer
     logger.audit_success(
       "Enqueued DeleteHost job for host #{@msg_value['id']}"
     )
+  end
+
+  def handle_db_error
+    logger.error(
+      'Database error, clearing active connection for further reconnect'
+    )
+    ActiveRecord::Base.clear_active_connections!
+    raise
   end
 
   # NB: This consumer object stays around between messages

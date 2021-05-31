@@ -189,5 +189,27 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       @consumer.process(@message)
       assert_audited 'Enqueued report parsing of profileid'
     end
+
+    should 'handle db errors and db clear connections' do
+      @message.stubs(:value).returns({
+        host: {
+          id: '37f7eeff-831b-5c41-984a-254965f58c0f'
+        },
+        platform_metadata: {
+          service: 'compliance',
+          url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
+        },
+        account: '1234'
+      }.to_json)
+      # Mock the actual 'sending the validation' to Kafka
+      XccdfReportParser.stubs(:new).raises(ActiveRecord::StatementInvalid)
+
+      ActiveRecord::Base.expects(:clear_active_connections!)
+      assert_raises ActiveRecord::StatementInvalid do
+        @consumer.process(@message)
+      end
+      assert_equal 0, ParseReportJob.jobs.size
+    end
   end
 end
