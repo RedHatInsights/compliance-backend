@@ -33,7 +33,7 @@ The Insights Compliance backend comprises of these components/services:
 Before running the project, these services must be running and acessible:
 
 * Kafka — message broker (default port 29092)
-  - set by `KAFKAMQ` environment variable
+  - set by `SETTINGS__KAFKA__BROKERS` environment variable
 * Redis — Job queue and cache
 * PostgreSQL compatible database
   - `DATABASE_SERVICE_NAME=postgres`
@@ -76,7 +76,7 @@ at least three different processes:
 Prerequisites:
 
 * URL to Kafka
-  - environment variable: `KAFKAMQ` (`KAFKAMQ=localhost:29092`)
+  - environment variable: `SETTINGS__KAFKA__BROKERS` (`SETTINGS__KAFKA__BROKERS=localhost:29092`)
 * URL to PostgreSQL database
   - environment variables: `POSTGRESQL_DATABASE`, `POSTGRESQL_SERVICE_HOST`, `POSTGRESQL_USER`, `POSTGRESQL_PASSWORD`, `POSTGRESQL_ADMIN_PASSWORD`, `DATABASE_SERVICE_NAME`
 * URL to Redis

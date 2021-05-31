@@ -1,20 +1,18 @@
 # These config values will be shared by all environments but can be overridden.
 common: &common
   client_id: "compliance_backend"
+  brokers:
+    <% Settings.kafka.brokers.split(',').each do |broker| %>
+    - <%= broker %>
+    <% end %>
 
 # By default, kafka's container port 9092 is proxied to 2902
 # in insights-upload
 development:
   <<: *common
-  brokers:
-    - <%= ENV["KAFKAMQ"] %>
 
 test:
   <<: *common
-  brokers:
-    - <%= ENV["KAFKAMQ"] %>
 
 production:
   <<: *common
-  brokers:
-    - <%= ENV["KAFKAMQ"] %>
