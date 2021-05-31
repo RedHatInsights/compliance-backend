@@ -27,15 +27,27 @@ class ApplicationProducer < Kafka::Client
     end
 
     def kafka_ca_cert
-      return unless Settings.kafka.security_protocol == 'ssl'
+      return unless %w[ssl sasl_ssl].include?(Settings.kafka.security_protocol)
 
       File.read(Settings.kafka.ssl_ca_location)
+    end
+
+    def sasl_config
+      return unless Settings.kafka.security_protocol == 'sasl_ssl'
+
+      {
+        sasl_scram_username: Settings.kafka.sasl_username,
+        sasl_scram_password: Settings.kafka.sasl_password,
+        sasl_scram_mechanism: 'sha512'
+      }
     end
 
     def kafka_config
       {}.tap do |config|
         config[:client_id] = self::CLIENT_ID
         config[:ssl_ca_cert] = kafka_ca_cert if kafka_ca_cert
+
+        config.merge!(sasl_config) if sasl_config
       end
     end
 
