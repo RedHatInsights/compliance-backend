@@ -1,6 +1,12 @@
 app_name: 'compliance'
 path_prefix: '/api'
 old_path_prefix: '/r/insights/platform'
+kafka:
+  brokers: ''
+  security_protocol: plaintext
+  ssl_ca_location:
+  sasl_username:
+  sasl_password:
 kafka_consumer_topics:
   inventory_events: 'platform.inventory.events'
 kafka_producer_topics:
