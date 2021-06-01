@@ -18,5 +18,12 @@ module V1
       get v1_benchmarks_url(FactoryBot.create(:benchmark))
       assert_response :success
     end
+
+    test '#index includes rules' do
+      FactoryBot.create(:rule, benchmark: FactoryBot.create(:benchmark))
+      get v1_benchmarks_url, params: { include: 'rules' }
+      assert_response :success
+      assert_equal(response.parsed_body['included'].first['type'], 'rule')
+    end
   end
 end
