@@ -14,7 +14,7 @@ threads threads_count, threads_count
 if ClowderCommonRuby::Config.clowder_enabled?
   port ClowderCommonRuby::Config.load.webPort
 else
-  port 3000
+  port ENV.fetch('PORT') { 3000 }
 end
 
 # Specifies the `environment` that Puma will run in.
