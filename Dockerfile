@@ -1,9 +1,12 @@
 FROM registry.access.redhat.com/ubi8/ruby-27
 
-# Install dependencies and clean cache to make the image cleaner
 
 USER 0
+
+# Install dependencies and clean cache to make the image cleaner
+# also remove unused packages added by ubi8/s2i-base.
 RUN yum install -y hostname shared-mime-info && \
+    yum remove -y mariadb-connector-c-devel npm && \
     yum clean all -y
 
 COPY --chown=1001:0 . /tmp/src
