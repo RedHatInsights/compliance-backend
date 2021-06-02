@@ -36,7 +36,7 @@ module V1
     def includes
       return unless params[:include]&.split(',')&.include?('rules')
 
-      { rules: %i[profiles rule_identifier rule_references] }
+      { rules: %i[profiles] }
     end
   end
 end
