@@ -1191,32 +1191,7 @@
                       "os_major_version": "7",
                       "latest_supported_os_minor_versions": []
                     },
-                    "relationships": {
-                      "rules": {
-                        "data": [
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "rule"
-                          },
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "rule"
-                          }
-                        ]
-                      },
-                      "profiles": {
-                        "data": [
-                          {
-                            "id": "37f7eeff-831b-5c41-984a-254965f58c0f",
-                            "type": "profile"
-                          },
-                          {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
-                            "type": "profile"
-                          }
-                        ]
-                      }
-                    }
+                    "relationships": {}
                   }
                 ]
               }
