@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 # JSON API serialization for an OpenSCAP Profile
-class ProfileSerializer
-  include JSONAPI::Serializer
+class ProfileSerializer < ApplicationSerializer
   set_type :profile
   belongs_to :account
   belongs_to :benchmark

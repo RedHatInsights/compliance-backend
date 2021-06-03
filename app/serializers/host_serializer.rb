@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 # JSON API serialization for Hosts
-class HostSerializer
-  include JSONAPI::Serializer
+class HostSerializer < ApplicationSerializer
   set_type :host
   attributes :name, :os_major_version, :os_minor_version, :last_scanned,
              :rules_passed, :rules_failed, :has_policy

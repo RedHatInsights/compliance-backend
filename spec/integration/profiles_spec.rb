@@ -255,7 +255,7 @@ describe 'Profiles API' do
                        type: { type: :string },
                        id: ref_schema('uuid'),
                        attributes: ref_schema('benchmark'),
-                       relationships: ref_schema('benchmark_relationships')
+                       relationships: { type: :object, properties: {} }
                      }
                    }
                  }
