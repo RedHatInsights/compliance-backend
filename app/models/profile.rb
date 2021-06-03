@@ -12,7 +12,8 @@ class Profile < ApplicationRecord
 
   SORTABLE_BY = {
     name: :name,
-    os_minor_version: :os_minor_version
+    os_minor_version: :os_minor_version,
+    score: :score
   }.freeze
 
   belongs_to :account, optional: true
@@ -42,6 +43,17 @@ class Profile < ApplicationRecord
   validates :benchmark_id, presence: true
   validates :account, presence: true, if: -> { hosts.any? }
   validates :policy, presence: true, if: -> { policy_id }
+
+  scope :with_score, lambda {
+    group('profiles.id')
+      .select(
+        Profile.arel_table[Arel.star],
+        TestResult.arel_table[:score].average.as('score')
+      ).joins("
+        LEFT OUTER JOIN (#{TestResult.latest.to_sql}) AS test_results
+        ON test_results.profile_id = profiles.id
+      ")
+  }
 
   scope :canonical_for_os, lambda { |os_major_version, os_minor_version|
     benchmarks = Xccdf::Benchmark.latest_for_os(

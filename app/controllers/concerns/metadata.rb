@@ -13,7 +13,7 @@ module Metadata
     end
 
     def metadata(opts = {})
-      opts[:total] ||= resolve_collection.count
+      opts[:total] ||= aggregated_count(resolve_collection.count)
       options = {}
       options[:meta] = { total: opts[:total], search: params[:search],
                          limit: pagination_limit, offset: pagination_offset }
@@ -61,6 +61,12 @@ module Metadata
     end
 
     private
+
+    def aggregated_count(count)
+      return count if count.is_a?(Integer)
+
+      count.values.sum
+    end
 
     def base_link_url
       "#{path_prefix}/#{Settings.app_name}/#{controller_name}"

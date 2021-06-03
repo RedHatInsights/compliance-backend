@@ -26,7 +26,8 @@ module Rendering
 
     def serializer_opts
       opts = index? ? metadata : {}
-      opts.merge!(params: { root_resource: resource })
+      # Scoped resources expose the model under a dedicated method
+      opts.merge!(params: { root_resource: resource.try(:model) || resource })
       opts.merge!(include: params[:include].split(',')) if params[:include]
 
       opts

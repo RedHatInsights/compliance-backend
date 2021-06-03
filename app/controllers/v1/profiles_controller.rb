@@ -14,7 +14,8 @@ module V1
 
     def index
       params[:search] ||= 'external=false and canonical=false'
-      render_json resolve_collection.sort_by(&:score)
+      params[:sort_by] ||= 'score'
+      render_json resolve_collection
     end
 
     def show
@@ -113,7 +114,7 @@ module V1
     end
 
     def resource
-      Profile
+      Profile.with_score
     end
 
     def serializer
