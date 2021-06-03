@@ -1022,7 +1022,7 @@ data:
           "yaxes": [
             {
               "format": "short",
-              "label": null,
+              "label": "per second",
               "logBase": 1,
               "max": null,
               "min": null,
