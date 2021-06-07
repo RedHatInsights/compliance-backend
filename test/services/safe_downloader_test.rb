@@ -48,4 +48,18 @@ class SafeDownloaderTest < ActiveSupport::TestCase
     end
     assert_audited 'Failed to dowload report'
   end
+
+  test 'checks secured url in production' do
+    strio = StringIO.new('report')
+    URI::HTTP.any_instance.expects(:open).returns(strio)
+    Rails.env.expects(:production?).returns(true).twice
+
+    assert_raises(SafeDownloader::DownloadError) do
+      SafeDownloader.download(@url)
+    end
+
+    safe_url = 'https://example.com'
+    downloaded = SafeDownloader.download(safe_url)
+    assert_equal 1, downloaded.count
+  end
 end
