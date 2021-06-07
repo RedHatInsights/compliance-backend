@@ -52,7 +52,7 @@ class SafeDownloader
       Rails.logger.audit_success("Downloaded report from URL: #{url}")
       urlopen
     rescue *DOWNLOAD_ERRORS
-      Rails.logger.audit_fail("Failed to dowload report from URL: #{url}")
+      Rails.logger.audit_fail("Failed to download report from URL: #{url}")
       raise
     end
 
