@@ -48,7 +48,12 @@ class SafeDownloader
     end
 
     def open_url(url, options)
-      url.open(options)
+      urlopen = url.open(options)
+      Rails.logger.audit_success("Downloaded report from URL: #{url}")
+      urlopen
+    rescue *DOWNLOAD_ERRORS
+      Rails.logger.audit_fail("Failed to dowload report from URL: #{url}")
+      raise
     end
 
     def encode_url(url)
