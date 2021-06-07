@@ -15,6 +15,7 @@ class SafeDownloaderTest < ActiveSupport::TestCase
 
     downloaded = SafeDownloader.download(@url)
     assert_equal 1, downloaded.count
+    assert_audited 'Downloaded report'
   end
 
   test 'download success with large file' do
@@ -24,6 +25,7 @@ class SafeDownloaderTest < ActiveSupport::TestCase
 
     downloaded = SafeDownloader.download(@url)
     assert_equal 1, downloaded.count
+    assert_audited 'Downloaded report'
   end
 
   test 'download with empty file fails' do
@@ -31,6 +33,7 @@ class SafeDownloaderTest < ActiveSupport::TestCase
     assert_raises(SafeDownloader::DownloadError) do
       SafeDownloader.download(@url)
     end
+    assert_audited 'Downloaded report'
   end
 
   test 'download with url parse failure' do
@@ -43,5 +46,6 @@ class SafeDownloaderTest < ActiveSupport::TestCase
     assert_raises(SafeDownloader::DownloadError) do
       SafeDownloader.download(@url, max_size: 1)
     end
+    assert_audited 'Failed to dowload report'
   end
 end
