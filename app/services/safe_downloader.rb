@@ -58,11 +58,18 @@ class SafeDownloader
 
     def encode_url(url)
       url = URI(url)
-      raise DownloadError, 'url was invalid' unless url.respond_to?(:open)
-
+      check_url(url)
       url
     rescue ArgumentError
       raise DownloadError, 'url was invalid'
+    end
+
+    def check_url(url)
+      raise DownloadError, 'url was invalid' unless url.respond_to?(:open)
+
+      return unless Rails.env.production? && url.scheme != 'https'
+
+      raise DownloadError, 'not secure (non-https)'
     end
 
     def create_options(max_size)
