@@ -46,7 +46,7 @@ class SafeDownloaderTest < ActiveSupport::TestCase
     assert_raises(SafeDownloader::DownloadError) do
       SafeDownloader.download(@url, max_size: 1)
     end
-    assert_audited 'Failed to dowload report'
+    assert_audited 'Failed to download report'
   end
 
   test 'checks secured url in production' do
