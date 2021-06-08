@@ -24,8 +24,9 @@ class SafeDownloader
   ].freeze
 
   class << self
-    def download(url, max_size: nil)
-      downloaded_file = open_url(encode_url(url), create_options(max_size))
+    def download(url, max_size: nil, ssl_only: false)
+      uri = encode_url(url, ssl_only)
+      downloaded_file = open_url(uri, create_options(max_size))
       raise EmptyFileError if downloaded_file.size.zero?
 
       downloaded_file
@@ -36,9 +37,10 @@ class SafeDownloader
       raise DownloadError, "download failed (#{url}): #{e.message}"
     end
 
-    def download_reports(url, max_size: nil)
+    def download_reports(url, opts = {})
+      opts[:ssl_only] = Rails.env.production?
       begin
-        downloaded_file = download(url, max_size: max_size)
+        downloaded_file = download(url, opts)
       rescue *DOWNLOAD_ERRORS
         Rails.logger.audit_fail("Failed to download report from URL: #{url}")
         raise
@@ -63,18 +65,18 @@ class SafeDownloader
       url.open(options)
     end
 
-    def encode_url(url)
+    def encode_url(url, ssl_only)
       url = URI(url)
-      check_url(url)
+      check_url(url, ssl_only)
       url
     rescue ArgumentError
       raise DownloadError, 'url was invalid'
     end
 
-    def check_url(url)
+    def check_url(url, ssl_only)
       raise DownloadError, 'url was invalid' unless url.respond_to?(:open)
 
-      return unless Rails.env.production? && url.scheme != 'https'
+      return unless ssl_only && url.scheme != 'https'
 
       raise DownloadError, 'not secure (non-https)'
     end
