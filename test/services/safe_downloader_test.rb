@@ -7,59 +7,75 @@ class SafeDownloaderTest < ActiveSupport::TestCase
     @url = 'http://example.com'
   end
 
-  test 'download success with small file' do
-    strio = StringIO.new('report')
-    URI::HTTP.any_instance.expects(:open).returns(strio)
-    IO.expects(:read).never
-    strio.expects(:string).returns('report')
+  context '#download' do
+    should 'success with small file' do
+      strio = StringIO.new('report')
+      URI::HTTP.any_instance.expects(:open).returns(strio)
 
-    downloaded = SafeDownloader.download(@url)
-    assert_equal 1, downloaded.count
-    assert_audited 'Downloaded report'
-  end
-
-  test 'download success with large file' do
-    file = File.new(file_fixture('insights-archive.tar.gz'))
-    URI::HTTP.any_instance.expects(:open).returns(file)
-    ReportsTarReader.any_instance.expects(:reports).returns(['report'])
-
-    downloaded = SafeDownloader.download(@url)
-    assert_equal 1, downloaded.count
-    assert_audited 'Downloaded report'
-  end
-
-  test 'download with empty file fails' do
-    URI::HTTP.any_instance.expects(:open).returns(StringIO.new)
-    assert_raises(SafeDownloader::DownloadError) do
-      SafeDownloader.download(@url)
-    end
-    assert_audited 'Downloaded report'
-  end
-
-  test 'download with url parse failure' do
-    assert_raises(SafeDownloader::DownloadError) do
-      SafeDownloader.download(:bad_url)
-    end
-  end
-
-  test 'download with oversized file' do
-    assert_raises(SafeDownloader::DownloadError) do
-      SafeDownloader.download(@url, max_size: 1)
-    end
-    assert_audited 'Failed to download report'
-  end
-
-  test 'checks secured url in production' do
-    strio = StringIO.new('report')
-    URI::HTTP.any_instance.expects(:open).returns(strio)
-    Rails.env.expects(:production?).returns(true).twice
-
-    assert_raises(SafeDownloader::DownloadError) do
-      SafeDownloader.download(@url)
+      downloaded = SafeDownloader.download(@url)
+      assert_equal strio.size, downloaded.size
     end
 
-    safe_url = 'https://example.com'
-    downloaded = SafeDownloader.download(safe_url)
-    assert_equal 1, downloaded.count
+    should 'success with large file' do
+      file = File.new(file_fixture('insights-archive.tar.gz'))
+      URI::HTTP.any_instance.expects(:open).returns(file)
+
+      downloaded = SafeDownloader.download(@url)
+      assert_equal file.size, downloaded.size
+    end
+
+    should 'fail with empty file' do
+      URI::HTTP.any_instance.expects(:open).returns(StringIO.new)
+      assert_raises(SafeDownloader::DownloadError) do
+        SafeDownloader.download(@url)
+      end
+    end
+
+    should 'fail with url parse failure' do
+      assert_raises(SafeDownloader::DownloadError) do
+        SafeDownloader.download(:bad_url)
+      end
+    end
+
+    should 'download with oversized file' do
+      assert_raises(SafeDownloader::DownloadError) do
+        SafeDownloader.download(@url, max_size: 1)
+      end
+    end
+
+    should 'checks secured url in production' do
+      strio = StringIO.new('report')
+      URI::HTTP.any_instance.expects(:open).returns(strio)
+      Rails.env.expects(:production?).returns(true).twice
+
+      assert_raises(SafeDownloader::DownloadError) do
+        SafeDownloader.download(@url)
+      end
+
+      safe_url = 'https://example.com'
+      downloaded = SafeDownloader.download(safe_url)
+      assert_equal 1, downloaded.count
+    end
+  end
+
+  context '#download_reports' do
+    should 'success with small reports file' do
+      strio = StringIO.new('report')
+      URI::HTTP.any_instance.expects(:open).returns(strio)
+      IO.expects(:read).never
+      strio.expects(:string).returns('report')
+
+      downloaded = SafeDownloader.download_reports(@url)
+      assert_equal 1, downloaded.count
+    end
+
+    should 'success with large file' do
+      file = File.new(file_fixture('insights-archive.tar.gz'))
+      URI::HTTP.any_instance.expects(:open).returns(file)
+      ReportsTarReader.any_instance.expects(:reports).returns(['report'])
+
+      downloaded = SafeDownloader.download_reports(@url)
+      assert_equal 1, downloaded.count
+    end
   end
 end

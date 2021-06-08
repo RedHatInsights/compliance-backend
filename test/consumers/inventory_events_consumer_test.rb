@@ -49,7 +49,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
   context 'report upload messages' do
     setup do
       ParseReportJob.clear
-      SafeDownloader.stubs(:download).returns(['report'])
+      SafeDownloader.stubs(:download_reports).returns(['report'])
       IdentityHeader.stubs(:new).returns(OpenStruct.new(valid?: true))
     end
 
