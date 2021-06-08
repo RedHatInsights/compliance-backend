@@ -96,7 +96,7 @@ module ReportParsing
     end
 
     def report_contents
-      @report_contents ||= SafeDownloader.download(url)
+      @report_contents ||= SafeDownloader.download_reports(url)
     end
 
     def identity

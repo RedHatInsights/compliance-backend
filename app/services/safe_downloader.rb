@@ -28,12 +28,24 @@ class SafeDownloader
       downloaded_file = open_url(encode_url(url), create_options(max_size))
       raise EmptyReportError if downloaded_file.size.zero?
 
-      report_contents(downloaded_file)
+      downloaded_file
     rescue *DOWNLOAD_ERRORS => e
       raise DownloadError if e.instance_of?(RuntimeError) &&
                              e.message !~ /redirection/
 
       raise DownloadError, "download failed (#{url}): #{e.message}"
+    end
+
+    def download_reports(url, max_size: nil)
+      begin
+        downloaded_file = download(url, max_size: max_size)
+      rescue *DOWNLOAD_ERRORS
+        Rails.logger.audit_fail("Failed to download report from URL: #{url}")
+        raise
+      end
+
+      Rails.logger.audit_success("Downloaded report from URL: #{url}")
+      report_contents(downloaded_file)
     end
 
     private
@@ -48,12 +60,7 @@ class SafeDownloader
     end
 
     def open_url(url, options)
-      urlopen = url.open(options)
-      Rails.logger.audit_success("Downloaded report from URL: #{url}")
-      urlopen
-    rescue *DOWNLOAD_ERRORS
-      Rails.logger.audit_fail("Failed to download report from URL: #{url}")
-      raise
+      url.open(options)
     end
 
     def encode_url(url)
