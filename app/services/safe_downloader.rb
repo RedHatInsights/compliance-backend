@@ -8,8 +8,8 @@ require 'net/http'
 class SafeDownloader
   DownloadError = Class.new(StandardError)
   # Exception class to handle empty reports
-  class EmptyReportError < StandardError
-    def initialize(message = 'report is empty')
+  class EmptyFileError < StandardError
+    def initialize(message = 'file is empty')
       super(message)
     end
   end
@@ -20,13 +20,13 @@ class SafeDownloader
     RuntimeError,
     URI::InvalidURIError,
     DownloadError,
-    EmptyReportError
+    EmptyFileError
   ].freeze
 
   class << self
     def download(url, max_size: nil)
       downloaded_file = open_url(encode_url(url), create_options(max_size))
-      raise EmptyReportError if downloaded_file.size.zero?
+      raise EmptyFileError if downloaded_file.size.zero?
 
       downloaded_file
     rescue *DOWNLOAD_ERRORS => e
