@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_17_182143) do
+ActiveRecord::Schema.define(version: 2021_06_09_081621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 2021_05_17_182143) do
     t.boolean "external", default: false, null: false
     t.uuid "policy_id"
     t.string "os_minor_version", default: "", null: false
+    t.decimal "score"
     t.index ["account_id"], name: "index_profiles_on_account_id"
     t.index ["external"], name: "index_profiles_on_external"
     t.index ["name"], name: "index_profiles_on_name"

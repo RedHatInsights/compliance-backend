@@ -16,6 +16,9 @@ class TestResult < ApplicationRecord
   validates :end_time, presence: true,
                        uniqueness: { scope: %i[host_id profile_id] }
 
+  after_save :update_profile_score!
+  after_destroy :update_profile_score!
+
   scope :latest, lambda {
     joins("JOIN (#{latest_without_ids.to_sql}) as tr on "\
           'test_results.profile_id = tr.profile_id AND '\
@@ -30,5 +33,9 @@ class TestResult < ApplicationRecord
   def self.latest_without_ids
     group(:profile_id, :host_id)
       .select(:profile_id, :host_id, 'MAX(end_time) as end_time')
+  end
+
+  def update_profile_score!
+    profile.nil? || profile.calculate_score!
   end
 end

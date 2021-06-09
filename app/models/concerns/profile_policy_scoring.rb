@@ -3,10 +3,12 @@
 # Methods that are related to computing the score of a profile or a policy
 module ProfilePolicyScoring
   def score(host: nil)
-    results = test_results.latest
-    results = results.where(host: host) if host
-    return 0 if results.blank?
+    return super().to_f unless host
 
-    ((scores = results.pluck(:score)).sum / scores.size).to_f
+    test_results.latest.where(host: host).average(:score).to_f
+  end
+
+  def calculate_score!(*_args)
+    update!(score: test_results.latest.average(:score).to_f)
   end
 end
