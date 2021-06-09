@@ -72,18 +72,12 @@ class SafeDownloaderTest < ActiveSupport::TestCase
       assert_equal 1, downloaded.count
     end
 
-    should 'check secure for reports url in production' do
-      strio = StringIO.new('report')
-      URI::HTTP.any_instance.expects(:open).returns(strio)
-      Rails.env.expects(:production?).returns(true).twice
+    should 'raise if not https on ssl_only' do
+      URI::HTTP.any_instance.expects(:open).never
 
       assert_raises(SafeDownloader::DownloadError) do
-        SafeDownloader.download_reports(@url)
+        SafeDownloader.download_reports(@url, ssl_only: true)
       end
-
-      safe_url = 'https://example.com'
-      downloaded = SafeDownloader.download_reports(safe_url)
-      assert_equal 1, downloaded.count
     end
   end
 end

@@ -96,7 +96,10 @@ module ReportParsing
     end
 
     def report_contents
-      @report_contents ||= SafeDownloader.download_reports(url)
+      @report_contents ||= SafeDownloader.download_reports(
+        url,
+        ssl_only: Settings.report_download_ssl_only
+      )
     end
 
     def identity
