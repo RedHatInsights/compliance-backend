@@ -2,5 +2,6 @@ host_inventory_url: http://insights-inventory.platform-prod.svc:8080
 rbac_url: http://rbac.rbac-prod.svc.cluster.local:9002
 prometheus_exporter_host: compliance-prometheus-exporter.compliance-prod.svc
 prometheus_exporter_port: 9394
+report_download_ssl_only: true
 redis_url: compliance-redis:6379
 redis_cache_url: compliance-redis:6379

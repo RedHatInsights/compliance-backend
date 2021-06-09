@@ -102,6 +102,30 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       assert_audited 'Enqueued report parsing of profileid'
     end
 
+    should 'pass ssl_only to reports downloader' do
+      @message.stubs(:value).returns({
+        host: {
+          id: '37f7eeff-831b-5c41-984a-254965f58c0f'
+        },
+        platform_metadata: {
+          service: 'compliance',
+          url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
+        },
+        account: '1234'
+      }.to_json)
+      @consumer.stubs(:validated_reports).returns([%w[profileid report]])
+      @consumer.expects(:produce)
+
+      Settings.expects(:report_download_ssl_only).returns(true)
+      SafeDownloader.expects(:download_reports)
+                    .returns(['report'])
+                    .with do |_url, opts|
+        opts[:ssl_only] == true
+      end
+      @consumer.process(@message)
+    end
+
     should 'not parse reports when validation fails' do
       @message.stubs(:value).returns({
         host: {

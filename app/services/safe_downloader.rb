@@ -38,7 +38,6 @@ class SafeDownloader
     end
 
     def download_reports(url, opts = {})
-      opts[:ssl_only] = Rails.env.production?
       begin
         downloaded_file = download(url, opts)
       rescue *DOWNLOAD_ERRORS
