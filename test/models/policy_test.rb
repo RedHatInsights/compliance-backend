@@ -338,10 +338,19 @@ class PolicyTest < ActiveSupport::TestCase
       )
       @policy.update(hosts: [@host])
       @os_minor_version = '3'
+      SupportedSsg.stubs(:for_os).returns([])
     end
 
     should 'update initial_profile when host has the latest minor version' do
-      @profile.benchmark.update!(version: '0.1.33')
+      SupportedSsg.expects(:for_os).with('7', 4).returns(
+        [
+          SupportedSsg.new(
+            os_major_version: 7,
+            os_minor_version: 4,
+            version: @profile.benchmark.version
+          )
+        ]
+      )
 
       @profile.policy.update_os_minor_versions
 
@@ -350,12 +359,20 @@ class PolicyTest < ActiveSupport::TestCase
 
     context 'child profiles' do
       setup do
-        @profile.benchmark.update!(version: '0.1.45')
         @new_profile = FactoryBot.create(
           :canonical_profile,
           ref_id: @profile.parent_profile.ref_id
         )
-        @new_profile.benchmark.update!(version: '0.1.33')
+
+        SupportedSsg.stubs(:for_os).with('7', 4).returns(
+          [
+            SupportedSsg.new(
+              os_major_version: 7,
+              os_minor_version: 4,
+              version: @new_profile.benchmark.version
+            )
+          ]
+        )
       end
 
       should 'create a new profile when it does not exist' do
