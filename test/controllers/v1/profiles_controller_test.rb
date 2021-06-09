@@ -206,9 +206,31 @@ module V1
                      profiles.dig('data', 0, 'attributes', 'policy_profile_id')
       end
 
+      test 'profiles are sorted by score by default' do
+        p1 = FactoryBot.create(:profile, name: 'a')
+        p2 = FactoryBot.create(:profile, name: 'b')
+        FactoryBot.create(:test_result, profile: p1, score: 0.3)
+        FactoryBot.create(:test_result, profile: p2, score: 0.5)
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false'
+        }
+
+        assert_response :success
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(%w[a b], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
       test 'profiles can be sorted by a single dimension' do
-        FactoryBot.create(:profile, name: 'a')
-        FactoryBot.create(:profile, name: 'b')
+        p1 = FactoryBot.create(:profile, name: 'a')
+        p2 = FactoryBot.create(:profile, name: 'b')
+        FactoryBot.create(:test_result, profile: p1, score: 0.4)
+        FactoryBot.create(:test_result, profile: p1, score: 0.1)
+        FactoryBot.create(:test_result, profile: p2, score: 0.5)
 
         get v1_profiles_url, params: {
           search: 'canonical=false',
