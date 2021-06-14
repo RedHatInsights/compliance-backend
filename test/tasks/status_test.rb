@@ -22,3 +22,23 @@ class DbStatusTest < ActiveSupport::TestCase
     end
   end
 end
+
+class RedisStatusTest < ActiveSupport::TestCase
+  test 'redis:status fails without a redis connection' do
+    Redis.any_instance.stubs(:ping).raises(Redis::BaseError)
+    assert_raises SystemExit do
+      capture_io do
+        Rake::Task['redis:status'].execute
+      end
+    end
+  end
+
+  test 'redis:status succeeds with a redis connection' do
+    Redis.any_instance.stubs(:ping).returns(true)
+    assert_nothing_raised do
+      capture_io do
+        Rake::Task['redis:status'].execute
+      end
+    end
+  end
+end
