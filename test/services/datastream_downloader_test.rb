@@ -34,6 +34,20 @@ class DatastreamImporterTest < ActiveSupport::TestCase
     end
 
     assert_equal 1, yielded
+    assert_audited 'Dowloaded datastream file'
+  end
+
+  test 'audits download failure' do
+    SafeDownloader.expects(:download).raises(StandardError)
+
+    downloader = DatastreamDownloader.new(@ssgs)
+    yielded = 0
+    assert_raises StandardError do
+      downloader.download_datastreams { yielded += 1 }
+    end
+
+    assert_audited 'Failed to dowload datastream file'
+    assert_equal 0, yielded
   end
 
   test 'uses default supported ssgs' do

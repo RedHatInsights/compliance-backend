@@ -16,7 +16,7 @@ class DatastreamDownloader
     Dir.mktmpdir do |tmpdir|
       datastream_urls.each do |label, url|
         filepath = File.join(tmpdir, "#{label}.xml")
-        ds = SafeDownloader.download(url)
+        ds = download(url)
         FileUtils.cp(ds.path, filepath)
         ds.close
         yield filepath
@@ -38,5 +38,20 @@ class DatastreamDownloader
       ssg.package,
       "ssg-rhel#{ssg.os_major_version}-ds.xml"
     ].join('/')
+  end
+
+  private
+
+  def download(url)
+    begin
+      file = SafeDownloader.download(url)
+    rescue StandardError => e
+      Rails.logger.audit_fail(
+        "Failed to dowload datastream file from #{url}: #{e}"
+      )
+      raise
+    end
+    Rails.logger.audit_success("Dowloaded datastream file from #{url}")
+    file
   end
 end
