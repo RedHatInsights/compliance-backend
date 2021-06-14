@@ -192,6 +192,7 @@ services:
     stdin_open: true
     restart: on-failure
     environment:
+      - SETTINGS__KAFKA__BROKERS=kafka:29092
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
@@ -243,6 +244,7 @@ services:
     image: compliance-backend-rails
     tty: true
     environment:
+      - SETTINGS__KAFKA__BROKERS=kafka:29092
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
       - POSTGRESQL_DATABASE=compliance_dev
