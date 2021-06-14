@@ -46,7 +46,7 @@ def runStages() {
 
     scmVars = checkout scm
 
-    if (currentBuild.currentResult == "SUCCESS" && env.CHANGE_TARGET == "stable" && env.CHANGE_ID) {
+    if (currentBuild.currentResult == "SUCCESS" && env.CHANGE_TARGET in ["master", "stable"] && env.CHANGE_ID) {
         execSmokeTest (
             ocDeployerBuilderPath: "compliance/compliance-backend",
             ocDeployerComponentPath: "compliance",
