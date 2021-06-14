@@ -42,3 +42,23 @@ class RedisStatusTest < ActiveSupport::TestCase
     end
   end
 end
+
+class KafkaStatusTest < ActiveSupport::TestCase
+  test 'kafka:status fails without a kafka connection' do
+    TestProducer.stubs(:deliver_message).raises(Kafka::ConnectionError)
+    assert_raises SystemExit do
+      capture_io do
+        Rake::Task['kafka:status'].execute
+      end
+    end
+  end
+
+  test 'kafka:status succeeds with a kafka connection' do
+    TestProducer.any_instance.stubs(:deliver_message)
+    assert_nothing_raised do
+      capture_io do
+        Rake::Task['kafka:status'].execute
+      end
+    end
+  end
+end

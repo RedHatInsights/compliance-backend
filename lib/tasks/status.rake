@@ -26,3 +26,14 @@ namespace :redis do
     end
   end
 end
+
+namespace :kafka do
+  desc 'Check for available kafka connection'
+  task status: [:environment] do
+    begin
+      TestProducer.deliver
+    rescue StandardError
+      abort('ERROR: Kafka unavailable')
+    end
+  end
+end
