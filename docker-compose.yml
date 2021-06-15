@@ -2,13 +2,13 @@
 version: "3"
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper
+    image: quay.io/cloudservices/cp-zookeeper
     environment:
       - ZOOKEEPER_CLIENT_PORT=32181
       - ZOOKEEPER_SERVER_ID=1
       - KAFKA_OPTS=-Dzookeeper.admin.enableServer=false
   kafka:
-    image: confluentinc/cp-kafka
+    image: quay.io/cloudservices/cp-kafka
     ports:
       - 29092:29092
     depends_on:
@@ -31,7 +31,7 @@ services:
     links:
       - kafka
   minio:
-    image: minio/minio
+    image: quay.io/cloudservices/minio
     command: server /data
     volumes:
       - /data
@@ -41,7 +41,7 @@ services:
       - MINIO_ACCESS_KEY
       - MINIO_SECRET_KEY
   createbuckets:
-    image: minio/mc
+    image: docker.io/minio/mc
     depends_on:
       - minio
     links:
@@ -85,7 +85,7 @@ services:
     links:
       - kafka
   db:
-    image: postgres
+    image: docker.io/library/postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: insights
@@ -284,6 +284,6 @@ services:
       - SIDEKIQ_CONCURRENCY=1
       - HOSTNAME=sidekiq
   redis:
-    image: redis:latest
+    image: quay.io/cloudservices/redis:latest
     ports:
       - 6379:6379
