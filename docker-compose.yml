@@ -2,13 +2,13 @@
 version: "3"
 services:
   zookeeper:
-    image: https://quay.io/repository/cloudservices/cp-zookeeper
+    image: quay.io/cloudservices/cp-zookeeper
     environment:
       - ZOOKEEPER_CLIENT_PORT=32181
       - ZOOKEEPER_SERVER_ID=1
       - KAFKA_OPTS=-Dzookeeper.admin.enableServer=false
   kafka:
-    image: https://quay.io/repository/cloudservices/cp-kafka
+    image: quay.io/cloudservices/cp-kafka
     ports:
       - 29092:29092
     depends_on:
@@ -31,7 +31,7 @@ services:
     links:
       - kafka
   minio:
-    image: https://quay.io/repository/cloudservices/minio
+    image: quay.io/cloudservices/minio
     command: server /data
     volumes:
       - /data
@@ -284,6 +284,6 @@ services:
       - SIDEKIQ_CONCURRENCY=1
       - HOSTNAME=sidekiq
   redis:
-    image: https://quay.io/repository/cloudservices/redis:latest
+    image: quay.io/cloudservices/redis:latest
     ports:
       - 6379:6379
