@@ -129,6 +129,13 @@ services:
     links:
       - db
       - kafka
+  compliance-ssg:
+    image: quay.io/cloudservices/compliance-ssg
+    restart: on-failure
+    environment:
+      - NGINX_PORT=8088
+    ports:
+      - 8088:8088
   #
   # NOTE: The following two 'services' are only required for a new DB
   # Feel free to comment them out for subsequent use
@@ -172,9 +179,11 @@ services:
     depends_on:
       - db
       - prometheus
+      - compliance-ssg
     links:
       - db
       - prometheus
+      - compliance-ssg
     environment:
       - DATABASE_SERVICE_NAME=postgres
       - POSTGRES_SERVICE_HOST=db
@@ -211,10 +220,12 @@ services:
       - db
       - prometheus
       - redis
+      - compliance-ssg
     links:
       - db
       - prometheus
       - redis
+      - compliance-ssg
   inventory-consumer:
     image: compliance-backend-rails
     restart: on-failure
