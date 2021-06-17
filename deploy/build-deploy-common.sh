@@ -65,6 +65,7 @@ login_to_required_registries() {
     for REGISTRY in $REQUIRED_REGISTRIES_LOCAL; do
         if ! login_container_registry_type "$REGISTRY"; then
             echo "Error while attempting to log into '${REGISTRY}' registry"
+            return 1
         fi
     done
 
@@ -72,6 +73,7 @@ login_to_required_registries() {
         for REGISTRY in $REQUIRED_REGISTRIES; do
             if ! login_container_registry_type "$REGISTRY"; then
                 echo "Error while attempting to log into '${REGISTRY}' registry"
+                return 1
             fi
         done
     fi
