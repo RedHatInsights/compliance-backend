@@ -143,7 +143,7 @@ services:
         bundle exec rake db:setup;
       fi;
       RAILS_ENV=test bundle exec rake db:create;
-      bundle exec rake db:test:prepare;
+      RAILS_ENV=test bundle exec rake db:test:prepare;
       bundle exec rails db < db/cyndi_setup_devel.sql;
       RAILS_ENV=test bundle exec rails db < db/cyndi_setup_test.sql;
       '
