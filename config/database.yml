@@ -3,7 +3,7 @@
 
     config = ClowderCommonRuby::Config.load
 
-    db_service = config.database.hostname
+    db_service = 'postgres'
     username = config.database.username
     password = config.database.password
     host = config.database.hostname
