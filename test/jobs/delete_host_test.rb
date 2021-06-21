@@ -7,11 +7,11 @@ class DeleteHostTest < ActiveSupport::TestCase
   setup do
     user = FactoryBot.create(:user)
     @host = FactoryBot.create(:host, account: user.account.account_number)
-    profile = FactoryBot.create(:profile, :with_rules, account: user.account)
-    tr = FactoryBot.create(:test_result, profile: profile, host: @host)
+    @profile = FactoryBot.create(:profile, :with_rules, account: user.account)
+    tr = FactoryBot.create(:test_result, profile: @profile, host: @host)
     FactoryBot.create(
       :rule_result,
-      rule: profile.rules.sample,
+      rule: @profile.rules.sample,
       test_result: tr, host: @host
     )
 
@@ -28,11 +28,13 @@ class DeleteHostTest < ActiveSupport::TestCase
   end
 
   test 'deletes a host if the passed ID is found' do
+    assert_not_equal(@profile.reload.score, 0)
     DeleteHost.perform_async(@message)
     assert_equal 1, DeleteHost.jobs.size
     assert_difference('RuleResult.count' => -1, 'TestResult.count' => -1) do
       DeleteHost.drain
     end
+    assert_equal(@profile.reload.score, 0)
     assert_audited 'Deleteted related records for host'
     assert_audited @host.id
   end
