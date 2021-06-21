@@ -12,7 +12,8 @@ class Profile < ApplicationRecord
 
   SORTABLE_BY = {
     name: :name,
-    os_minor_version: :os_minor_version
+    os_minor_version: :os_minor_version,
+    score: :score
   }.freeze
 
   belongs_to :account, optional: true

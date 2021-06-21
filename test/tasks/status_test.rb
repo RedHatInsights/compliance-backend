@@ -45,7 +45,7 @@ end
 
 class KafkaStatusTest < ActiveSupport::TestCase
   test 'kafka:status fails without a kafka connection' do
-    TestProducer.stubs(:deliver_message).raises(Kafka::ConnectionError)
+    ApplicationProducer.stubs(:kafka).raises(Kafka::ConnectionError)
     assert_raises SystemExit do
       capture_io do
         Rake::Task['kafka:status'].execute
@@ -54,7 +54,7 @@ class KafkaStatusTest < ActiveSupport::TestCase
   end
 
   test 'kafka:status succeeds with a kafka connection' do
-    TestProducer.any_instance.stubs(:deliver_message)
+    ApplicationProducer.stubs(:kafka).returns(OpenStruct.new(topics: []))
     assert_nothing_raised do
       capture_io do
         Rake::Task['kafka:status'].execute
