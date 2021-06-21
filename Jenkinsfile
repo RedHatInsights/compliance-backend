@@ -53,6 +53,7 @@ def runStages() {
             ocDeployerServiceSets: "compliance,ingress,inventory,platform-mq,rbac,cyndi",
             iqePlugins: ["iqe-compliance-plugin"],
             pytestMarker: "compliance_smoke",
+            appConfigs: [smoke: [plugins: ["iqe-compliance-plugin"], options: [image: 'quay.io/cloudservices/iqe-tests:compliance']]],
         )
     }
 }
