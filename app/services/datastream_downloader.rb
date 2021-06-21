@@ -7,7 +7,7 @@ class DatastreamDownloader
   end
 
   def default_supported_ssgs
-    ::SupportedSsg.available_upstream
+    ::SupportedSsg.all
                   .sort_by(&:comparable_version)
                   .reverse
   end

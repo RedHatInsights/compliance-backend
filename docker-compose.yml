@@ -169,6 +169,7 @@ services:
     image: compliance-backend-rails
     entrypoint: ''
     command: 'bundle exec rake ssg:import_rhel_supported'
+    restart: on-failure
     volumes:
       - .:/app:z
     depends_on:

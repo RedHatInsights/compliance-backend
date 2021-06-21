@@ -25,7 +25,6 @@ namespace :ssg do
 
   desc 'Update compliance DB with the supported SCAP Security Guide versions'
   task import_rhel_supported: [:environment] do
-    # DATASTREAM_FILENAMES from openscap_parser's ssg:sync
     downloader = DatastreamDownloader.new
     downloader.download_datastreams do |file|
       ENV['DATASTREAM_FILE'] = file
