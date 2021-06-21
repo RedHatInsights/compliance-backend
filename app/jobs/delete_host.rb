@@ -23,10 +23,18 @@ class DeleteHost
 
   def remove_related(host_id)
     num_removed = 0
+    profiles_to_rescore = []
     Sidekiq.logger.info("Deleting related records for host #{host_id}")
     MODELS.each do |model|
-      num_removed += model.where(host_id: host_id).delete_all
+      to_remove = model.where(host_id: host_id)
+      # Mark profile IDs as to be rescored if the model is TestResult
+      profiles_to_rescore = to_remove.pluck(:profile_id) if model == TestResult
+      num_removed += to_remove.delete_all
     end
+
+    # Rescore all marked profiles in batches
+    Profile.where(id: profiles_to_rescore.uniq).find_each(&:calculate_score!)
+
     num_removed
   end
 

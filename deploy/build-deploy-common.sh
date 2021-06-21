@@ -65,6 +65,7 @@ login_to_required_registries() {
     for REGISTRY in $REQUIRED_REGISTRIES_LOCAL; do
         if ! login_container_registry_type "$REGISTRY"; then
             echo "Error while attempting to log into '${REGISTRY}' registry"
+            return 1
         fi
     done
 
@@ -72,6 +73,7 @@ login_to_required_registries() {
         for REGISTRY in $REQUIRED_REGISTRIES; do
             if ! login_container_registry_type "$REGISTRY"; then
                 echo "Error while attempting to log into '${REGISTRY}' registry"
+                return 1
             fi
         done
     fi
@@ -154,9 +156,9 @@ build_image() {
 
     if [ -n "$BUILD_ARGS" ]; then
         BUILD_ARGS_CMD=$(_get_build_args)
-        container_engine_cmd build -f "$DOCKERFILE" $BUILD_ARGS_CMD -t "${IMAGE_NAME}:${IMAGE_TAG}" .
+        container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD -t "${IMAGE_NAME}:${IMAGE_TAG}" .
     else
-        container_engine_cmd build -f "$DOCKERFILE" -t "${IMAGE_NAME}:${IMAGE_TAG}" .
+        container_engine_cmd build --pull -f "$DOCKERFILE" -t "${IMAGE_NAME}:${IMAGE_TAG}" .
     fi
 
 }
