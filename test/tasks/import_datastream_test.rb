@@ -23,7 +23,6 @@ class ImportDatastreamTest < ActiveSupport::TestCase
                         .expects(:download_datastreams)
                         .multiple_yields(['file1'], ['file2'])
 
-    Rake::Task['ssg:import'].stubs(:execute)
     Rake::Task['ssg:import'].expects(:execute).with do
       ENV['DATASTREAM_FILE'] == 'file1'
     end
