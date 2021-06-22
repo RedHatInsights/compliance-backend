@@ -27,6 +27,8 @@ class Policy < ApplicationRecord
   after_update :destroy_orphaned_business_objective
   after_rollback :destroy_orphaned_business_objective
 
+  after_save :update_counters!
+
   scope :with_hosts, lambda { |hosts|
     joins(:hosts).where(hosts: { id: hosts }).distinct
   }
@@ -52,6 +54,7 @@ class Policy < ApplicationRecord
     removed = policy_hosts.where.not(host_id: new_host_ids).destroy_all
     imported = PolicyHost.import_from_policy(id, new_host_ids - host_ids)
     update_os_minor_versions
+    update_counters!
 
     [imported.ids.count, removed.count]
   end

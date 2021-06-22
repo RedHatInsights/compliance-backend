@@ -102,6 +102,11 @@ class PolicyTest < ActiveSupport::TestCase
       ).map { |wh| Host.find(wh.id) }
     end
 
+    HOST_COUNT_FIELDS = %w[
+      @policy.reload.hosts.count
+      @policy.total_host_count
+    ].freeze
+
     should 'update_os_minor_versions' do
       @policy.update(hosts: [@hosts.first])
 
@@ -114,7 +119,7 @@ class PolicyTest < ActiveSupport::TestCase
       FactoryBot.create(:profile, account: @account, policy: @policy)
 
       assert_empty(@policy.hosts)
-      assert_difference('@policy.hosts.count', @hosts.count) do
+      assert_difference(HOST_COUNT_FIELDS, @hosts.count) do
         changes = @policy.update_hosts(@hosts.pluck(:id))
         assert_equal [@hosts.count, 0], changes
       end
@@ -125,7 +130,7 @@ class PolicyTest < ActiveSupport::TestCase
       @policy.update(hosts: [@hosts.first])
 
       assert_not_empty(@policy.hosts)
-      assert_difference('@policy.hosts.count', 1) do
+      assert_difference(HOST_COUNT_FIELDS, 1) do
         changes = @policy.update_hosts(@hosts.pluck(:id))
         assert_equal [1, 0], changes
       end
@@ -134,7 +139,8 @@ class PolicyTest < ActiveSupport::TestCase
     should 'remove old hosts from an existing host set' do
       @policy.update(hosts: @hosts)
       assert_equal @hosts.count, @policy.hosts.count
-      assert_difference('@policy.reload.hosts.count', -@hosts.count) do
+      assert_equal @hosts.count, @policy.total_host_count
+      assert_difference(HOST_COUNT_FIELDS, -@hosts.count) do
         changes = @policy.update_hosts([])
         assert_equal [0, @hosts.count], changes
       end
@@ -145,7 +151,7 @@ class PolicyTest < ActiveSupport::TestCase
       FactoryBot.create(:profile, account: @account, policy: @policy)
 
       assert_not_empty(@policy.hosts)
-      assert_difference('@policy.hosts.count', 0) do
+      assert_difference(HOST_COUNT_FIELDS, 0) do
         changes = @policy.update_hosts([@hosts.last.id])
         assert_equal [1, 1], changes
       end
@@ -415,6 +421,70 @@ class PolicyTest < ActiveSupport::TestCase
           assert_equal child_profile.reload.os_minor_version, ''
         end
       end
+    end
+  end
+
+  context 'cached host counts' do
+    setup do
+      @host1 = FactoryBot.create(:host, account: @account.account_number)
+      @host2 = FactoryBot.create(:host, account: @account.account_number)
+      @profile = FactoryBot.create(:profile, policy: @policy, account: @account)
+    end
+
+    should 'change the total host count when a host is assigned directly' do
+      @policy.update(hosts: [@host1])
+      assert_equal(@policy.reload.total_host_count, 1)
+      @policy.update(hosts: [@host1, @host2])
+      assert_equal(@policy.reload.total_host_count, 2)
+      @policy.update(hosts: [])
+      assert_equal(@policy.reload.total_host_count, 0)
+    end
+
+    should 'change the test result host count when test results are assigned' do
+      FactoryBot.create(
+        :test_result,
+        host: @host1,
+        profile: @profile,
+        score: 100
+      )
+      assert_equal(@policy.reload.test_result_host_count, 1)
+      assert_equal(@policy.reload.compliant_host_count, 1)
+
+      FactoryBot.create(
+        :test_result,
+        host: @host2,
+        profile: @profile,
+        score: 0,
+        supported: false
+      )
+      assert_equal(@policy.reload.test_result_host_count, 1)
+      assert_equal(@policy.reload.compliant_host_count, 1)
+      assert_equal(@policy.reload.unsupported_host_count, 1)
+
+      FactoryBot.create(
+        :test_result,
+        host: @host2,
+        profile: @profile,
+        score: 0
+      )
+      assert_equal(@policy.reload.test_result_host_count, 2)
+      assert_equal(@policy.reload.compliant_host_count, 1)
+      assert_equal(@policy.reload.unsupported_host_count, 0)
+
+      FactoryBot.create(
+        :test_result,
+        host: @host2,
+        profile: @profile,
+        score: 100
+      )
+      assert_equal(@policy.reload.test_result_host_count, 2)
+      assert_equal(@policy.reload.compliant_host_count, 2)
+      assert_equal(@policy.reload.unsupported_host_count, 0)
+
+      @profile.test_results.destroy_all
+      assert_equal(@policy.reload.test_result_host_count, 0)
+      assert_equal(@policy.reload.compliant_host_count, 0)
+      assert_equal(@policy.reload.unsupported_host_count, 0)
     end
   end
 end

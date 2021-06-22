@@ -61,7 +61,7 @@ module Types
     private
 
     def context_parent
-      context[:parent_system_id] = object.id
+      context.scoped_set!(:parent_system_id, object.id)
     end
   end
 end

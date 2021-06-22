@@ -26,6 +26,8 @@ class Host < ApplicationRecord
   has_many :test_result_profiles, through: :test_results, source: :profile
   has_many :policies, through: :policy_hosts
   has_many :assigned_profiles, through: :policies, source: :profiles
+  has_many :assigned_internal_profiles, -> { external(false) },
+           through: :policies, source: :profiles
 
   def self.os_minor_versions(hosts)
     distinct.where(id: hosts).pluck(OS_MINOR_VERSION)
