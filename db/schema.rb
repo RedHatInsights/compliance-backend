@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_09_081621) do
+ActiveRecord::Schema.define(version: 2021_06_09_114653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
@@ -60,6 +60,10 @@ ActiveRecord::Schema.define(version: 2021_06_09_081621) do
     t.string "name"
     t.string "description"
     t.uuid "account_id"
+    t.integer "total_host_count", default: 0, null: false
+    t.integer "test_result_host_count", default: 0, null: false
+    t.integer "compliant_host_count", default: 0, null: false
+    t.integer "unsupported_host_count", default: 0, null: false
     t.index ["account_id"], name: "index_policies_on_account_id"
     t.index ["business_objective_id"], name: "index_policies_on_business_objective_id"
   end

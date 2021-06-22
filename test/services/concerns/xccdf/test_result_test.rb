@@ -52,13 +52,15 @@ class TestResultTest < ActiveSupport::TestCase
       TestResult.create!(
         host: @mock.host,
         profile: @mock.host_profile,
-        end_time: @end_time - 3.minutes
+        end_time: @end_time - 3.minutes,
+        score: 0
       )
 
       TestResult.create!(
         host: @mock.host,
         profile: p2,
-        end_time: @end_time - 8.minutes
+        end_time: @end_time - 8.minutes,
+        score: 0
       )
     end
 

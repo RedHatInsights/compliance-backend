@@ -22,18 +22,40 @@ class DeleteHost
   private
 
   def remove_related(host_id)
-    num_removed = 0
-    profiles_to_rescore = []
     Sidekiq.logger.info("Deleting related records for host #{host_id}")
-    MODELS.each do |model|
-      to_remove = model.where(host_id: host_id)
-      # Mark profile IDs as to be rescored if the model is TestResult
-      profiles_to_rescore = to_remove.pluck(:profile_id) if model == TestResult
-      num_removed += to_remove.delete_all
+
+    [
+      remove_related_rule_results(host_id),
+      remove_related_test_results(host_id),
+      remove_related_policy_hosts(host_id)
+    ].sum
+  end
+
+  def remove_related_rule_results(host_id)
+    RuleResult.where(host_id: host_id).delete_all
+  end
+
+  def remove_related_test_results(host_id)
+    to_remove = TestResult.where(host_id: host_id)
+    profiles_to_adjust = Profile.where(id: to_remove.pluck(:profile_id).uniq)
+
+    num_removed = to_remove.delete_all
+
+    profiles_to_adjust.find_each do |profile|
+      profile.calculate_score!
+      profile.policy.update_counters!
     end
 
-    # Rescore all marked profiles in batches
-    Profile.where(id: profiles_to_rescore.uniq).find_each(&:calculate_score!)
+    num_removed
+  end
+
+  def remove_related_policy_hosts(host_id)
+    to_remove = PolicyHost.where(host_id: host_id)
+    policies_to_adjust = Policy.where(id: to_remove.pluck(:policy_id).uniq)
+
+    num_removed = to_remove.delete_all
+
+    policies_to_adjust.find_each(&:update_counters!)
 
     num_removed
   end
