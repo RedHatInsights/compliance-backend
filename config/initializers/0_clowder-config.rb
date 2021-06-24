@@ -14,7 +14,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
   rbac_url = "#{rbac_config.hostname}:#{rbac_config.port}"
 
   # Prometheus
-  prometheus_exporter_config = config.private_dependency_endpoints['compliance']['prometheus-exporter']
+  prometheus_exporter_config = config.private_dependency_endpoints.dig('compliance', 'prometheus-exporter')
 
   # Inventory
   host_inventory_config = config.dependency_endpoints['host-inventory']['service']
@@ -38,8 +38,8 @@ if ClowderCommonRuby::Config.clowder_enabled?
       payload_tracker: config.kafka_topics['platform.payload-status'].name,
       remediation_updates: config.kafka_topics['platform.remediations.events'].name
     },
-    prometheus_exporter_host: prometheus_exporter_config.hostname,
-    prometheus_exporter_port: prometheus_exporter_config.port,
+    prometheus_exporter_host: prometheus_exporter_config&.hostname,
+    prometheus_exporter_port: prometheus_exporter_config&.port,
     rbac_url: rbac_url,
     redis_url: redis_url,
 # Blocked by https://issues.redhat.com/browse/RHCLOUD-10212

@@ -221,7 +221,7 @@ objects:
 
     - name: compliance-sidekiq
       # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
-      minReplicas: ${{REPLICAS_CONSUMER}}
+      minReplicas: ${{REPLICAS_SIDEKIQ}}
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
@@ -287,6 +287,12 @@ parameters:
   value: "1"
 - description: Replica count for backend service
   name: REPLICAS_SERVICE
+  value: "1"
+- description: Replica count for consumer
+  name: REPLICAS_CONSUMER
+  value: "1"
+- description: Replica count for sidekiq
+  name: REPLICAS_SIDEKIQ
   value: "1"
 - name: RAILS_ENV
   required: true
