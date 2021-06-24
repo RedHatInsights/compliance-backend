@@ -14,6 +14,9 @@ function check_number() {
 	fi
 }
 
+# shellcheck source=deploy/clowder-config-main
+source "$('deploy/get-clowder-common-bash.sh')"
+
 if [ -z "$APPLICATION_TYPE" ]; then
     echo "APPLICATION_TYPE not defined!"
     exit 1
@@ -26,18 +29,25 @@ if [ "$APPLICATION_TYPE" = "compliance-backend" ]; then
 
 	export RACK_ENV=${RACK_ENV:-"production"}
 
-	if is_puma_installed; then
-		export_vars=$(cgroup-limits) ; export $export_vars
+    if isClowderEnabled; then
+	PORT=$(ClowderConfigWebPort)
+    else
+        PORT="8080"
+    fi
 
-		exec bundle exec "puma --config ../etc/puma.cfg"
+	if is_puma_installed; then
+		export_vars=$(cgroup-limits) ; export export_vars
+
+		exec bundle exec "puma --config ../etc/puma.cfg -b tcp://0.0.0.0:${PORT}"
 	else
+
 		echo "You might consider adding 'puma' into your Gemfile."
 
 		if bundle exec rackup -h &>/dev/null; then
 			if [ -f Gemfile ]; then
-				exec bundle exec "rackup -E ${RAILS_ENV:-$RACK_ENV} -P /tmp/rack.pid --host 0.0.0.0 --port 8080"
+				exec bundle exec "rackup -E ${RAILS_ENV:-$RACK_ENV} -P /tmp/rack.pid --host 0.0.0.0 --port ${PORT}"
 			else
-				exec rackup -E "${RAILS_ENV:-$RACK_ENV}" -P /tmp/rack.pid --host 0.0.0.0 --port 8080
+				exec rackup -E "${RAILS_ENV:-$RACK_ENV}" -P /tmp/rack.pid --host 0.0.0.0 --port "${PORT}"
 			fi
 		else
 			echo "ERROR: Rubygem Rack is not installed in the present image."
@@ -49,7 +59,16 @@ elif [ "$APPLICATION_TYPE" = "compliance-inventory" ]; then
 elif [ "$APPLICATION_TYPE" = "compliance-sidekiq" ]; then
 	exec bundle exec sidekiq
 elif [ "$APPLICATION_TYPE" = "compliance-prometheus-exporter" ]; then
-	exec bundle exec prometheus_exporter -b 0.0.0.0 --prefix compliance_ -t 50 --verbose -a lib/prometheus/graphql_collector.rb -a lib/prometheus/business_collector.rb
+
+    if isClowderEnabled; then
+	PORT=$(ClowderConfigPrivatePort)
+    else
+        PORT="9394"
+    fi
+
+    echo "PORT:$PORT"
+	exec bundle exec prometheus_exporter -b 0.0.0.0 --port "$PORT" --prefix compliance_ -t 50 --verbose -a lib/prometheus/graphql_collector.rb -a lib/prometheus/business_collector.rb
+
 elif [ "$APPLICATION_TYPE" = "compliance-import-remediations" ]; then
 	exec bundle exec rake import_remediations --trace
 elif [ "$APPLICATION_TYPE" = "compliance-import-ssg" ]; then

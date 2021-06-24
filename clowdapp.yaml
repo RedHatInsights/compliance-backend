@@ -45,21 +45,21 @@ objects:
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
-        - name: wait-on-migrations
-          image: " "
-          imagePullPolicy: Always
-          command:
-            - bash
-            - -c
-            - |
-              for i in {1..120}; do sleep 1;
-              if bundle exec rake --trace db:abort_if_pending_migrations;
-              then exit 0; fi; done; exit 1
+        - command:
+          - bash
+          - -c
+          - |
+            for i in {1..120}; do sleep 1;
+            if bundle exec rake --trace db:abort_if_pending_migrations;
+            then exit 0; fi; done; exit 1
           env:
           - name: RAILS_ENV
             value: "${RAILS_ENV}"
           - name: PATH_PREFIX
             value: "${PATH_PREFIX}"
+          # Should be a secret ?
+          - name: SECRET_KEY_BASE
+            value: "secret_key_base"
         env:
         - name: APPLICATION_TYPE
           value: compliance-backend
@@ -83,43 +83,41 @@ objects:
           value: "${PUMA_MAX_THREADS}"
         - name: OLD_PATH_PREFIX
           value: "${OLD_PATH_PREFIX}"
+        # Should be a secret ?
+        - name: SECRET_KEY_BASE
+          value: "secret_key_base"
 # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
             path: /api/compliance/v1/openapi.json
-            port: 8080
-            scheme: HTTP
+            port: web
           initialDelaySeconds: 5
         readinessProbe:
           httpGet:
             path: /api/compliance/v1/status
-            port: 8080
-            scheme: HTTP
+            port: web
           initialDelaySeconds: 5
         resources:
           limits:
-            cpu: "${CPU_LIMIT_SERV}"
-            memory: "${MEMORY_LIMIT_SERV}"
+            cpu: ${CPU_LIMIT_SERV}
+            memory: ${MEMORY_LIMIT_SERV}
           requests:
-            cpu: "${CPU_REQUEST_SERV}"
-            memory: "${MEMORY_REQUEST_SERV}"
+            cpu: ${CPU_REQUEST_SERV}
+            memory: ${MEMORY_REQUEST_SERV}
     - name: prometheus-exporter
       minReplicas: ${{REPLICAS_PROMETHEUS}}
-#      webServices:
-#        public:
-#          enabled: true
+      webServices:
+        private:
+          enabled: true
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
-        - name: run-migrations
-          image: " "
-          imagePullPolicy: Always
-          command:
-            - bash
-            - -c
-            - |
-              set -e
-              RAILS_ENV="${RAILS_ENV}" bundle exec rake --trace db:debug db:migrate
+        - command:
+          - bash
+          - -c
+          - |
+            set -e
+            RAILS_ENV="${RAILS_ENV}" bundle exec rake --trace db:debug db:migrate
           env:
           - name: RAILS_ENV
             value: "${RAILS_ENV}"
@@ -127,6 +125,9 @@ objects:
             value: "${PATH_PREFIX}"
           - name: RAILS_LOG_TO_STDOUT
             value: "${RAILS_LOG_TO_STDOUT}"
+          # Should be a secret ?
+          - name: SECRET_KEY_BASE
+            value: "secret_key_base"
         env:
         - name: APPLICATION_TYPE
           value: compliance-prometheus-exporter
@@ -142,24 +143,24 @@ objects:
           value: "${REDIS_SSL}"
         - name: SETTINGS__REDIS_CACHE_SSL
           value: "${REDIS_SSL}"
-# If we can configure the metrics endpoint to listen to 9000 this definitions should go away
+        # Should be a secret ?
+        - name: SECRET_KEY_BASE
+          value: "secret_key_base"
         livenessProbe:
           httpGet:
             path: /metrics
-            port: 9394
-            scheme: HTTP
+            port: private
         readinessProbe:
           httpGet:
             path: /metrics
-            port: 9394
-            scheme: HTTP
+            port: private
         resources:
           limits:
-            cpu: "${CPU_LIMIT_PROM}"
-            memory: "${MEMORY_LIMIT_PROM}"
+            cpu: ${CPU_LIMIT_PROM}
+            memory: ${MEMORY_LIMIT_PROM}
           requests:
-            cpu: "${CPU_REQUEST_PROM}"
-            memory: "${MEMORY_REQUEST_PROM}"
+            cpu: ${CPU_REQUEST_PROM}
+            memory: ${MEMORY_REQUEST_PROM}
 
     - name: compliance-inventory
       # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
@@ -167,16 +168,13 @@ objects:
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
-        - name: wait-on-migrations
-          image: " "
-          imagePullPolicy: Always
-          command:
-            - bash
-            - -c
-            - |
-              for i in {1..120}; do sleep 1;
-              if bundle exec rake --trace db:abort_if_pending_migrations;
-              then exit 0; fi; done; exit 1
+        - command:
+          - bash
+          - -c
+          - |
+            for i in {1..120}; do sleep 1;
+            if bundle exec rake --trace db:abort_if_pending_migrations;
+            then exit 0; fi; done; exit 1
           env:
           - name: RAILS_ENV
             value: "${RAILS_ENV}"
@@ -186,6 +184,9 @@ objects:
             value: ${POSTGRESQL_MAX_CONNECTIONS}
           - name: RAILS_LOG_TO_STDOUT
             value: "${RAILS_LOG_TO_STDOUT}"
+          # Should be a secret ?
+          - name: SECRET_KEY_BASE
+            value: "secret_key_base"
         env:
         - name: APPLICATION_TYPE
           value: compliance-inventory
@@ -201,6 +202,9 @@ objects:
           value: "${RACECAR_QUEUE_SIZE}"
         - name: RACECAR_OFFSET_COMMIT_INTERVAL
           value: "${RACECAR_OFFSET_COMMIT_INTERVAL}"
+        # Should be a secret ?
+        - name: SECRET_KEY_BASE
+          value: "secret_key_base"
         readinessProbe:
           timeoutSeconds: 5
           exec:
@@ -213,11 +217,11 @@ objects:
               - kafka:status
         resources:
           limits:
-            cpu: "${CPU_LIMIT_CONS}"
-            memory: "${MEMORY_LIMIT_CONS}"
+            cpu: ${CPU_LIMIT_CONS}
+            memory: ${MEMORY_LIMIT_CONS}
           requests:
-            cpu: "${CPU_REQUEST_CONS}"
-            memory: "${MEMORY_REQUEST_CONS}"
+            cpu: ${CPU_REQUEST_CONS}
+            memory: ${MEMORY_REQUEST_CONS}
 
     - name: compliance-sidekiq
       # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
@@ -225,10 +229,7 @@ objects:
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
-        - name: wait-on-migrations
-          image: " "
-          imagePullPolicy: Always
-          command:
+        - command:
             - bash
             - -c
             - |
@@ -244,6 +245,16 @@ objects:
             value: ${POSTGRESQL_MAX_CONNECTIONS}
           - name: RAILS_LOG_TO_STDOUT
             value: "${RAILS_LOG_TO_STDOUT}"
+          # Should be a secret ?
+          - name: SECRET_KEY_BASE
+            value: "secret_key_base"
+        resources:
+          limits:
+            cpu: ${CPU_LIMIT_SIDE}
+            memory: ${MEMORY_LIMIT_SIDE}
+          requests:
+            cpu: ${CPU_REQUEST_SIDE}
+            memory: ${MEMORY_REQUEST_SIDE}
         env:
         - name: APPLICATION_TYPE
           value: compliance-sidekiq
@@ -261,13 +272,9 @@ objects:
           value: "${RAILS_MAX_THREADS}"
         - name: JOBS_ACCOUNT_NUMBER
           value: ${JOBS_ACCOUNT_NUMBER}
-        resources:
-          limits:
-            cpu: "${CPU_LIMIT_SIDE}"
-            memory: "${MEMORY_LIMIT_SIDE}"
-          requests:
-            cpu: "${CPU_REQUEST_SIDE}"
-            memory: "${MEMORY_REQUEST_SIDE}"
+        # Should be a secret ?
+        - name: SECRET_KEY_BASE
+          value: "secret_key_base"
 
 parameters:
 - name: MIN_REPLICAS
@@ -281,7 +288,6 @@ parameters:
   value: quay.io/cloudservices/compliance-backend
 - description: ClowdEnv Name
   name: ENV_NAME
-  requred: false
 - description: Replica count for prometheus-exporter
   name: REPLICAS_PROMETHEUS
   value: "1"
@@ -363,3 +369,11 @@ parameters:
   required: true
 - name: RAILS_MAX_THREADS
   value: "1"
+- name: DISABLE_RBAC
+  value: "false"
+- name: PUMA_WORKERS
+  value: "3"
+- name: PUMA_MAX_THREADS
+  value: "5"
+- name: OLD_PATH_PREFIX
+  value: /r/insights/platform
