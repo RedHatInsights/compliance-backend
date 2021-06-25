@@ -6,7 +6,6 @@ require 'yaml'
 SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
                           :os_major_version, :os_minor_version,
                           keyword_init: true) do
-  self::SUPPORTED_FILE = Rails.root.join('config/supported_ssg.yaml')
   OS_NAME = 'RHEL'
   self::OS_NAME = OS_NAME
 
@@ -89,9 +88,21 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
       rhel.scan(/(\d+)\.(\d+)$/)[0]
     end
 
+    def clear
+      @raw_supported = nil
+      @checksum = SsgConfigDownloader.ssg_ds_checksum
+    end
+
+    def ssg_ds_changed?
+      SsgConfigDownloader.update_ssg_ds
+
+      @checksum != SsgConfigDownloader.ssg_ds_checksum
+    end
+
     def raw_supported
-      # cached for the whole runtime
-      @raw_supported ||= YAML.load_file(self::SUPPORTED_FILE)
+      clear if ssg_ds_changed?
+
+      @raw_supported ||= YAML.safe_load(SsgConfigDownloader.ssg_ds)
     end
 
     def build_latest_map

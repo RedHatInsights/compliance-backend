@@ -14,6 +14,7 @@ RSpec.configure do |config|
     stub_request(:get, /#{Settings.rbac_url}/)
       .to_return(status: 200,
                  body: { 'data': [{ 'permission': 'compliance:*:*' }] }.to_json)
+    stub_request(:get, /#{Settings.compliance_ssg_url}/).to_return(status: 404)
   end
 
   config.swagger_docs = {
