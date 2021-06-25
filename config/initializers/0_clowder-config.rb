@@ -11,22 +11,21 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   # RBAC
   rbac_config = config.dependency_endpoints['rbac']['service']
-  rbac_url = "#{rbac_config.hostname}:#{rbac_config.port}"
+  rbac_url = "http://#{rbac_config.hostname}:#{rbac_config.port}"
 
   # Prometheus
   prometheus_exporter_config = config.private_dependency_endpoints.dig('compliance', 'prometheus-exporter')
 
   # Inventory
   host_inventory_config = config.dependency_endpoints['host-inventory']['service']
-  host_inventory_url = "#{host_inventory_config.hostname}:#{host_inventory_config.port}"
+  host_inventory_url = "http://#{host_inventory_config.hostname}:#{host_inventory_config.port}"
 
   # Redis (in-memory db)
   redis_url = "#{config.inMemoryDb.hostname}:#{config.inMemoryDb.port}"
 
   clowder_config = {
     kafka: { 
-#      brokers: "#{config.kafka_servers[0]['hostname']}:#{config.kafka_servers[0]['port']}"
-      brokers: config.kafka_servers,
+      brokers: config.kafka.brokers.map { |b| "#{b.hostname}:#{b.port}" }.join(','),
       # Not provided by clowder, not sure which of the following should be: [:plaintext, :ssl, :sasl_plaintext, :sasl_ssl]
       security_protocol: 'plaintext'
     },
