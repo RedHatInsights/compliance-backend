@@ -55,6 +55,8 @@ config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
 
+config/supported_ssg.yaml
+
 brakeman_output.markdown
 
 Gemfile.local

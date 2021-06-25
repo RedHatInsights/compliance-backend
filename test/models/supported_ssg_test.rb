@@ -3,6 +3,23 @@
 require 'test_helper'
 
 class SupportedSsgTest < ActiveSupport::TestCase
+  test 'updates SSG config when changed' do
+    SupportedSsg.stubs(:ssg_ds_changed?).returns(true)
+
+    SupportedSsg.expects(:clear)
+
+    SupportedSsg.send(:raw_supported)
+  end
+
+  test 'detects when the SSG config is changed' do
+    SupportedSsg.send(:raw_supported) # init checksum
+
+    SsgConfigDownloader.stubs(:update_ssg_ds)
+    SsgConfigDownloader.stubs(:ssg_ds_checksum).returns('different')
+
+    assert SupportedSsg.send(:ssg_ds_changed?)
+  end
+
   test 'loads supported SSGs' do
     assert SupportedSsg.all
   end
