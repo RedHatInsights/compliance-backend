@@ -35,7 +35,7 @@ login_container_registry() {
     local PASSWORD="$2"
     local REGISTRY="$3"
 
-    container_engine_cmd login "-u=${USER}" "-p=${PASSWORD}" "$REGISTRY"
+    container_engine_cmd login "-u=${USER}" "--password-stdin" "$REGISTRY" <<< "$PASSWORD"
 }
 
 login_quay_registry() {
