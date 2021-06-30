@@ -15,7 +15,7 @@ def create_rule_results(test_results, passing)
 end
 
 def create_test_results(profile, host, passing)
-  test_result_count = ENV['TEST_RESULT_COUNT'].to_i || rand(2..3)
+  test_result_count = (ENV['TEST_RESULT_COUNT'] || rand(2..3)).to_i
 
   test_results = FactoryBot.create_list(
     :test_result,
@@ -60,13 +60,13 @@ def create_policy(account, canonical_profile, hosts)
 end
 
 logger = Logger.new(STDOUT)
-account_count = ENV['ACCOUNT_COUNT'].to_i || 3
+account_count = (ENV['ACCOUNT_COUNT'] || 3).to_i
 
 FactoryBot.create_list(:account, account_count)
 logger.info("Generated #{account_count} accounts.")
 
 Account.find_each do |account|
-  host_count = ENV['HOST_COUNT'].to_i || rand(2..3)
+  host_count = (ENV['HOST_COUNT'] || rand(2..3)).to_i
 
   host_ids = SupportedSsg.all.map { |ssg| [ssg.os_major_version, ssg.os_minor_version] }.uniq.flat_map do |version|
     FactoryBot.create_list(
@@ -77,7 +77,7 @@ Account.find_each do |account|
     ).map(&:id)
   end
 
-  logger.info("Generated #{host_count} hosts for acc #{account.account_number}")
+  logger.info("Generated #{host_ids.count} hosts for acc #{account.account_number}")
 
   Profile.canonical.includes(:benchmark).group_by(&:ref_id).each do |_, profiles|
     canonical_profile = profiles.sample
@@ -89,8 +89,7 @@ Account.find_each do |account|
 
     policy = create_policy(account, canonical_profile, hosts)
 
-    passing_hosts_count = ENV['PASSING_HOST_COUNT'].to_i
-    passing_hosts_count ||= rand(1..policy.hosts.count / 2)
+    passing_hosts_count = (ENV['PASSING_HOST_COUNT'] || rand(1..policy.hosts.count / 2)).to_i
 
     passing_hosts = policy.hosts.sample(passing_hosts_count)
 
