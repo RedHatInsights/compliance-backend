@@ -20,7 +20,16 @@ class BusinessCollectorTest < ActiveSupport::TestCase
 
     assert_nothing_raised do
       metrics = @collector.metrics.map do |metric|
-        [metric.name, metric.data.values.first]
+        if metric.data.key?({}) # it's a gauge
+          [metric.name, metric.data[{}]]
+        else # it's a counter
+          [
+            metric.name,
+            metric.data.each_with_object({}) do |(key, value), obj|
+              obj[key[:version]] = value
+            end
+          ]
+        end
       end.to_h
 
       assert_equal 3, metrics['total_accounts']
@@ -30,6 +39,8 @@ class BusinessCollectorTest < ActiveSupport::TestCase
       assert_equal 0, metrics['client_policies']
       assert_equal 2, metrics['total_systems']
       assert_equal 0, metrics['client_systems']
+      assert_equal 2, metrics['total_systems_by_os']['7.9']
+      assert_equal nil, metrics['client_systems_by_os']['7.9']
     end
   end
 end
