@@ -48,7 +48,15 @@ module SystemLike
   end
 
   def compliance_score
-    score = (100 * (rules_passed.to_f / (rules_passed + rules_failed)))
+    counts = test_results.latest.joins(:rule_results)
+                         .group('rule_results.result').count
+    score = passed_count(counts).to_f / counts.values.map(&:to_i).sum * 100
     score.nan? ? 0.0 : score
+  end
+
+  private
+
+  def passed_count(result_hash)
+    result_hash.values_at(*RuleResult::PASSED).map(&:to_i).sum
   end
 end
