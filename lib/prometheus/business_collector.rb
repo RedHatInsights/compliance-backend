@@ -38,6 +38,12 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_systems = PrometheusExporter::Metric::Gauge.new(
       'client_systems', 'Systems from clients (excludes Red Hat)'
     )
+    @total_systems_by_os = PrometheusExporter::Metric::Counter.new(
+      'total_systems_by_os', 'Systems by OS version'
+    )
+    @client_systems_by_os = PrometheusExporter::Metric::Counter.new(
+      'client_systems_by_os', 'Systems by OS version (excluded Red Hat)'
+    )
   end
 
   def type
@@ -64,6 +70,28 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       Host.with_policies_or_test_results
           .where(account: client_accounts.select(:account_number)).count
     )
+
+    Host.with_policies_or_test_results.select(
+      "COUNT(id), concat(
+        #{Host::OS_MAJOR_VERSION},
+        '.',
+        #{Host::OS_MINOR_VERSION}
+      ) as version"
+    ).group('version').map(&:attributes).each do |item|
+      @total_systems_by_os.observe(item['count'], version: item['version'])
+    end
+
+    Host.with_policies_or_test_results.where(
+      account: client_accounts.select(:account_number)
+    ).select(
+      "COUNT(id), concat(
+        #{Host::OS_MAJOR_VERSION},
+        '.',
+        #{Host::OS_MINOR_VERSION}
+      ) as version"
+    ).group('version').map(&:attributes).each do |item|
+      @client_systems_by_os.observe(item['count'], version: item['version'])
+    end
   end
 
   def metrics
@@ -75,7 +103,9 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       @total_policies,
       @client_policies,
       @total_systems,
-      @client_systems
+      @client_systems,
+      @total_systems_by_os,
+      @client_systems_by_os
     ]
   end
 end
