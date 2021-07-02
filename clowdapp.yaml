@@ -11,6 +11,7 @@ objects:
   spec:
     envName: ${ENV_NAME}
     dependencies:
+    - compliance-ssg
     - host-inventory
     - ingress
     - rbac

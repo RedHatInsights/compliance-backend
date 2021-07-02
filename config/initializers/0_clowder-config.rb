@@ -8,6 +8,10 @@ if ClowderCommonRuby::Config.clowder_enabled?
 #  remediations_port = config.private_dependency_endpoints.remediations.service.port
 #  remediations_url = "#{remediations_hostname}:#{remediations_port}"
 
+  # compliance-ssg
+  compliance_ssg_config = config.private_dependency_endpoints.dig('compliance-ssg', 'service')
+  compliance_ssg_url = "http://#{compliance_ssg_config.hostname}:#{compliance_ssg_config.port}"
+
   # RBAC
   rbac_config = config.dependency_endpoints['rbac']['service']
   rbac_url = "http://#{rbac_config.hostname}:#{rbac_config.port}"
@@ -23,6 +27,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
   redis_url = "#{config.inMemoryDb.hostname}:#{config.inMemoryDb.port}"
 
   clowder_config = {
+    compliance_ssg_url: compliance_ssg_url,
     kafka: {
       brokers: config.kafka.brokers.map { |b| "#{b.hostname}:#{b.port}" }.join(','),
       # Not provided by clowder, not sure which of the following should be: [:plaintext, :ssl, :sasl_plaintext, :sasl_ssl]
