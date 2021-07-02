@@ -82,6 +82,12 @@
             "app": "compliance",
             "hostname": "prometheus",
             "port": 9394
+        },
+        {
+            "name": "service",
+            "app": "compliance-ssg",
+            "hostname": "compliance-ssg",
+            "port": 8088
         }
     ]
 }
