@@ -44,6 +44,7 @@ objects:
         public:
           enabled: true
       podSpec:
+        imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
@@ -111,6 +112,7 @@ objects:
         private:
           enabled: true
       podSpec:
+        imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
@@ -170,6 +172,7 @@ objects:
       # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_CONSUMER}}
       podSpec:
+        imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
@@ -231,6 +234,7 @@ objects:
       # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_SIDEKIQ}}
       podSpec:
+        imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
