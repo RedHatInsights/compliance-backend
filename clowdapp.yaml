@@ -119,6 +119,7 @@ objects:
           - |
             set -e
             RAILS_ENV="${RAILS_ENV}" bundle exec rake --trace db:debug db:migrate
+            RAILS_ENV="${RAILS_ENV}" bundle exec rake --trace ssg:import_rhel_supported
           env:
           - name: RAILS_ENV
             value: "${RAILS_ENV}"
@@ -129,6 +130,8 @@ objects:
           # Should be a secret ?
           - name: SECRET_KEY_BASE
             value: "secret_key_base"
+          - name: JOBS_ACCOUNT_NUMBER
+            value: ${JOBS_ACCOUNT_NUMBER}
         env:
         - name: APPLICATION_TYPE
           value: compliance-prometheus-exporter
