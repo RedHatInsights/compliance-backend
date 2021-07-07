@@ -15,7 +15,7 @@ kafka_producer_topics:
   remediation_updates: 'platform.remediation-updates.compliance'
 compliance_ssg_url: http://compliance-ssg:8080
 host_inventory_url: http://insights-inventory.platform-ci.svc.cluster.local:8080
-remediations_url: http://remediations.remediations-ci.svc.cluster.local:9002
+remediations_url: https://ci.cloud.redhat.com
 rbac_url: http://rbac.rbac-ci.svc.cluster.local:9002
 report_download_ssl_only: false
 prometheus_exporter_host: compliance-prometheus-exporter.compliance-ci.svc
