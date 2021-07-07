@@ -122,6 +122,13 @@ objects:
             set -e
             RAILS_ENV="${RAILS_ENV}" bundle exec rake --trace db:debug db:migrate
             RAILS_ENV="${RAILS_ENV}" bundle exec rake --trace ssg:import_rhel_supported
+          resources:
+            limits:
+              cpu: ${CPU_LIMIT_SIDE}
+              memory: ${MEMORY_LIMIT_SIDE}
+            requests:
+              cpu: ${CPU_REQUEST_SIDE}
+              memory: ${MEMORY_REQUEST_SIDE}
           env:
           - name: RAILS_ENV
             value: "${RAILS_ENV}"
