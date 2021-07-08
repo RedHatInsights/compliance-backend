@@ -75,6 +75,63 @@ module V1
         assert_response :success
         assert_empty JSON.parse(response.body).dig('meta', 'search')
       end
+
+      should 'allow filtering by tags' do
+        host1 = FactoryBot.create(
+          :host,
+          tags: [
+            {
+              key: 'env',
+              value: 'prod',
+              namespace: 'insights-client'
+            },
+            {
+              key: 'env',
+              value: 'stage',
+              namespace: 'insights-client'
+            }
+          ]
+        )
+
+        FactoryBot.create(
+          :host,
+          tags: [
+            {
+              key: 'env',
+              value: 'stage',
+              namespace: 'insights-client'
+            }
+          ]
+        )
+
+        FactoryBot.create(:policy, hosts: Host.all)
+
+        # The Insights API tags format cannot be constructed using a hash
+        get [
+          v1_systems_url,
+          'tags=insights-client/env=prod&tags=insights-client/env=stage'
+        ].join('?')
+
+        assert_response :success
+        results = JSON.parse(response.body)['data']
+        assert_equal results.count, 1
+        assert_equal results.first['id'], host1.id
+        assert_not_empty JSON.parse(response.body).dig('meta', 'tags')
+      end
+
+      %w[
+        tags=satellite/lifecycle_environment=Library
+        tags=satellite%2Flifecycle_environment=Library
+        tags=satellite/lifecycle_environment%3DLibrary
+        tags=satellite%2Flifecycle_environment%3DLibrary
+      ].each do |qstr|
+        should "properly parse #{qstr}" do
+          get [v1_systems_url, qstr].join('?')
+          tags = JSON.parse(response.body)['meta']['tags']
+
+          assert_equal tags, %w[satellite/lifecycle_environment=Library]
+        end
+      end
     end
 
     context 'show' do

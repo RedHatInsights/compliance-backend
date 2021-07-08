@@ -88,6 +88,12 @@ def search_params
             schema: { type: :string, default: '' }
 end
 
+def tags_params
+  parameter name: :tags, in: :query, required: false, type: :array,
+            description: 'An array of tags to narrow down the results against.',
+            schema: { type: :array, items: { type: 'string' }, default: '' }
+end
+
 def sort_params
   parameter name: :sort_by, in: :query, required: false,
             type: { oneOf: [{ type: :string }, { type: :array }] },

@@ -12,14 +12,25 @@ module Metadata
       response.headers['Content-Type'] = 'application/vnd.api+json'
     end
 
+    # This is part of a JSON schema, no need for strict metrics
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def metadata(opts = {})
       opts[:total] ||= resolve_collection.count
-      options = {}
-      options[:meta] = { total: opts[:total], search: params[:search],
-                         limit: pagination_limit, offset: pagination_offset }
-      options[:links] = links(last_offset(opts[:total]))
-      options
+
+      {
+        meta: {
+          total: opts[:total],
+          search: params[:search],
+          tags: tags_supported? ? params.fetch(:tags, []) : nil,
+          limit: pagination_limit,
+          offset: pagination_offset
+        }.compact,
+        links: links(last_offset(opts[:total]))
+      }
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     def links(last_offset)
       {

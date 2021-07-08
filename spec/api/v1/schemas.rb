@@ -33,6 +33,7 @@ module Api
         relationship_collection: RELATIONSHIP_COLLECTION,
         error: ERROR,
         metadata: METADATA,
+        tags: TAGS,
         host: HOST,
         host_relationships: HOST_RELATIONSHIPS,
         links: LINKS,

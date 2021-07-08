@@ -23,6 +23,17 @@ module Api
             }
           }
         }.freeze
+
+        TAGS = {
+          type: 'array',
+          items: {
+            type: 'string',
+            properties: {
+              type: 'string',
+              example: 'insights/environment=production'
+            }
+          }
+        }.freeze
       end
     end
   end
