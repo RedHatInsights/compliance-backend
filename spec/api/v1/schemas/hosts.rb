@@ -14,7 +14,7 @@ module Api
           properties: {
             name: {
               type: 'string',
-              example: 'cloud.redhat.com'
+              example: 'console.redhat.com'
             },
             compliant: {
               type: 'boolean',

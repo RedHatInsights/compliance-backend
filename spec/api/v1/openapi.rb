@@ -33,8 +33,8 @@ module Api
       def description
         'This is the API for Cloud Services for RHEL Compliance. '\
           'You can find out more about Red Hat Cloud Services for RHEL at '\
-          '[https://cloud.redhat.com/]'\
-          '(https://cloud.redhat.com/)'
+          '[https://console.redhat.com/]'\
+          '(https://console.redhat.com/)'
       end
     end
   end
