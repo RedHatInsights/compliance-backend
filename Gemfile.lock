@@ -264,6 +264,8 @@ GEM
     redis (4.2.1)
     reline (0.1.4)
       io-console (~> 0.5)
+    request_store (1.5.0)
+      rack (>= 1.4)
     rspec-core (3.9.2)
       rspec-support (~> 3.9.3)
     rspec-expectations (3.9.1)
@@ -396,6 +398,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 5.2.4, >= 5.2.4.4)
   redis (~> 4.0)
+  request_store
   rspec-rails
   rswag-api
   rswag-specs

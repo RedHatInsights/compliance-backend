@@ -72,6 +72,9 @@ gem 'stronger_parameters'
 # Clowder config
 gem 'clowder-common-ruby'
 
+# Support for per request thread-local variables
+gem 'request_store'
+
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
