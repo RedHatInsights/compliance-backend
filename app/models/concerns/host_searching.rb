@@ -4,6 +4,8 @@
 module HostSearching
   extend ActiveSupport::Concern
 
+  NUM_OPERATORS = ['=', '>', '<', '<=', '>=', '!='].freeze
+
   included do
     scoped_search on: %i[id display_name], only_explicit: true
     scoped_search on: :display_name, rename: :name
@@ -109,9 +111,12 @@ module HostSearching
     end
 
     def filter_by_compliance_score(_filter, operator, score)
-      ids = ::Host.includes(:test_result_profiles).select do |host|
-        host.compliance_score.public_send(operator, score.to_f)
+      unless NUM_OPERATORS.include?(operator)
+        raise ActiveRecord::StatementInvalid
       end
+
+      ids = ::Host.joins(:test_result_profiles)
+                  .where("test_results.score #{operator} ?", score.to_f)
       ids = ids.pluck(:id).map { |id| "'#{id}'" }
       return { conditions: '1=0' } if ids.empty?
 
