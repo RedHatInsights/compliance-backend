@@ -5,7 +5,7 @@ USER 0
 
 # Install dependencies and clean cache to make the image cleaner
 # also remove unused packages added by ubi8/s2i-base.
-RUN yum install -y hostname shared-mime-info && \
+RUN yum install -y hostname shared-mime-info jq && \
     yum remove -y mariadb-connector-c-devel npm && \
     yum clean all -y
 

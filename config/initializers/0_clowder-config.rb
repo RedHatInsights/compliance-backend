@@ -3,11 +3,14 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   config = ClowderCommonRuby::Config.load
 
-  # TO-DO: Refactor with a helper function (get_service_url(app_name, component)
 # Blocked by https://issues.redhat.com/browse/RHCLOUD-10212
 #  remediations_hostname = config.private_dependency_endpoints.remediations.service.hostname
 #  remediations_port = config.private_dependency_endpoints.remediations.service.port
 #  remediations_url = "#{remediations_hostname}:#{remediations_port}"
+
+  # compliance-ssg
+  compliance_ssg_config = config.private_dependency_endpoints.dig('compliance-ssg', 'service')
+  compliance_ssg_url = "http://#{compliance_ssg_config.hostname}:#{compliance_ssg_config.port}"
 
   # RBAC
   rbac_config = config.dependency_endpoints['rbac']['service']
@@ -24,7 +27,8 @@ if ClowderCommonRuby::Config.clowder_enabled?
   redis_url = "#{config.inMemoryDb.hostname}:#{config.inMemoryDb.port}"
 
   clowder_config = {
-    kafka: { 
+    compliance_ssg_url: compliance_ssg_url,
+    kafka: {
       brokers: config.kafka.brokers.map { |b| "#{b.hostname}:#{b.port}" }.join(','),
       # Not provided by clowder, not sure which of the following should be: [:plaintext, :ssl, :sasl_plaintext, :sasl_ssl]
       security_protocol: 'plaintext'

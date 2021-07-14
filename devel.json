@@ -1,6 +1,7 @@
 {
     "webPort": 8000,
     "metricsPort": 9000,
+    "privatePort": 9394,
     "metricsPath": "/metrics",
     "logging": {
         "type": "cloudwatch",
@@ -71,8 +72,8 @@
         {
             "name": "service",
             "app": "host-inventory",
-            "hostname": "host-inventory.svc",
-            "port": 8000
+            "hostname": "inventory-web",
+            "port": 8081
         }
     ],
     "privateEndpoints": [
@@ -81,6 +82,12 @@
             "app": "compliance",
             "hostname": "prometheus",
             "port": 9394
+        },
+        {
+            "name": "service",
+            "app": "compliance-ssg",
+            "hostname": "compliance-ssg",
+            "port": 8088
         }
     ]
 }
