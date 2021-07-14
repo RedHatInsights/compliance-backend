@@ -72,8 +72,8 @@
         {
             "name": "service",
             "app": "host-inventory",
-            "hostname": "host-inventory.svc",
-            "port": 8000
+            "hostname": "inventory-web",
+            "port": 8081
         }
     ],
     "privateEndpoints": [
