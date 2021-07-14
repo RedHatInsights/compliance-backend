@@ -8,7 +8,8 @@ module Authentication
 
   ALLOWED_CERT_BASED_RBAC_ACTIONS = [
     { controller: 'profiles', action: 'index' },
-    { controller: 'profiles', action: 'tailoring_file' }
+    { controller: 'profiles', action: 'tailoring_file' },
+    { controller: 'rules', action: 'index' }
   ].freeze
 
   included do
