@@ -8,8 +8,15 @@ module Collection
 
   included do
     def resolve_collection
-      result = sort(search(policy_scope(resource)))
+      result = filter_by_tags(sort(search(policy_scope(resource))))
       result.paginate(page: pagination_offset, per_page: pagination_limit)
+    end
+
+    def filter_by_tags(data)
+      tags = params[:tags]
+      return data unless tags? && tags&.any?
+
+      data.where('tags @> ?', tags.to_json)
     end
 
     def search(data)
@@ -22,6 +29,12 @@ module Collection
       return data if params[:sort_by].blank?
 
       data.order(build_order_by(data.klass, params[:sort_by]))
+    end
+
+    private
+
+    def tags?
+      resource.column_names.include?('tags')
     end
   end
 end

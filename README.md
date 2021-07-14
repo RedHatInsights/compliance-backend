@@ -288,6 +288,10 @@ an identity header (i.e. rbac, remediations).
 
 To disable Prometheus (e.g. in develompent) clear `prometheus_exporter_host` setting (set to empty).
 
+### Tagging
+
+If there is a `tags` column defined in any model, it always should be a `jsonb` column and follow the structured representation of tags described in Insights, i.e. an array of hashes. If this convention is not kept, the controllers might break when a user tries to pass the `tags` attribute to a GET request.
+
 ## API documentation
 
 The API documentation can be found at `Settings.path_prefix/Settings.app_name`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `Settings.path_prefix/Settings.app_name/v1/openapi.json`
