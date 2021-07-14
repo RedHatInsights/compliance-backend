@@ -342,4 +342,10 @@ class HostTest < ActiveSupport::TestCase
   test '#os_minor_versions' do
     assert_equal Host.os_minor_versions([@host1]), [4]
   end
+
+  should 'fail if a wrong operator is passed to filter_by_compliance_score' do
+    assert_raises(ActiveRecord::StatementInvalid) do
+      Host.filter_by_compliance_score(nil, '=\'\' or 1=1);--', 10)
+    end
+  end
 end
