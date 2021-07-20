@@ -61,6 +61,15 @@ class SystemQueryTest < ActiveSupport::TestCase
         @host1.policies << p.policy
       end
 
+      # An outdated test result made in the past
+      FactoryBot.create(
+        :test_result,
+        profile: @profile1,
+        host: @host1,
+        end_time: 1.minute.ago,
+        score: 10
+      )
+
       FactoryBot.create(
         :rule_result,
         host: @host1,
