@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -exv
-
 # Install bonfire repo/initialize
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
@@ -20,8 +18,16 @@ source $CICD_ROOT/build.sh
 # Make directory for artifacts
 mkdir -p artifacts
 
-cat << EOF > artifacts/junit-dummy.xml
-<testsuite tests="1">
-    <testcase classname="dummy" name="dummytest"/>
-</testsuite>
-EOF
+export IQE_PLUGINS="compliance"
+export IQE_MARKER_EXPRESSION="smoke"
+export IQE_FILTER_EXPRESSION=""
+export IQE_CJI_TIMEOUT=1800 # 30 minutes
+
+export COMPONENTS_W_RESOURCES="compliance"
+
+# Run unit tests
+source $APP_ROOT/unit_test.sh
+
+# Run smoke tests
+# source $CICD_ROOT/deploy_ephemeral_env.sh
+# source $CICD_ROOT/cji_smoke_test.sh

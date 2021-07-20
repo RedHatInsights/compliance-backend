@@ -35,7 +35,10 @@ unless Rails.env.production?
   require 'mocha/minitest'
 
   Minitest::Reporters.use!(
-    Minitest::Reporters::ProgressReporter.new,
+    [
+      Minitest::Reporters::JUnitReporter.new,
+      Minitest::Reporters::ProgressReporter.new
+    ],
     ENV,
     Minitest.backtrace_filter
   )
