@@ -37,9 +37,7 @@ services:
       - /data
     ports:
       - 9000:9000
-    environment:
-      - MINIO_ACCESS_KEY
-      - MINIO_SECRET_KEY
+    env_file: .env
   createbuckets:
     image: docker.io/minio/mc
     depends_on:
@@ -56,9 +54,7 @@ services:
       exit 0;'
     volumes:
       - /data
-    environment:
-      - MINIO_ACCESS_KEY
-      - MINIO_SECRET_KEY
+    env_file: .env
   ingress:
     image: quay.io/cloudservices/insights-ingress:stable
     environment:
@@ -78,6 +74,7 @@ services:
       - INGRESS_MINIOSECRETKEY=$MINIO_SECRET_KEY
       - INGRESS_MINIOENDPOINT=minio:9000
       - INGRESS_MAXSIZE=104857600 # 100 MB
+    env_file: .env
     ports:
       - 8080:8080
     depends_on:
