@@ -97,9 +97,9 @@ objects:
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
     deployments:
-    - name: service
+    - name: backend
       # TODO: Check how to auto-scale with Clowder
-      minReplicas: ${{REPLICAS_SERVICE}}
+      minReplicas: ${{REPLICAS_BACKEND}}
       webServices:
         public:
           enabled: true
@@ -366,7 +366,7 @@ parameters:
   name: REPLICAS_PROMETHEUS
   value: "1"
 - description: Replica count for backend service
-  name: REPLICAS_SERVICE
+  name: REPLICAS_BACKEND
   value: "1"
 - description: Replica count for consumer
   name: REPLICAS_CONSUMER
