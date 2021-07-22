@@ -499,6 +499,38 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_equal 'b', systems.second['node']['name']
   end
 
+  should 'return tags when requested' do
+    TAG = { 'namespace' => 'foo', 'key' => 'bar', 'value' => 'baz' }.freeze
+    query = <<-GRAPHQL
+      {
+        systems {
+          edges {
+            node {
+              id
+              name
+              tags {
+                namespace
+                key
+                value
+              }
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    WHost.find(@host1.id).update(tags: [TAG])
+
+    result = Schema.execute(
+      query,
+      variables: {},
+      context: { current_user: @user }
+    )
+
+    node = result['data']['systems']['edges'].first['node']
+    assert_equal node['tags'], [TAG]
+  end
+
   test 'query children profile only returns profiles owned by host' do
     query = <<-GRAPHQL
     query getSystems {

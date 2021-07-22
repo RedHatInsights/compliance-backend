@@ -501,6 +501,7 @@ type System implements Node {
     """
     profileId: String
   ): Int!
+  tags: [Tag!]
   testResultProfiles(
     """
     Filter results tested against a policy or profile ID
@@ -543,6 +544,16 @@ type SystemEdge {
   The item at the end of the edge.
   """
   node: System
+}
+
+"""
+A host inventory tag
+"""
+type Tag implements Node {
+  id: ID!!
+  key: String!
+  namespace: String!
+  value: String
 }
 
 """
