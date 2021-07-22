@@ -209,7 +209,7 @@ class SystemQueryTest < ActiveSupport::TestCase
                             benchmark: second_benchmark,
                             account: @user.account)
 
-      @profile1.test_results.first.update!(profile: other_profile)
+      @profile1.test_results.map { |tr| tr.update!(profile: other_profile) }
 
       result = Schema.execute(
         query,
@@ -460,9 +460,9 @@ class SystemQueryTest < ActiveSupport::TestCase
       returned_profiles = result.dig(0, 'node', 'testResultProfiles')
       assert_equal 1, returned_profiles.length
 
-      assert_equal @profile1.test_results.first.score,
+      assert_equal @profile1.test_results.latest.first.score,
                    returned_profiles.dig(0, 'score')
-      assert_equal @profile1.test_results.first.supported,
+      assert_equal @profile1.test_results.latest.first.supported,
                    returned_profiles.dig(0, 'supported')
       assert_equal @profile1.ssg_version,
                    returned_profiles.dig(0, 'ssgVersion')
