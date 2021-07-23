@@ -2795,6 +2795,20 @@
             }
           },
           {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "description": "An array of tags to narrow down the results against.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": ""
+            }
+          },
+          {
             "name": "include",
             "in": "query",
             "type": "string",
@@ -3091,6 +3105,16 @@
           "filter": {
             "type": "string",
             "example": "name='Standard System Security Profile for Fedora'"
+          }
+        }
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "properties": {
+            "type": "string",
+            "example": "insights/environment=production"
           }
         }
       },

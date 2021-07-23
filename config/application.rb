@@ -42,6 +42,9 @@ module ComplianceBackend
     # Attach audit logging for requests
     require 'audit_log/audit_log'
     config.middleware.use Insights::API::Common::AuditLog::Middleware
+    # Adjust params[tags] to be array
+    require 'adjust_tags/middleware'
+    config.middleware.use Insights::API::Common::AdjustTags::Middleware
 
     # GraphiQL
     if Rails.env.development?
