@@ -379,6 +379,11 @@ type Query implements Node {
     Sort results
     """
     sortBy: [String!]
+
+    """
+    Filter by tags
+    """
+    tags: [String!]
   ): SystemConnection!
   testResult(
     """

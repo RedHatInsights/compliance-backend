@@ -531,6 +531,39 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_equal node['tags'], [TAG]
   end
 
+  should 'allow filtering by tags' do
+    TAG = { 'namespace' => 'foo', 'key' => 'bar', 'value' => 'baz' }.freeze
+    query = <<-GRAPHQL
+      query getSystems($tags: [String!]){
+        systems(tags: $tags) {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    WHost.find(@host1.id).update(
+      tags: [{ namespace: 'foo', key: 'bar', value: 'baz' }]
+    )
+    setup_two_hosts
+
+    result = Schema.execute(
+      query,
+      variables: {
+        tags: ['foo/bar=baz']
+      },
+      context: { current_user: @user }
+    )
+
+    nodes = result['data']['systems']['edges']
+    assert_equal(nodes.count, 1)
+    assert_equal nodes.first['node']['id'], @host1.id
+  end
+
   test 'query children profile only returns profiles owned by host' do
     query = <<-GRAPHQL
     query getSystems {
