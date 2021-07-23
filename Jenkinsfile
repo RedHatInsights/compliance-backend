@@ -17,8 +17,16 @@ def runStages() {
     openShiftUtils.withNode(yaml: "openshift/Jenkins/slave_pod_template.yaml") {
         checkout scm
 
+        gitUtils.stageWithContext("Download shared mime", shortenURL = false) {
+            depStatus = sh(script: "curl -Ls https://dl.fedoraproject.org/pub/fedora/linux/releases/34/Server/x86_64/os/Packages/s/shared-mime-info-2.1-2.fc34.x86_64.rpm | rpm2archive | tar xzf - --strip-components 5 ./usr/share/mime/packages/freedesktop.org.xml", returnStatus: true)
+        }
+
+        if (depStatus != 0) {
+          error("shared mime download/extract failed")
+        }
+
         gitUtils.stageWithContext("Bundle-install", shortenURL = false) {
-            bundleStatus = sh(script: "bundle install --path /tmp/bundle", returnStatus: true)
+            bundleStatus = sh(script: "FREEDESKTOP_MIME_TYPES_PATH=./ bundle install --path /tmp/bundle", returnStatus: true)
         }
 
         if (bundleStatus != 0) {
