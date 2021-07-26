@@ -5,7 +5,20 @@ require 'swagger_helper'
 describe 'Systems API' do
   before do
     @account = FactoryBot.create(:account)
-    @host = FactoryBot.create(:host, account: @account.account_number)
+    @host = FactoryBot.create(
+      :host,
+      account: @account.account_number,
+      tags: [{ namespace: 'foo', key: 'bar', value: 'baz' }]
+    )
+    policy = FactoryBot.create(:policy, account: @account, hosts: [@host])
+    profile = FactoryBot.create(
+      :profile,
+      :with_rules,
+      account: @account,
+      policy: policy,
+      external: true
+    )
+    FactoryBot.create(:test_result, profile: profile, host: @host)
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/systems" do
@@ -26,6 +39,7 @@ describe 'Systems API' do
       response '200', 'lists all hosts requested' do
         let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
+        let(:tags) { ['foo/bar=baz'] }
         schema type: :object,
                properties: {
                  meta: ref_schema('metadata'),
