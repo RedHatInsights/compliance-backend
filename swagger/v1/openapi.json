@@ -2766,6 +2766,20 @@
             }
           },
           {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "description": "An array of tags to narrow down the results against.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": ""
+            }
+          },
+          {
             "name": "sort_by",
             "in": "query",
             "required": false,
@@ -2826,23 +2840,23 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
+                    "id": "754828e6-bfae-4068-8b88-93368d8dfb65",
                     "type": "host",
                     "attributes": {
-                      "name": "MyStringone",
+                      "name": "localhost",
                       "os_major_version": 7,
-                      "os_minor_version": 4,
-                      "last_scanned": "2020-03-25T14:51:17Z",
-                      "rules_passed": 1,
+                      "os_minor_version": 9,
+                      "last_scanned": "2021-07-27T13:50:30Z",
+                      "rules_passed": 0,
                       "rules_failed": 0,
-                      "has_policy": false,
+                      "has_policy": true,
                       "compliant": false
                     },
                     "relationships": {
                       "test_results": {
                         "data": [
                           {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "id": "0b845238-54e9-4c0c-9fce-7db2f06dd88b",
                             "type": "test_result"
                           }
                         ]
@@ -2850,7 +2864,7 @@
                       "profiles": {
                         "data": [
                           {
-                            "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                            "id": "32ebbb4a-47ee-4713-b0b3-0eb3073b0af2",
                             "type": "profile"
                           }
                         ]
@@ -2861,6 +2875,9 @@
                 "meta": {
                   "total": 1,
                   "search": "has_test_results=true or has_policy=true",
+                  "tags": [
+                    "foo/bar=baz"
+                  ],
                   "limit": 10,
                   "offset": 1
                 },
@@ -2959,23 +2976,23 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "5e65ac3f-8b44-4f60-9e99-abdafb31740c",
+                  "id": "d4f469e1-6a83-473a-9fe0-83b47e179399",
                   "type": "host",
                   "attributes": {
-                    "name": "MyStringone",
+                    "name": "localhost",
                     "os_major_version": 7,
-                    "os_minor_version": 4,
-                    "last_scanned": "2020-03-25T14:51:17Z",
-                    "rules_passed": 1,
+                    "os_minor_version": 9,
+                    "last_scanned": "2021-07-27T13:50:30Z",
+                    "rules_passed": 0,
                     "rules_failed": 0,
-                    "has_policy": false,
+                    "has_policy": true,
                     "compliant": false
                   },
                   "relationships": {
                     "test_results": {
                       "data": [
                         {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "id": "bde70ac9-6c14-431c-8ce1-562a08f24041",
                           "type": "test_result"
                         }
                       ]
@@ -2983,7 +3000,7 @@
                     "profiles": {
                       "data": [
                         {
-                          "id": "aa67c98c-d81f-5a9c-b0bc-26caa0051aea",
+                          "id": "8691c300-777e-423d-a5b2-6e1b70615d3e",
                           "type": "profile"
                         }
                       ]
