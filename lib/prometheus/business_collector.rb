@@ -18,6 +18,14 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       'client_accounts_with_hosts',
       'Client accounts with 1 or more hosts (excludes Red Hat)'
     )
+    @total_accounts_with_huge_policies = PrometheusExporter::Metric::Gauge.new(
+      'total_accounts_with_huge_policies',
+      'Total accounts with 1 policy or more having 50 or more hosts'
+    )
+    @client_accounts_with_huge_policies = PrometheusExporter::Metric::Gauge.new(
+      'client_accounts_with_huge_policies',
+      'Client accounts with 1 policy or more having 50 or more hosts (excludes Red Hat)'
+    )
     @total_policies = PrometheusExporter::Metric::Gauge.new(
       'total_policies', 'Policies (non-canonical)'
     )
@@ -90,6 +98,19 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     ).group('version').map(&:attributes).each do |item|
       @client_systems_by_os.observe(item['count'], version: item['version'])
     end
+
+    hosts_50_plus = PolicyHost.joins(:policy)
+                              .select('policies.account_id')
+                              .group(:policy_id, 'policies.account_id')
+                              .having('COUNT(policy_hosts.host_id) >= 50')
+
+    @total_accounts_with_huge_policies.observe(
+      Account.where(id: hosts_50_plus).count(:account_number)
+    )
+
+    @client_accounts_with_huge_policies.observe(
+      client_accounts.where(id: hosts_50_plus).count(:account_number)
+    )
   end
 
   def metrics
@@ -98,6 +119,8 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       @total_accounts,
       @client_accounts,
       @client_accounts_with_hosts,
+      @total_accounts_with_huge_policies,
+      @client_accounts_with_huge_policies,
       @total_policies,
       @client_policies,
       @total_systems,
