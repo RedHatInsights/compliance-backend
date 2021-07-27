@@ -4,8 +4,6 @@ unless defined? Rails
   require File.expand_path('../../config/environment', __dir__)
 end
 
-# rubocop:disable Metrics/MethodLength
-# Collects stats relevent for the engineers from the database
 # when /metrics is called. This runs directly on prometheus_exporter.
 class EngineeringCollector < PrometheusExporter::Server::TypeCollector
   def initialize
@@ -54,4 +52,3 @@ class EngineeringCollector < PrometheusExporter::Server::TypeCollector
     ]
   end
 end
-# rubocop:enable Metrics/MethodLength
