@@ -38,10 +38,10 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_systems = PrometheusExporter::Metric::Gauge.new(
       'client_systems', 'Systems from clients (excludes Red Hat)'
     )
-    @total_systems_by_os = PrometheusExporter::Metric::Counter.new(
+    @total_systems_by_os = PrometheusExporter::Metric::Gauge.new(
       'total_systems_by_os', 'Systems by OS version'
     )
-    @client_systems_by_os = PrometheusExporter::Metric::Counter.new(
+    @client_systems_by_os = PrometheusExporter::Metric::Gauge.new(
       'client_systems_by_os', 'Systems by OS version (excluded Red Hat)'
     )
   end
