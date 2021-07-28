@@ -18,6 +18,14 @@ class BusinessCollectorTest < ActiveSupport::TestCase
       policies: [FactoryBot.create(:policy, account: account)]
     )
 
+    policy = FactoryBot.create(:policy, account: account)
+    FactoryBot.create_list(
+      :host,
+      50,
+      account: account.account_number,
+      policies: [policy]
+    )
+
     assert_nothing_raised do
       metrics = @collector.metrics.map do |metric|
         if metric.data.key?({}) # it's a gauge
@@ -35,11 +43,13 @@ class BusinessCollectorTest < ActiveSupport::TestCase
       assert_equal 3, metrics['total_accounts']
       assert_equal 0, metrics['client_accounts']
       assert_equal 0, metrics['client_accounts_with_hosts']
+      assert_equal 1, metrics['total_accounts_with_huge_policies']
+      assert_equal 0, metrics['client_accounts_with_huge_policies']
       assert_equal 0, metrics['total_policies']
       assert_equal 0, metrics['client_policies']
-      assert_equal 2, metrics['total_systems']
+      assert_equal 52, metrics['total_systems']
       assert_equal 0, metrics['client_systems']
-      assert_equal 2, metrics['total_systems_by_os']['7.9']
+      assert_equal 52, metrics['total_systems_by_os']['7.9']
       assert_equal nil, metrics['client_systems_by_os']['7.9']
     end
   end
