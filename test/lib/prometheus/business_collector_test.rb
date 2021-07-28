@@ -43,14 +43,16 @@ class BusinessCollectorTest < ActiveSupport::TestCase
       assert_equal 3, metrics['total_accounts']
       assert_equal 0, metrics['client_accounts']
       assert_equal 0, metrics['client_accounts_with_hosts']
-      assert_equal 1, metrics['total_accounts_with_huge_policies']
-      assert_equal 0, metrics['client_accounts_with_huge_policies']
+      assert_equal 1, metrics['total_accounts_with_50plus_hosts_per_policy']
+      assert_equal 0, metrics['client_accounts_with_50plus_hosts_per_policy']
       assert_equal 2, metrics['total_policies']
       assert_equal 0, metrics['client_policies']
+      assert_equal 1, metrics['total_50plus_policies']
+      assert_equal 0, metrics['client_50plus_policies']
       assert_equal 52, metrics['total_systems']
       assert_equal 0, metrics['client_systems']
       assert_equal 52, metrics['total_systems_by_os']['7.9']
-      assert_equal nil, metrics['client_systems_by_os']['7.9']
+      assert_nil metrics['client_systems_by_os']['7.9']
     end
   end
 end

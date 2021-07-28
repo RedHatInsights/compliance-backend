@@ -18,12 +18,12 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       'client_accounts_with_hosts',
       'Client accounts with 1 or more hosts (excludes Red Hat)'
     )
-    @total_accounts_with_huge_policies = PrometheusExporter::Metric::Gauge.new(
-      'total_accounts_with_huge_policies',
+    @total_accounts_with_50plus_hosts_per_policy = PrometheusExporter::Metric::Gauge.new(
+      'total_accounts_with_50plus_hosts_per_policy',
       'Total accounts with 1 policy or more having 50 or more hosts'
     )
-    @client_accounts_with_huge_policies = PrometheusExporter::Metric::Gauge.new(
-      'client_accounts_with_huge_policies',
+    @client_accounts_with_50plus_hosts_per_policy = PrometheusExporter::Metric::Gauge.new(
+      'client_accounts_with_50plus_hosts_per_policy',
       'Client accounts with 1 policy or more having 50 or more hosts (excludes Red Hat)'
     )
     @total_policies = PrometheusExporter::Metric::Gauge.new(
@@ -37,6 +37,12 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     )
     @client_policies = PrometheusExporter::Metric::Gauge.new(
       'client_policies', 'Policies from clients (excludes Red Hat)'
+    )
+    @total_50plus_policies = PrometheusExporter::Metric::Gauge.new(
+      'total_50plus_policies', 'Policies having 50 or more hosts'
+    )
+    @client_50plus_policies = PrometheusExporter::Metric::Gauge.new(
+      'client_50plus_policies', 'Policies from clients having 50 or more hosts (excliedes Red Hat)'
     )
     @total_systems = PrometheusExporter::Metric::Gauge.new(
       'total_systems', 'Systems'
@@ -99,17 +105,22 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       @client_systems_by_os.observe(item['count'], version: item['version'])
     end
 
-    hosts_50_plus = PolicyHost.joins(:policy)
-                              .select('policies.account_id')
-                              .group(:policy_id, 'policies.account_id')
-                              .having('COUNT(policy_hosts.host_id) >= 50')
+    policies_50plus_hosts = PolicyHost.joins(:policy)
+                                      .select('policies.account_id')
+                                      .group(:policy_id, 'policies.account_id')
+                                      .having('COUNT(policy_hosts.host_id) >= 50')
 
-    @total_accounts_with_huge_policies.observe(
-      Account.where(id: hosts_50_plus).count(:account_number)
+    @total_accounts_with_50plus_hosts_per_policy.observe(
+      Account.where(id: policies_50plus_hosts).count(:account_number)
     )
 
-    @client_accounts_with_huge_policies.observe(
-      client_accounts.where(id: hosts_50_plus).count(:account_number)
+    @client_accounts_with_50plus_hosts_per_policy.observe(
+      client_accounts.where(id: policies_50plus_hosts).count(:account_number)
+    )
+
+    @total_50plus_policies.observe(policies_50plus_hosts.count.size)
+    @client_50plus_policies.observe(
+      policies_50plus_hosts.where('policies.account_id' => client_accounts.select(:id)).count.size
     )
   end
 
@@ -119,10 +130,12 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       @total_accounts,
       @client_accounts,
       @client_accounts_with_hosts,
-      @total_accounts_with_huge_policies,
-      @client_accounts_with_huge_policies,
+      @total_accounts_with_50plus_hosts_per_policy,
+      @client_accounts_with_50plus_hosts_per_policy,
       @total_policies,
       @client_policies,
+      @total_50plus_policies,
+      @client_50plus_policies,
       @total_systems,
       @client_systems,
       @total_systems_by_os,
