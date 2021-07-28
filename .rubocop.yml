@@ -15,6 +15,7 @@ AllCops:
     - 'Rakefile'
     - 'Gemfile'
     - 'vendor/**/*'
+    - 'lib/prometheus/**/*'
 
 Rails:
   Enabled: true
