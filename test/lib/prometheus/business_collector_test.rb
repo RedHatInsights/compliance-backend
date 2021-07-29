@@ -45,7 +45,7 @@ class BusinessCollectorTest < ActiveSupport::TestCase
       assert_equal 0, metrics['client_accounts_with_hosts']
       assert_equal 1, metrics['total_accounts_with_huge_policies']
       assert_equal 0, metrics['client_accounts_with_huge_policies']
-      assert_equal 0, metrics['total_policies']
+      assert_equal 2, metrics['total_policies']
       assert_equal 0, metrics['client_policies']
       assert_equal 52, metrics['total_systems']
       assert_equal 0, metrics['client_systems']
