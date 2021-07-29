@@ -27,7 +27,7 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       'Client accounts with 1 policy or more having 50 or more hosts (excludes Red Hat)'
     )
     @total_policies = PrometheusExporter::Metric::Gauge.new(
-      'total_policies', 'Policies (non-canonical)'
+      'total_policies', 'Policies'
     )
     @external_policies = PrometheusExporter::Metric::Gauge.new(
       'external_policies', 'External policies (non-canonical)'
@@ -67,9 +67,9 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
         account: client_accounts.select(:account_number)
       ).select(:account).distinct.count
     )
-    @total_policies.observe Profile.where.not(parent_profile_id: nil).count
+    @total_policies.observe Policy.count
     @client_policies.observe(
-      Profile.where(account_id: client_accounts.select(:id)).count
+      Policy.where(account_id: client_accounts.select(:id)).count
     )
     @total_systems.observe Host.with_policies_or_test_results.count
     @client_systems.observe(
