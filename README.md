@@ -50,20 +50,18 @@ Before running the project, these services must be running and acessible:
 
 Let's examine how to run the project:
 
-### Option 1: [OpenShift](https://www.openshift.com/)
-
-You may use the templates in `openshift/templates/` and upload them to
-Openshift to run the project without any further configuration. The template uses two docker images:
-[`quarck/ruby25-openscap`](https://hub.docker.com/r/quarck/ruby25-openscap/) and [`centos/postgresql-96-centos7`](https://hub.docker.com/r/centos/postgresql-96-centos7/).
+### Option 1: Ephemeral Environment with [Bonfire](https://github.com/RedHatInsights/bonfire/)
 
 #### Prerequisites
 
-* [`ocdeployer`](https://github.com/bsquizz/ocdeployer)
+* [`oc`](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz)
+  ([docs](https://docs.openshift.com/dedicated/4/cli_reference/openshift_cli/getting-started-cli.html))
+* [`bonfire`](https://github.com/RedHatInsights/bonfire/)
 
 #### Deploy
 
 ```shell
-ocdeployer -s compliance your_openshift_project
+bonfire deploy compliance gateway insights-ephemeral --no-remove-resources all --set-image-tag 'quay.io/cloudservices/compliance-backend=latest-new'
 ```
 
 ### Option 2: Development setup
