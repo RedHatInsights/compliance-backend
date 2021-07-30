@@ -42,7 +42,7 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       'total_50plus_policies', 'Policies having 50 or more hosts'
     )
     @client_50plus_policies = PrometheusExporter::Metric::Gauge.new(
-      'client_50plus_policies', 'Policies from clients having 50 or more hosts (excliedes Red Hat)'
+      'client_50plus_policies', 'Policies from clients having 50 or more hosts (excludes Red Hat)'
     )
     @total_systems = PrometheusExporter::Metric::Gauge.new(
       'total_systems', 'Systems'
