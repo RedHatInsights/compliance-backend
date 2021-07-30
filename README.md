@@ -58,10 +58,55 @@ Let's examine how to run the project:
   ([docs](https://docs.openshift.com/dedicated/4/cli_reference/openshift_cli/getting-started-cli.html))
 * [`bonfire`](https://github.com/RedHatInsights/bonfire/)
 
+#### Setup
+
+1. Log in into the ephemeral cluster
+2. Set up bonfire configuration
+
+    To use local deployement confguration update the `~/.config/bonfire/config.yaml` as follows:
+    ```
+    apps:
+    - name: compliance
+      components:
+        - name: compliance
+          host: local
+          repo: ~/path/to/local/compliance-backend
+          path: clowdapp.yaml
+          parameters:
+            REDIS_SSL: 'false'
+    ```
+
 #### Deploy
 
+Deployment with gateway and routes
+
 ```shell
-bonfire deploy compliance gateway insights-ephemeral --no-remove-resources all --set-image-tag 'quay.io/cloudservices/compliance-backend=latest-new'
+bonfire deploy --no-remove-resources=all compliance gateway insights-ephemeral
+```
+
+This will set up the environment with all service dependencies, 3scale gateway,
+and platform [mocks](https://github.com/RedHatInsights/mocks/) (authentication & authorization).
+
+Note, that the deployment only uses local `clowdapp.yaml`.
+A custom image should be pushed to an accessible location for the cluster to pull from.
+By default bonfire will use image tag of current short commit from the local repository.
+To override the behaviour either set `IMAGE_TAG` as parameter (in the bonfire config)
+or the `--set-image-tag` option. For example:
+
+```
+--set-image-tag 'quay.io/cloudservices/compliance-backend=latest-new'
+```
+
+#### Access
+
+The URL to the platform including frontend and APIs can be retrieved by:
+```
+oc get route front-end-aggregator -o jsonpath='https://{.spec.host}{"\n"}'
+```
+
+Users are being kept within the mocks service and can be managed via:
+```
+oc get route mocks -o jsonpath='https://{.spec.host}/_manager/ui{"\n"}'
 ```
 
 ### Option 2: Development setup
