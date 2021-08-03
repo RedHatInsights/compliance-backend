@@ -14,7 +14,9 @@ module Collection
     end
 
     def filter_by_tags(data)
-      return data unless tags_supported? && params[:tags]&.any?
+      unless TagFiltering.tags_supported?(resource) && params[:tags]&.any?
+        return data
+      end
 
       tags = parse_tags(params[:tags])
       data.where('tags @> ?', tags.to_json)
@@ -30,12 +32,6 @@ module Collection
       return data if params[:sort_by].blank?
 
       data.order(build_order_by(data.klass, params[:sort_by]))
-    end
-
-    private
-
-    def tags_supported?
-      resource.column_names.include?('tags')
     end
   end
 end

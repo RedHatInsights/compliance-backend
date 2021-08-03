@@ -13,7 +13,6 @@ module Metadata
     end
 
     # This is part of a JSON schema, no need for strict metrics
-    # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def metadata(opts = {})
       opts[:total] ||= resolve_collection.count
@@ -22,14 +21,13 @@ module Metadata
         meta: {
           total: opts[:total],
           search: params[:search],
-          tags: tags_supported? ? params.fetch(:tags, []) : nil,
+          tags: tags,
           limit: pagination_limit,
           offset: pagination_offset
         }.compact,
         links: links(last_offset(opts[:total]))
       }
     end
-    # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
 
     def links(last_offset)
@@ -88,6 +86,10 @@ module Metadata
     def meta_link(other_params = {})
       link_params = base_link_params.merge(other_params).compact
       "#{base_link_url}?#{link_params.to_query}"
+    end
+
+    def tags
+      TagFiltering.tags_supported?(resource) ? params.fetch(:tags, []) : nil
     end
   end
 end

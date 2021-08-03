@@ -31,4 +31,8 @@ module TagFiltering
          .scrub
     end
   end
+
+  def self.tags_supported?(resource)
+    resource.column_names.include?('tags')
+  end
 end
