@@ -3,9 +3,12 @@
 # Default options and configuration for pagination
 module Pagination
   extend ActiveSupport::Concern
+
+  ParamType = ActionController::Parameters
+
   included do
     def pagination_limit
-      params[:limit].present? ? params[:limit].to_i : 10
+      params.permit(limit: ParamType.integer & ParamType.gt(0))[:limit] || 10
     end
 
     def pagination_offset

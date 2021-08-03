@@ -193,5 +193,33 @@ class MetadataTest < ActionDispatch::IntegrationTest
       assert_match(/offset=#{Profile.canonical(false).count}/,
                    json_body['links']['last'])
     end
+
+    should 'return invalid parameter if limit=0' do
+      get profiles_url, params: { limit: 0 }
+      assert_response 422
+      assert_equal('Invalid parameter: limit must be greater than 0',
+                   json_body['errors'][0])
+    end
+
+    should 'return invalid parameter if limit<0' do
+      get profiles_url, params: { limit: -256 }
+      assert_response 422
+      assert_equal('Invalid parameter: limit must be greater than 0',
+                   json_body['errors'][0])
+    end
+
+    should 'return invalid parameter if limit is float' do
+      get profiles_url, params: { limit: 15.12 }
+      assert_response 422
+      assert_equal('Invalid parameter: limit must be an integer',
+                   json_body['errors'][0])
+    end
+
+    should 'return invalid parameter if limit is string' do
+      get profiles_url, params: { limit: '15.12' }
+      assert_response 422
+      assert_equal('Invalid parameter: limit must be an integer',
+                   json_body['errors'][0])
+    end
   end
 end
