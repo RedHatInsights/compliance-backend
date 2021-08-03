@@ -21,6 +21,10 @@ backwards_compatibility_enabled() {
   [ "$BACKWARDS_COMPATIBILITY" = true ]
 }
 
+is_ci_runner() {
+    [[ "$(hostname)" == "ci-"* ]]
+}
+
 get_7_chars_commit_hash() {
     echo "$(git rev-parse --short=7 HEAD)"
 }
@@ -131,7 +135,7 @@ container_engine_cmd() {
 
 initialize_container_engine_cmd() {
 
-    if _check_command_is_present podman; then
+    if _check_command_is_present podman && ! is_ci_runner; then
         CONTAINER_ENGINE_CMD='podman'
     else
         mkdir -p "$DOCKER_CONF"
