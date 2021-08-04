@@ -79,13 +79,21 @@ module Metadata
       {
         search: params[:search],
         include: params[:include],
-        limit: pagination_limit
+        limit: pagination_limit,
+        tags: params[:tags]
       }
     end
 
     def meta_link(other_params = {})
       link_params = base_link_params.merge(other_params).compact
-      "#{base_link_url}?#{link_params.to_query}"
+      # As the tags aren't a "real" array, unfortunately, we have to do these
+      # kind of jugglings to build the URL properly
+      [
+        base_link_url,
+        link_params.to_query
+                   .sub(/^tag%5B%5D\=/, 'tags=')
+                   .gsub(/\&tags%5B%5D\=/, '&tags=')
+      ].join('?')
     end
 
     def tags
