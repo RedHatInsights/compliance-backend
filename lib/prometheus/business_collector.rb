@@ -38,6 +38,13 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_policies = PrometheusExporter::Metric::Gauge.new(
       'client_policies', 'Policies from clients (excludes Red Hat)'
     )
+    @total_policies_by_os_major = PrometheusExporter::Metric::Gauge.new(
+      'total_policies_by_os_major', 'Policies by OS major version'
+    )
+    @client_policies_by_os_major = PrometheusExporter::Metric::Gauge.new(
+      'client_policies_by_os_major', 'Policies by OS major version (excludes Red Hat)'
+    )
+
     @total_50plus_policies = PrometheusExporter::Metric::Gauge.new(
       'total_50plus_policies', 'Policies having 50 or more hosts'
     )
@@ -82,6 +89,15 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       Host.with_policies_or_test_results
           .where(account: client_accounts.select(:account_number)).count
     )
+
+    Policy.joins(:benchmarks).distinct.group('benchmarks.ref_id').count.each do |ref_id, cnt|
+      @total_policies_by_os_major.observe(cnt, version: ref_id[/(?<=RHEL-)\d/])
+    end
+
+    Policy.where(account_id: client_accounts.select(:id))
+          .joins(:benchmarks).distinct.group('benchmarks.ref_id').count.each do |ref_id, cnt|
+      @client_policies_by_os_major.observe(cnt, version: ref_id[/(?<=RHEL-)\d/])
+    end
 
     Host.with_policies_or_test_results.select(
       "COUNT(id), concat(
@@ -134,6 +150,8 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       @client_accounts_with_50plus_hosts_per_policy,
       @total_policies,
       @client_policies,
+      @total_policies_by_os_major,
+      @client_policies_by_os_major,
       @total_50plus_policies,
       @client_50plus_policies,
       @total_systems,
