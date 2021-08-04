@@ -154,15 +154,37 @@ class HostTest < ActiveSupport::TestCase
       assert_equal 50.0, @host1.compliance_score
     end
 
+    should 'fail to find based on compliance score without a policy' do
+      RequestStore.clear!
+      assert_raises(::ScopedSearch::QueryNotSupported) do
+        Host.search_for('compliance_score >= 40 and compliance_score <= 60')
+      end
+    end
+
     should 'be able to find based on compliance score' do
       assert_includes(
-        Host.search_for('compliance_score >= 40 and compliance_score <= 60'),
+        Host.search_for("
+          with_results_for_policy_id = #{@profile.policy_id} and (
+            compliance_score >= #{@host1.test_results.first.score - 10} and
+            compliance_score <= #{@host1.test_results.first.score + 10}
+          )
+        "),
         @host1
       )
+
+      RequestStore.clear!
+
       assert_not_includes(
-        Host.search_for('compliance_score >= 0 and compliance_score <= 39'),
+        Host.search_for("
+          with_results_for_policy_id = #{@profile.policy_id} and (
+            compliance_score >= 0 and
+            compliance_score <= #{@host1.test_results.first.score - 1}
+          )
+        "),
         @host1
       )
+
+      RequestStore.clear!
     end
 
     should 'be able to find based on compliance true/false' do
@@ -341,5 +363,11 @@ class HostTest < ActiveSupport::TestCase
 
   test '#os_minor_versions' do
     assert_equal Host.os_minor_versions([@host1]), [4]
+  end
+
+  should 'fail if a wrong operator is passed to filter_by_compliance_score' do
+    assert_raises(ActiveRecord::StatementInvalid) do
+      Host.filter_by_compliance_score(nil, '=\'\' or 1=1);--', 10)
+    end
   end
 end

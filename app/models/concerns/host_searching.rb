@@ -4,6 +4,8 @@
 module HostSearching
   extend ActiveSupport::Concern
 
+  NUM_OPERATORS = ['=', '>', '<', '<=', '>=', '!='].freeze
+
   included do
     scoped_search on: %i[id display_name], only_explicit: true
     scoped_search on: :display_name, rename: :name
@@ -77,6 +79,8 @@ module HostSearching
                  .or(::Profile.where(policy_id: policy_or_profile_id))
                  .or(::Profile.where(policy_id: profiles.select(:policy_id)))
 
+      RequestStore.store['scoped_search_context_profiles'] = profiles
+
       { conditions: "hosts.id IN (#{
         ::TestResult.where(profile: profiles).select(:host_id).to_sql
       })" }
@@ -109,13 +113,20 @@ module HostSearching
     end
 
     def filter_by_compliance_score(_filter, operator, score)
-      ids = ::Host.includes(:test_result_profiles).select do |host|
-        host.compliance_score.public_send(operator, score.to_f)
+      unless NUM_OPERATORS.include?(operator)
+        raise ActiveRecord::StatementInvalid
       end
-      ids = ids.pluck(:id).map { |id| "'#{id}'" }
-      return { conditions: '1=0' } if ids.empty?
 
-      { conditions: "hosts.id IN(#{ids.join(',')})" }
+      profiles = RequestStore.store['scoped_search_context_profiles']
+
+      raise ScopedSearch::QueryNotSupported if profiles.nil?
+
+      hosts = ::TestResult.where("score #{operator} ?", score.to_f)
+                          .where(profile: profiles)
+                          .latest
+                          .select('test_results.host_id')
+
+      { conditions: "hosts.id IN(#{hosts.to_sql})" }
     end
 
     def test_results?(_filter, _operator, value)

@@ -780,6 +780,67 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert graphql_host.assigned_profiles.pluck(:id).include?(@profile1.id)
   end
 
+  test 'search for systems with a specific score for a given profile' do
+    # setup_two_hosts
+    @host2 = FactoryBot.create(
+      :host,
+      account: @user.account.account_number,
+      os_minor_version: 7
+    )
+    @profile1.policy.update(hosts: [@host1, @host2])
+
+    FactoryBot.create(
+      :test_result,
+      host: @host1,
+      profile: @profile1,
+      score: 52
+    )
+    FactoryBot.create(
+      :test_result,
+      host: @host2,
+      profile: @profile1,
+      score: 40
+    )
+
+    query = <<-GRAPHQL
+      query getSystems($filter: String!, $policyId: ID) {
+        systems(search: $filter) {
+          totalCount
+          edges {
+            node {
+              id
+              name
+              testResultProfiles(policyId: $policyId) {
+                id
+                name
+                lastScanned
+                compliant
+                score
+              }
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    filter = <<-FILTER
+      (with_results_for_policy_id = #{@profile1.id}) and
+      (has_test_results = true and compliance_score >= 45 and compliance_score <= 55)
+    FILTER
+
+    result = Schema.execute(
+      query,
+      variables: { filter: filter },
+      context: { current_user: @user }
+    )
+
+    node = result['data']['systems']['edges'][0]['node']
+
+    assert_equal result['data']['systems']['totalCount'], 1
+    assert_equal node['id'], @host1.id
+    assert_equal node['testResultProfiles'][0]['score'], 52
+  end
+
   test 'query system rules when results contain wrong rule_ids' do
     query = <<-GRAPHQL
     query System($systemId: String!){
