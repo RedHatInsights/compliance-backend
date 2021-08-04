@@ -56,6 +56,12 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_systems_by_os = PrometheusExporter::Metric::Gauge.new(
       'client_systems_by_os', 'Systems by OS version (excluded Red Hat)'
     )
+    @total_reports_per_month = PrometheusExporter::Metric::Counter.new(
+      'total_reports_per_month', 'Reports uploaded per month'
+    )
+    @client_reports_per_month = PrometheusExporter::Metric::Counter.new(
+      'client_reports_per_month', 'Reports uploaded per month (excludes Red Hat)'
+    )
   end
 
   def type
@@ -122,6 +128,26 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_50plus_policies.observe(
       policies_50plus_hosts.where('policies.account_id' => client_accounts.select(:id)).count.size
     )
+
+    @total_reports_per_month.observe(
+      TestResult.where(
+        'updated_at >= ? AND updated_at <= ?',
+        DateTime.now.beginning_of_month,
+        DateTime.now.end_of_month
+      ).count,
+      month: Time.zone.now.month,
+      year: Time.zone.now.year
+    )
+
+    @client_reports_per_month.observe(
+      client_accounts.joins(:test_results).distinct.where(
+        'test_results.updated_at >= ? AND test_results.updated_at <= ?',
+        DateTime.now.beginning_of_month,
+        DateTime.now.end_of_month
+      ).count,
+      month: Time.zone.now.month,
+      year: Time.zone.now.year
+    )
   end
 
   def metrics
@@ -139,7 +165,9 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       @total_systems,
       @client_systems,
       @total_systems_by_os,
-      @client_systems_by_os
+      @client_systems_by_os,
+      @total_reports_per_month,
+      @client_reports_per_month
     ]
   end
 end

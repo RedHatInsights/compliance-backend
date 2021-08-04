@@ -10,6 +10,7 @@ class Account < ApplicationRecord
   has_many :profiles, dependent: :destroy
   has_many :policies, dependent: :destroy
   has_many :business_objectives, through: :policies
+  has_many :test_results, through: :profiles
 
   validates :account_number, presence: true
 

@@ -26,19 +26,28 @@ class BusinessCollectorTest < ActiveSupport::TestCase
       policies: [policy]
     )
 
+    profile = FactoryBot.create(:profile, policy: policy, account: account)
+    FactoryBot.create(:test_result, profile: profile, host: policy.hosts.first)
+
     assert_nothing_raised do
       metrics = @collector.metrics.map do |metric|
-        if metric.data.key?({}) # it's a gauge
+        if metric.data.key?({})
           [metric.name, metric.data[{}]]
-        else # it's a counter
+        else
           [
             metric.name,
             metric.data.each_with_object({}) do |(key, value), obj|
-              obj[key[:version]] = value
+              if key.key?(:version)
+                obj[key[:version]] = value
+              elsif key.key?(:month)
+                obj[[key[:year], key[:month]].join('.')] = value
+              end
             end
           ]
         end
       end.to_h
+
+      month = [Time.zone.now.year, Time.zone.now.month].join('.')
 
       assert_equal 3, metrics['total_accounts']
       assert_equal 0, metrics['client_accounts']
@@ -53,6 +62,8 @@ class BusinessCollectorTest < ActiveSupport::TestCase
       assert_equal 0, metrics['client_systems']
       assert_equal 52, metrics['total_systems_by_os']['7.9']
       assert_nil metrics['client_systems_by_os']['7.9']
+      assert_equal 1, metrics['total_reports_per_month'][month]
+      assert_equal 0, metrics['client_reports_per_month'][month]
     end
   end
 end
