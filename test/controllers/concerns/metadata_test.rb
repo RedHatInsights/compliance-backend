@@ -13,6 +13,21 @@ class MetadataTest < ActionDispatch::IntegrationTest
     User.current = FactoryBot.create(:user)
   end
 
+  test 'meta adds tags to the links' do
+    V1::SystemsController.any_instance.expects(:authenticate_user).yields
+    User.current = FactoryBot.create(:user)
+
+    get [
+      systems_url,
+      'tags=foo/bar=baz&tags=foo/bar=yay'
+    ].join('?')
+
+    assert_response :success
+    re = /tags=foo%2Fbar%3Dbaz&tags=foo%2Fbar%3Dyay/
+    assert_match(re, json_body['links']['first'])
+    assert_match(re, json_body['links']['last'])
+  end
+
   test 'meta adds includes to JSON response' do
     authenticate
     3.times do
