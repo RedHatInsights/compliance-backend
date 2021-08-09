@@ -269,6 +269,15 @@ Use the docker image:
 podman run -itv $PWD:/usr/src -v $PWD/cacerts:/opt/java/openjdk/lib/security/cacerts --rm --name sonar-scanner-cli -e SONAR_HOST_URL='<sonarqube host>' -e SONAR_LOGIN=<token> sonarsource/sonar-scanner-cli
 ```
 
+### Seeding data
+
+To seed accounts, policies, results and hosts use `dev:db:seed` rake task.
+It is recommeneded to run the command after a first log in was initiated, as it would generate data for that account.
+
+```
+bundle exec rake dev:db:seed
+```
+
 ### Creating hosts in the inventory
 
 To create hosts in the inventory the `kafka_producer.py` script can be used from the `inventory` container:
