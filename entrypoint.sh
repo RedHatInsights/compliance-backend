@@ -68,11 +68,12 @@ elif [ "$APPLICATION_TYPE" = "compliance-prometheus-exporter" ]; then
 
   echo "PORT:$PORT"
   exec bundle exec prometheus_exporter -b 0.0.0.0 --port "$PORT" --prefix compliance_ -t 50 --verbose -a lib/prometheus/graphql_collector.rb -a lib/prometheus/business_collector.rb
-
 elif [ "$APPLICATION_TYPE" = "compliance-import-remediations" ]; then
   exec bundle exec rake import_remediations --trace
 elif [ "$APPLICATION_TYPE" = "compliance-import-ssg" ]; then
   exec bundle exec rake ssg:import_rhel_supported --trace
+elif [ "$APPLICATION_TYPE" = "sleep" ]; then
+  while true; do sleep 60; done
 else
   echo "Application type '$APPLICATION_TYPE' not supported"
 fi
