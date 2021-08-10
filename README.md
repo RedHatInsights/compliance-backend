@@ -26,7 +26,6 @@ The Insights Compliance backend comprises of these components/services:
 * Sidekiq — job runner connected through Redis (see [app/jobs](app/jobs))
 * Inventory Consumer (racecar) — processor of Kafka messages,
   mainly to process and parse reports
-* Prometheus Exporter (optional) — providing metrics (port 9394)
 
 ### Dependent Services
 
@@ -335,10 +334,6 @@ Basic authentication ([`platform_basic_auth` option](config/settings/development
 might be needed for platform services such as inventory, rbac, and remediations.
 Anything not deployed locally will require basic auth instead of using
 an identity header (i.e. rbac, remediations).
-
-### Disabling Prometheus
-
-To disable Prometheus (e.g. in develompent) clear `prometheus_exporter_host` setting (set to empty).
 
 ### Tagging
 

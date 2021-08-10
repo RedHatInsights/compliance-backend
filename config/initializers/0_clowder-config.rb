@@ -14,9 +14,6 @@ if ClowderCommonRuby::Config.clowder_enabled?
   rbac_config = config.dependency_endpoints.dig('rbac', 'service')
   rbac_url = "http://#{rbac_config&.hostname}:#{rbac_config&.port}"
 
-  # Prometheus
-  prometheus_exporter_config = config.private_dependency_endpoints&.dig('compliance', 'prometheus-exporter')
-
   # Inventory
   host_inventory_config = config.dependency_endpoints&.dig('host-inventory', 'service')
   host_inventory_url = "http://#{host_inventory_config&.hostname}:#{host_inventory_config&.port}"
@@ -40,14 +37,14 @@ if ClowderCommonRuby::Config.clowder_enabled?
       payload_tracker: config.kafka_topics&.dig('platform.payload-status', 'name'),
       remediation_updates: config.kafka_topics&.dig('platform.remediation-updates.compliance', 'name')
     },
-    prometheus_exporter_host: prometheus_exporter_config&.hostname,
-    prometheus_exporter_port: prometheus_exporter_config&.port,
     rbac_url: rbac_url,
     redis_url: redis_url,
     redis_password: redis_password,
     remediations_url: remediations_url,
     host_inventory_url: host_inventory_url,
-    clowder_config_enabled: true
+    clowder_config_enabled: true,
+    prometheus_exporter_port: config&.metricsPort,
+    prometheus_exporter_host: '127.0.0.1'
   }
 
   Settings.add_source!(clowder_config)

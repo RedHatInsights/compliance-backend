@@ -1,7 +1,7 @@
 {
     "webPort": 8000,
-    "metricsPort": 9000,
-    "privatePort": 9394,
+    "metricsPort": 9090,
+    "privatePort": 10000,
     "metricsPath": "/metrics",
     "logging": {
         "type": "cloudwatch",
@@ -77,12 +77,6 @@
         }
     ],
     "privateEndpoints": [
-        {
-            "name": "prometheus-exporter",
-            "app": "compliance",
-            "hostname": "prometheus",
-            "port": 9394
-        },
         {
             "name": "service",
             "app": "compliance-ssg",

@@ -5,14 +5,6 @@ metadata:
   name: "${APP_NAME}"
 objects:
 - apiVersion: cloud.redhat.com/v1alpha1
-  kind: ClowdJobInvocation
-  metadata:
-    name: compliance
-  spec:
-    appName: compliance
-    jobs:
-      - import-ssg
-- apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdApp
   metadata:
     name: "${APP_NAME}"
@@ -42,31 +34,17 @@ objects:
       enabled: true
       appName: "compliance"
       insightsOnly: true
-    jobs:
-    - name: compliance-import-ssg
+    deployments:
+    - name: db-migrations
       podSpec:
-        imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
             - bash
             - -c
             - |
-              for i in {1..120}; do sleep 1;
-              if bundle exec rake --trace db:abort_if_pending_migrations;
-              then exit 0; fi; done; exit 1
-          env:
-          - name: RAILS_ENV
-            value: "${RAILS_ENV}"
-          - name: PATH_PREFIX
-            value: "${PATH_PREFIX}"
-          - name: POSTGRESQL_MAX_CONNECTIONS
-            value: ${POSTGRESQL_MAX_CONNECTIONS}
-          - name: RAILS_LOG_TO_STDOUT
-            value: "${RAILS_LOG_TO_STDOUT}"
-          # Should be a secret ?
-          - name: SECRET_KEY_BASE
-            value: "secret_key_base"
+              bundle exec rake --trace db:debug db:migrate
+          inheritEnv: true
         resources:
           limits:
             cpu: ${CPU_LIMIT_SIDE}
@@ -76,7 +54,7 @@ objects:
             memory: ${MEMORY_REQUEST_SIDE}
         env:
         - name: APPLICATION_TYPE
-          value: compliance-import-ssg
+          value: sleep
         - name: RAILS_ENV
           value: "${RAILS_ENV}"
         - name: RAILS_LOG_TO_STDOUT
@@ -85,16 +63,45 @@ objects:
           value: "${PATH_PREFIX}"
         - name: APP_NAME
           value: "${APP_NAME}"
-        - name: SIDEKIQ_CONCURRENCY
-          value: "${SIDEKIQ_CONCURRENCY}"
-        - name: RAILS_MAX_THREADS
-          value: "${RAILS_MAX_THREADS}"
         - name: JOBS_ACCOUNT_NUMBER
           value: ${JOBS_ACCOUNT_NUMBER}
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
-    deployments:
+    - name: compliance-import-ssg
+      podSpec:
+        image: ${IMAGE}:${IMAGE_TAG}
+        initContainers:
+        - command:
+            - bash
+            - -c
+            - |
+              while ! bundle exec rake --trace db:abort_if_pending_migrations; do sleep 1; done;
+              bundle exec rake ssg:import_rhel_supported --trace
+          inheritEnv: true
+        resources:
+          limits:
+            cpu: ${CPU_LIMIT_SIDE}
+            memory: ${MEMORY_LIMIT_SIDE}
+          requests:
+            cpu: ${CPU_REQUEST_SIDE}
+            memory: ${MEMORY_REQUEST_SIDE}
+        env:
+        - name: APPLICATION_TYPE
+          value: sleep
+        - name: RAILS_ENV
+          value: "${RAILS_ENV}"
+        - name: RAILS_LOG_TO_STDOUT
+          value: "${RAILS_LOG_TO_STDOUT}"
+        - name: PATH_PREFIX
+          value: "${PATH_PREFIX}"
+        - name: APP_NAME
+          value: "${APP_NAME}"
+        - name: JOBS_ACCOUNT_NUMBER
+          value: ${JOBS_ACCOUNT_NUMBER}
+        # Should be a secret ?
+        - name: SECRET_KEY_BASE
+          value: "secret_key_base"
     - name: compliance-backend
       # TODO: Check how to auto-scale with Clowder
       minReplicas: ${{REPLICAS_BACKEND}}
@@ -102,7 +109,6 @@ objects:
         public:
           enabled: true
       podSpec:
-        imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
@@ -164,79 +170,10 @@ objects:
           requests:
             cpu: ${CPU_REQUEST_SERV}
             memory: ${MEMORY_REQUEST_SERV}
-    - name: compliance-prometheus-exporter
-      minReplicas: ${{REPLICAS_PROMETHEUS}}
-      webServices:
-        private:
-          enabled: true
-      podSpec:
-        imagePullPolicy: Always
-        image: ${IMAGE}:${IMAGE_TAG}
-        initContainers:
-        - command:
-          - bash
-          - -c
-          - |
-            set -e
-            RAILS_ENV="${RAILS_ENV}" bundle exec rake --trace db:debug db:migrate
-          resources:
-            limits:
-              cpu: ${CPU_LIMIT_SIDE}
-              memory: ${MEMORY_LIMIT_SIDE}
-            requests:
-              cpu: ${CPU_REQUEST_SIDE}
-              memory: ${MEMORY_REQUEST_SIDE}
-          env:
-          - name: RAILS_ENV
-            value: "${RAILS_ENV}"
-          - name: PATH_PREFIX
-            value: "${PATH_PREFIX}"
-          - name: RAILS_LOG_TO_STDOUT
-            value: "${RAILS_LOG_TO_STDOUT}"
-          # Should be a secret ?
-          - name: SECRET_KEY_BASE
-            value: "secret_key_base"
-          - name: JOBS_ACCOUNT_NUMBER
-            value: ${JOBS_ACCOUNT_NUMBER}
-        env:
-        - name: APPLICATION_TYPE
-          value: compliance-prometheus-exporter
-        - name: RAILS_ENV
-          value: "${RAILS_ENV}"
-        - name: PATH_PREFIX
-          value: "${PATH_PREFIX}"
-        - name: APP_NAME
-          value: "${APP_NAME}"
-        - name: RAILS_LOG_TO_STDOUT
-          value: "${RAILS_LOG_TO_STDOUT}"
-        - name: SETTINGS__REDIS_SSL
-          value: "${REDIS_SSL}"
-        - name: SETTINGS__REDIS_CACHE_SSL
-          value: "${REDIS_SSL}"
-        # Should be a secret ?
-        - name: SECRET_KEY_BASE
-          value: "secret_key_base"
-        livenessProbe:
-          httpGet:
-            path: /metrics
-            port: private
-        readinessProbe:
-          httpGet:
-            path: /metrics
-            port: private
-        resources:
-          limits:
-            cpu: ${CPU_LIMIT_PROM}
-            memory: ${MEMORY_LIMIT_PROM}
-          requests:
-            cpu: ${CPU_REQUEST_PROM}
-            memory: ${MEMORY_REQUEST_PROM}
-
     - name: compliance-inventory
       # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_CONSUMER}}
       podSpec:
-        imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
@@ -302,7 +239,6 @@ objects:
       # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_SIDEKIQ}}
       podSpec:
-        imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
@@ -368,9 +304,6 @@ parameters:
   value: quay.io/cloudservices/compliance-backend
 - description: ClowdEnv Name
   name: ENV_NAME
-- description: Replica count for prometheus-exporter
-  name: REPLICAS_PROMETHEUS
-  value: "1"
 - description: Replica count for backend service
   name: REPLICAS_BACKEND
   value: "1"
