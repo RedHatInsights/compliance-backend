@@ -2853,7 +2853,7 @@ data:
       },
       "timezone": "",
       "title": "Compliance",
-      "uid": "TjP_nMWMk",
+      "uid": "compliance",
       "version": 4176
     }
 kind: ConfigMap
