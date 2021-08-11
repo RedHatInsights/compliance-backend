@@ -27,6 +27,8 @@ class BusinessCollectorTest < ActiveSupport::TestCase
       policies: [policy]
     )
 
+    ref_id = policy.profiles.first.ref_id
+
     assert_nothing_raised do
       metrics = @collector.metrics.map do |metric|
         if metric.data.key?({}) # it's a gauge
@@ -35,7 +37,11 @@ class BusinessCollectorTest < ActiveSupport::TestCase
           [
             metric.name,
             metric.data.each_with_object({}) do |(key, value), obj|
-              obj[key[:version]] = value
+              if key.key?(:version)
+                obj[key[:version]] = value
+              elsif key.key?(:ref_id)
+                obj[key[:ref_id]] = value
+              end
             end
           ]
         end
@@ -48,6 +54,10 @@ class BusinessCollectorTest < ActiveSupport::TestCase
       assert_equal 0, metrics['client_accounts_with_50plus_hosts_per_policy']
       assert_equal 2, metrics['total_policies']
       assert_equal 0, metrics['client_policies']
+      assert_equal 1, metrics['total_policies_by_account'][ref_id]
+      assert_nil metrics['client_policies_by_account'][ref_id]
+      assert_equal 50, metrics['total_policies_by_host'][ref_id]
+      assert_nil metrics['client_policies_by_host'][ref_id]
       assert_equal 1, metrics['total_policies_by_os_major']['7']
       assert_nil metrics['client_policies_by_os_major']['7']
       assert_equal 1, metrics['total_50plus_policies']
