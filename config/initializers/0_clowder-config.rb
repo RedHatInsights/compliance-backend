@@ -9,7 +9,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
 #  remediations_url = "#{remediations_hostname}:#{remediations_port}"
 
   # compliance-ssg
-  compliance_ssg_config = config.private_dependency_endpoints.dig('compliance-ssg', 'service')
+  compliance_ssg_config = config.dependency_endpoints.dig('compliance-ssg', 'service')
   compliance_ssg_url = "http://#{compliance_ssg_config.hostname}:#{compliance_ssg_config.port}"
 
   # RBAC
