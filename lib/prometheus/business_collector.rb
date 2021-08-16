@@ -29,6 +29,18 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @total_policies = PrometheusExporter::Metric::Gauge.new(
       'total_policies', 'Policies'
     )
+    @total_policies_by_account = PrometheusExporter::Metric::Gauge.new(
+      'total_policies_by_account', 'Policies by account'
+    )
+    @client_policies_by_account = PrometheusExporter::Metric::Gauge.new(
+      'client_policies_by_account', 'Policies by account (exludes Red Hat)'
+    )
+    @total_policies_by_host = PrometheusExporter::Metric::Gauge.new(
+      'total_policies_by_host', 'Policies by host'
+    )
+    @client_policies_by_host = PrometheusExporter::Metric::Gauge.new(
+      'client_policies_by_host', 'Policies by host (exludes Red Hat)'
+    )
     @external_policies = PrometheusExporter::Metric::Gauge.new(
       'external_policies', 'External policies (non-canonical)'
     )
@@ -44,7 +56,6 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_policies_by_os_major = PrometheusExporter::Metric::Gauge.new(
       'client_policies_by_os_major', 'Policies by OS major version (excludes Red Hat)'
     )
-
     @total_50plus_policies = PrometheusExporter::Metric::Gauge.new(
       'total_50plus_policies', 'Policies having 50 or more hosts'
     )
@@ -61,7 +72,13 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       'total_systems_by_os', 'Systems by OS version'
     )
     @client_systems_by_os = PrometheusExporter::Metric::Gauge.new(
-      'client_systems_by_os', 'Systems by OS version (excluded Red Hat)'
+      'client_systems_by_os', 'Systems by OS version (excludes Red Hat)'
+    )
+    @total_systems_by_policy = PrometheusExporter::Metric::Gauge.new(
+      'total_systems_by_policy', 'Systems by assigned policies'
+    )
+    @total_systems_by_policy = PrometheusExporter::Metric::Gauge.new(
+      'total_systems_by_policy', 'Systems by assigned policies (excludes Red Hat)'
     )
   end
 
@@ -84,6 +101,37 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_policies.observe(
       Policy.where(account_id: client_accounts.select(:id)).count
     )
+
+    Policy.joins(:profiles)
+          .select(:account_id, "profiles.ref_id").distinct
+          .group(:ref_id)
+          .count(:account_id).each do |ref_id, count|
+      @total_policies_by_account.observe(count, ref_id: ref_id)
+    end
+
+    Policy.where(account_id: client_accounts.select(:id))
+          .joins(:profiles)
+          .select(:account_id, "profiles.ref_id").distinct
+          .group(:ref_id)
+          .count(:account_id).each do |ref_id, count|
+      @client_policies_by_account.observe(count, ref_id: ref_id)
+    end
+
+    Policy.joins(:policy_hosts).joins(:profiles)
+          .select('policy_hosts.host_id', 'profiles.ref_id').distinct
+          .group(:ref_id)
+          .count(:host_id).each do |ref_id, count|
+      @total_policies_by_host.observe(count, ref_id: ref_id)
+    end
+
+    Policy.where(account_id: client_accounts.pluck(:id))
+          .joins(:policy_hosts).joins(:profiles)
+          .select('policy_hosts.host_id', 'profiles.ref_id').distinct
+          .group(:ref_id)
+          .count(:host_id).each do |ref_id, count|
+      @client_policies_by_host.observe(count, ref_id: ref_id)
+    end
+
     @total_systems.observe Host.with_policies_or_test_results.count
     @client_systems.observe(
       Host.with_policies_or_test_results
@@ -150,6 +198,10 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
       @client_accounts_with_50plus_hosts_per_policy,
       @total_policies,
       @client_policies,
+      @total_policies_by_account,
+      @client_policies_by_account,
+      @total_policies_by_host,
+      @client_policies_by_host,
       @total_policies_by_os_major,
       @client_policies_by_os_major,
       @total_50plus_policies,
