@@ -3,10 +3,8 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   config = ClowderCommonRuby::Config.load
 
-# Blocked by https://issues.redhat.com/browse/RHCLOUD-10212
-#  remediations_hostname = config.private_dependency_endpoints.remediations.service.hostname
-#  remediations_port = config.private_dependency_endpoints.remediations.service.port
-#  remediations_url = "#{remediations_hostname}:#{remediations_port}"
+  remediations_config = config.dependency_endpoints.dig('remediations', 'api')
+  remediations_url = "http://#{remediations_config&.hostname}:#{remediations_config&.port}"
 
   # compliance-ssg
   compliance_ssg_config = config.private_dependency_endpoints.dig('compliance-ssg', 'service')
@@ -45,8 +43,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
     prometheus_exporter_port: prometheus_exporter_config&.port,
     rbac_url: rbac_url,
     redis_url: redis_url,
-# Blocked by https://issues.redhat.com/browse/RHCLOUD-10212
-#    remediations_url: remediations_url,
+    remediations_url: remediations_url,
     host_inventory_url: host_inventory_url,
     clowder_config_enabled: true
   }
