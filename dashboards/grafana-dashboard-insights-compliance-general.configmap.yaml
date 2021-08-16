@@ -2702,6 +2702,111 @@ data:
             "alignLevel": null
           }
         }
+        {
+          "aliasColors": {
+            "all": "#ba43a9",
+            "bugfix": "#ef843c",
+            "enhancement": "#9ac48a",
+            "security": "#e24d42",
+            "unknown": "#fce2de"
+          },
+          "dashLength": 10,
+          "datasource": "$datasource",
+          "fill": 1,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 45
+          },
+          "id": 23763571993,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "pointradius": 5,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "targets": [
+            {
+              "expr": "sum(increase(compliance_sidekiq_jobs_total{job_name=\"ParseReportJob\"}[$interval]) - increase(compliance_sidekiq_failed_jobs_total{job_name=\"ParseReportJob\"}[$interval]))",
+              "legendFormat": "{{job_name}}",
+              "interval": "",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeRegions": [],
+          "title": "Successfully parsed reports",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "Reports",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          },
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "links": []
+            },
+            "overrides": []
+          },
+          "pluginVersion": "7.2.1",
+          "bars": false,
+          "dashes": false,
+          "fillGradient": 0,
+          "hiddenSeries": false,
+          "percentage": false,
+          "points": false,
+          "stack": false,
+          "steppedLine": false,
+          "timeFrom": null,
+          "timeShift": null
+        }
       ],
       "refresh": false,
       "schemaVersion": 22,
