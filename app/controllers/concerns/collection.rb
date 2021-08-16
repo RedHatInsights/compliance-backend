@@ -29,8 +29,6 @@ module Collection
     end
 
     def sort(data)
-      return data if params[:sort_by].blank?
-
       data.order(build_order_by(data.klass, params[:sort_by]))
     end
   end
