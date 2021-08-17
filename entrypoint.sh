@@ -15,7 +15,7 @@ function check_number() {
 }
 
 # shellcheck source=deploy/clowder-config-main
-source "$('deploy/get-clowder-common-bash.sh')"
+source "deploy/clowder-common-bash.sh"
 
 if [ -z "$APPLICATION_TYPE" ]; then
   echo "APPLICATION_TYPE not defined!"
