@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class RulesCleanupServiceTest < ActiveSupport::TestCase
+class UpstreamCleanupServiceTest < ActiveSupport::TestCase
   setup do
     @cp = FactoryBot.create(:canonical_profile, :with_rules)
     acc = FactoryBot.create(:account)
@@ -17,16 +17,19 @@ class RulesCleanupServiceTest < ActiveSupport::TestCase
 
   test 'delete unused rules' do
     assert_difference(
+      'Profile.canonical.count' => -1,
+      'Profile.canonical(false).count' => 0,
       'Profile.canonical.flat_map(&:rules).count' => -@cp.rules.count,
       'Profile.canonical(false).flat_map(&:rules).count' => 0,
       'RuleReference.count' => -1,
       'RuleReferencesRule.count' => -3,
       'RuleIdentifier.count' => -1
     ) do
-      RulesCleanupService.run!
+      UpstreamCleanupService.run!
     end
 
-    assert_empty @cp.reload.rules
+    assert_empty Profile.where(id: @cp.id)
     assert_equal @profile.reload.rules.count, 5
+    assert @profile.parent_profile
   end
 end
