@@ -63,6 +63,21 @@ class MetadataTest < ActionDispatch::IntegrationTest
     assert_equal search_query, json_body['meta']['search']
   end
 
+  test 'meta adds sort_by to JSON response' do
+    authenticate
+    3.times do
+      FactoryBot.create(:profile)
+    end
+
+    get profiles_url, params: { sort_by: ['name'], limit: 1, offset: 2 }
+    assert_response :success
+    assert_match(/sort_by%5B%5D=name/, json_body['links']['first'])
+    assert_match(/sort_by%5B%5D=name/, json_body['links']['last'])
+    assert_match(/sort_by%5B%5D=name/, json_body['links']['next'])
+    assert_match(/sort_by%5B%5D=name/, json_body['links']['previous'])
+    assert_equal ['name'], json_body['meta']['sort_by']
+  end
+
   test 'meta escapes parameter values in links' do
     authenticate
     3.times do

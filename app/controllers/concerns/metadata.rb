@@ -14,6 +14,7 @@ module Metadata
 
     # This is part of a JSON schema, no need for strict metrics
     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def metadata(opts = {})
       opts[:total] ||= resolve_collection.count
 
@@ -23,11 +24,13 @@ module Metadata
           search: params[:search],
           tags: tags,
           limit: pagination_limit,
-          offset: pagination_offset
+          offset: pagination_offset,
+          sort_by: params[:sort_by]
         }.compact,
         links: links(last_offset(opts[:total]))
       }
     end
+    # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
 
     def links(last_offset)
@@ -80,7 +83,8 @@ module Metadata
         search: params[:search],
         include: params[:include],
         limit: pagination_limit,
-        tags: params[:tags]
+        tags: params[:tags],
+        sort_by: params[:sort_by]
       }
     end
 
