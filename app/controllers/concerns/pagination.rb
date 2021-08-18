@@ -12,7 +12,7 @@ module Pagination
     end
 
     def pagination_offset
-      params[:offset].present? ? params[:offset].to_i : 1
+      params.permit(offset: ParamType.integer & ParamType.gt(0))[:offset] || 1
     end
   end
 end
