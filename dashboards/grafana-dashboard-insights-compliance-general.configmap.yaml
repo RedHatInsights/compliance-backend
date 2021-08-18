@@ -2806,6 +2806,118 @@ data:
           "steppedLine": false,
           "timeFrom": null,
           "timeShift": null
+        },
+        {
+          "datasource": "$datasource",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 45
+          },
+          "id": 23763571993,
+          "links": [],
+          "targets": [
+            {
+              "expr": "sum(compliance_total_systems_by_os) by (version)",
+              "legendFormat": "{{version}}",
+              "interval": "",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Total number of systems reporting by OS version",
+          "type": "grafana-piechart-panel",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "links": []
+            },
+            "overrides": []
+          },
+          "pluginVersion": "7.2.1",
+          "pieType": "pie",
+          "legend": {
+            "show": true,
+            "values": true,
+            "header": "Count",
+            "percentage": true
+          },
+          "interval": null,
+          "cacheTimeout": null,
+          "nullPointMode": "connected",
+          "legendType": "Right side",
+          "breakPoint": "50%",
+          "aliasColors": {},
+          "format": "string",
+          "valueName": "current",
+          "strokeWidth": 1,
+          "fontSize": "80%",
+          "combine": {
+            "threshold": 0,
+            "label": "Others"
+          },
+          "description": "",
+          "decimals": null
+        },
+        {
+          "datasource": "$datasource",
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 45
+          },
+          "id": 23763571993,
+          "links": [],
+          "targets": [
+            {
+              "expr": "sum(compliance_client_systems_by_os) by (version)",
+              "legendFormat": "{{version}}",
+              "interval": "",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Client number of systems reporting by OS version",
+          "type": "grafana-piechart-panel",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "links": []
+            },
+            "overrides": []
+          },
+          "pluginVersion": "7.2.1",
+          "pieType": "pie",
+          "legend": {
+            "show": true,
+            "values": true,
+            "header": "Count",
+            "percentage": true
+          },
+          "interval": null,
+          "cacheTimeout": null,
+          "nullPointMode": "connected",
+          "legendType": "Right side",
+          "breakPoint": "50%",
+          "aliasColors": {},
+          "format": "string",
+          "valueName": "current",
+          "strokeWidth": 1,
+          "fontSize": "80%",
+          "combine": {
+            "threshold": 0,
+            "label": "Others"
+          },
+          "description": "",
+          "decimals": null
         }
       ],
       "refresh": false,
