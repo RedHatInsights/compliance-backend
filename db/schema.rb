@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_09_071351) do
+ActiveRecord::Schema.define(version: 2021_08_19_144533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
@@ -109,6 +109,14 @@ ActiveRecord::Schema.define(version: 2021_08_09_071351) do
     t.index ["policy_id"], name: "index_profiles_on_policy_id"
     t.index ["ref_id", "account_id", "benchmark_id", "os_minor_version", "policy_id"], name: "uniqueness", unique: true
     t.index ["ref_id", "benchmark_id"], name: "index_profiles_on_ref_id_and_benchmark_id", unique: true, where: "(parent_profile_id IS NULL)"
+  end
+
+  create_table "revisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "revision", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_revisions_on_name", unique: true
   end
 
   create_table "rule_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
