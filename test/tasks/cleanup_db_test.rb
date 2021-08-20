@@ -28,12 +28,11 @@ class CleanupDbTest < ActiveSupport::TestCase
 
   test 'cleanup_db does not remove accounts on a profile, policy, or host' do
     aorig = FactoryBot.create(:account)
-    host = FactoryBot.create(:host, account: aorig.account_number)
+    FactoryBot.create(:host, account: aorig.account_number)
     (account = aorig.dup).update!(account_number: '9797979')
     FactoryBot.create(:profile, account: account)
     (account = aorig.dup).update!(account_number: '3213213')
     FactoryBot.create(:policy, account: account)
-    aorig.dup.update!(account_number: host.account_number)
     assert_difference('Account.count' => 0) do
       capture_io do
         Rake::Task['cleanup_db'].execute

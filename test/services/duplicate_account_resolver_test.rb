@@ -46,11 +46,11 @@ class DuplicateAccountResolverTest < ActiveSupport::TestCase
 
     DuplicateAccountResolver.run!
 
-    assert_equal @account1.reload.users.pluck(:id), users1
-    assert_equal @account2.reload.users.pluck(:id), users2
-    assert_equal @account1.reload.profiles.pluck(:id), profiles1
-    assert_equal @account2.reload.profiles.pluck(:id), profiles2
-    assert_equal @account1.reload.policies.pluck(:id), policies1
-    assert_equal @account2.reload.policies.pluck(:id), policies2
+    assert_equal @account1.reload.users.pluck(:id).sort, users1.sort
+    assert_equal @account2.reload.users.pluck(:id).sort, users2.sort
+    assert_equal @account1.reload.profiles.pluck(:id).sort, profiles1.sort
+    assert_equal @account2.reload.profiles.pluck(:id).sort, profiles2.sort
+    assert_equal @account1.reload.policies.pluck(:id).sort, policies1.sort
+    assert_equal @account2.reload.policies.pluck(:id).sort, policies2.sort
   end
 end
