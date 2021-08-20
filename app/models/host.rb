@@ -6,11 +6,9 @@ class Host < ApplicationRecord
   OS_MINOR_VERSION = Arel.sql("system_profile->'operating_system'->'minor'")
   OS_MAJOR_VERSION = Arel.sql("system_profile->'operating_system'->'major'")
 
-  SORTABLE_BY = {
-    name: :display_name,
-    os_minor_version: OS_MINOR_VERSION,
-    os_major_version: OS_MAJOR_VERSION
-  }.freeze
+  sortable_by :name, :display_name
+  sortable_by :os_major_version, OS_MAJOR_VERSION
+  sortable_by :os_minor_version, OS_MINOR_VERSION
 
   self.table_name = 'inventory.hosts'
   self.primary_key = 'id'

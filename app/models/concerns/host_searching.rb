@@ -87,9 +87,9 @@ module HostSearching
     end
 
     def filter_by_policy(_filter, _operator, policy_or_profile_id)
-      with_policy = with_policy_lookup(policy_or_profile_id).select('id')
+      with_policy = with_policy_lookup(policy_or_profile_id).select(:id)
       with_profile = with_external_profile_lookup(policy_or_profile_id)
-                     .select('id')
+                     .select(:id)
 
       {
         conditions: "hosts.id IN (#{with_policy.to_sql})" \

@@ -4,6 +4,8 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
+  include Sortable
+
   scope :older_than, lambda { |datetime|
     where(arel_table[:created_at].lt(datetime))
   }

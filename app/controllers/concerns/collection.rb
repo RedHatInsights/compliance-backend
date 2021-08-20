@@ -4,7 +4,6 @@
 module Collection
   extend ActiveSupport::Concern
 
-  include Sorting
   include TagFiltering
 
   included do
@@ -29,7 +28,11 @@ module Collection
     end
 
     def sort(data)
-      data.order(build_order_by(data.klass, params[:sort_by]))
+      order_hash, extra_scopes = data.klass.build_order_by(params[:sort_by])
+
+      extra_scopes.inject(data.order(order_hash)) do |result, scope|
+        result.send(scope)
+      end
     end
   end
 end

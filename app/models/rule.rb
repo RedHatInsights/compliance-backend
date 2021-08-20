@@ -13,11 +13,9 @@ class Rule < ApplicationRecord
     SQL
   )
 
-  SORTABLE_BY = {
-    title: :title,
-    severity: SORTED_SEVERITIES,
-    remediation_available: :remediation_available
-  }.freeze
+  sortable_by :title, :title
+  sortable_by :severity, SORTED_SEVERITIES
+  sortable_by :remediation_available, :remediation_available
 
   extend FriendlyId
   friendly_id :ref_id, use: :slugged
