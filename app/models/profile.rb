@@ -10,11 +10,9 @@ class Profile < ApplicationRecord
   include ProfileHosts
   include ProfileRules
 
-  SORTABLE_BY = {
-    name: :name,
-    os_minor_version: :os_minor_version,
-    score: :score
-  }.freeze
+  sortable_by :name, :name
+  sortable_by :os_minor_version, :os_minor_version
+  sortable_by :score, :score
 
   belongs_to :account, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
@@ -50,6 +48,8 @@ class Profile < ApplicationRecord
     )
     canonical.where(benchmark_id: benchmarks)
   }
+
+  scope :joins_policy, -> { left_outer_joins(:policy) }
 
   delegate :account_number, to: :account, allow_nil: true
 

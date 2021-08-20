@@ -6,7 +6,6 @@ module Resolvers
     module Collection
       extend ActiveSupport::Concern
 
-      include Sorting
       include TagFiltering
 
       included do
@@ -68,7 +67,11 @@ module Resolvers
 
       def sort_filter(sort_by:)
         lambda do |scope|
-          scope.order(build_order_by(scope.klass, sort_by))
+          order_hash, extra_scopes = scope.klass.build_order_by(sort_by)
+
+          extra_scopes.inject(scope.order(order_hash)) do |result, e_scope|
+            result.send(e_scope)
+          end
         end
       end
 
