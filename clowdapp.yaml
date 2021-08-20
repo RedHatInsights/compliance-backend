@@ -23,8 +23,8 @@ objects:
     - host-inventory
     - ingress
     - rbac
-#  blocked https://issues.redhat.com/browse/RHCLOUD-10212
-#    - remediations
+    optionalDependencies:
+    - remediations
     database:
       name: compliance
       version: 12
@@ -38,8 +38,6 @@ objects:
       - topicName: platform.remediations.events
         partitions: 1
     inMemoryDb: true
-#    optionalDependencies:
-#    - remediations
     cyndi:
       enabled: true
       appName: "compliance"
