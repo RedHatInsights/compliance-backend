@@ -43,7 +43,7 @@ objects:
       appName: "compliance"
       insightsOnly: true
     jobs:
-    - name: import-ssg
+    - name: compliance-import-ssg
       podSpec:
         imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
@@ -95,7 +95,7 @@ objects:
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
     deployments:
-    - name: backend
+    - name: compliance-backend
       # TODO: Check how to auto-scale with Clowder
       minReplicas: ${{REPLICAS_BACKEND}}
       webServices:
@@ -164,7 +164,7 @@ objects:
           requests:
             cpu: ${CPU_REQUEST_SERV}
             memory: ${MEMORY_REQUEST_SERV}
-    - name: prometheus-exporter
+    - name: compliance-prometheus-exporter
       minReplicas: ${{REPLICAS_PROMETHEUS}}
       webServices:
         private:
