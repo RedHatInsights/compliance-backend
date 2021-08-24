@@ -39,7 +39,7 @@ module V1
         }
         assert_response :success
 
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         hosts = policy.hosts.pluck(:display_name).sort.reverse
 
         assert_equal(hosts, result['data'].map do |profile|
@@ -64,7 +64,7 @@ module V1
 
         assert_response :success
         assert_equal 'has_test_results=true or has_policy=true',
-                     JSON.parse(response.body).dig('meta', 'search')
+                     response.parsed_body.dig('meta', 'search')
       end
 
       should 'allow custom search' do
@@ -73,7 +73,7 @@ module V1
         get v1_systems_url, params: { search: '' }
 
         assert_response :success
-        assert_empty JSON.parse(response.body).dig('meta', 'search')
+        assert_empty response.parsed_body.dig('meta', 'search')
       end
 
       should 'allow filtering by tags' do
@@ -113,10 +113,10 @@ module V1
         ].join('?')
 
         assert_response :success
-        results = JSON.parse(response.body)['data']
+        results = response.parsed_body['data']
         assert_equal results.count, 1
         assert_equal results.first['id'], host1.id
-        assert_not_empty JSON.parse(response.body).dig('meta', 'tags')
+        assert_not_empty response.parsed_body.dig('meta', 'tags')
       end
 
       %w[
@@ -127,7 +127,7 @@ module V1
       ].each do |qstr|
         should "properly parse #{qstr}" do
           get [v1_systems_url, qstr].join('?')
-          tags = JSON.parse(response.body)['meta']['tags']
+          tags = response.parsed_body['meta']['tags']
 
           assert_equal tags, %w[satellite/lifecycle_environment=Library]
         end
@@ -139,7 +139,7 @@ module V1
         host = FactoryBot.create(:host)
         get system_path(host)
         assert_response :success
-        assert_equal host.id, JSON.parse(response.body).dig('data', 'id')
+        assert_equal host.id, response.parsed_body.dig('data', 'id')
       end
 
       should 'return 404 for hosts in other accounts' do

@@ -93,7 +93,7 @@ module V1
         }
         assert_response :success
 
-        result = JSON.parse(response.body)
+        result = response.parsed_body
         rules = [u2, u1, low, medium, high].map(&:id)
 
         assert_equal(rules, result['data'].map do |rule|

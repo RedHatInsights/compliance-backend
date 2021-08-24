@@ -24,7 +24,7 @@ class ControlleCollectionTest < ActionDispatch::IntegrationTest
     100.times do
       get url_path, params: params
       assert_response :success
-      data = JSON.parse(response.body)
+      data = response.parsed_body
 
       batch = data['data']
       batch_ids = batch.map { |p| p['id'] }.to_set

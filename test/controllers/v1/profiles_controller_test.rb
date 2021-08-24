@@ -163,7 +163,7 @@ module V1
     end
 
     def parsed_data
-      JSON.parse(response.body).dig('data')
+      response.parsed_body.dig('data')
     end
 
     class TailoringFileTest < ProfilesControllerTest
@@ -200,7 +200,7 @@ module V1
         get v1_profiles_url
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
         assert_equal 1, profiles['data'].length
         assert_equal profile.policy_profile_id,
                      profiles.dig('data', 0, 'attributes', 'policy_profile_id')
@@ -218,7 +218,7 @@ module V1
 
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(%w[a b], profiles['data'].map do |profile|
           profile['attributes']['name']
@@ -239,7 +239,7 @@ module V1
 
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(%w[b a], profiles['data'].map do |profile|
           profile['attributes']['name']
@@ -257,7 +257,7 @@ module V1
         }
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(%w[2 1 3], profiles['data'].map do |profile|
           profile['attributes']['os_minor_version']
@@ -280,7 +280,7 @@ module V1
         get v1_profiles_url, params: { search: search_query }
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
         assert_equal 1, profiles['data'].length
         assert_equal profile.id, profiles['data'].first['id']
       end
@@ -291,7 +291,7 @@ module V1
         get v1_profiles_url, params: { search: search_query }
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
         assert_equal 1, profiles['data'].length
         assert_equal profile.parent_profile.id, profiles['data'].first['id']
       end
@@ -300,7 +300,7 @@ module V1
         get v1_profiles_url
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
         assert_empty profiles['data']
       end
 
@@ -310,7 +310,7 @@ module V1
         get v1_profiles_url
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
         assert_equal profile.parent_profile.name,
                      profiles.dig('data', 0, 'attributes', 'policy_type')
       end
@@ -321,7 +321,7 @@ module V1
         get v1_profiles_url
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
         assert_equal profile.id, profiles['data'].first['id']
       end
 
@@ -336,7 +336,7 @@ module V1
         get v1_profiles_url, params: { search: search_query }
         assert_response :success
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
         returned_ids = profiles['data'].map { |p| p['id'] }
         assert_equal 3, profiles['data'].length
         assert_includes returned_ids, internal.id
@@ -374,7 +374,7 @@ module V1
         get v1_profiles_url, params: { search: search_query }
         assert_response :success
 
-        profiles = JSON.parse(response.body)['data']
+        profiles = response.parsed_body['data']
         assert_equal 2, profiles.length
 
         profiles.each do |returned_profile|
@@ -395,7 +395,7 @@ module V1
         get v1_profiles_url, params: { search: 'external = true' }
         assert_response :success
 
-        returned_profiles = JSON.parse(response.body)['data']
+        returned_profiles = response.parsed_body['data']
 
         assert_equal 1, returned_profiles.length
 
@@ -418,7 +418,7 @@ module V1
         get v1_profile_url(@profile.id)
         assert_response :success
 
-        body = JSON.parse(response.body)
+        body = response.parsed_body
         assert_equal @profile.policy_profile_id,
                      body.dig('data', 'attributes', 'policy_profile_id')
       end
@@ -427,8 +427,8 @@ module V1
         get v1_profile_url(@profile.id)
         assert_response :success
 
-        assert_not_nil JSON.parse(response.body).dig('data', 'attributes',
-                                                     'os_minor_version')
+        assert_not_nil response.parsed_body.dig('data', 'attributes',
+                                                'os_minor_version')
       end
     end
 
@@ -447,7 +447,7 @@ module V1
         end
         assert_response :success
         assert_equal 202, response.status, 'Response should be 202 accepted'
-        assert_equal profile_id, JSON.parse(response.body).dig('data', 'id'),
+        assert_equal profile_id, response.parsed_body.dig('data', 'id'),
                      'Profile ID did not match deleted profile'
         assert_audited 'Removed profile'
         assert_audited profile_id
@@ -460,7 +460,7 @@ module V1
         end
         assert_response :success
         assert_equal 202, response.status, 'Response should be 202 accepted'
-        assert_equal profile_id, JSON.parse(response.body).dig('data', 'id'),
+        assert_equal profile_id, response.parsed_body.dig('data', 'id'),
                      'Profile ID did not match deleted profile'
         assert_audited 'Removed profile'
         assert_audited profile_id
@@ -480,7 +480,7 @@ module V1
         end
         assert_response :success
         assert_equal 202, response.status, 'Response should be 202 accepted'
-        assert_equal profile_id, JSON.parse(response.body).dig('data', 'id'),
+        assert_equal profile_id, response.parsed_body.dig('data', 'id'),
                      'Profile ID did not match deleted profile'
         assert_audited 'Removed profile'
         assert_audited profile_id
@@ -535,7 +535,7 @@ module V1
         end
         assert_response :unprocessable_entity
         assert_match 'param is missing or the value is empty: data',
-                     JSON.parse(response.body).dig('errors', 0)
+                     response.parsed_body.dig('errors', 0)
       end
 
       test 'create with invalid data' do
@@ -544,7 +544,7 @@ module V1
         end
         assert_response :unprocessable_entity
         assert_match 'data must be a hash',
-                     JSON.parse(response.body).dig('errors', 0)
+                     response.parsed_body.dig('errors', 0)
       end
 
       test 'create with empty attributes' do
@@ -553,7 +553,7 @@ module V1
         end
         assert_response :unprocessable_entity
         assert_match 'param is missing or the value is empty: data',
-                     JSON.parse(response.body).dig('errors', 0)
+                     response.parsed_body.dig('errors', 0)
       end
 
       test 'create with invalid attributes' do
@@ -562,7 +562,7 @@ module V1
         end
         assert_response :unprocessable_entity
         assert_match 'attributes must be a hash',
-                     JSON.parse(response.body).dig('errors', 0)
+                     response.parsed_body.dig('errors', 0)
       end
 
       test 'create with empty parent_profile_id' do
@@ -574,7 +574,7 @@ module V1
         assert_response :unprocessable_entity
         assert_match 'param is missing or the value is empty: '\
                      'parent_profile_id',
-                     JSON.parse(response.body).dig('errors', 0)
+                     response.parsed_body.dig('errors', 0)
       end
 
       test 'create with an unfound parent_profile_id' do
@@ -876,21 +876,21 @@ module V1
         patch v1_profile_path(@profile.id), params: params({})
         assert_response :unprocessable_entity
         assert_match 'param is missing or the value is empty: data',
-                     JSON.parse(response.body).dig('errors', 0)
+                     response.parsed_body.dig('errors', 0)
       end
 
       test 'update with invalid data' do
         patch profile_path(@profile.id), params: params('foo')
         assert_response :unprocessable_entity
         assert_match 'data must be a hash',
-                     JSON.parse(response.body).dig('errors', 0)
+                     response.parsed_body.dig('errors', 0)
       end
 
       test 'update with invalid attributes' do
         patch profile_path(@profile.id), params: params(attributes: 'foo')
         assert_response :unprocessable_entity
         assert_match 'attributes must be a hash',
-                     JSON.parse(response.body).dig('errors', 0)
+                     response.parsed_body.dig('errors', 0)
       end
 
       test 'update with a single attribute' do
