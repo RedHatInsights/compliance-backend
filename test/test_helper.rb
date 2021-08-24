@@ -74,7 +74,7 @@ unless Rails.env.production?
   module ActionDispatch
     class IntegrationTest
       def json_body
-        JSON.parse(response.body)
+        response.parsed_body
       end
 
       def params(data)
