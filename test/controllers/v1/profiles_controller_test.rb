@@ -264,6 +264,31 @@ module V1
         end)
       end
 
+      test 'sorting by name delegates to policy' do
+        FactoryBot.create(:profile, name: 'foo')
+        FactoryBot.create(
+          :profile,
+          name: 'foo',
+          policy: FactoryBot.create(:policy, name: 'bar')
+        )
+        FactoryBot.create(
+          :profile,
+          name: 'foo',
+          policy: FactoryBot.create(:policy, name: 'asd')
+        )
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false',
+          sort_by: %w[name]
+        }
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(%w[asd bar foo], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
       should 'fail if wrong sort order is set' do
         get v1_profiles_url, params: { sort_by: ['name:foo'] }
         assert_response :unprocessable_entity

@@ -23,12 +23,12 @@ class DuplicateCanonicalProfileResolver
         :ref_id,
         :benchmark_id,
         :policy_id,
-        'COUNT(profiles.id)'
+        'COUNT(id)'
       ).group(
         :ref_id,
         :benchmark_id,
         :policy_id
-      ).having('count(profiles.id) > 1')
+      ).having('count(id) > 1')
     end
 
     def no_child_profiles?(profiles)

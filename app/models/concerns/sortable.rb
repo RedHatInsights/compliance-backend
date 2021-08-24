@@ -17,7 +17,7 @@ module Sortable
 
     private
 
-    def sortable_by(column, statement, scope: nil)
+    def sortable_by(column, statement = column, scope: nil)
       @sortable_by ||= {}
       @sortable_by[column] = {
         statement: statement,
