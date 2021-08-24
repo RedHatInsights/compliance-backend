@@ -13,9 +13,9 @@ class Rule < ApplicationRecord
     SQL
   )
 
-  sortable_by :title, :title
+  sortable_by :title
   sortable_by :severity, SORTED_SEVERITIES
-  sortable_by :remediation_available, :remediation_available
+  sortable_by :remediation_available
 
   extend FriendlyId
   friendly_id :ref_id, use: :slugged

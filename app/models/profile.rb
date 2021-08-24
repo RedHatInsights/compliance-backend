@@ -10,9 +10,10 @@ class Profile < ApplicationRecord
   include ProfileHosts
   include ProfileRules
 
-  sortable_by :name, :name
-  sortable_by :os_minor_version, :os_minor_version
-  sortable_by :score, :score
+  sortable_by :name, Arel.sql('COALESCE(policies.name, profiles.name)'),
+              scope: :joins_policy
+  sortable_by :os_minor_version
+  sortable_by :score
 
   belongs_to :account, optional: true
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
