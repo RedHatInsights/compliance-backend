@@ -10,6 +10,8 @@ class BusinessObjective < ApplicationRecord
 
   validates :title, presence: true
 
+  sortable_by :title
+
   scope :in_account, lambda { |account_or_account_id|
     joins(:accounts).where(accounts: { id: account_or_account_id }).distinct
   }

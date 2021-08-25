@@ -8,8 +8,8 @@ module V1
       BusinessObjectivesController.any_instance.stubs(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
 
-      @bo1 = FactoryBot.create(:business_objective)
-      @bo2 = FactoryBot.create(:business_objective)
+      @bo1 = FactoryBot.create(:business_objective, title: 'a')
+      @bo2 = FactoryBot.create(:business_objective, title: 'b')
 
       2.times do
         FactoryBot.create(
@@ -25,6 +25,25 @@ module V1
         get v1_business_objectives_path
         assert_response :success
         assert_equal @bo1.id, parsed_data&.first&.dig('id')
+      end
+
+      should 'be sorted by name' do
+        FactoryBot.create(
+          :policy,
+          account: User.current.account,
+          business_objective: @bo2
+        )
+
+        get v1_business_objectives_url, params: {
+          sort_by: %w[title]
+        }
+        assert_response :success
+
+        business_objectives = response.parsed_body['data']
+
+        assert_equal([@bo1, @bo2].map(&:id), business_objectives.map do |bo|
+          bo['id']
+        end)
       end
     end
 
