@@ -17,6 +17,8 @@ class RuleResult < ApplicationRecord
   validates :rule, presence: true,
                    uniqueness: { scope: %i[test_result_id host_id] }
 
+  sortable_by :result
+
   POSSIBLE_RESULTS = %w[pass fail error unknown notapplicable notchecked
                         notselected informational fixed].freeze
   NOT_SELECTED = %w[notapplicable notchecked informational notselected].freeze
