@@ -57,7 +57,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (11.1.3)
-    clowder-common-ruby (0.2.2)
+    clowder-common-ruby (0.2.3)
     codecov (0.3.0)
       simplecov (>= 0.15, < 0.22)
     coderay (1.1.2)
