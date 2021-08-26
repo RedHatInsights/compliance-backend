@@ -35,7 +35,7 @@ objects:
         partitions: 1
       - topicName: platform.inventory.events
         partitions: 1
-      - topicName: platform.remediations.events
+      - topicName: platform.remediation-updates.compliance
         partitions: 1
     inMemoryDb: true
     cyndi:

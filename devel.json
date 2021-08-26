@@ -36,8 +36,8 @@
                 "consumerGroup": "someGroupName"
             },
             {
-                "requestedName": "platform.remediations.events",
-                "name": "platform.remediations.events",
+                "requestedName": "platform.remediation-updates.compliance",
+                "name": "platform.remediation-updates.compliance",
                 "consumerGroup": "someGroupName"
             },
             {
