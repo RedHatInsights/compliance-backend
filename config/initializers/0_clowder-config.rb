@@ -27,7 +27,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
   clowder_config = {
     compliance_ssg_url: compliance_ssg_url,
     kafka: {
-      brokers: config.dig('kafka', 'brokers')&.map { |b| "#{b&.hostname}:#{b&.port}" }.join(','),
+      brokers: config.dig('kafka', 'brokers')&.map { |b| "#{b&.dig('hostname')}:#{b&.dig('port')}" }.join(','),
       # Not provided by clowder, not sure which of the following should be: [:plaintext, :ssl, :sasl_plaintext, :sasl_ssl]
       security_protocol: 'plaintext'
     },
