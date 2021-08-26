@@ -37,7 +37,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
     kafka_producer_topics: {
       upload_validation: config.kafka_topics['platform.upload.compliance'].name,
       payload_tracker: config.kafka_topics['platform.payload-status'].name,
-      remediation_updates: config.kafka_topics['platform.remediations.events'].name
+      remediation_updates: config.kafka_topics['platform.remediation-updates.compliance'].name
     },
     prometheus_exporter_host: prometheus_exporter_config&.hostname,
     prometheus_exporter_port: prometheus_exporter_config&.port,
