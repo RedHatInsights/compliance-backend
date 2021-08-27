@@ -23,6 +23,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   # Redis (in-memory db)
   redis_url = "#{config.dig('inMemoryDb', 'hostname')}:#{config.dig('inMemoryDb', 'port')}"
+  redis_password = config.dig('inMemoryDb', 'password')
 
   clowder_config = {
     compliance_ssg_url: compliance_ssg_url,
@@ -43,6 +44,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
     prometheus_exporter_port: prometheus_exporter_config&.port,
     rbac_url: rbac_url,
     redis_url: redis_url,
+    redis_password: redis_password,
     remediations_url: remediations_url,
     host_inventory_url: host_inventory_url,
     clowder_config_enabled: true
