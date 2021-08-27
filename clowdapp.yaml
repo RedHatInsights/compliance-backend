@@ -273,6 +273,10 @@ objects:
           value: "${RACECAR_QUEUE_SIZE}"
         - name: RACECAR_OFFSET_COMMIT_INTERVAL
           value: "${RACECAR_OFFSET_COMMIT_INTERVAL}"
+        - name: SETTINGS__REDIS_SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__REDIS_CACHE_SSL
+          value: "${REDIS_SSL}"
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
@@ -340,6 +344,10 @@ objects:
           value: "${APP_NAME}"
         - name: SIDEKIQ_CONCURRENCY
           value: "${SIDEKIQ_CONCURRENCY}"
+        - name: SETTINGS__REDIS_SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__REDIS_CACHE_SSL
+          value: "${REDIS_SSL}"
         - name: RAILS_MAX_THREADS
           value: "${RAILS_MAX_THREADS}"
         - name: JOBS_ACCOUNT_NUMBER
