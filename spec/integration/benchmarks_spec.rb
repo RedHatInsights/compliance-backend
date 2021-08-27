@@ -15,7 +15,7 @@ describe 'Benchmarks API' do
       auth_header
       pagination_params
       search_params
-      sort_params
+      sort_params(Xccdf::Benchmark)
 
       include_param
 

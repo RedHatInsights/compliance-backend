@@ -84,6 +84,16 @@
                   }
                 ]
               },
+              "items": {
+                "enum": [
+                  "title",
+                  "version",
+                  "title:asc",
+                  "title:desc",
+                  "version:asc",
+                  "version:desc"
+                ]
+              },
               "default": ""
             }
           },
@@ -397,6 +407,13 @@
                   }
                 ]
               },
+              "items": {
+                "enum": [
+                  "title",
+                  "title:asc",
+                  "title:desc"
+                ]
+              },
               "default": ""
             }
           },
@@ -680,6 +697,19 @@
                   {
                     "type": "array"
                   }
+                ]
+              },
+              "items": {
+                "enum": [
+                  "name",
+                  "os_minor_version",
+                  "score",
+                  "name:asc",
+                  "name:desc",
+                  "os_minor_version:asc",
+                  "os_minor_version:desc",
+                  "score:asc",
+                  "score:desc"
                 ]
               },
               "default": ""
@@ -1704,6 +1734,13 @@
                   }
                 ]
               },
+              "items": {
+                "enum": [
+                  "result",
+                  "result:asc",
+                  "result:desc"
+                ]
+              },
               "default": ""
             }
           },
@@ -1873,6 +1910,19 @@
                   {
                     "type": "array"
                   }
+                ]
+              },
+              "items": {
+                "enum": [
+                  "title",
+                  "severity",
+                  "remediation_available",
+                  "title:asc",
+                  "title:desc",
+                  "severity:asc",
+                  "severity:desc",
+                  "remediation_available:asc",
+                  "remediation_available:desc"
                 ]
               },
               "default": ""
@@ -2805,19 +2855,18 @@
                   }
                 ]
               },
-              "default": ""
-            }
-          },
-          {
-            "name": "tags",
-            "in": "query",
-            "required": false,
-            "type": "array",
-            "description": "An array of tags to narrow down the results against.",
-            "schema": {
-              "type": "array",
               "items": {
-                "type": "string"
+                "enum": [
+                  "name",
+                  "os_major_version",
+                  "os_minor_version",
+                  "name:asc",
+                  "name:desc",
+                  "os_major_version:asc",
+                  "os_major_version:desc",
+                  "os_minor_version:asc",
+                  "os_minor_version:desc"
+                ]
               },
               "default": ""
             }

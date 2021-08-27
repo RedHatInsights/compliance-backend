@@ -94,15 +94,25 @@ def tags_params
             schema: { type: :array, items: { type: 'string' }, default: '' }
 end
 
-def sort_params
+def sort_params(model = nil)
   parameter name: :sort_by, in: :query, required: false,
             type: { oneOf: [{ type: :string }, { type: :array }] },
             description: 'An array of fields with an optional direction '\
              '(:asc or :desc) to sort the results.',
             schema: {
               type: { oneOf: [{ type: :string }, { type: :array }] },
+              items: { enum: sort_combinations(model) },
               default: ''
             }
+end
+
+def sort_combinations(model)
+  fields = model.instance_variable_get(:@sortable_by).keys
+  fields + fields.flat_map do |field|
+    %w[asc desc].map do |direction|
+      [field, direction].join(':')
+    end
+  end
 end
 
 def content_types
