@@ -23,7 +23,7 @@ describe 'Profiles API' do
       auth_header
       pagination_params
       search_params
-      sort_params
+      sort_params(Profile)
 
       include_param
 

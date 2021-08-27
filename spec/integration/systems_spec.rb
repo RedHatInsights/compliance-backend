@@ -32,7 +32,7 @@ describe 'Systems API' do
       pagination_params
       search_params
       tags_params
-      sort_params
+      sort_params(Host)
 
       include_param
 

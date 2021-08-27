@@ -23,7 +23,7 @@ describe 'Rules API' do
       auth_header
       pagination_params
       search_params
-      sort_params
+      sort_params(Rule)
 
       include_param
 
