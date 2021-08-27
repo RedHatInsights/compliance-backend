@@ -1,13 +1,20 @@
 <%
   if ClowderCommonRuby::Config.clowder_enabled?
+    database_config = ClowderCommonRuby::Config.load.database
+    if database_config.rdsCa
+      rdsCaFile = File.new('tmp/rdsCa', 'wt')
+      rdsCaFile.write(database_config.rdsCa)
+      database_config.rdsCaPath = File.expand_path(rdsCaFile.path)
+    end
+    Settings.database = database_config
 
-    config = ClowderCommonRuby::Config.load
+    username = Settings.database.username
+    password = Settings.database.password
+    host = Settings.database.hostname
+    database = Settings.database.name
+    port = Settings.database.port
+    sslrootcert = Settings.database.rdsCaPath
 
-    username = config.database.username
-    password = config.database.password
-    host = config.database.hostname
-    database = config.database.name
-    port = config.database.port
   else
     db_service = ENV.fetch("DATABASE_SERVICE_NAME","").upcase.sub("-", "_")
     username = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? "postgres" : ENV["POSTGRESQL_USER"]
