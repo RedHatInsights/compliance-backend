@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_19_144533) do
+ActiveRecord::Schema.define(version: 2021_08_30_070917) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
@@ -166,9 +166,11 @@ ActiveRecord::Schema.define(version: 2021_08_19_144533) do
     t.string "slug"
     t.boolean "remediation_available", default: false, null: false
     t.uuid "benchmark_id", null: false
+    t.boolean "upstream", default: true, null: false
     t.index ["ref_id", "benchmark_id"], name: "index_rules_on_ref_id_and_benchmark_id", unique: true
     t.index ["ref_id"], name: "index_rules_on_ref_id"
     t.index ["slug"], name: "index_rules_on_slug", unique: true
+    t.index ["upstream"], name: "index_rules_on_upstream"
   end
 
   create_table "test_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

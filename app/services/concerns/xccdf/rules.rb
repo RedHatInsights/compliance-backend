@@ -12,12 +12,24 @@ module Xccdf
         end
 
         ::Rule.import!(new_rules, ignore: true)
+        # Mark already existing rules to be imported as non-upstream
+        # rubocop:disable Rails/SkipsModelValidations
+        ::Rule.where(id: old_rules.pluck(:id)).update_all(upstream: false)
+        # rubocop:enable Rails/SkipsModelValidations
       end
 
       private
 
+      def split_rules
+        @split_rules ||= @rules.partition(&:new_record?)
+      end
+
       def new_rules
-        @new_rules ||= @rules.select(&:new_record?)
+        @new_rules ||= split_rules.first
+      end
+
+      def old_rules
+        split_rules.last
       end
     end
   end
