@@ -12,9 +12,27 @@ module Xccdf
                                          benchmark_id: @benchmark&.id)
         end
 
-        ::Profile.import!(@profiles.select(&:new_record?), ignore: true)
+        ::Profile.import!(new_profiles, ignore: true)
+        # Mark already existing profiles to be imported as non-upstream
+        # rubocop:disable Rails/SkipsModelValidations
+        ::Profile.where(id: old_profiles.pluck(:id)).update_all(upstream: false)
+        # rubocop:enable Rails/SkipsModelValidations
       end
       alias_method :save_profiles, :profiles
+
+      private
+
+      def split_profiles
+        @split_profiles ||= @profiles.partition(&:new_record?)
+      end
+
+      def old_profiles
+        split_profiles.last
+      end
+
+      def new_profiles
+        split_profiles.first
+      end
     end
   end
 end
