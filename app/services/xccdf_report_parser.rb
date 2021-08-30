@@ -36,7 +36,7 @@ class XccdfReportParser
     end
 
     @b64_identity = message['b64_identity']
-    @account = Account.find_or_create_by(account_number: message['account'])
+    @account = Account.from_identity_header(IdentityHeader.new(@b64_identity))
     @host = Host.find(message['id'])
     @test_result_file = OpenscapParser::TestResultFile.new(report_contents)
     set_openscap_parser_data

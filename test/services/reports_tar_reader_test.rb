@@ -14,7 +14,7 @@ class ReportsTarReaderTest < ActiveSupport::TestCase
           report,
           'account' => account.account_number,
           'id' => host.id,
-          'b64_identity' => 'b64_fake_identity',
+          'b64_identity' => account.b64_identity,
           'metadata' => {
             'display_name' => 'foo.example.com'
           }

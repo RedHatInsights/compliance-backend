@@ -24,7 +24,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     @report_parser = TestParser
                      .new(fake_report,
                           'account' => @account.account_number,
-                          'b64_identity' => 'b64_fake_identity',
+                          'b64_identity' => @account.b64_identity,
                           'id' => @host.id,
                           'metadata' => {
                             'display_name' => @host.name
@@ -165,7 +165,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         TestParser.new(
           'fakereport',
           'account' => @account.account_number,
-          'b64_identity' => 'b64_fake_identity',
+          'b64_identity' => @account.b64_identity,
           'metadata' => { 'display_name': '123' }
         )
       end
@@ -288,7 +288,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
           fake_report,
           'account' => @account.account_number,
           'id' => @host.id,
-          'b64_identity' => 'b64_fake_identity',
+          'b64_identity' => @account.b64_identity,
           'metadata' => {
             'display_name' => @host.name
           }
