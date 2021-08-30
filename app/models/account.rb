@@ -13,6 +13,21 @@ class Account < ApplicationRecord
 
   validates :account_number, presence: true
 
+  class << self
+    def from_identity_header(identity_header)
+      account = Account.find_or_create_by(
+        account_number: identity_header.identity['account_number']
+      )
+
+      # Update the is_internal if set and differs from the stored one
+      unless identity_header.is_internal.nil?
+        account.update!(is_internal: identity_header.is_internal)
+      end
+
+      account
+    end
+  end
+
   # rubocop:disable Metrics/MethodLength
   def fake_identity_header
     {

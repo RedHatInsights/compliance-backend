@@ -52,7 +52,7 @@ module Authentication
   end
 
   def user
-    User.new(account: account_from_header)
+    User.new(account: Account.from_identity_header(identity_header))
   end
 
   def rbac_allowed?
@@ -94,11 +94,5 @@ module Authentication
 
   def identity_header
     @identity_header ||= IdentityHeader.new(raw_identity_header)
-  end
-
-  def account_from_header
-    Account.find_or_create_by(
-      account_number: identity_header.identity['account_number']
-    )
   end
 end
