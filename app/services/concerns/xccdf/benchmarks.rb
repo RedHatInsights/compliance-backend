@@ -24,6 +24,8 @@ module Xccdf
       end
 
       def benchmark_contents_equal_to_op?
+        return false if Settings.force_import_ssgs
+
         benchmark_saved? && benchmark_rules_saved? && benchmark_profiles_saved?
       end
 

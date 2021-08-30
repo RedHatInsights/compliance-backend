@@ -77,7 +77,8 @@ class Rule < ApplicationRecord
     rule.assign_attributes(title: op_rule.title,
                            description: op_rule.description,
                            rationale: op_rule.rationale,
-                           severity: op_rule.severity)
+                           severity: op_rule.severity,
+                           upstream: false)
 
     rule
   end
