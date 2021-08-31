@@ -2889,23 +2889,27 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "754828e6-bfae-4068-8b88-93368d8dfb65",
+                    "id": "448f21d1-70cb-47ef-8bbc-77f28ad29b29",
                     "type": "host",
                     "attributes": {
-                      "name": "localhost",
+                      "name": "hickle.org",
                       "os_major_version": 7,
                       "os_minor_version": 9,
-                      "last_scanned": "2021-07-27T13:50:30Z",
+                      "last_scanned": "2021-08-31T12:12:41Z",
                       "rules_passed": 0,
                       "rules_failed": 0,
                       "has_policy": true,
+                      "culled_timestamp": "2031-09-14T12:12:41.382Z",
+                      "stale_timestamp": "2031-08-31T12:12:41.382Z",
+                      "stale_warning_timestamp": "2031-09-07T12:12:41.382Z",
+                      "insights_id": null,
                       "compliant": false
                     },
                     "relationships": {
                       "test_results": {
                         "data": [
                           {
-                            "id": "0b845238-54e9-4c0c-9fce-7db2f06dd88b",
+                            "id": "3bacccb5-cc4b-490c-86b9-87f159ddeac0",
                             "type": "test_result"
                           }
                         ]
@@ -3025,23 +3029,27 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "d4f469e1-6a83-473a-9fe0-83b47e179399",
+                  "id": "f96aaf1e-2c9f-449e-a51c-a9dec3e4fd14",
                   "type": "host",
                   "attributes": {
-                    "name": "localhost",
+                    "name": "hilll.info",
                     "os_major_version": 7,
                     "os_minor_version": 9,
-                    "last_scanned": "2021-07-27T13:50:30Z",
+                    "last_scanned": "2021-08-31T12:12:41Z",
                     "rules_passed": 0,
                     "rules_failed": 0,
                     "has_policy": true,
+                    "culled_timestamp": "2031-09-14T12:12:41.594Z",
+                    "stale_timestamp": "2031-08-31T12:12:41.594Z",
+                    "stale_warning_timestamp": "2031-09-07T12:12:41.594Z",
+                    "insights_id": null,
                     "compliant": false
                   },
                   "relationships": {
                     "test_results": {
                       "data": [
                         {
-                          "id": "bde70ac9-6c14-431c-8ce1-562a08f24041",
+                          "id": "4c7964a4-b256-4630-b9ea-9e4574b8db60",
                           "type": "test_result"
                         }
                       ]
@@ -3223,6 +3231,22 @@
           "rules_failed": {
             "type": "integer",
             "example": 12
+          },
+          "culled_timestamp": {
+            "type": "string",
+            "example": "2020-06-04T19:31:55Z"
+          },
+          "stale_warning_timestamp": {
+            "type": "string",
+            "example": "2020-06-04T19:31:55Z"
+          },
+          "stale_timestamp": {
+            "type": "string",
+            "example": "2020-06-04T19:31:55Z"
+          },
+          "insights_id": {
+            "type": "uuid",
+            "example": "374399b7-e6ba-49b7-a405-9b620a2bd0b3"
           }
         }
       },

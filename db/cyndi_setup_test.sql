@@ -7,6 +7,8 @@
 CREATE SCHEMA IF NOT EXISTS inventory;
 
 -- This table should never be queried direcly
+DROP TABLE IF EXISTS inventory.hosts_v1_1 CASCADE;
+
 CREATE TABLE inventory.hosts_v1_1 (
     id uuid PRIMARY KEY,
     account character varying(10) NOT NULL,
@@ -15,7 +17,8 @@ CREATE TABLE inventory.hosts_v1_1 (
     updated timestamp with time zone NOT NULL,
     created timestamp with time zone NOT NULL,
     stale_timestamp timestamp with time zone NOT NULL,
-    system_profile jsonb NOT NULL
+    system_profile jsonb NOT NULL,
+    insights_id uuid
 );
 
 -- This view should be queried instead
@@ -30,7 +33,8 @@ SELECT
     stale_timestamp + INTERVAL '1' DAY * 7 AS stale_warning_timestamp,
     stale_timestamp + INTERVAL '1' DAY * 14 AS culled_timestamp,
     tags,
-    system_profile
+    system_profile,
+    insights_id
 FROM inventory.hosts_v1_1;
 
 --

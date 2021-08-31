@@ -16,6 +16,10 @@ module Types
     field :os_major_version, Int, null: true
     field :os_minor_version, Int, null: true
     field :has_policy, Boolean, null: false
+    field :culled_timestamp, String, null: false
+    field :stale_warning_timestamp, String, null: false
+    field :stale_timestamp, String, null: false
+    field :insights_id, ID, null: true
     field :profiles, [::Types::Profile], null: true do
       argument :policy_id, ID, 'Filter results by policy or profile ID',
                required: false
