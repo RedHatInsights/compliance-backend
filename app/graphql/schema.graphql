@@ -470,9 +470,11 @@ interface RulesPreload {
 A System registered in Insights Compliance
 """
 type System implements Node {
+  culledTimestamp: String!
   globalId: ID!
   hasPolicy: Boolean!
   id: ID!
+  insightsId: ID
   lastScanned(
     """
     Filter results by profile ID
@@ -506,6 +508,8 @@ type System implements Node {
     """
     profileId: String
   ): Int!
+  staleTimestamp: String!
+  staleWarningTimestamp: String!
   tags: [Tag!]
   testResultProfiles(
     """

@@ -19,8 +19,9 @@ SELECT
     stale_timestamp + INTERVAL '1' DAY * 7 AS stale_warning_timestamp,
     stale_timestamp + INTERVAL '1' DAY * 14 AS culled_timestamp,
     tags,
-    system_profile_facts as system_profile
-FROM dblink('dbname=insights user=insights', 'select id, account, display_name, created_on, modified_on, stale_timestamp, tags, system_profile_facts from hosts') as hosts(
+    system_profile_facts as system_profile,
+    canonical_facts->'insights_id' as insights_id
+FROM dblink('dbname=insights user=insights', 'select id, account, display_name, created_on, modified_on, stale_timestamp, tags, system_profile_facts, canonical_facts from hosts') as hosts(
     id uuid,
     account character varying(10),
     display_name character varying(200),
@@ -28,5 +29,6 @@ FROM dblink('dbname=insights user=insights', 'select id, account, display_name, 
     modified_on timestamp with time zone,
     stale_timestamp timestamp with time zone,
     tags jsonb,
-    system_profile_facts jsonb
+    system_profile_facts jsonb,
+    canonical_facts jsonb
 );
