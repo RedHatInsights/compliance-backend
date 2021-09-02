@@ -24,6 +24,7 @@ DATABASE_HOST="compliance-db"
 
 docker network rm "$NETWORK" || echo "network likely doesn't exist"
 docker network create --driver bridge "$NETWORK"
+ci_env=$(bash <(curl -s https://codecov.io/env)) # see https://docs.codecov.com/docs/testing-with-docker#codecov-inside-docker
 
 DB_CONTAINER_ID=$(docker run -d \
   --name "$DATABASE_HOST" \
@@ -46,8 +47,10 @@ TEST_CONTAINER_ID=$(docker run -d \
   -e POSTGRESQL_USER="$DATABASE_USER" \
   -e POSTGRESQL_PASSWORD="$DATABASE_PASSWORD" \
   -e POSTGRESQL_DATABASE="$DATABASE_NAME" \
-  -e POSTGRESQL_PORT="$DATABASE_PORT" \
   -e RAILS_ENV=test \
+  -e CI=true \
+  "$ci_env" \
+  -e CODECOV_TOKEN="$CODECOV_TOKEN" \
   "$IMAGE:$IMAGE_TAG" \
   /bin/bash -c 'sleep infinity' || echo "0")
 
