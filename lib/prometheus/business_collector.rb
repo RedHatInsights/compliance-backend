@@ -88,9 +88,7 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
 
   def collect
     @total_accounts.observe Account.count
-    client_accounts = Account.distinct.where(
-      id: User.select(:account_id).where.not('email LIKE ?', '%redhat%')
-    )
+    client_accounts = Account.where(is_internal: [nil, false])
     @client_accounts.observe client_accounts.count
     @client_accounts_with_hosts.observe(
       Host.with_policies_or_test_results.where(
