@@ -10,6 +10,8 @@ objects:
     name: "${APP_NAME}"
   spec:
     envName: ${ENV_NAME}
+    testing:
+      iqePlugin: compliance
     dependencies:
     - compliance-ssg
     - host-inventory

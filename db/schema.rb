@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_30_080830) do
+ActiveRecord::Schema.define(version: 2021_08_30_130754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_080830) do
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "account_number"
-    t.boolean "internal"
+    t.boolean "is_internal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_number"], name: "index_accounts_on_account_number", unique: true

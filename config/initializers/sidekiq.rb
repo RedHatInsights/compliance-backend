@@ -9,18 +9,20 @@ sidekiq_config = lambda do |config|
   }
   Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
 
-  config.server_middleware do |chain|
-    require 'prometheus_exporter/instrumentation'
-    chain.add PrometheusExporter::Instrumentation::Sidekiq
-  end
-  config.on :startup do
-    require 'prometheus_exporter/instrumentation'
-    PrometheusExporter::Instrumentation::Process.start type: 'sidekiq'
-  end
-  config.death_handlers << PrometheusExporter::Instrumentation::Sidekiq.death_handler
+  unless Rails.env.test?
+    config.server_middleware do |chain|
+      require 'prometheus_exporter/instrumentation'
+      chain.add PrometheusExporter::Instrumentation::Sidekiq
+    end
+    config.on :startup do
+      require 'prometheus_exporter/instrumentation'
+      PrometheusExporter::Instrumentation::Process.start type: 'sidekiq'
+    end
+    config.death_handlers << PrometheusExporter::Instrumentation::Sidekiq.death_handler
 
-  at_exit do
-    PrometheusExporter::Client.default.stop(wait_timeout_seconds: 10)
+    at_exit do
+      PrometheusExporter::Client.default.stop(wait_timeout_seconds: 10)
+    end
   end
 end
 
