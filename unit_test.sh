@@ -46,8 +46,9 @@ TEST_CONTAINER_ID=$(docker run -d \
   -e POSTGRESQL_USER="$DATABASE_USER" \
   -e POSTGRESQL_PASSWORD="$DATABASE_PASSWORD" \
   -e POSTGRESQL_DATABASE="$DATABASE_NAME" \
-  -e POSTGRESQL_PORT="$DATABASE_PORT" \
   -e RAILS_ENV=test \
+  -e CODECOV_TOKEN="$CODECOV_TOKEN" \
+  -v .git:/opt/app-root/src/.git
   "$IMAGE:$IMAGE_TAG" \
   /bin/bash -c 'sleep infinity' || echo "0")
 
