@@ -4,7 +4,8 @@ module V1
   # API for BusinessObjectives
   class BusinessObjectivesController < ApplicationController
     def index
-      render_json resolve_collection.sort_by(&:title)
+      params[:sort_by] ||= 'title'
+      render_json resolve_collection
     end
 
     def show
