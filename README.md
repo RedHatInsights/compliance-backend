@@ -96,6 +96,8 @@ or the `--set-image-tag` option. For example:
 --set-image-tag 'quay.io/cloudservices/compliance-backend=latest'
 ```
 
+some-change
+
 #### Access
 
 The URL to the platform including frontend and APIs can be retrieved by:
