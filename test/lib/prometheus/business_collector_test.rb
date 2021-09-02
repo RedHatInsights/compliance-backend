@@ -10,7 +10,7 @@ class BusinessCollectorTest < ActiveSupport::TestCase
   end
 
   test 'metrics' do
-    account, = FactoryBot.create_list(:account, 3)
+    account, = FactoryBot.create_list(:account, 3, is_internal: true)
     FactoryBot.create_list(
       :host,
       2,
