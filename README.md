@@ -93,7 +93,7 @@ To override the behaviour either set `IMAGE_TAG` as parameter (in the bonfire co
 or the `--set-image-tag` option. For example:
 
 ```
---set-image-tag 'quay.io/cloudservices/compliance-backend=latest-new'
+--set-image-tag 'quay.io/cloudservices/compliance-backend=latest'
 ```
 
 #### Access

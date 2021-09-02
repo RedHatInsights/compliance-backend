@@ -298,7 +298,7 @@ parameters:
 - description: Image tag
   name: IMAGE_TAG
   required: true
-  value: latest-new
+  value: latest
 - description: Image name
   name: IMAGE
   value: quay.io/cloudservices/compliance-backend
