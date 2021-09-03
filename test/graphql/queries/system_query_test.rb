@@ -16,6 +16,8 @@ class SystemQueryTest < ActiveSupport::TestCase
     )
   end
 
+  TAG = { 'namespace' => 'foo', 'key' => 'bar', 'value' => 'baz' }.freeze
+
   test 'query host owned by the user' do
     query = <<-GRAPHQL
       query System($inventoryId: String!){
@@ -500,7 +502,6 @@ class SystemQueryTest < ActiveSupport::TestCase
   end
 
   should 'return tags when requested' do
-    TAG = { 'namespace' => 'foo', 'key' => 'bar', 'value' => 'baz' }.freeze
     query = <<-GRAPHQL
       {
         systems {
@@ -532,7 +533,6 @@ class SystemQueryTest < ActiveSupport::TestCase
   end
 
   should 'allow filtering by tags' do
-    TAG = { 'namespace' => 'foo', 'key' => 'bar', 'value' => 'baz' }.freeze
     query = <<-GRAPHQL
       query getSystems($tags: [String!]){
         systems(tags: $tags) {
