@@ -70,6 +70,8 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
+        - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
+          value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
     - name: compliance-import-ssg
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
@@ -106,6 +108,8 @@ objects:
           value: "secret_key_base"
         - name: SETTINGS__FORCE_IMPORT_SSGS
           value: "${SETTINGS__FORCE_IMPORT_SSGS}"
+        - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
+          value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
     - name: compliance-backend
       # TODO: Check how to auto-scale with Clowder
       minReplicas: ${{REPLICAS_BACKEND}}
@@ -156,6 +160,8 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
+        - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
+          value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
 # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
@@ -175,7 +181,7 @@ objects:
             cpu: ${CPU_REQUEST_SERV}
             memory: ${MEMORY_REQUEST_SERV}
     - name: compliance-inventory
-      # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
+      # TODO: check requirement for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_CONSUMER}}
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
@@ -199,6 +205,8 @@ objects:
           # Should be a secret ?
           - name: SECRET_KEY_BASE
             value: "secret_key_base"
+          - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
+            value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         env:
         - name: APPLICATION_TYPE
           value: compliance-inventory
@@ -221,6 +229,8 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
+        - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
+          value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         readinessProbe:
           timeoutSeconds: 5
           exec:
@@ -264,6 +274,8 @@ objects:
           # Should be a secret ?
           - name: SECRET_KEY_BASE
             value: "secret_key_base"
+          - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
+            value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         resources:
           limits:
             cpu: ${CPU_LIMIT_SIDE}
@@ -295,6 +307,8 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
+        - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
+          value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
 
 parameters:
 - name: IMAGE_TAG
@@ -390,3 +404,5 @@ parameters:
   value: /r/insights/platform
 - name: SETTINGS__FORCE_IMPORT_SSGS
   value: "false"
+- name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
+  value: "true"
