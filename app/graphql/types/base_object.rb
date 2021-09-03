@@ -7,8 +7,8 @@ module Types
     connection_type_class Connections::BaseConnection
 
     global_id_field :global_id
-    field :node, field: GraphQL::Relay::Node.field
-    field :nodes, field: GraphQL::Relay::Node.plural_field
+    add_field GraphQL::Types::Relay::NodeField
+    add_field GraphQL::Types::Relay::NodesField
 
     class << self
       def model_class(new_model_class = nil)
