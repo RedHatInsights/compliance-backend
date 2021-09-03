@@ -32,6 +32,7 @@ class DuplicateCanonicalProfileResolverTest < ActiveSupport::TestCase
   end
 
   test 'fails if there are child profiles' do
+    Warning.stubs(:warn)
     account = FactoryBot.create(:account)
     Profile.find_by(name: 'foo 2').clone_to(
       account: account,
