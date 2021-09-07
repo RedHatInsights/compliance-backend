@@ -162,6 +162,8 @@ class HostTest < ActiveSupport::TestCase
     end
 
     should 'be able to find based on compliance score' do
+      RequestStore.clear!
+
       assert_includes(
         Host.search_for("
           with_results_for_policy_id = #{@profile.policy_id} and (
@@ -188,6 +190,8 @@ class HostTest < ActiveSupport::TestCase
     end
 
     should 'be able to find based on compliance true/false' do
+      User.current = FactoryBot.create(:user, account: @account)
+      RequestStore.clear!
       assert_not_includes Host.search_for('compliant = true'), @host1
       assert_includes Host.search_for('compliant = false'), @host1
       assert_includes Host.search_for('compliant != true'), @host1
