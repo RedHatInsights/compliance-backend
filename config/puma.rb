@@ -41,6 +41,8 @@ environment ENV.fetch('RAILS_ENV') { 'development' }
 plugin :tmp_restart
 
 after_worker_boot do
-  require 'prometheus_exporter/instrumentation'
-  PrometheusExporter::Instrumentation::Puma.start(type: 'puma')
+  if Settings.prometheus_exporter_host.present?
+    require 'prometheus_exporter/instrumentation'
+    PrometheusExporter::Instrumentation::Puma.start(type: 'puma')
+  end
 end

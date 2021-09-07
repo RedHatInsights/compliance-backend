@@ -335,6 +335,11 @@ might be needed for platform services such as inventory, rbac, and remediations.
 Anything not deployed locally will require basic auth instead of using
 an identity header (i.e. rbac, remediations).
 
+### Disabling Prometheus
+
+To disable Prometheus (e.g. in develompent) clear `prometheus_exporter_host`
+(`SETTINGS__PROMETHEUS_EXPORTER_HOST` env var) setting (set to empty).
+
 ### Tagging
 
 If there is a `tags` column defined in any model, it always should be a `jsonb` column and follow the structured representation of tags described in Insights, i.e. an array of hashes. If this convention is not kept, the controllers might break when a user tries to pass the `tags` attribute to a GET request.

@@ -1,4 +1,4 @@
-unless Rails.env.test?
+if Settings.prometheus_exporter_host.present? && !Rails.env.test?
   require 'prometheus_exporter'
   require 'prometheus_exporter/client'
   require 'prometheus_exporter/metric'

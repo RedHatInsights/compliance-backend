@@ -9,7 +9,7 @@ sidekiq_config = lambda do |config|
   }
   Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
 
-  unless Rails.env.test?
+  if Settings.prometheus_exporter_host.present? && !Rails.env.test?
     config.server_middleware do |chain|
       require 'prometheus_exporter/instrumentation'
       chain.add PrometheusExporter::Instrumentation::Sidekiq
