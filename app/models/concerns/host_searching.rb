@@ -98,18 +98,10 @@ module HostSearching
     end
 
     def filter_by_compliance(_filter, operator, value)
-      ids = ::Host.includes(test_results: :profile).select do |host|
-        host.compliant.values.all?(::ActiveModel::Type::Boolean.new.cast(value))
-      end
-      ids = ids.pluck(:id).map { |id| "'#{id}'" }
-
-      if ids.empty?
-        return { conditions: '1=0' } if operator == '='
-        return { conditions: '1=1' } if operator == '<>'
-      end
+      hosts = compliant_host_ids(value)
 
       operator = operator == '<>' ? 'NOT' : ''
-      { conditions: "hosts.id #{operator} IN(#{ids.join(',')})" }
+      { conditions: "hosts.id #{operator} IN(#{hosts.to_sql})" }
     end
 
     def filter_by_compliance_score(_filter, operator, score)
@@ -138,6 +130,25 @@ module HostSearching
     end
 
     private
+
+    def compliant_host_ids(value)
+      profiles = RequestStore.store['scoped_search_context_profiles']
+
+      TestResult.latest
+                .where(profile: profiles || User.current.account.profiles)
+                .joins(profile: :policy)
+                .group(:host_id, 'policies.id', 'policies.compliance_threshold')
+                .select(:host_id).having('AVG(test_results.score) <= 100')
+                .having("
+                  AVG(test_results.score)
+                  #{to_b(value) ? '>=' : '<'}
+                  policies.compliance_threshold
+                ")
+    end
+
+    def to_b(str)
+      ::ActiveModel::Type::Boolean.new.cast(str)
+    end
 
     def with_policy_lookup(policy_or_profile_id)
       policy_cond = { policies: { id: policy_or_profile_id } }
