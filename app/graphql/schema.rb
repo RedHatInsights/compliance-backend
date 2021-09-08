@@ -19,4 +19,5 @@ class Schema < GraphQL::Schema
   use GraphQL::Batch
   use GraphQL::Execution::Interpreter
   use GraphQL::Analysis::AST
+  disable_introspection_entry_points if Rails.env.production?
 end
