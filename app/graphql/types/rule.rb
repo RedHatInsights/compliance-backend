@@ -60,7 +60,7 @@ module Types
 
     def profiles
       ::CollectionLoader.for(::Rule, :profiles).load(object).then do |profiles|
-        profiles
+        Pundit.policy_scope(context[:current_user], profiles)
       end
     end
 
