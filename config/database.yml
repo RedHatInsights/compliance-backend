@@ -4,7 +4,7 @@
     if database_config.rdsCa
       rdsCaFile = File.new('tmp/rdsCa', 'wt')
       rdsCaFile.write(database_config.rdsCa)
-      database_config.rdsCaPath = File.expand_path(rdsCaFile.path)
+      database_config.sslrootcert = File.expand_path(rdsCaFile.path)
     end
     Settings.database = database_config
 
@@ -13,8 +13,8 @@
     host = Settings.database.hostname
     database = Settings.database.name
     port = Settings.database.port
-    sslrootcert = Settings.database.rdsCaPath
-
+    sslrootcert = Settings.database.sslrootcert
+    sslmode = Settings.database.sslMode
   else
     db_service = ENV.fetch("DATABASE_SERVICE_NAME","").upcase.sub("-", "_")
     username = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? "postgres" : ENV["POSTGRESQL_USER"]
@@ -34,6 +34,8 @@ default: &default
   host: <%= host %>
   database: <%= database %>
   port: <%= port %>
+  sslmode: <%= sslmode || "prefer" %>
+  sslrootcert: <%= sslrootcert  || "" %>
 
 test:
   <<: *default

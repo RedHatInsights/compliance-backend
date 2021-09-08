@@ -295,25 +295,23 @@ objects:
           value: "secret_key_base"
 
 parameters:
-- name: MIN_REPLICAS
-  value: '1'
-- description: Image tag
-  name: IMAGE_TAG
+- name: IMAGE_TAG
+  description: Image tag
   required: true
   value: latest
-- description: Image name
-  name: IMAGE
+- name: IMAGE
+  description: Image name
   value: quay.io/cloudservices/compliance-backend
-- description: ClowdEnv Name
-  name: ENV_NAME
-- description: Replica count for backend service
-  name: REPLICAS_BACKEND
+- name: ENV_NAME
+  description: ClowdEnv Name
+- name: REPLICAS_BACKEND
+  description: Replica count for backend service
   value: "1"
-- description: Replica count for consumer
-  name: REPLICAS_CONSUMER
+- name: REPLICAS_CONSUMER
+  description: Replica count for consumer
   value: "1"
-- description: Replica count for sidekiq
-  name: REPLICAS_SIDEKIQ
+- name: REPLICAS_SIDEKIQ
+  description: Replica count for sidekiq
   value: "1"
 - name: RAILS_ENV
   required: true
@@ -326,10 +324,6 @@ parameters:
 - name: APP_NAME
   required: true
   value: compliance
-- name: PGSSLMODE
-  description: 'Options can be found in the doc: https://www.postgresql.org/docs/current/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS'
-  displayName: Postgres SSL mode
-  value: verify-full
 - name: MEMORY_LIMIT_PROM
   value: 300Mi
 - name: MEMORY_REQUEST_PROM
