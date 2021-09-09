@@ -37,7 +37,7 @@ if Settings.prometheus_exporter_host.present? && !Rails.env.test?
     port: Settings.prometheus_exporter_port
   )
 
-  PrometheusExporter::Metric::Base.default_prefix = 'compliance'
+  PrometheusExporter::Metric::Base.default_prefix = 'compliance_'
 
   # stats per request like HTTP status and timings
   Rails.application.middleware.unshift PrometheusExporter::Middleware
