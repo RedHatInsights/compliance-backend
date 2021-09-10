@@ -6,11 +6,14 @@
 namespace :ssg do
   desc 'Update compliance DB with the supported SCAP Security Guide versions'
   task import_rhel_supported: [:environment] do
-    downloader = DatastreamDownloader.new
-    downloader.download_datastreams do |file|
-      ENV['DATASTREAM_FILE'] = file
-      Rake::Task['ssg:import'].execute
+    if Revision.datastreams != SupportedSsg.revision
+      downloader = DatastreamDownloader.new
+      downloader.download_datastreams do |file|
+        ENV['DATASTREAM_FILE'] = file
+        Rake::Task['ssg:import'].execute
+      end
     end
+    Revision.datastreams = SupportedSsg.revision
     Rake::Task['import_remediations'].execute
   end
 

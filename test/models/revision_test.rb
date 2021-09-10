@@ -32,4 +32,27 @@ class RevisionTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context 'helper class methods' do
+    setup do
+      Revision.destroy_all
+    end
+
+    should 'allow getting and setting revisions' do
+      assert_nil Revision.datastreams
+      assert_nil Revision.remediations
+
+      Revision.datastreams = '2021-09-01'
+      Revision.remediations = '2021-09-02'
+
+      assert_equal '2021-09-01', Revision.datastreams
+      assert_equal '2021-09-02', Revision.remediations
+
+      Revision.datastreams = '2021-09-05'
+      Revision.remediations = '2021-09-06'
+
+      assert_equal '2021-09-05', Revision.datastreams
+      assert_equal '2021-09-06', Revision.remediations
+    end
+  end
 end
