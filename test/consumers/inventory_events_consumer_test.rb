@@ -46,6 +46,27 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     assert_equal 0, DeleteHost.jobs.size
   end
 
+  test 'b64_identity is included in metadata' do
+    class TestReportParsing
+      include ReportParsing
+
+      def initialize
+        @msg_value = {
+          'platform_metadata' => {
+            'b64_identity' => 'identity'
+          },
+          'host' => {
+            'id' => 'id'
+          }
+        }
+      end
+    end
+
+    assert_equal('identity',
+                 TestReportParsing.new.send(:metadata)['b64_identity'])
+    assert_equal 'id', TestReportParsing.new.send(:metadata)['id']
+  end
+
   context 'report upload messages' do
     setup do
       ParseReportJob.clear
