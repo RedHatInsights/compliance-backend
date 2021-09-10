@@ -159,13 +159,24 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     end
   end
 
-  context 'missing ID' do
+  context 'error handling' do
     should 'raise error if message ID is not present' do
       assert_raises(XccdfReportParser::MissingIdError) do
         TestParser.new(
           'fakereport',
           'account' => @account.account_number,
           'b64_identity' => @account.b64_identity,
+          'metadata' => { 'display_name': '123' }
+        )
+      end
+    end
+
+    should 'validate b64_identity is present' do
+      assert_raises(XccdfReportParser::MissingIdError) do
+        TestParser.new(
+          'fakereport',
+          'account' => @account.account_number,
+          'id' => @host.id,
           'metadata' => { 'display_name': '123' }
         )
       end

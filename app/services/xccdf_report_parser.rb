@@ -31,11 +31,11 @@ class XccdfReportParser
   BENCHMARK_PREFIX = 'xccdf_org.ssgproject.content_benchmark_'
 
   def initialize(report_contents, message)
-    unless valid_message_format?(message)
-      raise MissingIdError, 'Missing Host id in message'
-    end
-
+    @id = message['id']
     @b64_identity = message['b64_identity']
+
+    validate_message_format!
+
     @account = Account.from_identity_header(IdentityHeader.new(@b64_identity))
     @host = Host.find(message['id'])
     @test_result_file = OpenscapParser::TestResultFile.new(report_contents)
@@ -49,8 +49,13 @@ class XccdfReportParser
     raise WrongFormatError, 'Wrong format or benchmark'
   end
 
-  def valid_message_format?(message)
-    message['id'].present?
+  def validate_message_format!
+    msg = "Missing data in message: id=#{@id} b64_identity=#{@b64_identity}"
+    raise(MissingIdError, msg) unless valid_message_format?
+  end
+
+  def valid_message_format?
+    @id.present? && @b64_identity.present?
   end
 
   def check_os_version
