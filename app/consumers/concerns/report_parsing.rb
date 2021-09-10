@@ -83,7 +83,8 @@ module ReportParsing
 
     def metadata
       (@msg_value.dig('platform_metadata', 'metadata') || {}).merge(
-        'id' => id
+        'id' => id,
+        'b64_identity' => b64_identity
       )
     end
 
