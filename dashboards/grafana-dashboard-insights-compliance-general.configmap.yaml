@@ -1174,7 +1174,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(container_cpu_usage_seconds_total{pod=~\"compliance-.*\"}[$interval])) by (container)/ sum(kube_pod_container_resource_limits_cpu_cores{pod=~\"compliance-.*\"}) by (container)",
+              "expr": "sum(rate(container_cpu_usage_seconds_total{pod=~\"compliance-.*\"}[$interval])) by (container)/ sum(kube_pod_container_resource_limits{resource=\"cpu\",pod=~\"compliance-.*\"}) by (container)",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{container}}",
