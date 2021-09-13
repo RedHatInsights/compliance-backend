@@ -40,7 +40,7 @@ module BenchmarkSearching
 
     scope :latest_for_os, lambda { |os_major_version, os_minor_version|
       ssgs = SupportedSsg.for_os(os_major_version, os_minor_version)
-      ssg_versions = ssgs.map { |ssg| ssg.upstream_version || ssg.version }
+      ssg_versions = ssgs.map(&:version)
 
       where(version: ssg_versions)
         .os_major_version(os_major_version)
