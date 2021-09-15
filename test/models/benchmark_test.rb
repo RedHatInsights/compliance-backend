@@ -383,8 +383,7 @@ module Xccdf
       setup do
         rhel6_supported = [
           SupportedSsg.new(
-            version: '1.6.1', upstream_version: '1.6.0',
-            os_major_version: '6', os_minor_version: '10'
+            version: '1.6.1', os_major_version: '6', os_minor_version: '10'
           )
         ]
         rhel7_supported = [
@@ -421,7 +420,7 @@ module Xccdf
 
       should 'return latest from extisting benchmarks' do
         bm6 = FactoryBot.create(
-          :benchmark, os_major_version: '6', version: '1.6.0'
+          :benchmark, os_major_version: '6', version: '1.6.1'
         )
         FactoryBot.create(:benchmark, os_major_version: '7', version: '1.7.1')
         FactoryBot.create(:benchmark, os_major_version: '7', version: '1.7.2')
@@ -439,17 +438,6 @@ module Xccdf
         assert_includes returned, bm7
         assert_includes returned, bm8
         assert_equal 3, returned.count
-      end
-
-      should 'return prefers upstream version' do
-        FactoryBot.create(:benchmark, os_major_version: '6', version: '1.6.1')
-        bm6 = FactoryBot.create(
-          :benchmark, os_major_version: '6', version: '1.6.0'
-        )
-
-        returned = Xccdf::Benchmark.latest_supported
-        assert_includes returned, bm6
-        assert_equal 1, returned.count
       end
 
       should 'fallbacks to previous existing benchmark' do

@@ -37,9 +37,9 @@ class SupportedSsgTest < ActiveSupport::TestCase
                          os_major_version: '7', os_minor_version: '3'),
         SupportedSsg.new(version: '0.1.24',
                          os_major_version: '7', os_minor_version: '2'),
-        SupportedSsg.new(upstream_version: '0.1.25', version: '0.1.22',
+        SupportedSsg.new(version: '0.1.22',
                          os_major_version: '6', os_minor_version: '10'),
-        SupportedSsg.new(upstream_version: 'N/A', version: '0.1.1',
+        SupportedSsg.new(version: '0.1.1',
                          os_major_version: '6', os_minor_version: '9')
       ]
       SupportedSsg.stubs(:all).returns(loaded)
@@ -48,16 +48,6 @@ class SupportedSsgTest < ActiveSupport::TestCase
     should 'provide models with ref_id' do
       ref_ids = SupportedSsg.all.map(&:ref_id)
       assert ref_ids.all?(&:present?)
-    end
-
-    should 'provide models available upstream' do
-      in_upstream = SupportedSsg.available_upstream
-      versions = in_upstream.map(&:version)
-      assert_includes versions, '0.1.52'
-      assert_includes versions, '0.1.50'
-      assert_includes versions, '0.1.24'
-      assert_includes versions, '0.1.22'
-      assert_equal in_upstream.count, 4
     end
 
     should 'provide a map of latest supported SSG for combination of OS major' \

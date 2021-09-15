@@ -4,7 +4,6 @@ supported:
   RHEL-6.6:
     - package: scap-security-guide-0.1.18-3.el6
       version: 0.1.18
-      upstream_version: N/A
       profiles:
         C2S:
         common:
@@ -18,7 +17,6 @@ supported:
   RHEL-6.7:
     - package: scap-security-guide-0.1.21-3.el6
       version: 0.1.21
-      upstream_version: N/A
       profiles:
         C2S:
         common:
@@ -76,7 +74,6 @@ supported:
   RHEL-7.1:
     - package: scap-security-guide-0.1.19-2.el7
       version: 0.1.19
-      upstream_version: N/A
       profiles:
         rht-ccp:
   RHEL-7.2:
@@ -209,9 +206,7 @@ supported:
             - stig-rhel7-disa
   RHEL-7.9:
     - package: scap-security-guide-0.1.49-13.el7
-      # RHEL 7 with CIS backported to 0.1.49 in downstream
       version: 0.1.49
-      upstream_version: 0.1.50
       profiles:
         anssi_nt28_enhanced:
         anssi_nt28_high:

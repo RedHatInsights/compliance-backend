@@ -31,7 +31,7 @@ module BenchmarkSearching
 
     scope :latest_supported, lambda {
       SupportedSsg.by_os_major.inject(none) do |union, (os_major_version, ssgs)|
-        ssg_versions = ssgs.map { |ssg| ssg.upstream_version || ssg.version }
+        ssg_versions = ssgs.map(&:version)
         union.or(where(id: order_by_version.os_major_version(os_major_version)
                                            .where(version: ssg_versions)
                                            .limit(1)))

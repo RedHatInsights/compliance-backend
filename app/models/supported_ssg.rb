@@ -3,7 +3,7 @@
 require 'yaml'
 
 # rubocop:disable Metrics/BlockLength
-SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
+SupportedSsg = Struct.new(:id, :package, :version, :profiles,
                           :os_major_version, :os_minor_version,
                           keyword_init: true) do
   OS_NAME = 'RHEL'
@@ -58,13 +58,6 @@ SupportedSsg = Struct.new(:id, :package, :version, :upstream_version, :profiles,
 
     def revision
       raw_supported['revision']
-    end
-
-    # Collection of supported SSGs that have ZIP available upstream
-    def available_upstream
-      all.reject do |ssg|
-        ssg.upstream_version&.upcase == 'N/A'
-      end
     end
 
     # Multilevel map of latest supported SSG for OS major and minor version
