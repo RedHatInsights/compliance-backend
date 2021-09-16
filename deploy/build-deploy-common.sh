@@ -160,9 +160,9 @@ build_image() {
 
     if [ -n "$BUILD_ARGS" ]; then
         BUILD_ARGS_CMD=$(_get_build_args)
-        container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD -t "${IMAGE_NAME}:${IMAGE_TAG}" .
+        container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD -t "${IMAGE_NAME}:${IMAGE_TAG}" --target=${TARGET_BUILD_STAGE} .
     else
-        container_engine_cmd build --pull -f "$DOCKERFILE" -t "${IMAGE_NAME}:${IMAGE_TAG}" .
+        container_engine_cmd build --pull -f "$DOCKERFILE" -t "${IMAGE_NAME}:${IMAGE_TAG}" --target=${TARGET_BUILD_STAGE} .
     fi
 
 }

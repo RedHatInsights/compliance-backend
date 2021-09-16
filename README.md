@@ -139,10 +139,12 @@ They are being read by dotenv.
 First, let's install all dependencies and initialize the database.
 
 ```shell
-bundle install
+bundle install --without=tableau
 bundle exec rake db:setup # invoke only on first setup!
 bundle exec rake db:test:prepare # for test DB setup
 ```
+
+Note that the `tableau` group is not necessary for running the Rails application, however, it needs some [additional dependencies](https://arrow.apache.org/install/) if you decide to install it.
 
 Once you have database initialized, you might want to import SSG policies:
 

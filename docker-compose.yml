@@ -181,6 +181,7 @@ services:
     build:
       context: .
       dockerfile: devel.Dockerfile
+      target: compliance-backend
     image: compliance-backend-rails
     tty: true
     stdin_open: true
