@@ -4,6 +4,15 @@
 # a class than a block and should be able to handle multiple tasks.
 # rubocop:disable Metrics/BlockLength
 namespace :ssg do
+  desc 'Check if the latest SSG has been synced'
+  task check_synced: [:environment] do
+    message = "SSG datastreams not synced\nDatastream config revision: " \
+      "#{SupportedSsg.revision.inspect}\nDB revision: " \
+      "#{Revision.datastreams.inspect}"
+    abort message if Revision.datastreams != SupportedSsg.revision
+    puts "Datastreams synced to revision: #{Revision.datastreams}"
+  end
+
   desc 'Update compliance DB with the supported SCAP Security Guide versions'
   task import_rhel_supported: [:environment] do
     if Revision.datastreams != SupportedSsg.revision
@@ -14,6 +23,7 @@ namespace :ssg do
       end
     end
     Revision.datastreams = SupportedSsg.revision
+    puts "Datastreams synced to revision: #{Revision.datastreams}"
     Rake::Task['import_remediations'].execute
   end
 

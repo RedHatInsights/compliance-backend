@@ -36,8 +36,10 @@ objects:
       enabled: true
       appName: "compliance"
       insightsOnly: true
-    deployments:
-    - name: db-migrations
+    jobs:
+    - name: compliance-import-ssg
+      schedule: "*/5 * * * *" # every 5 minutes
+      concurrencyPolicy: Forbid
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
@@ -45,7 +47,9 @@ objects:
             - bash
             - -c
             - |
-              bundle exec rake --trace db:debug db:migrate
+              for i in {1..120}; do sleep 1;
+              if bundle exec rake --trace db:abort_if_pending_migrations;
+              then exit 0; fi; done; exit 1
           inheritEnv: true
         resources:
           limits:
@@ -56,7 +60,7 @@ objects:
             memory: ${MEMORY_REQUEST_SIDE}
         env:
         - name: APPLICATION_TYPE
-          value: sleep
+          value: compliance-import-ssg
         - name: RAILS_ENV
           value: "${RAILS_ENV}"
         - name: RAILS_LOG_TO_STDOUT
@@ -72,7 +76,8 @@ objects:
           value: "secret_key_base"
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
-    - name: compliance-import-ssg
+    deployments:
+    - name: db-migrations
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
@@ -80,8 +85,7 @@ objects:
             - bash
             - -c
             - |
-              while ! bundle exec rake --trace db:abort_if_pending_migrations; do sleep 1; done;
-              bundle exec rake ssg:import_rhel_supported --trace
+              bundle exec rake --trace db:debug db:migrate
           inheritEnv: true
         resources:
           limits:
@@ -124,7 +128,7 @@ objects:
           - -c
           - |
             for i in {1..120}; do sleep 1;
-            if bundle exec rake --trace db:abort_if_pending_migrations;
+            if bundle exec rake --trace db:abort_if_pending_migrations ssg:check_synced;
             then exit 0; fi; done; exit 1
           env:
           - name: RAILS_ENV
@@ -191,7 +195,7 @@ objects:
           - -c
           - |
             for i in {1..120}; do sleep 1;
-            if bundle exec rake --trace db:abort_if_pending_migrations;
+            if bundle exec rake --trace db:abort_if_pending_migrations ssg:check_synced;
             then exit 0; fi; done; exit 1
           env:
           - name: RAILS_ENV
@@ -260,7 +264,7 @@ objects:
             - -c
             - |
               for i in {1..120}; do sleep 1;
-              if bundle exec rake --trace db:abort_if_pending_migrations;
+              if bundle exec rake --trace db:abort_if_pending_migrations ssg:check_synced;
               then exit 0; fi; done; exit 1
           env:
           - name: RAILS_ENV

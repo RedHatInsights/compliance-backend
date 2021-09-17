@@ -36,4 +36,26 @@ class ImportDatastreamTest < ActiveSupport::TestCase
       Rake::Task['ssg:import_rhel_supported'].execute
     end
   end
+
+  test 'ssg:check_synced fails if not synced' do
+    SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
+    Revision.expects(:datastreams).at_least_once.returns('2021-06-01')
+
+    assert_raises SystemExit do
+      capture_io do
+        Rake::Task['ssg:check_synced'].execute
+      end
+    end
+  end
+
+  test 'ssg:check_synced succeeds if synced' do
+    SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
+    Revision.expects(:datastreams).at_least_once.returns('2021-07-15')
+
+    assert_nothing_raised do
+      capture_io do
+        Rake::Task['ssg:check_synced'].execute
+      end
+    end
+  end
 end
