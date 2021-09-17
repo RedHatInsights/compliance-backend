@@ -6,6 +6,7 @@ IMAGE_TAG=$(git rev-parse --short=7 HEAD)
 export IMAGE_TAG
 
 DB_CONTAINER_NAME="compliance-db-${IMAGE_TAG}"
+TEST_CONTAINER_NAME="compliance-test-${IMAGE_TAG}"
 
 NETWORK="compliance-test-${IMAGE_TAG}"
 POSTGRES_IMAGE="quay.io/cloudservices/postgresql-rds:cyndi-12-1"
@@ -16,8 +17,8 @@ DATABASE_PASSWORD="changeme"
 DATABASE_NAME="compliance-test"
 
 function teardown_docker {
-  docker rm -f "$DB_CONTAINER_ID" || true
-  docker rm -f "$TEST_CONTAINER_ID" || true
+  docker rm -f "$DB_CONTAINER_NAME" || true
+  docker rm -f "$TEST_CONTAINER_NAME" || true
   docker network rm "$NETWORK" || true
 }
 
@@ -30,6 +31,7 @@ docker network create --driver bridge "$NETWORK"
 DB_CONTAINER_ID=$(docker run -d \
   --name "${DB_CONTAINER_NAME}" \
   --network "$NETWORK" \
+  --rm \
   -e POSTGRESQL_USER="$DATABASE_USER" \
   -e POSTGRESQL_PASSWORD="$DATABASE_PASSWORD" \
   -e POSTGRESQL_DATABASE="$DATABASE_NAME" \
@@ -42,7 +44,9 @@ fi
 
 # Do tests
 TEST_CONTAINER_ID=$(docker run -d \
+  --name "${TEST_CONTAINER_NAME}" \
   --network "$NETWORK" \
+  --rm \
   -e DATABASE_SERVICE_NAME=postgresql \
   -e POSTGRESQL_SERVICE_HOST="$DB_CONTAINER_NAME" \
   -e POSTGRESQL_USER="$DATABASE_USER" \
