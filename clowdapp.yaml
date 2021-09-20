@@ -104,6 +104,8 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
+        - name: SETTINGS__FORCE_IMPORT_SSGS
+          value: "${SETTINGS__FORCE_IMPORT_SSGS}"
     - name: compliance-backend
       # TODO: Check how to auto-scale with Clowder
       minReplicas: ${{REPLICAS_BACKEND}}
@@ -386,3 +388,5 @@ parameters:
   value: "5"
 - name: OLD_PATH_PREFIX
   value: /r/insights/platform
+- name: SETTINGS__FORCE_IMPORT_SSGS
+  value: "false"
