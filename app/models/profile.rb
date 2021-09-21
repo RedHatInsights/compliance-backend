@@ -9,6 +9,7 @@ class Profile < ApplicationRecord
   include ProfileSearching
   include ProfileHosts
   include ProfileRules
+  include ShortRefId
 
   sortable_by :name, Arel.sql('COALESCE(policies.name, profiles.name)'),
               scope: :joins_policy

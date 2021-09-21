@@ -24,6 +24,7 @@ class Rule < ApplicationRecord
   scoped_search relation: :rule_identifier, on: :label, aliases: %i[identifier]
   include OpenscapParserDerived
   include RuleRemediation
+  include ShortRefId
 
   has_many :profile_rules, dependent: :delete_all
   has_many :profiles, through: :profile_rules, source: :profile
