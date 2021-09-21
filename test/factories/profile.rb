@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :profile do
     name { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
-    ref_id { "foo-#{SecureRandom.uuid}" }
+    ref_id { "xccdf_org.ssgproject.content_profile_#{SecureRandom.uuid}" }
     benchmark { association :benchmark, os_major_version: os_major_version }
     parent_profile do
       association(
