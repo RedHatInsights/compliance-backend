@@ -51,13 +51,17 @@ class MetadataTest < ActionDispatch::IntegrationTest
 
     FactoryBot.create(:profile)
 
-    search_query = 'ref_id~foo'
+    search_query = 'ref_id~xccdf_org.ssgproject.content_profile_'
     get profiles_url, params: { search: search_query, limit: 1, offset: 2 }
     assert_response :success
-    assert_match(/search=ref_id~foo/, json_body['links']['first'])
-    assert_match(/search=ref_id~foo/, json_body['links']['last'])
-    assert_match(/search=ref_id~foo/, json_body['links']['next'])
-    assert_match(/search=ref_id~foo/, json_body['links']['previous'])
+    assert_match(/search=ref_id~xccdf_org.ssgproject.content_profile_/,
+                 json_body['links']['first'])
+    assert_match(/search=ref_id~xccdf_org.ssgproject.content_profile_/,
+                 json_body['links']['last'])
+    assert_match(/search=ref_id~xccdf_org.ssgproject.content_profile_/,
+                 json_body['links']['next'])
+    assert_match(/search=ref_id~xccdf_org.ssgproject.content_profile_/,
+                 json_body['links']['previous'])
     assert_equal Profile.search_for(search_query).count,
                  json_body['meta']['total']
     assert_equal search_query, json_body['meta']['search']
