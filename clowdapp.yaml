@@ -369,9 +369,9 @@ parameters:
 - name: MEMORY_REQUEST_SIDE
   value: 500Mi
 - name: CPU_LIMIT_SIDE
-  value: 800m
+  value: 1000m
 - name: CPU_REQUEST_SIDE
-  value: 80m
+  value: 100m
 - name: REDIS_SSL
   description: 'Whether to use secured connection to Redis. Use string values of true or false'
   value: "true"
