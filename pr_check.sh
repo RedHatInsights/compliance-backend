@@ -19,9 +19,10 @@ source $CICD_ROOT/build.sh
 mkdir -p artifacts
 
 export IQE_PLUGINS="compliance"
-export IQE_MARKER_EXPRESSION="smoke"
+export IQE_MARKER_EXPRESSION="compliance_smoke"
 export IQE_FILTER_EXPRESSION=""
-export IQE_CJI_TIMEOUT=1800 # 30 minutes
+export IQE_CJI_TIMEOUT="30m" # 30 minutes
+export DEPLOY_TIMEOUT=2000
 
 export COMPONENTS_W_RESOURCES="compliance"
 
@@ -29,5 +30,5 @@ export COMPONENTS_W_RESOURCES="compliance"
 source $APP_ROOT/unit_test.sh
 
 # Run smoke tests
-# source $CICD_ROOT/deploy_ephemeral_env.sh
-# source $CICD_ROOT/cji_smoke_test.sh
+source $CICD_ROOT/deploy_ephemeral_env.sh
+source $CICD_ROOT/cji_smoke_test.sh
