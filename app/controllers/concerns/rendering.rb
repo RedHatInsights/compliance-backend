@@ -28,7 +28,7 @@ module Rendering
       opts = index? ? metadata : {}
       opts.merge!(params: { root_resource: resource })
       opts[:params].merge!(relationships: relationships_enabled?)
-      opts.merge!(include: params[:include].split(',')) if params[:include]
+      opts.merge!(include: include_params.split(',')) if include_params
 
       opts
     end

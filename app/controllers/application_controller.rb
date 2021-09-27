@@ -72,6 +72,13 @@ class ApplicationController < ActionController::API
                  status: :unprocessable_entity
   end
 
+  rescue_from JSONAPI::Serializer::UnsupportedIncludeError do |error|
+    message = "Invalid parameter: #{error.message.sub(/ on .*Serializer$/, '')}"
+    logger.info "#{message} (#{StrongerParameters::InvalidParameter})"
+    render_error message,
+                 status: :unprocessable_entity
+  end
+
   protected
 
   def audit_success(msg)

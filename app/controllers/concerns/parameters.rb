@@ -41,6 +41,10 @@ module Parameters
       end
     end
 
+    def include_params
+      params.permit(include: ParamType.regexp(/^[a-zA-Z0-9,_]*$/))[:include]
+    end
+
     private
 
     def relationship_types
