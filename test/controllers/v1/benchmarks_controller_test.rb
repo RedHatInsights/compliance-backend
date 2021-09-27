@@ -26,6 +26,20 @@ module V1
       assert_equal(response.parsed_body['included'].first['type'], 'rule')
     end
 
+    test 'fails when includes nested' do
+      FactoryBot.create(:rule, benchmark: FactoryBot.create(:benchmark))
+      get v1_benchmarks_url, params: { include: 'rules.benchmark' }
+      assert_response 422
+      assert_match('Invalid parameter:', response.parsed_body['errors'].first)
+    end
+
+    test 'fails when includes invalid' do
+      FactoryBot.create(:rule, benchmark: FactoryBot.create(:benchmark))
+      get v1_benchmarks_url, params: { include: 'ducktales,benchmark' }
+      assert_response 422
+      assert_match('Invalid parameter:', response.parsed_body['errors'].first)
+    end
+
     test 'benchmarks can be sorted' do
       b1 = FactoryBot.create(:benchmark, title: 'a', version: '0.2')
       b2 = FactoryBot.create(:benchmark, title: 'a', version: '1.0')
