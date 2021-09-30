@@ -25,7 +25,8 @@ module Metadata
           tags: tags,
           limit: pagination_limit,
           offset: pagination_offset,
-          sort_by: params[:sort_by]
+          sort_by: params[:sort_by],
+          relationships: relationships_enabled?
         }.compact,
         links: links(last_offset(opts[:total]))
       }
@@ -84,7 +85,8 @@ module Metadata
         include: params[:include],
         limit: pagination_limit,
         tags: params[:tags],
-        sort_by: params[:sort_by]
+        sort_by: params[:sort_by],
+        relationships: relationships_enabled?
       }
     end
 
