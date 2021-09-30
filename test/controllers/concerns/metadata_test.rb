@@ -93,6 +93,22 @@ class MetadataTest < ActionDispatch::IntegrationTest
     assert_includes json_body['links']['previous'], 'search=name+%21%3D+%22%22'
   end
 
+  test 'meta adds relationships param to JSON response' do
+    authenticate
+    3.times do
+      FactoryBot.create(:profile)
+    end
+
+    get profiles_url, params: { relationships: false, limit: 1, offset: 2 }
+    assert_response :success
+    assert_includes json_body['links']['first'], 'relationships=false'
+    assert_includes json_body['links']['last'], 'relationships=false'
+    assert_includes json_body['links']['next'], 'relationships=false'
+    assert_includes json_body['links']['previous'], 'relationships=false'
+    assert_equal({}, parsed_data[0]['relationships'])
+    assert_equal false, json_body['meta']['relationships']
+  end
+
   context 'pagination' do
     setup do
       authenticate

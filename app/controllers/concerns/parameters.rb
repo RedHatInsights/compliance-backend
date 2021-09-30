@@ -12,6 +12,11 @@ module Parameters
   )
 
   included do
+    def relationships_enabled?
+      params.permit(relationships: ParamType.boolean)
+            .with_defaults(relationships: true)[:relationships]
+    end
+
     def resource_params
       params.permit(data: ParamType.map(
         attributes: ParamType.map,
