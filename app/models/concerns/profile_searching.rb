@@ -6,7 +6,7 @@ module ProfileSearching
 
   included do
     scoped_search on: %i[id name ref_id account_id compliance_threshold
-                         external parent_profile_id]
+                         external parent_profile_id upstream]
     scoped_search relation: :assigned_hosts, on: :id, rename: :system_ids
     scoped_search relation: :assigned_hosts, on: :display_name,
                   rename: :system_names
@@ -38,6 +38,9 @@ module ProfileSearching
     scope :canonical, lambda { |canonical = true|
       canonical && where(parent_profile_id: nil) ||
         where.not(parent_profile_id: nil)
+    }
+    scope :upstream, lambda { |upstream = true|
+      where(upstream: upstream)
     }
     scope :with_policy, lambda { |with_policy = true|
       with_policy && where.not(policy_id: nil) ||

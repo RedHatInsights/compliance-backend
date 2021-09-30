@@ -17,6 +17,7 @@ module Types
     field :profiles, [::Types::Profile], null: true
     field :identifier, String, null: true
     field :references, String, null: true
+    field :upstream, Boolean, null: false
     field :compliant, Boolean, null: false do
       argument :system_id, String, 'Is a system compliant?',
                required: false

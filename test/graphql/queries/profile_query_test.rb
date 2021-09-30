@@ -269,6 +269,68 @@ class ProfileQueryTest < ActiveSupport::TestCase
       assert_equal @profile.policy.description, second_profile['description']
     end
 
+    should 'search by upstream flag' do
+      @profile.update!(upstream: true)
+      @profile2.update!(upstream: false)
+
+      query = <<-GRAPHQL
+      {
+        profiles(search: "upstream=false") {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+      GRAPHQL
+
+      result = Schema.execute(
+        query,
+        variables: {},
+        context: { current_user: @user }
+      )
+
+      profiles = result['data']['profiles']['edges']
+
+      assert_equal 1, profiles.count
+      assert_equal @profile2.id, profiles.first['node']['id']
+    end
+
+    should 'search for downstream profiles and its nested downstream rules' do
+      @profile.update!(upstream: false)
+      rule = @profile.rules.first
+      rule.update!(upstream: false)
+
+      query = <<-GRAPHQL
+      {
+        profiles(search: "upstream=false") {
+          edges {
+            node {
+              id
+              rules: downstreamRules {
+                id
+              }
+            }
+          }
+        }
+      }
+      GRAPHQL
+
+      result = Schema.execute(
+        query,
+        variables: {},
+        context: { current_user: @user }
+      )
+
+      profiles = result['data']['profiles']['edges']
+
+      assert_equal 1, profiles.count
+      assert_equal @profile.id, profiles.first['node']['id']
+      assert_equal 1, profiles.first['node']['rules'].count
+      assert_equal rule.id, profiles.first['node']['rules'].first['id']
+    end
+
     should 'sort results' do
       query = <<-GRAPHQL
       {

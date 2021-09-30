@@ -16,6 +16,16 @@ module Types
     field :latest_supported_os_minor_versions, [String], null: false
     field :profiles, [::Types::Profile], null: true
     field :rules, [::Types::Rule], null: true
+    field :downstream_rules, [::Types::Rule], null: true
+    field :downstream_profiles, [::Types::Profile], null: true
+
+    def downstream_profiles
+      object.profiles.upstream(false)
+    end
+
+    def downstream_rules
+      object.rules.upstream(false)
+    end
 
     def profiles
       object.profiles.canonical

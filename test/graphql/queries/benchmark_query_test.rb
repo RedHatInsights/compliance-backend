@@ -35,6 +35,48 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
     )
   end
 
+  test 'query downstream rules and profiles' do
+    query = <<-GRAPHQL
+      query Benchmarks {
+        benchmarks {
+          nodes {
+            id
+            profiles: downstreamProfiles {
+              id
+            }
+            rules: downstreamRules {
+              id
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    d_profile, _u_profile = FactoryBot.create_list(
+      :canonical_profile,
+      2,
+      :with_rules,
+      rule_count: 2,
+      benchmark: FactoryBot.create(:benchmark)
+    )
+
+    d_rule = d_profile.rules.first
+    d_profile.update!(upstream: false)
+    d_rule.update!(upstream: false)
+
+    result = Schema.execute(
+      query,
+      variables: {},
+      context: { current_user: @user }
+    )
+
+    nodes = result.dig('data', 'benchmarks', 'nodes')
+
+    assert_equal 1, nodes.count
+    assert_equal d_profile.id, nodes.first['profiles'].first['id']
+    assert_equal d_rule.id, nodes.first['rules'].first['id']
+  end
+
   test 'query benchmarks with a filter' do
     query = <<-GRAPHQL
       query Benchmarks {

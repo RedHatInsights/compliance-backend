@@ -22,6 +22,7 @@ class Rule < ApplicationRecord
   scoped_search on: %i[id ref_id severity]
   scoped_search relation: :rule_references, on: :label, aliases: %i[reference]
   scoped_search relation: :rule_identifier, on: :label, aliases: %i[identifier]
+
   include OpenscapParserDerived
   include RuleRemediation
 
@@ -62,6 +63,10 @@ class Rule < ApplicationRecord
 
   scope :canonical, lambda {
     includes(:profiles).where(profiles: { id: Profile.canonical })
+  }
+
+  scope :upstream, lambda { |upstream = true|
+    where(upstream: upstream)
   }
 
   def canonical?

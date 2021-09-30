@@ -32,6 +32,7 @@ module Types
       argument :references, [String],
                'Rule references to filter by', required: false
     end
+    field :downstream_rules, [::Types::Rule], null: true
     field :hosts, [::Types::System], null: true
     field :benchmark, ::Types::Benchmark, null: true
     field :ssg_version, String, null: false
@@ -41,6 +42,7 @@ module Types
     field :test_result_host_count, Int, null: false
     field :unsupported_host_count, Int, null: false
     field :external, Boolean, null: false
+    field :upstream, Boolean, null: false
     field :parent_profile_id, ID, null: true
 
     field :score, Float, null: false do
@@ -97,6 +99,10 @@ module Types
     def hosts
       ::CollectionLoader.for(policy_or_report.class, :hosts)
                         .load(policy_or_report)
+    end
+
+    def downstream_rules
+      object.rules.upstream(false)
     end
 
     private
