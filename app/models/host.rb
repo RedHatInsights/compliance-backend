@@ -5,6 +5,7 @@
 class Host < ApplicationRecord
   OS_MINOR_VERSION = Arel.sql("system_profile->'operating_system'->'minor'")
   OS_MAJOR_VERSION = Arel.sql("system_profile->'operating_system'->'major'")
+  OS_VERSION = Arel.sql("system_profile->'operating_system'")
 
   sortable_by :name, :display_name
   sortable_by :os_major_version, OS_MAJOR_VERSION
@@ -30,6 +31,10 @@ class Host < ApplicationRecord
 
   def self.os_minor_versions(hosts)
     distinct.where(id: hosts).pluck(OS_MINOR_VERSION)
+  end
+
+  def self.available_os_versions
+    distinct.pluck(OS_VERSION)
   end
 
   def readonly?

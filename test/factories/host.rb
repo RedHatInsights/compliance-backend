@@ -77,6 +77,7 @@ FactoryBot.define do
         {
           'os_release' => os_version,
           'operating_system' => {
+            'name' => 'RHEL',
             'major' => os_major_version,
             'minor' => os_minor_version
           }

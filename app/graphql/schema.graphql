@@ -86,6 +86,15 @@ interface Node {
 }
 
 """
+An operating system with its version
+"""
+type OperatingSystem {
+  major: Int!
+  minor: Int!
+  name: String!
+}
+
+"""
 Information about pagination in a connection.
 """
 type PageInfo {
@@ -532,6 +541,7 @@ type SystemConnection {
   A list of nodes.
   """
   nodes: [System]
+  osVersions: [OperatingSystem!]!
 
   """
   Information to aid in pagination.

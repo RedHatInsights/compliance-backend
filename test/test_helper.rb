@@ -71,6 +71,10 @@ unless Rails.env.production?
                         msg_json,
                         "Message '#{msg}' not audited"
       end
+
+      def assert_equal_sets(arr1, arr2)
+        assert_equal Set.new(arr1), Set.new(arr2)
+      end
     end
   end
 
