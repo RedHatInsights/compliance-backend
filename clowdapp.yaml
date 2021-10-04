@@ -37,7 +37,7 @@ objects:
       appName: "compliance"
       insightsOnly: true
     jobs:
-    - name: compliance-import-ssg
+    - name: import-ssg
       schedule: "*/5 * * * *" # every 5 minutes
       concurrencyPolicy: Forbid
       podSpec:
@@ -114,7 +114,7 @@ objects:
           value: "${SETTINGS__FORCE_IMPORT_SSGS}"
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
-    - name: compliance-backend
+    - name: service
       # TODO: Check how to auto-scale with Clowder
       minReplicas: ${{REPLICAS_BACKEND}}
       webServices:
@@ -184,7 +184,7 @@ objects:
           requests:
             cpu: ${CPU_REQUEST_SERV}
             memory: ${MEMORY_REQUEST_SERV}
-    - name: compliance-inventory
+    - name: inventory-consumer
       # TODO: check requirement for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_CONSUMER}}
       podSpec:
@@ -253,7 +253,7 @@ objects:
             cpu: ${CPU_REQUEST_CONS}
             memory: ${MEMORY_REQUEST_CONS}
 
-    - name: compliance-sidekiq
+    - name: sidekiq
       # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_SIDEKIQ}}
       podSpec:
