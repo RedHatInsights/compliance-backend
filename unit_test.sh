@@ -19,14 +19,42 @@ DATABASE_NAME="compliance-test"
 function teardown_docker {
   docker rm -f "$DB_CONTAINER_NAME" || true
   docker rm -f "$TEST_CONTAINER_NAME" || true
-  docker network rm "$NETWORK" || true
+  try_to_delete_network || true
+}
+
+try_to_delete_network() {
+
+  if ! docker network rm "$NETWORK"; then
+
+    for CONTAINER_ID in "$DB_CONTAINER_NAME" "$TEST_CONTAINER_NAME"; do
+      docker network disconnect -f "$NETWORK" "$CONTAINER_ID"
+    done
+
+    if ! docker network rm "$NETWORK"; then
+      echo "failed deleting network '$NETWORK'";
+      return 1
+    fi
+  fi
+}
+
+try_to_create_container_network() {
+
+  if docker network inspect "$NETWORK" >/dev/null; then
+
+    if ! try_to_delete_network "$NETWORK"; then
+        return 1
+    fi
+  fi
+
+  if ! docker network create --driver bridge "$NETWORK"; then
+    echo "failed to create network $NETWORK"
+    return 1
+  fi
 }
 
 trap "teardown_docker" EXIT SIGINT SIGTERM
 
-
-docker network rm "$NETWORK" || echo "network likely doesn't exist"
-docker network create --driver bridge "$NETWORK"
+try_to_create_container_network || exit 1
 
 DB_CONTAINER_ID=$(docker run -d \
   --name "${DB_CONTAINER_NAME}" \
