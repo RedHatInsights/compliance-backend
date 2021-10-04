@@ -19,13 +19,25 @@ if ClowderCommonRuby::Config.clowder_enabled?
   redis_url = "#{config.dig('inMemoryDb', 'hostname')}:#{config.dig('inMemoryDb', 'port')}"
   redis_password = config.dig('inMemoryDb', 'password')
 
+  # Kafka
+  first_kafka_server_config = config.kafka.brokers[0]
+
+  kafka_server_config = {
+    brokers: "#{first_kafka_server_config.hostname}:#{first_kafka_server_config.port}",
+    security_protocol: first_kafka_server_config.authtype
+  }
+
+  if kafka_server_config['security_protocol'] == 'sasl_ssl'
+    kafkaCaFile = File.new('tmp/kafkaCa', 'wt')
+    kafkaCaFile.write(first_kafka_server_config.cacert)
+    kafka_server_config['ssl_ca_location'] = File.expand_path(kafkaCaFile.path)
+    kafka_server_config['sasl_username'] = first_kafka_server_config.dig('sasl', 'username')
+    kafka_server_config['sasl_password'] = first_kafka_server_config.dig('sasl', 'password')
+  end
+
   clowder_config = {
     compliance_ssg_url: compliance_ssg_url,
-    kafka: {
-      brokers: config.dig('kafka', 'brokers')&.map { |b| "#{b&.dig('hostname')}:#{b&.dig('port')}" }.join(','),
-      # Not provided by clowder, not sure which of the following should be: [:plaintext, :ssl, :sasl_plaintext, :sasl_ssl]
-      security_protocol: 'plaintext'
-    },
+    kafka: kafka_server_config,
     kafka_consumer_topics: {
       inventory_events: config.kafka_topics&.dig('platform.inventory.events', 'name')
     },
