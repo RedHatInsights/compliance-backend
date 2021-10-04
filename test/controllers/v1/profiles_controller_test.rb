@@ -919,13 +919,15 @@ module V1
       end
 
       test 'update with a single attribute' do
-        assert_difference("Policy.where(name: '#{NAME}').count" => 1) do
+        assert_difference(
+          "Policy.where(description: '#{DESCRIPTION}').count" => 1
+        ) do
           patch profile_path(@profile.id), params: params(
-            attributes: { name: NAME }
+            attributes: { description: DESCRIPTION }
           )
         end
         assert_response :success
-        assert_equal NAME, @profile.policy.reload.name
+        assert_equal DESCRIPTION, @profile.policy.reload.description
         assert_audited 'Updated profile'
         assert_audited @profile.id
         assert_audited @profile.policy.id
@@ -935,7 +937,6 @@ module V1
         assert_difference('BusinessObjective.count' => 1) do
           patch profile_path(@profile.id), params: params(
             attributes: {
-              name: NAME,
               description: DESCRIPTION,
               compliance_threshold: COMPLIANCE_THRESHOLD,
               business_objective: BUSINESS_OBJECTIVE
@@ -943,8 +944,7 @@ module V1
           )
         end
         assert_response :success
-        assert_equal NAME, @profile.policy.reload.name
-        assert_equal DESCRIPTION, @profile.policy.description
+        assert_equal DESCRIPTION, @profile.policy.reload.description
         assert_equal COMPLIANCE_THRESHOLD, @profile.compliance_threshold
         assert_equal BUSINESS_OBJECTIVE, @profile.business_objective.title
         assert_audited 'Updated profile'
