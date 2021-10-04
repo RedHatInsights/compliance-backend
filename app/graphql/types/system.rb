@@ -8,6 +8,7 @@ module Types
     include SystemProfiles
 
     model_class ::Host
+    connection_type_class ::Connections::SystemConnection
     graphql_name 'System'
     description 'A System registered in Insights Compliance'
 

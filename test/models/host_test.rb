@@ -369,6 +369,16 @@ class HostTest < ActiveSupport::TestCase
     assert_equal Host.os_minor_versions([@host1]), [4]
   end
 
+  test '#available_os_versions' do
+    assert_equal_sets(
+      [
+        { 'name' => 'RHEL', 'major' => 7, 'minor' => 4 },
+        { 'name' => 'RHEL', 'major' => 8, 'minor' => 3 }
+      ],
+      Host.available_os_versions
+    )
+  end
+
   should 'fail if a wrong operator is passed to filter_by_compliance_score' do
     assert_raises(ActiveRecord::StatementInvalid) do
       Host.filter_by_compliance_score(nil, '=\'\' or 1=1);--', 10)

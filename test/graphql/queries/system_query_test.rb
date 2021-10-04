@@ -728,6 +728,32 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_equal false, result['systems']['pageInfo']['hasNextPage']
   end
 
+  test 'available OS versions can be obtained on system query' do
+    query = <<-GRAPHQL
+    query getSystems($first: Int) {
+        systems(first: $first) {
+            osVersions {
+                name
+                major
+                minor
+            }
+        }
+    }
+    GRAPHQL
+
+    setup_two_hosts
+    result = Schema.execute(
+      query,
+      variables: { first: 1 },
+      context: { current_user: @user }
+    )['data']
+
+    assert_equal(
+      [{ 'name' => 'RHEL', 'major' => 7, 'minor' => 9 }],
+      result.dig('systems', 'osVersions')
+    )
+  end
+
   test 'limit and offset paginate the query' do
     query = <<-GRAPHQL
     query getSystems($perPage: Int, $page: Int) {
