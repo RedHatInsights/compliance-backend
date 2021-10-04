@@ -6,7 +6,7 @@ module Mutations
     class Edit < BaseMutation
       graphql_name 'UpdateProfile'
 
-      POLICY_ATTRIBUTES = %i[name description
+      POLICY_ATTRIBUTES = %i[description
                              compliance_threshold business_objective_id].freeze
 
       argument :id, ID, required: true
