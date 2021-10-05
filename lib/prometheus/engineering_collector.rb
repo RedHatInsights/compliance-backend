@@ -6,7 +6,10 @@ end
 
 # when /metrics is called. This runs directly on prometheus_exporter.
 class EngineeringCollector < PrometheusExporter::Server::TypeCollector
+  LRU_DURATION = 1.hour
+
   def initialize
+    @cache = ActiveSupport::Cache::MemoryStore.new(expires_in: LRU_DURATION)
     @dangling_accounts = PrometheusExporter::Metric::Gauge.new(
       'dangling_accounts', 'Accounts without hosts'
     )
@@ -42,13 +45,15 @@ class EngineeringCollector < PrometheusExporter::Server::TypeCollector
   end
 
   def metrics
-    collect
+    @cache.fetch('metrics') do
+      collect
 
-    [
-      @dangling_accounts,
-      @dangling_test_results,
-      @dangling_rule_results,
-      @dangling_policy_hosts
-    ]
+      [
+        @dangling_accounts,
+        @dangling_test_results,
+        @dangling_rule_results,
+        @dangling_policy_hosts
+      ]
+    end
   end
 end
