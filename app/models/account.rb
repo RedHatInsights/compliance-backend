@@ -11,7 +11,7 @@ class Account < ApplicationRecord
   has_many :policies, dependent: :destroy
   has_many :business_objectives, through: :policies
 
-  validates :account_number, presence: true
+  validates :account_number, presence: true, allow_blank: false
 
   class << self
     def from_identity_header(identity_header)

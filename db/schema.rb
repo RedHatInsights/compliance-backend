@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_31_100856) do
+ActiveRecord::Schema.define(version: 2021_10_05_131012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2021_08_31_100856) do
   enable_extension "plpgsql"
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "account_number"
+    t.string "account_number", null: false
     t.boolean "is_internal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
