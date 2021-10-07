@@ -13,7 +13,7 @@ export IMAGE="quay.io/cloudservices/compliance-backend"
 cat /etc/redhat-release
 
 # build the PR commit image
-source $CICD_ROOT/build.sh
+#source $CICD_ROOT/build.sh
 
 # Make directory for artifacts
 mkdir -p artifacts

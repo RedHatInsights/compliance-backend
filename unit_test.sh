@@ -52,7 +52,7 @@ try_to_create_container_network() {
   fi
 }
 
-trap "teardown_docker" EXIT SIGINT SIGTERM
+trap "teardown_docker" EXIT SIGINT SIGTERM TERM
 
 try_to_create_container_network || exit 1
 
@@ -69,6 +69,8 @@ if [[ "$DB_CONTAINER_ID" == "0" ]]; then
   echo "Failed to start DB container"
   exit 1
 fi
+
+sleep 7000
 
 # Do tests
 TEST_CONTAINER_ID=$(docker run -d \
