@@ -76,6 +76,8 @@ objects:
           value: "secret_key_base"
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
+        - name: SETTINGS__FORCE_IMPORT_SSGS
+          value: "${SETTINGS__FORCE_IMPORT_SSGS}"
     deployments:
     - name: db-migrations
       podSpec:
@@ -110,8 +112,6 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
-        - name: SETTINGS__FORCE_IMPORT_SSGS
-          value: "${SETTINGS__FORCE_IMPORT_SSGS}"
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
     - name: service
