@@ -26,12 +26,6 @@ module ProfileFields
       end
     end
 
-    def short_ref_id
-      ref_id.downcase.split(
-        'xccdf_org.ssgproject.content_profile_'
-      )[1] || ref_id
-    end
-
     def canonical?
       parent_profile_id.blank?
     end

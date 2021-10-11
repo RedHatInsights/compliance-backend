@@ -10,7 +10,9 @@ class ApplicationSerializer
     # rubocop:disable Layout/LineLength
     def relationships_hash(record, relationships, fieldset, includes_list, params = {})
       # rubocop:enable Layout/LineLength
-      return {} if params[:root_resource] != record.class
+      relationships_disabled = params[:root_resource] != record.class ||
+                               !params[:relationships]
+      return {} if relationships_disabled
 
       super(record, relationships, fieldset, includes_list, params)
     end

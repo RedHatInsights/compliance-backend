@@ -157,11 +157,12 @@
                   "total": 1,
                   "search": null,
                   "limit": 10,
-                  "offset": 1
+                  "offset": 1,
+                  "relationships": true
                 },
                 "links": {
-                  "first": "/api/compliance/benchmarks?limit=10&offset=1",
-                  "last": "/api/compliance/benchmarks?limit=10&offset=1"
+                  "first": "/api/compliance/benchmarks?limit=10&offset=1&relationships=true",
+                  "last": "/api/compliance/benchmarks?limit=10&offset=1&relationships=true"
                 }
               }
             },
@@ -473,11 +474,13 @@
                   "total": 2,
                   "search": null,
                   "limit": 10,
-                  "offset": 1
+                  "offset": 1,
+                  "sort_by": "title",
+                  "relationships": true
                 },
                 "links": {
-                  "first": "/api/compliance/business_objectives?limit=10&offset=1",
-                  "last": "/api/compliance/business_objectives?limit=10&offset=1"
+                  "first": "/api/compliance/business_objectives?limit=10&offset=1&relationships=true&sort_by=title",
+                  "last": "/api/compliance/business_objectives?limit=10&offset=1&relationships=true&sort_by=title"
                 }
               }
             },
@@ -857,11 +860,13 @@
                   "total": 2,
                   "search": "os_major_version = 7",
                   "limit": 10,
-                  "offset": 1
+                  "offset": 1,
+                  "sort_by": "score",
+                  "relationships": true
                 },
                 "links": {
-                  "first": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=1",
-                  "last": "/api/compliance/profiles?limit=10&search=os_major_version = 7&offset=1"
+                  "first": "/api/compliance/profiles?limit=10&offset=1&relationships=true&search=os_major_version+%3D+7&sort_by=score",
+                  "last": "/api/compliance/profiles?limit=10&offset=1&relationships=true&search=os_major_version+%3D+7&sort_by=score"
                 }
               }
             },
@@ -1787,11 +1792,12 @@
                   "total": 1,
                   "search": null,
                   "limit": 10,
-                  "offset": 1
+                  "offset": 1,
+                  "relationships": true
                 },
                 "links": {
-                  "first": "/api/compliance/rule_results?limit=10&offset=1",
-                  "last": "/api/compliance/rule_results?limit=10&offset=1"
+                  "first": "/api/compliance/rule_results?limit=10&offset=1&relationships=true",
+                  "last": "/api/compliance/rule_results?limit=10&offset=1&relationships=true"
                 }
               }
             },
@@ -1985,11 +1991,12 @@
                   "total": 1,
                   "search": null,
                   "limit": 10,
-                  "offset": 1
+                  "offset": 1,
+                  "relationships": true
                 },
                 "links": {
-                  "first": "/api/compliance/rules?limit=10&offset=1",
-                  "last": "/api/compliance/rules?limit=10&offset=1"
+                  "first": "/api/compliance/rules?limit=10&offset=1&relationships=true",
+                  "last": "/api/compliance/rules?limit=10&offset=1&relationships=true"
                 }
               }
             },
@@ -2932,11 +2939,12 @@
                     "foo/bar=baz"
                   ],
                   "limit": 10,
-                  "offset": 1
+                  "offset": 1,
+                  "relationships": true
                 },
                 "links": {
-                  "first": "/api/compliance/systems?limit=10&search=has_test_results=true or has_policy=true&offset=1",
-                  "last": "/api/compliance/systems?limit=10&search=has_test_results=true or has_policy=true&offset=1"
+                  "first": "/api/compliance/systems?limit=10&offset=1&relationships=true&search=has_test_results%3Dtrue+or+has_policy%3Dtrue&tags=foo%2Fbar%3Dbaz",
+                  "last": "/api/compliance/systems?limit=10&offset=1&relationships=true&search=has_test_results%3Dtrue+or+has_policy%3Dtrue&tags=foo%2Fbar%3Dbaz"
                 }
               }
             },

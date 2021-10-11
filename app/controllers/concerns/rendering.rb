@@ -27,6 +27,7 @@ module Rendering
     def serializer_opts
       opts = index? ? metadata : {}
       opts.merge!(params: { root_resource: resource })
+      opts[:params].merge!(relationships: relationships_enabled?)
       opts.merge!(include: params[:include].split(',')) if params[:include]
 
       opts

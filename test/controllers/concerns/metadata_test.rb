@@ -51,13 +51,17 @@ class MetadataTest < ActionDispatch::IntegrationTest
 
     FactoryBot.create(:profile)
 
-    search_query = 'ref_id~foo'
+    search_query = 'ref_id~xccdf_org.ssgproject.content_profile_'
     get profiles_url, params: { search: search_query, limit: 1, offset: 2 }
     assert_response :success
-    assert_match(/search=ref_id~foo/, json_body['links']['first'])
-    assert_match(/search=ref_id~foo/, json_body['links']['last'])
-    assert_match(/search=ref_id~foo/, json_body['links']['next'])
-    assert_match(/search=ref_id~foo/, json_body['links']['previous'])
+    assert_match(/search=ref_id~xccdf_org.ssgproject.content_profile_/,
+                 json_body['links']['first'])
+    assert_match(/search=ref_id~xccdf_org.ssgproject.content_profile_/,
+                 json_body['links']['last'])
+    assert_match(/search=ref_id~xccdf_org.ssgproject.content_profile_/,
+                 json_body['links']['next'])
+    assert_match(/search=ref_id~xccdf_org.ssgproject.content_profile_/,
+                 json_body['links']['previous'])
     assert_equal Profile.search_for(search_query).count,
                  json_body['meta']['total']
     assert_equal search_query, json_body['meta']['search']
@@ -91,6 +95,22 @@ class MetadataTest < ActionDispatch::IntegrationTest
     assert_includes json_body['links']['last'], 'search=name+%21%3D+%22%22'
     assert_includes json_body['links']['next'], 'search=name+%21%3D+%22%22'
     assert_includes json_body['links']['previous'], 'search=name+%21%3D+%22%22'
+  end
+
+  test 'meta adds relationships param to JSON response' do
+    authenticate
+    3.times do
+      FactoryBot.create(:profile)
+    end
+
+    get profiles_url, params: { relationships: false, limit: 1, offset: 2 }
+    assert_response :success
+    assert_includes json_body['links']['first'], 'relationships=false'
+    assert_includes json_body['links']['last'], 'relationships=false'
+    assert_includes json_body['links']['next'], 'relationships=false'
+    assert_includes json_body['links']['previous'], 'relationships=false'
+    assert_equal({}, parsed_data[0]['relationships'])
+    assert_equal false, json_body['meta']['relationships']
   end
 
   context 'pagination' do
