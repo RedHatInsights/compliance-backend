@@ -299,6 +299,34 @@ class ProfileQueryTest < ActiveSupport::TestCase
       assert_equal '2', profiles.second['node']['osMinorVersion']
     end
 
+    should 'correctly escape searched string' do
+      query = <<-GRAPHQL
+      {
+        profiles(search: "canonical=false and name~a_c") {
+          edges {
+            node {
+              id
+              name
+            }
+          }
+        }
+      }
+      GRAPHQL
+
+      @profile.update!(name: 'a_c')
+      @profile2.update!(name: 'abc')
+
+      result = Schema.execute(
+        query,
+        variables: {},
+        context: { current_user: @user }
+      )
+
+      profiles = result['data']['profiles']['edges']
+      assert_equal 1, profiles.count
+      assert_equal @profile.id, profiles.first['node']['id']
+    end
+
     should 'query all profiles' do
       query = <<-GRAPHQL
       {

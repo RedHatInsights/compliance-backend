@@ -225,6 +225,43 @@ module V1
         end)
       end
 
+      test 'search string properly escaped' do
+        FactoryBot.create(:profile, name: 'a_c')
+        FactoryBot.create(:profile, name: 'abc')
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false and name~a_c'
+        }
+
+        assert_response :success
+
+        profiles = response.parsed_body
+
+        assert_equal 1, profiles['data'].count
+        assert_equal(['a_c'], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
+      test 'correct searching for IN operator' do
+        FactoryBot.create(:profile, name: 'abc')
+        FactoryBot.create(:profile, name: 'def')
+        FactoryBot.create(:profile, name: 'ghi')
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false and name ^ (abc def)'
+        }
+
+        assert_response :success
+
+        profiles = response.parsed_body
+
+        assert_equal 2, profiles['data'].count
+        assert_equal(%w[abc def], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end.sort)
+      end
+
       test 'profiles can be sorted by a single dimension' do
         p1 = FactoryBot.create(:profile, name: 'a')
         p2 = FactoryBot.create(:profile, name: 'b')
