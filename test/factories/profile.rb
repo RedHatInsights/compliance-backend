@@ -11,7 +11,8 @@ FactoryBot.define do
         :canonical_profile,
         benchmark: benchmark,
         ref_id: ref_id,
-        os_major_version: os_major_version
+        os_major_version: os_major_version,
+        upstream: upstream
       )
     end
     account { User.current&.account }
