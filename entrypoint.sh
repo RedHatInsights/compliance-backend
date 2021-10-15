@@ -58,16 +58,6 @@ elif [ "$APPLICATION_TYPE" = "compliance-inventory" ]; then
   exec bundle exec racecar InventoryEventsConsumer
 elif [ "$APPLICATION_TYPE" = "compliance-sidekiq" ]; then
   exec bundle exec sidekiq
-elif [ "$APPLICATION_TYPE" = "compliance-prometheus-exporter" ]; then
-
-  if isClowderEnabled; then
-    PORT=$(ClowderConfigPrivatePort)
-  else
-    PORT="9394"
-  fi
-
-  echo "PORT:$PORT"
-  exec bundle exec prometheus_exporter -b 0.0.0.0 --port "$PORT" --prefix compliance_ -t 50 --verbose -a lib/prometheus/graphql_collector.rb -a lib/prometheus/business_collector.rb
 elif [ "$APPLICATION_TYPE" = "compliance-import-remediations" ]; then
   exec bundle exec rake import_remediations --trace
 elif [ "$APPLICATION_TYPE" = "compliance-import-ssg" ]; then

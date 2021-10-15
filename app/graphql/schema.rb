@@ -9,9 +9,7 @@ require_relative 'types/mutation'
 # GraphQL-ruby documentation to find out what to add or
 # remove here.
 class Schema < GraphQL::Schema
-  if Settings.prometheus_exporter_host.present? && !Rails.env.test?
-    use GraphQL::Tracing::PrometheusTracing
-  end
+  use GraphQL::Tracing::PrometheusTracing
   use ComplianceTimeout, max_seconds: 20
   query Types::Query
   mutation Types::Mutation

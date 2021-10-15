@@ -5,7 +5,6 @@ unless defined? Rails
 end
 
 # Collects stats relevent for the business from the database
-# when /metrics is called. This runs directly on prometheus_exporter.
 class BusinessCollector < PrometheusExporter::Server::TypeCollector
   def initialize
     @total_accounts = PrometheusExporter::Metric::Gauge.new(
