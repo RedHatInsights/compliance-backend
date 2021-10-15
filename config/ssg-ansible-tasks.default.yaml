@@ -1,0 +1,15 @@
+---
+revision: '2021-07-15'
+supported:
+  RHEL-6:
+    - package: scap-security-guide-rule-playbooks-0.1.52-3.el7_9.noarch.rpm
+      version: 0.1.52
+      brew_url: https://docs.engineering.redhat.com/download/attachments/187625058/scap-security-guide-rule-playbooks-0.1.52-3.el7_9.noarch.rpm
+  RHEL-7:
+    - package: scap-security-guide-rule-playbooks-0.1.54-7.el7_9.noarch.rpm
+      version: 0.1.54
+      brew_url: https://download.eng.bos.redhat.com/brewroot/vol/rhel-7/packages/scap-security-guide/0.1.54/7.el7_9/noarch/scap-security-guide-rule-playbooks-0.1.54-7.el7_9.noarch.rpm
+  RHEL-8:
+    - package: scap-security-guide-rule-playbooks-0.1.56-2.el8.noarch.rpm
+      version: 0.1.56
+      brew_url: https://download.eng.bos.redhat.com/brewroot/vol/rhel-8/packages/scap-security-guide/0.1.56/2.el8/noarch/scap-security-guide-rule-playbooks-0.1.56-2.el8.noarch.rpm

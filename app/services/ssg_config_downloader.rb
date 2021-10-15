@@ -2,21 +2,38 @@
 
 # Service for dowloading SSG configuration files
 class SsgConfigDownloader
-  FILE_PATH = 'config/supported_ssg.yaml'
-  FALLBACK_PATH = 'config/supported_ssg.default.yaml'
+  DS_FILE_PATH = 'config/supported_ssg.yaml'
+  DS_FALLBACK_PATH = 'config/supported_ssg.default.yaml'
+  AT_FILE_PATH = 'config/ssg-ansible-tasks.yaml'
+  AT_FALLBACK_PATH = 'config/ssg-ansible-tasks.default.yaml'
 
   class << self
     def ssg_ds
       File.read(ssg_ds_file)
     end
 
+    def ssg_ansible_tasks
+      File.read(ssg_ansible_tasks_file)
+    end
+
     def ssg_ds_checksum
       Digest::MD5.file(ssg_ds_file).hexdigest
     end
 
+    def ssg_ansible_tasks_checksum
+      Digest::MD5.file(ssg_ansible_tasks_file).hexdigest
+    end
+
     def update_ssg_ds
       ssg_content = download(ssg_datastream_config_url)&.read
-      ssg_content && File.open(FILE_PATH, 'w') do |f|
+      ssg_content && File.open(DS_FILE_PATH, 'w') do |f|
+        f.write(ssg_content)
+      end
+    end
+
+    def update_ssg_ansible_tasks
+      ssg_content = download(ssg_ansible_tasks_config_url)&.read
+      ssg_content && File.open(AT_FILE_PATH, 'w') do |f|
         f.write(ssg_content)
       end
     end
@@ -28,10 +45,21 @@ class SsgConfigDownloader
       ].join('/')
     end
 
+    def ssg_ansible_tasks_config_url
+      [
+        Settings.compliance_ssg_url,
+        Settings.supported_ssg_ansible_tasks_config
+      ].join('/')
+    end
+
     private
 
     def ssg_ds_file
-      File.new(File.exist?(FILE_PATH) ? FILE_PATH : FALLBACK_PATH)
+      File.new(File.exist?(DS_FILE_PATH) ? DS_FILE_PATH : DS_FALLBACK_PATH)
+    end
+
+    def ssg_ansible_tasks_file
+      File.new(File.exist?(AT_FILE_PATH) ? AT_FILE_PATH : AT_FALLBACK_PATH)
     end
 
     def download(url)

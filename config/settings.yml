@@ -29,3 +29,4 @@ slack_webhook: 'this is set through a env var in Openshift and not shared for se
 disable_rbac: 'false'
 async: true
 supported_ssg_ds_config: 'ssg-datastreams.yaml'
+supported_ssg_ansible_tasks_config: 'ssg-ansible-tasks.yaml'
