@@ -4,7 +4,7 @@ unless defined? Rails
   require File.expand_path('../../config/environment', __dir__)
 end
 
-# when /metrics is called. This runs directly on prometheus_exporter.
+# A collector of metrics important to engineering
 class EngineeringCollector < PrometheusExporter::Server::TypeCollector
   LRU_DURATION = 1.hour
 

@@ -39,8 +39,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
     redis_password: redis_password,
     host_inventory_url: host_inventory_url,
     clowder_config_enabled: true,
-    prometheus_exporter_port: config&.metricsPort,
-    prometheus_exporter_host: '127.0.0.1'
+    prometheus_exporter_port: config&.metricsPort
   }
 
   Settings.add_source!(clowder_config)

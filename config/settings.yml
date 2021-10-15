@@ -17,7 +17,6 @@ compliance_ssg_url: http://compliance-ssg:8080
 host_inventory_url: http://insights-inventory.platform-ci.svc.cluster.local:8080
 rbac_url: http://rbac.rbac-ci.svc.cluster.local:9002
 report_download_ssl_only: false
-prometheus_exporter_host: '127.0.0.1'
 prometheus_exporter_port: 9394
 redis_url: compliance-redis.compliance-ci.svc.cluster.local:6379
 redis_password:
