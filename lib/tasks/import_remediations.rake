@@ -11,26 +11,38 @@ desc <<-END_DESC
     # JOBS_ACCOUNT_NUMBER=000001 rake import_remediations
 END_DESC
 
+# rubocop:disable Metrics/BlockLength
 task import_remediations: :environment do
   begin
     start_time = Time.now.utc
     puts "Starting import_remediations job at #{start_time}"
 
-    playbook_status_by_rule_id = PlaybookDownloader.playbooks_exist?(
-      Rule.with_profiles.includes(:benchmark)
-    )
-    ids_with_playbooks = playbook_status_by_rule_id.filter { |_, v| v }.keys
-    ids_sans_playbooks = playbook_status_by_rule_id.filter { |_, v| !v }.keys
+    SsgConfigDownloader.update_ssg_ansible_tasks
+    ansible_tasks_revision = YAML.safe_load(
+      SsgConfigDownloader.ssg_ansible_tasks
+    ).dig('revision')
 
-    # rubocop:disable Rails/SkipsModelValidations
-    Rule.where(id: ids_sans_playbooks).update_all(remediation_available: false)
-    Rule.where(id: ids_with_playbooks).update_all(remediation_available: true)
-    # rubocop:enable Rails/SkipsModelValidations
+    if Revision.remediations != ansible_tasks_revision
+      playbook_status_by_rule_id = PlaybookDownloader.playbooks_exist?(
+        Rule.with_profiles.includes(:benchmark)
+      )
+      ids_with_playbooks = playbook_status_by_rule_id.filter { |_, v| v }.keys
+      ids_sans_playbooks = playbook_status_by_rule_id.filter { |_, v| !v }.keys
+
+      # rubocop:disable Rails/SkipsModelValidations
+      Rule.where(id: ids_sans_playbooks)
+          .update_all(remediation_available: false)
+      Rule.where(id: ids_with_playbooks).update_all(remediation_available: true)
+      # rubocop:enable Rails/SkipsModelValidations
+
+      puts "Updated #{ids_with_playbooks.count} rules with remediations"
+      puts "Updated #{ids_sans_playbooks.count} rules without remediations"
+      Revision.remediations = ansible_tasks_revision
+    end
 
     end_time = Time.now.utc
     duration = end_time - start_time
-    puts "Updated #{ids_with_playbooks.count} rules with remediations"
-    puts "Updated #{ids_sans_playbooks.count} rules without remediations"
+    puts "Remediations synced to revision: #{Revision.remediations}"
     puts "Finishing import_remediations job at #{end_time} "\
          "and last #{duration} seconds "
   rescue StandardError => e
@@ -43,3 +55,4 @@ task import_remediations: :environment do
     raise
   end
 end
+# rubocop:enable Metrics/BlockLength

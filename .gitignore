@@ -57,6 +57,7 @@ config/settings/*.local.yml
 config/environments/*.local.yml
 
 config/supported_ssg.yaml
+config/ssg-ansible-tasks.yaml
 
 brakeman_output.markdown
 
