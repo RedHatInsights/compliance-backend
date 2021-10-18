@@ -547,6 +547,7 @@ type SystemConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+  tags: [Tag!]!
   totalCount: Int!
 }
 
