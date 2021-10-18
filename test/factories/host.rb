@@ -34,7 +34,7 @@ FactoryBot.define do
       User.current&.account&.account_number || generate(:account_number)
     end
     display_name { Faker::Internet.domain_name }
-    tags { {} }
+    tags { [] }
     stale_timestamp { 10.years.since(Time.zone.now) }
     if Rails.env.test?
       created { Time.zone.now }

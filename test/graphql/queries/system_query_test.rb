@@ -754,6 +754,46 @@ class SystemQueryTest < ActiveSupport::TestCase
     )
   end
 
+  test 'available tags can be obtained on system query' do
+    query = <<-GRAPHQL
+    query getSystems($limit: Int) {
+        systems(limit: $limit) {
+            tags {
+                namespace
+                key
+                value
+            }
+        }
+    }
+    GRAPHQL
+
+    setup_two_hosts
+
+    WHost.limit(1).update(tags: [TAG])
+
+    result = Schema.execute(
+      query,
+      variables: { limit: 1 },
+      context: { current_user: @user }
+    )['data']
+
+    assert_equal_sets(
+      [TAG],
+      result.dig('systems', 'tags')
+    )
+
+    result = Schema.execute(
+      query,
+      variables: { limit: 1, offset: 2 },
+      context: { current_user: @user }
+    )['data']
+
+    assert_equal_sets(
+      [TAG],
+      result.dig('systems', 'tags')
+    )
+  end
+
   test 'limit and offset paginate the query' do
     query = <<-GRAPHQL
     query getSystems($perPage: Int, $page: Int) {
