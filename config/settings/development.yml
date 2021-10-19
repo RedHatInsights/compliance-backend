@@ -1,5 +1,4 @@
 host_inventory_url: http://inventory-web:8081
-remediations_url: https://ci.console.redhat.com
 rbac_url: https://ci.console.redhat.com
 # disable_rbac: true
 # platform_basic_auth_username: myusername

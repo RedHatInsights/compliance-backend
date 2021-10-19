@@ -3,9 +3,6 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   config = ClowderCommonRuby::Config.load
 
-  remediations_config = config.dependency_endpoints&.dig('remediations', 'api')
-  remediations_url = "http://#{remediations_config&.hostname}:#{remediations_config&.port}"
-
   # compliance-ssg
   compliance_ssg_config = config.private_dependency_endpoints&.dig('compliance-ssg', 'service')
   compliance_ssg_url = "http://#{compliance_ssg_config&.hostname}:#{compliance_ssg_config&.port}"
@@ -40,7 +37,6 @@ if ClowderCommonRuby::Config.clowder_enabled?
     rbac_url: rbac_url,
     redis_url: redis_url,
     redis_password: redis_password,
-    remediations_url: remediations_url,
     host_inventory_url: host_inventory_url,
     clowder_config_enabled: true,
     prometheus_exporter_port: config&.metricsPort,

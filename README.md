@@ -331,9 +331,9 @@ docker-compose run -e NUM_HOSTS=1000 -e INVENTORY_HOST_ACCOUNT=00001 inventory-w
 ### Basic Auth Platform Credentials
 
 Basic authentication ([`platform_basic_auth` option](config/settings/development.yml))
-might be needed for platform services such as inventory, rbac, and remediations.
+might be needed for platform services such as inventory and rbac.
 Anything not deployed locally will require basic auth instead of using
-an identity header (i.e. rbac, remediations).
+an identity header (i.e. rbac).
 
 ### Disabling Prometheus
 

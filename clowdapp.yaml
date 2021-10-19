@@ -17,8 +17,6 @@ objects:
     - host-inventory
     - ingress
     - rbac
-    optionalDependencies:
-    - remediations
     database:
       name: compliance
       version: 12
