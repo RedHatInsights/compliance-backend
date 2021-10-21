@@ -79,6 +79,7 @@ objects:
     - name: floorist
       schedule: ${FLOORIST_SCHEDULE}
       suspend: ${{FLOORIST_SUSPEND}}
+      concurrencyPolicy: Forbid
       podSpec:
         image: ${FLOORIST_IMAGE}:${FLOORIST_IMAGE_TAG}
         env:
