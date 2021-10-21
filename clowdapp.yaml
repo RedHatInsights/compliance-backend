@@ -76,6 +76,53 @@ objects:
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: SETTINGS__FORCE_IMPORT_SSGS
           value: "${SETTINGS__FORCE_IMPORT_SSGS}"
+    - name: floorist
+      schedule: ${FLOORIST_SCHEDULE}
+      suspend: ${{FLOORIST_SUSPEND}}
+      podSpec:
+        image: ${FLOORIST_IMAGE}:${FLOORIST_IMAGE_TAG}
+        env:
+        - name: AWS_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: ${FLOORIST_BUCKET_SECRET_NAME}
+              key: bucket
+        - name: AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              name: ${FLOORIST_BUCKET_SECRET_NAME}
+              key: aws_region
+        - name: AWS_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: ${FLOORIST_BUCKET_SECRET_NAME}
+              key: endpoint
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: ${FLOORIST_BUCKET_SECRET_NAME}
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ${FLOORIST_BUCKET_SECRET_NAME}
+              key: aws_secret_access_key
+        - name: FLOORPLAN_FILE
+          value: "/tmp/floorplan/floorplan.yaml"
+        volumeMounts:
+        - name: floorplan-volume
+          mountPath: "/tmp/floorplan"
+        volumes:
+          - name: floorplan-volume
+            configMap:
+              name: floorplan
+      resources:
+          limits:
+            cpu: "${CPU_LIMIT_FLOO}"
+            memory: "${MEMORY_LIMIT_FLOO}"
+          requests:
+            cpu: "${CPU_REQUEST_FLOO}"
+            memory: "${MEMORY_REQUEST_FLOO}"
     deployments:
     - name: db-migrations
       podSpec:
@@ -312,6 +359,54 @@ objects:
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
 
+# We need a dummy secret to avoid breaking the template on Ephemeral environments, where the floorist service is meant to be disabled
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: ${FLOORIST_BUCKET_SECRET_NAME}
+  type: Opaque
+  data:
+    bucket: ZHVtbXk=
+    aws_region: ZHVtbXk=
+    endpoint: ZHVtbXk=
+    aws_access_key_id: ZHVtbXk=
+    aws_secret_access_key: ZHVtbXk=
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: floorplan
+  data:
+    floorplan.yaml: |
+      - prefix: insights/compliance/hosts
+        query: >-
+          SELECT
+            "inventory"."hosts"."id",
+            "accounts"."account_number",
+            "inventory"."hosts"."created" AS "created_at",
+            "inventory"."hosts"."updated" AS "updated_at",
+            "inventory"."hosts"."system_profile"->'operating_system'->'major' AS "os_major_version",
+            "inventory"."hosts"."system_profile"->'operating_system'->'minor' AS "os_minor_version"
+            FROM "inventory"."hosts"
+            INNER JOIN "accounts" ON "accounts"."account_number" = "inventory"."hosts"."account"
+            WHERE ("inventory"."hosts"."id" IN (SELECT "policy_hosts"."host_id" FROM "policy_hosts")
+              OR "inventory"."hosts"."id" IN (SELECT "test_results"."host_id" FROM "test_results"));
+      - prefix: insights/compliance/policies
+        query: >-
+          SELECT DISTINCT
+            "policies"."id",
+            "profiles"."ref_id",
+            "profiles"."name",
+            "accounts"."account_number",
+            REGEXP_REPLACE("benchmarks"."ref_id", '.*RHEL-(\d)$', '\1') AS "os_major_version"
+            FROM "policies"
+            INNER JOIN "profiles" ON "profiles"."policy_id" = "policies"."id"
+            INNER JOIN "accounts" ON "accounts"."id" = "policies"."account_id"
+            INNER JOIN "benchmarks" ON "benchmarks"."id" = "profiles"."benchmark_id";
+      - prefix: insights/compliance/policy_hosts
+        query: >-
+          SELECT "policy_hosts"."host_id", "policy_hosts"."policy_id" FROM "policy_hosts";
+
 parameters:
 - name: IMAGE_TAG
   description: Image tag
@@ -374,6 +469,14 @@ parameters:
   value: 1000m
 - name: CPU_REQUEST_SIDE
   value: 100m
+- name: MEMORY_LIMIT_FLOO
+  value: 200Mi
+- name: MEMORY_REQUEST_FLOO
+  value: 100Mi
+- name: CPU_LIMIT_FLOO
+  value: 100m
+- name: CPU_REQUEST_FLOO
+  value: 50m
 - name: REDIS_SSL
   description: 'Whether to use secured connection to Redis. Use string values of true or false'
   value: "true"
@@ -408,3 +511,22 @@ parameters:
   value: "false"
 - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
   value: "true"
+- name: FLOORIST_SCHEDULE
+  description: Cronjob schedule definition
+  required: true
+  value:  '0 2 * * *'
+- name: FLOORIST_SUSPEND
+  description: Disable Floorist cronjob execution
+  required: true
+  value: 'true'
+- description: Floorist image name
+  name: FLOORIST_IMAGE
+  value: quay.io/cloudservices/floorist
+- description: Floorist Image tag
+  name: FLOORIST_IMAGE_TAG
+  required: true
+  value: latest
+- description: bucket secret name
+  name: FLOORIST_BUCKET_SECRET_NAME
+  required: true
+  value: dummy-secret
