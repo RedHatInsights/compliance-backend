@@ -17,7 +17,11 @@ class HostTest < ActiveSupport::TestCase
       :host,
       account: @account.account_number,
       os_major_version: 7,
-      os_minor_version: 4
+      os_minor_version: 4,
+      tags: [
+        { 'key' => 'foo', 'value' => '32', 'namespace' => 'insights-client' },
+        { 'key' => 'bar', 'value' => '7', 'namespace' => 'insights-client' }
+      ]
     ).id)
 
     @host2 = Host.find(FactoryBot.create(
@@ -376,6 +380,16 @@ class HostTest < ActiveSupport::TestCase
         { 'name' => 'RHEL', 'major' => 8, 'minor' => 3 }
       ],
       Host.available_os_versions
+    )
+  end
+
+  test '#available_tags' do
+    assert_equal_sets(
+      [
+        { 'key' => 'foo', 'value' => '32', 'namespace' => 'insights-client' },
+        { 'key' => 'bar', 'value' => '7', 'namespace' => 'insights-client' }
+      ],
+      Host.available_tags
     )
   end
 

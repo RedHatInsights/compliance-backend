@@ -6,6 +6,7 @@ class Host < ApplicationRecord
   OS_MINOR_VERSION = Arel.sql("system_profile->'operating_system'->'minor'")
   OS_MAJOR_VERSION = Arel.sql("system_profile->'operating_system'->'major'")
   OS_VERSION = Arel.sql("system_profile->'operating_system'")
+  TAGS = Arel.sql('jsonb_array_elements(tags)')
 
   sortable_by :name, :display_name
   sortable_by :os_major_version, OS_MAJOR_VERSION
@@ -35,6 +36,10 @@ class Host < ApplicationRecord
 
   def self.available_os_versions
     distinct.pluck(OS_VERSION)
+  end
+
+  def self.available_tags
+    where.not(Arel.sql("tags = '[]'::jsonb")).distinct.pluck(TAGS)
   end
 
   def readonly?
