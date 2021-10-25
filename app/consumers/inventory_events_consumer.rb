@@ -35,8 +35,9 @@ class InventoryEventsConsumer < ApplicationConsumer
   end
 
   def handle_report_parsing
-    produce(parse_report,
-            topic: Settings.kafka_producer_topics.upload_validation)
+    parse_output = parse_report
+    validation_topic = Settings.kafka_producer_topics.upload_validation
+    produce(parse_output, topic: validation_topic) if validation_topic
   end
 
   def handle_host_delete
