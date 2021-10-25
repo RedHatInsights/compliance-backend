@@ -5,6 +5,7 @@ require 'sidekiq/testing'
 
 class InventoryEventsConsumerTest < ActiveSupport::TestCase
   setup do
+    Settings.kafka_producer_topics.upload_validation = 'validation'
     @message = stub(message: nil)
     @consumer = InventoryEventsConsumer.new
     DeleteHost.clear
