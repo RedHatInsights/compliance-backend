@@ -125,41 +125,6 @@ objects:
             cpu: "${CPU_REQUEST_FLOO}"
             memory: "${MEMORY_REQUEST_FLOO}"
     deployments:
-    - name: db-migrations
-      podSpec:
-        image: ${IMAGE}:${IMAGE_TAG}
-        initContainers:
-        - command:
-            - bash
-            - -c
-            - |
-              bundle exec rake --trace db:debug db:migrate
-          inheritEnv: true
-        resources:
-          limits:
-            cpu: ${CPU_LIMIT_SIDE}
-            memory: ${MEMORY_LIMIT_SIDE}
-          requests:
-            cpu: ${CPU_REQUEST_SIDE}
-            memory: ${MEMORY_REQUEST_SIDE}
-        env:
-        - name: APPLICATION_TYPE
-          value: sleep
-        - name: RAILS_ENV
-          value: "${RAILS_ENV}"
-        - name: RAILS_LOG_TO_STDOUT
-          value: "${RAILS_LOG_TO_STDOUT}"
-        - name: PATH_PREFIX
-          value: "${PATH_PREFIX}"
-        - name: APP_NAME
-          value: "${APP_NAME}"
-        - name: JOBS_ACCOUNT_NUMBER
-          value: ${JOBS_ACCOUNT_NUMBER}
-        # Should be a secret ?
-        - name: SECRET_KEY_BASE
-          value: "secret_key_base"
-        - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
-          value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
     - name: service
       # TODO: Check how to auto-scale with Clowder
       minReplicas: ${{REPLICAS_BACKEND}}
@@ -170,20 +135,11 @@ objects:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
-          - bash
-          - -c
-          - |
-            for i in {1..120}; do sleep 1;
-            if bundle exec rake --trace db:abort_if_pending_migrations ssg:check_synced;
-            then exit 0; fi; done; exit 1
-          env:
-          - name: RAILS_ENV
-            value: "${RAILS_ENV}"
-          - name: PATH_PREFIX
-            value: "${PATH_PREFIX}"
-          # Should be a secret ?
-          - name: SECRET_KEY_BASE
-            value: "secret_key_base"
+            - bash
+            - -c
+            - |
+              bundle exec rake --trace db:debug db:migrate ssg:check_synced
+          inheritEnv: true
         env:
         - name: APPLICATION_TYPE
           value: compliance-backend
@@ -237,26 +193,11 @@ objects:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
         - command:
-          - bash
-          - -c
-          - |
-            for i in {1..120}; do sleep 1;
-            if bundle exec rake --trace db:abort_if_pending_migrations ssg:check_synced;
-            then exit 0; fi; done; exit 1
-          env:
-          - name: RAILS_ENV
-            value: "${RAILS_ENV}"
-          - name: PATH_PREFIX
-            value: "${PATH_PREFIX}"
-          - name: POSTGRESQL_MAX_CONNECTIONS
-            value: ${POSTGRESQL_MAX_CONNECTIONS}
-          - name: RAILS_LOG_TO_STDOUT
-            value: "${RAILS_LOG_TO_STDOUT}"
-          # Should be a secret ?
-          - name: SECRET_KEY_BASE
-            value: "secret_key_base"
-          - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
-            value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
+            - bash
+            - -c
+            - |
+              bundle exec rake --trace db:debug db:migrate ssg:check_synced
+          inheritEnv: true
         env:
         - name: APPLICATION_TYPE
           value: compliance-inventory
@@ -309,23 +250,8 @@ objects:
             - bash
             - -c
             - |
-              for i in {1..120}; do sleep 1;
-              if bundle exec rake --trace db:abort_if_pending_migrations ssg:check_synced;
-              then exit 0; fi; done; exit 1
-          env:
-          - name: RAILS_ENV
-            value: "${RAILS_ENV}"
-          - name: PATH_PREFIX
-            value: "${PATH_PREFIX}"
-          - name: POSTGRESQL_MAX_CONNECTIONS
-            value: ${POSTGRESQL_MAX_CONNECTIONS}
-          - name: RAILS_LOG_TO_STDOUT
-            value: "${RAILS_LOG_TO_STDOUT}"
-          # Should be a secret ?
-          - name: SECRET_KEY_BASE
-            value: "secret_key_base"
-          - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
-            value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
+              bundle exec rake --trace db:debug db:migrate ssg:check_synced
+          inheritEnv: true
         resources:
           limits:
             cpu: ${CPU_LIMIT_SIDE}
