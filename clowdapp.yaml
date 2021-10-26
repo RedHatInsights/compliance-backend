@@ -108,6 +108,8 @@ objects:
             secretKeyRef:
               name: ${FLOORIST_BUCKET_SECRET_NAME}
               key: aws_secret_access_key
+        - name: FORCE_ENVIRONMENT_BUCKET_CONFIG
+          value: "${FLOORIST_FORCE_ENVIRONMENT_BUCKET_CONFIG}"
         - name: FLOORPLAN_FILE
           value: "/tmp/floorplan/floorplan.yaml"
         volumeMounts:
@@ -531,3 +533,7 @@ parameters:
   name: FLOORIST_BUCKET_SECRET_NAME
   required: true
   value: dummy-secret
+- description: Force Floorist to consume bucket config from the env
+  name: FLOORIST_FORCE_ENVIRONMENT_BUCKET_CONFIG
+  required: false
+  value: "false"
