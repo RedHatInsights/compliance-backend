@@ -286,19 +286,6 @@ objects:
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
 
-# We need a dummy secret to avoid breaking the template on Ephemeral environments, where the floorist service is meant to be disabled
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    name: ${FLOORIST_BUCKET_SECRET_NAME}
-  type: Opaque
-  data:
-    bucket: ZHVtbXk=
-    aws_region: ZHVtbXk=
-    endpoint: ZHVtbXk=
-    aws_access_key_id: ZHVtbXk=
-    aws_secret_access_key: ZHVtbXk=
-
 - apiVersion: v1
   kind: ConfigMap
   metadata:
