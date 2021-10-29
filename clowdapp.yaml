@@ -447,3 +447,4 @@ parameters:
   value: dummy-secret
 - name: FLOORIST_LOGLEVEL
   description: Floorist loglevel config
+  value: 'INFO'
