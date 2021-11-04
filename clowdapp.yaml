@@ -224,6 +224,11 @@ objects:
           value: "secret_key_base"
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          timeoutSeconds: 5
         readinessProbe:
           timeoutSeconds: 5
           exec:
@@ -261,6 +266,19 @@ objects:
           requests:
             cpu: ${CPU_REQUEST_SIDE}
             memory: ${MEMORY_REQUEST_SIDE}
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+        readinessProbe:
+          timeoutSeconds: 5
+          exec:
+            command:
+              - bundle
+              - exec
+              - rake
+              - db:status
+              - redis:status
         env:
         - name: APPLICATION_TYPE
           value: compliance-sidekiq
