@@ -14,20 +14,26 @@ module Xccdf
             profile_rules.select(&:new_record?), ignore: true
           )
 
-          base = ::ProfileRule.joins(:profile)
+          base = ::ProfileRule.joins(profile: :benchmark)
                               .where('profiles.parent_profile_id' => nil)
 
           # links_to_remove(base).delete_all
 
           # FIXME: dry-run on the destructive operation first
           links_to_remove(base).joins(:rule).select(
-            'profiles.ref_id AS profile_ref_id', 'rules.ref_id AS rule_ref_id'
+            'profiles.ref_id AS profile_ref_id', 'rules.ref_id AS rule_ref_id',
+            'benchmarks.ref_id AS benchmark_ref_id', 'benchmarks.version AS ver'
           ).each do |link|
             Rails.logger.info(%(
               "Removing link between profile
               #{link.attributes['profile_ref_id']}
               and rule
-              #{link.attributes['rule_ref_id']}"
+              #{link.attributes['rule_ref_id']}
+              under benchmark
+              #{link.attributes['benchmark_ref_id']}
+              version
+              #{link.attributes['ver']}
+              "
             ).gsub(/\n|\s+/, ' '))
           end
         end
