@@ -24,7 +24,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   kafka_server_config = {
     brokers: "#{first_kafka_server_config.dig('hostname')}:#{first_kafka_server_config.dig('port')}",
-    security_protocol: first_kafka_server_config.authtype
+    security_protocol: first_kafka_server_config.dig('authtype')
   }
 
   if kafka_server_config['security_protocol'] == 'sasl_ssl'
