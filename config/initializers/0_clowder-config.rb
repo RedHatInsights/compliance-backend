@@ -23,7 +23,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
   first_kafka_server_config = config.kafka.brokers[0]
 
   kafka_server_config = {
-    brokers: "#{first_kafka_server_config.hostname}:#{first_kafka_server_config.port}",
+    brokers: "#{first_kafka_server_config.dig('hostname')}:#{first_kafka_server_config.dig('port')}",
     security_protocol: first_kafka_server_config.authtype
   }
 
