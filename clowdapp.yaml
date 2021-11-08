@@ -416,9 +416,6 @@ parameters:
   value: "true"
 - name: PUMA_MAX_THREADS
   value: "5"
-- name: POSTGRESQL_MAX_CONNECTIONS
-  description: Number of maximum database connections
-  value: "50"
 - name: RACECAR_OFFSET_COMMIT_INTERVAL
   required: true
   value: "5"
