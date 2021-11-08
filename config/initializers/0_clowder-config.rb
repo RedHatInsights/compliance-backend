@@ -21,18 +21,25 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   # Kafka
   first_kafka_server_config = config.kafka.brokers[0]
+  kafka_security_protocol = first_kafka_server_config.dig('authtype')
 
   kafka_server_config = {
-    brokers: "#{first_kafka_server_config.dig('hostname')}:#{first_kafka_server_config.dig('port')}",
-    security_protocol: first_kafka_server_config.dig('authtype')
+    brokers: config.dig('kafka', 'brokers')&.map { |b| "#{b&.dig('hostname')}:#{b&.dig('port')}" }.join(',')
   }
 
-  if kafka_server_config['security_protocol'] == 'sasl_ssl'
-    kafkaCaFile = File.new('tmp/kafkaCa', 'wt')
-    kafkaCaFile.write(first_kafka_server_config.cacert)
-    kafka_server_config['ssl_ca_location'] = File.expand_path(kafkaCaFile.path)
-    kafka_server_config['sasl_username'] = first_kafka_server_config.dig('sasl', 'username')
-    kafka_server_config['sasl_password'] = first_kafka_server_config.dig('sasl', 'password')
+  if kafka_security_protocol
+    if kafka_security_protocol == 'sasl'
+      kafka_server_config['security_protocol'] = 'sasl_ssl'
+      kafkaCaFile = File.new('tmp/kafkaCa', 'wt')
+      kafkaCaFile.write(first_kafka_server_config.cacert)
+      kafka_server_config['ssl_ca_location'] = File.expand_path(kafkaCaFile.path)
+      kafka_server_config['sasl_username'] = first_kafka_server_config.dig('sasl', 'username')
+      kafka_server_config['sasl_password'] = first_kafka_server_config.dig('sasl', 'password')
+    else
+      raise "Unsupported Kafka security protocol '#{kafka_security_protocol}'"
+    end
+  else
+    kafka_server_config['security_protocol'] = 'plaintext'
   end
 
   clowder_config = {
