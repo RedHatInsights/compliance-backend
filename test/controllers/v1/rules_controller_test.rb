@@ -111,6 +111,27 @@ module V1
         assert_response :unprocessable_entity
       end
 
+      should 'fail if invalid include parameter when finding rules' do
+        get v1_rules_url, params: { include: ['foo'] }
+        assert_response :unprocessable_entity
+      end
+
+      should 'fail if invalid include parameter when finding rule by ID' do
+        get v1_rule_url(@profile.rules.first.id), params: { include: 'foo' }
+        assert_response :unprocessable_entity
+      end
+
+      should 'find rules with rule identifier included' do
+        get v1_rules_url, params: { include: 'rule_identifier' }
+        assert_response :success
+      end
+
+      should 'find a rule by ID with rule identifier included' do
+        get v1_rule_url(@profile.rules.first.id),
+            params: { include: 'rule_identifier' }
+        assert_response :success
+      end
+
       should 'finds a rule with similar slug within the user scope' do
         @profile.rules.first.update(
           slug: "#{@profile.rules.first.ref_id}-#{SecureRandom.uuid}"
