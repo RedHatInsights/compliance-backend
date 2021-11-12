@@ -16,6 +16,11 @@ DATABASE_USER="compliance"
 DATABASE_PASSWORD="changeme"
 DATABASE_NAME="compliance-test"
 
+# if this is a PR, use a different tag, since PR tags expire
+if [[ ! -z "$ghprbPullId" ]]; then
+  export IMAGE_TAG="pr-${ghprbPullId}-${IMAGE_TAG}"
+fi
+
 function teardown_docker {
   docker rm -f "$DB_CONTAINER_NAME" || true
   docker rm -f "$TEST_CONTAINER_NAME" || true
