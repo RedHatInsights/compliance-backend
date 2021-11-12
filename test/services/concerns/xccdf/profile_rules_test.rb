@@ -47,13 +47,12 @@ module Xccdf
       )
       @profiles.first.update(rules: [rule1, rule2])
 
-      # TODO: dry-run on the destructive operation first
-      # assert_difference('ProfileRule.count', 72) do
-      save_profile_rules
-      # end
+      assert_difference('ProfileRule.count', 72) do
+        save_profile_rules
+      end
 
-      # assert_nil ProfileRule.find_by(rule: rule1, profile: @profiles.first)
-      # assert ProfileRule.find_by(rule: rule2, profile: @profiles.first)
+      assert_nil ProfileRule.find_by(rule: rule1, profile: @profiles.first)
+      assert ProfileRule.find_by(rule: rule2, profile: @profiles.first)
     end
   end
 end
