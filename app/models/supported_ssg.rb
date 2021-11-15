@@ -69,6 +69,11 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
       all.group_by(&:os_major_version)
     end
 
+    def sorted_ssgs_for_os_major(os_major_version)
+      for_os_major(os_major_version).sort_by(&:comparable_version)
+                                    .reverse
+    end
+
     private
 
     def map_attributes(rhel, raw_attrs)
@@ -79,6 +84,11 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
 
     def os_version(rhel)
       rhel.scan(/(\d+)\.(\d+)$/)[0]
+    end
+
+    def for_os_major(os_major_version)
+      os_major_version = os_major_version.to_s
+      all.select { |ssg| ssg.os_major_version == os_major_version }
     end
 
     def clear

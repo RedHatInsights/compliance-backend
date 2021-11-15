@@ -53,6 +53,15 @@ class Profile < ApplicationRecord
 
   scope :joins_policy, -> { left_outer_joins(:policy) }
 
+  scope :supported_for_os_major, lambda { |major|
+    Profile.profiles_for_os_major(major)
+           .inject(none) do |union, (version, profs)|
+      ref_ids = profs.map { |p| "xccdf_org.ssgproject.content_profile_#{p}" }
+      union.or(where(ref_id: ref_ids).ssg_versions(version)
+                                     .os_major_version(major))
+    end
+  }
+
   delegate :account_number, to: :account, allow_nil: true
 
   class << self

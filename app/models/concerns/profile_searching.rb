@@ -135,6 +135,18 @@ module ProfileSearching
                    ::Xccdf::Benchmark.where.not(version: value)
       { conditions: benchmark_id.in(benchmarks.pluck(:id)).to_sql }
     end
+
+    def profiles_for_os_major(major_os_version)
+      ::SupportedSsg.sorted_ssgs_for_os_major(major_os_version)
+                    .each_with_object({}) do |supported_ssg, latest_profiles|
+        supported_ssg.profiles.keys.each do |profile|
+          next if latest_profiles.values.flatten.include?(profile)
+
+          latest_profiles[supported_ssg.version] ||= []
+          latest_profiles[supported_ssg.version] << profile
+        end
+      end
+    end
   end
 
   class_methods do

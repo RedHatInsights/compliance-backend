@@ -615,6 +615,42 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal profile.short_ref_id, 'xccdf_org.ssgproject.profile'
   end
 
+  test 'supported_for_os_major' do
+    FactoryBot.create(:benchmark, version: '0.1.54', ref_id: 'RHEL-7')
+    FactoryBot.create(:benchmark, version: '0.1.36', ref_id: 'RHEL-7')
+    FactoryBot.create(:benchmark, version: '0.1.30', ref_id: 'RHEL-7')
+    Xccdf::Benchmark.all.each do |benchmark|
+      profile2 = FactoryBot.create(
+        :profile,
+        account: @account,
+        ref_id: 'xccdf_org.ssgproject.content_profile_stig',
+        os_major_version: 7
+      )
+      profile2.update!(benchmark_id: benchmark.id)
+      next if benchmark.version == '0.1.54' || benchmark.version == '0.1.36'
+
+      profile1 = FactoryBot.create(
+        :profile,
+        account: @account,
+        ref_id: 'xccdf_org.ssgproject.content_profile_nist-cl-il-al',
+        os_major_version: 7
+      )
+      profile1.update!(benchmark_id: benchmark.id)
+    end
+    latest_profiles = Profile.supported_for_os_major('7')
+    assert_includes latest_profiles, Profile.where(
+      ref_id: 'xccdf_org.ssgproject.content_profile_stig'
+    )
+                                            .ssg_versions('0.1.54')
+                                            .first
+    assert_includes latest_profiles, Profile.where(
+      ref_id: 'xccdf_org.ssgproject.content_profile_nist-cl-il-al'
+    )
+                                            .ssg_versions('0.1.30')
+                                            .first
+    assert_equal latest_profiles.length, 2
+  end
+
   context 'fill_from_parent' do
     NAME = 'Customized profile'
     DESCRIPTION = 'The best profile ever'
