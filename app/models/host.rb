@@ -11,6 +11,11 @@ class Host < ApplicationRecord
   sortable_by :name, :display_name
   sortable_by :os_major_version, OS_MAJOR_VERSION
   sortable_by :os_minor_version, OS_MINOR_VERSION
+  sortable_by(
+    :ssg_version,
+    Arel.sql("string_to_array(benchmarks.version, '.')::int[]"),
+    scope: :with_benchmark
+  )
 
   self.table_name = 'inventory.hosts'
   self.primary_key = 'id'
@@ -29,6 +34,14 @@ class Host < ApplicationRecord
   has_many :assigned_profiles, through: :policies, source: :profiles
   has_many :assigned_internal_profiles, -> { external(false) },
            through: :policies, source: :profiles
+
+  scope :with_benchmark, lambda { |profile = nil|
+    profile ||= RequestStore.store['scoped_search_context_profiles']
+
+    left_outer_joins(test_result_profiles: :benchmark).where(
+      profiles: { id: profile.pluck(:id) }
+    )
+  }
 
   def self.os_minor_versions(hosts)
     distinct.where(id: hosts).pluck(OS_MINOR_VERSION)
