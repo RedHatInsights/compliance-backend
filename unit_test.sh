@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 cd "$APP_ROOT"
 export IMAGE="quay.io/cloudservices/compliance-backend"
 IMAGE_TAG=$(git rev-parse --short=7 HEAD)
