@@ -30,7 +30,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
   if kafka_security_protocol
     if kafka_security_protocol == 'sasl'
       kafka_server_config[:security_protocol] = 'sasl_ssl'
-      kafkaCaFile = Tempfile.create(mode: 'wt')
+      kafkaCaFile = Tempfile.create
       kafkaCaFile.write(first_kafka_server_config&.dig('cacert'))
       kafka_server_config[:ssl_ca_location] = kafkaCaFile.path
       kafka_server_config[:sasl_username] = first_kafka_server_config&.dig('sasl', 'username')
