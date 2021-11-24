@@ -14,7 +14,9 @@ module Xccdf
         ::Rule.import!(new_rules, ignore: true)
         # Mark already existing rules to be imported as non-upstream
         # rubocop:disable Rails/SkipsModelValidations
-        ::Rule.where(id: old_rules.pluck(:id)).update_all(upstream: false)
+        ::Rule.transaction do
+          ::Rule.where(id: old_rules.pluck(:id)).update_all(upstream: false)
+        end
         # rubocop:enable Rails/SkipsModelValidations
       end
 
