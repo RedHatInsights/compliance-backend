@@ -30,6 +30,19 @@ module Xccdf
     end
     alias os_major_version inferred_os_major_version
 
+    # Returns all supported profiles for a given OS major version
+    # through a benchmark referencing this OS major
+    def supported_profiles
+      versions = SupportedSsg.by_os_major[os_major_version].map(&:version)
+
+      Profile.canonical.joins(:benchmark)
+             .where(benchmarks: { ref_id: ref_id, version: versions })
+             .order(:ref_id, Arel.sql('
+                string_to_array("benchmarks"."version", \'.\')::int[] DESC
+              '))
+             .select('DISTINCT ON ("profiles"."ref_id") "profiles".*')
+    end
+
     class << self
       def from_openscap_parser(op_benchmark)
         benchmark = find_or_initialize_by(
