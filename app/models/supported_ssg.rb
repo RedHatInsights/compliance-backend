@@ -62,6 +62,8 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
 
     # Multilevel map of latest supported SSG for OS major and minor version
     def latest_map
+      clear if ssg_ds_changed?
+
       @latest_map ||= build_latest_map
     end
 
@@ -83,6 +85,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
 
     def clear
       @raw_supported = nil
+      @latest_map = nil
       @checksum = SsgConfigDownloader.ssg_ds_checksum
     end
 
