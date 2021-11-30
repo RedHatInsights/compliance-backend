@@ -6,6 +6,8 @@ module Xccdf
   # for a given set of software in a specific release of the SCAP Security
   # Guide (i.e. RHEL 7, v0.1.43)
   class Benchmark < ApplicationRecord
+    REF_PREFIX = 'xccdf_org.ssgproject.content_benchmark_RHEL'
+
     has_many :profiles, dependent: :destroy
     has_many :rules, dependent: :destroy
     validates :ref_id, uniqueness: { scope: %i[version] }, presence: true
@@ -29,19 +31,6 @@ module Xccdf
       ref_id[/(?<=RHEL-)\d/]
     end
     alias os_major_version inferred_os_major_version
-
-    # Returns all supported profiles for a given OS major version
-    # through a benchmark referencing this OS major
-    def supported_profiles
-      versions = SupportedSsg.by_os_major[os_major_version].map(&:version)
-
-      Profile.canonical.joins(:benchmark)
-             .where(benchmarks: { ref_id: ref_id, version: versions })
-             .order(:ref_id, Arel.sql('
-                string_to_array("benchmarks"."version", \'.\')::int[] DESC
-              '))
-             .select('DISTINCT ON ("profiles"."ref_id") "profiles".*')
-    end
 
     class << self
       def from_openscap_parser(op_benchmark)

@@ -451,37 +451,5 @@ module Xccdf
         assert_equal 1, returned.count
       end
     end
-
-    context '#supported_profiles' do
-      should 'list all supported profiles' do
-        v1 = SupportedSsg.by_os_major['7'].first
-        bm1 = FactoryBot.create(
-          :benchmark,
-          version: v1.version,
-          os_major_version: '7'
-        )
-
-        v2 = SupportedSsg.by_os_major['7'].last
-        bm2 = FactoryBot.create(
-          :benchmark,
-          version: v2.version,
-          os_major_version: '7'
-        )
-
-        bm3 = FactoryBot.create(
-          :benchmark,
-          version: '0.0.1',
-          os_major_version: '7'
-        )
-
-        FactoryBot.create(:canonical_profile, benchmark: bm1)
-        FactoryBot.create(:canonical_profile, benchmark: bm2)
-        unsupported = FactoryBot.create(:canonical_profile, benchmark: bm3)
-
-        assert_equal(bm1.supported_profiles, bm2.supported_profiles)
-        assert_equal(bm2.supported_profiles, bm3.supported_profiles)
-        assert_not_includes(bm1.supported_profiles, unsupported)
-      end
-    end
   end
 end
