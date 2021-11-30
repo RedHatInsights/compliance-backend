@@ -12,6 +12,7 @@ module Types
     collection_field :profiles, Types::Profile
     collection_field :test_results, Types::TestResult
     collection_field :benchmarks, Types::Benchmark
+    collection_field :os_major_versions, Types::OsMajorVersion
     record_field :profile, Types::Profile
     record_field :test_result, Types::TestResult
 
