@@ -7,6 +7,10 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     attr_accessor :op_benchmark, :op_test_result, :op_profiles, :op_rules,
                   :op_rule_results, :rules
     attr_reader :test_result_file, :host, :profiles
+
+    def package_name
+      nil
+    end
   end
 
   setup do
@@ -21,6 +25,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       account: @account.account_number,
       display_name: 'MyStringone'
     )
+
     @report_parser = TestParser
                      .new(fake_report,
                           'account' => @account.account_number,

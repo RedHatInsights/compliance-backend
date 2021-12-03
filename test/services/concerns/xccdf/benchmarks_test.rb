@@ -30,6 +30,16 @@ module Xccdf
       ::Xccdf::Benchmark.any_instance.expects(:profiles)
                         .returns(stub(canonical: ['profile-mock1']))
                         .at_least_once
+
+      SupportedSsg.expects(:by_os_major).returns(
+        nil => [
+          OpenStruct.new(
+            version: 'v0.1.49',
+            package: 'foo'
+          )
+        ]
+      ).at_least_once
+
       assert_difference('Xccdf::Benchmark.count', 1) do
         mock.save_benchmark
       end
@@ -43,6 +53,16 @@ module Xccdf
       ::Xccdf::Benchmark.any_instance.expects(:profiles)
                         .returns(stub(canonical: ['profile-mock1']))
                         .at_least_once
+
+      SupportedSsg.expects(:by_os_major).returns(
+        nil => [
+          OpenStruct.new(
+            version: 'v0.1.49',
+            package: nil
+          )
+        ]
+      ).at_least_once
+
       mock.save_benchmark
       assert mock.benchmark_contents_equal_to_op?
 
@@ -56,6 +76,41 @@ module Xccdf
     test 'benchmark is not saved if rules count differ' do
       mock = Mock.new(OP_BENCHMARK)
       assert_not_equal mock.benchmark.rules.count, OP_BENCHMARK.rules.count
+
+      SupportedSsg.expects(:by_os_major).returns(
+        nil => [
+          OpenStruct.new(
+            version: 'v0.1.49',
+            package: nil
+          )
+        ]
+      )
+
+      assert_not mock.benchmark_contents_equal_to_op?
+    end
+
+    test 'benchmark is not saved if package_name differs' do
+      mock = Mock.new(OP_BENCHMARK)
+      ::Xccdf::Benchmark.any_instance.expects(:rules)
+                        .returns(['rule-mock1']).at_least_once
+      ::Xccdf::Benchmark.any_instance.expects(:profiles)
+                        .returns(stub(canonical: ['profile-mock1']))
+                        .at_least_once
+
+      SupportedSsg.expects(:by_os_major).returns(
+        nil => [
+          OpenStruct.new(
+            version: 'v0.1.49',
+            package: 'foo'
+          )
+        ]
+      ).at_least_once
+
+      mock.save_benchmark
+      assert mock.benchmark_contents_equal_to_op?
+
+      mock.instance_variable_get(:@benchmark).update(package_name: 'bar')
+
       assert_not mock.benchmark_contents_equal_to_op?
     end
 
@@ -63,6 +118,16 @@ module Xccdf
       mock = Mock.new(OP_BENCHMARK)
       ::Xccdf::Benchmark.any_instance.expects(:profiles)
                         .returns(%w[profiles-mock1 mock2]).at_least_once
+
+      SupportedSsg.expects(:by_os_major).returns(
+        nil => [
+          OpenStruct.new(
+            version: 'v0.1.49',
+            package: nil
+          )
+        ]
+      ).at_least_once
+
       assert_not_equal mock.benchmark.profiles.count,
                        OP_BENCHMARK.profiles.count
       assert_not mock.benchmark_contents_equal_to_op?
