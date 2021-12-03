@@ -3,7 +3,6 @@ A representation of a SCAP Security Guide version
 """
 type Benchmark implements Node {
   description: String
-  globalId: ID!
   id: ID!
   latestSupportedOsMinorVersions: [String!]!
   osMajorVersion: String!
@@ -54,7 +53,6 @@ type BenchmarkEdge {
 A Business Objective registered in Insights Compliance
 """
 type BusinessObjective implements Node {
-  globalId: ID!
   id: ID!
   title: String!
 }
@@ -70,7 +68,6 @@ type Mutation implements Node {
   createProfile(input: createProfileInput!): createProfilePayload
   deleteProfile(input: deleteProfileInput!): deleteProfilePayload
   deleteTestResults(input: deleteTestResultsInput!): deleteTestResultsPayload
-  globalId: ID!
   id: ID!!
   updateProfile(input: UpdateProfileInput!): UpdateProfilePayload
 }
@@ -98,7 +95,6 @@ type OperatingSystem {
 Major version of a supported operating system
 """
 type OsMajorVersion implements Node {
-  globalId: ID!
   id: ID!!
   osMajorVersion: Int!
   supportedProfiles: [Profile!]
@@ -184,7 +180,6 @@ type Profile implements Node & RulesPreload {
   compliantHostCount: Int!
   description: String
   external: Boolean!
-  globalId: ID!
   hosts: [System!]
   id: ID!
   lastScanned(
@@ -340,7 +335,6 @@ type Query implements Node {
   All business objectives visible by the user
   """
   businessObjectives: [BusinessObjective!]
-  globalId: ID!
   id: ID!!
 
   """
@@ -546,7 +540,6 @@ type Rule implements Node {
     systemId: String
   ): Boolean!
   description: String
-  globalId: ID!
   id: ID!
   identifier: String
   profiles: [Profile!]
@@ -567,7 +560,6 @@ A System registered in Insights Compliance
 """
 type System implements Node {
   culledTimestamp: String!
-  globalId: ID!
   hasPolicy: Boolean!
   id: ID!
   insightsId: ID
@@ -668,7 +660,6 @@ A TestResult as recorded in Insights Compliance
 """
 type TestResult implements Node {
   endTime: String!
-  globalId: ID!
   host: System!
   id: ID!
   profile: Profile!

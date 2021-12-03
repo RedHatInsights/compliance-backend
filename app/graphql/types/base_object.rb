@@ -6,7 +6,6 @@ module Types
     implements GraphQL::Relay::Node.interface
     connection_type_class Connections::BaseConnection
 
-    global_id_field :global_id
     add_field GraphQL::Types::Relay::NodeField
     add_field GraphQL::Types::Relay::NodesField
 
