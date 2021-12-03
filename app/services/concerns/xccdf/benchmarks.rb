@@ -7,12 +7,15 @@ module Xccdf
 
     included do
       def save_benchmark
-        ::Xccdf::Benchmark.import!([benchmark].select(&:new_record?),
-                                   ignore: true)
+        benchmark.package_name = package_name
+
+        return unless benchmark.new_record? || benchmark.package_name_changed?
+
+        benchmark.save!
       end
 
       def benchmark_saved?
-        benchmark.persisted?
+        benchmark.package_name == package_name && benchmark.persisted?
       end
 
       def benchmark_profiles_saved?
@@ -31,6 +34,14 @@ module Xccdf
 
       def benchmark
         @benchmark ||= ::Xccdf::Benchmark.from_openscap_parser(@op_benchmark)
+      end
+
+      def package_name
+        @package_name ||= begin
+          SupportedSsg.by_os_major[benchmark.os_major_version].find do |item|
+            item.version == benchmark.version
+          end&.package
+        end
       end
     end
   end
