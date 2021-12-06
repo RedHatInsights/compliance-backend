@@ -36,4 +36,10 @@ class OsMajorVersionTest < ActiveSupport::TestCase
       assert_not_includes(result, p3)
     end
   end
+
+  test 'is readonly' do
+    assert_raises(ActiveRecord::ReadOnlyRecord) do
+      OsMajorVersion.new.save
+    end
+  end
 end
