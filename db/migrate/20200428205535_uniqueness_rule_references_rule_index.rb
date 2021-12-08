@@ -10,11 +10,8 @@ class UniquenessRuleReferencesRuleIndex < ActiveRecord::Migration[5.2]
       t.references :rule_reference, type: :uuid, index: true, null: false
     end
     columns = [:rule_id, :rule_reference_id]
-    batch_size = 10000
     to_keep = RuleReferencesRule.where(id: ids_to_keep)
-    batches_to_run = to_keep.count/batch_size
-    to_keep.in_batches(of: batch_size).each_with_index do |batch, index|
-      puts "Inserting RRR batch, #{index} out of #{batches_to_run}"
+    to_keep.each_with_index do |batch, index|
       NewRuleReferencesRule.import!(
         columns,
         batch.pluck(:rule_id, :rule_reference_id)
