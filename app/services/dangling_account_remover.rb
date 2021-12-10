@@ -32,7 +32,12 @@ class DanglingAccountRemover
     end
 
     def accounts_with_hosts
-      Host.with_policies_or_test_results.select(:account).distinct.arel
+      if ApplicationRecord.connection.data_source_exists?(Host.table_name)
+        Host.with_policies_or_test_results.select(:account).distinct.arel
+      else
+        # When setting up initial migrations and cyndi is not yet available
+        ApplicationRecord.none
+      end
     end
   end
 end
