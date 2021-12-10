@@ -35,4 +35,10 @@ class DanglingAccountRemoverTest < ActiveSupport::TestCase
     assert accounts[2].reload
     assert accounts[3].reload
   end
+
+  test 'accounts_with_hosts' do
+    ApplicationRecord.connection.expects(:data_source_exists?).returns(false)
+    none = DanglingAccountRemover.send(:accounts_with_hosts)
+    assert none, ApplicationRecord.none
+  end
 end
