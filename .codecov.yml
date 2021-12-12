@@ -5,3 +5,5 @@ coverage:
         target: 90
 ignore:
   - "bundle"
+codecov:
+  allow_coverage_offsets: True
