@@ -8,7 +8,7 @@ module Types
     graphql_name 'Tag'
     description 'A host inventory tag'
 
-    field :namespace, String, null: false
+    field :namespace, String, null: true
     field :key, String, null: false
     field :value, String, null: true
   end

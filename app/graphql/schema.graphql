@@ -651,7 +651,7 @@ A host inventory tag
 type Tag implements Node {
   id: ID!!
   key: String!
-  namespace: String!
+  namespace: String
   value: String
 }
 
