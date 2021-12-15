@@ -15,6 +15,8 @@ class ApplicationController < ActionController::API
   include Rendering
   include Parameters
 
+  before_action :set_csp_hsts
+
   def openapi
     send_file Rails.root.join('swagger/v1/openapi.v3.yaml')
   end
@@ -83,5 +85,10 @@ class ApplicationController < ActionController::API
 
   def audit_success(msg)
     Rails.logger.audit_success(msg)
+  end
+
+  def set_csp_hsts
+    response.set_header('Content-Security-Policy', "default-src 'none'")
+    response.set_header('Strict-Transport-Security', "max-age=#{1.year}")
   end
 end
