@@ -11,7 +11,7 @@ module Mutations
       field :system, ::Types::System, null: true
 
       def resolve(args = {})
-        host = Host.find(args[:id])
+        host = find_host(args[:id])
         policies = find_profiles(args[:profile_ids]).map(&:policy).uniq
         policies.map do |policy|
           policy.hosts << host

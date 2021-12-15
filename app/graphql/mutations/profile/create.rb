@@ -41,7 +41,7 @@ module Mutations
 
       def new_policy(args)
         ::Policy.new(new_policy_options(args)).fill_from(
-          profile: ::Profile.find(args[:clone_from_profile_id])
+          profile: ::Profile.canonical.find(args[:clone_from_profile_id])
         )
       end
 
