@@ -21,10 +21,6 @@ module Types
       argument :id, String, required: true
     end
 
-    field :all_profiles, [Types::Profile], null: true do
-      description 'All profiles visible by the user'
-    end
-
     field :latest_benchmarks, [Types::Benchmark], null: true do
       description 'Latest benchmarks visible by the user'
     end

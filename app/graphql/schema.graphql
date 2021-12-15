@@ -284,10 +284,6 @@ type ProfileEdge {
 The root of all queries
 """
 type Query implements Node {
-  """
-  All profiles visible by the user
-  """
-  allProfiles: [Profile!]
   benchmark(id: String!): Benchmark
   benchmarks(
     """
