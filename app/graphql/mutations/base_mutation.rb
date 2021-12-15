@@ -11,6 +11,19 @@ module Mutations
   # Helpers for host related mutations
   module HostHelper
     include UserHelper
+
+    def find_host(host_id)
+      ::Pundit.authorize(
+        current_user,
+        ::Host.find(host_id),
+        :show?
+      )
+    end
+
+    def find_hosts(host_ids)
+      ::Pundit.policy_scope(current_user, ::Host)
+              .where(id: host_ids)
+    end
   end
 
   # Helpers for profile related mutations

@@ -13,9 +13,10 @@ module Mutations
 
       def resolve(args = {})
         ::Profile.transaction do
+          hosts = find_hosts(args[:system_ids])
           profile = find_profile(args[:id])
           if profile&.policy
-            profile.policy.update_hosts(args[:system_ids])
+            profile.policy.update_hosts(hosts.pluck(:id))
             audit_mutation(profile)
           end
           { profile: profile, profiles: profile.policy.profiles }
