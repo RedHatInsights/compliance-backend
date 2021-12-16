@@ -8,10 +8,8 @@ task brakeman: :environment do
   require 'brakeman/commandline'
   Brakeman::Commandline.start(
     {
-      output_files: [
-        'brakeman_output.codeclimate',
-        'brakeman_output.markdown'
-      ]
+      print_report: true,
+      skip_files: ['bundle/']
     },
     Rails.root
   )
