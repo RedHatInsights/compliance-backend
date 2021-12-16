@@ -7,10 +7,10 @@ require_relative 'concerns/profile_pseudo_policy'
 module Types
   # Definition of the Profile type in GraphQL
   class Profile < Types::BaseObject
-    include TestResults
-    include ProfilePseudoPolicy
+    include Concerns::TestResults
+    include Concerns::ProfilePseudoPolicy
 
-    implements(::RulesPreload)
+    implements(Interfaces::RulesPreload)
 
     graphql_name 'Profile'
     description 'A Profile registered in Insights Compliance'

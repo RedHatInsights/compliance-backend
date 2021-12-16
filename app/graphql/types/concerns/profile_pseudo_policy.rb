@@ -1,30 +1,32 @@
 # frozen_string_literal: true
 
 module Types
-  # Methods related to support pseudo-policy
-  module ProfilePseudoPolicy
-    extend ActiveSupport::Concern
+  module Concerns
+    # Methods related to support pseudo-policy
+    module ProfilePseudoPolicy
+      extend ActiveSupport::Concern
 
-    def name
-      object.policy&.name || object.name
-    end
+      def name
+        object.policy&.name || object.name
+      end
 
-    def description
-      object.policy&.description || object.description
-    end
+      def description
+        object.policy&.description || object.description
+      end
 
-    # Pseudo policy with a Profile type
-    def policy
-      return if object.canonical? || object.policy.nil?
+      # Pseudo policy with a Profile type
+      def policy
+        return if object.canonical? || object.policy.nil?
 
-      object.policy.initial_profile
-    end
+        object.policy.initial_profile
+      end
 
-    # policy profiles
-    def profiles
-      return if object.canonical?
+      # policy profiles
+      def profiles
+        return if object.canonical?
 
-      object.policy&.profiles
+        object.policy&.profiles
+      end
     end
   end
 end
