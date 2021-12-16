@@ -63,10 +63,9 @@ class DuplicateBenchmarkResolver
     end
 
     def migrate_parent_profiles(existing_bm, duplicate_bm)
-      duplicate_bm.profiles.where.not(
-        ref_id: existing_bm.profiles.select(:ref_id),
-        parent_profile_id: nil
-      ).find_each do |profile|
+      duplicate_bm.profiles
+                  .where.not(ref_id: existing_bm.profiles.select(:ref_id))
+                  .where.not(parent_profile_id: nil).find_each do |profile|
         profile.update!(
           parent_profile: existing_bm.profiles.canonical.find_by!(
             ref_id: profile.parent_profile.ref_id
