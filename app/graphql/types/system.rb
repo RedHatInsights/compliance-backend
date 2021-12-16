@@ -5,7 +5,7 @@ require_relative 'concerns/system_profiles'
 module Types
   # Definition of the System GraphQL type
   class System < Types::BaseObject
-    include SystemProfiles
+    include Concerns::SystemProfiles
 
     model_class ::Host
     connection_type_class ::Connections::SystemConnection
