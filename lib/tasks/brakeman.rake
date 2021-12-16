@@ -11,7 +11,8 @@ task brakeman: :environment do
       output_files: [
         'brakeman_output.codeclimate',
         'brakeman_output.markdown'
-      ]
+      ],
+      skip_files: ['bundle/']
     },
     Rails.root
   )
