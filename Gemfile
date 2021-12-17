@@ -83,6 +83,7 @@ group :development, :test do
   gem 'faker'
   gem 'simplecov', '~> 0.17.0'
   gem 'minitest-reporters'
+  gem 'minitest-stub-const'
   gem 'mocha'
   gem 'pry-byebug'
   gem 'pry-remote'
