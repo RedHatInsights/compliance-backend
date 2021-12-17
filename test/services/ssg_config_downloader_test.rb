@@ -39,82 +39,90 @@ class ConfigDownloaderTest < ActiveSupport::TestCase
 
   context 'downloaded file' do
     setup do
-      FileUtils.cp(
-        SsgConfigDownloader::DS_FALLBACK_PATH,
-        SsgConfigDownloader::DS_FILE_PATH
-      )
+      @ds_config_file = ::Tempfile.new('ds_config_file')
+      @ds_config_file.write(File.read(SsgConfigDownloader::DS_FALLBACK_PATH))
+      @ds_config_file.rewind
 
-      FileUtils.cp(
-        SsgConfigDownloader::AT_FALLBACK_PATH,
-        SsgConfigDownloader::AT_FILE_PATH
-      )
-
-      @ds_config_file = File.new(SsgConfigDownloader::DS_FILE_PATH)
-      @at_config_file = File.new(SsgConfigDownloader::AT_FILE_PATH)
+      @at_config_file = ::Tempfile.new('at_config_file')
+      @at_config_file.write(File.read(SsgConfigDownloader::AT_FALLBACK_PATH))
+      @at_config_file.rewind
     end
 
     should 'ssg_ds returns SSG datastream file from disk' do
-      assert_equal @ds_config_file.read, SsgConfigDownloader.ssg_ds
+      SsgConfigDownloader.stub_const(:DS_FILE_PATH, @ds_config_file.path) do
+        assert_equal @ds_config_file.read, SsgConfigDownloader.ssg_ds
+      end
     end
 
     should 'ssg_ansible_tasks returns SSG ansible tasks file from disk' do
-      assert_equal @at_config_file.read, SsgConfigDownloader.ssg_ansible_tasks
+      SsgConfigDownloader.stub_const(:AT_FILE_PATH, @at_config_file.path) do
+        assert_equal @at_config_file.read, SsgConfigDownloader.ssg_ansible_tasks
+      end
     end
 
     should 'ssg_ds_checksum' do
-      assert_equal Digest::MD5.file(@ds_config_file).hexdigest,
-                   SsgConfigDownloader.ssg_ds_checksum
+      SsgConfigDownloader.stub_const(:DS_FILE_PATH, @ds_config_file.path) do
+        assert_equal Digest::MD5.file(@ds_config_file).hexdigest,
+                     SsgConfigDownloader.ssg_ds_checksum
+      end
     end
 
     should 'ssg_ansible_tasks_checksum' do
-      assert_equal Digest::MD5.file(@at_config_file).hexdigest,
-                   SsgConfigDownloader.ssg_ansible_tasks_checksum
+      SsgConfigDownloader.stub_const(:AT_FILE_PATH, @at_config_file.path) do
+        assert_equal Digest::MD5.file(@at_config_file).hexdigest,
+                     SsgConfigDownloader.ssg_ansible_tasks_checksum
+      end
     end
 
     should 'update_ssg_ds success' do
-      SafeDownloader.expects(:download)
+      SsgConfigDownloader.stub_const(:DS_FILE_PATH, @ds_config_file.path) do
+        SafeDownloader.expects(:download)
 
-      SsgConfigDownloader.update_ssg_ds
-      assert_audited 'Downloaded config'
+        SsgConfigDownloader.update_ssg_ds
+        assert_audited 'Downloaded config'
 
-      assert_equal @ds_config_file.read, SsgConfigDownloader.ssg_ds
+        assert_equal @ds_config_file.read, SsgConfigDownloader.ssg_ds
+      end
     end
 
     should 'update_ssg_ansible_tasks success' do
-      SafeDownloader.expects(:download)
+      SsgConfigDownloader.stub_const(:AT_FILE_PATH, @at_config_file.path) do
+        SafeDownloader.expects(:download)
 
-      SsgConfigDownloader.update_ssg_ansible_tasks
-      assert_audited 'Downloaded config'
+        SsgConfigDownloader.update_ssg_ansible_tasks
+        assert_audited 'Downloaded config'
 
-      assert_equal @at_config_file.read, SsgConfigDownloader.ssg_ansible_tasks
+        assert_equal @at_config_file.read, SsgConfigDownloader.ssg_ansible_tasks
+      end
     end
 
     should 'update_ssg_ds handles failure gracefully' do
-      SafeDownloader.expects(:download).raises(StandardError)
+      SsgConfigDownloader.stub_const(:DS_FILE_PATH, @ds_config_file.path) do
+        SafeDownloader.expects(:download).raises(StandardError)
 
-      SsgConfigDownloader.update_ssg_ds
-      assert_audited 'Failed to download config'
+        SsgConfigDownloader.update_ssg_ds
+        assert_audited 'Failed to download config'
 
-      assert_equal @ds_config_file.read, SsgConfigDownloader.ssg_ds
+        assert_equal @ds_config_file.read, SsgConfigDownloader.ssg_ds
+      end
     end
 
     should 'update_ssg_ansible_tasks handles failure gracefully' do
-      SafeDownloader.expects(:download).raises(StandardError)
+      SsgConfigDownloader.stub_const(:AT_FILE_PATH, @at_config_file.path) do
+        SafeDownloader.expects(:download).raises(StandardError)
 
-      SsgConfigDownloader.update_ssg_ansible_tasks
-      assert_audited 'Failed to download config'
+        SsgConfigDownloader.update_ssg_ansible_tasks
+        assert_audited 'Failed to download config'
 
-      assert_equal @at_config_file.read, SsgConfigDownloader.ssg_ansible_tasks
+        assert_equal @at_config_file.read, SsgConfigDownloader.ssg_ansible_tasks
+      end
     end
 
     teardown do
-      if File.exist?(SsgConfigDownloader::DS_FILE_PATH)
-        File.delete(SsgConfigDownloader::DS_FILE_PATH)
-      end
-
-      if File.exist?(SsgConfigDownloader::AT_FILE_PATH)
-        File.delete(SsgConfigDownloader::AT_FILE_PATH)
-      end
+      @ds_config_file.close
+      @ds_config_file.unlink
+      @at_config_file.close
+      @ds_config_file.unlink
     end
   end
 end

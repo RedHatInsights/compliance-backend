@@ -54,6 +54,20 @@ unless Rails.env.production?
     class TestCase
       self.use_transactional_tests = true
 
+      parallelize
+
+      parallelize_setup do |worker|
+        SimpleCov.command_name "#{SimpleCov.command_name}-#{worker}"
+
+        ActiveRecord::Base.connection.execute(
+          IO.read('db/cyndi_setup_test.sql')
+        )
+      end
+
+      parallelize_teardown do
+        SimpleCov.result
+      end
+
       setup do
         audit_log_capturing
       end
