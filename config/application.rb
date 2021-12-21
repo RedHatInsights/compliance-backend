@@ -29,7 +29,7 @@ Dotenv::Railtie.load unless Rails.env.production?
 module ComplianceBackend
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 6.1
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -48,6 +48,9 @@ module ComplianceBackend
     # Adjust params[tags] to be array
     require 'adjust_tags/middleware'
     config.middleware.use Insights::API::Common::AdjustTags::Middleware
+
+    # FIXME: profile<->policy connections could fail on this
+    config.active_record.has_many_inversing = false
 
     # GraphiQL
     if Rails.env.development?
