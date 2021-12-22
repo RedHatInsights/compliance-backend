@@ -297,6 +297,8 @@ LOCAL_BUILD=true RH_REGISTRY_USER=guybrush RH_REGISTRY_TOKEN=monkey QUAY_USER=le
 
 ## Development notes
 
+Community Contribution test
+
 ### Running Sonarqube
 
 Follow instructions to set up self-signed certs, as described [here](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/).
