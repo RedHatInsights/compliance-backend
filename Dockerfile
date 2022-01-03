@@ -7,7 +7,8 @@ USER 0
 # also remove unused packages added by ubi8/s2i-base.
 RUN yum install -y hostname shared-mime-info jq && \
     yum remove -y mariadb-connector-c-devel npm openssh && \
-    yum clean all -y
+    yum clean all -y && \
+    gem update bundler
 
 COPY --chown=1001:0 . /tmp/src
 
