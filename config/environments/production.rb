@@ -83,14 +83,11 @@ Rails.application.configure do
   end
 
   # Whitelist hosts
-  # Production and stage environments
-  config.hosts << 'console.stage.redhat.com'
-  config.hosts << 'cloud.stage.redhat.com'
-  config.hosts << 'cloud.redhat.com'
-  config.hosts << 'console.redhat.com'
+  # Production, stage and ephemeral environments
+  config.hosts << /(cloud|console)\.(stage\.)?redhat\.com\z/
   # Ephemeral environments
   config.hosts << /.+.apps\.c-rh-c-eph\.(\w+)\.p1\.openshiftapps\.com\z/
-  config.hosts << 'compliance-service'
+  config.hosts << /\Acompliance-service\z/
   # Kubernetes readiness/liveness probe
   config.hosts << /\A10\.\d+\.\d+\.\d+\z/
 
