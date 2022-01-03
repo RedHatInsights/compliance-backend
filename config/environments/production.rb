@@ -83,8 +83,8 @@ Rails.application.configure do
   end
 
   # Whitelist hosts
-  # Production, CI, QA and stage environments
-  config.hosts << /((ci|qa)\.)?console\.(stage\.)?redhat\.com\z/
+  # Production, stage and ephemeral environments
+  config.hosts << /(cloud|console)\.(stage\.)?redhat\.com\z/
   # Ephemeral environments
   config.hosts << /.+.apps\.c-rh-c-eph\.(\w+)\.p1\.openshiftapps\.com\z/
   config.hosts << /\Acompliance-service\z/
