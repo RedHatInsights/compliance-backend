@@ -82,14 +82,15 @@ Rails.application.configure do
     config.audit_logger = Logger.new(STDOUT)
   end
 
-  # Whitelist hosts
-  # Production, stage and ephemeral environments
-  config.hosts << /(cloud|console)\.(stage\.)?redhat\.com\z/
-  # Ephemeral environments
-  config.hosts << /.+.apps\.c-rh-c-eph\.(\w+)\.p1\.openshiftapps\.com\z/
-  config.hosts << /\Acompliance-service\z/
-  # Kubernetes readiness/liveness probe
-  config.hosts << /\A10\.\d+\.\d+\.\d+\z/
+  # Temporarily allow any origins
+  config.hosts.clear
+  # # Production, stage and ephemeral environments
+  # config.hosts << /(cloud|console)\.(stage\.)?redhat\.com\z/
+  # # Ephemeral environments
+  # config.hosts << /.+.apps\.c-rh-c-eph\.(\w+)\.p1\.openshiftapps\.com\z/
+  # config.hosts << /\Acompliance-service\z/
+  # # Kubernetes readiness/liveness probe
+  # config.hosts << /\A10\.\d+\.\d+\.\d+\z/
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
