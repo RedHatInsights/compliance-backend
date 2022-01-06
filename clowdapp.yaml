@@ -233,12 +233,10 @@ objects:
           timeoutSeconds: 5
           exec:
             command:
-              - bundle
-              - exec
-              - rake
-              - db:status
-              - redis:status
-              - kafka:status
+              - bash
+              - -c
+              - |
+                bundle exec rake --trace db:status redis:status kafka:status
         resources:
           limits:
             cpu: ${CPU_LIMIT_CONS}
@@ -275,11 +273,10 @@ objects:
           timeoutSeconds: 5
           exec:
             command:
-              - bundle
-              - exec
-              - rake
-              - db:status
-              - redis:status
+              - bash
+              - -c
+              - |
+                bundle exec rake --trace db:status redis:status
         env:
         - name: APPLICATION_TYPE
           value: compliance-sidekiq
