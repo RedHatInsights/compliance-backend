@@ -5,8 +5,9 @@ inherit_from:
   - .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 2.4
-  TargetRailsVersion: 6.0
+  NewCops: enable
+  TargetRubyVersion: 2.7
+  TargetRailsVersion: 6.1
   Exclude:
     - 'db/**/*'
     - 'bin/**/*'
@@ -27,7 +28,85 @@ Metrics/ClassLength:
     - 'spec/**/*'
 
 Metrics/BlockLength:
-  ExcludedMethods: ['included', 'class_methods', 'GraphQL::ObjectType.define']
+  IgnoredMethods: ['included', 'class_methods', 'GraphQL::ObjectType.define']
   Exclude:
     - 'test/**/*'
     - 'spec/**/*'
+
+Layout/LineEndStringConcatenationIndentation:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: aligned
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: false
+
+Layout/EmptyLineBetweenDefs:
+  EmptyLineBetweenClassDefs: false
+
+Lint/AmbiguousOperatorPrecedence:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: false
+
+Lint/SymbolConversion:
+  Enabled: false
+
+Lint/ConstantDefinitionInBlock:
+  Enabled: false
+
+Lint/RedundantCopDisableDirective:
+  Enabled: false
+
+Lint/MissingSuper:
+  Enabled: false
+
+Lint/EmptyFile:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+Security/IoMethods:
+  Enabled: false
+
+Style/FileWrite:
+  Enabled: false
+
+Style/MapToHash:
+  Enabled: false
+
+Style/OpenStructUse:
+  Enabled: false
+
+Style/SingleArgumentDig:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/RedundantFileExtensionInRequire:
+  Enabled: false
+
+Style/GlobalStdStream:
+  Enabled: false
+
+Style/SlicingWithRange:
+  Enabled: false
+
+Style/RedundantBegin:
+  Enabled: false
+
+Style/StringConcatenation:
+  Mode: conservative
+
+Style/RedundantAssignment:
+  Enabled: false
+
+Style/RedundantRegexpEscape:
+  Enabled: false
