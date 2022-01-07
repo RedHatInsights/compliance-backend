@@ -39,7 +39,7 @@ class SafeDownloader
 
     def download_reports(url, opts = {})
       begin
-        downloaded_file = download(url, opts)
+        downloaded_file = download(url, **opts)
       rescue *DOWNLOAD_ERRORS
         Rails.logger.audit_fail("Failed to download report from URL: #{url}")
         raise

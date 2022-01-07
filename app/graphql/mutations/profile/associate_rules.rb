@@ -18,7 +18,7 @@ module Mutations
         ::Profile.transaction do
           profile = find_profile(args[:id])
           if profile
-            rules_added, rules_removed = profile.update_rules(rules)
+            rules_added, rules_removed = profile.update_rules(**rules)
             audit_mutation(profile, rules_added, rules_removed)
           end
           { profile: profile }

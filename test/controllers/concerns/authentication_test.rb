@@ -368,6 +368,6 @@ class AuthenticationTest < ActionController::TestCase
       headers.each { |key, val| @request.headers[key] = val }
     end
 
-    process(action_name, params)
+    process(action_name, **params)
   end
 end
