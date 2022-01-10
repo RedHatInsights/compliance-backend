@@ -74,10 +74,7 @@ module HostSearching
     end
 
     def filter_with_results_for_policy(_filter, _operator, policy_or_profile_id)
-      profiles = ::Profile.where(id: policy_or_profile_id)
-      profiles = profiles
-                 .or(::Profile.where(policy_id: policy_or_profile_id))
-                 .or(::Profile.where(policy_id: profiles.select(:policy_id)))
+      profiles = profiles_by_id(policy_or_profile_id)
 
       RequestStore.store['scoped_search_context_profiles'] = profiles
 
@@ -87,6 +84,10 @@ module HostSearching
     end
 
     def filter_by_policy(_filter, _operator, policy_or_profile_id)
+      profiles = profiles_by_id(policy_or_profile_id) + Profile.select('NULL AS id').distinct
+
+      RequestStore.store['scoped_search_context_profiles'] = profiles
+
       with_policy = with_policy_lookup(policy_or_profile_id).select(:id)
       with_profile = with_external_profile_lookup(policy_or_profile_id)
                      .select(:id)
@@ -167,6 +168,12 @@ module HostSearching
           }
         }
       )
+    end
+
+    def profiles_by_id(policy_or_profile_id)
+      profiles = ::Profile.where(id: policy_or_profile_id)
+      profiles.or(::Profile.where(policy_id: policy_or_profile_id))
+              .or(::Profile.where(policy_id: profiles.select(:policy_id)))
     end
   end
 
