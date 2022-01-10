@@ -13,6 +13,7 @@ kafka_producer_topics:
   upload_validation: 'platform.upload.validation'
   payload_tracker: 'platform.payload-status'
   remediation_updates: 'platform.remediation-updates.compliance'
+  notifications: 'platfom.notifications.ingress'
 compliance_ssg_url: http://compliance-ssg:8080
 host_inventory_url: http://insights-inventory.platform-ci.svc.cluster.local:8080
 rbac_url: http://rbac.rbac-ci.svc.cluster.local:9002
