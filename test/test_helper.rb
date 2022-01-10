@@ -75,7 +75,7 @@ unless Rails.env.production?
       def audit_log_capturing
         audit_logger = Rails.application.config.audit_logger
         @audit_log = StringIO.new
-        audit_logger.reopen(@audit_log)
+        audit_logger.instance_variable_set(:@logdev, @audit_log)
       end
 
       def assert_audited(msg)
