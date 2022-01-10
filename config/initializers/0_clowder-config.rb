@@ -51,7 +51,8 @@ if ClowderCommonRuby::Config.clowder_enabled?
     kafka_producer_topics: {
       upload_validation: config.kafka_topics&.dig('platform.upload.validation', 'name'),
       payload_tracker: config.kafka_topics&.dig('platform.payload-status', 'name'),
-      remediation_updates: config.kafka_topics&.dig('platform.remediation-updates.compliance', 'name')
+      remediation_updates: config.kafka_topics&.dig('platform.remediation-updates.compliance', 'name'),
+      notifications: config.kafka_topics&.dig('platfom.notifications.ingress', 'name')
     },
     rbac_url: rbac_url,
     redis_url: redis_url,
