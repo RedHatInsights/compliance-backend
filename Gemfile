@@ -75,6 +75,10 @@ gem 'clowder-common-ruby'
 # Support for per request thread-local variables
 gem 'request_store'
 
+# Ruby 3 dependencies
+gem 'rexml'
+gem 'webrick'
+
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
@@ -102,7 +106,7 @@ end
 group :development do
   gem 'graphiql-rails'
   gem 'bullet'
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen', '>= 3.0.5'
   gem 'pry-rails'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
