@@ -43,25 +43,6 @@ class AuditLogFormatterTest < ActiveSupport::TestCase
       Object.send(:remove_const, :Sidekiq) if @test_sidekiq
     end
 
-    should 'log sidekiq job id from Sidekiq::Context' do
-      orig_ctx_module = @sidekiq_module.const_defined?(:Context) \
-                         && @sidekiq_module::Context
-      ctx_module = Module.new
-      @sidekiq_module.const_set('Context', ctx_module)
-
-      begin
-        ctx_module.stubs(:current).returns(jid: '123')
-        assert Sidekiq::Context.current
-
-        line = @formatter.call('info', Time.zone.now, 'prog', 'Audit message')
-        log_msg = JSON.parse(line)
-        assert_equal '123', log_msg['transaction_id']
-      ensure
-        @sidekiq_module.send(:remove_const, :Context)
-        @sidekiq_module.const_set('Context', orig_ctx_module) if orig_ctx_module
-      end
-    end
-
     should 'log sidekiq job id from thread local context' do
       begin
         Thread.current[:sidekiq_context] =
