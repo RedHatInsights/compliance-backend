@@ -41,7 +41,7 @@ class Profile < ApplicationRecord
   }, if: -> { os_minor_version.present? }
   validates :name, presence: true
   validates :benchmark_id, presence: true
-  validates :account, presence: true, if: -> { hosts.any? }
+  validates :account, presence: true, if: -> { parent_profile_id && hosts.any? }
   validates :policy, presence: true, if: -> { policy_id }
 
   scope :canonical_for_os, lambda { |os_major_version, os_minor_version|
