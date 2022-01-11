@@ -52,12 +52,7 @@ module Insights
           def sidekiq_current_ctx
             return unless Module.const_defined?(:Sidekiq)
 
-            if ::Sidekiq.const_defined?(:Context)
-              Sidekiq::Context.current
-            else
-              # versions up to 6.0.0
-              parse_sidekiq_ctx(Thread.current[:sidekiq_context])
-            end
+            parse_sidekiq_ctx(Thread.current[:sidekiq_context])
           rescue StandardError
             nil
           end
