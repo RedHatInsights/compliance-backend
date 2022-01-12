@@ -20,6 +20,14 @@ services:
       - KAFKA_BROKER_ID=1
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:32181
+  createtopics:
+    image: quay.io/cloudservices/cp-kafka
+    depends_on:
+      - kafka
+    links:
+      - kafka
+    command: "bash -c 'echo Waiting for Kafka to be ready... && \
+                       kafka-topics --create --if-not-exists --topic platform.upload.announce --bootstrap-server kafka:29092'"
   puptoo:
     image: quay.io/cloudservices/insights-puptoo:latest
     environment:
@@ -28,6 +36,7 @@ services:
       - PROMETHEUS_PORT=8001
     depends_on:
       - kafka
+      - createtopics
     links:
       - kafka
   minio:
@@ -56,7 +65,7 @@ services:
       - /data
     env_file: .env
   ingress:
-    image: quay.io/cloudservices/insights-ingress:stable
+    image: quay.io/cloudservices/insights-ingress:latest
     environment:
       - AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
       - AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
