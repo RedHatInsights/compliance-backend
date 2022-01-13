@@ -171,7 +171,7 @@ class HostTest < ActiveSupport::TestCase
       assert_includes(
         Host.search_for("
           with_results_for_policy_id = #{@profile.policy_id} and (
-            compliance_score >= #{@host1.test_results.first.score - 10} and
+            compliance_score >= #{[@host1.test_results.first.score, 0].max} and
             compliance_score <= #{@host1.test_results.first.score + 10}
           )
         "),
@@ -184,7 +184,7 @@ class HostTest < ActiveSupport::TestCase
         Host.search_for("
           with_results_for_policy_id = #{@profile.policy_id} and (
             compliance_score >= 0 and
-            compliance_score <= #{@host1.test_results.first.score - 1}
+            compliance_score <= #{[@host1.test_results.first.score - 10, 0].max}
           )
         "),
         @host1
