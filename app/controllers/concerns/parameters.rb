@@ -35,13 +35,10 @@ module Parameters
       resource_params[:relationships]&.permit(relationship_types)
     end
 
-    def new_relationship_ids(model)
-      relationship = model.to_s.pluralize.downcase.to_sym
-      ids = resource_relationships.to_h.dig(relationship, :data)&.map do |res|
-        res[:id]
+    def new_relationship_ids(relationship)
+      resource_relationships.to_h.dig(relationship, :data)&.map do |resource|
+        resource[:id]
       end
-
-      ::Pundit.policy_scope(current_user, model).where(id: ids).pluck(:id)
     end
 
     def include_params

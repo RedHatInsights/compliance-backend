@@ -106,11 +106,11 @@ module V1
     end
 
     def new_host_ids
-      new_relationship_ids(Host)
+      new_relationship_ids(:hosts)
     end
 
     def new_rule_ids
-      new_relationship_ids(Rule)
+      new_relationship_ids(:rules)
     end
 
     def resource
