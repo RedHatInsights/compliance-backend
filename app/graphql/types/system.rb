@@ -62,7 +62,7 @@ module Types
     end
 
     def last_scanned(args = {})
-      object.last_scanned(args)
+      object.last_scanned(**args)
     end
 
     private
