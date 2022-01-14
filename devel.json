@@ -36,6 +36,11 @@
                 "consumerGroup": "someGroupName"
             },
             {
+                "requestedName": "platfom.notifications.ingress",
+                "name": "platfom.notifications.ingress",
+                "consumerGroup": "someGroupName"
+            },
+            {
                 "requestedName": "platform.remediation-updates.compliance",
                 "name": "platform.remediation-updates.compliance",
                 "consumerGroup": "someGroupName"
