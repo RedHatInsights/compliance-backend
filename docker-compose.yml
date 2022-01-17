@@ -171,7 +171,7 @@ services:
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - ACG_CONFIG=/app/devel.json
-  ssg-import-rhel-supported:
+  import-ssg:
     image: compliance-backend-rails
     entrypoint: ''
     command: 'bundle exec rake ssg:import_rhel_supported'
@@ -181,6 +181,7 @@ services:
     depends_on:
       - db
       - compliance-ssg
+      - build-rails-db
     links:
       - db
       - compliance-ssg
@@ -209,6 +210,7 @@ services:
       - db
       - redis
       - compliance-ssg
+      - import-ssg
     links:
       - db
       - redis
