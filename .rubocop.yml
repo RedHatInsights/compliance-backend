@@ -110,3 +110,24 @@ Style/RedundantAssignment:
 
 Style/RedundantRegexpEscape:
   Enabled: false
+
+Rails/IndexWith:
+  Enabled: false
+
+Rails/SquishedSQLHeredocs:
+  Enabled: false
+
+Rails/RedundantPresenceValidationOnBelongsTo:
+  Enabled: false
+
+Rails/ActiveRecordCallbacksOrder:
+  Enabled: false
+
+Rails/PluckInWhere:
+  Enabled: false
+
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false
+
+Rails/Pick:
+  Enabled: false
