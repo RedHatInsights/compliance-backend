@@ -225,7 +225,7 @@ GEM
       pry (~> 0.9)
       slop (~> 3.0)
     public_suffix (4.0.6)
-    puma (4.3.10)
+    puma (5.5.2)
       nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
@@ -410,7 +410,7 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   pry-remote
-  puma (~> 4)
+  puma (~> 5)
   pundit
   racecar
   rack (>= 2.1.4)
@@ -443,4 +443,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   2.3.4
+   2.3.5

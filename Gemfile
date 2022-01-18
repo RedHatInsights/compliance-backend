@@ -7,7 +7,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'rails', '~> 6.1'
 gem 'pg'
 # Use Puma as the app server
-gem 'puma', '~> 4'
+gem 'puma', '~> 5'
 # Use Redis adapter to connect to Sidekiq
 gem 'redis', '~> 4.0'
 # Reduces boot times through caching; required in config/boot.rb
