@@ -16,6 +16,8 @@ def start_exporter_server
 
   server = PrometheusExporter::Server::WebServer.new(port: Settings.prometheus_exporter_port)
   server.start
+  # Increase the server thread priority for better latency
+  server.instance_variable_get(:@runner).priority = 3
 
   require './lib/prometheus/graphql_collector'
 
