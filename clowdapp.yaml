@@ -8,6 +8,8 @@ objects:
   kind: ClowdApp
   metadata:
     name: "${APP_NAME}"
+    annotations:
+      ignore-check.kube-linter.io/minimum_three_replicas
   spec:
     envName: ${ENV_NAME}
     testing:
