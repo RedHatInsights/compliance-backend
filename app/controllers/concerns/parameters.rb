@@ -43,7 +43,7 @@ module Parameters
 
       # Pundit implicitly returns with an empty array when the input is nil.
       # This is unwanted as it would unassign all the systems...
-      ::Pundit.policy_scope(current_user, model).where(id: ids).pluck(:id) if ids.present?
+      ::Pundit.policy_scope(current_user, model).where(id: ids).pluck(:id) unless ids.nil?
     end
 
     def include_params
