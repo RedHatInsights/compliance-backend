@@ -6,19 +6,35 @@ require 'xccdf_report_parser'
 class ParseReportJob
   include Sidekiq::Worker
 
+  # rubocop:disable Metrics/MethodLength
   def perform(file, message)
     return if cancelled?
 
-    @file = file
     @msg_value = message
     Sidekiq.logger.info(
       "Parsing report for account #{@msg_value['account']}, "\
       "system #{@msg_value['id']}"
     )
+
+    # TODO: clean this up after the legacy jobs are drained in production
+    @file = if file.is_a?(Numeric)
+              begin
+                SafeDownloader.download_reports(
+                  @msg_value['url'],
+                  ssl_only: Settings.report_download_ssl_only
+                )[file]
+              rescue SafeDownloader::DownloadError => e
+                handle_error(e)
+              end
+            else # support for draining legacy jobs
+              ActiveSupport::Gzip.decompress(file)
+            end
+
     Rails.logger.audit_with_account(@msg_value['account']) do
       save_all
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def cancelled?
     Sidekiq.redis { |c| c.exists?("cancelled-#{jid}") }
@@ -41,8 +57,7 @@ class ParseReportJob
   end
 
   def parser
-    @parser ||= XccdfReportParser.new(ActiveSupport::Gzip.decompress(@file),
-                                      @msg_value)
+    @parser ||= XccdfReportParser.new(@file, @msg_value)
   end
 
   def handle_error(exc)
