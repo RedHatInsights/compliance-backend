@@ -76,6 +76,12 @@ objects:
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: SETTINGS__FORCE_IMPORT_SSGS
           value: "${SETTINGS__FORCE_IMPORT_SSGS}"
+        livenessProbe:
+          exec:
+            command:
+              - bash
+              - -c
+              - ps ax | grep [r]ake
     - name: floorist
       schedule: ${FLOORIST_SCHEDULE}
       suspend: ${{FLOORIST_SUSPEND}}
@@ -112,6 +118,12 @@ objects:
           value: "/tmp/floorplan/floorplan.yaml"
         - name: LOGLEVEL
           value: ${FLOORIST_LOGLEVEL}
+        livenessProbe:
+          exec:
+            command:
+              - bash
+              - -c
+              - ps ax | grep [r]un
         volumeMounts:
         - name: floorplan-volume
           mountPath: "/tmp/floorplan"
