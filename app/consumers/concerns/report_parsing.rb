@@ -21,9 +21,8 @@ module ReportParsing
     end
 
     def enqueue_parse_report_job(reports)
-      reports.each do |profile_id, report|
-        job = ParseReportJob
-              .perform_async(ActiveSupport::Gzip.compress(report), metadata)
+      reports.each_with_index do |(profile_id, _report), idx|
+        job = ParseReportJob.perform_async(idx, metadata)
         notify_report_success(profile_id, job)
       end
 
@@ -84,7 +83,8 @@ module ReportParsing
     def metadata
       (@msg_value.dig('platform_metadata', 'metadata') || {}).merge(
         'id' => id,
-        'b64_identity' => b64_identity
+        'b64_identity' => b64_identity,
+        'url' => url
       )
     end
 
