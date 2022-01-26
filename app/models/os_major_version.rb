@@ -2,14 +2,40 @@
 
 # Pseudo-class for retrieving supported OS major versions
 class OsMajorVersion < ApplicationRecord
-  OS_MAJOR_VERSION = Arel.sql(
-    <<-SQL.gsub("\n", ' ').squeeze(' ')
-      REPLACE(ref_id, '#{Xccdf::Benchmark::REF_PREFIX}-', '')::int
-      AS os_major_version
-    SQL
-  )
-
   self.table_name = 'benchmarks'
+
+  # Helper function that aggregates a column under a grouping and orders them
+  # descending based on their benchmark version.
+  def self.aggregated_cast(column)
+    Arel::Nodes::NamedFunction.new(
+      'array_agg',
+      [Arel::Nodes::InfixOperation.new(
+        'ORDER BY',
+        column,
+        Arel::Nodes::Descending.new(
+          Xccdf::Benchmark::SORT_BY_VERSION
+        )
+      )]
+    )
+  end
+
+  OS_MAJOR_VERSION = Arel::Nodes::NamedFunction.new(
+    'CAST',
+    [
+      Arel::Nodes::NamedFunction.new(
+        'REPLACE',
+        [
+          Xccdf::Benchmark.arel_table[:ref_id],
+          Arel::Nodes::Quoted.new("#{Xccdf::Benchmark::REF_PREFIX}-"),
+          Arel::Nodes::Quoted.new('')
+        ]
+      ).as('int')
+    ]
+  ).as('os_major_version')
+
+  PROFILE_LAST_ID = Arel.sql("(#{OsMajorVersion.aggregated_cast(Profile.arel_table[:id]).to_sql})[1] as \"id\"")
+  PROFILE_BM_VERSIONS = OsMajorVersion.aggregated_cast(Xccdf::Benchmark.arel_table[:version]).as('bm_versions')
+  PROFILE_BM_REF_ID = Xccdf::Benchmark.arel_table[:ref_id].as('bm')
 
   default_scope do
     select(OS_MAJOR_VERSION, :ref_id).distinct.order(:os_major_version)
@@ -19,22 +45,22 @@ class OsMajorVersion < ApplicationRecord
                         foreign_key: 'ref_id', primary_key: 'ref_id',
                         inverse_of: false, dependent: :restrict_with_exception
 
+  has_many :profiles, lambda {
+    supported_profiles = canonical.where(upstream: false)
+                                  .joins(:benchmark)
+                                  .select(PROFILE_LAST_ID, PROFILE_BM_VERSIONS, PROFILE_BM_REF_ID)
+                                  .group(:ref_id, 'benchmarks.ref_id')
+
+    canonical.where(upstream: false)
+             .joins("INNER JOIN (#{supported_profiles.to_sql}) t ON t.id = profiles.id")
+             .select('"profiles".*, "t"."bm_versions" AS "bm_versions"')
+  }, through: :benchmarks
+
   def readonly?
     true
   end
 
   def os_major_version
     attributes['os_major_version']
-  end
-
-  def supported_profiles
-    versions = SupportedSsg.by_os_major[os_major_version.to_s].map(&:version)
-
-    Profile.canonical.joins(:benchmark)
-           .where(benchmarks: { ref_id: ref_id, version: versions })
-           .order(:ref_id, Arel.sql('
-             string_to_array("benchmarks"."version", \'.\')::int[] DESC
-           '))
-           .select('DISTINCT ON ("profiles"."ref_id") "profiles".*')
   end
 end

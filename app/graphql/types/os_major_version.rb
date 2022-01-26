@@ -8,6 +8,6 @@ module Types
     description 'Major version of a supported operating system'
 
     field :os_major_version, Int, null: false
-    field :supported_profiles, [::Types::Profile], null: true
+    field :profiles, [::Types::Profile], null: true
   end
 end
