@@ -92,6 +92,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     def clear
       @raw_supported = nil
       @latest_map = nil
+      @by_ssg_version = nil
       @checksum = SsgConfigDownloader.ssg_ds_checksum
     end
 
