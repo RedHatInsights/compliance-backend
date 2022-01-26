@@ -97,7 +97,7 @@ Major version of a supported operating system
 type OsMajorVersion implements Node {
   id: ID!!
   osMajorVersion: Int!
-  supportedProfiles: [Profile!]
+  profiles: [Profile!]
 }
 
 """
@@ -239,6 +239,7 @@ type Profile implements Node & RulesPreload {
     """
     systemId: String
   ): Boolean!
+  supportedOsVersions: [String!]!
   testResultHostCount: Int!
   totalHostCount: Int!
   unsupportedHostCount: Int!

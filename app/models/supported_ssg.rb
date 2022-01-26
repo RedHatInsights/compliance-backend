@@ -71,6 +71,12 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
       all.group_by(&:os_major_version)
     end
 
+    def by_ssg_version
+      clear if ssg_ds_changed?
+
+      @by_ssg_version ||= all.group_by(&:version)
+    end
+
     private
 
     def map_attributes(rhel, raw_attrs)

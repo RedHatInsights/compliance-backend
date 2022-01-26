@@ -7,6 +7,15 @@ module Xccdf
   # Guide (i.e. RHEL 7, v0.1.43)
   class Benchmark < ApplicationRecord
     REF_PREFIX = 'xccdf_org.ssgproject.content_benchmark_RHEL'
+    SORT_BY_VERSION = Arel::Nodes::NamedFunction.new(
+      'CAST',
+      [
+        Arel::Nodes::NamedFunction.new(
+          'string_to_array',
+          [arel_table[:version], Arel::Nodes::Quoted.new('.')]
+        ).as('int[]')
+      ]
+    )
 
     has_many :profiles, dependent: :destroy
     has_many :rules, dependent: :destroy
@@ -14,7 +23,8 @@ module Xccdf
     validates :version, presence: true
 
     sortable_by :title
-    sortable_by :version, Arel.sql("string_to_array(version, '.')::int[]")
+    # Ordering by hash can't deal with Arel, so this juggling is necessary
+    sortable_by :version, Arel.sql(SORT_BY_VERSION.to_sql)
 
     include ::BenchmarkSearching
 

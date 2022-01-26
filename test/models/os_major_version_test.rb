@@ -25,11 +25,11 @@ class OsMajorVersionTest < ActiveSupport::TestCase
         os_major_version: '7'
       )
 
-      p1 = FactoryBot.create(:canonical_profile, benchmark: bm1)
-      p2 = FactoryBot.create(:canonical_profile, benchmark: bm2)
-      p3 = FactoryBot.create(:canonical_profile, benchmark: bm3)
+      p1 = FactoryBot.create(:canonical_profile, upstream: false, benchmark: bm1)
+      p2 = FactoryBot.create(:canonical_profile, upstream: false, benchmark: bm2)
+      p3 = FactoryBot.create(:canonical_profile, upstream: true, benchmark: bm3)
 
-      result = OsMajorVersion.first.supported_profiles
+      result = OsMajorVersion.first.profiles
 
       assert_includes(result, p1)
       assert_includes(result, p2)
