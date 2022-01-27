@@ -48,6 +48,9 @@ module ComplianceBackend
     # Adjust params[tags] to be array
     require 'adjust_tags/middleware'
     config.middleware.use Insights::API::Common::AdjustTags::Middleware
+    # Compensate the missing MIME type in Satellite-forwarded requests
+    require 'satellite_compensation/middleware'
+    config.middleware.use Insights::API::Common::SatelliteCompensation::Middleware
 
     # FIXME: profile<->policy connections could fail on this
     config.active_record.has_many_inversing = false
