@@ -10,7 +10,7 @@ module Mutations
       field :business_objective, Types::BusinessObjective, null: true
 
       def resolve(title:)
-        business_objective = ::BusinessObjective.new(title: title)
+        business_objective = ::BusinessObjective.find_or_initialize_by(title: title)
         business_objective.save
         audit_mutation(business_objective)
         { business_objective: business_objective }
