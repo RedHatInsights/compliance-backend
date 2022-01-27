@@ -16,8 +16,8 @@ class DeleteHostTest < ActiveSupport::TestCase
     )
 
     @message = {
-      'id': @host.id,
-      'type': 'delete'
+      'id' => @host.id,
+      'type' => 'delete'
     }
     DeleteHost.clear
 
