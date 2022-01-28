@@ -24,7 +24,7 @@ module Xccdf
 
     sortable_by :title
     # Ordering by hash can't deal with Arel, so this juggling is necessary
-    sortable_by :version, Arel.sql(SORT_BY_VERSION.to_sql)
+    sortable_by :version, SORT_BY_VERSION
 
     include ::BenchmarkSearching
 
