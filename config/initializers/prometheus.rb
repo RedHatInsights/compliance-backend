@@ -19,9 +19,15 @@ def start_exporter_server
   # Increase the server thread priority for better latency
   server.instance_variable_get(:@runner).priority = 3
 
-  require './lib/prometheus/graphql_collector'
+  if ENV['APPLICATION_TYPE'] == 'compliance' || Rails.env.development? && ENV['HOSTNAME'] == 'rails'
+    require './lib/prometheus/graphql_collector'
+    require './lib/prometheus/business_collector'
+    require './lib/prometheus/engineering_collector'
 
-  server.collector.register_collector(GraphQLCollector.new)
+    server.collector.register_collector(GraphQLCollector.new)
+    server.collector.register_collector(BusinessCollector.new)
+    server.collector.register_collector(EngineeringCollector.new)
+  end
 rescue Errno::EADDRINUSE
 end
 
