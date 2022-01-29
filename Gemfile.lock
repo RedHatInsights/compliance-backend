@@ -74,6 +74,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (11.1.3)
+    cgi (0.3.1)
     clowder-common-ruby (0.2.3)
     codecov (0.6.0)
       simplecov (>= 0.15, < 0.22)
@@ -383,6 +384,7 @@ DEPENDENCIES
   brakeman
   bullet
   byebug
+  cgi (>= 0.3.1)
   clowder-common-ruby
   codecov
   config
