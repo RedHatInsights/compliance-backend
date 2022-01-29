@@ -8,8 +8,14 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @parse_report_job = ParseReportJob.new
     @file = file_fixture('report.tar.gz').read
     @parser = mock('XccdfReportParser')
+    @policy = mock('Policy')
+    @host = mock('Host')
     @issue_id = 'ssg:rhel7|short_profile_ref_id|rule_ref_id'
     @logger = mock
+
+    @parser.stubs(:policy).returns(@policy)
+    @parser.stubs(:host).returns(@host)
+    @policy.stubs(:compliant?).returns(false)
 
     Sidekiq.stubs(:logger).returns(@logger)
     @logger.stubs(:info)
@@ -114,5 +120,55 @@ class ParseReportJobTest < ActiveSupport::TestCase
                   .returns(ActiveSupport::Gzip.decompress(@file))
     @parse_report_job.perform(0, @msg_value)
     assert_audited 'Failed to parse report'
+  end
+
+  test 'emits notification if compliance drops below threshold' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    Sidekiq.stubs(:redis).returns(false)
+    @policy.stubs(:compliant?).returns(true)
+    @parser.stubs(:score).returns(90)
+    @policy.stubs(:compliance_threshold).returns(100)
+
+    @parse_report_job.stubs(:notify_payload_tracker)
+    @parse_report_job.stubs(:notify_remediation)
+    @parse_report_job.stubs(:audit_success)
+    @parser.expects(:save_all)
+
+    SystemNonCompliant.expects(:deliver)
+
+    @parse_report_job.perform(0, @msg_value)
+  end
+
+  test 'does not emit notification if compliance is already below threshold' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    Sidekiq.stubs(:redis).returns(false)
+    @parser.stubs(:score).returns(90)
+    @policy.stubs(:compliance_threshold).returns(100)
+
+    @parse_report_job.stubs(:notify_payload_tracker)
+    @parse_report_job.stubs(:notify_remediation)
+    @parse_report_job.stubs(:audit_success)
+    @parser.expects(:save_all)
+
+    SystemNonCompliant.expects(:deliver).never
+
+    @parse_report_job.perform(0, @msg_value)
+  end
+
+  test 'does not emit notification if compliance increases above threshold' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    Sidekiq.stubs(:redis).returns(false)
+    @policy.stubs(:compliant?).returns(true)
+    @parser.stubs(:score).returns(90)
+    @policy.stubs(:compliance_threshold).returns(80)
+
+    @parse_report_job.stubs(:notify_payload_tracker)
+    @parse_report_job.stubs(:notify_remediation)
+    @parse_report_job.stubs(:audit_success)
+    @parser.expects(:save_all)
+
+    SystemNonCompliant.expects(:deliver).never
+
+    @parse_report_job.perform(0, @msg_value)
   end
 end
