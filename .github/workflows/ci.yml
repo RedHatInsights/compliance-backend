@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Setup Ruby and install gems
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - name: Rubocop
+      run: bundle exec rubocop --parallel
+    - name: Brakeman
+      run: bundle exec brakeman
+  unit-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: insights
+          POSTGRES_DB: insights
+          POSTGRES_PASSWORD: insights
+        ports: ["5432:5432"]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Setup Ruby and install gems
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - name: Setup database
+      env:
+        RAILS_ENV: test
+        DATABASE_SERVICE_NAME: postgres
+        POSTGRES_SERVICE_HOST: localhost
+        POSTGRESQL_USER: insights
+        POSTGRESQL_PASSWORD: insights
+        POSTGRESQL_TEST_DATABASE: insights
+      run: |
+        bin/rails db:setup;
+        RAILS_ENV=test bundle exec rails db -p < db/cyndi_setup_test.sql;
+    - name: Run rswag specs
+      env:
+        HOSTNAME: rails
+        RAILS_ENV: test
+        DATABASE_SERVICE_NAME: postgres
+        POSTGRES_SERVICE_HOST: localhost
+        POSTGRESQL_USER: insights
+        POSTGRESQL_PASSWORD: insights
+        POSTGRESQL_TEST_DATABASE: insights
+      run: bin/rake spec
+    - name: Run unit tests
+      env:
+        HOSTNAME: rails
+        RAILS_ENV: test
+        DATABASE_SERVICE_NAME: postgres
+        POSTGRES_SERVICE_HOST: localhost
+        POSTGRESQL_USER: insights
+        POSTGRESQL_PASSWORD: insights
+        POSTGRESQL_TEST_DATABASE: insights
+      run: bin/rake test
+    - name: Upload code coverage
+      uses: codecov/codecov-action@v2
