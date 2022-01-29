@@ -76,6 +76,7 @@ gem 'clowder-common-ruby'
 gem 'request_store'
 
 # Ruby 3 dependencies
+gem 'cgi', ">= 0.3.1"
 gem 'rexml'
 gem 'webrick'
 
