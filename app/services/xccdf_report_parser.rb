@@ -19,14 +19,13 @@ class XccdfReportParser
   class UnknownRuleError < StandardError; end
 
   ERRORS = [
-    MissingIdError, WrongFormatError, OSVersionMismatch,
-    ActiveRecord::RecordInvalid, ExternalReportError, UnknownBenchmarkError,
-    UnknownProfileError, UnknownRuleError
+    MissingIdError, WrongFormatError, OSVersionMismatch, UnknownProfileError,
+    ActiveRecord::RecordInvalid, ExternalReportError, UnknownBenchmarkError, UnknownRuleError
   ].freeze
 
   include ::Xccdf::Util
 
-  attr_reader :report_path, :test_result_file
+  attr_reader :report_path, :test_result_file, :policy, :host
 
   BENCHMARK_PREFIX = 'xccdf_org.ssgproject.content_benchmark_'
 
@@ -40,6 +39,10 @@ class XccdfReportParser
     @host = Host.find(message['id'])
     @test_result_file = OpenscapParser::TestResultFile.new(report_contents)
     set_openscap_parser_data
+
+    @policy = Policy.with_hosts(@host).with_ref_ids(@test_result_file.test_result.profile_id)
+                    .find_by(account: @account)
+
     check_report_format
   end
 

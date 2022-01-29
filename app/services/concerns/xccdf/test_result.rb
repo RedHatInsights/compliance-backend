@@ -8,7 +8,7 @@ module Xccdf
         host: @host,
         profile: @host_profile,
         supported: supported?,
-        score: @op_test_result.score,
+        score: score,
         start_time: @op_test_result.start_time.in_time_zone,
         end_time: @op_test_result.end_time.in_time_zone
       )
@@ -24,6 +24,10 @@ module Xccdf
                          host: @host)
                   .where.not(id: @test_result.id)
                   .destroy_all
+    end
+
+    def score
+      @op_test_result.score
     end
 
     private

@@ -18,7 +18,7 @@ class ParseReportJob
     @file = retrieve_file(idx)
 
     Rails.logger.audit_with_account(@msg_value['account']) do
-      save_all
+      parse_and_save_report
     end
   end
 
@@ -41,9 +41,29 @@ class ParseReportJob
     handle_error(e)
   end
 
-  def save_all
+  def notify_if_non_compliant
+    # Store the old score to detect if there was a drop
+    pre_compliant = parser.policy.compliant?(parser.host)
+
+    yield
+
+    # Produce a notification if there score drop was not caused by this report
+    notify! if pre_compliant && parser.score < parser.policy.compliance_threshold
+  end
+
+  def notify!
+    SystemNonCompliant.deliver(
+      host: parser.host,
+      account_number: @account,
+      policy: parser.policy,
+      policy_threshold: parser.policy.compliance_threshold,
+      compliance_score: parser.score
+    )
+  end
+
+  def parse_and_save_report
     notify_payload_tracker(:processing, "Job #{jid} is now processing")
-    parser.save_all
+    notify_if_non_compliant { parser.save_all }
     notify_remediation
     audit_success
     notify_payload_tracker(:success, "Job #{jid} has completed successfully")
