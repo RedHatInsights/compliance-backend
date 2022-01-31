@@ -53,7 +53,7 @@ module Xccdf
         op_rule_references_rules - existing_op_rule_references_rules
       end
 
-      def rule_references_for(op_rule: nil)
+      def rule_references_for(op_rule:)
         @cached_references ||= @rule_references.index_by { |rr| [rr.label, rr.href] }
 
         op_rule.rule_references.map do |rr|
