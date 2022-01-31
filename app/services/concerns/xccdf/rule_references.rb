@@ -25,13 +25,11 @@ module Xccdf
                                       .find_unique(@op_rule_references)
       end
 
-      def existing_href_labels
-        existing_rule_references.pluck(:href, :label)
-      end
-
       def new_op_rule_references
+        @existing_href_labels = existing_rule_references.pluck(:href, :label)
+
         @op_rule_references.reject do |op_reference|
-          existing_href_labels.include? [op_reference.href, op_reference.label]
+          @existing_href_labels.include? [op_reference.href, op_reference.label]
         end
       end
     end
