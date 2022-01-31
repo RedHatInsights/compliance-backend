@@ -54,17 +54,16 @@ module Xccdf
       end
 
       def rule_references_for(op_rule: nil)
-        label_hrefs = op_rule.rule_references.map do |rr|
-          [rr.label, rr.href]
-        end
+        @cached_references ||= @rule_references.index_by { |rr| [rr.label, rr.href] }
 
-        @rule_references.select do |reference|
-          label_hrefs.include?([reference.label, reference.href])
-        end
+        op_rule.rule_references.map do |rr|
+          @cached_references[[rr.label, rr.href]]
+        end.compact
       end
 
       def rule_for(ref_id:)
-        @rules.find { |r| r.ref_id == ref_id }
+        @cached_rules ||= @rules.index_by(&:ref_id)
+        @cached_rules[ref_id]
       end
     end
   end
