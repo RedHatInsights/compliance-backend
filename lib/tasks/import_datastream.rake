@@ -13,6 +13,12 @@ namespace :ssg do
     puts "Datastreams synced to revision: #{Revision.datastreams}"
   end
 
+  desc 'Update supported SSGs fallback yaml'
+  task sync_supported: [:environment] do
+    SupportedSsgUpdater.run!
+    puts "Fallback YAML has been updated to revision: #{Revision.datastreams}"
+  end
+
   desc 'Update compliance DB with the supported SCAP Security Guide versions'
   task import_rhel_supported: [:environment] do
     if Revision.datastreams != SupportedSsg.revision
