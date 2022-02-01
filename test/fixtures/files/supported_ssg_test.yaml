@@ -1,0 +1,35 @@
+revision: '1975-13-25'
+supported:
+  RHEL-6.6:
+    - package: scap-security-guide-0.1.18-3.el6
+      version: 0.1.18
+      upstream_version: 0.1.18
+      brew_url: randomstuff.com
+      profiles:
+        C2S:
+        common:
+        CS2:
+        CSCF-RHEL6-MLS:
+        rht-ccp:
+        server:
+          old_name: something
+        stig-rhel6-server-upstream:
+        test:
+        usgcb-rhel6-server:
+  RHEL-7.1:
+    - package: scap-security-guide-0.1.19-2.el7
+      version: 0.1.19
+      upstream_version: 0.1.19
+      brew_url: randomstuff.com
+      profiles:
+        rht-ccp:
+  RHEL-7.9:
+    - package: scap-security-guide-0.1.49-13.el7
+      version: 0.1.49
+      upstream_version: 0.1.49
+      brew_url: randomstuff.com
+      profiles:
+        anssi_nt28_enhanced:
+          test: foo
+        anssi_nt28_high:
+          test: foo
