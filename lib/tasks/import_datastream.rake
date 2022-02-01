@@ -15,7 +15,7 @@ namespace :ssg do
 
   desc 'Update compliance DB with the supported SCAP Security Guide versions'
   task import_rhel_supported: [:environment] do
-    if Revision.datastreams != SupportedSsg.revision
+    if ENV['SETTINGS__FORCE_IMPORT_SSGS'] || Revision.datastreams != SupportedSsg.revision
       downloader = DatastreamDownloader.new
       downloader.download_datastreams do |file|
         ENV['DATASTREAM_FILE'] = file
