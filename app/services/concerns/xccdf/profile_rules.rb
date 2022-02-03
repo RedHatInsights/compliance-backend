@@ -17,7 +17,7 @@ module Xccdf
           base = ::ProfileRule.joins(profile: :benchmark)
                               .where('profiles.parent_profile_id' => nil)
 
-          links_to_remove(base).delete_all
+          profile_rule_links_to_remove(base).delete_all
         end
       end
 
@@ -34,7 +34,7 @@ module Xccdf
         end
       end
 
-      def links_to_remove(base)
+      def profile_rule_links_to_remove(base)
         grouped_rules = profile_rules.group_by(&:profile_id)
         grouped_rules.reduce(ProfileRule.none) do |query, (profile_id, prs)|
           query.or(

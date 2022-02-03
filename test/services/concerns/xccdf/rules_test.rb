@@ -7,6 +7,8 @@ class RulesTest < ActiveSupport::TestCase
   class Mock
     include Xccdf::Profiles
     include Xccdf::Rules
+    include Xccdf::RuleGroupRules
+    include Xccdf::RuleGroups
     include Xccdf::ProfileRules
     include Xccdf::RuleReferences
 
@@ -18,6 +20,7 @@ class RulesTest < ActiveSupport::TestCase
       @op_test_result = test_result_file.test_result
       @op_rules = @op_benchmark.rules
       @op_profiles = @op_benchmark.profiles
+      @op_rule_groups = @op_benchmark.groups
     end
   end
 
@@ -27,6 +30,7 @@ class RulesTest < ActiveSupport::TestCase
       :canonical_profile, :with_rules
     ).benchmark
     @mock.account = FactoryBot.create(:account)
+    @mock.save_rule_groups
   end
 
   test 'save all rules as new' do

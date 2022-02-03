@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_03_12_143550) do
+ActiveRecord::Schema[7.0].define(version: 2022_03_23_130920) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -78,6 +78,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_12_143550) do
     t.index ["policy_id"], name: "index_policy_hosts_on_policy_id"
   end
 
+  create_table "profile_rule_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "profile_id", null: false
+    t.uuid "rule_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id", "rule_group_id"], name: "index_profile_rule_groups_on_profile_id_and_rule_group_id", unique: true
+    t.index ["profile_id"], name: "index_profile_rule_groups_on_profile_id"
+    t.index ["rule_group_id"], name: "index_profile_rule_groups_on_rule_group_id"
+  end
+
   create_table "profile_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "profile_id", null: false
     t.uuid "rule_id", null: false
@@ -119,6 +129,39 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_12_143550) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_revisions_on_name", unique: true
+  end
+
+  create_table "rule_group_relationships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "left_type"
+    t.uuid "left_id"
+    t.string "right_type"
+    t.uuid "right_id"
+    t.string "relationship"
+    t.index ["left_id", "right_id", "right_type", "left_type", "relationship"], name: "index_rule_group_relationships_unique", unique: true
+    t.index ["left_type", "left_id"], name: "index_rule_group_relationships_on_left"
+    t.index ["right_type", "right_id"], name: "index_rule_group_relationships_on_right"
+  end
+
+  create_table "rule_group_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "rule_group_id"
+    t.uuid "rule_id"
+    t.index ["rule_group_id", "rule_id"], name: "index_rule_group_rules_on_rule_group_id_and_rule_id", unique: true
+    t.index ["rule_group_id"], name: "index_rule_group_rules_on_rule_group_id"
+    t.index ["rule_id"], name: "index_rule_group_rules_on_rule_id"
+  end
+
+  create_table "rule_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "ref_id"
+    t.string "title"
+    t.text "description"
+    t.text "rationale"
+    t.string "ancestry"
+    t.uuid "benchmark_id", null: false
+    t.uuid "rule_id"
+    t.index ["ancestry"], name: "index_rule_groups_on_ancestry"
+    t.index ["benchmark_id"], name: "index_rule_groups_on_benchmark_id"
+    t.index ["ref_id", "benchmark_id"], name: "index_rule_groups_on_ref_id_and_benchmark_id", unique: true
+    t.index ["rule_id"], name: "index_rule_groups_on_rule_id", unique: true
   end
 
   create_table "rule_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -214,4 +257,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_12_143550) do
   add_foreign_key "policy_hosts", "policies"
   add_foreign_key "profiles", "policies"
   add_foreign_key "profiles", "profiles", column: "parent_profile_id"
+  add_foreign_key "rule_group_rules", "rule_groups"
+  add_foreign_key "rule_group_rules", "rules"
+  add_foreign_key "rule_groups", "benchmarks"
+  add_foreign_key "rule_groups", "rules"
 end

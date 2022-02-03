@@ -238,7 +238,7 @@ Regardless of your system's workload all of these checks should pass.</descripti
     <select idref="xccdf_org.ssgproject.content_group_dns_server_separate_internal_external" selected="false"/>
     <select idref="xccdf_org.ssgproject.content_group_dns_server_partition_with_views" selected="false"/>
     <select idref="xccdf_org.ssgproject.content_group_nfs_and_rpc" selected="false"/>
-    <select idref="xccdf_org.ssgproject.content_group_nfs_configuring_servers" selected="false"/>
+    <select idref="xccdf_org.ssgproject.content_group_nfs_configuring_servers" selected="true"/>
     <select idref="xccdf_org.ssgproject.content_group_use_acl_enforce_auth_restrictions" selected="false"/>
     <select idref="xccdf_org.ssgproject.content_group_export_filesystems_read_only" selected="false"/>
     <select idref="xccdf_org.ssgproject.content_group_configure_exports_restrictively" selected="false"/>
@@ -280,10 +280,10 @@ Regardless of your system's workload all of these checks should pass.</descripti
     <select idref="xccdf_org.ssgproject.content_group_locking_out_password_attempts" selected="false"/>
     <select idref="xccdf_org.ssgproject.content_group_accounts-banners" selected="false"/>
     <select idref="xccdf_org.ssgproject.content_group_gui_login_banner" selected="false"/>
-    <select idref="xccdf_org.ssgproject.content_group_accounts-physical" selected="false"/>
+    <select idref="xccdf_org.ssgproject.content_group_accounts-physical" selected="true"/>
     <select idref="xccdf_org.ssgproject.content_group_screen_locking" selected="false"/>
-    <select idref="xccdf_org.ssgproject.content_group_smart_card_login" selected="false"/>
-    <select idref="xccdf_org.ssgproject.content_group_console_screen_locking" selected="false"/>
+    <select idref="xccdf_org.ssgproject.content_group_smart_card_login" selected="true"/>
+    <select idref="xccdf_org.ssgproject.content_group_console_screen_locking" selected="true"/>
     <select idref="xccdf_org.ssgproject.content_group_user_umask" selected="false"/>
     <select idref="xccdf_org.ssgproject.content_group_selinux" selected="false"/>
     <select idref="xccdf_org.ssgproject.content_group_selinux-booleans" selected="false"/>
@@ -2272,6 +2272,7 @@ be forwarded to at least one monitored email address.</rationale>
       </Group>
       <Group id="xccdf_org.ssgproject.content_group_postfix_harden_os">
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Configure Operating System to Protect Mail Server</title>
+        <requires idref="xccdf_org.ssgproject.content_group_postfix_configure_ssl_certs xccdf_org.ssgproject.content_group_postfix_install_ssl_cert xccdf_org.ssgproject.content_rule_sshd_disable_rhosts"/>
         <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">The guidance in this section is appropriate for any host which is
 operating as a site MTA, whether the mail server runs using Sendmail, Postfix,
 or some other software.</description>
@@ -2619,6 +2620,8 @@ Run the following command:
         </Group>
         <Rule id="xccdf_org.ssgproject.content_rule_sshd_disable_rhosts" selected="false" severity="medium">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Disable SSH Support for .rhosts Files</title>
+          <requires idref="xccdf_org.ssgproject.content_group_ssh_server"/>
+          <requires idref="xccdf_org.ssgproject.content_group_sshd_strengthen_firewall"/>
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">SSH can emulate the behavior of the obsolete rsh
 command in allowing users to enable insecure access to their
 accounts via <html:code xmlns:html="http://www.w3.org/1999/xhtml">.rhosts</html:code> files.
@@ -2662,6 +2665,8 @@ replace_or_append '/etc/ssh/sshd_config' '^IgnoreRhosts' 'yes' '' '%s %s'
         </Rule>
         <Rule id="xccdf_org.ssgproject.content_rule_sshd_set_keepalive" selected="false" severity="medium">
           <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Set SSH Client Alive Count</title>
+          <conflicts idref="xccdf_org.ssgproject.content_rule_sshd_disable_rhosts"/>
+          <conflicts idref="xccdf_org.ssgproject.content_group_talk"/>
           <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">To ensure the SSH idle timeout occurs precisely when the <html:code xmlns:html="http://www.w3.org/1999/xhtml">ClientAliveInterval</html:code> is set,
 edit <html:code xmlns:html="http://www.w3.org/1999/xhtml">/etc/ssh/sshd_config</html:code> as follows:
 <html:pre xmlns:html="http://www.w3.org/1999/xhtml">ClientAliveCountMax 0</html:pre></description>
@@ -3916,6 +3921,7 @@ location. The system's default proxy server software is Squid, and
 provided in an RPM package of the same name.</description>
       <Group id="xccdf_org.ssgproject.content_group_disabling_squid">
         <title xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">Disable Squid if Possible</title>
+        <conflicts idref="xccdf_org.ssgproject.content_group_openstack"/>
         <description xmlns:xhtml="http://www.w3.org/1999/xhtml" xml:lang="en-US">If Squid was installed and activated, but the system
 does not need to act as a proxy server, then it should be disabled
 and removed.</description>

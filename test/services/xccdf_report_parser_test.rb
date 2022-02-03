@@ -5,7 +5,7 @@ require 'test_helper'
 class XccdfReportParserTest < ActiveSupport::TestCase
   class TestParser < ::XccdfReportParser
     attr_accessor :op_benchmark, :op_test_result, :op_profiles, :op_rules,
-                  :op_rule_results, :rules
+                  :op_rule_results, :rules, :op_rule_groups, :rule_groups
     attr_reader :test_result_file, :host, :profiles
 
     def package_name
@@ -84,6 +84,13 @@ class XccdfReportParserTest < ActiveSupport::TestCase
           @report_parser.save_all
         end
       end
+    end
+  end
+
+  context 'rule_group' do
+    setup do
+      @report_parser.save_benchmark
+      @report_parser.save_profiles
     end
   end
 
@@ -200,11 +207,13 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       ]
       @report_parser.save_benchmark
       @report_parser.save_profiles
+      @report_parser.save_rule_groups
     end
 
     should 'link the rules with the profile' do
       @report_parser.save_rules
       @report_parser.save_profile_rules
+      @report_parser.save_profile_rule_groups
       rule_ref_id = @report_parser.op_profiles
                                   .find { |p| p.id == @profile.keys.first }
                                   .selected_rule_ids.sample
@@ -249,6 +258,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         assert_difference('rule.profiles.count', 0) do
           @report_parser.save_rules
           @report_parser.save_profile_rules
+          @report_parser.save_profile_rule_groups
         end
       end
       assert_includes rule.profiles, profile
@@ -262,6 +272,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
 
       @report_parser.save_rules
       @report_parser.save_profile_rules
+      @report_parser.save_profile_rule_groups
       assert_empty(Profile.where(parent_profile: parent_profile))
       assert_difference(
         -> { Profile.count } => 1,
@@ -291,6 +302,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       ) do
         @report_parser.save_rules
         @report_parser.save_profile_rules
+        @report_parser.save_profile_rule_groups
         @report_parser.save_host_profile
       end
     end
