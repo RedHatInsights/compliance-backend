@@ -19,6 +19,7 @@ module Xccdf
 
     has_many :profiles, dependent: :destroy
     has_many :rules, dependent: :destroy
+    has_many :rule_groups, dependent: :destroy
     validates :ref_id, uniqueness: { scope: %i[version] }, presence: true
     validates :version, presence: true
 

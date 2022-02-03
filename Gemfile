@@ -64,7 +64,7 @@ gem 'prometheus_exporter', '>= 0.5'
 gem 'manageiq-loggers', '~> 0.6.0'
 
 # Parsing OpenSCAP reports library
-gem 'openscap_parser', '~> 1.0.0'
+gem 'openscap_parser', '~> 1.1.0'
 
 # RBAC service API
 gem 'insights-rbac-api-client', '~> 1.0.0'
@@ -82,6 +82,9 @@ gem 'request_store'
 gem 'cgi', ">= 0.3.1"
 gem 'rexml'
 gem 'webrick'
+
+# Allows for tree structures in db 
+gem 'ancestry'
 
 group :development, :test do
   gem 'brakeman'

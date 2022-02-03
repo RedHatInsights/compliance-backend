@@ -70,6 +70,8 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
+    ancestry (4.1.0)
+      activerecord (>= 5.2.6)
     ansi (1.5.0)
     ast (2.4.2)
     bootsnap (1.9.3)
@@ -174,7 +176,7 @@ GEM
     insights-rbac-api-client (1.0.0)
       json (~> 2.1, >= 2.1.0)
       typhoeus (~> 1.0, >= 1.0.1)
-    io-console (0.5.6)
+    io-console (0.5.7)
     io-wait (0.2.1)
     irb (1.2.4)
       reline (>= 0.0.1)
@@ -232,7 +234,7 @@ GEM
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oj (3.10.6)
-    openscap_parser (1.0.1)
+    openscap_parser (1.1.0)
       nokogiri (~> 1.6)
     parallel (1.21.0)
     parser (3.1.0.0)
@@ -302,7 +304,7 @@ GEM
       rake (>= 12.3)
     redis (4.5.1)
     regexp_parser (2.2.0)
-    reline (0.1.4)
+    reline (0.2.5)
       io-console (~> 0.5)
     request_store (1.5.0)
       rack (>= 1.4)
@@ -414,6 +416,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-import
+  ancestry
   bootsnap (>= 1.1.0)
   brakeman
   bullet
@@ -440,7 +443,7 @@ DEPENDENCIES
   minitest-stub-const
   mocha
   oj
-  openscap_parser (~> 1.0.0)
+  openscap_parser (~> 1.1.0)
   pg
   prometheus_exporter (>= 0.5)
   pry-byebug

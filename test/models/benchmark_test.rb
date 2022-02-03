@@ -15,6 +15,7 @@ module Xccdf
 
     should have_many(:profiles)
     should have_many(:rules)
+    should have_many(:rule_groups)
 
     OP_BENCHMARK = OpenStruct.new(id: '1', version: 'v0.1.49',
                                   title: 'one', description: 'first')
