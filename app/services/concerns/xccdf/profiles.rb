@@ -13,14 +13,6 @@ module Xccdf
         end
 
         ::Profile.import!(new_profiles, ignore: true)
-        # Mark already existing profiles to be imported as non-upstream
-        # rubocop:disable Rails/SkipsModelValidations
-        ::Profile.transaction do
-          ::Profile.where(id: old_profiles.pluck(:id)).update_all(
-            upstream: false
-          )
-        end
-        # rubocop:enable Rails/SkipsModelValidations
       end
       alias_method :save_profiles, :profiles
 
