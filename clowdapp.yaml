@@ -14,9 +14,9 @@ objects:
       iqePlugin: compliance
     dependencies:
     - compliance-ssg
-    - host-inventory
-    - ingress
-    - rbac
+    - host-inventory${COMPLIANCE_DEPENDENCY_SUFFIX}
+    - ingress${COMPLIANCE_DEPENDENCY_SUFFIX}
+    - rbac${COMPLIANCE_DEPENDENCY_SUFFIX}
     database:
       name: compliance
       version: 12
@@ -473,3 +473,6 @@ parameters:
 - name: FLOORIST_LOGLEVEL
   description: Floorist loglevel config
   value: 'INFO'
+- name: COMPLIANCE_DEPENDENCY_SUFFIX
+  description: Suffix of dependencies except of compliance-ssg
+  value: ''
