@@ -18,6 +18,12 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     Gem::Version.new(version)
   end
 
+  def version_with_revision
+    Gem::Version.new(
+      package.sub(/^scap-security-guide-(.*)\.el.*$/, '\1')
+    )
+  end
+
   class << self
     def supported?(ssg_version:, os_major_version:, os_minor_version:)
       ssg_versions_for_os(os_major_version, os_minor_version)
