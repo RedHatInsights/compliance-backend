@@ -3,7 +3,7 @@
 require 'test_helper'
 
 # A class to test importing from a Datastream file
-class DatastreamImporterTest < ActiveSupport::TestCase
+class DatastreamDownloaderTest < ActiveSupport::TestCase
   setup do
     @ssgs = [
       SupportedSsg.new(
@@ -52,5 +52,47 @@ class DatastreamImporterTest < ActiveSupport::TestCase
 
   test 'uses default supported ssgs' do
     assert DatastreamDownloader.new.instance_variable_get('@ssgs')
+  end
+
+  test 'deduplicates revisions per OS major' do
+    ssgs = [
+      SupportedSsg.new(
+        id: 'rhel-7.9-scap-security-guide-0.1.49-13.el7',
+        package: 'scap-security-guide-0.1.49-13.el7',
+        version: '0.1.49',
+        os_major_version: '7',
+        os_minor_version: '9'
+      ),
+      SupportedSsg.new(
+        id: 'rhel-7.8-scap-security-guide-0.1.49-12.el7',
+        package: 'scap-security-guide-0.1.49-12.el7',
+        version: '0.1.49',
+        os_major_version: '7',
+        os_minor_version: '8'
+      ),
+      SupportedSsg.new(
+        id: 'rhel-8.4-scap-security-guide-0.1.57-3.el8_4',
+        package: 'scap-security-guide-0.1.57-3.el8_4',
+        version: '0.1.57',
+        os_major_version: '8',
+        os_minor_version: '4'
+      ),
+      SupportedSsg.new(
+        id: 'rhel-8.5-scap-security-guide-0.1.57-5.el8',
+        package: 'scap-security-guide-0.1.57-5.el8',
+        version: '0.1.57',
+        os_major_version: '8',
+        os_minor_version: '5'
+      )
+    ]
+
+    SupportedSsg.stubs(:all).returns(ssgs)
+    result = DatastreamDownloader.new.default_supported_ssgs.map(&:package)
+
+    assert_includes(result, 'scap-security-guide-0.1.57-5.el8')
+    assert_includes(result, 'scap-security-guide-0.1.49-13.el7')
+
+    assert_not_includes(result, 'scap-security-guide-0.1.57-3.el8_4')
+    assert_not_includes(result, 'scap-security-guide-0.1.49-12.el7')
   end
 end
