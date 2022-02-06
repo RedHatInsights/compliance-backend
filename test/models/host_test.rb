@@ -57,30 +57,42 @@ class HostTest < ActiveSupport::TestCase
   end
 
   test 'OS major version scope and filter' do
-    assert_includes Host.os_major_version(7), @host1
+    assert_includes Host.os_major_version('7'), @host1
     assert_includes Host.search_for('os_major_version = 7'), @host1
 
-    assert_not_includes Host.os_major_version(7, false), @host1
+    assert_includes Host.os_major_version(%w[7 8]), @host1, @host2
+    assert_includes Host.search_for('os_major_version ^ (7,8)'), @host1, @host2
+
+    assert_empty Host.os_major_version(%w[7 8], false)
+    assert_empty Host.search_for('os_major_version !^ (7,8)')
+
+    assert_not_includes Host.os_major_version('7', false), @host1
     assert_not_includes Host.search_for('os_major_version != 7'), @host1
 
-    assert_includes Host.os_major_version(7, false), @host2
+    assert_includes Host.os_major_version('7', false), @host2
     assert_includes Host.search_for('os_major_version != 7'), @host2
 
-    assert_not_includes Host.os_major_version(7), @host2
+    assert_not_includes Host.os_major_version('7'), @host2
     assert_not_includes Host.search_for('os_major_version = 7'), @host2
   end
 
   test 'OS minor version scope and filter' do
-    assert_includes Host.os_minor_version(4), @host1
+    assert_includes Host.os_minor_version('4'), @host1
     assert_includes Host.search_for('os_minor_version = 4'), @host1
 
-    assert_not_includes Host.os_minor_version(4, false), @host1
+    assert_includes Host.os_minor_version(%w[4 3]), @host1, @host2
+    assert_includes Host.search_for('os_minor_version ^ (4,3)'), @host1, @host2
+
+    assert_empty Host.os_minor_version(%w[4 3], false)
+    assert_empty Host.search_for('os_minor_version !^ (4,3)')
+
+    assert_not_includes Host.os_minor_version('4', false), @host1
     assert_not_includes Host.search_for('os_minor_version != 4'), @host1
 
-    assert_includes Host.os_minor_version(4, false), @host2
+    assert_includes Host.os_minor_version('4', false), @host2
     assert_includes Host.search_for('os_minor_version != 4'), @host2
 
-    assert_not_includes Host.os_minor_version(4), @host2
+    assert_not_includes Host.os_minor_version('4'), @host2
     assert_not_includes Host.search_for('os_minor_version = 4'), @host2
   end
 

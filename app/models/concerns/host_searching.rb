@@ -10,9 +10,9 @@ module HostSearching
     scoped_search on: %i[id display_name], only_explicit: true
     scoped_search on: :display_name, rename: :name
     scoped_search on: :os_major_version, ext_method: 'filter_os_major_version',
-                  only_explicit: true, operators: ['=', '!=']
+                  only_explicit: true, operators: ['=', '!=', '^', '!^']
     scoped_search on: :os_minor_version, ext_method: 'filter_os_minor_version',
-                  only_explicit: true, operators: ['=', '!=']
+                  only_explicit: true, operators: ['=', '!=', '^', '!^']
     scoped_search on: :compliant, ext_method: 'filter_by_compliance',
                   only_explicit: true
     scoped_search on: :compliance_score,
@@ -43,28 +43,26 @@ module HostSearching
       with_policy.or(with_test_results)
     }
 
-    scope :os_major_version, lambda { |version, equal = true|
-      condition = ['system_profile @> ?',
-                   { operating_system: { major: version.to_i } }.to_json]
-      equal && where(*condition) || where.not(*condition)
+    scope :os_major_version, lambda { |versions, equal = true|
+      where(::Host.os_version_query(:major, versions, equal))
     }
 
-    scope :os_minor_version, lambda { |version, equal = true|
-      condition = ['system_profile @> ?',
-                   { operating_system: { minor: version.to_i } }.to_json]
-      equal && where(*condition) || where.not(*condition)
+    scope :os_minor_version, lambda { |versions, equal = true|
+      where(::Host.os_version_query(:minor, versions, equal))
     }
   end
 
   # class methods for Host searching
   module ClassMethods
     def filter_os_major_version(_filter, operator, value)
-      hosts = ::Host.os_major_version(value, operator == '=')
+      values = value.split(',').map(&:strip)
+      hosts = ::Host.os_major_version(values, ['=', 'IN'].include?(operator))
       { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
     end
 
     def filter_os_minor_version(_filter, operator, value)
-      hosts = ::Host.os_minor_version(value, operator == '=')
+      values = value.split(',').map(&:strip)
+      hosts = ::Host.os_minor_version(values, ['=', 'IN'].include?(operator))
       { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
     end
 

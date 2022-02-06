@@ -59,6 +59,18 @@ class Host < ApplicationRecord
     true
   end
 
+  def self.os_version_query(path, values, equal = true)
+    query = equal ? :in : :not_in
+
+    raise ArgumentError unless %i[major minor].include?(path)
+
+    Arel::Nodes::InfixOperation.new(
+      '->',
+      arel_table[:system_profile],
+      Arel::Nodes::SqlLiteral.new("'operating_system'->'#{path}'")
+    ).send(query, values)
+  end
+
   alias destroy save
   alias delete save
 
