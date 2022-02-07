@@ -64,4 +64,19 @@ class RulesTest < ActiveSupport::TestCase
 
     assert_includes rule.profiles.pluck(:id), profile.id
   end
+
+  test 'reorders rules when needed' do
+    @mock.benchmark.rules.clear
+    @mock.save_rules
+
+    before = @mock.benchmark.rules.order(:precedence).pluck(:ref_id)
+
+    @mock.instance_variable_set(:@rules, nil)
+    @mock.instance_variable_set(:@op_rules, @mock.instance_variable_get(:@op_rules).reverse)
+    @mock.save_rules
+
+    after = @mock.benchmark.rules.order(:precedence).pluck(:ref_id)
+
+    assert_equal before, after.reverse
+  end
 end

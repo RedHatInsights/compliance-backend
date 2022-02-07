@@ -7,25 +7,18 @@ module Xccdf
 
     included do
       def save_rules
-        @rules ||= @op_rules.map do |op_rule|
-          ::Rule.from_openscap_parser(op_rule, benchmark_id: @benchmark&.id)
+        @rules ||= @op_rules.each_with_index.map do |op_rule, idx|
+          ::Rule.from_openscap_parser(op_rule, precedence: idx, benchmark_id: @benchmark&.id)
         end
 
-        ::Rule.import!(new_rules, ignore: true)
-      end
+        # This is needed for future computations with rule identifiers
+        @new_rules = @rules.select(&:new_record?)
 
-      private
-
-      def split_rules
-        @split_rules ||= @rules.partition(&:new_record?)
-      end
-
-      def new_rules
-        @new_rules ||= split_rules.first
-      end
-
-      def old_rules
-        split_rules.last
+        ::Rule.import!(@rules,
+                       on_duplicate_key_update: {
+                         conflict_target: %i[ref_id benchmark_id],
+                         columns: %i[precedence]
+                       })
       end
     end
   end
