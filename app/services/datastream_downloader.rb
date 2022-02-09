@@ -8,8 +8,9 @@ class DatastreamDownloader
 
   def default_supported_ssgs
     ::SupportedSsg.all
-                  .sort_by(&:comparable_version)
+                  .sort_by(&:version_with_revision)
                   .reverse
+                  .uniq { |ssg| [ssg.version, ssg.os_major_version] }
   end
 
   def download_datastreams

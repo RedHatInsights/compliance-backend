@@ -20,7 +20,7 @@ unless Rails.env.production?
     add_group 'Services', 'app/services'
   end
 
-  if ENV['CODECOV_TOKEN'] || ENV['GITHUB_ACTIONS']
+  if ENV['GITHUB_ACTIONS']
     require 'codecov'
     SimpleCov.formatter = SimpleCov::Formatter::Codecov
   end

@@ -88,7 +88,6 @@ TEST_CONTAINER_ID=$(docker run -d \
   -e POSTGRESQL_DATABASE="$DATABASE_NAME" \
   -e RAILS_ENV=test \
   -e CI=true \
-  -e CODECOV_TOKEN="$CODECOV_TOKEN" \
   -e JENKINS_URL="$JENKINS_URL" \
   -e ghprbSourceBranch="$ghprbSourceBranch" \
   -e GIT_BRANCH="$GIT_BRANCH" \

@@ -3,7 +3,7 @@
 # JSON API serialization for an OpenSCAP Rule
 class RuleSerializer < ApplicationSerializer
   attributes :ref_id, :remediation_issue_id, :title, :rationale, :description,
-             :severity, :slug
+             :severity, :slug, :precedence
   belongs_to :benchmark
   has_many :profiles
   has_many :rule_references

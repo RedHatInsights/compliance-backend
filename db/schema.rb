@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_03_131739) do
+ActiveRecord::Schema.define(version: 2022_02_08_085557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
@@ -170,6 +170,7 @@ ActiveRecord::Schema.define(version: 2022_01_03_131739) do
     t.boolean "remediation_available", default: false, null: false
     t.uuid "benchmark_id", null: false
     t.boolean "upstream", default: true, null: false
+    t.integer "precedence"
     t.index ["ref_id", "benchmark_id"], name: "index_rules_on_ref_id_and_benchmark_id", unique: true
     t.index ["ref_id"], name: "index_rules_on_ref_id"
     t.index ["slug"], name: "index_rules_on_slug", unique: true

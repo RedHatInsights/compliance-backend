@@ -13,6 +13,7 @@ module Types
     field :rationale, String, null: true
     field :description, String, null: true
     field :severity, String, null: false
+    field :precedence, Int, null: true
     field :remediation_available, Boolean, null: false
     field :profiles, [::Types::Profile], null: true
     field :identifier, String, null: true
