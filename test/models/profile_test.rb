@@ -838,21 +838,24 @@ class ProfileTest < ActiveSupport::TestCase
 
       @rule1 = @parent.rules.first
       @rule2 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+      @rule3 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
 
       @profile = @parent.clone_to(
         account: @account,
         policy: @policy
       )
-      @profile.update! rules: [@rule2]
+      @profile.update! rules: [@rule2, @rule3]
+      @rule2.update(precedence: 4)
+      @rule3.update(precedence: 1)
     end
 
     should 'send the correct rule ref ids to the tailoring file service' do
-      assert_equal({ @rule1.ref_id => false, @rule2.ref_id => true },
+      assert_equal({ @rule1.ref_id => false, @rule2.ref_id => true, @rule3.ref_id => true },
                    @profile.tailored_rule_ref_ids)
     end
 
-    should 'properly detects added_rules' do
-      assert_equal [@rule2], @profile.added_rules
+    should 'properly detects added_rules in the correct order' do
+      assert_equal [@rule3, @rule2], @profile.added_rules
     end
 
     should 'properly detects removed_rules' do
