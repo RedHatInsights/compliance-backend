@@ -17,7 +17,7 @@ module ProfileTailoring
   end
 
   def added_rules
-    rules - parent_profile.rules
+    rules.order(:precedence) - parent_profile.rules
   end
 
   def removed_rules
