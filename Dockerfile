@@ -6,7 +6,7 @@ USER 0
 # Install dependencies and clean cache to make the image cleaner
 # also remove unused packages added by ubi8/s2i-base.
 RUN dnf install -y hostname shared-mime-info jq && \
-    dnf remove -y mariadb-connector-c-devel npm openssh vim-minimal && \
+    dnf remove -y mariadb-connector-c-devel npm openssh vim-minimal libtiff && \
     dnf clean all -y && \
     gem update bundler
 
