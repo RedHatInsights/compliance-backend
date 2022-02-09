@@ -1921,10 +1921,13 @@
               "items": {
                 "enum": [
                   "title",
+                  "precedence",
                   "severity",
                   "remediation_available",
                   "title:asc",
                   "title:desc",
+                  "precedence:asc",
+                  "precedence:desc",
                   "severity:asc",
                   "severity:desc",
                   "remediation_available:asc",
@@ -1961,7 +1964,8 @@
                       "rationale": "MyText",
                       "description": "MyText",
                       "severity": "high",
-                      "slug": "MyStringOne"
+                      "slug": "MyStringOne",
+                      "precedence": 1
                     },
                     "relationships": {
                       "benchmark": {
@@ -2099,7 +2103,8 @@
                     "rationale": "MyText",
                     "description": "MyText",
                     "severity": "high",
-                    "slug": "MyStringOne"
+                    "slug": "MyStringOne",
+                    "precedence": 1
                   },
                   "relationships": {
                     "benchmark": {
@@ -2867,12 +2872,15 @@
                   "name",
                   "os_major_version",
                   "os_minor_version",
+                  "ssg_version",
                   "name:asc",
                   "name:desc",
                   "os_major_version:asc",
                   "os_major_version:desc",
                   "os_minor_version:asc",
-                  "os_minor_version:desc"
+                  "os_minor_version:desc",
+                  "ssg_version:asc",
+                  "ssg_version:desc"
                 ]
               },
               "default": ""
@@ -3501,6 +3509,10 @@
           "remediation_issue_id": {
             "type": "string",
             "example": "ssg:rhel7|rhelh-stig|xccdf_org.ssgproject.content_rule_no_empty_passwords"
+          },
+          "precedence": {
+            "type": "integer",
+            "example": 3
           },
           "severity": {
             "type": "string",

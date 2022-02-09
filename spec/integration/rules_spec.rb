@@ -11,6 +11,7 @@ describe 'Rules API' do
       rule_count: 1,
       account: @account
     )
+    @profile.rules.update(precedence: 1)
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/rules" do

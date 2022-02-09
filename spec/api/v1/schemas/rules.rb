@@ -26,6 +26,10 @@ module Api
               example: 'ssg:rhel7|rhelh-stig|xccdf_org.ssgproject.content_'\
               'rule_no_empty_passwords'
             },
+            precedence: {
+              type: 'integer',
+              example: 3
+            },
             severity: {
               type: 'string',
               example: 'Low'
