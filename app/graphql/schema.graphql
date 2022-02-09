@@ -539,6 +539,7 @@ type Rule implements Node {
   description: String
   id: ID!
   identifier: String
+  precedence: Int
   profiles: [Profile!]
   rationale: String
   refId: String!

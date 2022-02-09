@@ -14,6 +14,7 @@ class Rule < ApplicationRecord
   )
 
   sortable_by :title
+  sortable_by :precedence
   sortable_by :severity, SORTED_SEVERITIES
   sortable_by :remediation_available
 
