@@ -5,6 +5,7 @@ require 'rake'
 
 class ImportRemediationsTest < ActiveSupport::TestCase
   setup do
+    Rails.application.load_tasks if Rake::Task.tasks.empty?
     @rules = FactoryBot.create_list(:rule, 10)
   end
 
