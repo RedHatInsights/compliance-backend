@@ -4,6 +4,10 @@ require 'test_helper'
 require 'rake'
 
 class DbStatusTest < ActiveSupport::TestCase
+  setup do
+    Rails.application.load_tasks if Rake::Task.tasks.empty?
+  end
+
   test 'db:status fails without a database connection' do
     ActiveRecord::Base.stubs(:connected?)
     assert_raises SystemExit do
@@ -24,6 +28,10 @@ class DbStatusTest < ActiveSupport::TestCase
 end
 
 class RedisStatusTest < ActiveSupport::TestCase
+  setup do
+    Rails.application.load_tasks if Rake::Task.tasks.empty?
+  end
+
   test 'redis:status fails without a redis connection' do
     Redis.any_instance.stubs(:ping).raises(Redis::BaseError)
     assert_raises SystemExit do
@@ -44,6 +52,10 @@ class RedisStatusTest < ActiveSupport::TestCase
 end
 
 class KafkaStatusTest < ActiveSupport::TestCase
+  setup do
+    Rails.application.load_tasks if Rake::Task.tasks.empty?
+  end
+
   test 'kafka:status fails without a kafka connection' do
     ApplicationProducer.stubs(:kafka).raises(Kafka::ConnectionError)
     assert_raises SystemExit do

@@ -4,6 +4,10 @@ require 'test_helper'
 require 'rake'
 
 class ImportDatastreamTest < ActiveSupport::TestCase
+  setup do
+    Rails.application.load_tasks if Rake::Task.tasks.empty?
+  end
+
   test 'ssg:import fails on error' do
     filepath = 'test/fixtures/files/xccdf_report.xml'
 

@@ -4,6 +4,10 @@ require 'test_helper'
 require 'rake'
 
 class CleanupDbTest < ActiveSupport::TestCase
+  setup do
+    Rails.application.load_tasks if Rake::Task.tasks.empty?
+  end
+
   test 'cleanup_db removes dangling records' do
     account = FactoryBot.create(:account)
     FactoryBot.create(:host, account: account.account_number)
