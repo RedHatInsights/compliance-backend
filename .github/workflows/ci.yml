@@ -50,7 +50,7 @@ jobs:
         POSTGRESQL_TEST_DATABASE: insights
       run: |
         bin/rails db:setup;
-        RAILS_ENV=test bundle exec rails db -p < db/cyndi_setup_test.sql;
+        bundle exec rails db -p < db/cyndi_setup_test.sql;
     - name: Run rswag specs
       env:
         HOSTNAME: rails
