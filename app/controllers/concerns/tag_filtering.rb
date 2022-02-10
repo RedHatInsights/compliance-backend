@@ -33,6 +33,6 @@ module TagFiltering
   end
 
   def self.tags_supported?(resource)
-    resource.column_names.include?('tags')
+    resource.taggable?
   end
 end

@@ -59,6 +59,10 @@ class Host < ApplicationRecord
     true
   end
 
+  def self.taggable?
+    true
+  end
+
   def self.os_version_query(path, values, equal = true)
     query = equal ? :in : :not_in
 
