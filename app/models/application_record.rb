@@ -26,4 +26,8 @@ class ApplicationRecord < ActiveRecord::Base
       send(col) == other.send(col)
     end.all?
   end
+
+  def self.taggable?
+    false
+  end
 end
