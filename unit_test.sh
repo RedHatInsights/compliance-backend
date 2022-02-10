@@ -113,7 +113,10 @@ echo '===================================='
 echo '=== Installing Gem Dependencies ===='
 echo '===================================='
 set +e
-docker exec "$TEST_CONTAINER_ID" /bin/bash -c 'bundle install --with test'
+docker exec "$TEST_CONTAINER_ID" /bin/bash -c '
+  bundle config set --local without development &&
+  bundle config set --local with test &&
+  bundle install'
 TEST_RESULT=$?
 set -e
 if [[ $TEST_RESULT -ne 0 ]]; then
