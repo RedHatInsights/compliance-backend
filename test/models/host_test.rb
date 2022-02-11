@@ -396,6 +396,9 @@ class HostTest < ActiveSupport::TestCase
   end
 
   test '#available_tags' do
+    FactoryBot.create(:host, account: @account.account_number, tags: [])
+    FactoryBot.create(:host, account: @account.account_number, tags: {})
+
     assert_equal_sets(
       [
         { 'key' => 'foo', 'value' => '32', 'namespace' => 'insights-client' },

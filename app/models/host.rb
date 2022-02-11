@@ -52,7 +52,8 @@ class Host < ApplicationRecord
   end
 
   def self.available_tags
-    where.not(Arel.sql("tags = '[]'::jsonb")).distinct.pluck(TAGS)
+    where.not(Arel.sql("tags = '[]'::jsonb"))
+         .where.not(Arel.sql("tags = '{}'::jsonb")).distinct.pluck(TAGS)
   end
 
   def readonly?
