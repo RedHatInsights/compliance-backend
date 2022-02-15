@@ -4,13 +4,14 @@
 # basic report properties, such as dates, host, and results.
 class TestResult < ApplicationRecord
   belongs_to :profile
-  belongs_to :host
+  belongs_to :host, optional: true
   has_one :benchmark, through: :profile
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results
 
-  validates :host, presence: true,
-                   uniqueness: { scope: %i[profile_id end_time] }
+  validates :host, presence: true, on: :create
+  validates :host_id, presence: true,
+                      uniqueness: { scope: %i[profile_id end_time] }
   validates :profile, presence: true,
                       uniqueness: { scope: %i[host_id end_time] }
   validates :end_time, presence: true,

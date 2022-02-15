@@ -5,15 +5,16 @@
 # reports of compliance at any point in time
 class RuleResult < ApplicationRecord
   scoped_search on: %i[id rule_id host_id result]
-  belongs_to :host
+  belongs_to :host, optional: true
   belongs_to :rule
   belongs_to :test_result
   has_one :profile, through: :test_result
 
   validates :test_result, presence: true,
                           uniqueness: { scope: %i[host_id rule_id] }
-  validates :host, presence: true,
-                   uniqueness: { scope: %i[test_result_id rule_id] }
+  validates :host, presence: true, on: :create
+  validates :host_id, presence: true,
+                      uniqueness: { scope: %i[test_result_id rule_id] }
   validates :rule, presence: true,
                    uniqueness: { scope: %i[test_result_id host_id] }
 
