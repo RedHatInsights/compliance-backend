@@ -10,9 +10,8 @@ class NofiticationTest < ActiveSupport::TestCase
   end
 
   test 'handles missing kafka config' do
-    assert_nil Notification.deliver(event_type: 'report-upload-failed',
-                                    account: @acc, host: @host,
-                                    policy: @policy)
+    assert_nil Notification.deliver(event_type: 'report-upload-failed', account_number: @acc.account_number,
+                                    host: @host, policy: @policy)
   end
 
   test 'delivers messages to the notifications topic' do
@@ -20,8 +19,8 @@ class NofiticationTest < ActiveSupport::TestCase
     Notification.stubs(:kafka).returns(kafka)
     kafka.expects(:deliver_message)
          .with(anything, topic: 'platfom.notifications.ingress')
-    Notification.deliver(event_type: 'report-upload-failed',
-                         account: @acc, host: @host, policy: @policy)
+    Notification.deliver(event_type: 'report-upload-failed', account_number: @acc.account_number,
+                         host: @host, policy: @policy)
   end
 
   test 'handles delivery issues' do
@@ -33,9 +32,8 @@ class NofiticationTest < ActiveSupport::TestCase
          .raises(Kafka::DeliveryFailed.new(nil, nil))
 
     assert_nothing_raised do
-      Notification.deliver(event_type: 'report-upload-failed',
-                           account: @acc, host: @host,
-                           policy: @policy)
+      Notification.deliver(event_type: 'report-upload-failed', account_number: @acc.account_number,
+                           host: @host, policy: @policy)
     end
   end
 end
