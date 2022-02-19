@@ -9,6 +9,11 @@ module ProfileRules
     has_many :rules, through: :profile_rules, source: :rule
     has_many :profile_rule_groups, dependent: :delete_all
     has_many :rule_groups, through: :profile_rule_groups, source: :rule_group
+    has_many :rules_with_profile_ref_ids, lambda {
+      joins('INNER JOIN profiles ON profile_rules.profile_id = profiles.id').select(
+        'rules.*, profiles.ref_id AS profile_ref_id'
+      )
+    }, through: :profile_rules, source: :rule, class_name: 'Rule'
 
     def update_rules(ids: nil, ref_ids: nil)
       removed = ::ProfileRule.where(
