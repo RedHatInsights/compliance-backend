@@ -91,6 +91,13 @@ class RuleTest < ActiveSupport::TestCase
     assert_nil rule.remediation_issue_id
   end
 
+  test 'rule generates remediation issue id from cached column' do
+    rule = @profile.rules_with_profile_ref_ids.first
+    rule.update!(ref_id: 'MyStringOne', remediation_available: true)
+
+    assert_equal rule.remediation_issue_id, "ssg:rhel7|#{@profile.short_ref_id}|MyStringOne"
+  end
+
   test 'rule generates remediation issue id for RHEL8' do
     @profile.benchmark.update!(
       ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-8'

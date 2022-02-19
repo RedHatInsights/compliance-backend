@@ -35,7 +35,7 @@ module Types
       end
 
       def all_rules
-        ::CollectionLoader.for(::Profile, :rules).load(object).then do |rules|
+        ::CollectionLoader.for(::Profile, :rules_with_profile_ref_ids).load(object).then do |rules|
           rules
         end
       end
