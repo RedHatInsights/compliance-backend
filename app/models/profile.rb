@@ -84,8 +84,9 @@ class Profile < ApplicationRecord
 
   def bm_versions
     # Try to reach for this in the cached attributes if possible
-    attributes['bm_versions'] || self.class.where(
-      ref_id: ref_id
+    attributes['bm_versions'] || self.class.canonical.where(
+      ref_id: ref_id,
+      upstream: false
     ).joins(:benchmark).pluck('benchmarks.version')
   end
 end
