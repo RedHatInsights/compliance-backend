@@ -20,6 +20,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     Sidekiq.stubs(:logger).returns(@logger)
     @logger.stubs(:info)
     @logger.stubs(:error)
+    @host.stubs(:test_results).returns([1])
   end
 
   test 'payload tracker is notified about successful processing' do
@@ -120,6 +121,24 @@ class ParseReportJobTest < ActiveSupport::TestCase
                   .returns(ActiveSupport::Gzip.decompress(@file))
     @parse_report_job.perform(0, @msg_value)
     assert_audited 'Failed to parse report'
+  end
+
+  test 'emits notification non compliant without a report' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    Sidekiq.stubs(:redis).returns(false)
+    @policy.stubs(:compliant?).returns(false)
+    @parser.stubs(:score).returns(90)
+    @policy.stubs(:compliance_threshold).returns(100)
+    @host.stubs(:test_results).returns([])
+
+    @parse_report_job.stubs(:notify_payload_tracker)
+    @parse_report_job.stubs(:notify_remediation)
+    @parse_report_job.stubs(:audit_success)
+    @parser.expects(:save_all)
+
+    SystemNonCompliant.expects(:deliver)
+
+    @parse_report_job.perform(0, @msg_value)
   end
 
   test 'emits notification if compliance drops below threshold' do

@@ -42,8 +42,8 @@ class ParseReportJob
   end
 
   def notify_if_non_compliant
-    # Store the old score to detect if there was a drop
-    pre_compliant = parser.policy.compliant?(parser.host)
+    # Store the old score to detect if there was a drop or there are no test results
+    pre_compliant = parser.host.test_results.empty? || parser.policy.compliant?(parser.host)
 
     yield
 
