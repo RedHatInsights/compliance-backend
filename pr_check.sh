@@ -32,6 +32,9 @@ export COMPONENTS_W_RESOURCES="compliance"
 # Run unit tests
 source $APP_ROOT/unit_test.sh
 
+# Experiment
+pip install git+https://github.com/RedHatInsights/bonfire.git@fix_final_wait_check
+
 # Run smoke tests
 source $CICD_ROOT/deploy_ephemeral_env.sh
 source $CICD_ROOT/cji_smoke_test.sh
