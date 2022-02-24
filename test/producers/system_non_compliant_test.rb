@@ -13,7 +13,7 @@ class SystemNonCompliantTest < ActiveSupport::TestCase
     kafka = mock('kafka')
     SystemNonCompliant.stubs(:kafka).returns(kafka)
     kafka.expects(:deliver_message)
-         .with(anything, topic: 'platfom.notifications.ingress')
+         .with(anything, topic: 'platform.notifications.ingress')
     SystemNonCompliant.deliver(account_number: @acc.account_number,
                                host: @host, policy: @policy,
                                compliance_score: 90, policy_threshold: 100)
