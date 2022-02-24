@@ -54,7 +54,7 @@ class ParseReportJob
   def notify!
     SystemNonCompliant.deliver(
       host: parser.host,
-      account_number: @account,
+      account_number: @msg_value['account'],
       policy: parser.policy,
       policy_threshold: parser.policy.compliance_threshold,
       compliance_score: parser.score
