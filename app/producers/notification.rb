@@ -13,7 +13,7 @@ class Notification < ApplicationProducer
       version: VERSION,
       bundle: BUNDLE,
       application: SERVICE,
-      event_type: EVENT_TYPE,
+      event_type: self::EVENT_TYPE,
       timestamp: DateTime.now.iso8601,
       account_id: account_number,
       events: build_events(**kwargs),
