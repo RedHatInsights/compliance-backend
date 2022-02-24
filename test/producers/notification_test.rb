@@ -25,7 +25,7 @@ class NofiticationTest < ActiveSupport::TestCase
     kafka = mock('kafka')
     MockNotification.stubs(:kafka).returns(kafka)
     kafka.expects(:deliver_message)
-         .with(anything, topic: 'platfom.notifications.ingress')
+         .with(anything, topic: 'platform.notifications.ingress')
     MockNotification.deliver(account_number: @acc.account_number)
   end
 
@@ -34,7 +34,7 @@ class NofiticationTest < ActiveSupport::TestCase
     Kafka.stubs(:new).returns(kafka)
     MockNotification.stubs(:kafka).returns(kafka)
     kafka.expects(:deliver_message)
-         .with(anything, topic: 'platfom.notifications.ingress')
+         .with(anything, topic: 'platform.notifications.ingress')
          .raises(Kafka::DeliveryFailed.new(nil, nil))
 
     assert_nothing_raised do

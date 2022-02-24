@@ -36,8 +36,8 @@
                 "consumerGroup": "someGroupName"
             },
             {
-                "requestedName": "platfom.notifications.ingress",
-                "name": "platfom.notifications.ingress",
+                "requestedName": "platform.notifications.ingress",
+                "name": "platform.notifications.ingress",
                 "consumerGroup": "someGroupName"
             },
             {
