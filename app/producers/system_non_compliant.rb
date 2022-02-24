@@ -15,7 +15,7 @@ class SystemNonCompliant < Notification
         policy_name: policy.name,
         policy_threshold: policy_threshold,
         compliance_score: compliance_score
-      }
+      }.to_json
     }]
   end
   # rubocop:enable Metrics/MethodLength
