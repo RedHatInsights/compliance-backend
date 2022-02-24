@@ -29,6 +29,8 @@ objects:
         partitions: 1
       - topicName: platform.remediation-updates.compliance
         partitions: 1
+      - topicName: platfom.notifications.ingress
+        partitions: 1
     inMemoryDb: true
     cyndi:
       enabled: true
