@@ -38,7 +38,7 @@ objects:
       insightsOnly: true
     jobs:
     - name: import-ssg
-      schedule: "*/5 * * * *" # every 5 minutes
+      schedule: ${IMPORT_SSG_SCHEDULE}
       concurrencyPolicy: Forbid
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
@@ -455,7 +455,7 @@ parameters:
 - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
   value: "true"
 - name: FLOORIST_SCHEDULE
-  description: Cronjob schedule definition
+  description: Cronjob schedule definition for floorist
   required: true
 - name: FLOORIST_SUSPEND
   description: Disable Floorist cronjob execution
@@ -475,3 +475,6 @@ parameters:
 - name: FLOORIST_LOGLEVEL
   description: Floorist loglevel config
   value: 'INFO'
+- name: IMPORT_SSG_SCHEDULE
+  description: Cronjob schedule for import-ssg
+  value: "*/5 * * * *" # every 5 minutes
