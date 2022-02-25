@@ -17,7 +17,8 @@ class Notification < ApplicationProducer
       timestamp: DateTime.now.iso8601,
       account_id: account_number,
       events: build_events(**kwargs),
-      context: build_context(**kwargs).to_json
+      context: build_context(**kwargs).to_json,
+      recipients: []
     }
 
     kafka&.deliver_message(msg.to_json, topic: self::TOPIC)
