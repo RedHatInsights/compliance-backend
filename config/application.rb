@@ -52,8 +52,6 @@ module ComplianceBackend
     require 'satellite_compensation/middleware'
     config.middleware.use Insights::API::Common::SatelliteCompensation::Middleware
 
-    # FIXME: profile<->policy connections could fail on this
-    config.active_record.has_many_inversing = false
 
     # GraphiQL
     if Rails.env.development?
