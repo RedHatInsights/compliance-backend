@@ -13,8 +13,8 @@ class SystemNonCompliant < Notification
         host_name: host.display_name,
         policy_id: policy.id,
         policy_name: policy.name,
-        policy_threshold: policy_threshold,
-        compliance_score: compliance_score
+        policy_threshold: policy_threshold.round(2),
+        compliance_score: compliance_score.round(2)
       }.to_json
     }]
   end
