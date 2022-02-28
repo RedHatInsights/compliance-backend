@@ -47,14 +47,14 @@ module ProfilePolicyAssociation
     def destroy_policy_with_internal
       return if external?
 
-      destroyed_policy = policy&.destroy
+      destroyed_policy = policy&.reload&.destroy
       audit_policy_with_main_autoremove(destroyed_policy)
     end
 
     def destroy_empty_policy
-      return unless policy&.profiles&.empty?
+      return if policy&.profiles&.reload&.any?
 
-      destroyed_policy = policy.destroy
+      destroyed_policy = policy&.destroy
       audit_empty_policy_autoremove(destroyed_policy)
     end
 
@@ -68,6 +68,8 @@ module ProfilePolicyAssociation
     end
 
     def audit_empty_policy_autoremove(policy)
+      return unless policy
+
       msg = "Autoremoved policy #{policy.id} with the last profile"
       ::Rails.logger.audit_success(msg)
     end
