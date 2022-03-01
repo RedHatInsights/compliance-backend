@@ -70,13 +70,14 @@ class Rule < ApplicationRecord
     (profiles & Profile.canonical).any?
   end
 
-  def self.from_openscap_parser(op_rule, benchmark_id: nil)
+  def self.from_openscap_parser(op_rule, precedence: nil, benchmark_id: nil)
     rule = find_or_initialize_by(ref_id: op_rule.id, benchmark_id: benchmark_id)
 
     rule.op_source = op_rule
 
     rule.assign_attributes(title: op_rule.title,
                            description: op_rule.description,
+                           precedence: precedence,
                            rationale: op_rule.rationale,
                            severity: op_rule.severity,
                            upstream: false)
