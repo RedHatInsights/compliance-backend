@@ -17,7 +17,7 @@ class RemoveEmptyBenchmarks < ActiveRecord::Migration[5.2]
         empty_rule_references_rules.delete_all
         empty_benchmark.rules.delete_all
       end
-      empty_benchmarks.destroy_all
+      empty_benchmarks.delete_all
     end
   end
 
