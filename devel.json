@@ -72,7 +72,7 @@
             "name": "service",
             "app": "rbac",
             "hostname": "rbac",
-            "port": 8000
+            "port": 8080
         },
         {
             "name": "service",
