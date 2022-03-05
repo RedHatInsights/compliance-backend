@@ -44,6 +44,7 @@ Before running the project, these services must be running and acessible:
 * [Insights PUPTOO](https://github.com/RedHatInsights/insights-puptoo)
   — Platform Upload Processor
 * [Insights Host Inventory](https://github.com/RedHatInsights/insights-host-inventory) (MQ service and web service)
+* [RBAC](https://github.com/RedHatInsights/insights-rbac) (Role-based access control)
 
 
 ## Getting started

@@ -72,7 +72,7 @@ services:
       - AWS_REGION=us-east-1
       - INGRESS_STAGEBUCKET=insights-upload-perma
       - INGRESS_REJECTBUCKET=insights-upload-rejected
-      - INGRESS_VALIDTOPICS=testareno,advisor,buckit,compliance #if you test a different topic, add it here
+      - INGRESS_VALIDTOPICS=testareno,advisor,buckit,compliance # if you test a different topic, add it here
       - INGRESS_INVENTORYURL=inventory-web:8081/api/inventory/v1/hosts
       - OPENSHIFT_BUILD_COMMIT=woopwoop
       - INGRESS_PORT=8080
@@ -101,6 +101,52 @@ services:
       - 5432:5432
     volumes:
       - /var/lib/postgresql/data
+  rbac:
+    image: quay.io/cloudservices/rbac:latest
+    restart: on-failure
+    environment:
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=insights
+      - DATABASE_USER=insights
+      - DATABASE_PASSWORD=insights
+      - API_PATH_PREFIX=/api/rbac
+      - DEVELOPMENT=True
+    depends_on:
+      - build-rbac-db
+      - db
+      - redis
+    links:
+      - db
+      - redis
+    ports:
+      - 9002:8080
+    volumes:
+      - ./config/devel/rbac/permissions.json:/opt/app-root/src/rbac/management/role/permissions/compliance.json:z
+      - ./config/devel/rbac/definitions.json:/opt/app-root/src/rbac/management/role/definitions/compliance.json:z
+  build-rbac-db:
+    image: quay.io/cloudservices/rbac:latest
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=insights
+      - DATABASE_USER=insights
+      - DATABASE_PASSWORD=insights
+      - TENANT_PARALLEL_MIGRATION_MAX_PROCESSES=4
+      - TENANT_PARALLEL_MIGRATION_CHUNKS=2
+      - ACCESS_CACHE_CONNECT_SIGNALS=False
+      - MAX_SEED_THREADS=2
+    depends_on:
+      - db
+    links:
+      - db
+    volumes:
+      - ./config/devel/rbac/permissions.json:/opt/app-root/src/rbac/management/role/permissions/compliance.json:z
+      - ./config/devel/rbac/definitions.json:/opt/app-root/src/rbac/management/role/definitions/compliance.json:z
+    entrypoint: /bin/sh
+    command: -c './rbac/manage.py migrate_schemas --executor=parallel ; ./rbac/manage.py seeds'
   inventory:
     image: quay.io/cloudservices/insights-inventory:latest
     command: bash -c 'sleep 10 && make upgrade_db && make run_inv_mq_service'
@@ -209,11 +255,13 @@ services:
     depends_on:
       - db
       - redis
+      - rbac
       - compliance-ssg
       - import-ssg
     links:
       - db
       - redis
+      - rbac
       - compliance-ssg
   inventory-consumer:
     image: compliance-backend-rails
@@ -229,9 +277,11 @@ services:
       - .:/app:z
     depends_on:
       - db
+      - rbac
       - kafka
     links:
       - db
+      - rbac
       - kafka
   sidekiq:
     image: compliance-backend-rails
@@ -240,8 +290,10 @@ services:
       - .:/app:z
     depends_on:
       - redis
+      - rbac
     links:
       - redis
+      - rbac
     command: bundle exec sidekiq
     environment:
       - MALLOC_ARENA_MAX=2

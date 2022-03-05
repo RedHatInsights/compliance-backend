@@ -1,6 +1,6 @@
 host_inventory_url: http://inventory-web:8081
-rbac_url: https://ci.console.redhat.com
-# disable_rbac: true
+rbac_url: http://rbac:8080
+disable_rbac: false
 # platform_basic_auth_username: myusername
 # platform_basic_auth_password: secret
 prometheus_exporter_port: 9394
