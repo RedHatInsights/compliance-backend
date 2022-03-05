@@ -10,6 +10,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @parser = mock('XccdfReportParser')
     @policy = mock('Policy')
     @host = mock('Host')
+    @host.stubs(:id)
     @issue_id = 'ssg:rhel7|short_profile_ref_id|rule_ref_id'
     @logger = mock
 
@@ -20,7 +21,9 @@ class ParseReportJobTest < ActiveSupport::TestCase
     Sidekiq.stubs(:logger).returns(@logger)
     @logger.stubs(:info)
     @logger.stubs(:error)
-    @host.stubs(:test_results).returns([1])
+    @hosts = mock
+    @hosts.stubs(:where).returns([1])
+    @policy.stubs(:test_result_hosts).returns(@hosts)
   end
 
   test 'payload tracker is notified about successful processing' do
@@ -129,7 +132,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @policy.stubs(:compliant?).returns(false)
     @parser.stubs(:score).returns(90)
     @policy.stubs(:compliance_threshold).returns(100)
-    @host.stubs(:test_results).returns([])
+    @hosts.stubs(:where).returns([])
 
     @parse_report_job.stubs(:notify_payload_tracker)
     @parse_report_job.stubs(:notify_remediation)
