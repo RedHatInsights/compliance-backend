@@ -8,13 +8,17 @@ module Notifications
     private
 
     def compliance_notification_wrapper
-      # Store the old score to detect if there was a drop or there are no test results
-      pre_compliant = parser.host.test_results.empty? || parser.policy.compliant?(parser.host)
+      # Store the old score to detect if there was a drop
+      pre_compliant = parser.policy.compliant?(parser.host)
 
       yield
 
-      # Produce a notification if there score drop was not caused by this report
-      notify_non_compliant! if pre_compliant && parser.score < parser.policy.compliance_threshold
+      # Produce a notification if there is no previos report or the host was compliant before
+      notify_non_compliant! if (no_test_results? || pre_compliant) && parser.score < parser.policy.compliance_threshold
+    end
+
+    def no_test_results?
+      parser.policy.test_result_hosts.where(id: parser.host.id).empty?
     end
 
     def notify_non_compliant!
