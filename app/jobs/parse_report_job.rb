@@ -5,6 +5,7 @@ require 'xccdf_report_parser'
 # Saves all of the information we can parse from a Xccdf report into db
 class ParseReportJob
   include Sidekiq::Worker
+  include Notifications
 
   def perform(idx, message)
     return if cancelled?
@@ -41,29 +42,9 @@ class ParseReportJob
     handle_error(e)
   end
 
-  def notify_if_non_compliant
-    # Store the old score to detect if there was a drop or there are no test results
-    pre_compliant = parser.host.test_results.empty? || parser.policy.compliant?(parser.host)
-
-    yield
-
-    # Produce a notification if there score drop was not caused by this report
-    notify! if pre_compliant && parser.score < parser.policy.compliance_threshold
-  end
-
-  def notify!
-    SystemNonCompliant.deliver(
-      host: parser.host,
-      account_number: @msg_value['account'],
-      policy: parser.policy,
-      policy_threshold: parser.policy.compliance_threshold,
-      compliance_score: parser.score
-    )
-  end
-
   def parse_and_save_report
     notify_payload_tracker(:processing, "Job #{jid} is now processing")
-    notify_if_non_compliant { parser.save_all }
+    compliance_notification_wrapper { parser.save_all }
     notify_remediation
     audit_success
     notify_payload_tracker(:success, "Job #{jid} has completed successfully")
