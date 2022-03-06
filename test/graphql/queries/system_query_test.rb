@@ -769,7 +769,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     setup_two_hosts
 
-    WHost.limit(1).update(tags: [TAG])
+    WHost.update(tags: [TAG])
 
     result = Schema.execute(
       query,
