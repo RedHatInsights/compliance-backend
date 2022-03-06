@@ -5,6 +5,6 @@ FactoryBot.define do
     host { association :host }
     profile { association :profile, :with_rules }
     end_time { Time.zone.now }
-    score { SecureRandom.rand(100) }
+    score { SecureRandom.rand(98) + 1 }
   end
 end
