@@ -48,6 +48,8 @@ module ReportParsing
       logger.error error_message
       logger.audit_fail error_message
       notify_payload_tracker(:error, error_message)
+      ReportUploadFailed.deliver(host: Host.find_by(id: id, account: @msg_value['account']),
+                                 account_number: @msg_value['account'], error: msg_for_notification(exc))
 
       validation_payload(request_id, valid: false)
     end
@@ -67,6 +69,17 @@ module ReportParsing
       end
     end
     # rubocop:enable Metrics/MethodLength
+
+    def msg_for_notification(exc)
+      case exc
+      when EntitlementError
+        'Invalid itentity of missing insights entitlement.'
+      when SafeDownloader::DownloadError
+        'Unable to access the uploaded report.'
+      when InventoryEventsConsumer::ReportValidationError
+        'Unable to parse the uploaded report, invalid format.'
+      end
+    end
 
     def id
       @msg_value.dig('host', 'id')

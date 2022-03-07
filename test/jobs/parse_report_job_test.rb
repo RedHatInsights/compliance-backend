@@ -4,7 +4,8 @@ require 'test_helper'
 
 class ParseReportJobTest < ActiveSupport::TestCase
   setup do
-    @msg_value = { 'id' => '', 'account' => '', 'request_id' => '', 'url' => '' }
+    @host = FactoryBot.create(:host, account: '1234')
+    @msg_value = { 'id' => @host.id, 'account' => '1234', 'request_id' => '', 'url' => '' }
     @parse_report_job = ParseReportJob.new
     @file = file_fixture('report.tar.gz').read
     @parser = mock('XccdfReportParser')
@@ -81,6 +82,32 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @parse_report_job.perform(0, @msg_value)
   end
 
+  test 'notification service is notified about failed report parsing' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    @parser.stubs(:save_all).raises(
+      XccdfReportParser::WrongFormatError.new('Wrong format or benchmark')
+    )
+    profile_stub = OpenStruct.new(
+      test_result: OpenStruct.new(profile_id: 'profileid')
+    )
+    @parser.stubs(:test_result_file).returns(profile_stub)
+    Sidekiq.stubs(:redis).returns(false)
+    @parse_report_job.stubs(:jid).returns('1')
+
+    Host.stubs(:find_by).returns(@host)
+
+    ReportUploadFailed.expects(:deliver).with(
+      account_number: @msg_value['account'], host: @host,
+      error: "Failed to parse report profileid from host #{@msg_value['id']}: WrongFormatError"
+    )
+
+    SafeDownloader.expects(:download_reports)
+                  .with('', ssl_only: Settings.report_download_ssl_only)
+                  .returns(ActiveSupport::Gzip.decompress(@file))
+    @parse_report_job.perform(0, @msg_value)
+    assert_audited 'Failed to parse report profileid'
+  end
+
   test 'payload tracker is notified about errored processing' do
     XccdfReportParser.stubs(:new).returns(@parser)
     @parser.stubs(:save_all).raises(
@@ -102,7 +129,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: :error,
       status_msg:
-      'Failed to parse report profileid: XccdfReportParser::WrongFormatError:' \
+      "Failed to parse report profileid from host #{@msg_value['id']}: XccdfReportParser::WrongFormatError:" \
       " Wrong format or benchmark - #{error_msg}"
     )
     SafeDownloader.expects(:download_reports)
