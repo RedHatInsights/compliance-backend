@@ -9,8 +9,8 @@ class ReportUploadFailed < Notification
     [{
       metadata: {},
       payload: {
-        host_id: host.id,
-        host_name: host.display_name,
+        host_id: host&.id,
+        host_name: host&.display_name,
         error: error
       }
     }]
