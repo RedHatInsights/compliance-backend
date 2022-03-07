@@ -19,14 +19,4 @@ class SystemNonCompliant < Notification
     }]
   end
   # rubocop:enable Metrics/MethodLength
-
-  def self.build_context(host:, **_kwargs)
-    {
-      display_name: host.display_name,
-      host_url: "https://console.redhat.com/insights/inventory/#{host.id}",
-      inventory_id: host.id,
-      rhel_version: [host.os_major_version, host.os_minor_version].join('.'),
-      tags: host.tags
-    }
-  end
 end
