@@ -13,7 +13,7 @@ module Notifications
 
       yield
 
-      # Produce a notification if there is no previos report or the host was compliant before
+      # Produce a notification if there is no previous report or the host was compliant before
       notify_non_compliant! if (no_test_results? || pre_compliant) && parser.score < parser.policy.compliance_threshold
     end
 
