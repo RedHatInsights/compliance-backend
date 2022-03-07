@@ -73,19 +73,20 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       ParseReportJob.clear
       SafeDownloader.stubs(:download_reports).returns(['report'])
       IdentityHeader.stubs(:new).returns(OpenStruct.new(valid?: true))
+      @host = Host.find(FactoryBot.create(:host, id: '37f7eeff-831b-5c41-984a-254965f58c0f', account: '1234').id)
     end
 
     should 'not leak memory to subsequent messages' do
       @message.stubs(:value).returns({
         host: {
-          id: '37f7eeff-831b-5c41-984a-254965f58c0f'
+          id: @host.id
         },
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         },
-        account: '1234'
+        account: @host.account
       }.to_json)
       @consumer.stubs(:validated_reports).returns([%w[profile report]])
       @consumer.stubs(:produce)
@@ -100,14 +101,14 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     should 'should queue a ParseReportJob' do
       @message.stubs(:value).returns({
         host: {
-          id: '37f7eeff-831b-5c41-984a-254965f58c0f'
+          id: @host.id
         },
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         },
-        account: '1234'
+        account: @host.account
       }.to_json)
       @consumer.stubs(:validated_reports).returns([%w[profileid report]])
       @consumer.expects(:produce).with(
@@ -127,14 +128,14 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     should 'pass ssl_only to reports downloader' do
       @message.stubs(:value).returns({
         host: {
-          id: '37f7eeff-831b-5c41-984a-254965f58c0f'
+          id: @host.id
         },
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         },
-        account: '1234'
+        account: @host.account
       }.to_json)
       @consumer.stubs(:validated_reports).returns([%w[profileid report]])
       @consumer.expects(:produce)
@@ -148,20 +149,60 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       @consumer.process(@message)
     end
 
-    should 'not parse reports when validation fails' do
+    should 'emit notification when download fails' do
       @message.stubs(:value).returns({
         host: {
-          id: '37f7eeff-831b-5c41-984a-254965f58c0f'
+          id: @host.id
         },
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         },
-        account: '1234'
+        account: @host.account
+      }.to_json)
+
+      SafeDownloader.stubs(:download_reports).raises(SafeDownloader::DownloadError)
+
+      ReportUploadFailed.expects(:deliver).with(
+        account_number: @host.account, host: @host,
+        error: 'Unable to access the uploaded report.'
+      )
+
+      @consumer.expects(:produce).with(
+        {
+          'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
+          'service': 'compliance',
+          'validation': 'failure'
+        }.to_json,
+        topic: Settings.kafka_producer_topics.upload_validation
+      )
+
+      @consumer.process(@message)
+      assert_equal 0, ParseReportJob.jobs.size
+      assert_audited 'Failed to dowload report'
+    end
+
+    should 'not parse reports when validation fails' do
+      @message.stubs(:value).returns({
+        host: {
+          id: @host.id
+        },
+        platform_metadata: {
+          service: 'compliance',
+          url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
+        },
+        account: @host.account
       }.to_json)
       # Mock the actual 'sending the validation' to Kafka
       XccdfReportParser.stubs(:new).raises(StandardError.new)
+
+      ReportUploadFailed.expects(:deliver).with(
+        account_number: @host.account, host: @host,
+        error: 'Unable to parse the uploaded report, invalid format.'
+      )
+
       @consumer.expects(:produce).with(
         {
           'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
@@ -189,6 +230,12 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         },
         account: '1234'
       }.to_json)
+
+      ReportUploadFailed.expects(:deliver).with(
+        account_number: @host.account, host: @host,
+        error: 'Invalid itentity of missing insights entitlement.'
+      )
+
       @consumer.expects(:validated_reports).never
       @consumer.expects(:produce).with(
         {
@@ -207,14 +254,14 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     should 'notify payload tracker when a report is received' do
       @message.stubs(:value).returns({
         host: {
-          id: '37f7eeff-831b-5c41-984a-254965f58c0f'
+          id: @host.id
         },
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         },
-        account: '1234'
+        account: @host.account
       }.to_json)
       @consumer.stubs(:download_file)
       parsed_stub = OpenStruct.new(
@@ -239,14 +286,14 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     should 'handle db errors and db clear connections' do
       @message.stubs(:value).returns({
         host: {
-          id: '37f7eeff-831b-5c41-984a-254965f58c0f'
+          id: @host.id
         },
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
         },
-        account: '1234'
+        account: @host.account
       }.to_json)
       # Mock the actual 'sending the validation' to Kafka
       XccdfReportParser.stubs(:new).raises(ActiveRecord::StatementInvalid)
