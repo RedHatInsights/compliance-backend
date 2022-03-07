@@ -82,6 +82,32 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @parse_report_job.perform(0, @msg_value)
   end
 
+  test 'notification service is notified about failed report parsing with no host' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    @parser.stubs(:save_all).raises(
+      XccdfReportParser::WrongFormatError.new('Wrong format or benchmark')
+    )
+    profile_stub = OpenStruct.new(
+      test_result: OpenStruct.new(profile_id: 'profileid')
+    )
+    @parser.stubs(:test_result_file).returns(profile_stub)
+    Sidekiq.stubs(:redis).returns(false)
+    @parse_report_job.stubs(:jid).returns('1')
+
+    Host.stubs(:find_by).returns(nil)
+
+    ReportUploadFailed.expects(:deliver).with(
+      account_number: @msg_value['account'], host: nil,
+      error: "Failed to parse report profileid from host #{@msg_value['id']}: WrongFormatError"
+    )
+
+    SafeDownloader.expects(:download_reports)
+                  .with('', ssl_only: Settings.report_download_ssl_only)
+                  .returns(ActiveSupport::Gzip.decompress(@file))
+    @parse_report_job.perform(0, @msg_value)
+    assert_audited 'Failed to parse report profileid'
+  end
+
   test 'notification service is notified about failed report parsing' do
     XccdfReportParser.stubs(:new).returns(@parser)
     @parser.stubs(:save_all).raises(

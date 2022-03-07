@@ -73,11 +73,11 @@ module ReportParsing
     def msg_for_notification(exc)
       case exc
       when EntitlementError
-        'Invalid itentity of missing insights entitlement.'
+        "Failed to parse any uploaded report from host #{id}: invalid identity of missing insights entitlement."
       when SafeDownloader::DownloadError
-        'Unable to access the uploaded report.'
+        "Unable to locate any uploaded report from host #{id}."
       when InventoryEventsConsumer::ReportValidationError
-        'Unable to parse the uploaded report, invalid format.'
+        "Failed to parse any uploaded report from host #{id}: invalid format."
       end
     end
 
