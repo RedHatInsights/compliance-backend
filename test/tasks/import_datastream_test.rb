@@ -23,6 +23,7 @@ class ImportDatastreamTest < ActiveSupport::TestCase
   end
 
   test 'ssg:import_rhel_supported imports downstream datastreams' do
+    Revision.stubs(:datastreams).returns('')
     DatastreamDownloader.any_instance
                         .expects(:download_datastreams)
                         .multiple_yields(['file1'], ['file2'])
