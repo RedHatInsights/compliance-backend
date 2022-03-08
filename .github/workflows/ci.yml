@@ -73,3 +73,29 @@ jobs:
       run: bin/rake test
     - name: Upload code coverage
       uses: codecov/codecov-action@v2
+  migration-robustness:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: insights
+          POSTGRES_DB: insights
+          POSTGRES_PASSWORD: insights
+        ports: ["5432:5432"]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Setup Ruby and install gems
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+    - name: Setup database and run migrations
+      env:
+        RAILS_ENV: test
+        DATABASE_SERVICE_NAME: postgres
+        POSTGRES_SERVICE_HOST: localhost
+        POSTGRESQL_USER: insights
+        POSTGRESQL_PASSWORD: insights
+        POSTGRESQL_TEST_DATABASE: insights
+      run: bin/rails db:create db:migrate
