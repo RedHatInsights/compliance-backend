@@ -1,0 +1,19 @@
+{
+  "roles": [
+    {
+      "name": "Compliance administrator",
+      "description": "Perform any available operation against any Compliance resource.",
+      "system": true,
+      "platform_default": true,
+      "version": 8,
+      "access": [
+        {
+          "permission": "compliance:*:*"
+        },
+        {
+          "permission": "inventory:*:read"
+        }
+      ]
+    }
+  ]
+}

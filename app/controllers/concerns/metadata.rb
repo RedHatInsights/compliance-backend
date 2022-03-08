@@ -76,7 +76,9 @@ module Metadata
     private
 
     def base_link_url
-      "#{path_prefix}/#{Settings.app_name}/#{controller_name}"
+      api_version = request.fullpath.delete_prefix("#{path_prefix}/#{Settings.app_name}")
+      api_version.sub!(%r{/#{controller_name}.*}, '')
+      "#{path_prefix}/#{Settings.app_name}#{api_version}/#{controller_name}"
     end
 
     def base_link_params
