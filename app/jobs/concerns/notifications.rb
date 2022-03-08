@@ -17,6 +17,7 @@ module Notifications
       return unless preconditions && parser.score < parser.policy.compliance_threshold
 
       notify_non_compliant!
+      Rails.logger.info('Notification emitted due to non-compliance')
     end
 
     # Notifications should be only allowed if there are no test results or the policy was previously compliant
