@@ -53,11 +53,11 @@ objects:
           inheritEnv: true
         resources:
           limits:
-            cpu: ${CPU_LIMIT_SIDE}
-            memory: ${MEMORY_LIMIT_SIDE}
+            cpu: ${CPU_LIMIT_IMPORT_SSG}
+            memory: ${MEMORY_LIMIT_IMPORT_SSG}
           requests:
-            cpu: ${CPU_REQUEST_SIDE}
-            memory: ${MEMORY_REQUEST_SIDE}
+            cpu: ${CPU_REQUEST_IMPORT_SSG}
+            memory: ${MEMORY_REQUEST_IMPORT_SSG}
         env:
         - name: APPLICATION_TYPE
           value: compliance-import-ssg
@@ -423,6 +423,14 @@ parameters:
   value: 100m
 - name: CPU_REQUEST_FLOO
   value: 50m
+- name: MEMORY_LIMIT_IMPORT_SSG
+  value: 1000Mi
+- name: MEMORY_REQUEST_IMPORT_SSG
+  value: 500Mi
+- name: CPU_LIMIT_IMPORT_SSG
+  value: 500m
+- name: CPU_REQUEST_IMPORT_SSG
+  value: 300m
 - name: REDIS_SSL
   description: 'Whether to use secured connection to Redis. Use string values of true or false'
   value: "true"
