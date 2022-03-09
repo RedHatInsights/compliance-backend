@@ -14,6 +14,7 @@ module Xccdf
 
           base = ::ProfileRule.joins(profile: :benchmark)
                               .where('profiles.parent_profile_id' => nil)
+                              .where('benchmarks.ref_id' => @benchmark&.id)
 
           links_to_remove(base).delete_all
         end
