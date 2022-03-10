@@ -26,7 +26,7 @@ redis_cache_url:
 redis_cache_password:
 redis_cache_ssl: false
 slack_webhook: 'this is set through a env var in Openshift and not shared for security reasons'
-disable_rbac: 'false'
+disable_rbac: false
 async: true
 supported_ssg_ds_config: 'ssg-datastreams.yaml'
 supported_ssg_ansible_tasks_config: 'ssg-ansible-tasks.yaml'
