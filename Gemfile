@@ -66,6 +66,9 @@ gem 'manageiq-loggers', '~> 0.6.0'
 # Parsing OpenSCAP reports library
 gem 'openscap_parser', '~> 1.0.0'
 
+# RBAC service API
+gem 'insights-rbac-api-client', '~> 1.0.0'
+
 # REST API parameter type checking
 gem 'stronger_parameters'
 
