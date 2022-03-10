@@ -66,7 +66,6 @@ class RulesTest < ActiveSupport::TestCase
   end
 
   test 'reorders rules when needed' do
-    skip 'not implemented yet'
     @mock.benchmark.rules.clear
     @mock.save_rules
 
