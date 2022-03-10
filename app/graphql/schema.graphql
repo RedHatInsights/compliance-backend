@@ -603,6 +603,7 @@ type System implements Node {
     """
     policyId: ID
   ): [Profile!]
+  updated: String!
 }
 
 """
