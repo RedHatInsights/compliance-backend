@@ -2917,6 +2917,7 @@
                       "culled_timestamp": "2031-09-14T12:12:41.382Z",
                       "stale_timestamp": "2031-08-31T12:12:41.382Z",
                       "stale_warning_timestamp": "2031-09-07T12:12:41.382Z",
+                      "updated": "2031-09-07T12:12:41.382Z",
                       "insights_id": null,
                       "compliant": false
                     },
@@ -3058,6 +3059,7 @@
                     "culled_timestamp": "2031-09-14T12:12:41.594Z",
                     "stale_timestamp": "2031-08-31T12:12:41.594Z",
                     "stale_warning_timestamp": "2031-09-07T12:12:41.594Z",
+                    "updated": "2031-09-07T12:12:41.594Z",
                     "insights_id": null,
                     "compliant": false
                   },
@@ -3257,6 +3259,10 @@
             "example": "2020-06-04T19:31:55Z"
           },
           "stale_timestamp": {
+            "type": "string",
+            "example": "2020-06-04T19:31:55Z"
+          },
+          "updated": {
             "type": "string",
             "example": "2020-06-04T19:31:55Z"
           },
