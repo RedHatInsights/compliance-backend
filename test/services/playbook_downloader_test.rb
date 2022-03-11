@@ -8,27 +8,15 @@ class PlaybookDownloaderTest < ActiveSupport::TestCase
     @profile = FactoryBot.create(:canonical_profile)
     @rule = FactoryBot.create(:rule)
     @rules = FactoryBot.create_list(:rule, 2)
+    SafeDownloader.stubs(:download).returns(StringIO.new([{ name: @rule.short_ref_id }].to_json))
   end
 
   test 'playbook_exists? when it exists' do
-    SafeDownloader.expects(:download).returns(:playbook)
     assert PlaybookDownloader.playbook_exists?(@rule)
-    assert_audited 'Downloaded playbook'
   end
 
-  test 'playbook_exists? specifying a profile_short_ref_id' do
-    SafeDownloader.expects(:download).returns(:playbook)
-    assert PlaybookDownloader.playbook_exists?(@rule, @profile)
-    assert_audited 'Downloaded playbook'
-  end
-
-  test 'playbook_exists? handles download errors' do
-    SafeDownloader.expects(:download).raises(StandardError)
-
-    assert_nothing_raised do
-      assert_not PlaybookDownloader.playbook_exists?(@rule)
-    end
-    assert_audited 'Failed to download playbook'
+  test 'playbook_exists? when not exists' do
+    assert_not PlaybookDownloader.playbook_exists?(@rules.sample)
   end
 
   test 'playbooks_exist?' do
