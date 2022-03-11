@@ -246,4 +246,20 @@ class ParseReportJobTest < ActiveSupport::TestCase
 
     @parse_report_job.perform(0, @msg_value)
   end
+
+  test 'does not emit notification if report is external' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    Sidekiq.stubs(:redis).returns(false)
+    @parser.stubs(:policy).returns(nil)
+    @parser.stubs(:score).returns(90)
+
+    @parse_report_job.stubs(:notify_payload_tracker)
+    @parse_report_job.stubs(:notify_remediation)
+    @parse_report_job.stubs(:audit_success)
+    @parser.expects(:save_all)
+
+    SystemNonCompliant.expects(:deliver).never
+
+    @parse_report_job.perform(0, @msg_value)
+  end
 end

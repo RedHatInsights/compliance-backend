@@ -22,7 +22,7 @@ module Notifications
 
     # Notifications should be only allowed if there are no test results or the policy was previously compliant
     def build_notify_preconditions
-      parser.policy.compliant?(parser.host) || parser.policy.test_result_hosts.where(id: parser.host.id).empty?
+      parser.policy&.compliant?(parser.host) || parser.policy&.test_result_hosts&.where(id: parser.host.id)&.empty?
     end
 
     def notify_non_compliant!
