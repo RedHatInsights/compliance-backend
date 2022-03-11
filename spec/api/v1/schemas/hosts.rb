@@ -58,6 +58,10 @@ module Api
               type: 'string',
               example: '2020-06-04T19:31:55Z'
             },
+            updated: {
+              type: 'string',
+              example: '2020-06-04T19:31:55Z'
+            },
             insights_id: {
               type: 'uuid',
               example: '374399b7-e6ba-49b7-a405-9b620a2bd0b3'
