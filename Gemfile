@@ -83,10 +83,10 @@ gem 'webrick'
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'codecov', :require => false
+  gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
-  gem 'simplecov', '~> 0.17.0'
+  gem 'irb', '>= 1.2'
   gem 'minitest-reporters'
   gem 'minitest-stub-const'
   gem 'mocha'
@@ -98,9 +98,9 @@ group :development, :test do
   gem 'rubocop-rails', require: false
   gem 'shoulda-context'
   gem 'shoulda-matchers'
-  gem 'dotenv-rails'
-  gem 'irb', '>= 1.2'
   gem 'silent_stream'
+  gem 'simplecov'
+  gem 'simplecov-cobertura', require: false
   gem 'webmock'
 end
 
