@@ -12,10 +12,12 @@ class PlaybookDownloaderTest < ActiveSupport::TestCase
   end
 
   test 'playbook_exists? when it exists' do
+    PlaybookDownloader.instance_variable_set(:@cache, nil)
     assert PlaybookDownloader.playbook_exists?(@rule)
   end
 
   test 'playbook_exists? when not exists' do
+    PlaybookDownloader.instance_variable_set(:@cache, nil)
     assert_not PlaybookDownloader.playbook_exists?(@rules.sample)
   end
 
