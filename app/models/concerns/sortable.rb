@@ -30,15 +30,7 @@ module Sortable
         column, direction = field.underscore.split(':')
         assert_sortable_by!(column, direction)
 
-        # FIXME: Rails cannot deal with Arel nodes in order hashes.
-        # After the bug is resolved, the compensation will be no longer
-        # necessaryand the fetching can be simply done by:
-        # rule = @sortable_by[column.to_sym]
-        #
-        # BUG: https://github.com/rails/rails/issues/44282
-        # FIX: https://github.com/rails/rails/pull/44284
-        rule = fetch_rule_by_column(column.to_sym)
-
+        rule = @sortable_by[column.to_sym]
         obj[:h][rule[:statement]] = direction || 'asc'
         obj[:s] << rule[:scope] if rule[:scope]
       end
@@ -52,16 +44,6 @@ module Sortable
       return if ['asc', 'desc', nil].include?(direction)
 
       raise ::Exceptions::InvalidSortingDirection, direction
-    end
-
-    def fetch_rule_by_column(column)
-      rule = @sortable_by[column]
-      if rule[:statement].is_a?(Arel::Nodes::Node)
-        # Arel node conversion to make both Rails and Brakeman happy
-        rule[:statement] = Arel.sql(rule[:statement].to_sql)
-      end
-
-      rule
     end
   end
 end
