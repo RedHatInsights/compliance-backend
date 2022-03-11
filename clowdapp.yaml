@@ -324,19 +324,6 @@ objects:
     name: floorplan
   data:
     floorplan.yaml: |
-      - prefix: insights/compliance/hosts
-        query: >-
-          SELECT
-            "inventory"."hosts"."id",
-            "accounts"."account_number",
-            "inventory"."hosts"."created" AS "created_at",
-            "inventory"."hosts"."updated" AS "updated_at",
-            "inventory"."hosts"."system_profile"->'operating_system'->'major' AS "os_major_version",
-            "inventory"."hosts"."system_profile"->'operating_system'->'minor' AS "os_minor_version"
-            FROM "inventory"."hosts"
-            INNER JOIN "accounts" ON "accounts"."account_number" = "inventory"."hosts"."account"
-            WHERE ("inventory"."hosts"."id" IN (SELECT "policy_hosts"."host_id" FROM "policy_hosts")
-              OR "inventory"."hosts"."id" IN (SELECT "test_results"."host_id" FROM "test_results"));
       - prefix: insights/compliance/policies
         query: >-
           SELECT DISTINCT

@@ -5,6 +5,8 @@ class OrphanedLinksRemover
   class << self
     # rubocop:disable Metrics/AbcSize
     def run!
+      return unless Host.table_exists?
+
       ProfileRule.left_outer_joins(:profile).left_outer_joins(:rule).where(profiles: { id: nil }).or(
         ProfileRule.where(rules: { id: nil })
       ).destroy_all
