@@ -43,13 +43,8 @@ objects:
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
-        - command:
-            - bash
-            - -c
-            - |
-              for i in {1..120}; do sleep 1;
-              if bundle exec rake --trace db:abort_if_pending_migrations;
-              then exit 0; fi; done; exit 1
+        - command: ["/bin/sh"]
+          args: ["-c", "$HOME/scripts/abort_if_pending_migrations.sh"]
           inheritEnv: true
         resources:
           limits:
@@ -78,12 +73,11 @@ objects:
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: SETTINGS__FORCE_IMPORT_SSGS
           value: "${SETTINGS__FORCE_IMPORT_SSGS}"
+        - name: MAX_INIT_TIMEOUT_SECONDS
+          value: "${MAX_INIT_TIMEOUT_SECONDS}"
         livenessProbe:
           exec:
-            command:
-              - bash
-              - -c
-              - ps ax | grep [r]ake
+            command: ["pgrep" ,"-f", "rake"]
     - name: floorist
       schedule: ${FLOORIST_SCHEDULE}
       suspend: ${{FLOORIST_SUSPEND}}
@@ -122,10 +116,7 @@ objects:
           value: ${FLOORIST_LOGLEVEL}
         livenessProbe:
           exec:
-            command:
-              - bash
-              - -c
-              - ps ax | grep [r]un
+            command: ["pgrep", "-f", "run"]
         volumeMounts:
         - name: floorplan-volume
           mountPath: "/tmp/floorplan"
@@ -142,7 +133,6 @@ objects:
             memory: "${MEMORY_REQUEST_FLOO}"
     deployments:
     - name: service
-      # TODO: Check how to auto-scale with Clowder
       minReplicas: ${{REPLICAS_BACKEND}}
       webServices:
         public:
@@ -150,11 +140,8 @@ objects:
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
-        - command:
-            - bash
-            - -c
-            - |
-              bundle exec rake --trace db:debug db:migrate ssg:check_synced
+        - command: ["/bin/sh"]
+          args: ["-c", "$HOME/scripts/check_migration_status_and_ssg_synced.sh"]
           inheritEnv: true
         env:
         - name: APPLICATION_TYPE
@@ -184,6 +171,8 @@ objects:
           value: "secret_key_base"
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
+        - name: MAX_INIT_TIMEOUT_SECONDS
+          value: "${MAX_INIT_TIMEOUT_SECONDS}"
 # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
@@ -208,11 +197,8 @@ objects:
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
-        - command:
-            - bash
-            - -c
-            - |
-              bundle exec rake --trace db:debug db:migrate ssg:check_synced
+        - command: ["/bin/sh"]
+          args: ["-c", "$HOME/scripts/check_migration_status_and_ssg_synced.sh"]
           inheritEnv: true
         env:
         - name: APPLICATION_TYPE
@@ -238,6 +224,8 @@ objects:
           value: "secret_key_base"
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
+        - name: MAX_INIT_TIMEOUT_SECONDS
+          value: "${MAX_INIT_TIMEOUT_SECONDS}"
         livenessProbe:
           httpGet:
             path: /metrics
@@ -246,11 +234,7 @@ objects:
         readinessProbe:
           timeoutSeconds: 5
           exec:
-            command:
-              - bash
-              - -c
-              - |
-                bundle exec rake --trace db:status redis:status kafka:status
+            command: ["bash", "-c", "bundle exec rake --trace db:status redis:status kafka:status"]
         resources:
           limits:
             cpu: ${CPU_LIMIT_CONS}
@@ -260,16 +244,12 @@ objects:
             memory: ${MEMORY_REQUEST_CONS}
 
     - name: sidekiq
-      # TODO: check requreiment for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_SIDEKIQ}}
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
-        - command:
-            - bash
-            - -c
-            - |
-              bundle exec rake --trace db:debug db:migrate ssg:check_synced
+        - command: ["/bin/sh"]
+          args: ["-c", "$HOME/scripts/check_migration_status_and_ssg_synced.sh"]
           inheritEnv: true
         resources:
           limits:
@@ -286,11 +266,7 @@ objects:
         readinessProbe:
           timeoutSeconds: 5
           exec:
-            command:
-              - bash
-              - -c
-              - |
-                bundle exec rake --trace db:status redis:status
+            command: ["bash", "-c", "bundle exec rake --trace db:status redis:status"]
         env:
         - name: APPLICATION_TYPE
           value: compliance-sidekiq
@@ -317,6 +293,9 @@ objects:
           value: "secret_key_base"
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
+        - name: MAX_INIT_TIMEOUT_SECONDS
+          value: "${MAX_INIT_TIMEOUT_SECONDS}"
+
 
 - apiVersion: v1
   kind: ConfigMap
@@ -473,3 +452,6 @@ parameters:
 - name: IMPORT_SSG_SCHEDULE
   description: Cronjob schedule for import-ssg
   value: "*/5 * * * *" # every 5 minutes
+- name: MAX_INIT_TIMEOUT_SECONDS
+  description: Number of seconds for timeout init container operation
+  value: "120"
