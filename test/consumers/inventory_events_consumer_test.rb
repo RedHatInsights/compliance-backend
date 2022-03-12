@@ -84,9 +84,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
-          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        },
-        account: @host.account
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          account: @host.account
+        }
       }.to_json)
       @consumer.stubs(:validated_reports).returns([%w[profile report]])
       @consumer.stubs(:produce)
@@ -106,9 +106,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
-          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        },
-        account: @host.account
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          account: @host.account
+        }
       }.to_json)
       @consumer.stubs(:validated_reports).returns([%w[profileid report]])
       @consumer.expects(:produce).with(
@@ -133,9 +133,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
-          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        },
-        account: @host.account
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          account: @host.account
+        }
       }.to_json)
       @consumer.stubs(:validated_reports).returns([%w[profileid report]])
       @consumer.expects(:produce)
@@ -157,9 +157,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
-          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        },
-        account: @host.account
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          account: @host.account
+        }
       }.to_json)
 
       SafeDownloader.stubs(:download_reports).raises(SafeDownloader::DownloadError)
@@ -191,9 +191,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
-          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        },
-        account: @host.account
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          account: @host.account
+        }
       }.to_json)
       # Mock the actual 'sending the validation' to Kafka
       XccdfReportParser.stubs(:new).raises(StandardError.new)
@@ -226,9 +226,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
-          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        },
-        account: '1234'
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          account: '1234'
+        }
       }.to_json)
 
       ReportUploadFailed.expects(:deliver).with(
@@ -260,9 +260,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
-          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        },
-        account: @host.account
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          account: @host.account
+        }
       }.to_json)
       @consumer.stubs(:download_file)
       parsed_stub = OpenStruct.new(
@@ -292,9 +292,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         platform_metadata: {
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
-          request_id: '036738d6f4e541c4aa8cfc9f46f5a140'
-        },
-        account: @host.account
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          account: @host.account
+        }
       }.to_json)
       # Mock the actual 'sending the validation' to Kafka
       XccdfReportParser.stubs(:new).raises(ActiveRecord::StatementInvalid)
