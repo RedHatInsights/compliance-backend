@@ -16,6 +16,7 @@ services:
     links:
       - zookeeper
     environment:
+      - KAFKA_AUTO_LEADER_REBALANCE_ENABLE=true
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092
       - KAFKA_BROKER_ID=1
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
