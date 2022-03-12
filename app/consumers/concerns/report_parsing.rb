@@ -48,8 +48,8 @@ module ReportParsing
       logger.error error_message
       logger.audit_fail error_message
       notify_payload_tracker(:error, error_message)
-      ReportUploadFailed.deliver(host: Host.find_by(id: id, account: @msg_value['account']),
-                                 account_number: @msg_value['account'], error: msg_for_notification(exc))
+      ReportUploadFailed.deliver(host: Host.find_by(id: id, account: account),
+                                 account_number: account, error: msg_for_notification(exc))
 
       validation_payload(request_id, valid: false)
     end

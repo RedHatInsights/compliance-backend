@@ -13,9 +13,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   def process(message)
     super
 
-    Insights::API::Common::AuditLog.audit_with_account(
-      @msg_value['account']
-    ) do
+    Insights::API::Common::AuditLog.audit_with_account(account) do
       dispatch
     end
   rescue PG::Error, ActiveRecord::StatementInvalid
@@ -64,5 +62,11 @@ class InventoryEventsConsumer < ApplicationConsumer
   # NB: This consumer object stays around between messages
   def clear!
     @report_contents, @msg_value = nil
+  end
+
+  private
+
+  def account
+    @msg_value.dig('platform_metadata', 'account')
   end
 end
