@@ -40,4 +40,27 @@ class ImportRemediationsTest < ActiveSupport::TestCase
                    rule.reload.remediation_available)
     end
   end
+
+  test 'import remediations never imports rsyslog_remote_loghost' do
+    @rules.each { |rule| rule.update(remediation_available: false) }
+    @rules.sample(2).each do |rule|
+      rule.update(
+        ref_id: 'xccdf_org.ssgproject.content_rule_rsyslog_remote_loghost',
+        remediation_available: true
+      )
+    end
+
+    PlaybookDownloader.stubs(:playbook_exists?).returns(true)
+    Rule.stubs(:with_profiles).returns(@rules)
+    @rules.stubs(:includes).returns(@rules)
+
+    capture_io do
+      Rake::Task['import_remediations'].execute
+    end
+
+    @rules.each do |rule|
+      excluded = rule.ref_id != 'xccdf_org.ssgproject.content_rule_rsyslog_remote_loghost'
+      assert_equal(rule.reload.remediation_available, excluded)
+    end
+  end
 end

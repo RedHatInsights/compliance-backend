@@ -26,6 +26,13 @@ task import_remediations: :environment do
       playbook_status_by_rule_id = PlaybookDownloader.playbooks_exist?(
         Rule.with_profiles.includes(:benchmark)
       )
+
+      # Exclude the remediation for rsyslog_remote_loghost
+      EXCLUDE = 'xccdf_org.ssgproject.content_rule_rsyslog_remote_loghost'
+      Rule.where(ref_id: EXCLUDE).pluck(:id).each do |id|
+        playbook_status_by_rule_id[id] = false
+      end
+
       ids_with_playbooks = playbook_status_by_rule_id.filter { |_, v| v }.keys
       ids_sans_playbooks = playbook_status_by_rule_id.filter { |_, v| !v }.keys
 
