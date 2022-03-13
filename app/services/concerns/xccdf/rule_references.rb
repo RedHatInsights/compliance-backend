@@ -7,30 +7,15 @@ module Xccdf
 
     included do
       def save_rule_references
-        @rule_references = new_rule_references + existing_rule_references
-
-        ::RuleReference.import!(new_rule_references)
-      end
-
-      private
-
-      def new_rule_references
-        @new_rule_references ||= new_op_rule_references.map do |op_reference|
-          RuleReference.new(href: op_reference.href, label: op_reference.label)
+        @rule_references = @op_rule_references.map do |op_rr|
+          ::RuleReference.new(href: op_rr.href, label: op_rr.label)
         end
-      end
 
-      def existing_rule_references
-        @existing_rule_references ||= ::RuleReference
-                                      .find_unique(@op_rule_references)
-      end
-
-      def new_op_rule_references
-        @existing_href_labels = existing_rule_references.pluck(:href, :label)
-
-        @op_rule_references.reject do |op_reference|
-          @existing_href_labels.include? [op_reference.href, op_reference.label]
-        end
+        ::RuleReference.import!(@rule_references,
+                                on_duplicate_key_update: {
+                                  conflict_target: %i[label href],
+                                  columns: %i[label href]
+                                })
       end
     end
   end

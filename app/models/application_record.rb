@@ -10,15 +10,6 @@ class ApplicationRecord < ActiveRecord::Base
     where(arel_table[:created_at].lt(datetime))
   }
 
-  def self.arel_find(collection, batch_size = 1000)
-    base_arel = arel_table[column_names.first].eq('')
-    collection.in_groups_of(batch_size, false).map do |batch|
-      where(batch.inject(base_arel) do |rel, record|
-        rel.or(yield(record))
-      end)
-    end.inject([], &:+)
-  end
-
   def ==(other)
     return super if self.class.column_names.include? 'id'
 
