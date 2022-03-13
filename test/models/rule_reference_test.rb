@@ -25,10 +25,4 @@ class RuleReferenceTest < ActiveSupport::TestCase
     assert_equal rule_reference.id,
                  RuleReference.from_openscap_parser(OP_RULE_REFERENCE).id
   end
-
-  test 'finds an existing RuleReference from_oscap' do
-    rule_reference = RuleReference.create!(OP_RULE_REFERENCE.to_h)
-    assert_equal rule_reference.id,
-                 RuleReference.find_unique([OP_RULE_REFERENCE]).first.id
-  end
 end

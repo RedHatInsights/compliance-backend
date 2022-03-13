@@ -18,13 +18,6 @@ class RuleReference < ApplicationRecord
                      message: 'and label combination already taken'
                    }
 
-  def self.find_unique(references)
-    arel_find(references) do |reference|
-      arel_table[:href].eq(reference.href)
-                       .and(arel_table[:label].eq(reference.label))
-    end
-  end
-
   def self.from_openscap_parser(op_rule_reference)
     find_or_initialize_by(
       href: op_rule_reference.href,
