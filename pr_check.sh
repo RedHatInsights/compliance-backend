@@ -23,6 +23,7 @@ export IQE_MARKER_EXPRESSION="compliance_smoke"
 export IQE_FILTER_EXPRESSION=""
 export IQE_CJI_TIMEOUT="30m" # 30 minutes
 export DEPLOY_TIMEOUT=900
+export REF_ENV="insights-stage"
 # Allows to test custom IQE images
 # export IQE_IMAGE_TAG=""
 
