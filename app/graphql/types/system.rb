@@ -66,6 +66,22 @@ module Types
       object.last_scanned(**args)
     end
 
+    def culled_timestamp
+      object.culled_timestamp&.iso8601
+    end
+
+    def stale_warning_timestamp
+      object.stale_warning_timestamp&.iso8601
+    end
+
+    def stale_timestamp
+      object.stale_timestamp&.iso8601
+    end
+
+    def updated
+      object.updated&.iso8601
+    end
+
     private
 
     def context_parent
