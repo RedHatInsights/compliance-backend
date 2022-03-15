@@ -56,6 +56,30 @@ class SystemQueryTest < ActiveSupport::TestCase
     end
   end
 
+  test 'query host returns timestamps in ISO-6801' do
+    query = <<-GRAPHQL
+      query System($inventoryId: String!){
+          system(id: $inventoryId) {
+              culledTimestamp
+              staleWarningTimestamp
+              staleTimestamp
+              updated
+          }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { inventoryId: @host1.id },
+      context: { current_user: @user }
+    )
+
+    assert_equal 4, result['data']['system'].count
+    result['data']['system'].each do |_, timestamp|
+      assert_equal timestamp, Time.parse(timestamp).iso8601
+    end
+  end
+
   context 'policy id querying' do
     setup do
       [@profile1, @profile2].each do |p|

@@ -8,9 +8,11 @@ module Xccdf
     included do
       def save_profile_rules
         ::ProfileRule.transaction do
-          ::ProfileRule.import!(
-            profile_rules.select(&:new_record?), ignore: true
-          )
+          ::ProfileRule.import!(profile_rules,
+                                on_duplicate_key_update: {
+                                  conflict_target: %i[rule_id profile_id],
+                                  columns: %i[rule_id profile_id]
+                                })
 
           base = ::ProfileRule.joins(profile: :benchmark)
                               .where('profiles.parent_profile_id' => nil)
@@ -25,7 +27,7 @@ module Xccdf
         @profile_rules ||= @op_profiles.flat_map do |op_profile|
           profile_id = profile_id_for(ref_id: op_profile.id)
           rule_ids_for(ref_ids: op_profile.selected_rule_ids).map do |rule_id|
-            ::ProfileRule.find_or_initialize_by(
+            ::ProfileRule.new(
               profile_id: profile_id, rule_id: rule_id
             )
           end

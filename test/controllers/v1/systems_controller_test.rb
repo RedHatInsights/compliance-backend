@@ -147,6 +147,21 @@ module V1
         get system_path(host)
         assert_response :not_found
       end
+
+      should 'return timestamps in ISO-6801' do
+        host = FactoryBot.create(:host)
+        get system_path(host)
+
+        %w[
+          culled_timestamp
+          stale_timestamp
+          stale_warning_timestamp
+          updated
+        ].each do |ts|
+          timestamp = response.parsed_body.dig('data', 'attributes')[ts]
+          assert_equal timestamp, Time.parse(timestamp).iso8601
+        end
+      end
     end
   end
 end
