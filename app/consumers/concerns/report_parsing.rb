@@ -97,7 +97,8 @@ module ReportParsing
       (@msg_value.dig('platform_metadata', 'metadata') || {}).merge(
         'id' => id,
         'b64_identity' => b64_identity,
-        'url' => url
+        'url' => url,
+        'request_id' => request_id
       )
     end
 

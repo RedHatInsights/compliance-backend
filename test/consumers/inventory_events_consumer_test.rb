@@ -54,7 +54,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       def initialize
         @msg_value = {
           'platform_metadata' => {
-            'b64_identity' => 'identity'
+            'b64_identity' => 'identity',
+            'request_id' => 'requestid'
           },
           'host' => {
             'id' => 'id'
@@ -66,6 +67,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     assert_equal('identity',
                  TestReportParsing.new.send(:metadata)['b64_identity'])
     assert_equal 'id', TestReportParsing.new.send(:metadata)['id']
+    assert_equal 'requestid', TestReportParsing.new.send(:metadata)['request_id']
   end
 
   context 'report upload messages' do
