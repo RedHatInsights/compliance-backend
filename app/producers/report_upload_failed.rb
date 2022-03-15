@@ -12,7 +12,7 @@ class ReportUploadFailed < Notification
         host_id: host&.id,
         host_name: host&.display_name,
         error: error
-      }
+      }.to_json
     }]
   end
   # rubocop:enable Metrics/MethodLength
