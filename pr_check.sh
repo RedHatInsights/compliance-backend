@@ -7,7 +7,7 @@ curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------
-export APP_NAME="foobar"  # name of app-sre "application" folder this component lives in
+export APP_NAME="compliance"  # name of app-sre "application" folder this component lives in
 export COMPONENT_NAME="compliance"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
 export IMAGE="quay.io/cloudservices/compliance-backend"
 cat /etc/redhat-release
@@ -24,6 +24,7 @@ export IQE_FILTER_EXPRESSION=""
 export IQE_CJI_TIMEOUT="30m" # 30 minutes
 export DEPLOY_TIMEOUT=900
 export REF_ENV="insights-stage"
+export ALWAYS_COLLECT_LOGS="true"
 # Allows to test custom IQE images
 # export IQE_IMAGE_TAG=""
 
