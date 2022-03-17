@@ -16,7 +16,7 @@ class ApplicationProducer < Kafka::Client
 
     def deliver_message(msg)
       msg = msg.merge(
-        date: DateTime.now.send(self::DATE_FORMAT),
+        date: DateTime.now.utc.send(self::DATE_FORMAT),
         service: SERVICE,
         source: ENV['APPLICATION_TYPE']
       )
