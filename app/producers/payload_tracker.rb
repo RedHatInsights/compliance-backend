@@ -3,6 +3,7 @@
 # A Kafka producer client for payload-tracker
 class PayloadTracker < ApplicationProducer
   TOPIC = Settings.kafka_producer_topics.payload_tracker
+  DATE_FORMAT = :rfc3339
 
   def self.deliver(request_id:, status:, account:, system_id:, status_msg: nil)
     # Inventory ID and system ID are identical because we match
