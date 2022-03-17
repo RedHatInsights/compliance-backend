@@ -6,6 +6,7 @@ class ApplicationProducer < Kafka::Client
   BROKERS = Settings.kafka.brokers.split(',').freeze
   CLIENT_ID = 'compliance-backend'
   SERVICE = 'compliance'
+  DATE_FORMAT = :iso8601
   # Define TOPIC in the inherited class.
   # Example:
   #   TOPIC = 'platform.payload-status'
@@ -15,7 +16,7 @@ class ApplicationProducer < Kafka::Client
 
     def deliver_message(msg)
       msg = msg.merge(
-        date: DateTime.now.iso8601,
+        date: DateTime.now.send(self::DATE_FORMAT),
         service: SERVICE,
         source: ENV['APPLICATION_TYPE']
       )
