@@ -6,7 +6,7 @@ require 'zlib'
 # Finds the files in a insights tar and returns them as an array
 class ReportsTarReader
   LONG_LINK = '././@LongLink'
-  REPORT_REGEX = /oscap_results/.freeze
+  REPORT_REGEX = %r{oscap_results[^/]+\.xml$}.freeze
 
   def initialize(file)
     @file = file
