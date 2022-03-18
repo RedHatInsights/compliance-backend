@@ -9,6 +9,28 @@ class ReportsTarReaderTest < ActiveSupport::TestCase
       account = FactoryBot.create(:account)
       host = FactoryBot.create(:host, account: account.account_number)
       reports = ReportsTarReader.new(file).reports
+      assert_equal 3, reports.length
+      reports.each do |report|
+        XccdfReportParser.new(
+          report,
+          'account' => account.account_number,
+          'id' => host.id,
+          'b64_identity' => account.b64_identity,
+          'metadata' => {
+            'display_name' => 'foo.example.com'
+          }
+        )
+      end
+    end
+  end
+
+  test 'detects reports that have long filename' do
+    assert_nothing_raised do
+      file = File.new(file_fixture('insights-archive-long.tar.gz'))
+      account = FactoryBot.create(:account)
+      host = FactoryBot.create(:host, account: account.account_number)
+      reports = ReportsTarReader.new(file).reports
+      assert_equal 1, reports.length
       reports.each do |report|
         XccdfReportParser.new(
           report,
