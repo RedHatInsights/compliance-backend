@@ -6,6 +6,9 @@ module Validation
 
   included do
     def validated_reports(report_contents, metadata)
+      # Fail if there are no reports in the uploaded archive
+      raise InventoryEventsConsumer::ReportValidationError if report_contents.empty?
+
       report_contents.map do |raw_report|
         test_result = validate_report(raw_report, metadata)
 

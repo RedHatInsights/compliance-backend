@@ -70,6 +70,16 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     assert_equal 'requestid', TestReportParsing.new.send(:metadata)['request_id']
   end
 
+  test 'fails if no reports in the uploaded archive' do
+    class TestValidation
+      include Validation
+    end
+
+    assert_raises InventoryEventsConsumer::ReportValidationError do
+      TestValidation.new.validated_reports([], {})
+    end
+  end
+
   context 'report upload messages' do
     setup do
       ParseReportJob.clear
