@@ -44,4 +44,12 @@ class ReportsTarReaderTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test 'omits paths that have openscap_results outside the filename' do
+    assert_nothing_raised do
+      file = File.new(file_fixture('insights-archive-prefixed.tar.gz'))
+      reports = ReportsTarReader.new(file).reports
+      assert_equal 0, reports.length
+    end
+  end
 end
