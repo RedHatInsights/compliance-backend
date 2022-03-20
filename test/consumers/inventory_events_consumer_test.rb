@@ -195,6 +195,37 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       assert_audited 'Failed to dowload report'
     end
 
+    should 'not emit notification when host was deleted' do
+      @message.stubs(:value).returns({
+        host: {
+          id: 'abcdef'
+        },
+        platform_metadata: {
+          service: 'compliance',
+          url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          account: @host.account
+        }
+      }.to_json)
+
+      SafeDownloader.stubs(:download_reports).raises(SafeDownloader::DownloadError)
+
+      ReportUploadFailed.expects(:deliver).never
+
+      @consumer.expects(:produce).with(
+        {
+          'request_id': '036738d6f4e541c4aa8cfc9f46f5a140',
+          'service': 'compliance',
+          'validation': 'failure'
+        }.to_json,
+        topic: Settings.kafka_producer_topics.upload_validation
+      )
+
+      @consumer.process(@message)
+      assert_equal 0, ParseReportJob.jobs.size
+      assert_audited 'Failed to dowload report'
+    end
+
     should 'not parse reports when validation fails' do
       @message.stubs(:value).returns({
         host: {
