@@ -48,10 +48,17 @@ module ReportParsing
       logger.error error_message
       logger.audit_fail error_message
       notify_payload_tracker(:error, error_message)
-      ReportUploadFailed.deliver(host: Host.find_by(id: id, account: account),
-                                 account_number: account, error: msg_for_notification(exc))
-
+      notify_report_failure(exc)
       validation_payload(request_id, valid: false)
+    end
+
+    def notify_report_failure(exc)
+      host = Host.find_by(id: id, account: account)
+
+      # Do not fire a notification for a host that has been deleted
+      return unless host
+
+      ReportUploadFailed.deliver(host: host, account_number: account, error: msg_for_notification(exc))
     end
 
     # rubocop:disable Metrics/MethodLength
