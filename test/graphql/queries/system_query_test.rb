@@ -931,6 +931,67 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_equal node['testResultProfiles'][0]['score'], 52
   end
 
+  test 'search for systems with specific benchmark versions for a given profile' do
+    @profile3 = FactoryBot.create(
+      :profile,
+      :with_rules,
+      rule_count: 1,
+      account: @user.account,
+      parent_profile: @profile1.parent_profile,
+      policy: @profile1.policy
+    )
+
+    @profile2.update(parent_profile: @profile1.parent_profile, policy: @profile1.policy)
+
+    @host2 = FactoryBot.create(
+      :host,
+      account: @user.account.account_number,
+      os_minor_version: 7
+    )
+
+    @host3 = FactoryBot.create(
+      :host,
+      account: @user.account.account_number,
+      os_minor_version: 7
+    )
+
+    FactoryBot.create(:test_result, host: @host1, profile: @profile1)
+    FactoryBot.create(:test_result, host: @host2, profile: @profile2)
+    FactoryBot.create(:test_result, host: @host3, profile: @profile3)
+
+    query = <<-GRAPHQL
+      query getSystems($filter: String!, $policyId: ID) {
+        systems(search: $filter) {
+          totalCount
+          edges {
+            node {
+              id
+              testResultProfiles(policyId: $policyId) {
+                id
+              }
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    filter = <<-FILTER
+      (with_results_for_policy_id = #{@profile1.id}) and
+      (has_test_results = true and ssg_version ^ (#{@profile2.benchmark.version}, #{@profile3.benchmark.version}))
+    FILTER
+
+    result = Schema.execute(
+      query,
+      variables: { filter: filter },
+      context: { current_user: @user }
+    )
+
+    nodes = result['data']['systems']['edges'].map { |e| e['node']['id'] }.sort
+
+    assert_equal result['data']['systems']['totalCount'], 2
+    assert_equal nodes, [@host2.id, @host3.id].sort
+  end
+
   test 'query system rules when results contain wrong rule_ids' do
     query = <<-GRAPHQL
     query System($systemId: String!){
