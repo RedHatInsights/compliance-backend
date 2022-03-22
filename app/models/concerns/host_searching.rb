@@ -15,6 +15,8 @@ module HostSearching
                   only_explicit: true, operators: ['=', '!=', '^', '!^']
     scoped_search on: :compliant, ext_method: 'filter_by_compliance',
                   only_explicit: true
+    scoped_search on: :ssg_version, ext_method: 'filter_by_ssg_version',
+                  only_explicit: true, operators: ['=', '!=', '^', '!^']
     scoped_search on: :compliance_score,
                   ext_method: 'filter_by_compliance_score',
                   only_explicit: true
@@ -101,6 +103,17 @@ module HostSearching
 
       operator = operator == '<>' ? 'NOT' : ''
       { conditions: "hosts.id #{operator} IN(#{hosts.to_sql})" }
+    end
+
+    def filter_by_ssg_version(_filter, operator, value)
+      profiles = RequestStore.store['scoped_search_context_profiles']
+      values = value.split(',').map(&:strip)
+
+      where = { benchmarks: { version: values } }
+      base = TestResult.latest.joins(profile: :benchmark).where(profile: profiles).select(:host_id)
+      hosts = ['=', 'IN'].include?(operator) ? base.where(where) : base.where.not(where)
+
+      { conditions: "hosts.id IN(#{hosts.to_sql})" }
     end
 
     def filter_by_compliance_score(_filter, operator, score)
