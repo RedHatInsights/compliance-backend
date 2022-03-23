@@ -48,6 +48,14 @@ module Xccdf
 
       private
 
+      def save_missing_supported_benchmark
+        return unless SupportedSsg.versions.include?(benchmark.version)
+
+        Rails.logger.info("Importing missing benchmark v#{benchmark.version} for RHEL#{benchmark.os_major_version}")
+
+        Xccdf::Benchmark.transaction { save_all_benchmark_info }
+      end
+
       def invalidate_cache
         Rails.cache.delete("#{@new_host_profile&.id}/#{@host&.id}/results")
         @host_profile.rules.each do |rule|
