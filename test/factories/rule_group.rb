@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :rule_group do
     title { Faker::Lorem.sentence }
-    ref_id { "foo-#{SecureRandom.uuid}" }
+    ref_id { "foo_group_#{SecureRandom.uuid}" }
     description { Faker::Lorem.paragraph }
     rationale { Faker::Lorem.paragraph }
     benchmark

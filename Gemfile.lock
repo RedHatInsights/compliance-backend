@@ -234,7 +234,7 @@ GEM
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oj (3.10.6)
-    openscap_parser (1.1.0)
+    openscap_parser (1.2.0)
       nokogiri (~> 1.6)
     parallel (1.21.0)
     parser (3.1.0.0)
@@ -443,7 +443,7 @@ DEPENDENCIES
   minitest-stub-const
   mocha
   oj
-  openscap_parser (~> 1.1.0)
+  openscap_parser (~> 1.2.0)
   pg
   prometheus_exporter (>= 0.5)
   pry-byebug
