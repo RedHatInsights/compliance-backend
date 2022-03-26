@@ -85,7 +85,7 @@ GEM
     cgi (0.3.1)
     clowder-common-ruby (0.2.3)
     coderay (1.1.2)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.1.10)
     config (2.2.1)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
@@ -189,7 +189,7 @@ GEM
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.14.0)
+    loofah (2.15.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     macaddr (1.7.2)
@@ -326,13 +326,13 @@ GEM
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
     rspec-support (3.9.3)
-    rswag-api (2.5.0)
+    rswag-api (2.5.1)
       railties (>= 3.1, < 7.1)
     rswag-specs (2.5.0)
       activesupport (>= 3.1, < 7.1)
       json-schema (~> 2.2)
       railties (>= 3.1, < 7.1)
-    rswag-ui (2.5.0)
+    rswag-ui (2.5.1)
       actionpack (>= 3.1, < 7.1)
       railties (>= 3.1, < 7.1)
     rubocop (1.25.0)
@@ -483,4 +483,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   2.3.9
+   2.3.10
