@@ -6,10 +6,14 @@
 namespace :ssg do
   desc 'Check if the latest SSG has been synced'
   task check_synced: [:environment] do
-    message = "SSG datastreams not synced\nDatastream config revision: " \
+    datastreams_message = "SSG datastreams not synced\nDatastream config revision: " \
       "#{SupportedSsg.revision.inspect}\nDB revision: " \
       "#{Revision.datastreams.inspect}"
-    abort message if Revision.datastreams != SupportedSsg.revision
+    remediations_message = "SSG remediations not synced\nRemediation config revision: " \
+      "#{SupportedSsg.revision.inspect}\nDB revision: " \
+      "#{Revision.remediations.inspect}"
+    abort datastreams_message if Revision.datastreams != SupportedSsg.revision
+    abort remediations_message if Revision.remediations != SupportedSsg.revision
     puts "Datastreams synced to revision: #{Revision.datastreams}"
   end
 
