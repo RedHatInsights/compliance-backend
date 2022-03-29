@@ -1,0 +1,10 @@
+---
+install: --no-document
+update: --no-document
+:backtrace: true
+:benchmark: false
+:bulk_threshold: 1000
+:ipv4_fallback_enabled: true
+:update_sources: true
+:sources:
+- https://rubygems.org/
