@@ -113,6 +113,7 @@ echo '===================================='
 echo '=== Installing Gem Dependencies ===='
 echo '===================================='
 set +e
+docker exec -u 0 "$TEST_CONTAINER_ID" /bin/bash -c 'microdnf install $devDeps'
 docker exec "$TEST_CONTAINER_ID" /bin/bash -c '
   bundle config set --local without development &&
   bundle config set --local with test &&

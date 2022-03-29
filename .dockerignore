@@ -1,5 +1,6 @@
 .git
 .env.example
+Gemfile.local.example
 coverage/
 scap-security-guide-*
 log/*.log
