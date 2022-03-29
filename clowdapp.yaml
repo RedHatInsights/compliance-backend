@@ -134,6 +134,8 @@ objects:
     deployments:
     - name: service
       minReplicas: ${{REPLICAS_BACKEND}}
+      deploymentStrategy:
+        privateStrategy: RollingUpdate
       webServices:
         public:
           enabled: true
@@ -194,6 +196,8 @@ objects:
     - name: inventory-consumer
       # TODO: check requirement for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_CONSUMER}}
+      deploymentStrategy:
+        privateStrategy: RollingUpdate
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
@@ -242,9 +246,10 @@ objects:
           requests:
             cpu: ${CPU_REQUEST_CONS}
             memory: ${MEMORY_REQUEST_CONS}
-
     - name: sidekiq
       minReplicas: ${{REPLICAS_SIDEKIQ}}
+      deploymentStrategy:
+        privateStrategy: RollingUpdate
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
@@ -295,7 +300,6 @@ objects:
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: MAX_INIT_TIMEOUT_SECONDS
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
-
 
 - apiVersion: v1
   kind: ConfigMap
