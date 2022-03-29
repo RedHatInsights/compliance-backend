@@ -83,7 +83,7 @@ class XccdfReportParser
   end
 
   def save_missing_supported_benchmark
-    return unless SupportedSsg.versions.include?(benchmark.version)
+    return unless benchmark.os_major_version == '6' && SupportedSsg.versions.include?(benchmark.version)
 
     Xccdf::Benchmark.transaction { save_all_benchmark_info }
   end
