@@ -42,7 +42,7 @@ class ImportDatastreamTest < ActiveSupport::TestCase
     end
   end
 
-  test 'ssg:check_synced fails if not synced' do
+  test 'ssg:check_synced fails if datastreams are not synced' do
     SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
     Revision.expects(:datastreams).at_least_once.returns('2021-06-01')
 
@@ -53,8 +53,21 @@ class ImportDatastreamTest < ActiveSupport::TestCase
     end
   end
 
+  test 'ssg:check_synced fails if remediations are not synced' do
+    SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
+    Revision.expects(:datastreams).at_least_once.returns('2021-07-15')
+    Revision.expects(:remediations).at_least_once.returns('2021-06-01')
+
+    assert_raises SystemExit do
+      capture_io do
+        Rake::Task['ssg:check_synced'].execute
+      end
+    end
+  end
+
   test 'ssg:check_synced succeeds if synced' do
     SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
+    Revision.expects(:remediations).at_least_once.returns('2021-07-15')
     Revision.expects(:datastreams).at_least_once.returns('2021-07-15')
 
     assert_nothing_raised do
