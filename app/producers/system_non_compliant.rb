@@ -11,7 +11,7 @@ class SystemNonCompliant < Notification
       payload: {
         host_id: host&.id,
         host_name: host&.display_name,
-        policy_id: policy&.id,
+        policy_id: policy&.initial_profile&.id,
         policy_name: policy&.name,
         policy_threshold: policy_threshold.round(1),
         compliance_score: compliance_score.round(1)
