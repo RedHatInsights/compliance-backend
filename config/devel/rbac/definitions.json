@@ -2,13 +2,62 @@
   "roles": [
     {
       "name": "Compliance administrator",
-      "description": "Perform any available operation against any Compliance resource.",
+      "description": "A Compliance role that grants full access to any Compliance resource.",
       "system": true,
       "platform_default": true,
-      "version": 8,
+      "version": 10,
       "access": [
         {
           "permission": "compliance:*:*"
+        },
+        {
+          "permission": "inventory:*:read"
+        },
+        {
+          "permission": "remediations:remediation:read"
+        },
+        {
+          "permission": "remediations:remediation:write"
+        }
+      ]
+    },
+    {
+      "name": "Compliance reporter",
+      "description": "A Compliance role that grants read and export access to any Compliance resource.",
+      "system": true,
+      "version": 1,
+      "access": [
+        {
+          "permission": "compliance:report_export:read"
+        },
+        {
+          "permission": "compliance:policy:read"
+        },
+        {
+          "permission": "compliance:report:read"
+        },
+        {
+          "permission": "compliance:system:read"
+        },
+        {
+          "permission": "inventory:*:read"
+        }
+      ]
+    },
+    {
+      "name": "Compliance viewer",
+      "description": "A Compliance role that grants read access to any Compliance resource.",
+      "system": true,
+      "version": 2,
+      "access": [
+        {
+          "permission": "compliance:policy:read"
+        },
+        {
+          "permission": "compliance:report:read"
+        },
+        {
+          "permission": "compliance:system:read"
         },
         {
           "permission": "inventory:*:read"

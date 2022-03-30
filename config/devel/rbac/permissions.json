@@ -3,5 +3,40 @@
         {
             "verb": "*"
         }
+    ],
+    "system": [
+      {
+        "verb": "read"
+      }
+    ],
+    "report": [
+      {
+        "verb": "read"
+      },
+      {
+        "verb": "delete"
+      }
+    ],
+    "policy": [
+      {
+        "verb": "read"
+      },
+      {
+        "verb": "create"
+      },
+      {
+        "verb": "update"
+      },
+      {
+        "verb": "delete"
+      },
+      {
+        "verb": "write"
+      }
+    ],
+    "report_export": [
+      {
+        "verb": "read"
+      }
     ]
 }
