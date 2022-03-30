@@ -23,6 +23,7 @@ module Api
             },
             remediation_issue_id: {
               type: 'string',
+              nullable: true,
               example: 'ssg:rhel7|rhelh-stig|xccdf_org.ssgproject.content_'\
               'rule_no_empty_passwords'
             },

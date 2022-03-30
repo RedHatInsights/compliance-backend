@@ -69,15 +69,26 @@ class RuleTest < ActiveSupport::TestCase
     assert_equal [@rule], Rule.canonical
   end
 
-  test 'rule generates remediation issue id' do
+  test 'rule generates remediation issue id if remediation is available' do
     rule = @profile.rules.first
-    rule.update!(ref_id: 'MyStringOne')
+    rule.update!(ref_id: 'MyStringOne', remediation_available: true)
     @profile.test_results.destroy_all
     @profile.parent_profile.update!(
       ref_id: 'xccdf_org.ssgproject.content_profile_profile1'
     )
 
     assert_equal rule.remediation_issue_id, 'ssg:rhel7|profile1|MyStringOne'
+  end
+
+  test 'rule does not generate remediation issue id if remediation is not available' do
+    rule = @profile.rules.first
+    rule.update!(ref_id: 'MyStringOne', remediation_available: false)
+    @profile.test_results.destroy_all
+    @profile.parent_profile.update!(
+      ref_id: 'xccdf_org.ssgproject.content_profile_profile1'
+    )
+
+    assert_equal rule.remediation_issue_id, nil
   end
 
   test 'rule generates remediation issue id for RHEL8' do
@@ -90,7 +101,8 @@ class RuleTest < ActiveSupport::TestCase
     )
 
     @rule.update!(
-      ref_id: 'hello'
+      ref_id: 'hello',
+      remediation_available: true
     )
 
     assert_equal @rule.remediation_issue_id, 'ssg:rhel8|profile1|hello'
