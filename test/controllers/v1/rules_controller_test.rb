@@ -99,6 +99,24 @@ module V1
         end)
       end
 
+      should 'return remediation_issue_id as nil if remediation unavailable' do
+        rule = @profile.rules.first
+        rule.update!(remediation_available: false)
+
+        get v1_rule_url(rule.ref_id)
+        assert_response :success
+        assert_nil response.parsed_body['data']['attributes']['remediation_issue_id']
+      end
+
+      should 'return with remediation_issue_id if remediation available' do
+        rule = @profile.rules.first
+        rule.update!(remediation_available: true)
+
+        get v1_rule_url(rule.ref_id)
+        assert_response :success
+        assert response.parsed_body['data']['attributes']['remediation_issue_id']
+      end
+
       should 'fail if wrong sort order is set' do
         get v1_rules_url, params: { sort_by: ['title:foo'] }
         assert_response :unprocessable_entity
