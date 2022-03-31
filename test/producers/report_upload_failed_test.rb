@@ -14,7 +14,7 @@ class ReportUploadFailedTest < ActiveSupport::TestCase
     kafka.expects(:deliver_message)
          .with(anything, topic: 'platform.notifications.ingress')
     ReportUploadFailed.deliver(account_number: @acc.account_number,
-                               host: @host, error: 'foo')
+                               host: @host, request_id: 'bar', error: 'foo')
   end
 
   test 'delivers messages to the notifications topic without host' do
@@ -23,6 +23,6 @@ class ReportUploadFailedTest < ActiveSupport::TestCase
     kafka.expects(:deliver_message)
          .with(anything, topic: 'platform.notifications.ingress')
     ReportUploadFailed.deliver(account_number: @acc.account_number,
-                               host: nil, error: 'foo')
+                               host: nil, request_id: 'bar', error: 'foo')
   end
 end

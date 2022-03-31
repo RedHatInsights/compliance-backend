@@ -97,7 +97,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     Host.stubs(:find_by).returns(nil)
 
     ReportUploadFailed.expects(:deliver).with(
-      account_number: @msg_value['account'], host: nil,
+      account_number: @msg_value['account'], host: nil, request_id: '',
       error: "Failed to parse report profileid from host #{@msg_value['id']}: WrongFormatError"
     )
 
@@ -123,7 +123,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     Host.stubs(:find_by).returns(@host)
 
     ReportUploadFailed.expects(:deliver).with(
-      account_number: @msg_value['account'], host: @host,
+      account_number: @msg_value['account'], host: @host, request_id: '',
       error: "Failed to parse report profileid from host #{@msg_value['id']}: WrongFormatError"
     )
 
