@@ -9,6 +9,8 @@ module RuleRemediation
   #  `.includes(profiles: :benchmark)`
   #
   def remediation_issue_id
+    return nil unless remediation_available
+
     # FIXME: Nondetermenistic canonical selection
     profile = profiles.select(&:canonical?)&.first
     return unless profile

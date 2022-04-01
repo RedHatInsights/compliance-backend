@@ -64,7 +64,7 @@ gem 'prometheus_exporter', '>= 0.5'
 gem 'manageiq-loggers', '~> 0.6.0'
 
 # Parsing OpenSCAP reports library
-gem 'openscap_parser', '~> 1.1.0'
+gem 'openscap_parser', '~> 1.2.0'
 
 # RBAC service API
 gem 'insights-rbac-api-client', '~> 1.0.0'
