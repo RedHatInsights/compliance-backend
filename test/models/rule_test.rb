@@ -88,7 +88,7 @@ class RuleTest < ActiveSupport::TestCase
       ref_id: 'xccdf_org.ssgproject.content_profile_profile1'
     )
 
-    assert_equal rule.remediation_issue_id, nil
+    assert_nil rule.remediation_issue_id
   end
 
   test 'rule generates remediation issue id for RHEL8' do
