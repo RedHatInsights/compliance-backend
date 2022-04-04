@@ -15,6 +15,7 @@ class PolicyTest < ActiveSupport::TestCase
   setup do
     @account = FactoryBot.create(:user).account
     @policy = FactoryBot.create(:policy, account: @account)
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
   end
 
   context 'scopes' do

@@ -20,6 +20,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
   GRAPHQL
 
   setup do
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @user = FactoryBot.create(:user)
     @profile = FactoryBot.create(:profile, account: @user.account)
     @host = FactoryBot.create(:host, account: @user.account.account_number)

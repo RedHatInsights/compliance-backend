@@ -148,6 +148,7 @@ module V1
 
   class ProfilesControllerTest < ActionDispatch::IntegrationTest
     setup do
+      PolicyHost.any_instance.stubs(:host_supported?).returns(true)
       ProfilesController.any_instance.stubs(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
     end

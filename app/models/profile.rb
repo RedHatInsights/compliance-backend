@@ -80,6 +80,16 @@ class Profile < ApplicationRecord
     end.flatten.uniq.sort.reverse
   end
 
+  def supported_minor_versions
+    benchmark_versions = self.class.canonical.where(
+      ref_id: ref_id,
+      upstream: false
+    ).joins(:benchmark).pluck('benchmarks.version')
+    SupportedSsg.by_os_major[os_major_version]
+                .select { |ssg| benchmark_versions.include? ssg.version }
+                .map(&:os_minor_version)
+  end
+
   private
 
   def bm_versions
