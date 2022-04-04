@@ -23,6 +23,10 @@ module Xccdf
       end
     end
 
+    setup do
+      PolicyHost.any_instance.stubs(:host_supported?).returns(true)
+    end
+
     test 'save_benchmark' do
       mock = Mock.new(OP_BENCHMARK)
       ::Xccdf::Benchmark.any_instance.expects(:rules)

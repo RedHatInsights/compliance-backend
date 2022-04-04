@@ -4,6 +4,7 @@ require 'test_helper'
 
 class ProfileQueryTest < ActiveSupport::TestCase
   setup do
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @user = FactoryBot.create(:user)
     @profile = FactoryBot.create(
       :profile,

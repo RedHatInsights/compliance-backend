@@ -94,6 +94,15 @@ class Policy < ApplicationRecord
     audit_bo_autoremove(removed_bos)
   end
 
+  def supported_os_minor_versions
+    profile_os_major_version = initial_profile.os_major_version
+    Xccdf::Benchmark.including_profile(initial_profile).flat_map do |bm|
+      SupportedSsg.by_ssg_version[bm.version]
+                  .select { |ssg| ssg.os_major_version == profile_os_major_version }
+                  .map(&:os_minor_version)
+    end
+  end
+
   private
 
   def unassigned_minor_versions

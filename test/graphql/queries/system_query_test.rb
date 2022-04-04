@@ -4,6 +4,7 @@ require 'test_helper'
 
 class SystemQueryTest < ActiveSupport::TestCase
   setup do
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @user = FactoryBot.create(:user)
     @host1 = FactoryBot.create(:host, account: @user.account.account_number)
 
