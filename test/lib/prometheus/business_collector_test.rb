@@ -6,6 +6,7 @@ require 'prometheus/business_collector'
 
 class BusinessCollectorTest < ActiveSupport::TestCase
   setup do
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @collector = BusinessCollector.new
   end
 

@@ -12,6 +12,7 @@ class HostTest < ActiveSupport::TestCase
   should have_many(:test_result_profiles).through(:test_results)
 
   setup do
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @account = FactoryBot.create(:account)
     @host1 = Host.find(FactoryBot.create(
       :host,

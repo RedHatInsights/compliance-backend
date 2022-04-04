@@ -15,6 +15,7 @@ class PolicyTest < ActiveSupport::TestCase
   setup do
     @account = FactoryBot.create(:user).account
     @policy = FactoryBot.create(:policy, account: @account)
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
   end
 
   context 'scopes' do
@@ -90,6 +91,26 @@ class PolicyTest < ActiveSupport::TestCase
       policy = Policy.new.fill_from(profile: profile)
       assert_equal profile.name, policy.name
       assert_equal profile.description, policy.description
+    end
+  end
+
+  context 'supported_os_minor_versions' do
+    should 'return supported os minor versions' do
+      account = FactoryBot.create(:user).account
+      supported_ssg1 = SupportedSsg.new(version: '0.1.50',
+                                        os_major_version: '7', os_minor_version: '1')
+      SupportedSsg.stubs(:all).returns([supported_ssg1])
+      bm1 = FactoryBot.create(
+        :benchmark,
+        version: supported_ssg1.version,
+        os_major_version: '7'
+      )
+      SupportedSsg.stubs(:by_ssg_version).returns({ bm1.version => [supported_ssg1] })
+      policy = FactoryBot.create(:policy, account: account)
+      profile = FactoryBot.create(:profile, account: account, policy: policy, benchmark: bm1)
+      profile.parent_profile.update!(upstream: false)
+
+      assert_equal policy.supported_os_minor_versions, ['1']
     end
   end
 

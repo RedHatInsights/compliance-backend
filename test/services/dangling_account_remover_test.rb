@@ -12,6 +12,7 @@ class DanglingAccountRemoverTest < ActiveSupport::TestCase
   end
 
   test 'keeps accounts that have relationships' do
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     accounts = FactoryBot.create_list(:account, 5)
     FactoryBot.create(:user, account: accounts[4])
     host1 = FactoryBot.create(:host, account: accounts[0].account_number)

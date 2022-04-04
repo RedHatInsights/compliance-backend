@@ -5,6 +5,7 @@ require 'test_helper'
 module V1
   class SystemsControllerTest < ActionDispatch::IntegrationTest
     setup do
+      PolicyHost.any_instance.stubs(:host_supported?).returns(true)
       SystemsController.any_instance.expects(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
     end
