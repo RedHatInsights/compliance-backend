@@ -178,6 +178,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
       ReportUploadFailed.expects(:deliver).with(
         account_number: @host.account, host: @host,
+        request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
         error: "Unable to locate any uploaded report from host #{@host.id}."
       )
 
@@ -243,6 +244,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
       ReportUploadFailed.expects(:deliver).with(
         account_number: @host.account, host: @host,
+        request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
         error: "Failed to parse any uploaded report from host #{@host.id}: invalid format."
       )
 
@@ -276,6 +278,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
       ReportUploadFailed.expects(:deliver).with(
         account_number: @host.account, host: @host,
+        request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
         error: "Failed to parse any uploaded report from host #{@host.id}: " \
                'invalid identity of missing insights entitlement.'
       )

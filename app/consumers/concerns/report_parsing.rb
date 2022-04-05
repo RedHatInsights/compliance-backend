@@ -37,10 +37,7 @@ module ReportParsing
       logger.info(msg)
       logger.audit_success(msg)
 
-      notify_payload_tracker(
-        :received,
-        "File of #{profile_id} is valid. Job #{job} enqueued"
-      )
+      notify_payload_tracker(:received, "File of #{profile_id} is valid. Job #{job} enqueued")
     end
 
     def handle_report_error(exc)
@@ -58,7 +55,8 @@ module ReportParsing
       # Do not fire a notification for a host that has been deleted
       return unless host
 
-      ReportUploadFailed.deliver(host: host, account_number: account, error: msg_for_notification(exc))
+      ReportUploadFailed.deliver(host: host, account_number: account,
+                                 request_id: request_id, error: msg_for_notification(exc))
     end
 
     # rubocop:disable Metrics/MethodLength
