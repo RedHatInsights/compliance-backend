@@ -1,6 +1,7 @@
 [![codecov](https://codecov.io/gh/RedHatInsights/compliance-backend/branch/master/graph/badge.svg)](https://codecov.io/gh/RedHatInsights/compliance-backend)
 [![CI](https://github.com/RedHatInsights/compliance-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/RedHatInsights/compliance-backend/actions/workflows/ci.yml)
 
+A change we don't want
 
 # Cloud Services for RHEL: Compliance Backend
 
