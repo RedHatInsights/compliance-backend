@@ -19,6 +19,8 @@ jobs:
         fetch-depth: 0
     - name: Validate commit message format
       uses: wagoid/commitlint-github-action@v4
+      with:
+        configFile: './.commitlint.yml'
     - name: Setup Ruby and install gems
       uses: ruby/setup-ruby@v1
       with:
