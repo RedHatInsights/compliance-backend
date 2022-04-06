@@ -146,7 +146,7 @@ services:
       - ./config/devel/rbac/permissions.json:/opt/app-root/src/rbac/management/role/permissions/compliance.json:z
       - ./config/devel/rbac/definitions.json:/opt/app-root/src/rbac/management/role/definitions/compliance.json:z
     entrypoint: /bin/sh
-    command: -c './rbac/manage.py migrate_schemas --executor=parallel ; ./rbac/manage.py seeds'
+    command: -c './rbac/manage.py migrate ; ./rbac/manage.py seeds'
   inventory:
     image: quay.io/cloudservices/insights-inventory:latest
     command: bash -c 'sleep 10 && make upgrade_db && make run_inv_mq_service'
