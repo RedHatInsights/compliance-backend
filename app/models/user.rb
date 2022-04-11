@@ -9,6 +9,18 @@ class User < ApplicationRecord
 
   delegate :account_number, to: :account
 
+  def authorized_to?(access_request)
+    rbac_permissions.any? do |access|
+      Rbac.verify(access.permission, access_request)
+    end
+  end
+
+  private
+
+  def rbac_permissions
+    @rbac_permissions ||= Rbac.load_user_permissions(account.b64_identity)
+  end
+
   class << self
     def current
       Thread.current[:user]
@@ -38,7 +50,6 @@ class User < ApplicationRecord
       )
     end
     # rubocop:enable Metrics/AbcSize
-
     # rubocop:enable Metrics/MethodLength
   end
 end
