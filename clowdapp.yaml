@@ -398,7 +398,7 @@ parameters:
 - name: MEMORY_REQUEST_IMPORT_SSG
   value: 500Mi
 - name: CPU_LIMIT_IMPORT_SSG
-  value: 500m
+  value: 1000m
 - name: CPU_REQUEST_IMPORT_SSG
   value: 300m
 - name: REDIS_SSL
