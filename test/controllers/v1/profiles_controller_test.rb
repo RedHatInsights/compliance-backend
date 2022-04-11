@@ -23,6 +23,7 @@ module V1
         )
         HostInventoryApi.any_instance.expects(:hosts)
                         .raises(Faraday::Error.new(''))
+        RbacApi.expects(:new).never
         get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :forbidden
       end
@@ -45,6 +46,7 @@ module V1
         HostInventoryApi.any_instance
                         .expects(:hosts)
                         .returns('results' => [:foo])
+        RbacApi.expects(:new).never
         get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :success
       end
@@ -65,6 +67,7 @@ module V1
           }.to_json
         )
         HostInventoryApi.any_instance.expects(:hosts).returns('results' => [])
+        RbacApi.expects(:new).never
         get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :forbidden
       end
@@ -90,6 +93,7 @@ module V1
         HostInventoryApi.any_instance
                         .expects(:hosts)
                         .returns('results' => [:foo])
+        RbacApi.expects(:new).never
         get tailoring_file_profile_url(profile.id),
             headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :success
@@ -115,6 +119,7 @@ module V1
           }.to_json
         )
         HostInventoryApi.any_instance.expects(:hosts).returns('results' => [])
+        RbacApi.expects(:new).never
         get tailoring_file_profile_url(profile),
             headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :forbidden
@@ -122,6 +127,7 @@ module V1
 
       should 'disallow access to profiles#show' do
         HostInventoryApi.any_instance.expects(:hosts).never
+        RbacApi.any_instance.expects(:check_user).never
         account = FactoryBot.create(:account)
         profile = FactoryBot.create(:profile, account: account)
 

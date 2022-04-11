@@ -29,6 +29,7 @@ module V1
       HostInventoryApi.any_instance
                       .expects(:hosts)
                       .returns('results' => [:foo])
+      RbacApi.expects(:new).never
       get rule_url(Rule.first),
           headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
@@ -54,6 +55,7 @@ module V1
       HostInventoryApi.any_instance
                       .expects(:hosts)
                       .never
+      RbacApi.expects(:new).never
       get rules_url,
           headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :forbidden
