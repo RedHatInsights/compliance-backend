@@ -3,7 +3,7 @@ extends:
   - '@commitlint/config-conventional'
 parserPreset:
   parserOpts:
-    headerPattern: '^(\w*)\((\w*)\):\s(\w+-[0-9]+)\s(.*)$'
+    headerPattern: '^(\w*)\((\w*)\):\s(\w+-[0-9]+\s)?(.*)$'
     headerCorrespondence:
       - 'type'
       - 'scope'
