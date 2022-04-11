@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rbac_api'
-
 # Authentication logic for all controllers
 module Authentication
   extend ActiveSupport::Concern
@@ -59,8 +57,7 @@ module Authentication
     return true if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
     return valid_cert_auth? if identity_header.cert_based?
 
-    @rbac_api ||= ::RbacApi.new(raw_identity_header)
-    @rbac_api.check_user
+    user.authorized_to?(Rbac::COMPLIANCE_FULL_ACCESS)
   end
 
   private

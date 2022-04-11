@@ -102,10 +102,18 @@ class AuthenticationTest < ActionController::TestCase
           }
         }.to_json
       )
-      rbac_request = OpenStruct.new(body: {
-        'data': [{ 'permission': 'advisor:*:*' }]
-      }.to_json)
-      ::Faraday::Connection.any_instance.expects(:get).returns(rbac_request)
+      full_access_response = RBACApiClient::AccessPagination.new(
+        data: [
+          RBACApiClient::Access.new(
+            permission: 'advisor:*:*',
+            resource_definitions: nil
+          )
+        ]
+      )
+      RBACApiClient::AccessApi
+        .any_instance
+        .stubs(:get_principal_access)
+        .returns(full_access_response)
       process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :forbidden
       assert_not User.current, 'current user must be reset after request'
@@ -114,10 +122,18 @@ class AuthenticationTest < ActionController::TestCase
 
   context 'successful login' do
     setup do
-      rbac_request = OpenStruct.new(body: {
-        'data': [{ 'permission': 'compliance:*:*' }]
-      }.to_json)
-      ::Faraday::Connection.any_instance.expects(:get).returns(rbac_request)
+      full_access_response = RBACApiClient::AccessPagination.new(
+        data: [
+          RBACApiClient::Access.new(
+            permission: 'compliance:*:*',
+            resource_definitions: nil
+          )
+        ]
+      )
+      RBACApiClient::AccessApi
+        .any_instance
+        .stubs(:get_principal_access)
+        .returns(full_access_response)
     end
 
     should 'account number not found, creates a new account' do
@@ -227,7 +243,7 @@ class AuthenticationTest < ActionController::TestCase
       assert_not User.current, 'current user must be reset after request'
     end
 
-    should 'successful authentication sets User.current' do
+    should 'set User.current' do
       encoded_header = Base64.encode64(
         {
           'identity':
@@ -253,7 +269,7 @@ class AuthenticationTest < ActionController::TestCase
       assert_not User.current, 'current user must be reset after request'
     end
 
-    should 'successful authentication sets audit account context' do
+    should 'set audit account context' do
       encoded_header = Base64.encode64(
         {
           'identity':
@@ -317,7 +333,6 @@ class AuthenticationTest < ActionController::TestCase
           }.to_json
         )
         Settings.disable_rbac = 'true'
-        RbacApi.expects(:new).never
         process_test(headers: { 'X-RH-IDENTITY': encoded_header })
         assert_response :success
         assert_equal '1234', response.body
@@ -349,7 +364,6 @@ class AuthenticationTest < ActionController::TestCase
                                  .returns(true)
       HostInventoryApi.any_instance.expects(:hosts)
                       .raises(Faraday::Error.new(''))
-      RbacApi.expects(:new).never
       process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :forbidden
       assert_not User.current, 'current user must be reset after request'
