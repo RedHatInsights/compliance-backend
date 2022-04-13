@@ -14,6 +14,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
   end
 
   setup do
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     fake_report = file_fixture('xccdf_report.xml').read
     @profile = {
       'xccdf_org.ssgproject.content_profile_standard' =>

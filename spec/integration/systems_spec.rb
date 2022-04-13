@@ -4,6 +4,7 @@ require 'swagger_helper'
 
 describe 'Systems API' do
   before do
+    allow_any_instance_of(PolicyHost).to receive(:host_supported?).and_return true
     @account = FactoryBot.create(:account)
     @host = FactoryBot.create(
       :host,

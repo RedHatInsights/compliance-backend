@@ -24,6 +24,7 @@ class ProfileTest < ActiveSupport::TestCase
   setup do
     @account = FactoryBot.create(:account)
     @host = FactoryBot.create(:host, account: @account.account_number)
+    PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @policy = FactoryBot.create(:policy, account: @account, hosts: [@host])
   end
 

@@ -23,6 +23,12 @@ module Xccdf
     validates :ref_id, uniqueness: { scope: %i[version] }, presence: true
     validates :version, presence: true
 
+    scope :including_profile, lambda { |profile|
+      joins(:profiles).where(profiles: { parent_profile_id: nil,
+                                         ref_id: profile.ref_id,
+                                         upstream: false })
+    }
+
     sortable_by :title
     # Ordering by hash can't deal with Arel, so this juggling is necessary
     sortable_by :version, SORT_BY_VERSION

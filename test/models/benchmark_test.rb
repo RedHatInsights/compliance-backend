@@ -37,6 +37,23 @@ module Xccdf
       assert_equal '7', benchmark.inferred_os_major_version
     end
 
+    test 'including_profile' do
+      account = FactoryBot.create(:user).account
+      supported_ssg1 = SupportedSsg.new(version: '0.1.50',
+                                        os_major_version: '7', os_minor_version: '1')
+      SupportedSsg.stubs(:all).returns([supported_ssg1])
+      bm1 = FactoryBot.create(
+        :benchmark,
+        version: supported_ssg1.version,
+        os_major_version: '7'
+      )
+      policy = FactoryBot.create(:policy, account: account)
+      profile = FactoryBot.create(:profile, account: account, policy: policy, benchmark: bm1)
+      profile.parent_profile.update!(upstream: false)
+
+      assert_includes Xccdf::Benchmark.including_profile(profile), bm1
+    end
+
     context '#latest_supported_os_minor_versions' do
       setup do
         SupportedSsg.expects(:latest_map).returns(
