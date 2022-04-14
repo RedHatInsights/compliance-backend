@@ -2,9 +2,9 @@
 
 # Service for dowloading SSG configuration files
 class SsgConfigDownloader
-  DS_FILE_PATH = 'config/supported_ssg.yaml'
+  DS_FILE_PATH = 'tmp/supported_ssg.yaml'
   DS_FALLBACK_PATH = 'config/supported_ssg.default.yaml'
-  AT_FILE_PATH = 'config/ssg-ansible-tasks.yaml'
+  AT_FILE_PATH = 'tmp/ssg-ansible-tasks.yaml'
   AT_FALLBACK_PATH = 'config/ssg-ansible-tasks.default.yaml'
 
   class << self
