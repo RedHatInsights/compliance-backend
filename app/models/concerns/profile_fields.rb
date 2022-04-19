@@ -13,10 +13,9 @@ module ProfileFields
       (parent_profile || self).name
     end
 
-    def major_os_version
+    def os_major_version
       benchmark&.inferred_os_major_version
     end
-    alias_method :os_major_version, :major_os_version
 
     def os_version
       if os_minor_version.present?
