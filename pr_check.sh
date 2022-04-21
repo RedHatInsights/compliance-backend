@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo $SHELL
+$SHELL --version
+
+exit 99
 # Install bonfire repo/initialize
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
