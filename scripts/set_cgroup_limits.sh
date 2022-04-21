@@ -3,6 +3,7 @@
 # Script for parsing cgroup information
 # Inspired by https://github.com/sclorg/container-common-scripts/blob/master/shared-scripts/core/usr/bin/cgroup-limits
 
+MEMORY_LIMIT_THRESHOLD_VALUE_IN_BYTES=92233720368547
 export MAX_MEMORY_LIMIT_IN_BYTES=9223372036854775807
 echo "MAX_MEMORY_LIMIT_IN_BYTES=${MAX_MEMORY_LIMIT_IN_BYTES}"
 
@@ -26,7 +27,7 @@ else
 fi
 
 # Set NO_MEMORY_LIMIT
-if [[ "${MEMORY_LIMIT_IN_BYTES}" -ge "${MAX_MEMORY_LIMIT_IN_BYTES}" ]]; then
+if [[ "${MEMORY_LIMIT_IN_BYTES}" -ge "${MEMORY_LIMIT_THRESHOLD_VALUE_IN_BYTES}" ]]; then
   export NO_MEMORY_LIMIT="true"
   echo "NO_MEMORY_LIMIT=true"
 fi

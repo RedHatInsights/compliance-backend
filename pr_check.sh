@@ -28,6 +28,9 @@ export REF_ENV="insights-stage"
 
 export COMPONENTS_W_RESOURCES="compliance"
 
+# Run E2E cgroup-limits tests
+source $APP_ROOT/e2e-test-cgroup-limits/run-e2e-cgroup-limits-tests.sh
+
 # Run unit tests
 source $APP_ROOT/unit_test.sh
 
