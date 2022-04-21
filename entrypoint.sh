@@ -36,7 +36,7 @@ if [ "$APPLICATION_TYPE" = "compliance-backend" ]; then
   fi
 
   if is_puma_installed; then
-    ./scripts/set_cgroup_limits.sh
+    source scripts/set_cgroup_limits.sh
 
     exec bundle exec "puma --config ../etc/puma.cfg -b tcp://0.0.0.0:${PORT}"
   else
