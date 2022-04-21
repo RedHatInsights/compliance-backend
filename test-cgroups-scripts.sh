@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 COMPLIANCE_IMAGE_TAG="${1:-29ac074}"
 

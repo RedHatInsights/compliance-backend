@@ -3,6 +3,8 @@
 echo $SHELL
 $SHELL --version
 
+diff <(ls .) <(ls /tmp)
+
 exit 99
 # Install bonfire repo/initialize
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
