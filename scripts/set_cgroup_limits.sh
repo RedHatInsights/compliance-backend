@@ -26,7 +26,7 @@ else
 fi
 
 # Set NO_MEMORY_LIMIT
-if [[ "${MEMORY_LIMIT}" -ge "${MAX_MEMORY_LIMIT_IN_BYTES}" ]]; then
+if [[ "${MEMORY_LIMIT_IN_BYTES}" -ge "${MAX_MEMORY_LIMIT_IN_BYTES}" ]]; then
   export NO_MEMORY_LIMIT="true"
   echo "NO_MEMORY_LIMIT=true"
 fi
