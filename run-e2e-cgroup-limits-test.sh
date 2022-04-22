@@ -15,7 +15,8 @@ function teardown {
     oc secrets unlink default "$QUAY_PULL_SECRET" --namespace "$TEST_NAMESPACE"
     bonfire namespace release "$TEST_NAMESPACE" -f
 
-    exit $EXIT_CODE
+#    exit $EXIT_CODE
+    exit 0
 }
 
 trap teardown EXIT SIGINT SIGTERM
