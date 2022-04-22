@@ -14,7 +14,7 @@ cat /etc/redhat-release
 
 # build the PR commit image
 #TODO: uncomment
-source $CICD_ROOT/build.sh
+#source $CICD_ROOT/build.sh
 
 #TODO: remove
 # should fail - FAILS
@@ -22,9 +22,17 @@ source $CICD_ROOT/build.sh
 # IMAGE_TAG=''
 
 # Run E2E test for cgroup-limits, local container engine
+#./test-cgroups-scripts.sh "$IMAGE_TAG"
+# Run E2E test for cgroup-limits, remote Openshift cluster
+#./run-e2e-cgroup-limits-test.sh "$IMAGE_TAG"
+
+for IMAGE_TAG in "29ac074" "c79395e" "aa5d86d"; do
+# Run E2E test for cgroup-limits, local container engine
 ./test-cgroups-scripts.sh "$IMAGE_TAG"
 # Run E2E test for cgroup-limits, remote Openshift cluster
 ./run-e2e-cgroup-limits-test.sh "$IMAGE_TAG"
+sleep 60
+done
 
 echo "SUCCESS"
 exit 0
