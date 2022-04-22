@@ -28,12 +28,9 @@ export REF_ENV="insights-stage"
 
 export COMPONENTS_W_RESOURCES="compliance"
 
-#TODO: create Junit result report
-# Run E2E test for cgroup-limits, local container engine
-./run-e2e-cgroup-limits-test-local-container.sh "$IMAGE_TAG"
-#TODO: create Junit result report
-# Run E2E test for cgroup-limits, remote Openshift cluster
-./run-e2e-cgroup-limits-test-remote-cluster.sh "$IMAGE_TAG"
+# Run E2E cgroup-limits tests
+$APP_ROOT/run-e2e-cgroup-limits-tests.sh
+exit 0
 
 # Run unit tests
 source $APP_ROOT/unit_test.sh
