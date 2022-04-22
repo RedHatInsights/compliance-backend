@@ -3,7 +3,7 @@
 # Script for parsing cgroup information
 # Inspired by https://github.com/sclorg/container-common-scripts/blob/master/shared-scripts/core/usr/bin/cgroup-limits
 
-export MAX_MEMORY_LIMIT_IN_BYTES=9223372036854775807
+# export MAX_MEMORY_LIMIT_IN_BYTES=9223372036854775807
 echo "MAX_MEMORY_LIMIT_IN_BYTES=${MAX_MEMORY_LIMIT_IN_BYTES}"
 
 # Determine memory limit from cgroups
@@ -16,18 +16,18 @@ fi
 
 # Set MEMORY_LIMIT_IN_BYTES
 if [[ "${MEMORY_LIMIT}" == "max" ]]; then
-  export MEMORY_LIMIT_IN_BYTES=$MAX_MEMORY_LIMIT_IN_BYTES
+  # export MEMORY_LIMIT_IN_BYTES=$MAX_MEMORY_LIMIT_IN_BYTES
   echo "MEMORY_LIMIT_IN_BYTES=${MEMORY_LIMIT_IN_BYTES}"
 elif [[ -z "${MEMORY_LIMIT}"  ]]; then
   echo "Warning: Can't detect memory limit from cgroups" >&2
 else
-  export MEMORY_LIMIT_IN_BYTES=$MEMORY_LIMIT
+  # export MEMORY_LIMIT_IN_BYTES=$MEMORY_LIMIT
   echo "MEMORY_LIMIT_IN_BYTES=${MEMORY_LIMIT_IN_BYTES}"
 fi
 
 # Set NO_MEMORY_LIMIT
 if [[ "${MEMORY_LIMIT}" -ge "${MAX_MEMORY_LIMIT_IN_BYTES}" ]]; then
-  export NO_MEMORY_LIMIT="true"
+  # export NO_MEMORY_LIMIT="true"
   echo "NO_MEMORY_LIMIT=true"
 fi
 
@@ -54,6 +54,6 @@ for GROUP in $(echo "${CORES}" | tr "," "\n"); do
 done
 
 if [[ "${CORE_COUNT}" -ne 0 ]]; then
-  export NUMBER_OF_CORES=$CORE_COUNT
+  # export NUMBER_OF_CORES=$CORE_COUNT
   echo "NUMBER_OF_CORES=${NUMBER_OF_CORES}"
 fi
