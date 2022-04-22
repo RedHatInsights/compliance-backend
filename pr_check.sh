@@ -15,8 +15,10 @@ cat /etc/redhat-release
 # build the PR commit image
 source $CICD_ROOT/build.sh
 
-./test-cgroups-scripts.sh "$IMAGE_TAG"
-exit 99
+./run-e2e-cgroup-limits-test.sh "$IMAGE_TAG"
+
+echo "SUCESS"
+exit 0
 
 # Make directory for artifacts
 mkdir -p artifacts
