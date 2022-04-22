@@ -1,0 +1,45 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: e2e-test-cgroups-limit-template
+objects:
+
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    name: e2e-test-for-compliance-cgroups-limit
+    labels:
+      app: e2e-test-for-compliance-cgroups-limit
+    namespace: ${NAMESPACE}
+  spec:
+    containers:
+      - name: reference
+        image: ${REFERENCE_IMAGE}
+        command:
+          - /bin/bash
+          - '-c'
+          - 'cgroup-limits 2>/dev/null && sleep infinity'
+      - name: target
+        image: '${COMPLIANCE_IMAGE}:${IMAGE_TAG}'
+        command:
+          - /bin/bash
+          - '-c'
+          - >-
+            echo $(env -i bash -c "scripts/set_cgroup_limits.sh  2>/dev/null &&
+            env") && sleep infinity
+
+parameters:
+- description: namespace
+  name: NAMESPACE
+  required: true
+- description: compliance-backend image tag
+  name: IMAGE_TAG
+  required: true
+- description: Reference image for original implementation
+  name: REFERENCE_IMAGE
+  required: true
+  value: 'registry.access.redhat.com/ubi8/ruby-30'
+- description: Compliance backend image
+  name: COMPLIANCE_IMAGE
+  required: true
+  value: 'quay.io/cloudservices/compliance-backend'

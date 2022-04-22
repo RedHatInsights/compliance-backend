@@ -15,7 +15,7 @@ cat /etc/redhat-release
 # build the PR commit image
 source $CICD_ROOT/build.sh
 
-./run-e2e-cgroup-limits-test.sh "$IMAGE_TAG"
+bash -x run-e2e-cgroup-limits-test.sh "$IMAGE_TAG"
 
 echo "SUCESS"
 exit 0
