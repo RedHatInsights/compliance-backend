@@ -35,5 +35,4 @@ else
     echo "test/e2e-test-for-compliance-cgroups-limit-local: PASSED"
 fi
 
-exit 0
-#exit $EXIT_CODE
+exit $EXIT_CODE

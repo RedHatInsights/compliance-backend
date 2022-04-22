@@ -13,29 +13,8 @@ export IMAGE="quay.io/cloudservices/compliance-backend"
 cat /etc/redhat-release
 
 # build the PR commit image
-#TODO: uncomment
-#source $CICD_ROOT/build.sh
+source $CICD_ROOT/build.sh
 
-#TODO: remove
-# should fail - FAILS
-#IMAGE_TAG='aa5d86d'
-# IMAGE_TAG=''
-
-# Run E2E test for cgroup-limits, local container engine
-#./test-cgroups-scripts.sh "$IMAGE_TAG"
-# Run E2E test for cgroup-limits, remote Openshift cluster
-#./run-e2e-cgroup-limits-test.sh "$IMAGE_TAG"
-
-for IMAGE_TAG in "29ac074" "c79395e" "aa5d86d"; do
-# Run E2E test for cgroup-limits, local container engine
-./test-cgroups-scripts.sh "$IMAGE_TAG"
-# Run E2E test for cgroup-limits, remote Openshift cluster
-./run-e2e-cgroup-limits-test.sh "$IMAGE_TAG"
-sleep 60
-done
-
-echo "SUCCESS"
-exit 0
 # Make directory for artifacts
 mkdir -p artifacts
 
@@ -48,6 +27,13 @@ export REF_ENV="insights-stage"
 # export IQE_IMAGE_TAG=""
 
 export COMPONENTS_W_RESOURCES="compliance"
+
+#TODO: create Junit result report
+# Run E2E test for cgroup-limits, local container engine
+./run-e2e-cgroup-limits-test-local-container.sh "$IMAGE_TAG"
+#TODO: create Junit result report
+# Run E2E test for cgroup-limits, remote Openshift cluster
+./run-e2e-cgroup-limits-test-remote-cluster.sh "$IMAGE_TAG"
 
 # Run unit tests
 source $APP_ROOT/unit_test.sh
