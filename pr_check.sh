@@ -13,13 +13,21 @@ export IMAGE="quay.io/cloudservices/compliance-backend"
 cat /etc/redhat-release
 
 # build the PR commit image
+#TODO: uncomment
 source $CICD_ROOT/build.sh
 
-bash -x run-e2e-cgroup-limits-test.sh "$IMAGE_TAG"
+#TODO: remove
+# should fail - FAILS
+#IMAGE_TAG='aa5d86d'
+# IMAGE_TAG=''
 
-echo "SUCESS"
+# Run E2E test for cgroup-limits, local container engine
+./test-cgroups-scripts.sh "$IMAGE_TAG"
+# Run E2E test for cgroup-limits, remote Openshift cluster
+./run-e2e-cgroup-limits-test.sh "$IMAGE_TAG"
+
+echo "SUCCESS"
 exit 0
-
 # Make directory for artifacts
 mkdir -p artifacts
 

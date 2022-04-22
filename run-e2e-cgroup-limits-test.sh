@@ -3,16 +3,17 @@
 TARGET_IMAGE_TAG=${1:-latest}
 
 POD_TEMPLATE='./e2e-test-cgroups-limit-template.yaml'
-TARGET_IMAGE="quay.io/cloudservices/compliance-backend:${TARGET_IMAGE_TAG}"
 REFERENCE_POD_NAME='reference'
 TARGET_POD_NAME='target'
 POD_NAME='e2e-test-for-compliance-cgroups-limit'
+QUAY_PULL_SECRET='quay-cloudservices-pull'
 EXIT_CODE=0
 
 function teardown {
 
     oc delete pod --now "$POD_NAME" --namespace "$TEST_NAMESPACE"
-    bonfire namespace release "$TEST_NAMESPACE"
+    oc secrets unlink default "$QUAY_PULL_SECRET" --namespace "$TEST_NAMESPACE"
+    bonfire namespace release "$TEST_NAMESPACE" -f
 
     exit $EXIT_CODE
 }
@@ -20,6 +21,7 @@ function teardown {
 trap teardown EXIT SIGINT SIGTERM
 
 TEST_NAMESPACE=$(bonfire namespace reserve)
+oc secrets link --for=pull default "$QUAY_PULL_SECRET" quay-cloudservices-pull --namespace "$TEST_NAMESPACE"
 
 oc process -f "$POD_TEMPLATE" --namespace "$TEST_NAMESPACE" -p "IMAGE_TAG=${TARGET_IMAGE_TAG}" -p "NAMESPACE=${TEST_NAMESPACE}" | oc create -f - --namespace "$TEST_NAMESPACE"
 oc wait --for=condition=Ready --namespace "$TEST_NAMESPACE" "pod/${POD_NAME}"
@@ -38,6 +40,8 @@ if [[ $? -ne 0 ]]; then
     echo "================"
     echo "actual output:"
     echo "$FORMATTED_ACTUAL_OUTPUT"
-
+    echo "test/e2e-test-for-compliance-cgroups-limit-remote: FAILED"
     EXIT_CODE=1
+else
+    echo "test/e2e-test-for-compliance-cgroups-limit-remote: PASSED"
 fi
