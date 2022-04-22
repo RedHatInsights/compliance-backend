@@ -11,6 +11,6 @@ class RuleGroupRelationship < ApplicationRecord
   validates :left_id, presence: true, uniqueness: { scope: %i[relationship right_id right_type left_type] }
 
   scope :with_relationships, lambda { |rules_or_groups, relationship|
-    where(relationship: relationship).includes(:left, :right).where(left: rules_or_groups)
+    where(relationship: relationship, left: rules_or_groups).includes(:left, :right)
   }
 end

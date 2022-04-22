@@ -33,4 +33,13 @@ module ProfileTailoring
 
     update!(os_minor_version: version)
   end
+
+  def tailoring_valid?
+    conflicts, requires = %w[conflicts requires].map do |relationship|
+      with_relationships(relationship, rules, hierarchical_rule_groups).map(&:right)
+    end
+
+    rules_and_groups = rules | hierarchical_rule_groups
+    (requires - rules_and_groups).empty? && (conflicts & rules_and_groups).empty?
+  end
 end
