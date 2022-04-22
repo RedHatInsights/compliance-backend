@@ -2,7 +2,7 @@
 
 TARGET_IMAGE_TAG=${1:-latest}
 
-POD_TEMPLATE='./e2e-test-cgroups-limit-template.yaml'
+POD_TEMPLATE="${APP_ROOT}/e2e-test-cgroup-limits/e2e-test-cgroup-limits-template.yaml"
 REFERENCE_POD_NAME='reference'
 TARGET_POD_NAME='target'
 POD_NAME='e2e-test-for-compliance-cgroups-limit'
