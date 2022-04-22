@@ -1,9 +1,16 @@
 
+echo '========================================'
+echo '=== Running E2E cgroup-limits tests ===='
+echo '========================================'
+
 JUNIT_RESULT_REPORT="${ARTIFACTS_DIR}/junit-e2e-cgroup-limits-tests.xml"
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' > "$JUNIT_RESULT_REPORT"
 echo '<testsuite tests="2">' >> "$JUNIT_RESULT_REPORT"
 
+echo '================================================='
+echo '=== E2E cgroup-limits test - local container ===='
+echo '================================================='
 #TODO: create Junit result report
 # Run E2E test for cgroup-limits, local container engine
 LOCAL_TESTS_OUTPUT=$($APP_ROOT/e2e-test-cgroup-limits/run-e2e-cgroup-limits-test-local-container.sh "$IMAGE_TAG")
@@ -19,6 +26,10 @@ fi
 
 echo '</testcase>' >> "$JUNIT_RESULT_REPORT"
 
+echo '================================================'
+echo '=== E2E cgroup-limits test - remote cluster ===='
+echo '================================================'
+
 #TODO: create Junit result report
 # Run E2E test for cgroup-limits, remote Openshift cluster
 REMOTE_TESTS_OUTPUT=$($APP_ROOT/e2e-test-cgroup-limits/run-e2e-cgroup-limits-test-remote-cluster.sh "$IMAGE_TAG")
@@ -33,5 +44,8 @@ if [ "$REMOTE_TESTS_EXIT_CODE" -ne 0 ]; then
 fi
 
 echo '</testcase>' >> "$JUNIT_RESULT_REPORT"
-
 echo "</testsuite>" >> "$JUNIT_RESULT_REPORT"
+
+echo '================================================='
+echo '=== E2E cgroup-limits tests finished running ===='
+echo '================================================='
