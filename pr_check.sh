@@ -1,9 +1,5 @@
 #!/bin/bash
 
-which sh
-ls -lrt $(which sh)
-sh --version
-
 # Install bonfire repo/initialize
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
@@ -19,7 +15,7 @@ cat /etc/redhat-release
 # build the PR commit image
 source $CICD_ROOT/build.sh
 
-source test-cgroups-scripts.sh "$IMAGE_TAG"
+./test-cgroups-scripts.sh "$IMAGE_TAG"
 exit 99
 
 # Make directory for artifacts

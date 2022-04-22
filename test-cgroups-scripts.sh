@@ -2,8 +2,6 @@
 
 COMPLIANCE_IMAGE_TAG="${1:-29ac074}"
 
-
-
 _check_command_is_present() {
     command -v $1 >/dev/null
 }
@@ -19,4 +17,16 @@ actual_output=$("$CONTAINER_ENGINE" run --rm  quay.io/cloudservices/compliance-b
 
 formatted_actual_output=$(sed -e 's/\s/\n/g' <<<"$actual_output" | sed -e '/^\(PWD\|SHLVL\|_\)=.*$/d' | sort -u)
 
-diff <(echo "$expected_output") <(echo "$formatted_actual_output")
+diff -q <(echo "$expected_output") <(echo "$formatted_actual_output") 
+
+if [[ $? -ne 0 ]]; then
+
+    echo "environment variables differ"
+    echo "expected output:"
+    echo "$expected_output"
+    echo "================"
+    echo "actual output:"
+    echo "$formatted_actual_output"
+
+    exit 1
+fi
