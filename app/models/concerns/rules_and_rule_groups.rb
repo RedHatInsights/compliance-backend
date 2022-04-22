@@ -31,14 +31,19 @@ module RulesAndRuleGroups
 
     private
 
-    def with_relationships(relationship)
+    def hierarchical_rule_groups
+      RuleGroup.where(id: rules.includes(:rule_group)
+               .references(:rule_group).flat_map { |r| r.rule_group&.path_ids })
+    end
+
+    def with_relationships(relationship, rules, rule_groups)
       RuleGroupRelationship.with_relationships(rules, relationship).or(
         RuleGroupRelationship.with_relationships(rule_groups, relationship)
       )
     end
 
     def relationships_for(relationship)
-      with_relationships(relationship).each_with_object({}) do |rgr, relationships|
+      with_relationships(relationship, rules, rule_groups).each_with_object({}) do |rgr, relationships|
         relationships[rgr.left] ||= []
         relationships[rgr.left] << rgr.right
       end

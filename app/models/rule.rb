@@ -30,8 +30,8 @@ class Rule < ApplicationRecord
 
   has_many :profile_rules, dependent: :delete_all
   has_many :profiles, through: :profile_rules, source: :profile
-  has_many :rule_group_rules, dependent: :delete_all
-  has_many :rule_groups, through: :rule_group_rules
+  has_one :rule_group_rule, dependent: :delete
+  has_one :rule_group, through: :rule_group_rule
   has_many :rule_results, dependent: :delete_all
   has_many :hosts, through: :rule_results, source: :host
   has_many :rule_references_rules, dependent: :delete_all
@@ -73,9 +73,7 @@ class Rule < ApplicationRecord
     joins(:profiles).where(profiles: { id: Profile.canonical })
   }
 
-  scope :without_rule_group_parent, lambda {
-    where.missing(:rule_groups)
-  }
+  scope :without_rule_group_parent, -> { where.missing(:rule_group) }
 
   scope :joins_identifier, lambda {
     left_outer_joins(:rule_identifier).select('rules.*', RuleIdentifier::AS_JSON.as('identifier'))

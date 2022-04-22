@@ -848,6 +848,27 @@ class ProfileTest < ActiveSupport::TestCase
       @profile.update! rules: [@rule2, @rule3]
       @rule2.update(precedence: 4)
       @rule3.update(precedence: 1)
+
+      @policy2 = FactoryBot.create(:policy, account: @account, hosts: [@host])
+
+      @profile2 = @parent.clone_to(
+        account: @account,
+        policy: @policy2
+      )
+
+      @rule4 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+      @rule5 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+      @rule6 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+      @rule7 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+
+      @rule_group1 = FactoryBot.create(:rule_group)
+      @rule_group2 = FactoryBot.create(:rule_group)
+      @rule_group3 = FactoryBot.create(:rule_group)
+
+      @rule_group1.update!(parent_id: @rule_group2.id)
+      @rule4.rule_group = @rule_group1
+
+      @profile2.update! rules: [@rule4, @rule5, @rule6, @rule7]
     end
 
     should 'send the correct rule ref ids to the tailoring file service' do
@@ -861,6 +882,101 @@ class ProfileTest < ActiveSupport::TestCase
 
     should 'properly detects removed_rules' do
       assert_equal [@rule1], @profile.removed_rules
+    end
+
+    should 'return tailoring_valid? false due to conflict between rule_group and rule' do
+      rgr = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
+      rgr.update!(left: @rule_group2, right: @rule7)
+
+      assert_equal false, @profile2.tailoring_valid?
+    end
+
+    should 'return tailoring_valid? false due to conflict between rule_groups' do
+      rule_group4 = FactoryBot.create(:rule_group)
+      @rule5.rule_group = rule_group4
+      rgr = FactoryBot.create(:rule_group_relationship, :for_rule_group_and_rule_group_conflicts)
+      rgr.update!(left: @rule_group2, right: rule_group4)
+
+      assert_equal false, @profile2.tailoring_valid?
+    end
+
+    should 'return tailoring_valid? false due to conflict between rules' do
+      rgr = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_conflicts)
+      rgr.update!(left: @rule4, right: @rule5)
+
+      assert_equal false, @profile2.tailoring_valid?
+    end
+
+    should 'return tailoring_valid? false due to missing requirement between rule_group and rule' do
+      rule8 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+      rgr = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_requires)
+      rgr.update!(left: @rule_group2, right: rule8)
+
+      assert_equal false, @profile2.tailoring_valid?
+    end
+
+    should 'return tailoring_valid? false due to missing requirement between rule_groups' do
+      rule_group4 = FactoryBot.create(:rule_group)
+      rgr = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_requires)
+      rgr.update!(left: @rule_group2, right: rule_group4)
+
+      assert_equal false, @profile2.tailoring_valid?
+    end
+
+    should 'return tailoring_valid? false due to missing requirement between rules' do
+      rule8 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+      rgr = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_requires)
+      rgr.update!(left: @rule4, right: rule8)
+
+      assert_equal false, @profile2.tailoring_valid?
+    end
+
+    should 'return tailoring_valid? false with duplicate requirement' do
+      rule8 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+      rgr1 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_requires)
+      rgr2 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_requires)
+      rgr1.update!(left: @rule4, right: rule8)
+      rgr2.update!(left: @rule5, right: rule8)
+
+      assert_equal false, @profile2.tailoring_valid?
+    end
+
+    should 'return tailoring_valid? false with duplicate conflict' do
+      rgr1 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_conflicts)
+      rgr2 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_conflicts)
+      rgr1.update!(left: @rule4, right: @rule5)
+      rgr2.update!(left: @rule6, right: @rule5)
+
+      assert_equal false, @profile2.tailoring_valid?
+    end
+
+    should 'return tailoring_valid? true when conflicts and requirements are satisfied' do
+      rule8 = FactoryBot.create(:rule, benchmark: @parent.benchmark)
+      rule_group4 = FactoryBot.create(:rule_group)
+      rule_group5 = FactoryBot.create(:rule_group)
+      @rule5.rule_group = rule_group4
+
+      rgr1 = FactoryBot.create(:rule_group_relationship, :for_rule_group_and_rule_conflicts)
+      rgr2 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_requires)
+      rgr3 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_requires)
+      rgr4 = FactoryBot.create(:rule_group_relationship, :for_rule_group_and_rule_group_requires)
+      rgr5 = FactoryBot.create(:rule_group_relationship, :for_rule_group_and_rule_group_conflicts)
+      rgr6 = FactoryBot.create(:rule_group_relationship, :for_rule_group_and_rule_group_requires)
+      rgr7 = FactoryBot.create(:rule_group_relationship, :for_rule_group_and_rule_group_conflicts)
+
+      rgr1.update!(left: @rule_group2, right: rule8)
+      rgr2.update!(left: @rule4, right: @rule6)
+      rgr3.update!(left: @rule4, right: @rule_group2)
+      rgr4.update!(left: @rule_group2, right: rule_group4)
+      rgr5.update!(left: @rule_group1, right: rule_group5)
+      rgr6.update!(left: @rule7, right: @rule6)
+      rgr7.update!(left: @rule7, right: rule8)
+
+      assert_equal true, @profile2.tailoring_valid?
+    end
+
+    should 'return tailoring_valid? true when there are no relationships' do
+      assert_equal true, @profile2.tailoring_valid?
     end
   end
 
