@@ -5,23 +5,28 @@ require 'test_helper'
 class OsMajorVersionTest < ActiveSupport::TestCase
   context 'supported_profiles' do
     should 'list all supported profiles' do
-      v1 = SupportedSsg.by_os_major['7'].first
+      supported_ssg1 = SupportedSsg.new(version: '0.1.50',
+                                        os_major_version: '7', os_minor_version: '1')
+      supported_ssg2 = SupportedSsg.new(version: '0.1.51',
+                                        os_major_version: '7', os_minor_version: '9')
+      supported_ssg3 = SupportedSsg.new(version: '0.0.1',
+                                        os_major_version: '7', os_minor_version: '3')
+      SupportedSsg.stubs(:all).returns([supported_ssg1, supported_ssg2, supported_ssg3])
       bm1 = FactoryBot.create(
         :benchmark,
-        version: v1.version,
+        version: supported_ssg1.version,
         os_major_version: '7'
       )
 
-      v2 = SupportedSsg.by_os_major['7'].last
       bm2 = FactoryBot.create(
         :benchmark,
-        version: v2.version,
+        version: supported_ssg2.version,
         os_major_version: '7'
       )
 
       bm3 = FactoryBot.create(
         :benchmark,
-        version: '0.0.1',
+        version: supported_ssg3.version,
         os_major_version: '7'
       )
 

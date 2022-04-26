@@ -19,6 +19,10 @@ class TestResultTest < ActiveSupport::TestCase
     @mock.op_test_result = OpenStruct.new(score: 30,
                                           start_time: @end_time - 2.minutes,
                                           end_time: @end_time)
+    supported_ssg = SupportedSsg.new(version: '0.1.33',
+                                     os_major_version: '7', os_minor_version: '4')
+
+    SupportedSsg.stubs(:all).returns([supported_ssg])
   end
 
   test 'old test results are destroyed and replaced by the new test result' do
