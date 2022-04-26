@@ -148,7 +148,6 @@ module V1
 
   class ProfilesControllerTest < ActionDispatch::IntegrationTest
     setup do
-      PolicyHost.any_instance.stubs(:host_supported?).returns(true)
       ProfilesController.any_instance.stubs(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
     end
@@ -424,6 +423,7 @@ module V1
           )
         )
 
+        policy.stubs(:supported_os_minor_versions).returns(hosts.map(&:os_minor_version).map(&:to_s))
         policy.hosts = hosts
 
         search_query = 'canonical=false'
@@ -447,6 +447,8 @@ module V1
         host = FactoryBot.create(:host)
         profile = FactoryBot.create(:profile, external: true)
         FactoryBot.create(:test_result, host: host, profile: profile)
+        profile.policy.stubs(:initial_profile).returns(profile)
+        profile.policy.stubs(:supported_os_minor_versions).returns([host.os_minor_version.to_s])
         profile.policy.hosts = [host]
 
         get v1_profiles_url, params: { search: 'external = true' }
@@ -888,7 +890,17 @@ module V1
 
       test 'create allows hosts relationship' do
         hosts = FactoryBot.create_list(:host, 2)
-        parent = FactoryBot.create(:canonical_profile)
+        parent = FactoryBot.create(:canonical_profile, upstream: false)
+
+        SupportedSsg.stubs(:by_ssg_version).returns(
+          parent.benchmark.version => hosts.map do |host|
+            SupportedSsg.new(
+              os_major_version: host.os_major_version.to_s,
+              os_minor_version: host.os_minor_version.to_s
+            )
+          end
+        )
+
         assert_empty(parent.hosts)
         assert_difference('PolicyHost.count', hosts.count) do
           post profiles_path, params: params(
@@ -917,6 +929,28 @@ module V1
         assert_audited "#{hosts.count} added"
         assert_audited '0 removed'
       end
+
+      test 'create fails with unsupported hosts' do
+        hosts = FactoryBot.create_list(:host, 2)
+        SupportedSsg.stubs(:by_ssg_version).returns({})
+        parent = FactoryBot.create(:canonical_profile)
+        assert_empty(parent.hosts)
+        assert_difference('PolicyHost.count', 0) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: parent.id
+            },
+            relationships: {
+              hosts: {
+                data: hosts.map do |host|
+                  { id: host.id, type: 'host' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :not_acceptable
+      end
     end
 
     class UpdateTest < ProfilesControllerTest
@@ -926,7 +960,7 @@ module V1
       BUSINESS_OBJECTIVE = 'LATAM Expansion'
 
       setup do
-        @profile = FactoryBot.create(:profile, :with_rules)
+        @profile = FactoryBot.create(:profile, :with_rules, upstream: false)
       end
 
       test 'update without data' do
@@ -1045,6 +1079,15 @@ module V1
       test 'update to update hosts relationships' do
         hosts = FactoryBot.create_list(:host, 2)
 
+        SupportedSsg.stubs(:by_ssg_version).returns(
+          @profile.benchmark.version => hosts.map do |host|
+            SupportedSsg.new(
+              os_major_version: host.os_major_version.to_s,
+              os_minor_version: host.os_minor_version.to_s
+            )
+          end
+        )
+
         @profile.policy.update!(hosts: hosts[0...-1])
         assert_difference('@profile.policy.reload.hosts.count' => 0) do
           patch profile_path(@profile.id), params: params(
@@ -1068,6 +1111,16 @@ module V1
 
       test 'update to remove hosts relationships' do
         hosts = FactoryBot.create_list(:host, 2)
+
+        SupportedSsg.stubs(:by_ssg_version).returns(
+          @profile.benchmark.version => hosts.map do |host|
+            SupportedSsg.new(
+              os_major_version: host.os_major_version.to_s,
+              os_minor_version: host.os_minor_version.to_s
+            )
+          end
+        )
+
         @profile.policy.update!(hosts: hosts)
         assert_difference(
           '@profile.policy.reload.hosts.count' => -1
