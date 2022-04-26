@@ -139,6 +139,8 @@ class PolicyTest < ActiveSupport::TestCase
     should 'add new hosts to an empty host set' do
       FactoryBot.create(:profile, account: @account, policy: @policy)
 
+      stub_supported_ssg(@hosts)
+
       assert_empty(@policy.hosts)
       assert_difference(HOST_COUNT_FIELDS, @hosts.count) do
         changes = @policy.update_hosts(@hosts.pluck(:id))
@@ -149,6 +151,8 @@ class PolicyTest < ActiveSupport::TestCase
     should 'add new hosts to an existing host set' do
       FactoryBot.create(:profile, account: @account, policy: @policy)
       @policy.update(hosts: [@hosts.first])
+
+      stub_supported_ssg(@hosts)
 
       assert_not_empty(@policy.hosts)
       assert_difference(HOST_COUNT_FIELDS, 1) do
@@ -170,6 +174,8 @@ class PolicyTest < ActiveSupport::TestCase
     should 'add new and remove old hosts from an existing host set' do
       @policy.update(hosts: [@hosts.first])
       FactoryBot.create(:profile, account: @account, policy: @policy)
+
+      stub_supported_ssg(@hosts)
 
       assert_not_empty(@policy.hosts)
       assert_difference(HOST_COUNT_FIELDS, 0) do

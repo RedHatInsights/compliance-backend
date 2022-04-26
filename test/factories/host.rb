@@ -5,7 +5,13 @@ FactoryBot.define do
   Object.send(:remove_const, :WHost) if defined?(WHost)
   Object.send(:remove_const, :SSGS) if defined?(SSGS)
 
-  SSGS = SupportedSsg.all
+  supported_ssg1 = SupportedSsg.new(version: '0.1.50',
+                                    os_major_version: '7', os_minor_version: '1')
+  supported_ssg2 = SupportedSsg.new(version: '0.1.51',
+                                    os_major_version: '7', os_minor_version: '9')
+  supported_ssg3 = SupportedSsg.new(version: '0.0.1',
+                                    os_major_version: '7', os_minor_version: '3')
+  SSGS = [supported_ssg1, supported_ssg2, supported_ssg3].freeze
 
   # A writable version of the Host model for the factory only
   class WHost < Host

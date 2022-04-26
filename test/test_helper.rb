@@ -90,6 +90,22 @@ unless Rails.env.production?
         assert_equal Set.new(arr1), Set.new(arr2)
       end
 
+      def stub_supported_ssg(hosts, benchmark_versions = nil)
+        supported_ssgs = []
+
+        benchmark_versions ||= test_benchmark_versions
+
+        benchmark_versions.each do |bmv|
+          new_supported_ssgs = test_supported_ssgs(hosts, bmv)
+          supported_ssgs += new_supported_ssgs
+          # Stubbing by_ssg_version because some tests were failing due to
+          # the conditional assignment with the instance variable
+          SupportedSsg.stubs(:by_ssg_version).returns(bmv => new_supported_ssgs)
+        end
+        SupportedSsg.stubs(:all).returns(supported_ssgs)
+        SupportedSsg.stubs(:revision).returns('2022-04-20')
+      end
+
       # rubocop:disable Metrics/MethodLength
       def stub_rbac_permissions(*permissions)
         role_permissions = permissions.map do |permission|
@@ -119,5 +135,30 @@ unless Rails.env.production?
         json_body.dig('data')
       end
     end
+  end
+
+  private
+
+  def test_supported_ssgs(hosts, bmv)
+    hosts.map do |host|
+      SupportedSsg.new(
+        os_major_version: host.os_major_version.to_s,
+        os_minor_version: host.os_minor_version.to_s,
+        version: bmv
+      )
+    end
+  end
+
+  def test_benchmark_versions
+    bm1 = FactoryBot.create(
+      :benchmark, version: '0.2.50',
+                  os_major_version: '7'
+    )
+
+    bm2 = FactoryBot.create(
+      :benchmark, version: '0.1.51',
+                  os_major_version: '7'
+    )
+    [bm1.version, bm2.version]
   end
 end

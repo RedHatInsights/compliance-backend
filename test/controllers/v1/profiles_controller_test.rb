@@ -923,14 +923,7 @@ module V1
         hosts = FactoryBot.create_list(:host, 2)
         parent = FactoryBot.create(:canonical_profile, upstream: false)
 
-        SupportedSsg.stubs(:by_ssg_version).returns(
-          parent.benchmark.version => hosts.map do |host|
-            SupportedSsg.new(
-              os_major_version: host.os_major_version.to_s,
-              os_minor_version: host.os_minor_version.to_s
-            )
-          end
-        )
+        stub_supported_ssg(hosts, [parent.benchmark.version])
 
         assert_empty(parent.hosts)
         assert_difference('PolicyHost.count', hosts.count) do
@@ -1110,14 +1103,7 @@ module V1
       test 'update to update hosts relationships' do
         hosts = FactoryBot.create_list(:host, 2)
 
-        SupportedSsg.stubs(:by_ssg_version).returns(
-          @profile.benchmark.version => hosts.map do |host|
-            SupportedSsg.new(
-              os_major_version: host.os_major_version.to_s,
-              os_minor_version: host.os_minor_version.to_s
-            )
-          end
-        )
+        stub_supported_ssg(hosts, [@profile.benchmark.version])
 
         @profile.policy.update!(hosts: hosts[0...-1])
         assert_difference('@profile.policy.reload.hosts.count' => 0) do
@@ -1143,14 +1129,7 @@ module V1
       test 'update to remove hosts relationships' do
         hosts = FactoryBot.create_list(:host, 2)
 
-        SupportedSsg.stubs(:by_ssg_version).returns(
-          @profile.benchmark.version => hosts.map do |host|
-            SupportedSsg.new(
-              os_major_version: host.os_major_version.to_s,
-              os_minor_version: host.os_minor_version.to_s
-            )
-          end
-        )
+        stub_supported_ssg(hosts, [@profile.benchmark.version])
 
         @profile.policy.update!(hosts: hosts)
         assert_difference(

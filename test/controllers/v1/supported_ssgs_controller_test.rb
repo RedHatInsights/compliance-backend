@@ -6,6 +6,8 @@ module V1
   class SupportedSsgsControllerTest < ActionDispatch::IntegrationTest
     setup do
       SupportedSsgsController.any_instance.stubs(:authenticate_user).yields
+      @hosts = FactoryBot.create_list(:host, 2)
+      stub_supported_ssg(@hosts)
     end
 
     context 'index' do

@@ -38,6 +38,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     @report_parser.host.stubs(:os_major_version).returns(8)
     @report_parser.host.stubs(:os_minor_version).returns(3)
     @report_parser.set_openscap_parser_data
+    stub_supported_ssg([@host], ['0.1.40'])
   end
 
   context 'benchmark' do

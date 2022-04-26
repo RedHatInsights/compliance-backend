@@ -7,6 +7,7 @@ module V1
     setup do
       BenchmarksController.any_instance.stubs(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
+      @hosts = FactoryBot.create_list(:host, 2)
     end
 
     test '#index success' do
@@ -15,12 +16,16 @@ module V1
     end
 
     test '#show success' do
-      get v1_benchmarks_url(FactoryBot.create(:benchmark))
+      bm1 = FactoryBot.create(:benchmark)
+      stub_supported_ssg(@hosts, [bm1.version])
+      get v1_benchmarks_url(bm1)
       assert_response :success
     end
 
     test '#index includes rules' do
-      FactoryBot.create(:rule, benchmark: FactoryBot.create(:benchmark))
+      bm1 = FactoryBot.create(:benchmark)
+      stub_supported_ssg(@hosts, [bm1.version])
+      FactoryBot.create(:rule, benchmark: bm1)
       get v1_benchmarks_url, params: { include: 'rules' }
       assert_response :success
       assert_equal(response.parsed_body['included'].first['type'], 'rule')
@@ -45,6 +50,7 @@ module V1
       b2 = FactoryBot.create(:benchmark, title: 'a', version: '1.0')
       b3 = FactoryBot.create(:benchmark, title: 'a', version: '0.9')
       b4 = FactoryBot.create(:benchmark, title: 'b', version: '0.1')
+      stub_supported_ssg(@hosts, [b1.version, b2.version, b3.version, b4.version])
 
       get v1_benchmarks_url, params: {
         sort_by: %w[title version]

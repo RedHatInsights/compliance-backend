@@ -9,6 +9,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
     @profile = FactoryBot.create(:profile, account: @user.account)
     @host = FactoryBot.create(:host, account: @user.account.account_number, org_id: @user.account.org_id)
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_supported_ssg([@host])
   end
 
   QUERY = <<-GRAPHQL
