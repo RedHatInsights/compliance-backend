@@ -10,8 +10,8 @@ class PolicyHost < ApplicationRecord
   validates :host_id, presence: true, uniqueness: { scope: :policy }
   validate :host_supported?, on: :create
 
-  def self.import_from_policy(policy_id, host_ids)
-    import(host_ids.map do |host_id|
+  def self.import_from_policy!(policy_id, host_ids)
+    import!(host_ids.map do |host_id|
       { host_id: host_id, policy_id: policy_id }
     end)
   end

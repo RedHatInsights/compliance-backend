@@ -9,8 +9,11 @@ describe 'Profiles API' do
     @policy = FactoryBot.create(:policy, account: @account)
     @parent = FactoryBot.create(:canonical_profile)
     @hosts = FactoryBot.create_list(
-      :host, 2, account: @account.account_number
+      :host, 2, account: @account.account_number, os_minor_version: 2
     )
+    allow_any_instance_of(PolicyHost).to receive(:host_supported?).and_return(true)
+
+    allow(@policy).to receive(:supported_os_minor_versions).and_return([2])
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/profiles" do
