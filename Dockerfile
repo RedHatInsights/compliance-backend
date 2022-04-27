@@ -41,14 +41,14 @@ RUN rpm -e --nodeps tzdata             && \
     microdnf install --nodocs -y $deps && \
     gem update bundler                 && \
     microdnf clean all -y              && \
-    chown 1001:root ./
+    chown 1001:root ./                 && \
+    install -d -m 0775 -o 1001 ./tmp ./log
+
 
 USER 1001
 
 COPY --chown=1001:0 . /opt/app-root/src
 COPY --chown=1001:0 --from=build /opt/app-root/src/.bundle /opt/app-root/src/.bundle
-
-RUN ./scripts/fix-permissions ./
 
 ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true HOME=/opt/app-root/src DEV_DEPS=$devDeps
 

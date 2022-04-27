@@ -3,6 +3,5 @@
 Gemfile.local.example
 coverage/
 scap-security-guide-*
-log/*.log
-tmp/*.*
-tmp/*/*
+log/
+tmp/
