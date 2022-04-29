@@ -207,6 +207,37 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_equal 1, result_profile_ids.length
     end
 
+    should 'search systems based on stale_timestamp' do
+      @host2 = FactoryBot.create(
+        :host,
+        account: @host1.account,
+        stale_timestamp: 2.days.ago(Time.zone.now)
+      )
+      FactoryBot.create(:policy, account: @user.account, hosts: [Host.find(@host2.id)])
+
+      query = <<-GRAPHQL
+      query getSystems($search: String) {
+          systems(limit: 50, offset: 1, search: $search) {
+              edges {
+                  node {
+                      id
+                      name
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      result = Schema.execute(
+        query,
+        variables: { search: "stale_timestamp<#{Time.zone.now.iso8601}" },
+        context: { current_user: @user }
+      )['data']['systems']['edges']
+
+      assert_equal result.length, 1
+      assert_equal result.first['node']['id'], @host2.id
+    end
+
     should 'filter test result profiles by policyId using an internal' \
            ' profile id' do
       query = <<-GRAPHQL
