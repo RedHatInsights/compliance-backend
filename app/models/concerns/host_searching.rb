@@ -30,6 +30,8 @@ module HostSearching
                   only_explicit: true, operators: ['=']
     scoped_search on: :has_policy, ext_method: 'filter_has_policy',
                   only_explicit: true, operators: ['=']
+    scoped_search on: :stale_timestamp,
+                  only_explicit: true, operators: ['<', '>']
 
     scope :with_policy, lambda { |with_policy = true|
       with_policy && where(id: ::PolicyHost.select(:host_id)) ||
