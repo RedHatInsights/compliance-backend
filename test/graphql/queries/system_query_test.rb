@@ -58,6 +58,8 @@ class SystemQueryTest < ActiveSupport::TestCase
   end
 
   test 'query host returns timestamps in ISO-6801' do
+    FactoryBot.create(:test_result, host: @host1, profile: @profile1)
+
     query = <<-GRAPHQL
       query System($inventoryId: String!){
           system(id: $inventoryId) {
@@ -65,6 +67,7 @@ class SystemQueryTest < ActiveSupport::TestCase
               staleWarningTimestamp
               staleTimestamp
               updated
+              lastScanned
           }
       }
     GRAPHQL
@@ -75,10 +78,28 @@ class SystemQueryTest < ActiveSupport::TestCase
       context: { current_user: @user }
     )
 
-    assert_equal 4, result['data']['system'].count
+    assert_equal 5, result['data']['system'].count
     result['data']['system'].each do |_, timestamp|
       assert_equal timestamp, Time.parse(timestamp).iso8601
     end
+  end
+
+  test "query host lastScanned returns 'Never' if no test results" do
+    query = <<-GRAPHQL
+      query System($inventoryId: String!){
+          system(id: $inventoryId) {
+              lastScanned
+          }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { inventoryId: @host1.id },
+      context: { current_user: @user }
+    )
+
+    assert_equal 'Never', result['data']['system']['lastScanned']
   end
 
   context 'policy id querying' do
