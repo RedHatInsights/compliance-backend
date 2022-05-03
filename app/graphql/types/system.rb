@@ -63,7 +63,13 @@ module Types
     end
 
     def last_scanned(args = {})
-      object.last_scanned(**args)
+      latest_test_result_batch(args).then do |latest_test_result|
+        if latest_test_result.blank? || latest_test_result.end_time.blank?
+          'Never'
+        else
+          latest_test_result.end_time.iso8601
+        end
+      end
     end
 
     def culled_timestamp
@@ -83,6 +89,15 @@ module Types
     end
 
     private
+
+    def latest_test_result_batch(args)
+      ::RecordLoader.for(
+        ::TestResult,
+        column: :host_id,
+        where: args[:profile_id] ? { profile_id: args[:profile_id] } : {},
+        order: 'created_at DESC'
+      ).load(object.id)
+    end
 
     def context_parent
       context.scoped_set!(:parent_system_id, object.id)
