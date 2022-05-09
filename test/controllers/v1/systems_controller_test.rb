@@ -48,21 +48,6 @@ module V1
         end)
       end
 
-      should 'filter systems based on stale_timestamp' do
-        FactoryBot.create(:policy, hosts: Host.all)
-
-        host1, host2 = Host.all
-
-        WHost.find(host2.id).update!(stale_timestamp: 10.days.ago(Time.zone.now))
-
-        get v1_systems_url, params: {
-          search: "stale_timestamp > #{Time.zone.now.iso8601}"
-        }
-
-        assert_equal response.parsed_body['data'].length, 1
-        assert_equal response.parsed_body['data'].first['id'], host1.id
-      end
-
       should 'fail if wrong sort order is set' do
         get v1_systems_url, params: { sort_by: ['name:foo'] }
         assert_response :unprocessable_entity

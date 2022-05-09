@@ -58,8 +58,6 @@ class SystemQueryTest < ActiveSupport::TestCase
   end
 
   test 'query host returns timestamps in ISO-6801' do
-    FactoryBot.create(:test_result, host: @host1, profile: @profile1)
-
     query = <<-GRAPHQL
       query System($inventoryId: String!){
           system(id: $inventoryId) {
@@ -67,7 +65,6 @@ class SystemQueryTest < ActiveSupport::TestCase
               staleWarningTimestamp
               staleTimestamp
               updated
-              lastScanned
           }
       }
     GRAPHQL
@@ -78,28 +75,10 @@ class SystemQueryTest < ActiveSupport::TestCase
       context: { current_user: @user }
     )
 
-    assert_equal 5, result['data']['system'].count
+    assert_equal 4, result['data']['system'].count
     result['data']['system'].each do |_, timestamp|
       assert_equal timestamp, Time.parse(timestamp).iso8601
     end
-  end
-
-  test "query host lastScanned returns 'Never' if no test results" do
-    query = <<-GRAPHQL
-      query System($inventoryId: String!){
-          system(id: $inventoryId) {
-              lastScanned
-          }
-      }
-    GRAPHQL
-
-    result = Schema.execute(
-      query,
-      variables: { inventoryId: @host1.id },
-      context: { current_user: @user }
-    )
-
-    assert_equal 'Never', result['data']['system']['lastScanned']
   end
 
   context 'policy id querying' do
@@ -226,37 +205,6 @@ class SystemQueryTest < ActiveSupport::TestCase
       result_profile_ids = result_profiles.map { |p| p['id'] }
       assert_includes result_profile_ids, @profile1.id
       assert_equal 1, result_profile_ids.length
-    end
-
-    should 'search systems based on stale_timestamp' do
-      @host2 = FactoryBot.create(
-        :host,
-        account: @host1.account,
-        stale_timestamp: 2.days.ago(Time.zone.now)
-      )
-      FactoryBot.create(:policy, account: @user.account, hosts: [Host.find(@host2.id)])
-
-      query = <<-GRAPHQL
-      query getSystems($search: String) {
-          systems(limit: 50, offset: 1, search: $search) {
-              edges {
-                  node {
-                      id
-                      name
-                  }
-              }
-          }
-      }
-      GRAPHQL
-
-      result = Schema.execute(
-        query,
-        variables: { search: "stale_timestamp<#{Time.zone.now.iso8601}" },
-        context: { current_user: @user }
-      )['data']['systems']['edges']
-
-      assert_equal result.length, 1
-      assert_equal result.first['node']['id'], @host2.id
     end
 
     should 'filter test result profiles by policyId using an internal' \
