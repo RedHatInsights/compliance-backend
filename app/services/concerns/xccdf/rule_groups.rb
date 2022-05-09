@@ -12,20 +12,15 @@ module Xccdf
         end
 
         ::RuleGroup.import!(@rule_groups.select(&:new_record?), ignore: true)
-
-        ::RuleGroup.import!(rule_group_parents, on_duplicate_key_update: {
-                              conflict_target: %i[ref_id benchmark_id],
-                              columns: %i[ancestry]
-                            }, validate: false)
+        rule_group_parents
       end
 
       private
 
       def rule_group_parents
-        @op_rule_groups.select(&:parent_id).map do |op_rule_group|
+        @op_rule_groups.each do |op_rule_group|
           rule_group = rule_group_for(ref_id: op_rule_group.id)
-          rule_group.parent_id = rule_group_for(ref_id: op_rule_group.parent_id)&.id
-          rule_group
+          rule_group.update(parent: rule_group_for(ref_id: op_rule_group.parent_id))
         end
       end
 
