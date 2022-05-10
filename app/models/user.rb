@@ -18,6 +18,7 @@ class User < ApplicationRecord
   private
 
   def rbac_permissions
+    # FIXME: pass the original raw identity header here somehow
     @rbac_permissions ||= Rbac.load_user_permissions(account.b64_identity)
   end
 

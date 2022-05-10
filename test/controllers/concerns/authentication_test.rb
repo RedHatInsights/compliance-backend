@@ -370,6 +370,30 @@ class AuthenticationTest < ActionController::TestCase
     end
   end
 
+  should 'send the same identity header to RBAC' do
+    encoded_header = Base64.encode64(
+      {
+        'identity':
+        {
+          'account_number': '1234',
+          'user': { 'username': 'username' }
+        },
+        'entitlements':
+        {
+          'insights': {
+            'is_entitled': true
+          }
+        }
+      }.to_json
+    )
+
+    Rbac::API_CLIENT.expects(:get_principal_access)
+                    .with(Rbac::APPS, header_params: { X_RH_IDENTITY: encoded_header })
+                    .returns(RBACApiClient::AccessPagination.new(data: []))
+
+    process_test(headers: { 'X-RH-IDENTITY': encoded_header })
+  end
+
   private
 
   def process_test(params = {})
