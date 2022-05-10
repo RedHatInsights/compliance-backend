@@ -57,7 +57,11 @@ module Authentication
     return true if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
     return valid_cert_auth? if identity_header.cert_based?
 
-    user.authorized_to?(Rbac::COMPLIANCE_FULL_ACCESS)
+    @rbac_permissions ||= Rbac.load_user_permissions(raw_identity_header)
+
+    @rbac_permissions.any? do |access|
+      Rbac.verify(access.permission, Rbac::COMPLIANCE_FULL_ACCESS)
+    end
   end
 
   private
