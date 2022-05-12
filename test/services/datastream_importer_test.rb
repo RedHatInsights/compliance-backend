@@ -11,14 +11,12 @@ class DatastreamImporterTest < ActiveSupport::TestCase
   test 'datastream import' do
     importer = DatastreamImporter.new(@datastream_file)
     importer.expects(:save_all_benchmark_info)
-    ENV['JOBS_ACCOUNT_NUMBER'] ||= FactoryBot.create(:account).account_number
     importer.import!
   end
 
   test 'works without any accounts' do
     importer = DatastreamImporter.new(@datastream_file)
     importer.expects(:save_all_benchmark_info)
-    ENV['JOBS_ACCOUNT_NUMBER'] ||= nil
     importer.import!
   end
 end

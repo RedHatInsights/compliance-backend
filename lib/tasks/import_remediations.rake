@@ -8,7 +8,7 @@ desc <<-END_DESC
   API.
 
   Examples:
-    # JOBS_ACCOUNT_NUMBER=000001 rake import_remediations
+    # rake import_remediations
 END_DESC
 
 # rubocop:disable Metrics/BlockLength
