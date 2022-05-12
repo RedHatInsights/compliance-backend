@@ -64,8 +64,6 @@ objects:
           value: "${PATH_PREFIX}"
         - name: APP_NAME
           value: "${APP_NAME}"
-        - name: JOBS_ACCOUNT_NUMBER
-          value: ${JOBS_ACCOUNT_NUMBER}
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
@@ -291,8 +289,6 @@ objects:
           value: "${REDIS_SSL}"
         - name: RAILS_MAX_THREADS
           value: "${RAILS_MAX_THREADS}"
-        - name: JOBS_ACCOUNT_NUMBER
-          value: ${JOBS_ACCOUNT_NUMBER}
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
@@ -414,10 +410,6 @@ parameters:
   value: "5"
 - name: SIDEKIQ_CONCURRENCY
   value: "1"
-- name: JOBS_ACCOUNT_NUMBER
-  displayName: "Account number used in the import remediations job"
-  value: "6212377"
-  required: true
 - name: RAILS_MAX_THREADS
   value: "1"
 - name: DISABLE_RBAC
