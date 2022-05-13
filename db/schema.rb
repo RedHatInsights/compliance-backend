@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_03_23_130920) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_13_090623) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -21,6 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_23_130920) do
     t.boolean "is_internal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "org_id"
     t.index ["account_number"], name: "index_accounts_on_account_number", unique: true
   end
 
