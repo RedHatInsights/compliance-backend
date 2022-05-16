@@ -129,6 +129,36 @@ objects:
           requests:
             cpu: "${CPU_REQUEST_FLOO}"
             memory: "${MEMORY_REQUEST_FLOO}"
+    - name: org-id-populator
+      podSpec:
+        image: quay.io/cloudservices/tenant-utils:latest
+        command:
+          - ./org-id-column-populator
+          - -C
+          - -a
+          - account_number
+          - -o
+          - org_id
+          - -t
+          - accounts
+          - --ean-translator-addr
+          - http://${TENANT_TRANSLATOR_HOST}:${TENANT_TRANSLATOR_PORT}
+        env:
+          - name: TENANT_TRANSLATOR_HOST
+            value: ${TENANT_TRANSLATOR_HOST}
+          - name: TENANT_TRANSLATOR_PORT
+            value: ${TENANT_TRANSLATOR_PORT}
+          - name: LOG_FORMAT
+            value: ${LOG_FORMAT}
+          - name: LOG_BATCH_FREQUENCY
+            value: '1'
+        resources:
+          limits:
+            cpu: 300m
+            memory: 1Gi
+          requests:
+            cpu: 50m
+            memory: 512Mi
     deployments:
     - name: service
       minReplicas: ${{REPLICAS_BACKEND}}
@@ -451,3 +481,11 @@ parameters:
 - name: MAX_INIT_TIMEOUT_SECONDS
   description: Number of seconds for timeout init container operation
   value: "120"
+- description: Host for the EAN to OrgId translator.
+  name: TENANT_TRANSLATOR_HOST
+  required: true
+  value: 'apicast.3scale-dev.svc.cluster.local'
+- description: Port for the EAN to OrgId translator.
+  name: TENANT_TRANSLATOR_PORT
+  required: true
+  value: '8892'
