@@ -15,15 +15,18 @@ class Account < ApplicationRecord
 
   class << self
     def from_identity_header(identity_header)
+      # FIXME: swap the 'account_number' with the 'org_id' after the translation is done
       account = Account.find_or_create_by(
         account_number: identity_header.identity['account_number']
       )
 
-      # Update the is_internal if set and differs from the stored one
-      unless identity_header.is_internal.nil?
-        account.update!(is_internal: identity_header.is_internal)
-      end
+      # Update the 'is_internal' and the 'org_id' fields if set and differs
+      updates = {
+        is_internal: (identity_header.is_internal unless identity_header.is_internal.nil?),
+        org_id: (identity_header.identity['org_id'] if account.org_id.blank?)
+      }.compact
 
+      account.update!(updates) if updates.any?
       account
     end
   end
@@ -33,6 +36,7 @@ class Account < ApplicationRecord
     {
       'identity': {
         'account_number': account_number,
+        'org_id': org_id,
         'type': 'User',
         'auth_type': 'basic-auth',
         'user': {
