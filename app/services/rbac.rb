@@ -7,6 +7,7 @@ class Rbac
   API_CLIENT = RBACApiClient::AccessApi.new
   COMPLIANCE_FULL_ACCESS = 'compliance:*:*'
   APPS = 'compliance,inventory'
+  OPTS = { limit: 1000, auth_names: '' }.freeze
   ANY = '*'
 
   class AuthorizationError < StandardError; end
@@ -16,7 +17,7 @@ class Rbac
       begin
         API_CLIENT.get_principal_access(
           self::APPS,
-          { header_params: { 'X_RH_IDENTITY': identity } }
+          self::OPTS.merge(header_params: { X_RH_IDENTITY: identity })
         ).data
       rescue RBACApiClient::ApiError => e
         Rails.logger.info(e.message)
