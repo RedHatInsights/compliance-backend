@@ -12,6 +12,7 @@ describe 'Rules API' do
       account: @account
     )
     @profile.rules.update(precedence: 1)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/rules" do

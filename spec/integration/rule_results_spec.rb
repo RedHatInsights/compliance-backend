@@ -19,6 +19,7 @@ describe 'RuleResults API' do
       host: host,
       rule: profile.rules.first
     )
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/rule_results" do

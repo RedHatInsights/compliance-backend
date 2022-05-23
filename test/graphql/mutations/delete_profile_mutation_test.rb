@@ -6,6 +6,7 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
   setup do
     @user = FactoryBot.create(:user)
     @profile = FactoryBot.create(:profile, account: @user.account)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   QUERY = <<-GRAPHQL
@@ -78,5 +79,30 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
     end
     assert_audited 'Removed profile'
     assert_audited @profile.policy.id
+  end
+
+  context 'unauthorized user' do
+    setup do
+      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_VIEWER)
+    end
+
+    should 'have the delete action rejected' do
+      second = FactoryBot.create(
+        :profile,
+        account: @user.account,
+        policy: @profile.policy,
+        external: true
+      )
+
+      assert_raises(GraphQL::UnauthorizedError, 'User is not authorized to access this action.') do
+        Schema.execute(
+          QUERY,
+          variables: { input: {
+            id: second.id
+          } },
+          context: { current_user: @user }
+        )
+      end
+    end
   end
 end

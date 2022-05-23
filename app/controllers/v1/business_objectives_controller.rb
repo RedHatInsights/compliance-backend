@@ -7,11 +7,13 @@ module V1
       params[:sort_by] ||= 'title'
       render_json resolve_collection
     end
+    permission_for_action :index, Rbac::POLICY_READ
 
     def show
       authorize business_objective
       render_json business_objective
     end
+    permission_for_action :show, Rbac::POLICY_READ
 
     private
 

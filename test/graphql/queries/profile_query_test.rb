@@ -12,6 +12,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
       rule_count: 2,
       account: @user.account
     )
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   test 'query profile owned by the user' do

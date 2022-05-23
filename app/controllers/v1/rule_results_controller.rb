@@ -6,6 +6,7 @@ module V1
     def index
       render_json resolve_collection
     end
+    permission_for_action :index, Rbac::POLICY_READ
 
     private
 

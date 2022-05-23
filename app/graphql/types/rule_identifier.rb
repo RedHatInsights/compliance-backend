@@ -10,5 +10,7 @@ module Types
     field :label, String, null: false
     field :system, String, null: false
     field :rule, ::Types::Rule, null: true
+
+    enforce_rbac Rbac::COMPLIANCE_VIEWER
   end
 end

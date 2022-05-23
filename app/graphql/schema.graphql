@@ -85,7 +85,8 @@ interface Node {
 """
 An operating system with its version
 """
-type OperatingSystem {
+type OperatingSystem implements Node {
+  id: ID!!
   major: Int!
   minor: Int!
   name: String!
@@ -646,7 +647,7 @@ type SystemEdge {
 """
 A host inventory tag
 """
-type Tag implements Node {
+type Tag implements Node & Node {
   id: ID!!
   key: String!
   namespace: String

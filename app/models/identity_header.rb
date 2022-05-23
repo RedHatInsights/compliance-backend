@@ -31,6 +31,10 @@ class IdentityHeader
     content['identity']
   end
 
+  def raw
+    @b64_identity
+  end
+
   # rubocop:disable Naming/PredicateName
   def is_internal
     identity&.dig('user', 'is_internal')

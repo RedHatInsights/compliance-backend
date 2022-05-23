@@ -25,6 +25,8 @@ module Types
                required: false
     end
 
+    enforce_rbac Rbac::COMPLIANCE_VIEWER
+
     def compliant(args = {})
       system_id(args) &&
         profile_id(args) &&

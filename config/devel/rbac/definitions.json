@@ -4,8 +4,8 @@
       "name": "Compliance administrator",
       "description": "A Compliance role that grants full access to any Compliance resource.",
       "system": true,
-      "platform_default": true,
-      "version": 10,
+      "admin_default": true,
+      "version": 11,
       "access": [
         {
           "permission": "compliance:*:*"
@@ -48,7 +48,8 @@
       "name": "Compliance viewer",
       "description": "A Compliance role that grants read access to any Compliance resource.",
       "system": true,
-      "version": 2,
+      "platform_default": true,
+      "version": 3,
       "access": [
         {
           "permission": "compliance:policy:read"

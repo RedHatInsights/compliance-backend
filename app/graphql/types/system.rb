@@ -50,6 +50,8 @@ module Types
 
     field :tags, [Tag], null: true
 
+    enforce_rbac Rbac::SYSTEM_READ
+
     def rules_passed(args = {})
       ::RecordLoader.for(::Profile).load(args[:profile_id]).then do |profile|
         object.rules_passed(profile)

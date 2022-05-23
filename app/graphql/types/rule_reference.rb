@@ -10,5 +10,7 @@ module Types
     field :label, String, null: false
     field :href, String, null: false
     field :rules, [::Types::Rule], null: true
+
+    enforce_rbac Rbac::SYSTEM_READ
   end
 end

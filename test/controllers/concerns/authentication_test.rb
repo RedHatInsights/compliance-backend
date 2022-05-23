@@ -5,7 +5,7 @@ require 'test_helper'
 # This class tests a "dummy" controller for authentication.
 class AuthenticationTest < ActionController::TestCase
   # rubocop:disable Rails/ApplicationController
-  class AuthenticatedMockController < ActionController::Base
+  class AuthenticatedMockController < V1::ApplicationController
     include Authentication
 
     def index
@@ -14,6 +14,7 @@ class AuthenticationTest < ActionController::TestCase
 
       render plain: user.account_number
     end
+    permission_for_action :index, Rbac::POLICY_READ
 
     def raising
       raise 'Error'
@@ -102,38 +103,16 @@ class AuthenticationTest < ActionController::TestCase
           }
         }.to_json
       )
-      full_access_response = RBACApiClient::AccessPagination.new(
-        data: [
-          RBACApiClient::Access.new(
-            permission: 'advisor:*:*',
-            resource_definitions: nil
-          )
-        ]
-      )
-      RBACApiClient::AccessApi
-        .any_instance
-        .stubs(:get_principal_access)
-        .returns(full_access_response)
+      stub_rbac_permissions('advisor:*:*')
       process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :forbidden
       assert_not User.current, 'current user must be reset after request'
     end
   end
 
-  context 'successful login' do
+  context 'after successful login' do
     setup do
-      full_access_response = RBACApiClient::AccessPagination.new(
-        data: [
-          RBACApiClient::Access.new(
-            permission: 'compliance:*:*',
-            resource_definitions: nil
-          )
-        ]
-      )
-      RBACApiClient::AccessApi
-        .any_instance
-        .stubs(:get_principal_access)
-        .returns(full_access_response)
+      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_VIEWER)
     end
 
     should 'account number not found, creates a new account' do

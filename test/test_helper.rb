@@ -89,6 +89,19 @@ unless Rails.env.production?
       def assert_equal_sets(arr1, arr2)
         assert_equal Set.new(arr1), Set.new(arr2)
       end
+
+      # rubocop:disable Metrics/MethodLength
+      def stub_rbac_permissions(*permissions)
+        role_permissions = permissions.map do |permission|
+          RBACApiClient::Access.new(
+            permission: permission,
+            resource_definitions: nil
+          )
+        end
+        role = RBACApiClient::AccessPagination.new(data: role_permissions)
+        Rbac::API_CLIENT.stubs(:get_principal_access).returns(role)
+      end
+      # rubocop:enable Metrics/MethodLength
     end
   end
 

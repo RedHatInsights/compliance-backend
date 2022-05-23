@@ -11,6 +11,8 @@ module Mutations
       field :profile, Types::Profile, null: true
       field :profiles, [Types::Profile], null: true
 
+      enforce_rbac Rbac::POLICY_WRITE
+
       def resolve(args = {})
         ::Profile.transaction do
           hosts = find_hosts(args[:system_ids])

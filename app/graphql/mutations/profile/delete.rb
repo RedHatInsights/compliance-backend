@@ -9,6 +9,8 @@ module Mutations
       argument :id, ID, required: true
       field :profile, Types::Profile, null: false
 
+      enforce_rbac Rbac::POLICY_DELETE
+
       def resolve(args = {})
         profile = Pundit.authorize(
           context[:current_user],

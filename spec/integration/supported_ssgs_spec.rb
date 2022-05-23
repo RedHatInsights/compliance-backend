@@ -3,6 +3,10 @@
 require 'swagger_helper'
 
 describe 'SupportedSsgs API' do
+  before do
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+  end
+
   path "#{Settings.path_prefix}/#{Settings.app_name}/supported_ssgs" do
     get 'List all supported SSGs' do
       tags 'supported_ssg'

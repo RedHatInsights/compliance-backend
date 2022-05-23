@@ -3,6 +3,10 @@
 require 'test_helper'
 
 class BusinessObjectiveTest < ActiveSupport::TestCase
+  setup do
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+  end
+
   test 'query host owned by the user' do
     query = <<-GRAPHQL
       {

@@ -20,6 +20,7 @@ describe 'Systems API' do
       external: true
     )
     FactoryBot.create(:test_result, profile: profile, host: @host)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/systems" do

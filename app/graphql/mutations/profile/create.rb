@@ -17,6 +17,8 @@ module Mutations
       argument :selected_rule_ref_ids, [String], required: false
       field :profile, Types::Profile, null: false
 
+      enforce_rbac Rbac::POLICY_CREATE
+
       def resolve(args = {})
         policy = new_policy(args)
         profile = new_profile(args)

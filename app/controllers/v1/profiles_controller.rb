@@ -17,10 +17,12 @@ module V1
       params[:sort_by] ||= 'score'
       render_json resolve_collection
     end
+    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
 
     def show
       render_json profile
     end
+    permission_for_action :show, Rbac::COMPLIANCE_VIEWER
 
     def destroy
       authorize profile
@@ -28,6 +30,7 @@ module V1
       audit_removal(destroyed_profile)
       render_json destroyed_profile, status: :accepted
     end
+    permission_for_action :destroy, Rbac::POLICY_DELETE
 
     def create
       Policy.transaction do
@@ -41,6 +44,7 @@ module V1
       end
       audit_creation
     end
+    permission_for_action :create, Rbac::POLICY_CREATE
 
     def update
       Policy.transaction do
@@ -53,6 +57,7 @@ module V1
         end
       end
     end
+    permission_for_action :update, Rbac::POLICY_WRITE
 
     def tailoring_file
       return unless profile.tailored?

@@ -18,4 +18,8 @@ class Schema < GraphQL::Schema
   use GraphQL::Execution::Interpreter
   use GraphQL::Analysis::AST
   disable_introspection_entry_points if Rails.env.production?
+
+  def self.unauthorized_object(_error)
+    raise GraphQL::UnauthorizedError, 'User is not authorized to access this action.'
+  end
 end

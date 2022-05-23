@@ -13,12 +13,17 @@ class Account < ApplicationRecord
 
   validates :account_number, presence: true, allow_blank: false
 
+  attr_accessor :identity_header
+
   class << self
     def from_identity_header(identity_header)
       # FIXME: swap the 'account_number' with the 'org_id' after the translation is done
       account = Account.find_or_create_by(
         account_number: identity_header.identity['account_number']
       )
+
+      # Set the identity header for further use
+      account.identity_header = identity_header
 
       # Update the 'is_internal' and the 'org_id' fields if set and differs
       updates = {

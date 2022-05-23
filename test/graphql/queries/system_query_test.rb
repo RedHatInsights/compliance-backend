@@ -15,6 +15,8 @@ class SystemQueryTest < ActiveSupport::TestCase
       rule_count: 1,
       account: @user.account
     )
+
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   TAG = { 'namespace' => 'foo', 'key' => 'bar', 'value' => 'baz' }.freeze
@@ -1114,5 +1116,30 @@ class SystemQueryTest < ActiveSupport::TestCase
     )
 
     @host1.update!(policies: [@profile1.policy])
+  end
+
+  context 'unauthorized user' do
+    setup do
+      stub_rbac_permissions
+    end
+
+    should 'have the query action rejected' do
+      query = <<-GRAPHQL
+        query System($inventoryId: String!){
+            system(id: $inventoryId) {
+                name
+            }
+        }
+      GRAPHQL
+
+      error = assert_raises(GraphQL::UnauthorizedError) do
+        Schema.execute(
+          query,
+          variables: { inventoryId: @host1.id },
+          context: { current_user: @user }
+        )
+      end
+      assert_equal error.message, 'User is not authorized to access this action.'
+    end
   end
 end

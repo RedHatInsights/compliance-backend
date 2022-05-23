@@ -14,8 +14,9 @@ module Mutations
       argument :description, String, required: false
       argument :compliance_threshold, Float, required: false
       argument :business_objective_id, ID, required: false
-
       field :profile, Types::Profile, null: true
+
+      enforce_rbac Rbac::POLICY_WRITE
 
       def resolve(args = {})
         profile = authorized_profile(args)

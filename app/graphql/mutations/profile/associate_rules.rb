@@ -13,6 +13,8 @@ module Mutations
       argument :rule_ref_ids, [String], required: false
       field :profile, Types::Profile, null: true
 
+      enforce_rbac Rbac::POLICY_WRITE
+
       def resolve(args = {})
         rules = prepare_rules(args)
         ::Profile.transaction do

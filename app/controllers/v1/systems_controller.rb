@@ -7,10 +7,12 @@ module V1
       params[:search] ||= 'has_test_results=true or has_policy=true'
       render_json resolve_collection
     end
+    permission_for_action :index, Rbac::SYSTEM_READ
 
     def show
       render_json host
     end
+    permission_for_action :show, Rbac::SYSTEM_READ
 
     private
 

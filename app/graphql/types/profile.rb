@@ -84,6 +84,8 @@ module Types
     field :os_version, String, null: false
     field :policy_type, String, null: false
 
+    enforce_rbac Rbac::POLICY_READ
+
     def last_scanned(args = {})
       latest_test_result_batch(args).then do |latest_test_result|
         if latest_test_result.blank? || latest_test_result.end_time.blank?
