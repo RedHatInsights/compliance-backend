@@ -46,6 +46,22 @@ module Mutations
 
   # Common class for all GraphQL mutations
   class BaseMutation < GraphQL::Schema::RelayClassicMutation
+    class << self
+      def authorized?(_object, context)
+        if @rbac_permissions.blank?
+          raise StandardError, 'RBAC was not enforced on mutation.'
+        end
+
+        @rbac_permissions.any? do |permission|
+          context[:current_user].authorized_to?(permission)
+        end
+      end
+
+      def enforce_rbac(*permissions)
+        @rbac_permissions = permissions
+      end
+    end
+
     protected
 
     def audit_success(msg)

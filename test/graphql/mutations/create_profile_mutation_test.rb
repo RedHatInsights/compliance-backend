@@ -6,6 +6,7 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
   setup do
     @user = FactoryBot.create(:user)
     @parent = FactoryBot.create(:canonical_profile, :with_rules)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   QUERY = <<-GRAPHQL

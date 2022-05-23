@@ -8,5 +8,7 @@ module Types
 
     field :id, ID, null: false
     field :title, String, null: false
+
+    enforce_rbac Rbac::POLICY_READ
   end
 end

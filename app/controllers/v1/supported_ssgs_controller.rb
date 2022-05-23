@@ -8,6 +8,7 @@ module V1
     def index
       render_json supported_ssgs
     end
+    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
 
     private
 

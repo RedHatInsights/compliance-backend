@@ -6,6 +6,8 @@ class GraphQLCollectionTest < ActiveSupport::TestCase
   setup do
     @user = FactoryBot.create(:user)
     User.current = @user
+
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   test 'deterministic pagination' do

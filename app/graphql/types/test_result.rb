@@ -14,5 +14,7 @@ module Types
     field :supported, Boolean, null: false
     field :profile, ::Types::Profile, null: false
     field :host, ::Types::System, null: false
+
+    enforce_rbac Rbac::REPORT_READ, Rbac::REPORT_EXPORT_READ
   end
 end

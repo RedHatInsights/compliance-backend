@@ -3,6 +3,10 @@
 require 'swagger_helper'
 
 describe 'Benchmarks API' do
+  before do
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+  end
+
   path "#{Settings.path_prefix}/#{Settings.app_name}/benchmarks" do
     get 'List all benchmarks' do
       before { FactoryBot.create_list(:benchmark, 2) }

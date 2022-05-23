@@ -10,6 +10,8 @@ class User < ApplicationRecord
   delegate :account_number, to: :account
 
   def authorized_to?(access_request)
+    return true if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
+
     rbac_permissions.any? do |access|
       Rbac.verify(access.permission, access_request)
     end
@@ -18,8 +20,7 @@ class User < ApplicationRecord
   private
 
   def rbac_permissions
-    # FIXME: pass the original raw identity header here somehow
-    @rbac_permissions ||= Rbac.load_user_permissions(account.b64_identity)
+    @rbac_permissions ||= Rbac.load_user_permissions(account.identity_header.raw)
   end
 
   class << self

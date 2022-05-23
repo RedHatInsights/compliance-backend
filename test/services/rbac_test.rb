@@ -20,22 +20,7 @@ class RbacTest < ActiveSupport::TestCase
     end
 
     should 'return users permissions' do
-      fake_rbac_api_response = RBACApiClient::AccessPagination.new(
-        data: [
-          RBACApiClient::Access.new(
-            permission: 'app:resource0:*',
-            resource_definitions: nil
-          ),
-          RBACApiClient::Access.new(
-            permission: 'app:resource1:write',
-            resource_definitions: nil
-          )
-        ]
-      )
-      RBACApiClient::AccessApi
-        .any_instance
-        .expects(:get_principal_access)
-        .returns(fake_rbac_api_response)
+      stub_rbac_permissions('app:resource0:*', 'app:resource1:write')
       assert Rbac.load_user_permissions(@account.b64_identity)
     end
   end

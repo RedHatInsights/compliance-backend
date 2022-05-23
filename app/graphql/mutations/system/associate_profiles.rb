@@ -10,6 +10,8 @@ module Mutations
       argument :profile_ids, [ID], required: true
       field :system, ::Types::System, null: true
 
+      enforce_rbac Rbac::POLICY_WRITE
+
       def resolve(args = {})
         host = find_host(args[:id])
         policies = find_profiles(args[:profile_ids]).map(&:policy).uniq

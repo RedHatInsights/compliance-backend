@@ -12,4 +12,14 @@ class GraphqlController < ApplicationController
     )
     render json: result
   end
+
+  rescue_from GraphQL::UnauthorizedError do
+    render_error 'You are not authorized to access this action.', status: :forbidden
+  end
+
+  private
+
+  def rbac_allowed?
+    user.authorized_to?(Rbac::INVENTORY_VIEWER)
+  end
 end

@@ -9,6 +9,8 @@ module Mutations
       argument :title, String, required: true
       field :business_objective, Types::BusinessObjective, null: true
 
+      enforce_rbac Rbac::POLICY_CREATE
+
       def resolve(title:)
         business_objective = ::BusinessObjective.find_or_initialize_by(title: title)
         business_objective.save

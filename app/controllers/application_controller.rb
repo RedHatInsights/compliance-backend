@@ -16,6 +16,13 @@ class ApplicationController < ActionController::API
 
   before_action :set_csp_hsts
 
+  class << self
+    def permission_for_action(action, permission)
+      @action_permissions ||= {}
+      @action_permissions[action.to_sym] ||= permission
+    end
+  end
+
   def openapi
     send_file Rails.root.join('swagger/v1/openapi.v3.yaml')
   end

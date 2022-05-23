@@ -12,6 +12,8 @@ module Mutations
       field :profile, Types::Profile, null: false
       field :test_results, [Types::TestResult], null: false
 
+      enforce_rbac Rbac::COMPLIANCE_ADMIN
+
       def resolve(args = {})
         profile = scoped_profiles.find(args[:profile_id])
         profiles = profile.policy.profiles

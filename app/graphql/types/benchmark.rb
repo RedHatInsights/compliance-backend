@@ -17,6 +17,8 @@ module Types
     field :profiles, [::Types::Profile], null: true
     field :rules, [::Types::Rule], null: true
 
+    enforce_rbac Rbac::COMPLIANCE_VIEWER
+
     def profiles
       object.profiles.canonical
     end

@@ -3,6 +3,10 @@
 require 'test_helper'
 
 class CreateBusinessObjectiveMutationTest < ActiveSupport::TestCase
+  setup do
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+  end
+
   QUERY = <<-GRAPHQL
      mutation createBusinessObjective($input: createBusinessObjectiveInput!) {
         createBusinessObjective(input: $input) {

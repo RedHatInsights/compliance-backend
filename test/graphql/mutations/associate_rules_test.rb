@@ -13,6 +13,7 @@ class AssociateRulesMutationTest < ActiveSupport::TestCase
       benchmark: parent.benchmark
     )
     @rule = parent.rules.first
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   QUERY = <<-GRAPHQL

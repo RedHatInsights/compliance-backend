@@ -15,6 +15,7 @@ describe 'Business Objectives API' do
       profile.policy.update!(business_objective: bo)
       bo
     end
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/business_objectives" do

@@ -6,6 +6,7 @@ module V1
     def index
       render_json resolve_collection
     end
+    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
 
     def show
       rule = if ::UUID.validate(params[:id])
@@ -18,6 +19,7 @@ module V1
 
       render_json rule
     end
+    permission_for_action :show, Rbac::COMPLIANCE_VIEWER
 
     private
 

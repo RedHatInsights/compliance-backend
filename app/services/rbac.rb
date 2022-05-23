@@ -5,10 +5,21 @@ require 'insights-rbac-api-client'
 # This service is meant to handle calls to the RBAC API
 class Rbac
   API_CLIENT = RBACApiClient::AccessApi.new
-  COMPLIANCE_FULL_ACCESS = 'compliance:*:*'
   APPS = 'compliance,inventory'
   OPTS = { limit: 1000, auth_names: '' }.freeze
   ANY = '*'
+
+  INVENTORY_VIEWER = 'inventory:*:read'
+  COMPLIANCE_VIEWER = 'compliance:policy:read' # universal read permission accross all roles
+  COMPLIANCE_ADMIN = 'compliance:*:*'
+
+  POLICY_READ = 'compliance:policy:read'
+  POLICY_CREATE = 'compliance:policy:create'
+  POLICY_DELETE = 'compliance:policy:delete'
+  POLICY_WRITE = 'compliance:policy:write'
+  REPORT_EXPORT_READ = 'compliance:report_export:read'
+  REPORT_READ = 'compliance:report:read'
+  SYSTEM_READ = 'compliance:system:read'
 
   class AuthorizationError < StandardError; end
 
