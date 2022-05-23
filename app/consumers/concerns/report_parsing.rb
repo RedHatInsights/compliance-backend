@@ -55,7 +55,7 @@ module ReportParsing
       # Do not fire a notification for a host that has been deleted
       return unless host
 
-      ReportUploadFailed.deliver(host: host, account_number: account,
+      ReportUploadFailed.deliver(host: host, account_number: account, org_id: org_id,
                                  request_id: request_id, error: msg_for_notification(exc))
     end
 
@@ -103,7 +103,8 @@ module ReportParsing
         'id' => id,
         'b64_identity' => b64_identity,
         'url' => url,
-        'request_id' => request_id
+        'request_id' => request_id,
+        'org_id' => org_id
       )
     end
 

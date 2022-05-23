@@ -5,7 +5,13 @@ require 'test_helper'
 class ParseReportJobTest < ActiveSupport::TestCase
   setup do
     @host = FactoryBot.create(:host, account: '1234')
-    @msg_value = { 'id' => @host.id, 'account' => '1234', 'request_id' => '', 'url' => '' }
+    @msg_value = {
+      'id' => @host.id,
+      'account' => '1234',
+      'org_id' => '1111',
+      'request_id' => '',
+      'url' => ''
+    }
     @parse_report_job = ParseReportJob.new
     @file = file_fixture('report.tar.gz').read
     @parser = mock('XccdfReportParser')
@@ -44,12 +50,12 @@ class ParseReportJobTest < ActiveSupport::TestCase
     PayloadTracker.expects(:deliver).with(
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: :processing,
-      status_msg: 'Job 1 is now processing'
+      status_msg: 'Job 1 is now processing', org_id: @msg_value['org_id']
     )
     PayloadTracker.expects(:deliver).with(
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: :success,
-      status_msg: 'Job 1 has completed successfully'
+      status_msg: 'Job 1 has completed successfully', org_id: @msg_value['org_id']
     )
     SafeDownloader.expects(:download_reports)
                   .with('', ssl_only: Settings.report_download_ssl_only)
@@ -97,7 +103,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     Host.stubs(:find_by).returns(nil)
 
     ReportUploadFailed.expects(:deliver).with(
-      account_number: @msg_value['account'], host: nil, request_id: '',
+      account_number: @msg_value['account'], host: nil, request_id: '', org_id: @msg_value['org_id'],
       error: "Failed to parse report profileid from host #{@msg_value['id']}: WrongFormatError"
     )
 
@@ -123,7 +129,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     Host.stubs(:find_by).returns(@host)
 
     ReportUploadFailed.expects(:deliver).with(
-      account_number: @msg_value['account'], host: @host, request_id: '',
+      account_number: @msg_value['account'], host: @host, request_id: '', org_id: @msg_value['org_id'],
       error: "Failed to parse report profileid from host #{@msg_value['id']}: WrongFormatError"
     )
 
@@ -148,7 +154,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     PayloadTracker.expects(:deliver).with(
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: :processing,
-      status_msg: 'Job 1 is now processing'
+      status_msg: 'Job 1 is now processing', org_id: @msg_value['org_id']
     )
     error_msg = @msg_value.to_json
     PayloadTracker.expects(:deliver).with(
@@ -156,7 +162,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
       request_id: @msg_value['request_id'], status: :error,
       status_msg:
       "Failed to parse report profileid from host #{@msg_value['id']}: XccdfReportParser::WrongFormatError:" \
-      " Wrong format or benchmark - #{error_msg}"
+      " Wrong format or benchmark - #{error_msg}", org_id: @msg_value['org_id']
     )
     SafeDownloader.expects(:download_reports)
                   .with('', ssl_only: Settings.report_download_ssl_only)

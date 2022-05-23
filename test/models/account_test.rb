@@ -12,7 +12,7 @@ class AccountTest < ActiveSupport::TestCase
 
   context '.from_identity_header' do
     should 'find an existing account' do
-      acc = FactoryBot.create(:account)
+      acc = FactoryBot.create(:account, org_id: nil)
       ih = IdentityHeader.new(Base64.encode64({
         'identity' => {
           'account_number' => acc.account_number
@@ -64,7 +64,7 @@ class AccountTest < ActiveSupport::TestCase
     end
 
     should 'update the org_id field if set for an existing account' do
-      acc = FactoryBot.create(:account)
+      acc = FactoryBot.create(:account, org_id: nil)
       ih = IdentityHeader.new(Base64.encode64({
         'identity' => {
           'account_number' => acc.account_number,
