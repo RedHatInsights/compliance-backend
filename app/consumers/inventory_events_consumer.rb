@@ -69,4 +69,8 @@ class InventoryEventsConsumer < ApplicationConsumer
   def account
     @msg_value.dig('platform_metadata', 'account')
   end
+
+  def org_id
+    @msg_value.dig('platform_metadata', 'org_id')
+  end
 end

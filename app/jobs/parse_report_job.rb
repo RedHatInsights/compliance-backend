@@ -62,7 +62,7 @@ class ParseReportJob
     notify_payload_tracker(:error, msg_with_values)
     ReportUploadFailed.deliver(host: Host.find_by(id: @msg_value['id'], account: @msg_value['account']),
                                account_number: @msg_value['account'], request_id: @msg_value['request_id'],
-                               error: notification_message(exc))
+                               error: notification_message(exc), org_id: @msg_value['org_id'])
     Sidekiq.logger.error(msg_with_values)
     Rails.logger.audit_fail(msg)
   end
@@ -89,7 +89,7 @@ class ParseReportJob
     PayloadTracker.deliver(
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: status,
-      status_msg: status_msg
+      status_msg: status_msg, org_id: @msg_value['org_id']
     )
   end
 
