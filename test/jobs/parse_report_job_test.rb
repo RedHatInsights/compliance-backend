@@ -44,6 +44,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     profile_stub = OpenStruct.new(
       test_result: OpenStruct.new(profile_id: 'profileid')
     )
+    @parser.stubs(:supported?).returns(true)
     @parser.stubs(:test_result_file).returns(profile_stub)
     @parser.stubs(:host_profile)
            .returns(OpenStruct.new(policy_id: 'policyUUID'))
@@ -71,6 +72,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
       test_result: OpenStruct.new(profile_id: 'profileid')
     )
     @parser.stubs(:test_result_file).returns(profile_stub)
+    @parser.stubs(:supported?).returns(true)
     @parser.stubs(:host_profile)
            .returns(OpenStruct.new(policy_id: 'policyUUID'))
     Sidekiq.stubs(:redis).returns(false)
@@ -191,6 +193,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @policy.stubs(:compliant?).returns(false)
     @parser.stubs(:score).returns(90)
     @policy.stubs(:compliance_threshold).returns(100)
+    @parser.stubs(:supported?).returns(true)
     @hosts.stubs(:where).returns([])
 
     @parse_report_job.stubs(:notify_payload_tracker)
@@ -209,6 +212,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @policy.stubs(:compliant?).returns(true)
     @parser.stubs(:score).returns(90)
     @policy.stubs(:compliance_threshold).returns(100)
+    @parser.stubs(:supported?).returns(true)
 
     @parse_report_job.stubs(:notify_payload_tracker)
     @parse_report_job.stubs(:notify_remediation)
@@ -220,11 +224,30 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @parse_report_job.perform(0, @msg_value)
   end
 
+  test 'does not emit notification if host is unsupported' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    Sidekiq.stubs(:redis).returns(false)
+    @policy.stubs(:compliant?).returns(true)
+    @parser.stubs(:score).returns(90)
+    @parser.stubs(:supported?).returns(false)
+    @policy.stubs(:compliance_threshold).returns(100)
+
+    @parse_report_job.stubs(:notify_payload_tracker)
+    @parse_report_job.stubs(:notify_remediation)
+    @parse_report_job.stubs(:audit_success)
+    @parser.expects(:save_all)
+
+    SystemNonCompliant.expects(:deliver).never
+
+    @parse_report_job.perform(0, @msg_value)
+  end
+
   test 'does not emit notification if compliance is already below threshold' do
     XccdfReportParser.stubs(:new).returns(@parser)
     Sidekiq.stubs(:redis).returns(false)
     @parser.stubs(:score).returns(90)
     @policy.stubs(:compliance_threshold).returns(100)
+    @parser.stubs(:supported?).returns(true)
 
     @parse_report_job.stubs(:notify_payload_tracker)
     @parse_report_job.stubs(:notify_remediation)
@@ -242,6 +265,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @policy.stubs(:compliant?).returns(true)
     @parser.stubs(:score).returns(90)
     @policy.stubs(:compliance_threshold).returns(80)
+    @parser.stubs(:supported?).returns(true)
 
     @parse_report_job.stubs(:notify_payload_tracker)
     @parse_report_job.stubs(:notify_remediation)
@@ -258,6 +282,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     Sidekiq.stubs(:redis).returns(false)
     @parser.stubs(:policy).returns(nil)
     @parser.stubs(:score).returns(90)
+    @parser.stubs(:supported?).returns(true)
 
     @parse_report_job.stubs(:notify_payload_tracker)
     @parse_report_job.stubs(:notify_remediation)
