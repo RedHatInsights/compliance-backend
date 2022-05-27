@@ -14,7 +14,7 @@ module Notifications
       yield
 
       # Produce a notification if preconditions are met and the new score is below threshold
-      return unless preconditions && parser.score < parser.policy.compliance_threshold
+      return unless parser.supported? && preconditions && parser.score < parser.policy.compliance_threshold
 
       notify_non_compliant!
       Rails.logger.info('Notification emitted due to non-compliance')

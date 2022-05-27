@@ -30,8 +30,6 @@ module Xccdf
       @op_test_result.score
     end
 
-    private
-
     def supported?
       SupportedSsg.supported?(
         ssg_version: @host_profile.ssg_version,
