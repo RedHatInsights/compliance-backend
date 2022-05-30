@@ -2,7 +2,7 @@ ARG deps="findutils hostname jq libpq openssl ruby shared-mime-info tzdata"
 ARG devDeps="gcc gcc-c++ gzip libffi-devel make openssl-devel postgresql-devel ruby-devel tar util-linux"
 ARG without="development:test"
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal AS build
+FROM registry.access.redhat.com/ubi9/ubi-minimal AS build
 
 ARG deps
 ARG devDeps
@@ -14,8 +14,7 @@ USER 0
 
 COPY ./Gemfile.lock ./Gemfile ./.gemrc.prod /opt/app-root/src/
 
-RUN microdnf module enable ruby:3.0             && \
-    microdnf install --nodocs -y $devDeps       && \
+RUN microdnf install --nodocs -y $devDeps       && \
     gem update bundler                          && \
     mv ./.gemrc.prod /etc/gemrc                 && \
     bundle config set --local without $without  && \
@@ -27,7 +26,7 @@ RUN microdnf module enable ruby:3.0             && \
 
 #############################################################
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 ARG deps
 ARG devDeps
@@ -37,7 +36,6 @@ WORKDIR /opt/app-root/src
 USER 0
 
 RUN rpm -e --nodeps tzdata             && \
-    microdnf module enable ruby:3.0    && \
     microdnf install --nodocs -y $deps && \
     gem update bundler                 && \
     microdnf clean all -y              && \
