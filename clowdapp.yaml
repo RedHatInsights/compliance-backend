@@ -143,6 +143,8 @@ objects:
           - accounts
           - --ean-translator-addr
           - http://${TENANT_TRANSLATOR_HOST}:${TENANT_TRANSLATOR_PORT}
+          - --ean-translator-timeout
+          - "60"
         env:
           - name: TENANT_TRANSLATOR_HOST
             value: ${TENANT_TRANSLATOR_HOST}
