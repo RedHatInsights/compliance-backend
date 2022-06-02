@@ -45,6 +45,10 @@ bower.json
 # Ignore Byebug command history file.
 .byebug_history
 
+# Ignore Pry history and config file
+.pry_history
+.pryrc
+
 # Ignore node_modules
 node_modules/
 
