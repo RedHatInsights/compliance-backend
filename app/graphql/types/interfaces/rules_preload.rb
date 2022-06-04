@@ -13,7 +13,7 @@ module Types
 
         latest_test_result_batch(args).then do |latest_test_result|
           latest_rule_results_batch(latest_test_result).then do |rule_results|
-            rules_for_rule_results_batch(rule_results).then do |rules|
+            rules_for_rule_results_batch(rule_results, args).then do |rules|
               initialize_rules_context(rules.compact, rule_results, args)
               rules.compact
             end
@@ -30,8 +30,9 @@ module Types
                           .load(latest_test_result)
       end
 
-      def rules_for_rule_results_batch(rule_results)
-        ::RecordLoader.for(::Rule).load_many(rule_results.pluck(:rule_id))
+      def rules_for_rule_results_batch(rule_results, args)
+        includes = :rule_identifier if args[:lookahead].selects?(:identifier)
+        ::RecordLoader.for(::Rule, includes: includes).load_many(rule_results.pluck(:rule_id))
       end
 
       def all_rules
