@@ -134,8 +134,7 @@ Prerequisites:
 * Generated minio credentials (for Ingress)
   - environment variables: `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`
 
-Note, that the environment variables can be written to `.env` file
-(see [.env.example](.env.example)).
+Note, that the environment variables can be written to `.env` file (see [.env.example](.env.example)).
 They are being read by dotenv.
 
 First, let's install all dependencies and initialize the database.
