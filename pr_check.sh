@@ -13,9 +13,8 @@ export COMPONENT_NAME="compliance"  # name of app-sre "resourceTemplate" in depl
 export IMAGE="quay.io/cloudservices/compliance-backend"
 cat /etc/redhat-release
 
-# shellcheck source=/dev/null
 # build the PR commit image
-source "${CICD_ROOT}/build.sh"
+source "${APP_ROOT}/build_deploy.sh"
 
 # Make directory for artifacts
 mkdir -p artifacts
