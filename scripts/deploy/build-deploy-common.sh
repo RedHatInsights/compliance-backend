@@ -1,36 +1,49 @@
 #!/usr/bin/env bash
 
 BUILD_DEPLOY_WORKDIR=$(pwd)
-BACKWARDS_COMPATIBILITY="${BACKWARDS_COMPATIBILITY:-true}"
-BACKWARDS_COMPATIBILITY_TAGS="latest qa"
-REQUIRED_REGISTRIES="quay redhat"
-REQUIRED_REGISTRIES_LOCAL="redhat"
+ADDITIONAL_TAGS="${ADDITIONAL_TAGS:-}"
+REQUIRED_REGISTRIES="${REQUIRED_REGISTRIES:-quay redhat}"
+REQUIRED_REGISTRIES_LOCAL="${REQUIRED_REGISTRIES_LOCAL:-redhat}"
 LOCAL_BUILD="${LOCAL_BUILD:-false}"
 DOCKER_CONF="$BUILD_DEPLOY_WORKDIR/.docker"
 DOCKERFILE=${DOCKERFILE:="${BUILD_DEPLOY_WORKDIR}/Dockerfile"}
 REDHAT_REGISTRY="${REDHAT_REGISTRY:-registry.redhat.io}"
 QUAY_REGISTRY="${QUAY_REGISTRY:-quay.io}"
+BUILD_ARGS="${BUILD_ARGS:-}"
+IMAGE_NAME="${IMAGE_NAME:-}"
+QUAY_EXPIRE_TIME="${QUAY_EXPIRE_TIME:-3d}"
 CONTAINER_ENGINE_CMD=''
-BUILD_ARGS=''
+IMAGE_TAG=''
 
 local_build() {
   [ "$LOCAL_BUILD" = true ]
 }
 
-backwards_compatibility_enabled() {
-  [ "$BACKWARDS_COMPATIBILITY" = true ]
+additional_tags() {
+  [ -n "$ADDITIONAL_TAGS" ]
 }
 
-is_ci_runner() {
-    [[ "$CI" == true ]]
+is_pr_or_mr_build() {
+    [ -n "$ghprbPullId" ] || [ -n "$gitlabMergeRequestId" ]
+}
+
+get_pr_build_id() {
+
+    local BUILD_ID
+
+    if [ -n "$ghprbPullId" ]; then
+        BUILD_ID="$ghprbPullId"
+    elif [ -n "$gitlabMergeRequestId" ]; then
+        BUILD_ID="$gitlabMergeRequestId"
+    else
+        BUILD_ID=''
+    fi
+
+    echo -n "$BUILD_ID"
 }
 
 get_7_chars_commit_hash() {
     git rev-parse --short=7 HEAD
-}
-
-_check_command_is_present() {
-    command -v "$1"
 }
 
 login_container_registry() {
@@ -126,6 +139,12 @@ check_required_registry_credentials() {
 
 container_engine_cmd() {
 
+    if [ -z "$CONTAINER_ENGINE_CMD" ]; then
+        if ! set_container_engine_cmd; then
+            return 1
+        fi
+    fi
+
     if [ "$CONTAINER_ENGINE_CMD" = "podman" ]; then
         podman "$@"
     else
@@ -133,14 +152,70 @@ container_engine_cmd() {
     fi
 }
 
-initialize_container_engine_cmd() {
+set_container_engine_cmd() {
 
-    if _check_command_is_present podman && ! is_ci_runner; then
-        CONTAINER_ENGINE_CMD='podman'
-    else
-        mkdir -p "$DOCKER_CONF"
-        CONTAINER_ENGINE_CMD='docker'
+    if [ -n "$CONTAINER_ENGINE_CMD" ] && _command_is_present "$CONTAINER_ENGINE_CMD"; then
+        if [ "$CONTAINER_ENGINE_CMD" = "docker" ] && ! _docker_seems_emulated; then
+            return 0
+        else
+            echo "WARNING!: specified container engine '${CONTAINER_ENGINE_CMD}' not present"
+        fi
     fi
+
+    if _command_is_present 'podman'; then
+        CONTAINER_ENGINE_CMD='podman'
+    elif _command_is_present 'docker' && ! _docker_seems_emulated; then
+        CONTAINER_ENGINE_CMD='docker'
+    else
+        echo "ERROR, no container engine found, please install either podman or docker first"
+        return 1
+    fi
+
+    echo "Container engine selected: $CONTAINER_ENGINE_CMD"
+}
+
+_command_is_present() {
+    command -v "$1" > /dev/null 2>&1
+}
+
+_docker_seems_emulated() {
+
+    local DOCKER_COMMAND_PATH
+    DOCKER_COMMAND_PATH=$(command -v docker)
+
+    if [[ $(file "$DOCKER_COMMAND_PATH") == *"ASCII text"* ]]; then
+        return 0
+    fi
+    return 1
+}
+
+build_image() {
+
+    local BUILD_ARGS_CMD=''
+    local LABEL_PARAMETER=''
+
+
+    if is_pr_or_mr_build; then
+        LABEL_PARAMETER=$(get_expiry_label_parameter)
+    fi
+
+    if [ -n "$BUILD_ARGS" ]; then
+        BUILD_ARGS_CMD=$(_get_build_args)
+    fi
+
+    #shellcheck disable=SC2086
+    container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD $LABEL_PARAMETER \
+        -t "${IMAGE_NAME}:${IMAGE_TAG}" .
+
+    #shellcheck disable=SC2181
+    if [ $? != 0 ]; then
+        echo "Error building image"
+        return 1
+    fi
+}
+
+get_expiry_label_parameter() {
+    echo "--label quay.expires-after=${QUAY_EXPIRE_TIME}"
 }
 
 _get_build_args() {
@@ -152,19 +227,6 @@ _get_build_args() {
     done
 
     echo "$tmp"
-}
-
-build_image() {
-
-    local BUILD_ARGS_CMD=''
-
-    if [ -n "$BUILD_ARGS" ]; then
-        BUILD_ARGS_CMD=$(_get_build_args)
-        container_engine_cmd build --pull -f "$DOCKERFILE" "$BUILD_ARGS_CMD" -t "${IMAGE_NAME}:${IMAGE_TAG}" .
-    else
-        container_engine_cmd build --pull -f "$DOCKERFILE" -t "${IMAGE_NAME}:${IMAGE_TAG}" .
-    fi
-
 }
 
 push_image() {
@@ -181,20 +243,29 @@ tag_image() {
     container_engine_cmd tag "${IMAGE_NAME}:${IMAGE_TAG}" "${IMAGE_NAME}:$TARGET_TAG"
 }
 
-tag_and_push_for_backwards_compatibility() {
+add_additional_tags() {
 
-    for TARGET_TAG in $BACKWARDS_COMPATIBILITY_TAGS; do
-        tag_image "$TARGET_TAG"
+    for TARGET_TAG in $ADDITIONAL_TAGS; do
+
+        if ! tag_image "$TARGET_TAG"; then
+            echo "Error creating image tag ${TARGET_TAG}"
+            return 1
+        fi
+
         if ! local_build; then
-            push_image "$TARGET_TAG"
+            if ! push_image "$TARGET_TAG"; then
+                echo "Error pushing image tag '${TARGET_TAG}' to registry!"
+                return 1
+            fi
         fi
     done
 }
 
 build_deploy_init() {
     check_required_registry_credentials || return 1
-    initialize_container_engine_cmd || return 1
+    set_container_engine_cmd || return 1
     login_to_required_registries || return 1
+    set_image_tag
 
     # TODO - validate some image related variables ?  wrap this into function
     if [ -z "$IMAGE_NAME" ]; then
@@ -208,21 +279,31 @@ build_deploy_init() {
     fi
 }
 
+set_image_tag() {
+
+    local BUILD_ID
+
+    BUILD_ID=$(get_pr_build_id)
+
+    if [ -n "$BUILD_ID" ]; then
+        IMAGE_TAG="pr-${BUILD_ID}-$(get_7_chars_commit_hash)"
+    else
+        IMAGE_TAG="$(get_7_chars_commit_hash)"
+    fi
+}
+
 build_deploy_main() {
 
     if ! build_deploy_init; then
         echo "build_deploy init phase failed!"
         return 1
     fi
-    build_image
+    build_image || return 1
     if ! local_build; then
         push_image "$IMAGE_TAG"
     fi
 
-    # To enable backwards compatibility with ci, qa, and smoke, always push latest and qa tags
-    if backwards_compatibility_enabled; then
-        tag_and_push_for_backwards_compatibility
+    if ! is_pr_or_mr_build && additional_tags; then
+        add_additional_tags || return 1
     fi
 }
-
-IMAGE_TAG=$(get_7_chars_commit_hash)
