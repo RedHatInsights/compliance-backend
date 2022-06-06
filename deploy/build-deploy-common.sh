@@ -22,7 +22,7 @@ backwards_compatibility_enabled() {
 }
 
 is_ci_runner() {
-    [[ "$(hostname)" == "ci-"* ]]
+    [[ "$CI" == true ]]
 }
 
 get_7_chars_commit_hash() {
