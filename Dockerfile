@@ -35,13 +35,12 @@ WORKDIR /opt/app-root/src
 
 USER 0
 
-RUN rpm -e --nodeps tzdata                 && \
-    microdnf install --nodocs -y $deps     && \
-    gem update bundler                     && \
-    microdnf clean all -y                  && \
-    chown 1001:root ./                     && \
-    install -d -m 0777 -o 1001 ./tmp ./log && \
-    chmod +t ./tmp ./log
+RUN rpm -e --nodeps tzdata             && \
+    microdnf install --nodocs -y $deps && \
+    gem update bundler                 && \
+    microdnf clean all -y              && \
+    chown 1001:root ./                 && \
+    install -v -d -m 1777 -o 1001 ./tmp ./log
 
 
 USER 1001
