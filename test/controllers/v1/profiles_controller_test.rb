@@ -95,6 +95,30 @@ module V1
         assert_response :success
       end
 
+      should 'allow access to profiles#tailoring_file with basic auth' do
+        account = FactoryBot.create(:account)
+        profile = FactoryBot.create(:canonical_profile, account: account)
+        stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_VIEWER)
+
+        encoded_header = Base64.encode64(
+          {
+            'identity': {
+              'account_number': account.account_number,
+              'auth_type': 'basic-auth'
+            },
+            'entitlements':
+            {
+              'insights': {
+                'is_entitled': true
+              }
+            }
+          }.to_json
+        )
+        get tailoring_file_profile_url(profile.id),
+            headers: { 'X-RH-IDENTITY': encoded_header }
+        assert_response :success
+      end
+
       should 'disallow access to profiles#tailoring_file' \
              ' with invalid identity' do
         account = FactoryBot.create(:account)

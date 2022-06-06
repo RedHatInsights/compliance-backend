@@ -63,12 +63,12 @@ module V1
       return unless profile.tailored?
 
       send_data XccdfTailoringFile.new(
-        profile: profile,
-        rule_ref_ids: profile.tailored_rule_ref_ids
+        profile: profile, rule_ref_ids: profile.tailored_rule_ref_ids
       ).to_xml, filename: tailoring_filename, type: Mime[:xml]
 
       audit_tailoring_file
     end
+    permission_for_action :tailoring_file, Rbac::COMPLIANCE_VIEWER
 
     private
 
