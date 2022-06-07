@@ -184,6 +184,8 @@ objects:
           value: "${PATH_PREFIX}"
         - name: APP_NAME
           value: "${APP_NAME}"
+        - name: RAILS_LOGLEVEL
+          value: "${RAILS_LOGLEVEL}"
         - name: RAILS_LOG_TO_STDOUT
           value: "${RAILS_LOG_TO_STDOUT}"
         - name: SETTINGS__REDIS_SSL
@@ -376,6 +378,8 @@ parameters:
 - name: PATH_PREFIX
   required: true
   value: /api
+- name: RAILS_LOGLEVEL
+  value: 'info'
 - name: RAILS_LOG_TO_STDOUT
   value: "true"
 - name: APP_NAME
