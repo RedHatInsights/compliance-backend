@@ -6,8 +6,6 @@ module V1
     include ProfileAttributes
     include ProfileAudit
 
-    attr_reader :hosts_added, :hosts_removed, :rules_added, :rules_removed
-
     before_action only: %i[show update] do
       authorize profile
     end
@@ -71,6 +69,8 @@ module V1
     permission_for_action :tailoring_file, Rbac::COMPLIANCE_VIEWER
 
     private
+
+    attr_reader :hosts_added, :hosts_removed, :rules_added, :rules_removed
 
     def new_profile
       @new_profile ||= Profile.new(profile_create_attributes).fill_from_parent
