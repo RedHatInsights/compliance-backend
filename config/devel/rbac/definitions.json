@@ -41,6 +41,9 @@
         },
         {
           "permission": "inventory:*:read"
+        },
+        {
+          "permission": "remediations:remediation:read"
         }
       ]
     },
@@ -62,6 +65,9 @@
         },
         {
           "permission": "inventory:*:read"
+        },
+        {
+          "permission": "remediations:remediation:read"
         }
       ]
     }
