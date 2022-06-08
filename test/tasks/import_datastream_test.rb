@@ -44,9 +44,11 @@ class ImportDatastreamTest < ActiveSupport::TestCase
 
   test 'ssg:check_synced fails if datastreams are not synced' do
     SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
+    SupportedRemediations.expects(:revision).at_least_once.returns('2021-07-15')
     Revision.expects(:datastreams).at_least_once.returns('2021-06-01')
+    Revision.expects(:remediations).at_least_once.returns('2021-07-15')
 
-    assert_raises SystemExit do
+    assert_raises(SystemExit, 'SSG datastreams not synced') do
       capture_io do
         Rake::Task['ssg:check_synced'].execute
       end
@@ -55,19 +57,34 @@ class ImportDatastreamTest < ActiveSupport::TestCase
 
   test 'ssg:check_synced fails if remediations are not synced' do
     SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
+    SupportedRemediations.expects(:revision).at_least_once.returns('2021-07-15')
     Revision.expects(:datastreams).at_least_once.returns('2021-07-15')
     Revision.expects(:remediations).at_least_once.returns('2021-06-01')
 
-    assert_raises SystemExit do
+    assert_raises(SystemExit, 'SSG remediations not synced') do
       capture_io do
         Rake::Task['ssg:check_synced'].execute
       end
     end
   end
 
-  test 'ssg:check_synced succeeds if synced' do
+  test 'ssg:check_synced succeeds if datastreams and remediations are synced' do
     SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
+    SupportedRemediations.expects(:revision).at_least_once.returns('2021-07-15')
     Revision.expects(:remediations).at_least_once.returns('2021-07-15')
+    Revision.expects(:datastreams).at_least_once.returns('2021-07-15')
+
+    assert_nothing_raised do
+      capture_io do
+        Rake::Task['ssg:check_synced'].execute
+      end
+    end
+  end
+
+  test 'ssg:check_synced succeeds if datastreams and remediations are synced but have different revision dates' do
+    SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
+    SupportedRemediations.expects(:revision).at_least_once.returns('2021-06-11')
+    Revision.expects(:remediations).at_least_once.returns('2021-06-11')
     Revision.expects(:datastreams).at_least_once.returns('2021-07-15')
 
     assert_nothing_raised do

@@ -10,11 +10,11 @@ namespace :ssg do
       "#{SupportedSsg.revision.inspect}\nDB revision: " \
       "#{Revision.datastreams.inspect}"
     remediations_message = "SSG remediations not synced\nRemediation config revision: " \
-      "#{SupportedSsg.revision.inspect}\nDB revision: " \
+      "#{SupportedRemediations.revision.inspect}\nDB revision: " \
       "#{Revision.remediations.inspect}"
     abort datastreams_message if Revision.datastreams != SupportedSsg.revision
-    abort remediations_message if Revision.remediations != SupportedSsg.revision
-    puts "Datastreams synced to revision: #{Revision.datastreams}"
+    abort remediations_message if Revision.remediations != SupportedRemediations.revision
+    puts "Datastreams and remediations synced to revision: #{Revision.datastreams} and #{Revision.remediations}"
   end
 
   desc 'Update supported SSGs fallback yaml'
