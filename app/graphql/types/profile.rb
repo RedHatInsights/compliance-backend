@@ -114,10 +114,11 @@ module Types
     def latest_test_result_batch(args)
       ::RecordLoader.for(
         ::TestResult,
-        column: :profile_id,
-        where: { host_id: system_id(args) },
+        column: :host_id,
+        where: { profile_id: object.id },
+        includes: :rule_results, # TODO: check for lookaheads
         order: 'created_at DESC'
-      ).load(object.id)
+      ).load(system_id(args))
     end
   end
 end
