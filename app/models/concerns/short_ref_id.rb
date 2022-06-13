@@ -10,10 +10,6 @@ module ShortRefId
   /x.freeze
 
   def short_ref_id
-    ShortRefId.short_ref_id(ref_id)
-  end
-
-  def self.short_ref_id(ref_id)
     ref_id.downcase[SHORT_REF_ID_RE] || ref_id
   end
 end
