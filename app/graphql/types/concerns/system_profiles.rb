@@ -30,7 +30,13 @@ module Types
       private
 
       def scope_profiles(profiles, policy_id)
-        policy_id ? profiles.in_policy(policy_id) : profiles
+        if policy_id
+          context[:scope_profiles] ||= {}
+          context[:scope_profiles][policy_id] ||= {}
+          context[:scope_profiles][policy_id][profiles.pluck(:id).sort] ||= profiles.in_policy(policy_id)
+        else
+          profiles
+        end
       end
     end
   end
