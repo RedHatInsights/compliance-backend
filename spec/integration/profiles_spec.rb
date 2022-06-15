@@ -9,7 +9,7 @@ describe 'Profiles API' do
     @policy = FactoryBot.create(:policy, account: @account)
     @parent = FactoryBot.create(:canonical_profile)
     @hosts = FactoryBot.create_list(
-      :host, 2, account: @account.account_number, os_minor_version: 2
+      :host, 2, account: @account.account_number, org_id: @account.org_id, os_minor_version: 2
     )
     allow_any_instance_of(PolicyHost).to receive(:host_supported?).and_return(true)
 

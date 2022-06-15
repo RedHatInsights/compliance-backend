@@ -6,7 +6,7 @@ class SystemQueryTest < ActiveSupport::TestCase
   setup do
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @user = FactoryBot.create(:user)
-    @host1 = FactoryBot.create(:host, account: @user.account.account_number)
+    @host1 = FactoryBot.create(:host, account: @user.account.account_number, org_id: @user.account.org_id)
 
     @profile1, @profile2 = FactoryBot.create_list(
       :profile,
@@ -234,6 +234,7 @@ class SystemQueryTest < ActiveSupport::TestCase
       @host2 = FactoryBot.create(
         :host,
         account: @host1.account,
+        org_id: @host1.org_id,
         stale_timestamp: 2.days.ago(Time.zone.now)
       )
       FactoryBot.create(:policy, account: @user.account, hosts: [Host.find(@host2.id)])
@@ -566,7 +567,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     setup_two_hosts
     @host1.update!(display_name: 'b')
-    @host2.update!(display_name: 'a', account: @user.account.account_number)
+    @host2.update!(display_name: 'a', account: @user.account.account_number, org_id: @user.account.org_id)
 
     result = Schema.execute(
       query,
@@ -930,6 +931,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     @host2 = FactoryBot.create(
       :host,
       account: @user.account.account_number,
+      org_id: @user.account.org_id,
       os_minor_version: 7
     )
     @profile1.policy.update(hosts: [@host1, @host2])
@@ -1001,12 +1003,14 @@ class SystemQueryTest < ActiveSupport::TestCase
     @host2 = FactoryBot.create(
       :host,
       account: @user.account.account_number,
+      org_id: @user.account.org_id,
       os_minor_version: 7
     )
 
     @host3 = FactoryBot.create(
       :host,
       account: @user.account.account_number,
+      org_id: @user.account.org_id,
       os_minor_version: 7
     )
 
@@ -1109,10 +1113,12 @@ class SystemQueryTest < ActiveSupport::TestCase
   private
 
   def setup_two_hosts
+    acc = FactoryBot.create(:account)
     @host2 = FactoryBot.create(
       :host,
       policies: [@profile2.policy],
-      account: FactoryBot.create(:account).account_number
+      account: acc.account_number,
+      org_id: acc.org_id
     )
 
     @host1.update!(policies: [@profile1.policy])

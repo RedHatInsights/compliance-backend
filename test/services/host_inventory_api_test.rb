@@ -5,9 +5,11 @@ require 'host_inventory_api'
 
 class HostInventoryApiTest < ActiveSupport::TestCase
   setup do
+    account = FactoryBot.create(:account)
     @host = FactoryBot.create(
       :host,
-      account: FactoryBot.create(:account).account_number
+      account: account.account_number,
+      org_id: account.org_id
     )
 
     @inventory_host = { 'id' => @host.id,

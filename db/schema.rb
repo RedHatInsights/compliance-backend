@@ -10,19 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_25_104102) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_15_070144) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "account_number", null: false
+    t.string "account_number"
     t.boolean "is_internal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "org_id"
+    t.string "org_id", null: false
     t.index ["account_number"], name: "index_accounts_on_account_number", unique: true
+    t.index ["org_id"], name: "index_accounts_on_org_id", unique: true
   end
 
   create_table "benchmarks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

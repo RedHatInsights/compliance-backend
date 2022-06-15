@@ -9,6 +9,7 @@ describe 'Systems API' do
     @host = FactoryBot.create(
       :host,
       account: @account.account_number,
+      org_id: @account.org_id,
       tags: [{ namespace: 'foo', key: 'bar', value: 'baz' }]
     )
     policy = FactoryBot.create(:policy, account: @account, hosts: [@host])

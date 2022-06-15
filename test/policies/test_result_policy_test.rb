@@ -11,10 +11,10 @@ class TestResultPolicyTest < ActiveSupport::TestCase
     @profile2 = FactoryBot.create(:profile, :with_rules, account: account2)
 
     @host1 = Host.find(
-      FactoryBot.create(:host, account: @user.account.account_number).id
+      FactoryBot.create(:host, account: @user.account.account_number, org_id: @user.account.org_id).id
     )
     @host2 = Host.find(
-      FactoryBot.create(:host, account: account2.account_number).id
+      FactoryBot.create(:host, account: account2.account_number, org_id: account2.org_id).id
     )
 
     @tr1 = FactoryBot.create(

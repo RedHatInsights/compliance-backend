@@ -5,7 +5,7 @@ require 'swagger_helper'
 describe 'RuleResults API' do
   before do
     @account = FactoryBot.create(:account)
-    host = FactoryBot.create(:host, account: @account.account_number)
+    host = FactoryBot.create(:host, account: @account.account_number, org_id: @account.org_id)
     profile = FactoryBot.create(
       :profile,
       :with_rules,

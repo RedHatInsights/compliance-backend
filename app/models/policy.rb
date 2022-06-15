@@ -18,6 +18,7 @@ class Policy < ApplicationRecord
   belongs_to :business_objective, optional: true
   belongs_to :account
   delegate :account_number, to: :account
+  delegate :org_id, to: :account
 
   validates :compliance_threshold, numericality: true
   validates :account, presence: true

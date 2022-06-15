@@ -40,7 +40,7 @@ class ApplicationPolicy
   end
 
   def match_account?
-    record.account_number == user.account_number
+    record.org_id == user.org_id
   end
 
   # Generic scope for all models - just matching the account ID.

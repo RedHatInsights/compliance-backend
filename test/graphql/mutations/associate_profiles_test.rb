@@ -18,7 +18,7 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @user = FactoryBot.create(:user)
     @profiles = FactoryBot.create_list(:profile, 2, account: @user.account)
-    @host = FactoryBot.create(:host, account: @user.account.account_number)
+    @host = FactoryBot.create(:host, account: @user.account.account_number, org_id: @user.account.org_id)
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
