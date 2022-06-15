@@ -12,7 +12,7 @@ class AuthenticationTest < ActionController::TestCase
       user = User.current
       return false unless user
 
-      render plain: user.account_number
+      render plain: user.org_id
     end
     permission_for_action :index, Rbac::POLICY_READ
 
@@ -58,6 +58,7 @@ class AuthenticationTest < ActionController::TestCase
           'identity':
           {
             'account_number': '1234',
+            'org_id': '1234',
             'user': { 'username': 'username' }
           }
         }.to_json
@@ -73,6 +74,7 @@ class AuthenticationTest < ActionController::TestCase
           'identity':
           {
             'account_number': '1234',
+            'org_id': '1234',
             'user': { 'username': 'username' }
           },
           'entitlements':
@@ -93,6 +95,7 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity': {
             'account_number': '1234',
+            'org_id': '1234',
             'user': { 'username': 'username' }
           },
           'entitlements':
@@ -120,6 +123,7 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity': {
             'account_number': '1234',
+            'org_id': '1234',
             'user': {
               'username': 'username',
               'is_internal': true
@@ -136,12 +140,12 @@ class AuthenticationTest < ActionController::TestCase
       process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :success
       assert_equal '1234', response.body
-      assert Account.find_by(account_number: '1234')
+      assert Account.find_by(org_id: '1234')
       assert_equal(
-        Account.find_by(account_number: '1234').account_number,
+        Account.find_by(org_id: '1234').org_id,
         '1234'
       )
-      assert Account.find_by(account_number: '1234').is_internal
+      assert Account.find_by(org_id: '1234').is_internal
       assert_not User.current, 'current user must be reset after request'
     end
 
@@ -151,6 +155,7 @@ class AuthenticationTest < ActionController::TestCase
           'identity':
           {
             'account_number': '1234',
+            'org_id': '1234',
             'user': { 'username': 'username' }
           },
           'entitlements':
@@ -165,21 +170,22 @@ class AuthenticationTest < ActionController::TestCase
       assert_response :success
       assert_equal '1234', response.body
       assert_equal(
-        Account.find_by(account_number: '1234').account_number,
+        Account.find_by(org_id: '1234').org_id,
         '1234'
       )
       assert_not User.current, 'current user must be reset after request'
     end
 
     should 'account found, is_internal unset, updates it' do
-      FactoryBot.create(:account, account_number: '1234')
-      assert_nil Account.find_by(account_number: '1234').is_internal
+      FactoryBot.create(:account, org_id: '1234')
+      assert_nil Account.find_by(org_id: '1234').is_internal
 
       encoded_header = Base64.encode64(
         {
           'identity':
           {
             'account_number': '1234',
+            'org_id': '1234',
             'user': {
               'username': 'username',
               'is_internal': false
@@ -197,7 +203,7 @@ class AuthenticationTest < ActionController::TestCase
       process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :success
       assert_equal '1234', response.body
-      assert_equal false, Account.find_by(account_number: '1234').is_internal
+      assert_equal false, Account.find_by(org_id: '1234').is_internal
     end
 
     should 'user not found, creates a new account, username missing' do
@@ -206,6 +212,7 @@ class AuthenticationTest < ActionController::TestCase
           'identity':
           {
             'account_number': '1234',
+            'org_id': '1234',
             'user': { 'username': 'username' }
           },
           'entitlements':
@@ -228,6 +235,7 @@ class AuthenticationTest < ActionController::TestCase
           'identity':
           {
             'account_number': '1234',
+            'org_id': '1234',
             'user': { 'username': 'username' }
           },
           'entitlements':
@@ -242,7 +250,7 @@ class AuthenticationTest < ActionController::TestCase
       assert_response :success
       assert_equal '1234', response.body
       assert_equal(
-        Account.find_by(account_number: '1234').account_number,
+        Account.find_by(org_id: '1234').org_id,
         '1234'
       )
       assert_not User.current, 'current user must be reset after request'
@@ -254,6 +262,7 @@ class AuthenticationTest < ActionController::TestCase
           'identity':
           {
             'account_number': '1234',
+            'org_id': '1234',
             'user': { 'username': 'username' }
           },
           'entitlements':
@@ -276,6 +285,7 @@ class AuthenticationTest < ActionController::TestCase
           'identity':
           {
             'account_number': '1234',
+            'org_id': '1234',
             'user': { 'username': 'username' }
           },
           'entitlements':
@@ -301,6 +311,7 @@ class AuthenticationTest < ActionController::TestCase
           {
             'identity': {
               'account_number': '1234',
+              'org_id': '1234',
               'user': { 'username': 'username' }
             },
             'entitlements':
@@ -328,6 +339,7 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity': {
             'account_number': '1234',
+            'org_id': '1234',
             'auth_type': IdentityHeader::CERT_AUTH
           },
           'entitlements':
@@ -355,6 +367,7 @@ class AuthenticationTest < ActionController::TestCase
         'identity':
         {
           'account_number': '1234',
+          'org_id': '1234',
           'user': { 'username': 'username' }
         },
         'entitlements':

@@ -8,6 +8,7 @@ class User < ApplicationRecord
   belongs_to :account
 
   delegate :account_number, to: :account
+  delegate :org_id, to: :account
 
   def authorized_to?(access_request)
     return true if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)

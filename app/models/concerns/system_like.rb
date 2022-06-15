@@ -8,8 +8,8 @@ module SystemLike
   included do
     has_many :rule_results, dependent: :destroy
     has_many :rules, through: :rule_results, source: :rule
-    belongs_to :account_object, optional: true, foreign_key: :account,
-                                primary_key: :account_number,
+    belongs_to :account_object, optional: true, foreign_key: :org_id,
+                                primary_key: :org_id,
                                 inverse_of: :hosts, class_name: 'Account'
   end
 

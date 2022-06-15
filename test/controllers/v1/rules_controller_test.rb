@@ -16,6 +16,7 @@ module V1
         {
           'identity': {
             'account_number': account.account_number,
+            'org_id': account.org_id,
             'auth_type': IdentityHeader::CERT_AUTH
           },
           'entitlements':
@@ -41,6 +42,7 @@ module V1
         {
           'identity': {
             'account_number': account.account_number,
+            'org_id': account.org_id,
             'auth_type': IdentityHeader::CERT_AUTH
           },
           'entitlements':

@@ -43,6 +43,7 @@ def x_rh_identity(account = nil)
     'identity':
     {
       'account_number': account&.account_number || '1234',
+      'org_id': account&.org_id || '1234',
       'type': 'User',
       'user': {
         'email': 'a@b.com',

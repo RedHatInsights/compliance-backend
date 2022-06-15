@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS inventory.hosts_v1_1 CASCADE;
 CREATE TABLE inventory.hosts_v1_1 (
     id uuid PRIMARY KEY,
     account character varying(10) NOT NULL,
+    org_id character varying(10) NOT NULL,
     display_name character varying(200) NOT NULL,
     tags jsonb NOT NULL,
     updated timestamp with time zone NOT NULL,
@@ -26,6 +27,7 @@ CREATE OR REPLACE VIEW inventory.hosts AS
 SELECT
     id,
     account,
+    org_id,
     display_name,
     created,
     updated,

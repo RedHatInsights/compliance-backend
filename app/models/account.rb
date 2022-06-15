@@ -4,31 +4,30 @@
 class Account < ApplicationRecord
   has_many :users, dependent: :nullify
   # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :hosts, foreign_key: :account, primary_key: :account_number,
+  has_many :hosts, foreign_key: :org_id, primary_key: :org_id,
                    inverse_of: :account_object
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :profiles, dependent: :destroy
   has_many :policies, dependent: :destroy
   has_many :business_objectives, through: :policies
 
-  validates :account_number, presence: true, allow_blank: false
+  validates :org_id, presence: true, allow_blank: false
 
   attr_accessor :identity_header
 
   class << self
     def from_identity_header(identity_header)
-      # FIXME: swap the 'account_number' with the 'org_id' after the translation is done
       account = Account.find_or_create_by(
-        account_number: identity_header.identity['account_number']
+        org_id: identity_header.identity['org_id']
       )
 
       # Set the identity header for further use
       account.identity_header = identity_header
 
-      # Update the 'is_internal' and the 'org_id' fields if set and differs
+      # Update the 'is_internal' and the 'account_number' fields if set and differs
       updates = {
         is_internal: (identity_header.is_internal unless identity_header.is_internal.nil?),
-        org_id: (identity_header.identity['org_id'] if account.org_id.blank?)
+        account_number: (identity_header.identity['account_number'] if account.account_number.blank?)
       }.compact
 
       account.update!(updates) if updates.any?
