@@ -14,7 +14,7 @@ class MocksController < ActionController::API
   end
 
   def account
-    OpenStruct.new(account_number: '12312931')
+    OpenStruct.new(org_id: '12312931')
   end
 end
 
