@@ -69,7 +69,7 @@ module Authentication
   def set_authenticated_user
     User.current = user
     Insights::API::Common::AuditLog.audit_with_account(
-      current_user.account_number
+      current_user.org_id
     )
   end
 

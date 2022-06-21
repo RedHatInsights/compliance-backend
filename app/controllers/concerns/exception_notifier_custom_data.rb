@@ -14,7 +14,7 @@ module ExceptionNotifierCustomData
     request.env[
       'exception_notifier.exception_data'
     ] = OpenshiftEnvironment.summary.merge(
-      current_user: current_user&.account&.account_number
+      current_user: current_user&.account&.org_id
     )
   end
 end
