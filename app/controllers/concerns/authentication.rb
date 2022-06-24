@@ -60,7 +60,7 @@ module Authentication
     @rbac_permissions ||= Rbac.load_user_permissions(raw_identity_header)
 
     @rbac_permissions.any? do |access|
-      Rbac.verify(access.permission, Rbac::COMPLIANCE_FULL_ACCESS)
+      Rbac.verify(access.permission, Rbac::COMPLIANCE_VIEWER)
     end
   end
 
