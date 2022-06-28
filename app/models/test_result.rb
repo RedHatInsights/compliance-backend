@@ -20,12 +20,7 @@ class TestResult < ApplicationRecord
   after_save :update_cached_fields!
   after_destroy :update_cached_fields!
 
-  scope :latest, lambda {
-    joins("JOIN (#{latest_without_ids.to_sql}) as tr on "\
-          'test_results.profile_id = tr.profile_id AND '\
-          'test_results.host_id = tr.host_id AND '\
-          'test_results.end_time = tr.end_time')
-  }
+  scope :latest, -> { joins(with_latest) }
 
   scope :supported, lambda { |supported = true|
     where(supported: supported)
@@ -39,5 +34,16 @@ class TestResult < ApplicationRecord
   def self.latest_without_ids
     group(:profile_id, :host_id)
       .select(:profile_id, :host_id, 'MAX(end_time) as end_time')
+  end
+
+  def self.with_latest
+    latest_without_ids = group(:profile_id, :host_id).select(:profile_id, :host_id, 'MAX(end_time) as end_time')
+
+    <<-SQL
+      JOIN (#{latest_without_ids.to_sql}) as tr ON
+      test_results.profile_id = tr.profile_id AND
+      test_results.host_id = tr.host_id AND
+      test_results.end_time = tr.end_time
+    SQL
   end
 end
