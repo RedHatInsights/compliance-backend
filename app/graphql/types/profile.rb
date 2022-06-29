@@ -32,6 +32,10 @@ module Types
       argument :references, [String],
                'Rule references to filter by', required: false
     end
+    field :failing_rules, [::Types::Rule], null: true do
+      argument :policy_id, ID,
+               'Policy ID to filter by', required: true
+    end
     field :hosts, [::Types::System], null: true
     field :benchmark, ::Types::Benchmark, null: true
     field :ssg_version, String, null: false

@@ -40,6 +40,16 @@ module Types
         end
       end
 
+      def failing_rules(args = {})
+        ids = ::RuleResult.latest(args[:policy_id]).failed
+                          .group(:rule_id)
+                          .select(:rule_id, 'COUNT(result) as cnt')
+
+        ::Rule.joins("INNER JOIN (#{ids.to_sql}) AS failed ON rules.id = failed.rule_id")
+              .order('failed.cnt DESC')
+              .select('rules.*', 'failed.cnt AS failed_count')
+      end
+
       def initialize_rules_context(rules, rule_results, args = {})
         rules.each do |rule|
           context[:parent_profile_id][rule.id] = object.id

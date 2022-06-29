@@ -31,6 +31,8 @@ class RuleResult < ApplicationRecord
   scope :selected, -> { where(result: SELECTED) }
   scope :failed, -> { where(result: FAIL) }
   scope :for_system, ->(host_id) { where(host_id: host_id) }
+  scope :for_policy, ->(policy_id) { joins(:profile).where(profiles: ::Profile.in_policy(policy_id)) }
+  scope :latest, ->(policy_id) { for_policy(policy_id).joins(:test_result).joins(::TestResult.with_latest) }
 
   def self.from_openscap_parser(op_rule_result, test_result_id: nil,
                                 rule_id: nil, host_id: nil)
