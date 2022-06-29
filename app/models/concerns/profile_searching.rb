@@ -31,6 +31,8 @@ module ProfileSearching
                   validator: ScopedSearch::Validators::INTEGER
     scoped_search on: :ssg_version, ext_method: 'ssg_version_search',
                   only_explicit: true, operators: ['=', '!=']
+    scoped_search on: :policy_id, ext_method: 'filter_by_policy',
+                  only_explicit: true, operators: ['=']
 
     scope :ssg_versions, lambda { |ssg_versions|
       joins(:benchmark).where(benchmarks: { version: ssg_versions })
@@ -134,6 +136,15 @@ module ProfileSearching
                    ::Xccdf::Benchmark.where(version: value) ||
                    ::Xccdf::Benchmark.where.not(version: value)
       { conditions: benchmark_id.in(benchmarks.pluck(:id)).to_sql }
+    end
+
+    def filter_by_policy(_filter, _operator, policy_or_profile_id)
+      # We don't really care which ones is being selected if the parent policy is common
+      any_child_profile = Profile.in_policy(policy_or_profile_id).select(:id).limit(1)
+
+      {
+        conditions: "profiles.id IN (#{any_child_profile.to_sql})"
+      }
     end
   end
 
