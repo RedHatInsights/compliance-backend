@@ -181,6 +181,12 @@ type Profile implements Node & RulesPreload {
   compliantHostCount: Int!
   description: String
   external: Boolean!
+  failingRules(
+    """
+    Policy ID to filter by
+    """
+    policyId: ID!
+  ): [Rule!]
   hosts: [System!]
   id: ID!
   lastScanned(
@@ -537,6 +543,7 @@ type Rule implements Node {
     systemId: String
   ): Boolean!
   description: String
+  failedCount: Int
   id: ID!
   identifier: String
   precedence: Int

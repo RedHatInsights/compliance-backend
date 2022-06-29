@@ -18,6 +18,7 @@ module Types
     field :profiles, [::Types::Profile], null: true
     field :identifier, String, null: true
     field :references, String, null: true
+    field :failed_count, Int, null: true
     field :compliant, Boolean, null: false do
       argument :system_id, String, 'Is a system compliant?',
                required: false
@@ -65,6 +66,11 @@ module Types
       ::CollectionLoader.for(::Rule, :profiles).load(object).then do |profiles|
         Pundit.policy_scope(context[:current_user], profiles)
       end
+    end
+
+    # We only care about this value if there is an attributes cache hit
+    def failed_count
+      object.attributes['failed_count']
     end
 
     private

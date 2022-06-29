@@ -329,4 +329,44 @@ class ProfileQueryTest < ActiveSupport::TestCase
       assert_equal @profile.id, profiles.first['node']['id']
     end
   end
+
+  should 'query profile via a policy with failing rule stats' do
+    FactoryBot.create_list(:host, 2, account: @profile.account.account_number, org_id: @profile.account.org_id)
+    @profile.policy.update!(hosts: Host.all)
+    Host.all.each do |h|
+      tr = FactoryBot.create(:test_result, host: h, profile: @profile)
+      @profile.rules.each do |r|
+        FactoryBot.create(:rule_result, rule: r, test_result: tr, result: 'fail')
+      end
+    end
+
+    query = <<-GRAPHQL
+    query Profiles($filter: String!, $policyId: ID!) {
+      profiles(search: $filter) {
+        edges {
+          node {
+            id
+            hosts {
+              id
+            }
+            failingRules(policyId: $policyId) {
+              id
+              failedCount
+            }
+          }
+        }
+      }
+    }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { policyId: @profile.policy_id, filter: "policy_id = #{@profile.policy_id}" },
+      context: { current_user: @user }
+    )
+
+    profile = result['data']['profiles']['edges'][0]['node']
+    assert_equal 2, profile['hosts'].count
+    assert_equal 2, profile['failingRules'].count
+  end
 end

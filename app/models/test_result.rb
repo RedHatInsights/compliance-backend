@@ -8,6 +8,9 @@ class TestResult < ApplicationRecord
   has_one :benchmark, through: :profile
   has_many :rule_results, dependent: :delete_all
   has_many :rules, through: :rule_results
+  has_many :failed_rule_results, -> { failed }, inverse_of: :test_result,
+                                                class_name: 'RuleResult',
+                                                dependent: :delete_all
 
   validates :host, presence: true, on: :create
   validates :host_id, presence: true,
