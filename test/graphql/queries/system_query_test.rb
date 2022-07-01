@@ -1051,6 +1051,148 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_equal nodes, [@host2.id, @host3.id].sort
   end
 
+  test 'search for systems with supported or unsupported profiles' do
+    # setup_two_hosts
+    @host2 = FactoryBot.create(
+      :host,
+      account: @user.account.account_number,
+      org_id: @user.account.org_id,
+      os_minor_version: 7
+    )
+    @profile1.policy.update(hosts: [@host1, @host2])
+
+    FactoryBot.create(
+      :test_result,
+      host: @host1,
+      profile: @profile1,
+      supported: false
+    )
+    FactoryBot.create(
+      :test_result,
+      host: @host2,
+      profile: @profile1
+    )
+
+    query = <<-GRAPHQL
+      query getSystems($filter: String!, $policyId: ID) {
+        systems(search: $filter) {
+          totalCount
+          edges {
+            node {
+              id
+              name
+              testResultProfiles(policyId: $policyId) {
+                id
+                name
+                supported
+              }
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    filter = <<-FILTER
+      (with_results_for_policy_id = #{@profile1.id}) and
+      (supported_ssg = false)
+    FILTER
+
+    result = Schema.execute(
+      query,
+      variables: { filter: filter },
+      context: { current_user: @user }
+    )
+
+    node = result['data']['systems']['edges'][0]['node']
+
+    assert_equal result['data']['systems']['totalCount'], 1
+    assert_equal node['id'], @host1.id
+
+    filter = <<-FILTER
+      (with_results_for_policy_id = #{@profile1.id}) and
+      (supported_ssg = true)
+    FILTER
+
+    result = Schema.execute(
+      query,
+      variables: { filter: filter },
+      context: { current_user: @user }
+    )
+
+    node = result['data']['systems']['edges'][0]['node']
+
+    assert_equal result['data']['systems']['totalCount'], 1
+    assert_equal node['id'], @host2.id
+  end
+
+  test 'search for systems with reported or not reported profiles' do
+    # setup_two_hosts
+    @host2 = FactoryBot.create(
+      :host,
+      account: @user.account.account_number,
+      org_id: @user.account.org_id,
+      os_minor_version: 7
+    )
+    @profile1.policy.update(hosts: [@host1, @host2])
+
+    FactoryBot.create(
+      :test_result,
+      host: @host1,
+      profile: @profile1
+    )
+
+    query = <<-GRAPHQL
+      query getSystems($filter: String!, $policyId: ID) {
+        systems(search: $filter) {
+          totalCount
+          edges {
+            node {
+              id
+              name
+              testResultProfiles(policyId: $policyId) {
+                id
+                name
+                lastScanned
+                compliant
+                score
+              }
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    filter = <<-FILTER
+      (policy_id = #{@profile1.id}) and (reported = true)
+    FILTER
+
+    result = Schema.execute(
+      query,
+      variables: { filter: filter },
+      context: { current_user: @user }
+    )
+
+    node = result['data']['systems']['edges'][0]['node']
+
+    assert_equal result['data']['systems']['totalCount'], 1
+    assert_equal node['id'], @host1.id
+
+    filter = <<-FILTER
+      (policy_id = #{@profile1.id}) and (reported = false)
+    FILTER
+
+    result = Schema.execute(
+      query,
+      variables: { filter: filter },
+      context: { current_user: @user }
+    )
+
+    node = result['data']['systems']['edges'][0]['node']
+
+    assert_equal result['data']['systems']['totalCount'], 1
+    assert_equal node['id'], @host2.id
+  end
+
   test 'query system rules when results contain wrong rule_ids' do
     query = <<-GRAPHQL
     query System($systemId: String!){
