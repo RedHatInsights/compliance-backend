@@ -32,6 +32,12 @@ module HostSearching
                   only_explicit: true, operators: ['=']
     scoped_search on: :stale_timestamp,
                   only_explicit: true, operators: ['<', '>']
+    scoped_search on: :supported_ssg,
+                  ext_method: :filter_by_supported_ssg,
+                  only_explicit: true, operators: ['=']
+    scoped_search on: :reported,
+                  ext_method: :filter_by_reported,
+                  only_explicit: true, operators: ['=']
 
     scope :with_policy, lambda { |with_policy = true|
       with_policy && where(id: ::PolicyHost.select(:host_id)) ||
@@ -57,6 +63,7 @@ module HostSearching
   end
 
   # class methods for Host searching
+  # rubocop:disable Metrics/ModuleLength
   module ClassMethods
     def filter_os_major_version(_filter, operator, value)
       values = value.split(',').map(&:strip)
@@ -135,6 +142,28 @@ module HostSearching
       { conditions: "hosts.id IN(#{hosts.to_sql})" }
     end
 
+    def filter_by_supported_ssg(_filter, _operator, value)
+      profiles = RequestStore.store['scoped_search_context_profiles']
+
+      raise ScopedSearch::QueryNotSupported if profiles.nil?
+
+      hosts = ::TestResult.where(supported: value, profile: profiles)
+                          .latest.select('test_results.host_id')
+
+      { conditions: "hosts.id IN(#{hosts.to_sql})" }
+    end
+
+    def filter_by_reported(_filter, _operator, value)
+      profiles = RequestStore.store['scoped_search_context_profiles']
+
+      raise ScopedSearch::QueryNotSupported if profiles.nil?
+
+      hosts = ::TestResult.where(profile: profiles)
+                          .latest.select('test_results.host_id')
+
+      { conditions: "hosts.id #{value == 'false' ? 'NOT' : ''} IN(#{hosts.to_sql})" }
+    end
+
     def test_results?(_filter, _operator, value)
       hosts = ::Host.with_test_results(
         ::ActiveModel::Type::Boolean.new.cast(value)
@@ -189,6 +218,7 @@ module HostSearching
               .or(::Profile.where(policy_id: profiles.select(:policy_id)))
     end
   end
+  # rubocop:enable Metrics/ModuleLength
 
   class_methods do
     extend ClassMethods
