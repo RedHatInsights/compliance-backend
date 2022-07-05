@@ -175,6 +175,24 @@ objects:
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: MAX_INIT_TIMEOUT_SECONDS
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
+        - name: SETTINGS__REDIS_CACHE_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.endpoint
+              optional: true
+        - name: SETTINGS__REDIS_CACHE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.port
+              optional: true
+        - name: SETTINGS__REDIS_CACHE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.auth_token
+              optional: true
 # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
