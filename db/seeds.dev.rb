@@ -81,9 +81,10 @@ Account.find_each do |account|
 
   Profile.canonical.includes(:benchmark).group_by(&:ref_id).each do |_, profiles|
     canonical_profile = profiles.sample
+    supported_minor_versions = canonical_profile.supported_os_versions.map { |sv| sv.version[/[^.]+$/] }
     hosts = Host.where(id: host_ids)
-                .where("#{Host::OS_MAJOR_VERSION} = ?",
-                       canonical_profile.os_major_version)
+                .where("#{Host::OS_MAJOR_VERSION} = ? AND #{Host::OS_MINOR_VERSION} IN (?)",
+                       canonical_profile.os_major_version, supported_minor_versions)
 
     next if hosts.empty? || [true, true, false].sample
 
