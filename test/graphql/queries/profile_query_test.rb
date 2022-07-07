@@ -349,7 +349,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
             hosts {
               id
             }
-            failingRules(policyId: $policyId) {
+            topFailedRules(policyId: $policyId) {
               id
               failedCount
             }
@@ -367,6 +367,6 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
     profile = result['data']['profiles']['edges'][0]['node']
     assert_equal 2, profile['hosts'].count
-    assert_equal 2, profile['failingRules'].count
+    assert_equal 2, profile['topFailedRules'].count
   end
 end

@@ -40,14 +40,15 @@ module Types
         end
       end
 
-      def failing_rules(args = {})
+      def top_failed_rules(args = {})
         ids = ::RuleResult.latest(args[:policy_id]).failed
                           .group(:rule_id)
                           .select(:rule_id, 'COUNT(result) as cnt')
 
         ::Rule.joins("INNER JOIN (#{ids.to_sql}) AS failed ON rules.id = failed.rule_id")
-              .order('failed.cnt DESC')
+              .order(::Rule::SORTED_SEVERITIES => :desc, 'failed.cnt' => :desc)
               .select('rules.*', 'failed.cnt AS failed_count')
+              .limit(10)
       end
 
       def initialize_rules_context(rules, rule_results, args = {})

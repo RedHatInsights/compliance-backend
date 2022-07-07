@@ -181,12 +181,6 @@ type Profile implements Node & RulesPreload {
   compliantHostCount: Int!
   description: String
   external: Boolean!
-  failingRules(
-    """
-    Policy ID to filter by
-    """
-    policyId: ID!
-  ): [Rule!]
   hosts: [System!]
   id: ID!
   lastScanned(
@@ -247,6 +241,12 @@ type Profile implements Node & RulesPreload {
   ): Boolean!
   supportedOsVersions: [String!]!
   testResultHostCount: Int!
+  topFailedRules(
+    """
+    Policy ID to filter by
+    """
+    policyId: ID!
+  ): [Rule!]
   totalHostCount: Int!
   unsupportedHostCount: Int!
 }
