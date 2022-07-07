@@ -6,10 +6,10 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
   setup do
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @user = FactoryBot.create(:user)
-    @profile = FactoryBot.create(:profile, account: @user.account)
+    @profile = FactoryBot.create(:profile, account: @user.account, upstream: false)
     @host = FactoryBot.create(:host, account: @user.account.account_number, org_id: @user.account.org_id)
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
-    stub_supported_ssg([@host])
+    stub_supported_ssg([@host], [@profile.benchmark.version])
   end
 
   QUERY = <<-GRAPHQL

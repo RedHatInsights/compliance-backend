@@ -11,7 +11,8 @@ describe 'Profiles API' do
     @hosts = FactoryBot.create_list(
       :host, 2, account: @account.account_number, org_id: @account.org_id, os_minor_version: 2
     )
-    allow_any_instance_of(PolicyHost).to receive(:host_supported?).and_return(true)
+    allow(PolicyHost).to receive(:os_major_supported?).and_return(true)
+    allow(PolicyHost).to receive(:os_minors_supported?).and_return(true)
 
     allow(@policy).to receive(:supported_os_minor_versions).and_return([2])
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
