@@ -113,7 +113,8 @@ services:
       - DATABASE_USER=insights
       - DATABASE_PASSWORD=insights
       - API_PATH_PREFIX=/api/rbac
-      - DEVELOPMENT=True
+      - DEVELOPMENT=False
+      - BYPASS_BOP_VERIFICATION=True
     depends_on:
       - build-rbac-db
       - db

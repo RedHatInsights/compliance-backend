@@ -15,6 +15,6 @@ module Types
     field :profile, ::Types::Profile, null: false
     field :host, ::Types::System, null: false
 
-    enforce_rbac Rbac::REPORT_READ, Rbac::REPORT_EXPORT_READ
+    enforce_rbac Rbac::REPORT_READ
   end
 end
