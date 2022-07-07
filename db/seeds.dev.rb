@@ -73,11 +73,12 @@ Account.find_each do |account|
       :host,
       host_count,
       account: account.account_number,
+      org_id: account.org_id,
       os_version_arr: version
     ).map(&:id)
   end
 
-  logger.info("Generated #{host_ids.count} hosts for acc #{account.account_number}")
+  logger.info("Generated #{host_ids.count} hosts for acc #{account.org_id}")
 
   Profile.canonical.includes(:benchmark).group_by(&:ref_id).each do |_, profiles|
     canonical_profile = profiles.sample
@@ -108,5 +109,5 @@ Account.find_each do |account|
     end
   end
 
-  logger.info("Generated #{account.policies.count} policies for account #{account.account_number}")
+  logger.info("Generated #{account.policies.count} policies for account #{account.org_id}")
 end

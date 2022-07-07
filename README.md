@@ -318,6 +318,7 @@ podman run -itv $PWD:/usr/src -v $PWD/cacerts:/opt/java/openjdk/lib/security/cac
 ### Seeding data
 
 To seed accounts, policies, results and hosts use `dev:db:seed` rake task.
+It is required to wait for the SSG content to be synchronized. Watch `compliance-backend_import-ssg_1` container to see the synchronization progress.
 It is recommeneded to run the command after a first log in was initiated, as it would generate data for that account.
 
 ```
