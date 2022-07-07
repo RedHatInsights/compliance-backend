@@ -17,7 +17,6 @@ class Rbac
   POLICY_CREATE = 'compliance:policy:create'
   POLICY_DELETE = 'compliance:policy:delete'
   POLICY_WRITE = 'compliance:policy:write'
-  REPORT_EXPORT_READ = 'compliance:report_export:read'
   REPORT_READ = 'compliance:report:read'
   SYSTEM_READ = 'compliance:system:read'
 

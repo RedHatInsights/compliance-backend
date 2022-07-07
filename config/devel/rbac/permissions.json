@@ -33,10 +33,5 @@
       {
         "verb": "write"
       }
-    ],
-    "report_export": [
-      {
-        "verb": "read"
-      }
     ]
 }
