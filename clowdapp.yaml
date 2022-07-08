@@ -137,6 +137,7 @@ objects:
       webServices:
         public:
           enabled: true
+          apiPath: compliance
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
