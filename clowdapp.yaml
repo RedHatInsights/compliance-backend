@@ -176,6 +176,8 @@ objects:
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: MAX_INIT_TIMEOUT_SECONDS
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
+        - name: PRIMARY_REDIS_AS_CACHE
+          value: "${PRIMARY_REDIS_AS_CACHE}"
         - name: SETTINGS__REDIS_CACHE_HOSTNAME
           valueFrom:
             secretKeyRef:
@@ -474,3 +476,6 @@ parameters:
 - name: MAX_INIT_TIMEOUT_SECONDS
   description: Number of seconds for timeout init container operation
   value: "120"
+- name: PRIMARY_REDIS_AS_CACHE
+  description: Whether to use the clowder-provided Redis as cache or not
+  value: 'false'

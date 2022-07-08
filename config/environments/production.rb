@@ -46,12 +46,21 @@ Rails.application.configure do
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
 
-  # Use a different cache store in production.
-  config.cache_store = :redis_cache_store, {
-    url: "redis://#{Settings.redis_cache_hostname}:#{Settings.redis_cache_port}",
-    password: Settings.redis_cache_password.present? ? Settings.redis_cache_password : nil,
-    ssl: Settings.redis_cache_ssl
-  }
+  # Cache configuration might be coming from Clowder that is only available after initialization
+  config.after_initialize do
+    # Use a different cache store in production.
+    config.cache_store = :redis_cache_store, begin
+      if ENV.fetch('PRIMARY_REDIS_AS_CACHE', false) == 'true' # Fall-back to the clowder-redis in ephemeral
+        redis_url = "redis://#{Settings.redis_url}"
+        redis_password = Settings.redis_password
+      else # Use the dedicated redis if available
+        redis_url = "redis://#{Settings.redis_cache_hostname}:#{Settings.redis_cache_port}"
+        redis_password = Settings.redis_cache_password.present? ? Settings.redis_cache_password : nil
+      end
+
+      { url: redis_url, password: redis_password, ssl: Settings.redis_cache_ssl}
+    end
+  end
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
