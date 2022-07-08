@@ -28,18 +28,18 @@ class ApplicationProducer < Kafka::Client
     end
 
     def kafka_ca_cert
-      return unless %w[ssl sasl_ssl].include?(Settings.kafka.security_protocol)
+      return unless %w[ssl sasl_ssl].include?(Settings.kafka.security_protocol.downcase)
 
       File.read(Settings.kafka.ssl_ca_location)
     end
 
     def sasl_config
-      return unless Settings.kafka.security_protocol == 'sasl_ssl'
+      return unless Settings.kafka.security_protocol.downcase == 'sasl_ssl'
 
       {
         sasl_scram_username: Settings.kafka.sasl_username,
         sasl_scram_password: Settings.kafka.sasl_password,
-        sasl_scram_mechanism: 'sha512'
+        sasl_scram_mechanism: Settings.kafka.sasl_mechanism.try(:sub, /^SCRAM-SHA-/, 'sha')
       }
     end
 
