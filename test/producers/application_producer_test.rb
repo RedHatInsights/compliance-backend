@@ -25,6 +25,7 @@ class ApplicationProducerTest < ActiveSupport::TestCase
     Settings.kafka.ssl_ca_location = 'test/fixtures/files/test_ca.crt'
     Settings.kafka.sasl_username = 'user'
     Settings.kafka.sasl_password = 'youwish'
+    Settings.kafka.sasl_mechanism = 'SCRAM-SHA-512'
 
     class MockProducer < ApplicationProducer; end
 

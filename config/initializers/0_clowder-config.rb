@@ -29,12 +29,13 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   if kafka_security_protocol
     if kafka_security_protocol == 'sasl'
-      kafka_server_config[:security_protocol] = 'sasl_ssl'
       kafkaCaFile = Tempfile.create
       kafkaCaFile.write(first_kafka_server_config&.dig('cacert'))
       kafka_server_config[:ssl_ca_location] = kafkaCaFile.path
       kafka_server_config[:sasl_username] = first_kafka_server_config&.dig('sasl', 'username')
       kafka_server_config[:sasl_password] = first_kafka_server_config&.dig('sasl', 'password')
+      kafka_server_config[:sasl_mechanism] = first_kafka_server_config&.dig('sasl', 'saslMechanism')
+      kafka_server_config[:security_protocol] = first_kafka_server_config&.dig('sasl', 'securityProtocol')
     else
       raise "Unsupported Kafka security protocol '#{kafka_security_protocol}'"
     end
