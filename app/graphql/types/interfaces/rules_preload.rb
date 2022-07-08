@@ -42,13 +42,15 @@ module Types
 
       def top_failed_rules(args = {})
         ids = ::RuleResult.latest(args[:policy_id]).failed
-                          .group(:rule_id)
-                          .select(:rule_id, 'COUNT(result) as cnt')
+                          .joins(:rule).group('rules.ref_id')
+                          .select('rules.ref_id', 'COUNT(result) as cnt', '(ARRAY_AGG(rule_id))[1] as rule_id')
+        # The rule_id selection is non-deterministic here, but it's not important which specific rule we select
+        # with the grouped ref_id under the given policy. This deduplication effort also ensures that the query
+        # below is something that ActiveRecord can consume further without model compatibility problems.
 
         ::Rule.joins("INNER JOIN (#{ids.to_sql}) AS failed ON rules.id = failed.rule_id")
               .order(::Rule::SORTED_SEVERITIES => :desc, 'failed.cnt' => :desc)
-              .select('rules.*', 'failed.cnt AS failed_count')
-              .limit(10)
+              .select('rules.*', 'failed.cnt AS failed_count').limit(10)
       end
 
       def initialize_rules_context(rules, rule_results, args = {})
