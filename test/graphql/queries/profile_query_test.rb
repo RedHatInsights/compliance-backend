@@ -333,11 +333,19 @@ class ProfileQueryTest < ActiveSupport::TestCase
   should 'query profile via a policy with failing rule stats' do
     FactoryBot.create_list(:host, 2, account: @profile.account.account_number, org_id: @profile.account.org_id)
     @profile.policy.update!(hosts: Host.all)
-    Host.all.each do |h|
+    rules = @profile.rules.to_a
+    duplicate_rule = rules.pop
+
+    cp = FactoryBot.create(:canonical_profile, :with_rules, rule_count: 1)
+    cp.rules.first.update(ref_id: duplicate_rule.ref_id)
+
+    Host.all.each_with_index do |h, idx|
       tr = FactoryBot.create(:test_result, host: h, profile: @profile)
-      @profile.rules.each do |r|
+      rules.each do |r|
         FactoryBot.create(:rule_result, rule: r, test_result: tr, result: 'fail')
       end
+      special_rule = [duplicate_rule, cp.rules.first][idx]
+      FactoryBot.create(:rule_result, rule: special_rule, test_result: tr, result: 'fail')
     end
 
     query = <<-GRAPHQL
@@ -351,6 +359,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
             }
             topFailedRules(policyId: $policyId) {
               id
+              refId
               failedCount
             }
           }
