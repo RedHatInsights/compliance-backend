@@ -42,7 +42,6 @@ module Types
 
       def top_failed_rules(args = {})
         ids = ::RuleResult.latest(args[:policy_id]).failed
-                          .where(test_results: { supported: true })
                           .joins(:rule).group('rules.ref_id')
                           .select('rules.ref_id', 'COUNT(result) as cnt', '(ARRAY_AGG(rule_id))[1] as rule_id')
         # The rule_id selection is non-deterministic here, but it's not important which specific rule we select
