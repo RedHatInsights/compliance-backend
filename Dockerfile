@@ -1,4 +1,4 @@
-ARG deps="findutils hostname jq libpq openssl ruby shared-mime-info tzdata"
+ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tzdata"
 ARG devDeps="gcc gcc-c++ gzip libffi-devel make openssl-devel postgresql-devel ruby-devel tar util-linux"
 ARG without="development:test"
 
