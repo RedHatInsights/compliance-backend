@@ -104,6 +104,7 @@ Account.find_each do |account|
         host.os_minor_version
       )
 
+      profile.rules = canonical_profile&.rules&.first(2) if profile&.rules&.empty?
       passing = passing_hosts.include?(host)
       create_test_results(profile, host, passing)
     end
