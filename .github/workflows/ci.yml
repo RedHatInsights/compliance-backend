@@ -57,6 +57,15 @@ jobs:
       run: |
         bin/rails db:setup;
         bundle exec rails db -p < db/cyndi_setup_test.sql;
+    - name: Run zeitwerk check
+      env:
+        RAILS_ENV: test
+        DATABASE_SERVICE_NAME: postgres
+        POSTGRES_SERVICE_HOST: localhost
+        POSTGRESQL_USER: insights
+        POSTGRESQL_PASSWORD: insights
+        POSTGRESQL_TEST_DATABASE: insights
+      run: bin/rails zeitwerk:check
     - name: Run rswag specs
       env:
         HOSTNAME: rails
