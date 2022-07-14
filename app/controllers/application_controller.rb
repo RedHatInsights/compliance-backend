@@ -62,19 +62,13 @@ class ApplicationController < ActionController::API
                  status: :unprocessable_entity
   end
 
-  rescue_from StrongerParameters::InvalidParameter do |error|
-    logger.info "#{error.message} (#{error.class})"
-    render_error error.message,
-                 status: :unprocessable_entity
-  end
+  invalid_parameter_exceptions = [
+    StrongerParameters::InvalidParameter,
+    ::Exceptions::InvalidSortingDirection,
+    ::Exceptions::InvalidSortingColumn
+  ]
 
-  rescue_from ::Exceptions::InvalidSortingDirection do |error|
-    logger.info "#{error.message} (#{error.class})"
-    render_error error.message,
-                 status: :unprocessable_entity
-  end
-
-  rescue_from ::Exceptions::InvalidSortingColumn do |error|
+  rescue_from(*invalid_parameter_exceptions) do |error|
     logger.info "#{error.message} (#{error.class})"
     render_error error.message,
                  status: :unprocessable_entity
