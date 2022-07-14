@@ -76,59 +76,6 @@ objects:
         livenessProbe:
           exec:
             command: ["pgrep" ,"-f", "rake"]
-    - name: floorist
-      schedule: ${FLOORIST_SCHEDULE}
-      suspend: ${{FLOORIST_SUSPEND}}
-      concurrencyPolicy: Forbid
-      podSpec:
-        image: ${FLOORIST_IMAGE}:${FLOORIST_IMAGE_TAG}
-        env:
-        - name: AWS_BUCKET
-          valueFrom:
-            secretKeyRef:
-              name: ${FLOORIST_BUCKET_SECRET_NAME}
-              key: bucket
-        - name: AWS_REGION
-          valueFrom:
-            secretKeyRef:
-              name: ${FLOORIST_BUCKET_SECRET_NAME}
-              key: aws_region
-        - name: AWS_ENDPOINT
-          valueFrom:
-            secretKeyRef:
-              name: ${FLOORIST_BUCKET_SECRET_NAME}
-              key: endpoint
-        - name: AWS_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: ${FLOORIST_BUCKET_SECRET_NAME}
-              key: aws_access_key_id
-        - name: AWS_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: ${FLOORIST_BUCKET_SECRET_NAME}
-              key: aws_secret_access_key
-        - name: FLOORPLAN_FILE
-          value: "/tmp/floorplan/floorplan.yaml"
-        - name: LOGLEVEL
-          value: ${FLOORIST_LOGLEVEL}
-        livenessProbe:
-          exec:
-            command: ["pgrep", "-f", "run"]
-        volumeMounts:
-        - name: floorplan-volume
-          mountPath: "/tmp/floorplan"
-        volumes:
-          - name: floorplan-volume
-            configMap:
-              name: floorplan
-        resources:
-          limits:
-            cpu: "${CPU_LIMIT_FLOO}"
-            memory: "${MEMORY_LIMIT_FLOO}"
-          requests:
-            cpu: "${CPU_REQUEST_FLOO}"
-            memory: "${MEMORY_REQUEST_FLOO}"
     deployments:
     - name: service
       minReplicas: ${{REPLICAS_BACKEND}}
@@ -320,27 +267,32 @@ objects:
         - name: MAX_INIT_TIMEOUT_SECONDS
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
 
-- apiVersion: v1
-  kind: ConfigMap
+- apiVersion: metrics.console.redhat.com/v1alpha1
+  kind: FloorPlan
   metadata:
     name: floorplan
-  data:
-    floorplan.yaml: |
-      - prefix: insights/compliance/policies
-        query: >-
-          SELECT DISTINCT
-            "policies"."id",
-            "profiles"."ref_id",
-            "profiles"."name",
-            "accounts"."account_number",
-            REGEXP_REPLACE("benchmarks"."ref_id", '.*RHEL-(\d)$', '\1') AS "os_major_version"
-            FROM "policies"
-            INNER JOIN "profiles" ON "profiles"."policy_id" = "policies"."id"
-            INNER JOIN "accounts" ON "accounts"."id" = "policies"."account_id"
-            INNER JOIN "benchmarks" ON "benchmarks"."id" = "profiles"."benchmark_id";
-      - prefix: insights/compliance/policy_hosts
-        query: >-
-          SELECT "policy_hosts"."host_id", "policy_hosts"."policy_id" FROM "policy_hosts";
+  spec:
+    database:
+      secretName: ${FLOORIST_DB_SECRET_NAME}
+    objectStore:
+      secretName: ${FLOORIST_BUCKET_SECRET_NAME}
+    logLevel: ${FLOORIST_LOGLEVEL}
+    queries:
+    - prefix: insights/compliance/policies
+      query: >-
+        SELECT DISTINCT
+          "policies"."id",
+          "profiles"."ref_id",
+          "profiles"."name",
+          "accounts"."account_number",
+          REGEXP_REPLACE("benchmarks"."ref_id", '.*RHEL-(\d)$', '\1') AS "os_major_version"
+          FROM "policies"
+          INNER JOIN "profiles" ON "profiles"."policy_id" = "policies"."id"
+          INNER JOIN "accounts" ON "accounts"."id" = "policies"."account_id"
+          INNER JOIN "benchmarks" ON "benchmarks"."id" = "profiles"."benchmark_id";
+    - prefix: insights/compliance/policy_hosts
+      query: >-
+        SELECT "policy_hosts"."host_id", "policy_hosts"."policy_id" FROM "policy_hosts";
 
 parameters:
 - name: IMAGE_TAG
@@ -456,13 +408,9 @@ parameters:
   description: Disable Floorist cronjob execution
   required: true
   value: 'true'
-- description: Floorist image name
-  name: FLOORIST_IMAGE
-  value: quay.io/cloudservices/floorist
-- description: Floorist Image tag
-  name: FLOORIST_IMAGE_TAG
-  required: true
-  value: latest
+- description: database secret name
+  name: FLOORIST_DB_SECRET_NAME
+  value: compliance-db
 - description: bucket secret name
   name: FLOORIST_BUCKET_SECRET_NAME
   required: true
