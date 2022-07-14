@@ -92,6 +92,15 @@ module V1
         assert_empty response.parsed_body.dig('meta', 'search')
       end
 
+      should 'fail on invalid search columns' do
+        SystemsController.any_instance.expects(:policy_scope).with(Host)
+                         .returns(Host.all).at_least_once
+        get v1_systems_url, params: { search: 'foo=bar' }
+
+        assert_response :unprocessable_entity
+        assert_includes response.parsed_body['errors'], "Invalid parameter: Field 'foo' not recognized for searching!"
+      end
+
       should 'allow filtering by tags' do
         host1 = FactoryBot.create(
           :host,

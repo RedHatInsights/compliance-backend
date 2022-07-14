@@ -87,6 +87,12 @@ class ApplicationController < ActionController::API
                  status: :unprocessable_entity
   end
 
+  rescue_from ScopedSearch::QueryNotSupported do |error|
+    message = "Invalid parameter: #{error.message}"
+    logger.info "#{message} (#{ScopedSearch::QueryNotSupported})"
+    render_error message, status: :unprocessable_entity
+  end
+
   protected
 
   def audit_success(msg)
