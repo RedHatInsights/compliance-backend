@@ -5,6 +5,7 @@ module Parameters
   extend ActiveSupport::Concern
 
   ParamType = ActionController::Parameters
+  ParamType.action_on_unpermitted_parameters = :raise
   ID_TYPE = ParamType.integer | ParamType.string
   ARRAY_OR_STRING = ParamType.array(ParamType.string) | ParamType.string
   POSITIVE_NUMBER = ParamType.integer & ParamType.gt(0)
