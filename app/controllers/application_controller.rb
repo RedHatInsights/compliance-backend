@@ -64,6 +64,7 @@ class ApplicationController < ActionController::API
 
   invalid_parameter_exceptions = [
     StrongerParameters::InvalidParameter,
+    ActionController::UnpermittedParameters,
     ::Exceptions::InvalidSortingDirection,
     ::Exceptions::InvalidSortingColumn
   ]

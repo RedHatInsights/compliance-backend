@@ -73,6 +73,11 @@ module V1
         assert_response :unprocessable_entity
       end
 
+      should 'fail if passing an unsupported param' do
+        get v1_systems_url, params: { foo: 'bar' }
+        assert_response :unprocessable_entity
+      end
+
       should 'provide a default search' do
         SystemsController.any_instance.expects(:policy_scope).with(Host)
                          .returns(Host.all).at_least_once
