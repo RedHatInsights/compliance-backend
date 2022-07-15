@@ -57,10 +57,6 @@ module V1
       end
 
       def resource_params
-        permitted_params.permit(data: ParamType.map(
-          attributes: ParamType.map,
-          relationships: ParamType.map
-        ))
         permitted_params.require(:data).permit(attributes: {}, relationships: {})
       end
 

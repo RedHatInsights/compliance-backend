@@ -6,9 +6,7 @@ module V1
     include ProfileAttributes
     include ProfileAudit
 
-    before_action only: %i[show update] do
-      authorize profile
-    end
+    before_action(only: %i[show update]) { authorize profile }
 
     def index
       permitted_params[:search] ||= 'external=false and canonical=false'
@@ -67,6 +65,7 @@ module V1
       audit_tailoring_file
     end
     permission_for_action :tailoring_file, Rbac::COMPLIANCE_VIEWER
+    permitted_params_for_action :tailoring_file, id: ID_TYPE.required
 
     private
 
