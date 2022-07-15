@@ -352,7 +352,7 @@ describe 'Profiles API' do
           {
             data: {
               attributes: {
-                name: 'An updated custom name',
+                description: 'An updated custom description',
                 compliance_threshold: 93.5,
                 business_objective: 'APAC Expansion'
               },
