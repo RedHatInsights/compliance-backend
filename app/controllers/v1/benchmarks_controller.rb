@@ -20,7 +20,7 @@ module V1
     end
 
     def benchmark
-      @benchmark ||= authorize(resource.find(params[:id]))
+      @benchmark ||= authorize(resource.find(permitted_params[:id]))
     end
 
     def scope
@@ -36,7 +36,7 @@ module V1
     end
 
     def includes
-      return unless params[:include]&.split(',')&.include?('rules')
+      return unless permitted_params[:include]&.split(',')&.include?('rules')
 
       { rules: %i[profiles] }
     end

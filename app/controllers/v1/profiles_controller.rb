@@ -11,8 +11,8 @@ module V1
     end
 
     def index
-      params[:search] ||= 'external=false and canonical=false'
-      params[:sort_by] ||= 'score'
+      permitted_params[:search] ||= 'external=false and canonical=false'
+      permitted_params[:sort_by] ||= 'score'
       render_json resolve_collection
     end
     permission_for_action :index, Rbac::COMPLIANCE_VIEWER
@@ -93,7 +93,7 @@ module V1
     end
 
     def profile
-      @profile ||= @new_profile || pundit_scope.find(params[:id])
+      @profile ||= @new_profile || pundit_scope.find(permitted_params[:id])
     end
 
     def parent_profile

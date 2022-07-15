@@ -13,22 +13,22 @@ module Collection
     end
 
     def filter_by_tags(data)
-      unless TagFiltering.tags_supported?(resource) && params[:tags]&.any?
+      unless TagFiltering.tags_supported?(resource) && permitted_params[:tags]&.any?
         return data
       end
 
-      tags = parse_tags(params[:tags])
+      tags = parse_tags(permitted_params[:tags])
       data.where('tags @> ?', tags.to_json)
     end
 
     def search(data)
-      return data if params[:search].blank?
+      return data if permitted_params[:search].blank?
 
-      data.search_for(params[:search])
+      data.search_for(permitted_params[:search])
     end
 
     def sort(data)
-      order_hash, extra_scopes = data.klass.build_order_by(params[:sort_by])
+      order_hash, extra_scopes = data.klass.build_order_by(permitted_params[:sort_by])
 
       extra_scopes.inject(data.order(order_hash)) do |result, scope|
         result.send(scope)
