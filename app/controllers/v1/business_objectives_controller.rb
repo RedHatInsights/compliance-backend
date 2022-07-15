@@ -4,7 +4,7 @@ module V1
   # API for BusinessObjectives
   class BusinessObjectivesController < ApplicationController
     def index
-      params[:sort_by] ||= 'title'
+      permitted_params[:sort_by] ||= 'title'
       render_json resolve_collection
     end
     permission_for_action :index, Rbac::POLICY_READ
@@ -18,7 +18,7 @@ module V1
     private
 
     def business_objective
-      @business_objective ||= pundit_scope.find(params[:id])
+      @business_objective ||= pundit_scope.find(permitted_params[:id])
     end
 
     def resource

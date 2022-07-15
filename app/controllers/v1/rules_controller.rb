@@ -9,7 +9,7 @@ module V1
     permission_for_action :index, Rbac::COMPLIANCE_VIEWER
 
     def show
-      rule = if ::UUID.validate(params[:id])
+      rule = if ::UUID.validate(permitted_params[:id])
                search_by_id
              else
                search_by_ref_id
@@ -36,13 +36,13 @@ module V1
     end
 
     def search_by_id
-      pundit_scope.friendly.find(params[:id])
+      pundit_scope.friendly.find(permitted_params[:id])
     end
 
     def search_by_ref_id
       rule = pundit_scope.latest.where(
         'rules.slug LIKE ?',
-        "%#{ActiveRecord::Base.sanitize_sql_like(params[:id])}%"
+        "%#{ActiveRecord::Base.sanitize_sql_like(permitted_params[:id])}%"
       )
       raise ActiveRecord::RecordNotFound if rule.blank?
 

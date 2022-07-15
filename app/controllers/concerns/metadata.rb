@@ -21,11 +21,11 @@ module Metadata
       {
         meta: {
           total: opts[:total],
-          search: params[:search],
+          search: permitted_params[:search],
           tags: tags,
           limit: pagination_limit,
           offset: pagination_offset,
-          sort_by: params[:sort_by],
+          sort_by: permitted_params[:sort_by],
           relationships: relationships_enabled?
         }.compact,
         links: links(last_offset(opts[:total]))
@@ -83,11 +83,11 @@ module Metadata
 
     def base_link_params
       {
-        search: params[:search],
-        include: params[:include],
+        search: permitted_params[:search],
+        include: permitted_params[:include],
         limit: pagination_limit,
-        tags: params[:tags],
-        sort_by: params[:sort_by],
+        tags: permitted_params[:tags],
+        sort_by: permitted_params[:sort_by],
         relationships: relationships_enabled?
       }
     end
