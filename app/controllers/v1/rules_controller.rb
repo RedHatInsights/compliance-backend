@@ -7,6 +7,7 @@ module V1
       render_json resolve_collection
     end
     permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    permitted_params_for_action :index, policy_id: ID_TYPE
 
     def show
       rule = if ::UUID.validate(permitted_params[:id])
