@@ -8,9 +8,11 @@ class HostPolicyTest < ActiveSupport::TestCase
     h1 = Host.find(
       FactoryBot.create(:host, account: user.account.account_number, org_id: user.account.org_id).id
     )
+    a = FactoryBot.create(:account)
     h2 = Host.find(FactoryBot.create(
       :host,
-      account: FactoryBot.create(:account).account_number
+      account: a.account_number,
+      org_id: a.org_id
     ).id)
 
     assert Pundit.authorize(user, h1, :index?)
