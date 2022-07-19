@@ -5,8 +5,10 @@ module ProfileSearching
   extend ActiveSupport::Concern
 
   included do
-    scoped_search on: %i[id name ref_id account_id compliance_threshold
-                         external parent_profile_id]
+    scoped_search on: %i[id account_id compliance_threshold
+                         external parent_profile_id],
+                  only_explicit: true
+    scoped_search on: %i[name ref_id]
     scoped_search relation: :assigned_hosts, on: :id, rename: :system_ids
     scoped_search relation: :assigned_hosts, on: :display_name,
                   rename: :system_names
