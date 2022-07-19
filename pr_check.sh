@@ -26,7 +26,7 @@ export REF_ENV="insights-stage"
 # Allows to test custom IQE images
 # export IQE_IMAGE_TAG=""
 
-export COMPONENTS_W_RESOURCES="compliance"
+export COMPONENTS_W_RESOURCES="compliance rbac"
 
 # Run unit tests
 source $APP_ROOT/unit_test.sh
