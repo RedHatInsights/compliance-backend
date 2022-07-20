@@ -24,6 +24,11 @@ module Collection
     def search(data)
       return data if permitted_params[:search].blank?
 
+      # Fail if search is not supported for the given model
+      if !data.respond_to?(:search_for) || permitted_params[:search].match(/\x00/)
+        raise ActionController::UnpermittedParameters.new(search: permitted_params[:search])
+      end
+
       data.search_for(permitted_params[:search])
     end
 
