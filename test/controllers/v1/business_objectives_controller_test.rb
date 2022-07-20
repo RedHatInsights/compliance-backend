@@ -45,6 +45,11 @@ module V1
           bo['id']
         end)
       end
+
+      should 'fail when searching' do
+        get v1_business_objectives_url, params: { search: 'foo' }
+        assert_response :unprocessable_entity
+      end
     end
 
     context '#show' do

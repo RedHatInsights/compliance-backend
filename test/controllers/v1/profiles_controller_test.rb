@@ -268,6 +268,13 @@ module V1
         end)
       end
 
+      test 'fail if search contains null character' do
+        get v1_profiles_url, params: {
+          search: "foo\x00bar"
+        }
+        assert_response :unprocessable_entity
+      end
+
       test 'correct searching for IN operator' do
         FactoryBot.create(:profile, name: 'abc')
         FactoryBot.create(:profile, name: 'def')
