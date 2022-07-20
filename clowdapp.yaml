@@ -8,6 +8,8 @@ objects:
   kind: ClowdApp
   metadata:
     name: "${APP_NAME}"
+    annotations:
+      ${LINT_ANNOTATION}: "minimum three replicas not required"
   spec:
     envName: ${ENV_NAME}
     testing:
@@ -314,6 +316,8 @@ parameters:
 - name: REPLICAS_SIDEKIQ
   description: Replica count for sidekiq
   value: "1"
+- name: LINT_ANNOTATION
+  value: 'default-lint-annotation-value'
 - name: RAILS_ENV
   required: true
   value: production
