@@ -20,7 +20,8 @@ class Rule < ApplicationRecord
 
   extend FriendlyId
   friendly_id :ref_id, use: :slugged
-  scoped_search on: %i[id ref_id severity]
+  scoped_search on: %i[id severity], only_explicit: true
+  scoped_search on: :ref_id
   scoped_search relation: :rule_references, on: :label, aliases: %i[reference]
   scoped_search relation: :rule_identifier, on: :label, aliases: %i[identifier]
   include OpenscapParserDerived

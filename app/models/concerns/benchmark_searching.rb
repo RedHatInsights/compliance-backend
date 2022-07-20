@@ -5,7 +5,8 @@ module BenchmarkSearching
   extend ActiveSupport::Concern
 
   included do
-    scoped_search on: %i[id ref_id title version]
+    scoped_search on: :id, only_explicit: true
+    scoped_search on: %i[ref_id title version]
     scoped_search relation: :profiles, on: :id, rename: :profile_ids,
                   aliases: %i[profile_id]
     scoped_search relation: :rules, on: :id, rename: :rule_ids,
