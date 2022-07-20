@@ -277,6 +277,7 @@ objects:
     objectStore:
       secretName: ${FLOORIST_BUCKET_SECRET_NAME}
     logLevel: ${FLOORIST_LOGLEVEL}
+    suspend: ${{FLOORIST_SUSPEND}}
     queries:
     - prefix: insights/compliance/policies
       query: >-
@@ -401,9 +402,6 @@ parameters:
   value: "false"
 - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
   value: "true"
-- name: FLOORIST_SCHEDULE
-  description: Cronjob schedule definition for floorist
-  required: true
 - name: FLOORIST_SUSPEND
   description: Disable Floorist cronjob execution
   required: true
