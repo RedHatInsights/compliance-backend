@@ -7,4 +7,7 @@ class SupportedSsgSerializer < ApplicationSerializer
   attribute :profiles do |obj|
     obj.profiles&.keys
   end
+
+  # Hacky fix that prevents the serializer to fail with no relationships
+  @relationships_to_serialize = {}
 end
