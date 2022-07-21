@@ -48,11 +48,7 @@ module Types
     end
 
     def profile(id:)
-      Pundit.authorize(
-        context[:current_user],
-        ::Profile.includes(:test_results, :hosts).find(id),
-        :show?
-      )
+      Pundit.policy_scope(context[:current_user], ::Profile).includes(:test_results, :hosts).find(id)
     end
 
     def business_objectives
