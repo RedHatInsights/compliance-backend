@@ -115,7 +115,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
     @profile.update!(account: FactoryBot.create(:account))
 
-    assert_raises(Pundit::NotAuthorizedError) do
+    assert_raises(ActiveRecord::RecordNotFound) do
       Schema.execute(
         query,
         variables: { id: @profile.id },
