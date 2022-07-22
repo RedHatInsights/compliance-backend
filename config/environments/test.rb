@@ -60,6 +60,8 @@ Rails.application.configure do
   # Tell Active Support which deprecation messages to disallow.
   config.active_support.disallowed_deprecation_warnings = []
 
+  # Disable logging
+  config.logger = ActiveSupport::Logger.new(File::NULL)
   config.audit_logger = Logger.new(File::NULL)
 
   config.factory_bot.definition_file_paths = ["test/factories"]

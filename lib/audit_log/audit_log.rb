@@ -19,7 +19,8 @@ module Insights
           f.binmode
           f.sync = autoflush
 
-          ::Logger.new(f)
+          args = Rails.env.production? ? [f] : [f, 1, 64.megabytes]
+          ::Logger.new(*args)
         end
 
         def self.audit_with_account(account_number)
