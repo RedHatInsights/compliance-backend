@@ -209,6 +209,9 @@ services:
       echo "Setting up Cyndi data in the test DB";
       RAILS_ENV=test bundle exec rails db -p < db/cyndi_setup_test.sql;
       '
+    tmpfs:
+      - /app/log
+      - /app/tmp
     volumes:
       - .:/app:z
     depends_on:
@@ -223,6 +226,9 @@ services:
     entrypoint: ''
     command: 'bundle exec rake ssg:import_rhel_supported'
     restart: on-failure
+    tmpfs:
+      - /app/log
+      - /app/tmp
     volumes:
       - .:/app:z
     depends_on:
@@ -251,6 +257,9 @@ services:
       - ACG_CONFIG=/app/devel.json
     ports:
       - 3000:3000
+    tmpfs:
+      - /app/log
+      - /app/tmp
     volumes:
       - .:/app:z
     depends_on:
@@ -274,6 +283,9 @@ services:
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
       - HOSTNAME=inventory-consumer
       - ACG_CONFIG=/app/devel.json
+    tmpfs:
+      - /app/log
+      - /app/tmp
     volumes:
       - .:/app:z
     depends_on:
@@ -287,6 +299,9 @@ services:
   sidekiq:
     image: compliance-backend-rails
     restart: on-failure
+    tmpfs:
+      - /app/log
+      - /app/tmp
     volumes:
       - .:/app:z
     depends_on:
