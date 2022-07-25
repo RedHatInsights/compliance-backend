@@ -12,7 +12,7 @@ QUAY_REGISTRY="${QUAY_REGISTRY:-quay.io}"
 BUILD_ARGS="${BUILD_ARGS:-}"
 IMAGE_NAME="${IMAGE_NAME:-}"
 QUAY_EXPIRE_TIME="${QUAY_EXPIRE_TIME:-3d}"
-CONTAINER_ENGINE_CMD=''
+CONTAINER_ENGINE_CMD="${CONTAINER_ENGINE_CMD:-}"
 
 local_build() {
   [ "$LOCAL_BUILD" = true ]
@@ -20,10 +20,6 @@ local_build() {
 
 additional_tags() {
   [ -n "$ADDITIONAL_TAGS" ]
-}
-
-is_ci_runner() {
-    [[ "$CI" == true ]]
 }
 
 is_pr_or_mr_build() {
@@ -37,9 +33,9 @@ get_pr_build_id() {
     if [ -n "$ghprbPullId" ]; then
         BUILD_ID="$ghprbPullId"
     elif [ -n "$gitlabMergeRequestId" ]; then
-	BUILD_ID="$gitlabMergeRequestId"
+        BUILD_ID="$gitlabMergeRequestId"
     else
-	BUILD_ID=''
+        BUILD_ID=''
     fi
 
     echo -n "$BUILD_ID"
@@ -47,10 +43,6 @@ get_pr_build_id() {
 
 get_7_chars_commit_hash() {
     git rev-parse --short=7 HEAD
-}
-
-_command_is_present() {
-    command -v "$1"
 }
 
 login_container_registry() {
@@ -146,6 +138,12 @@ check_required_registry_credentials() {
 
 container_engine_cmd() {
 
+    if [ -z "$CONTAINER_ENGINE_CMD" ]; then
+        if ! set_container_engine_cmd; then
+            return 1
+        fi
+    fi
+
     if [ "$CONTAINER_ENGINE_CMD" = "podman" ]; then
         podman "$@"
     else
@@ -155,14 +153,39 @@ container_engine_cmd() {
 
 set_container_engine_cmd() {
 
-    if _command_is_present 'docker'; then
-        CONTAINER_ENGINE_CMD='docker'
-    elif _command_is_present 'podman'; then
+    if [ -n "$CONTAINER_ENGINE_CMD" ] && _command_is_present "$CONTAINER_ENGINE_CMD"; then
+        if [ "$CONTAINER_ENGINE_CMD" = "docker" ] && ! _docker_seems_emulated; then
+            return 0
+        else
+            echo "WARNING!: specified container engine '${CONTAINER_ENGINE_CMD}' not present"
+        fi
+    fi
+
+    if _command_is_present 'podman'; then
         CONTAINER_ENGINE_CMD='podman'
+    elif _command_is_present 'docker' && ! _docker_seems_emulated; then
+        CONTAINER_ENGINE_CMD='docker'
     else
-        echo "Cannot find a container engine!"
+        echo "ERROR, no container engine found, please install either podman or docker first"
         return 1
     fi
+
+    echo "Container engine selected: $CONTAINER_ENGINE_CMD"
+}
+
+_command_is_present() {
+    command -v "$1" > /dev/null 2>&1
+}
+
+_docker_seems_emulated() {
+
+    local DOCKER_COMMAND_PATH
+    DOCKER_COMMAND_PATH=$(command -v docker)
+
+    if [[ $(file "$DOCKER_COMMAND_PATH") == *"ASCII text"* ]]; then
+        return 0
+    fi
+    return 1
 }
 
 _get_build_args() {
@@ -190,11 +213,14 @@ build_image() {
         BUILD_ARGS_CMD=$(_get_build_args)
     fi
 
-    container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD $LABEL_PARAMETER -t "${IMAGE_NAME}:${IMAGE_TAG}" .
+    #shellcheck disable=SC2086
+    container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD $LABEL_PARAMETER \
+        -t "${IMAGE_NAME}:${IMAGE_TAG}" .
 
+    #shellcheck disable=SC2181
     if [ $? != 0 ]; then
         echo "Error building image"
-	return 1
+        return 1
     fi
 }
 
@@ -219,9 +245,17 @@ tag_image() {
 add_additional_tags() {
 
     for TARGET_TAG in $ADDITIONAL_TAGS; do
-        tag_image "$TARGET_TAG"
+
+        if ! tag_image "$TARGET_TAG"; then
+            echo "Error creating image tag ${TARGET_TAG}"
+            return 1
+        fi
+
         if ! local_build; then
-            push_image "$TARGET_TAG"
+            if ! push_image "$TARGET_TAG"; then
+                echo "Error pushing image tag '${TARGET_TAG}' to registry!"
+                return 1
+            fi
         fi
     done
 }
@@ -251,9 +285,9 @@ set_image_tag() {
     BUILD_ID=$(get_pr_build_id)
 
     if [ -n "$BUILD_ID" ]; then
-    IMAGE_TAG="pr-${BUILD_ID}-$(get_7_chars_commit_hash)"
+        IMAGE_TAG="pr-${BUILD_ID}-$(get_7_chars_commit_hash)"
     else
-    IMAGE_TAG="$(get_7_chars_commit_hash)"
+        IMAGE_TAG="$(get_7_chars_commit_hash)"
     fi
 }
 
@@ -268,7 +302,7 @@ build_deploy_main() {
         push_image "$IMAGE_TAG"
     fi
 
-    if additional_tags; then
-        add_additional_tags
+    if ! is_pr_or_mr_build && additional_tags; then
+        add_additional_tags || return 1
     fi
 }
