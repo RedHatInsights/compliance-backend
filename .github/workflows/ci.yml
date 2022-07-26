@@ -29,6 +29,14 @@ jobs:
       run: bundle exec rubocop --parallel
     - name: Brakeman
       run: bundle exec brakeman
+    - name: Validate the minimized Clowder template
+      run: |
+        wget -qO ./yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64;
+        chmod +x yq;
+        ./yq '.objects[0].spec.jobs = [] | .objects[0].spec.deployments = [] | del(.objects[0].spec.dependencies[] | select(. == "compliance-ssg"))' clowdapp.yaml > ref.yaml;
+        diff ref.yaml clowdapp-minimal.yaml;
+        rm ref.yaml yq;
+
   unit-tests:
     runs-on: ubuntu-latest
     services:
