@@ -47,11 +47,11 @@ get_7_chars_commit_hash() {
 
 login_container_registry() {
 
-    local USER="$1"
+    local USERNAME="$1"
     local PASSWORD="$2"
     local REGISTRY="$3"
 
-    container_engine_cmd login "-u=${USER}" "--password-stdin" "$REGISTRY" <<< "$PASSWORD"
+    container_engine_cmd login "-u=${USERNAME}" "--password-stdin" "$REGISTRY" <<< "$PASSWORD"
 }
 
 login_quay_registry() {
@@ -154,10 +154,11 @@ container_engine_cmd() {
 set_container_engine_cmd() {
 
     if [ -n "$CONTAINER_ENGINE_CMD" ] && _command_is_present "$CONTAINER_ENGINE_CMD"; then
-        if [ "$CONTAINER_ENGINE_CMD" = "docker" ] && ! _docker_seems_emulated; then
-            return 0
-        else
+        if [ "$CONTAINER_ENGINE_CMD" = "docker" ] && _docker_seems_emulated; then
             echo "WARNING!: specified container engine '${CONTAINER_ENGINE_CMD}' not present"
+        else
+            echo "Container engine selected: $CONTAINER_ENGINE_CMD"
+            return 0
         fi
     fi
 
