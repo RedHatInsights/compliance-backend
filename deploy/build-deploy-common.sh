@@ -141,6 +141,7 @@ initialize_container_engine_cmd() {
         mkdir -p "$DOCKER_CONF"
         CONTAINER_ENGINE_CMD='docker'
     fi
+    CONTAINER_ENGINE_CMD='podman'
 }
 
 _get_build_args() {
