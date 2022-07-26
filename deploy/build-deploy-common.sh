@@ -47,11 +47,11 @@ get_7_chars_commit_hash() {
 
 login_container_registry() {
 
-    local USERNAME="$1"
+    local USER="$1"
     local PASSWORD="$2"
     local REGISTRY="$3"
 
-    container_engine_cmd login "-u=${USERNAME}" "--password-stdin" "$REGISTRY" <<< "$PASSWORD"
+    container_engine_cmd login "-u=${USER}" "--password-stdin" "$REGISTRY" <<< "$PASSWORD"
 }
 
 login_quay_registry() {
