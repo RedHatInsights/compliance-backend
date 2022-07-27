@@ -141,6 +141,6 @@ class XccdfReportParser
 
   def parse_failure_message
     "Report for profile #{@test_result_file.test_result.profile_id} against "\
-      "#{@host.name} of account #{@account.account_number} could not be parsed."
+      "#{@host.name} of account #{@account.org_id} could not be parsed."
   end
 end
