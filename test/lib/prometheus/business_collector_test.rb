@@ -15,7 +15,7 @@ class BusinessCollectorTest < ActiveSupport::TestCase
     FactoryBot.create_list(
       :host,
       2,
-      account: account.account_number,
+      org_id: account.org_id,
       policies: [FactoryBot.create(:policy, account: account)]
     )
 
@@ -24,7 +24,7 @@ class BusinessCollectorTest < ActiveSupport::TestCase
     FactoryBot.create_list(
       :host,
       50,
-      account: account.account_number,
+      org_id: account.org_id,
       policies: [policy]
     )
 

@@ -91,8 +91,8 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @client_accounts.observe client_accounts.count
     @client_accounts_with_hosts.observe(
       Host.with_policies_or_test_results.where(
-        account: client_accounts.select(:account_number)
-      ).select(:account).distinct.count
+        account: client_accounts.select(:org_id)
+      ).select(:org_id).distinct.count
     )
     @total_policies.observe Policy.count
     @client_policies.observe(
@@ -132,7 +132,7 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     @total_systems.observe Host.with_policies_or_test_results.count
     @client_systems.observe(
       Host.with_policies_or_test_results
-          .where(account: client_accounts.select(:account_number)).count
+          .where(account: client_accounts.select(:org_id)).count
     )
 
     Policy.joins(:benchmarks).distinct.group('benchmarks.ref_id').count.each do |ref_id, cnt|
@@ -155,7 +155,7 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
     end
 
     Host.with_policies_or_test_results.where(
-      account: client_accounts.select(:account_number)
+      account: client_accounts.select(:org_id)
     ).select(
       "COUNT(id), concat(
         #{Host::OS_MAJOR_VERSION},
@@ -172,11 +172,11 @@ class BusinessCollector < PrometheusExporter::Server::TypeCollector
                                       .having('COUNT(policy_hosts.host_id) >= 50')
 
     @total_accounts_with_50plus_hosts_per_policy.observe(
-      Account.where(id: policies_50plus_hosts).count(:account_number)
+      Account.where(id: policies_50plus_hosts).count(:org_id)
     )
 
     @client_accounts_with_50plus_hosts_per_policy.observe(
-      client_accounts.where(id: policies_50plus_hosts).count(:account_number)
+      client_accounts.where(id: policies_50plus_hosts).count(:org_id)
     )
 
     @total_50plus_policies.observe(policies_50plus_hosts.count.size)
