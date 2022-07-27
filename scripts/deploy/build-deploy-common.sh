@@ -14,6 +14,7 @@ IMAGE_NAME="${IMAGE_NAME:-}"
 QUAY_EXPIRE_TIME="${QUAY_EXPIRE_TIME:-3d}"
 CONTAINER_ENGINE_CMD=''
 IMAGE_TAG=''
+PREFER_CONTAINER_ENGINE="${PREFER_CONTAINER_ENGINE:-}"
 
 local_build() {
   [ "$LOCAL_BUILD" = true ]
@@ -154,24 +155,53 @@ container_engine_cmd() {
 
 set_container_engine_cmd() {
 
-    if [ -n "$CONTAINER_ENGINE_CMD" ] && _command_is_present "$CONTAINER_ENGINE_CMD"; then
-        if [ "$CONTAINER_ENGINE_CMD" = "docker" ] && ! _docker_seems_emulated; then
-            return 0
+    if _configured_container_engine_available; then
+        CONTAINER_ENGINE_CMD="$PREFER_CONTAINER_ENGINE"
+    else
+        if container_engine_available 'podman'; then
+            CONTAINER_ENGINE_CMD='podman'
+        elif container_engine_available 'docker'; then
+            CONTAINER_ENGINE_CMD='docker'
         else
-            echo "WARNING!: specified container engine '${CONTAINER_ENGINE_CMD}' not present"
+            echo "ERROR, no container engine found, please install either podman or docker first"
+            return 1
         fi
     fi
 
-    if _command_is_present 'podman'; then
-        CONTAINER_ENGINE_CMD='podman'
-    elif _command_is_present 'docker' && ! _docker_seems_emulated; then
-        CONTAINER_ENGINE_CMD='docker'
-    else
-        echo "ERROR, no container engine found, please install either podman or docker first"
-        return 1
+    echo "Container engine selected: $CONTAINER_ENGINE_CMD"
+}
+
+_configured_container_engine_available() {
+
+    local CONTAINER_ENGINE_AVAILABLE=1
+
+    if [ -n "$PREFER_CONTAINER_ENGINE" ]; then
+        if container_engine_available "$PREFER_CONTAINER_ENGINE"; then
+            CONTAINER_ENGINE_AVAILABLE=0
+        else
+            echo "WARNING!: specified container engine '${PREFER_CONTAINER_ENGINE}' not present, finding alternative..."
+        fi
     fi
 
-    echo "Container engine selected: $CONTAINER_ENGINE_CMD"
+    return "$CONTAINER_ENGINE_AVAILABLE"
+}
+
+container_engine_available() {
+
+    local CONTAINER_ENGINE_CMD="$1"
+    local CONTAINER_ENGINE_AVAILABLE=1
+
+    if [ "$CONTAINER_ENGINE_CMD" = "podman" ]; then
+        if _command_is_present 'podman'; then
+            CONTAINER_ENGINE_AVAILABLE=0
+        fi
+    elif [ "$CONTAINER_ENGINE_CMD" = "docker" ]; then
+        if _command_is_present 'docker' && ! _docker_seems_emulated; then
+            CONTAINER_ENGINE_AVAILABLE=0
+        fi
+    fi
+
+    return "$CONTAINER_ENGINE_AVAILABLE"
 }
 
 _command_is_present() {
