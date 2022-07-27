@@ -7,8 +7,8 @@ export IMAGE_TAG
 
 DB_CONTAINER_NAME="compliance-db-${IMAGE_TAG}"
 TEST_CONTAINER_NAME="compliance-test-${IMAGE_TAG}"
+POD_NAME="compliance-pod-${IMAGE_TAG}"
 
-NETWORK="compliance-test-${IMAGE_TAG}"
 POSTGRES_IMAGE="quay.io/cloudservices/postgresql-rds:cyndi-12-1"
 IMAGE="quay.io/cloudservices/compliance-backend"
 IMAGE_TAG=$(git rev-parse --short=7 HEAD)
@@ -21,50 +21,19 @@ if [[ ! -z "$ghprbPullId" ]]; then
   export IMAGE_TAG="pr-${ghprbPullId}-${IMAGE_TAG}"
 fi
 
-function teardown_docker {
-  docker rm -f "$DB_CONTAINER_NAME" || true
-  docker rm -f "$TEST_CONTAINER_NAME" || true
-  try_to_delete_network || true
+function teardown_podman {
+  podman rm -f "$DB_CONTAINER_NAME" || true
+  podman rm -f "$TEST_CONTAINER_NAME" || true
+  podman pod rm "$POD_NAME" || true
 }
 
-try_to_delete_network() {
+trap "teardown_podman" EXIT SIGINT SIGTERM
 
-  if ! docker network rm "$NETWORK"; then
+podman pod create --name "$POD_NAME" || exit 1
 
-    for CONTAINER_ID in "$DB_CONTAINER_NAME" "$TEST_CONTAINER_NAME"; do
-      docker rm -f "$CONTAINER_ID"
-      docker network disconnect -f "$NETWORK" "$CONTAINER_ID"
-    done
-
-    if ! docker network rm "$NETWORK"; then
-      echo "failed deleting network '$NETWORK'";
-      return 1
-    fi
-  fi
-}
-
-try_to_create_container_network() {
-
-  if docker network inspect "$NETWORK" >/dev/null; then
-
-    if ! try_to_delete_network "$NETWORK"; then
-        return 1
-    fi
-  fi
-
-  if ! docker network create --driver bridge "$NETWORK"; then
-    echo "failed to create network $NETWORK"
-    return 1
-  fi
-}
-
-trap "teardown_docker" EXIT SIGINT SIGTERM
-
-try_to_create_container_network || exit 1
-
-DB_CONTAINER_ID=$(docker run -d \
+DB_CONTAINER_ID=$(podman run -d \
   --name "${DB_CONTAINER_NAME}" \
-  --network "$NETWORK" \
+  --pod "${POD_NAME}" \
   --rm \
   -e POSTGRESQL_USER="$DATABASE_USER" \
   -e POSTGRESQL_PASSWORD="$DATABASE_PASSWORD" \
@@ -77,12 +46,13 @@ if [[ "$DB_CONTAINER_ID" == "0" ]]; then
 fi
 
 # Do tests
-TEST_CONTAINER_ID=$(docker run -d \
+TEST_CONTAINER_ID=$(podman run -d \
   --name "${TEST_CONTAINER_NAME}" \
-  --network "$NETWORK" \
+  --pod "${POD_NAME}" \
   --rm \
+  -e HOSTNAME="$TEST_CONTAINER_NAME" \
   -e DATABASE_SERVICE_NAME=postgresql \
-  -e POSTGRESQL_SERVICE_HOST="$DB_CONTAINER_NAME" \
+  -e POSTGRESQL_SERVICE_HOST="$POD_NAME" \
   -e POSTGRESQL_USER="$DATABASE_USER" \
   -e POSTGRESQL_PASSWORD="$DATABASE_PASSWORD" \
   -e POSTGRESQL_DATABASE="$DATABASE_NAME" \
@@ -113,8 +83,8 @@ echo '===================================='
 echo '=== Installing Gem Dependencies ===='
 echo '===================================='
 set +e
-docker exec -u 0 "$TEST_CONTAINER_ID" /bin/bash -c 'microdnf install -y $DEV_DEPS'
-docker exec "$TEST_CONTAINER_ID" /bin/bash -c '
+podman exec -u 0 "$TEST_CONTAINER_ID" /bin/bash -c 'microdnf install -y $DEV_DEPS'
+podman exec "$TEST_CONTAINER_ID" /bin/bash -c '
   bundle config set --local without development &&
   bundle config set --local with test &&
   bundle install'
@@ -132,7 +102,7 @@ echo '===================================='
 echo '===     Setting Up Database     ===='
 echo '===================================='
 set +e
-docker exec "$TEST_CONTAINER_ID" /bin/bash -c 'bundle exec rake db:test:prepare'
+podman exec "$TEST_CONTAINER_ID" /bin/bash -c 'bundle exec rake db:test:prepare'
 TEST_RESULT=$?
 set -e
 if [[ $TEST_RESULT -ne 0 ]]; then
@@ -147,10 +117,10 @@ echo '===================================='
 echo '===       Setting Up Cyndi      ===='
 echo '===================================='
 set +e
-docker cp "$TEST_CONTAINER_ID":/opt/app-root/src/db/cyndi_setup_test.sql "$WORKSPACE/"
-docker cp "$WORKSPACE/cyndi_setup_test.sql" "$DB_CONTAINER_ID":/var/lib/pgsql/
+podman cp "$TEST_CONTAINER_ID":/opt/app-root/src/db/cyndi_setup_test.sql "$WORKSPACE/"
+podman cp "$WORKSPACE/cyndi_setup_test.sql" "$DB_CONTAINER_ID":/var/lib/pgsql/
 rm "$WORKSPACE/cyndi_setup_test.sql"
-docker exec "$DB_CONTAINER_ID" /bin/bash -c 'psql -d $POSTGRESQL_DATABASE < cyndi_setup_test.sql'
+podman exec "$DB_CONTAINER_ID" /bin/bash -c 'psql -d $POSTGRESQL_DATABASE < cyndi_setup_test.sql'
 TEST_RESULT=$?
 set -e
 if [[ $TEST_RESULT -ne 0 ]]; then
@@ -165,11 +135,11 @@ echo '===================================='
 echo '===     Running Unit Tests      ===='
 echo '===================================='
 set +e
-docker exec "$TEST_CONTAINER_ID" /bin/bash -c 'bundle exec rake test:validate'
+podman exec "$TEST_CONTAINER_ID" /bin/bash -c 'bundle exec rake test:validate'
 TEST_RESULT=$?
 set -e
 # Copy test reports
-docker cp "$TEST_CONTAINER_ID":/opt/app-root/src/test/reports/. "$WORKSPACE"/artifacts
+podman cp "$TEST_CONTAINER_ID":/opt/app-root/src/test/reports/. "$WORKSPACE"/artifacts
 # Prefix name of reports with 'junit-' so jenkins analysis picks them up
 cd "$WORKSPACE/artifacts"
 for FILENAME in TEST-*.xml; do mv "$FILENAME" "junit-$FILENAME"; done
