@@ -26,7 +26,7 @@ is_ci_runner() {
 }
 
 get_7_chars_commit_hash() {
-    echo "$(git rev-parse --short=7 HEAD)"
+    git rev-parse --short=7 HEAD
 }
 
 _check_command_is_present() {
@@ -160,7 +160,7 @@ build_image() {
 
     if [ -n "$BUILD_ARGS" ]; then
         BUILD_ARGS_CMD=$(_get_build_args)
-        container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD -t "${IMAGE_NAME}:${IMAGE_TAG}" .
+        container_engine_cmd build --pull -f "$DOCKERFILE" "$BUILD_ARGS_CMD" -t "${IMAGE_NAME}:${IMAGE_TAG}" .
     else
         container_engine_cmd build --pull -f "$DOCKERFILE" -t "${IMAGE_NAME}:${IMAGE_TAG}" .
     fi
@@ -226,5 +226,3 @@ build_deploy_main() {
 }
 
 IMAGE_TAG=$(get_7_chars_commit_hash)
-IMAGE_NAME=''
-ADITIONAL_TAGS=''

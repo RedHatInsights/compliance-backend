@@ -14,7 +14,7 @@ function check_number() {
   fi
 }
 
-source "scripts/lib/clowder-common-bash/src/clowder-common-bash.sh"
+source "scripts/lib/clowder-common-bash/src/clowder-config-main.sh"
 
 if [ -z "$APPLICATION_TYPE" ]; then
   echo "APPLICATION_TYPE not defined!"
