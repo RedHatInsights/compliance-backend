@@ -29,7 +29,7 @@ export REF_ENV="insights-stage"
 export COMPONENTS_W_RESOURCES="compliance rbac"
 
 # Run unit tests
-bash -x $APP_ROOT/unit_test.sh
+bash -x "${APP_ROOT}/scripts/unit_test.sh"
 
 # Run smoke tests
 source $CICD_ROOT/deploy_ephemeral_env.sh
