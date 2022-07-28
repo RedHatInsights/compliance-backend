@@ -36,6 +36,11 @@ jobs:
         ./yq '.objects[0].spec.jobs = [] | .objects[0].spec.deployments = [] | del(.objects[0].spec.dependencies[] | select(. == "compliance-ssg"))' clowdapp.yaml > ref.yaml;
         diff ref.yaml clowdapp-minimal.yaml;
         rm ref.yaml yq;
+    - name: ShellCheck
+      uses: ludeeus/action-shellcheck@1.1.0
+      with:
+        ignore: vendor
+        check_together: true
 
   unit-tests:
     runs-on: ubuntu-latest
