@@ -17,7 +17,7 @@ DATABASE_PASSWORD="changeme"
 DATABASE_NAME="compliance-test"
 
 # if this is a PR, use a different tag, since PR tags expire
-if [[ ! -z "$ghprbPullId" ]]; then
+if [[ -n "$ghprbPullId" ]]; then
   export IMAGE_TAG="pr-${ghprbPullId}-${IMAGE_TAG}"
 fi
 
@@ -59,9 +59,9 @@ TEST_CONTAINER_ID=$(podman run -d \
   -e RAILS_ENV=test \
   -e CI=true \
   -e JENKINS_URL="$JENKINS_URL" \
-  -e ghprbSourceBranch="$ghprbSourceBranch" \
+  -e ghprbSourceBranch="${ghprbSourceBranch:?}" \
   -e GIT_BRANCH="$GIT_BRANCH" \
-  -e ghprbActualCommit="$ghprbActualCommit" \
+  -e ghprbActualCommit="${ghprbActualCommit:?}" \
   -e GIT_COMMIT="$GIT_COMMIT" \
   -e BUILD_NUMBER="$BUILD_NUMBER" \
   -e ghprbPullId="$ghprbPullId" \

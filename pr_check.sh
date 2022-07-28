@@ -2,6 +2,7 @@
 
 # Install bonfire repo/initialize
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
+# shellcheck source=/dev/null
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 
 # --------------------------------------------
@@ -12,8 +13,9 @@ export COMPONENT_NAME="compliance"  # name of app-sre "resourceTemplate" in depl
 export IMAGE="quay.io/cloudservices/compliance-backend"
 cat /etc/redhat-release
 
+# shellcheck source=/dev/null
 # build the PR commit image
-source $CICD_ROOT/build.sh
+source "${CICD_ROOT}/build.sh"
 
 # Make directory for artifacts
 mkdir -p artifacts
@@ -32,6 +34,9 @@ export COMPONENTS_W_RESOURCES="compliance rbac"
 bash -x "${APP_ROOT}/scripts/unit_test.sh"
 
 # Run smoke tests
-source $CICD_ROOT/deploy_ephemeral_env.sh
-source $CICD_ROOT/cji_smoke_test.sh
-source $CICD_ROOT/post_test_results.sh
+# shellcheck source=/dev/null
+source "${CICD_ROOT}/deploy_ephemeral_env.sh"
+# shellcheck source=/dev/null
+source "${CICD_ROOT}/cji_smoke_test.sh"
+# shellcheck source=/dev/null
+source "${CICD_ROOT}/post_test_results.sh"
