@@ -69,6 +69,12 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
+        - name: SETTINGS__SLACK_WEBHOOK
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: slack_webhook
+              optional: true
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: SETTINGS__FORCE_IMPORT_SSGS
@@ -121,6 +127,12 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
+        - name: SETTINGS__SLACK_WEBHOOK
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: slack_webhook
+              optional: true
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: MAX_INIT_TIMEOUT_SECONDS
@@ -145,7 +157,7 @@ objects:
               name: compliance-rails-cache
               key: db.auth_token
               optional: true
-# If we can configure the metrics endpoint to listen to 9000 this definitions should go away
+        # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
             path: /api/compliance/v1/openapi.json
@@ -196,6 +208,12 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
+        - name: SETTINGS__SLACK_WEBHOOK
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: slack_webhook
+              optional: true
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: MAX_INIT_TIMEOUT_SECONDS
@@ -264,6 +282,12 @@ objects:
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"
+        - name: SETTINGS__SLACK_WEBHOOK
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: slack_webhook
+              optional: true
         - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: MAX_INIT_TIMEOUT_SECONDS
