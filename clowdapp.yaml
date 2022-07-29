@@ -66,9 +66,8 @@ objects:
           value: "${PATH_PREFIX}"
         - name: APP_NAME
           value: "${APP_NAME}"
-        # Should be a secret ?
         - name: SECRET_KEY_BASE
-          value: "secret_key_base"
+          value: "secret_key_base" # placeholder value, Rails requires it
         - name: SETTINGS__SLACK_WEBHOOK
           valueFrom:
             secretKeyRef:
@@ -124,9 +123,8 @@ objects:
           value: "${PUMA_MAX_THREADS}"
         - name: OLD_PATH_PREFIX
           value: "${OLD_PATH_PREFIX}"
-        # Should be a secret ?
         - name: SECRET_KEY_BASE
-          value: "secret_key_base"
+          value: "secret_key_base"  # placeholder value, Rails requires it
         - name: SETTINGS__SLACK_WEBHOOK
           valueFrom:
             secretKeyRef:
@@ -205,9 +203,8 @@ objects:
           value: "${REDIS_SSL}"
         - name: SETTINGS__REDIS_CACHE_SSL
           value: "${REDIS_SSL}"
-        # Should be a secret ?
         - name: SECRET_KEY_BASE
-          value: "secret_key_base"
+          value: "secret_key_base"  # placeholder value, Rails requires it
         - name: SETTINGS__SLACK_WEBHOOK
           valueFrom:
             secretKeyRef:
@@ -279,9 +276,8 @@ objects:
           value: "${REDIS_SSL}"
         - name: RAILS_MAX_THREADS
           value: "${RAILS_MAX_THREADS}"
-        # Should be a secret ?
         - name: SECRET_KEY_BASE
-          value: "secret_key_base"
+          value: "secret_key_base"  # placeholder value, Rails requires it
         - name: SETTINGS__SLACK_WEBHOOK
           valueFrom:
             secretKeyRef:
