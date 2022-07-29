@@ -16,7 +16,7 @@ class DanglingAccountRemover
         Account.arel_table[:id].not_in(
           accounts_with_profiles_or_policies
         ).and(
-          Account.arel_table[:account_number].not_in(accounts_with_hosts)
+          Account.arel_table[:org_id].not_in(accounts_with_hosts)
         )
       )
       deleter

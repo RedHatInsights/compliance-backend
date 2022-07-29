@@ -16,11 +16,11 @@ class DuplicateAccountResolverTest < ActiveSupport::TestCase
 
     @account1 = FactoryBot.create(:account)
     @account1d = FactoryBot.create(
-      :account, account_number: @account1.account_number
+      :account, org_id: @account1.org_id
     )
     @account2 = FactoryBot.create(:account)
     @account2d = FactoryBot.create(
-      :account, account_number: @account2.account_number
+      :account, org_id: @account2.org_id
     )
 
     Account.find_each do |account|

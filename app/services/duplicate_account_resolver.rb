@@ -8,7 +8,7 @@ class DuplicateAccountResolver
   class << self
     def run!
       duplicates = Account.select(MAIN_ID_COLUMN, DUPL_ID_COLUMN)
-                          .group(:account_number)
+                          .group(:org_id)
 
       [Profile, Policy, User].each do |model|
         ActiveRecord::Base.connection.execute("
