@@ -15,8 +15,8 @@ class DanglingAccountRemoverTest < ActiveSupport::TestCase
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     accounts = FactoryBot.create_list(:account, 5)
     FactoryBot.create(:user, account: accounts[4])
-    host1 = FactoryBot.create(:host, account: accounts[0].account_number)
-    host2 = FactoryBot.create(:host, account: accounts[1].account_number)
+    host1 = FactoryBot.create(:host, org_id: accounts[0].org_id)
+    host2 = FactoryBot.create(:host, org_id: accounts[1].org_id)
 
     profile1 = FactoryBot.create(:profile, account: accounts[0])
     profile1.policy.update(hosts: [host1])
