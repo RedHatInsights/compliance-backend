@@ -66,6 +66,8 @@ objects:
           value: "${PATH_PREFIX}"
         - name: APP_NAME
           value: "${APP_NAME}"
+        - name: RUBYOPT
+          value: "--jit --jit-warnings"
         # Should be a secret ?
         - name: SECRET_KEY_BASE
           value: "secret_key_base"

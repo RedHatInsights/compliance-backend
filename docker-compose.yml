@@ -240,6 +240,7 @@ services:
       - compliance-ssg
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
+      - RUBYOPT="--jit --jit-warnings"
       - ACG_CONFIG=/app/devel.json
   rails:
     env_file: .env
