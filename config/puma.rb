@@ -47,3 +47,11 @@ after_worker_boot do
   require 'prometheus_exporter/instrumentation'
   PrometheusExporter::Instrumentation::Puma.start(type: 'puma')
 end
+
+on_worker_shutdown do
+  puts '-------------------------Puma worker shutdown-------------------------'
+end
+
+on_restart do
+  puts '-------------------------Puma worker restart-------------------------'
+end
