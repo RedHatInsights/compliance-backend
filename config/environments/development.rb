@@ -57,8 +57,11 @@ Rails.application.configure do
   # Whitelist hosts
   config.hosts.clear
 
-  # File size limit for logging
-  config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 64.megabytes)
+  if ENV['RAILS_LOG_TO_STDOUT'].present?
+    config.logger = ActiveSupport::Logger.new(STDOUT)
+  else # Impose a 64MB limit for the logfile
+    config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 64.megabytes)
+  end
 
   # Enable sessions in development for Sidekiq WebUI access
   config.session_store :cookie_store, key: '_compliance_session'

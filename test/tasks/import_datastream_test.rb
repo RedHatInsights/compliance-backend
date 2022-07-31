@@ -42,6 +42,32 @@ class ImportDatastreamTest < ActiveSupport::TestCase
     end
   end
 
+  test 'ssg:sync_supported calls the SupportedSsgUpdater' do
+    SupportedSsgUpdater.expects(:run!)
+    capture_io do
+      Rake::Task['ssg:sync_supported'].execute
+    end
+  end
+
+  test 'ssg:import imports the file' do
+    ENV['DATASTREAM_FILE'] = 'test/fixtures/files/xccdf_report.xml'
+    DatastreamImporter.any_instance.expects(:import!)
+
+    capture_io do
+      Rake::Task['ssg:import'].execute
+    end
+  end
+
+  test 'ssg:import propagates errors further' do
+    ENV['DATASTREAM_FILE'] = 'foo'
+
+    assert_raises(StandardError) do
+      capture_io do
+        Rake::Task['ssg:import'].execute
+      end
+    end
+  end
+
   test 'ssg:check_synced fails if datastreams are not synced' do
     SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
     SupportedRemediations.expects(:revision).at_least_once.returns('2021-07-15')
