@@ -240,6 +240,7 @@ services:
       - compliance-ssg
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
+      - RAILS_LOG_TO_STDOUT=true
       - ACG_CONFIG=/app/devel.json
   rails:
     env_file: .env

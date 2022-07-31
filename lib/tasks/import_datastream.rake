@@ -14,13 +14,14 @@ namespace :ssg do
       "#{Revision.remediations.inspect}"
     abort datastreams_message if Revision.datastreams != SupportedSsg.revision
     abort remediations_message if Revision.remediations != SupportedRemediations.revision
-    puts "Datastreams and remediations synced to revision: #{Revision.datastreams} and #{Revision.remediations}"
+    Rails.logger.info('Datastreams and remediations synced to revision: ' \
+                      "#{Revision.datastreams} and #{Revision.remediations}")
   end
 
   desc 'Update supported SSGs fallback yaml'
   task sync_supported: [:environment] do
     SupportedSsgUpdater.run!
-    puts "Fallback YAML has been updated to revision: #{Revision.datastreams}"
+    Rails.logger.info "Fallback YAML has been updated to revision: #{Revision.datastreams}"
   end
 
   desc 'Update compliance DB with the supported SCAP Security Guide versions'
@@ -36,7 +37,7 @@ namespace :ssg do
       end
     end
     Revision.datastreams = SupportedSsg.revision
-    puts "Datastreams synced to revision: #{Revision.datastreams}"
+    Rails.logger.info "Datastreams synced to revision: #{Revision.datastreams}"
     Rake::Task['import_remediations'].execute
   end
 
@@ -45,17 +46,16 @@ namespace :ssg do
     begin
       if (filename = ENV['DATASTREAM_FILE'])
         start = Time.zone.now
-        puts "Importing #{filename} at #{start}"
+        Rails.logger.info "Importing #{filename} at #{start}"
         DatastreamImporter.new(filename).import!
-        puts "Finished importing #{filename} in #{Time.zone.now - start}"\
-             ' seconds.'
+        Rails.logger.info "Finished importing #{filename} in #{Time.zone.now - start} seconds."
       end
     rescue StandardError => e
       ExceptionNotifier.notify_exception(
         e,
         data: OpenshiftEnvironment.summary
       )
-      puts "Import failed for #{filename} in #{Time.zone.now - start} seconds."
+      Rails.logger.error "Import failed for #{filename} in #{Time.zone.now - start} seconds."
       raise e
     end
   end
