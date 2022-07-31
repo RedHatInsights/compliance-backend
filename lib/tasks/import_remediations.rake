@@ -15,7 +15,7 @@ END_DESC
 task import_remediations: :environment do
   begin
     start_time = Time.now.utc
-    puts "Starting import_remediations job at #{start_time}"
+    Rails.logger.info "Starting import_remediations job at #{start_time}"
 
     SsgConfigDownloader.update_ssg_ansible_tasks
     ansible_tasks_revision = YAML.safe_load(
@@ -42,18 +42,18 @@ task import_remediations: :environment do
       Rule.where(id: ids_with_playbooks).update_all(remediation_available: true)
       # rubocop:enable Rails/SkipsModelValidations
 
-      puts "Updated #{ids_with_playbooks.count} rules with remediations"
-      puts "Updated #{ids_sans_playbooks.count} rules without remediations"
+      Rails.logger.info "Updated #{ids_with_playbooks.count} rules with remediations"
+      Rails.logger.info "Updated #{ids_sans_playbooks.count} rules without remediations"
       Revision.remediations = ansible_tasks_revision
     end
 
     end_time = Time.now.utc
     duration = end_time - start_time
-    puts "Remediations synced to revision: #{Revision.remediations}"
-    puts "Finishing import_remediations job at #{end_time} "\
+    Rails.logger.info "Remediations synced to revision: #{Revision.remediations}"
+    Rails.logger.info "Finishing import_remediations job at #{end_time} "\
          "and last #{duration} seconds "
   rescue StandardError => e
-    puts "import_remediations job failed at #{end_time} "\
+    Rails.logger.error "import_remediations job failed at #{end_time} "\
          "and lasted #{duration} seconds "
     ExceptionNotifier.notify_exception(
       e,
