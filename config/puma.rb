@@ -49,9 +49,9 @@ after_worker_boot do
 end
 
 on_worker_shutdown do
-  puts '-------------------------Puma worker shutdown-------------------------'
+  Rails.logger.info '-------------------------Puma worker shutdown-------------------------'
 end
 
 on_restart do
-  puts '-------------------------Puma worker restart-------------------------'
+  Rails.logger.info '-------------------------Puma worker restart-------------------------'
 end
