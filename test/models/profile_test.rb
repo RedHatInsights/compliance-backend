@@ -28,6 +28,11 @@ class ProfileTest < ActiveSupport::TestCase
     @policy = FactoryBot.create(:policy, account: @account, hosts: [@host])
   end
 
+  test 'bm_versions should reach cached attributes' do
+    profile = FactoryBot.create(:profile, account: @account)
+    profile.send(:bm_versions)
+  end
+
   test 'unqiness by ref_id for an internal profile' do
     profile = FactoryBot.create(:profile, account: @account)
 
