@@ -80,6 +80,28 @@ objects:
           value: "${SETTINGS__FORCE_IMPORT_SSGS}"
         - name: MAX_INIT_TIMEOUT_SECONDS
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
+        - name: PRIMARY_REDIS_AS_CACHE
+          value: "${PRIMARY_REDIS_AS_CACHE}"
+        - name: SETTINGS__REDIS_CACHE_SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__REDIS_CACHE_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.endpoint
+              optional: true
+        - name: SETTINGS__REDIS_CACHE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.port
+              optional: true
+        - name: SETTINGS__REDIS_CACHE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.auth_token
+              optional: true
         livenessProbe:
           exec:
             command: ["pgrep" ,"-f", "rake"]
@@ -215,6 +237,26 @@ objects:
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: MAX_INIT_TIMEOUT_SECONDS
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
+        - name: PRIMARY_REDIS_AS_CACHE
+          value: "${PRIMARY_REDIS_AS_CACHE}"
+        - name: SETTINGS__REDIS_CACHE_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.endpoint
+              optional: true
+        - name: SETTINGS__REDIS_CACHE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.port
+              optional: true
+        - name: SETTINGS__REDIS_CACHE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.auth_token
+              optional: true
         livenessProbe:
           httpGet:
             path: /metrics
@@ -288,6 +330,26 @@ objects:
           value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
         - name: MAX_INIT_TIMEOUT_SECONDS
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
+        - name: PRIMARY_REDIS_AS_CACHE
+          value: "${PRIMARY_REDIS_AS_CACHE}"
+        - name: SETTINGS__REDIS_CACHE_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.endpoint
+              optional: true
+        - name: SETTINGS__REDIS_CACHE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.port
+              optional: true
+        - name: SETTINGS__REDIS_CACHE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.auth_token
+              optional: true
 
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
