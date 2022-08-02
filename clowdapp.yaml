@@ -67,7 +67,10 @@ objects:
         - name: APP_NAME
           value: "${APP_NAME}"
         - name: SECRET_KEY_BASE
-          value: "secret_key_base" # placeholder value, Rails requires it
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: secret_key_base
         - name: SETTINGS__SLACK_WEBHOOK
           valueFrom:
             secretKeyRef:
@@ -146,7 +149,10 @@ objects:
         - name: OLD_PATH_PREFIX
           value: "${OLD_PATH_PREFIX}"
         - name: SECRET_KEY_BASE
-          value: "secret_key_base"  # placeholder value, Rails requires it
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: secret_key_base
         - name: SETTINGS__SLACK_WEBHOOK
           valueFrom:
             secretKeyRef:
@@ -226,7 +232,10 @@ objects:
         - name: SETTINGS__REDIS_CACHE_SSL
           value: "${REDIS_SSL}"
         - name: SECRET_KEY_BASE
-          value: "secret_key_base"  # placeholder value, Rails requires it
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: secret_key_base
         - name: SETTINGS__SLACK_WEBHOOK
           valueFrom:
             secretKeyRef:
@@ -319,7 +328,10 @@ objects:
         - name: RAILS_MAX_THREADS
           value: "${RAILS_MAX_THREADS}"
         - name: SECRET_KEY_BASE
-          value: "secret_key_base"  # placeholder value, Rails requires it
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: secret_key_base
         - name: SETTINGS__SLACK_WEBHOOK
           valueFrom:
             secretKeyRef:
@@ -378,6 +390,16 @@ objects:
     - prefix: insights/compliance/policy_hosts
       query: >-
         SELECT "policy_hosts"."host_id", "policy_hosts"."policy_id" FROM "policy_hosts";
+
+- apiVersion: v1
+  kind: Secret
+  type: Opaque
+  metadata:
+    name: compliance-backend
+  data:
+    # This secret is only mounted in ephemeral environments, for any other deployment it is already
+    # mounted and available. Its value is just a placeholder and does contain anything sensitive.
+    secret_key_base: 'VGhpcyBpcyBhIHBsYWNlaG9sZGVyIHZhbHVlCg=='
 
 parameters:
 - name: IMAGE_TAG
