@@ -102,7 +102,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def raw_supported
-      SsgConfigDownloader.update_ssg_ds if SsgConfigDownloader.exists?
+      SsgConfigDownloader.update_ssg_ds unless SsgConfigDownloader.exists?
       Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/raw") do
         YAML.safe_load(SsgConfigDownloader.ssg_ds)
       end
