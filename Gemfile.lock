@@ -371,7 +371,7 @@ GEM
       simplecov (~> 0.19)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    slack-notifier (2.3.2)
+    slack-notifier (2.4.0)
     slop (3.6.0)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
@@ -481,4 +481,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   2.3.17
+   2.3.18
