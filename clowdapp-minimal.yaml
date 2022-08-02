@@ -67,6 +67,15 @@ objects:
         - prefix: insights/compliance/policy_hosts
           query: >-
             SELECT "policy_hosts"."host_id", "policy_hosts"."policy_id" FROM "policy_hosts";
+  - apiVersion: v1
+    kind: Secret
+    type: Opaque
+    metadata:
+      name: compliance-backend
+    data:
+      # This secret is only mounted in ephemeral environments, for any other deployment it is already
+      # mounted and available. Its value is just a placeholder and does contain anything sensitive.
+      secret_key_base: 'VGhpcyBpcyBhIHBsYWNlaG9sZGVyIHZhbHVlCg=='
 parameters:
   - name: IMAGE_TAG
     description: Image tag
