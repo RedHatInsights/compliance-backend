@@ -35,6 +35,7 @@ namespace :ssg do
         ENV['DATASTREAM_FILE'] = file
         Rake::Task['ssg:import'].execute
       end
+      SupportedSsg.clear # Clear the old cached values
     end
     Revision.datastreams = SupportedSsg.revision
     Rails.logger.info "Datastreams synced to revision: #{Revision.datastreams}"

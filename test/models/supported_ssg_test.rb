@@ -3,23 +3,6 @@
 require 'test_helper'
 
 class SupportedSsgTest < ActiveSupport::TestCase
-  test 'updates SSG config when changed' do
-    SupportedSsg.stubs(:ssg_ds_changed?).returns(true)
-
-    SupportedSsg.expects(:clear)
-
-    SupportedSsg.send(:raw_supported)
-  end
-
-  test 'detects when the SSG config is changed' do
-    SupportedSsg.send(:raw_supported) # init checksum
-
-    SsgConfigDownloader.stubs(:update_ssg_ds)
-    SsgConfigDownloader.stubs(:ssg_ds_checksum).returns('different')
-
-    assert SupportedSsg.send(:ssg_ds_changed?)
-  end
-
   test 'loads supported SSGs' do
     assert SupportedSsg.all
   end
@@ -82,6 +65,24 @@ class SupportedSsgTest < ActiveSupport::TestCase
       assert_not SupportedSsg.supported?(ssg_version: '1.2.4',
                                          os_major_version: '7',
                                          os_minor_version: '4')
+    end
+  end
+
+  context '#by_ssg_version' do
+    should 'return the ssgs grouped by SSG version' do
+      SupportedSsg.stubs(:raw_supported).returns(
+        'supported' => {
+          'RHEL-7.4' => [
+            { 'version' => '1.2.3' },
+            { 'version' => '1.2.4' }
+          ],
+          'RHEL-6.9' => [
+            { 'version' => '0.1.2' }
+          ]
+        }
+      )
+
+      assert_equal SupportedSsg.by_ssg_version.keys, ['1.2.3', '1.2.4', '0.1.2']
     end
   end
 
