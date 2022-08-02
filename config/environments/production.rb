@@ -60,6 +60,9 @@ Rails.application.configure do
 
       { url: redis_url, password: redis_password, ssl: Settings.redis_cache_ssl}
     end
+
+    # Override is necessary as it gets set during initialization without the proper config available
+    Rails.cache = ActiveSupport::Cache.lookup_store(*config.cache_store)
   end
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
