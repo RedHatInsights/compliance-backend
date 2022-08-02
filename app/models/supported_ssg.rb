@@ -68,9 +68,9 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
 
     # Multilevel map of latest supported SSG for OS major and minor version
     def latest_map
-      clear if ssg_ds_changed?
-
-      @latest_map ||= build_latest_map
+      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/map") do
+        build_latest_map
+      end
     end
 
     def by_os_major
@@ -78,9 +78,15 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def by_ssg_version
-      clear if ssg_ds_changed?
+      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/by-ssg") do
+        all.group_by(&:version)
+      end
+    end
 
-      @by_ssg_version ||= all.group_by(&:version)
+    def clear(to_clear = revision)
+      %i[raw map by-ssg].each do |target|
+        Rails.cache.delete("SupportedSsg/datastreams/#{to_clear}/#{target}")
+      end
     end
 
     private
@@ -95,23 +101,10 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
       rhel.scan(/(\d+)\.(\d+)$/)[0]
     end
 
-    def clear
-      @raw_supported = nil
-      @latest_map = nil
-      @by_ssg_version = nil
-      @checksum = SsgConfigDownloader.ssg_ds_checksum
-    end
-
-    def ssg_ds_changed?
-      SsgConfigDownloader.update_ssg_ds
-
-      @checksum != SsgConfigDownloader.ssg_ds_checksum
-    end
-
     def raw_supported
-      clear if ssg_ds_changed?
-
-      @raw_supported ||= YAML.safe_load(SsgConfigDownloader.ssg_ds)
+      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/raw") do
+        YAML.safe_load(SsgConfigDownloader.ssg_ds)
+      end
     end
 
     def build_latest_map
