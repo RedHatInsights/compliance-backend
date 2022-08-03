@@ -68,9 +68,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
 
     # Multilevel map of latest supported SSG for OS major and minor version
     def latest_map
-      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/map") do
-        build_latest_map
-      end
+      cache(:map) { build_latest_map }
     end
 
     def by_os_major
@@ -78,9 +76,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def by_ssg_version
-      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/by-ssg") do
-        all.group_by(&:version)
-      end
+      cache(:'by-ssg') { all.group_by(&:version) }
     end
 
     def clear(to_clear = revision)
@@ -103,9 +99,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
 
     def raw_supported
       SsgConfigDownloader.update_ssg_ds unless SsgConfigDownloader.exists?
-      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/raw") do
-        YAML.safe_load(SsgConfigDownloader.ssg_ds)
-      end
+      cache(:raw) { YAML.safe_load(SsgConfigDownloader.ssg_ds) }
     end
 
     def build_latest_map
@@ -116,6 +110,10 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
             minor_ssgs.max_by(&:comparable_version)
           end.freeze
       end.freeze
+    end
+
+    def cache(key, &block)
+      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/#{key}", &block)
     end
   end
 end
