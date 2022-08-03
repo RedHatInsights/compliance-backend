@@ -84,11 +84,6 @@ class Profile < ApplicationRecord
   private
 
   def bm_versions
-    if attributes['bm_versions']
-      Rails.logger.info '---Reached cached attributes in bm_versions---'
-    else
-      Rails.logger.info '---No cached attributes in bm_versions---'
-    end
     # Try to reach for this in the cached attributes if possible
     attributes['bm_versions'] || self.class.canonical.where(
       ref_id: ref_id,
