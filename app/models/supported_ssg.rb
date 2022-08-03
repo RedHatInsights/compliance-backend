@@ -113,7 +113,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def cache(key, &block)
-      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/#{key}", &block)
+      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/#{key}", expires_on: 1.day, &block)
     end
   end
 end
