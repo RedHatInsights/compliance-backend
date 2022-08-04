@@ -15,4 +15,4 @@
 - [ ] Database Security
 - [ ] File Management
 - [ ] Memory Management
-- [ ] General Coding Practices
+- [x] General Coding Practices
