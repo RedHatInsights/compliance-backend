@@ -1,6 +1,5 @@
 class DeduplicateAccounts < ActiveRecord::Migration[5.2]
   def up
-    DuplicateAccountResolver.run!
     remove_index :accounts, :account_number
     add_index :accounts, :account_number, unique: true
   end
