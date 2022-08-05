@@ -35,7 +35,6 @@ class OsMajorVersion < ApplicationRecord
 
   PROFILE_LAST_ID = Arel.sql("(#{OsMajorVersion.aggregated_cast(Profile.arel_table[:id]).to_sql})[1] as \"id\"")
   PROFILE_BM_VERSIONS = OsMajorVersion.aggregated_cast(Xccdf::Benchmark.arel_table[:version]).as('bm_versions')
-  PROFILE_BM_REF_ID = Xccdf::Benchmark.arel_table[:ref_id].as('bm')
 
   default_scope do
     select(OS_MAJOR_VERSION, :ref_id).distinct.order(:os_major_version)
@@ -48,12 +47,12 @@ class OsMajorVersion < ApplicationRecord
   has_many :profiles, lambda {
     supported_profiles = canonical.where(upstream: false)
                                   .joins(:benchmark)
-                                  .select(PROFILE_LAST_ID, PROFILE_BM_VERSIONS, PROFILE_BM_REF_ID)
-                                  .group(:ref_id, 'benchmarks.ref_id')
+                                  .select(PROFILE_LAST_ID, PROFILE_BM_VERSIONS, OS_MAJOR_VERSION)
+                                  .group(:ref_id, 'os_major_version')
 
     canonical.where(upstream: false)
              .joins("INNER JOIN (#{supported_profiles.to_sql}) t ON t.id = profiles.id")
-             .select('"profiles".*, "t"."bm_versions" AS "bm_versions"')
+             .select('"profiles".*, "t"."bm_versions" AS "bm_versions", "t"."os_major_version" AS "os_major_version"')
   }, through: :benchmarks
 
   def readonly?
