@@ -119,9 +119,9 @@ parameters:
   - name: CPU_REQUEST_PROM
     value: 100m
   - name: MEMORY_LIMIT_SERV
-    value: 800Mi
+    value: 1000Mi
   - name: MEMORY_REQUEST_SERV
-    value: 400Mi
+    value: 500Mi
   - name: CPU_LIMIT_SERV
     value: 700m
   - name: CPU_REQUEST_SERV
