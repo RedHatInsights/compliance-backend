@@ -501,7 +501,7 @@ parameters:
 - name: DISABLE_RBAC
   value: "false"
 - name: PUMA_WORKERS
-  value: "2"
+  value: "3"
 - name: PUMA_MAX_THREADS
   value: "5"
 - name: OLD_PATH_PREFIX
