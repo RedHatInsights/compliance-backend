@@ -72,27 +72,4 @@ class Profile < ApplicationRecord
       profile
     end
   end
-
-  def supported_os_versions
-    bm_versions.map do |v|
-      SupportedSsg.by_ssg_version[v].select { |ssg| ssg.os_major_version == cached_major_version }.map do |ssg|
-        Gem::Version.new([ssg.os_major_version, ssg.os_minor_version].join('.'))
-      end
-    end.flatten.uniq.sort.reverse
-  end
-
-  private
-
-  def bm_versions
-    # Try to reach for this in the cached attributes if possible
-    attributes['bm_versions'] || self.class.canonical.where(
-      ref_id: ref_id,
-      upstream: false
-    ).joins(:benchmark).pluck('benchmarks.version')
-  end
-
-  def cached_major_version
-    # Try to reach for this in the cached attributes if possible
-    (attributes['os_major_version'] || os_major_version).to_s
-  end
 end
