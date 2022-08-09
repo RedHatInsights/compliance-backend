@@ -1,6 +1,6 @@
 class RemoveDanglingAccounts < ActiveRecord::Migration[5.2]
   def up
-    DanglingAccountRemover.run!
+    # DanglingAccountRemover.run!
   end
 
   def down
