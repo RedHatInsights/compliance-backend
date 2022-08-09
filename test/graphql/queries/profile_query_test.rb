@@ -85,6 +85,9 @@ class ProfileQueryTest < ActiveSupport::TestCase
               id
               refId
               ssgVersion
+              benchmark {
+                refId
+              }
           }
       }
     GRAPHQL
