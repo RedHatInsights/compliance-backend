@@ -77,8 +77,7 @@ module Types
 
     field :last_scanned, String, null: false do
       argument :system_id, String,
-               'Last time this profile was scanned for a system',
-               required: false
+               'Last time this profile was scanned for a system', required: false
     end
 
     field :compliant_host_count, Int, null: false
@@ -101,8 +100,11 @@ module Types
     end
 
     def hosts
-      ::CollectionLoader.for(policy_or_report.class, :hosts)
-                        .load(policy_or_report)
+      ::CollectionLoader.for(policy_or_report.class, :hosts).load(policy_or_report)
+    end
+
+    def benchmark
+      ::CollectionLoader.for(::Profile, :benchmark).load(object)
     end
 
     private
