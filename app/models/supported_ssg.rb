@@ -79,9 +79,9 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
       cache(:'by-ssg') { all.group_by(&:version) }
     end
 
-    def clear(to_clear = revision)
+    def clear
       %i[raw map by-ssg].each do |target|
-        Rails.cache.delete("SupportedSsg/datastreams/#{to_clear}/#{target}")
+        Rails.cache.delete("SupportedSsg/datastreams/#{target}")
       end
     end
 
@@ -113,7 +113,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def cache(key, &block)
-      Rails.cache.fetch("SupportedSsg/datastreams/#{Revision.datastreams}/#{key}", expires_on: 1.day, &block)
+      Rails.cache.fetch("SupportedSsg/datastreams/#{key}", expires_on: 1.day, &block)
     end
   end
 end
