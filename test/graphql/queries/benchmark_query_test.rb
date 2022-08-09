@@ -112,4 +112,63 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
     assert_equal latest_benchmark.os_major_version,
                  result['data']['latestBenchmarks'].first['osMajorVersion']
   end
+
+  test 'query benchmark with rules' do
+    cp = FactoryBot.create(:canonical_profile, :with_rules)
+
+    query = <<-GRAPHQL
+      query benchmarkQuery($id: String!) {
+        benchmark(id: $id) {
+          id
+          osMajorVersion
+          rules {
+            id
+            title
+          }
+        }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { id: cp.benchmark.id },
+      context: { current_user: @user }
+    )
+
+    assert_equal result['data']['benchmark']['rules'].count, cp.rules.count
+  end
+
+  test 'query benchmark with rule identifiers' do
+    cp = FactoryBot.create(:canonical_profile, :with_rules)
+    cp.rules.each { |rule| FactoryBot.create(:rule_identifier, rule: rule) }
+
+    query = <<-GRAPHQL
+      query benchmarkQuery($id: String!) {
+        benchmark(id: $id) {
+          id
+          osMajorVersion
+          rules {
+            id
+            title
+            severity
+            rationale
+            refId
+            description
+            remediationAvailable
+            identifier
+          }
+        }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { id: cp.benchmark.id },
+      context: { current_user: @user }
+    )
+
+    identifiers = result['data']['benchmark']['rules'].map { |x| JSON.parse(x['identifier']) }
+    ref = cp.rules.map { |rule| { 'label' => rule.rule_identifier.label, 'system' => rule.rule_identifier.system } }
+    assert_same_elements(identifiers, ref)
+  end
 end
