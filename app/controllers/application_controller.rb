@@ -66,7 +66,8 @@ class ApplicationController < ActionController::API
     StrongerParameters::InvalidParameter,
     ActionController::UnpermittedParameters,
     ::Exceptions::InvalidSortingDirection,
-    ::Exceptions::InvalidSortingColumn
+    ::Exceptions::InvalidSortingColumn,
+    RangeError
   ]
 
   rescue_from(*invalid_parameter_exceptions) do |error|
