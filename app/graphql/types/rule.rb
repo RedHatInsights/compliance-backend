@@ -56,6 +56,10 @@ module Types
     end
 
     def identifier
+      # Try to return with the preloaded identifier if available
+      return object['identifier'].to_json if object.has_attribute?('identifier')
+
+      # Fall back to loading and building the identifiers
       ::CollectionLoader.for(::Rule, :rule_identifier)
                         .load(object).then do |identifier|
         { label: identifier&.label, system: identifier&.system }.to_json

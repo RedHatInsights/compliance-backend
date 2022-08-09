@@ -73,6 +73,10 @@ class Rule < ApplicationRecord
     includes(:profiles).where(profiles: { id: Profile.canonical })
   }
 
+  scope :joins_identifier, lambda {
+    left_outer_joins(:rule_identifier).select('rules.*', RuleIdentifier::AS_JSON.as('identifier'))
+  }
+
   def canonical?
     (profiles & Profile.canonical).any?
   end
