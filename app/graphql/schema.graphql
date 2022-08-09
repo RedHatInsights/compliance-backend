@@ -552,7 +552,6 @@ type Rule implements Node {
   refId: String!
   references: String
   remediationAvailable: Boolean!
-  remediationIssueId: String
   severity: String!
   title: String!
 }
