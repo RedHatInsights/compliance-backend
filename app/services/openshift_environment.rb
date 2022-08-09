@@ -4,7 +4,7 @@
 module OpenshiftEnvironment
   class << self
     def environment
-      namespace&.send(:[], /(ci|qa|eph|stage|prod)/) || 'dev'
+      namespace&.send(:[], /(eph|stage|perf|prod)/) || 'dev'
     end
 
     def application
@@ -16,7 +16,7 @@ module OpenshiftEnvironment
     end
 
     def build
-      ENV['OPENSHIFT_BUILD_NAME']
+      ENV['IMAGE_TAG']
     end
 
     def namespace

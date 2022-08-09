@@ -105,6 +105,12 @@ objects:
               name: compliance-rails-cache
               key: db.auth_token
               optional: true
+        - name: IMAGE_TAG
+          value: "${IMAGE}:${IMAGE_TAG}"
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         livenessProbe:
           exec:
             command: ["pgrep" ,"-f", "rake"]
@@ -183,6 +189,12 @@ objects:
               name: compliance-rails-cache
               key: db.auth_token
               optional: true
+        - name: IMAGE_TAG
+          value: "${IMAGE}:${IMAGE_TAG}"
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
@@ -266,6 +278,12 @@ objects:
               name: compliance-rails-cache
               key: db.auth_token
               optional: true
+        - name: IMAGE_TAG
+          value: "${IMAGE}:${IMAGE_TAG}"
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         livenessProbe:
           httpGet:
             path: /metrics
@@ -362,6 +380,12 @@ objects:
               name: compliance-rails-cache
               key: db.auth_token
               optional: true
+        - name: IMAGE_TAG
+          value: "${IMAGE}:${IMAGE_TAG}"
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
 
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
