@@ -9,6 +9,8 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
   OS_NAME = 'RHEL'
   self::OS_NAME = OS_NAME
 
+  CACHE_PREFIX = 'SupportedSsg/datastreams'
+
   def ref_id
     'xccdf_org.ssgproject' \
     ".content_benchmark_#{OS_NAME}-#{os_major_version}"
@@ -80,7 +82,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def clear
-      Rails.cache.delete_matched('SupportedSsg/datastreams/*')
+      Rails.cache.delete_matched("#{CACHE_PREFIX}/*")
     end
 
     private
@@ -111,7 +113,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def cache(key, &block)
-      Rails.cache.fetch("SupportedSsg/datastreams/#{key}", expires_on: 1.day, &block)
+      Rails.cache.fetch("#{CACHE_PREFIX}/#{key}", expires_on: 1.day, &block)
     end
   end
 end
