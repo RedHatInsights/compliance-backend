@@ -9,6 +9,7 @@ module Types
 
     field :id, ID, null: false
     field :description, String, null: true
+    field :foo, String, null: true
     field :title, String, null: false
     field :ref_id, String, null: false
     field :version, String, null: false
