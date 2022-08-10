@@ -29,13 +29,13 @@ if [ "$APPLICATION_TYPE" = "compliance-backend" ]; then
   export RACK_ENV=${RACK_ENV:-"production"}
 
   if isClowderEnabled; then
-    PORT=$(ClowderConfigWebPort)
+    export PORT=$(ClowderConfigWebPort)
   else
-    PORT="8080"
+    export PORT="8080"
   fi
 
   if is_puma_installed; then
-    exec bundle exec "puma --config ./config/puma.cfg -b tcp://0.0.0.0:${PORT}"
+    exec bundle exec "puma --config ./config/puma.cfg"
   else
 
     echo "You might consider adding 'puma' into your Gemfile."
