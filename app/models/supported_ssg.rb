@@ -80,9 +80,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def clear
-      %i[raw map by-ssg].each do |target|
-        Rails.cache.delete("SupportedSsg/datastreams/#{target}")
-      end
+      Rails.cache.delete_matched('SupportedSsg/datastreams/*')
     end
 
     private
