@@ -16,11 +16,16 @@ type Benchmark implements Node {
 """
 The connection type for Benchmark.
 """
-type BenchmarkConnection {
+type BenchmarkConnection implements Node {
   """
   A list of edges.
   """
   edges: [BenchmarkEdge]
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   A list of nodes.
@@ -37,11 +42,16 @@ type BenchmarkConnection {
 """
 An edge in a connection.
 """
-type BenchmarkEdge {
+type BenchmarkEdge implements Node {
   """
   A cursor for use in pagination.
   """
   cursor: String!
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   The item at the end of the edge.
@@ -61,15 +71,59 @@ type BusinessObjective implements Node {
 The mutation root of this schema
 """
 type Mutation implements Node {
-  associateProfiles(input: associateProfilesInput!): associateProfilesPayload
-  associateRules(input: associateRulesInput!): associateRulesPayload
-  associateSystems(input: associateSystemsInput!): associateSystemsPayload
-  createBusinessObjective(input: createBusinessObjectiveInput!): createBusinessObjectivePayload
-  createProfile(input: createProfileInput!): createProfilePayload
-  deleteProfile(input: deleteProfileInput!): deleteProfilePayload
-  deleteTestResults(input: deleteTestResultsInput!): deleteTestResultsPayload
-  id: ID!!
-  updateProfile(input: UpdateProfileInput!): UpdateProfilePayload
+  associateProfiles(
+    """
+    Parameters for associateProfiles
+    """
+    input: associateProfilesInput!
+  ): associateProfilesPayload
+  associateRules(
+    """
+    Parameters for associateRules
+    """
+    input: associateRulesInput!
+  ): associateRulesPayload
+  associateSystems(
+    """
+    Parameters for associateSystems
+    """
+    input: associateSystemsInput!
+  ): associateSystemsPayload
+  createBusinessObjective(
+    """
+    Parameters for createBusinessObjective
+    """
+    input: createBusinessObjectiveInput!
+  ): createBusinessObjectivePayload
+  createProfile(
+    """
+    Parameters for createProfile
+    """
+    input: createProfileInput!
+  ): createProfilePayload
+  deleteProfile(
+    """
+    Parameters for deleteProfile
+    """
+    input: deleteProfileInput!
+  ): deleteProfilePayload
+  deleteTestResults(
+    """
+    Parameters for deleteTestResults
+    """
+    input: deleteTestResultsInput!
+  ): deleteTestResultsPayload
+
+  """
+  ID of the object.
+  """
+  id: ID!
+  updateProfile(
+    """
+    Parameters for UpdateProfile
+    """
+    input: UpdateProfileInput!
+  ): UpdateProfilePayload
 }
 
 """
@@ -86,7 +140,10 @@ interface Node {
 An operating system with its version
 """
 type OperatingSystem implements Node {
-  id: ID!!
+  """
+  ID of the object.
+  """
+  id: ID!
   major: Int!
   minor: Int!
   name: String!
@@ -96,7 +153,10 @@ type OperatingSystem implements Node {
 Major version of a supported operating system
 """
 type OsMajorVersion implements Node {
-  id: ID!!
+  """
+  ID of the object.
+  """
+  id: ID!
   osMajorVersion: Int!
   profiles: [Profile!]
 }
@@ -104,11 +164,16 @@ type OsMajorVersion implements Node {
 """
 The connection type for OsMajorVersion.
 """
-type OsMajorVersionConnection {
+type OsMajorVersionConnection implements Node {
   """
   A list of edges.
   """
   edges: [OsMajorVersionEdge]
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   A list of nodes.
@@ -125,11 +190,16 @@ type OsMajorVersionConnection {
 """
 An edge in a connection.
 """
-type OsMajorVersionEdge {
+type OsMajorVersionEdge implements Node {
   """
   A cursor for use in pagination.
   """
   cursor: String!
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   The item at the end of the edge.
@@ -254,11 +324,16 @@ type Profile implements Node & RulesPreload {
 """
 The connection type for Profile.
 """
-type ProfileConnection {
+type ProfileConnection implements Node {
   """
   A list of edges.
   """
   edges: [ProfileEdge]
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   A list of nodes.
@@ -275,11 +350,16 @@ type ProfileConnection {
 """
 An edge in a connection.
 """
-type ProfileEdge {
+type ProfileEdge implements Node {
   """
   A cursor for use in pagination.
   """
   cursor: String!
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   The item at the end of the edge.
@@ -338,12 +418,36 @@ type Query implements Node {
   All business objectives visible by the user
   """
   businessObjectives: [BusinessObjective!]
-  id: ID!!
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   Latest benchmarks visible by the user
   """
   latestBenchmarks: [Benchmark!]
+
+  """
+  Fetches an object given its ID.
+  """
+  node(
+    """
+    ID of the object.
+    """
+    id: ID!
+  ): Node
+
+  """
+  Fetches a list of objects given a list of IDs.
+  """
+  nodes(
+    """
+    IDs of the objects.
+    """
+    ids: [ID!]!
+  ): [Node]!
   osMajorVersions(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -615,11 +719,16 @@ type System implements Node {
 """
 The connection type for System.
 """
-type SystemConnection {
+type SystemConnection implements Node {
   """
   A list of edges.
   """
   edges: [SystemEdge]
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   A list of nodes.
@@ -638,11 +747,16 @@ type SystemConnection {
 """
 An edge in a connection.
 """
-type SystemEdge {
+type SystemEdge implements Node {
   """
   A cursor for use in pagination.
   """
   cursor: String!
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   The item at the end of the edge.
@@ -653,8 +767,11 @@ type SystemEdge {
 """
 A host inventory tag
 """
-type Tag implements Node & Node {
-  id: ID!!
+type Tag implements Node {
+  """
+  ID of the object.
+  """
+  id: ID!
   key: String!
   namespace: String
   value: String
@@ -676,11 +793,16 @@ type TestResult implements Node {
 """
 The connection type for TestResult.
 """
-type TestResultConnection {
+type TestResultConnection implements Node {
   """
   A list of edges.
   """
   edges: [TestResultEdge]
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   A list of nodes.
@@ -697,11 +819,16 @@ type TestResultConnection {
 """
 An edge in a connection.
 """
-type TestResultEdge {
+type TestResultEdge implements Node {
   """
   A cursor for use in pagination.
   """
   cursor: String!
+
+  """
+  ID of the object.
+  """
+  id: ID!
 
   """
   The item at the end of the edge.
@@ -835,7 +962,7 @@ Autogenerated input type of createProfile
 """
 input createProfileInput {
   benchmarkId: ID!
-  businessObjectiveId: String
+  businessObjectiveId: ID
 
   """
   A unique identifier for the client performing the mutation.
