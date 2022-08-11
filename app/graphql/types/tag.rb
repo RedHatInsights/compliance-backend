@@ -3,8 +3,6 @@
 module Types
   # This type defines a host inventory tag
   class Tag < Types::BaseObject
-    implements GraphQL::Relay::Node.interface
-
     graphql_name 'Tag'
     description 'A host inventory tag'
 

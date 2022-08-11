@@ -12,7 +12,6 @@ module Mutations
       argument :name, String, required: true
       argument :ref_id, ID, required: true
       argument :description, String, required: false
-      argument :business_objective_id, String, required: false
       argument :compliance_threshold, Float, required: false
       argument :selected_rule_ref_ids, [String], required: false
       field :profile, Types::Profile, null: false
