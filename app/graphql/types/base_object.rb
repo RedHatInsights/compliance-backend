@@ -2,12 +2,11 @@
 
 module Types
   # Definition of the BaseObject type in GraphQL
-  class BaseObject < GraphQL::Types::Relay::BaseObject
-    implements GraphQL::Relay::Node.interface
-    connection_type_class Connections::BaseConnection
-
-    add_field GraphQL::Types::Relay::NodeField
-    add_field GraphQL::Types::Relay::NodesField
+  class BaseObject < GraphQL::Schema::Object
+    edge_type_class(Types::BaseEdge)
+    connection_type_class(Types::BaseConnection)
+    field_class Types::BaseField
+    implements GraphQL::Types::Relay::Node
 
     class << self
       def model_class(new_model_class = nil)

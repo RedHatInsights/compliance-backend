@@ -5,6 +5,10 @@ module Types
   class Query < Types::BaseObject
     include Fields
 
+    # Add `node(id: ID!) and `nodes(ids: [ID!]!)`
+    include GraphQL::Types::Relay::HasNodeField
+    include GraphQL::Types::Relay::HasNodesField
+
     graphql_name 'Query'
     description 'The root of all queries'
 
