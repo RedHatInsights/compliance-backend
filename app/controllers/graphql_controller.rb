@@ -11,6 +11,10 @@ class GraphqlController < ApplicationController
       context: { current_user: current_user }
     )
     render json: result
+  rescue StandardError => e
+    raise e unless Rails.env.development?
+
+    handle_error_in_development(e)
   end
 
   rescue_from GraphQL::UnauthorizedError do
@@ -21,5 +25,18 @@ class GraphqlController < ApplicationController
 
   def rbac_allowed?
     user.authorized_to?(Rbac::INVENTORY_VIEWER)
+  end
+
+  def handle_error_in_development(exc)
+    logger.error exc.message
+    logger.error exc.backtrace.join("\n")
+
+    render json: {
+      errors: [{
+        message: e.message,
+        backtrace: e.backtrace
+      }],
+      data: {}
+    }, status: :internal_server_error
   end
 end
