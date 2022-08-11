@@ -411,7 +411,7 @@ objects:
           "policies"."id",
           "profiles"."ref_id",
           "profiles"."name",
-          "accounts"."account_number",
+          "accounts"."org_id",
           REGEXP_REPLACE("benchmarks"."ref_id", '.*RHEL-(\d)$', '\1') AS "os_major_version"
           FROM "policies"
           INNER JOIN "profiles" ON "profiles"."policy_id" = "policies"."id"
