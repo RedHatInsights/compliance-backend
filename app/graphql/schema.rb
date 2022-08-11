@@ -15,8 +15,8 @@ class Schema < GraphQL::Schema
   mutation Types::Mutation
   lazy_resolve(Promise, :sync)
   use GraphQL::Batch
-  use GraphQL::Execution::Interpreter
-  use GraphQL::Analysis::AST
+  # For batch-loading (see https://graphql-ruby.org/dataloader/overview.html)
+  # use GraphQL::Dataloader
   disable_introspection_entry_points if Rails.env.production?
 
   def self.unauthorized_object(_error)
