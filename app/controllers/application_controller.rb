@@ -5,14 +5,14 @@ require 'exceptions'
 # General controller to include all-encompassing behavior
 class ApplicationController < ActionController::API
   include ActionController::Helpers
-  include Pundit
+  include Pundit::Authorization
   include Authentication
   include ExceptionNotifierCustomData
   include Metadata
   include Pagination
   include Collection
   include Rendering
-  include Parameters
+  include Parammeters
 
   before_action :set_csp_hsts
 

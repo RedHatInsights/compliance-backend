@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Reusable parameter checking for all controllers
-module Parameters
+module Parammeters
   extend ActiveSupport::Concern
 
   ParamType = ActionController::Parameters

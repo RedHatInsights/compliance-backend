@@ -48,6 +48,7 @@ gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
 # Faraday to make requests easier
 gem 'faraday'
+gem 'faraday-retry'
 
 # Helpers for models, pagination, mass import
 gem 'friendly_id', '~> 5.2.4'

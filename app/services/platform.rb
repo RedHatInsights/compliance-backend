@@ -13,7 +13,7 @@ module Platform
     backoff_factor: 2,
     methods: %i[get],
     exceptions: [
-      *Faraday::Request::Retry::DEFAULT_EXCEPTIONS, Faraday::ConnectionFailed
+      Errno::ETIMEDOUT, 'Timeout::Error', Faraday::TimeoutError, Faraday::RetriableResponse, Faraday::ConnectionFailed
     ]
   }.freeze
 
