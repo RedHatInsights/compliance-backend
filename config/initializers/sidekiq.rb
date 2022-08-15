@@ -9,7 +9,7 @@ sidekiq_config = lambda do |config|
   }
   config.options[:dead_timeout_in_seconds] = 2.weeks.to_i
   config.options[:interrupted_timeout_in_seconds] = 2.weeks.to_i
-  Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
+  Sidekiq::ReliableFetch.setup_reliable_fetch!(config) if $0.include?('sidekiq')
 
   config.server_middleware do |chain|
     require 'prometheus_exporter/instrumentation'
