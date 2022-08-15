@@ -152,6 +152,8 @@ objects:
           value: "${PUMA_WORKERS}"
         - name: PUMA_MAX_THREADS
           value: "${PUMA_MAX_THREADS}"
+        - name: MALLOC_ARENA_MAX
+          value: '2'
         - name: OLD_PATH_PREFIX
           value: "${OLD_PATH_PREFIX}"
         - name: SECRET_KEY_BASE
