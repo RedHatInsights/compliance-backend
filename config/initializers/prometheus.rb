@@ -25,17 +25,19 @@ def start_exporter_server
 rescue Errno::EADDRINUSE
 end
 
-ensure_exporter_server unless $0.include?('prometheus_exporter')
+unless $0.include?('puma')
+  ensure_exporter_server unless $0.include?('prometheus_exporter')
 
-PrometheusExporter::Client.default = PrometheusExporter::Client.new(
-  host: '127.0.0.1',
-  port: Settings.prometheus_exporter_port
-)
+  PrometheusExporter::Client.default = PrometheusExporter::Client.new(
+    host: '127.0.0.1',
+    port: Settings.prometheus_exporter_port
+  )
 
-PrometheusExporter::Metric::Base.default_prefix = 'compliance_'
+  PrometheusExporter::Metric::Base.default_prefix = 'compliance_'
 
-# stats per request like HTTP status and timings
-Rails.application.middleware.unshift PrometheusExporter::Middleware
+  # stats per request like HTTP status and timings
+  Rails.application.middleware.unshift PrometheusExporter::Middleware
 
-# basic process stats like RSS and GC info
-PrometheusExporter::Instrumentation::Process.start(type: "master")
+  # basic process stats like RSS and GC info
+  PrometheusExporter::Instrumentation::Process.start(type: "master")
+end
