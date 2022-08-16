@@ -9,7 +9,29 @@ describe 'Benchmarks API' do
 
   path "#{Settings.path_prefix}/#{Settings.app_name}/benchmarks" do
     get 'List all benchmarks' do
-      before { FactoryBot.create_list(:benchmark, 2) }
+      before do
+        account = FactoryBot.create(:account)
+        profile = FactoryBot.create(
+          :profile,
+          :with_rules,
+          rule_count: 2,
+          name: 'Profile name with rules #1',
+          account: account
+        )
+        FactoryBot.create(
+          :profile,
+          :with_rules,
+          rule_count: 2,
+          name: 'Profile name with rules #2',
+          account: account
+        )
+        host = FactoryBot.create(
+          :host,
+          account: account.account_number,
+          org_id: account.org_id
+        )
+        FactoryBot.create(:test_result, profile: profile, host: host)
+      end
 
       tags 'benchmark'
       description 'Lists all benchmarks requested'
@@ -53,7 +75,13 @@ describe 'Benchmarks API' do
   path "#{Settings.path_prefix}/#{Settings.app_name}/benchmarks/{id}" do
     get 'Retrieve a benchmark' do
       before do
-        @profile = FactoryBot.create(:canonical_profile, :with_rules)
+        @profile = FactoryBot.create(:canonical_profile, :with_rules, name: 'First related profile')
+        FactoryBot.create(
+          :canonical_profile,
+          :with_rules,
+          name: 'Second related profile',
+          benchmark_id: @profile.benchmark_id
+        )
       end
 
       tags 'benchmark'
