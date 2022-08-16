@@ -6,10 +6,24 @@ require 'sidekiq/testing'
 describe 'Profiles API' do
   before do
     @account = FactoryBot.create(:account)
-    @policy = FactoryBot.create(:policy, account: @account)
-    @parent = FactoryBot.create(:canonical_profile)
+    @policy = FactoryBot.create(
+      :policy,
+      name: 'Policy for Profile',
+      description: 'Policy assigned to Profile',
+      account: @account
+    )
+    @parent = FactoryBot.create(
+      :canonical_profile,
+      name: 'Canonical Profile',
+      description: 'Canonical (Generated) Profile'
+    )
     @hosts = FactoryBot.create_list(
-      :host, 2, account: @account.account_number, org_id: @account.org_id, os_minor_version: 2
+      :host,
+      2,
+      account: @account.account_number,
+      display_name: 'not-redhat.com',
+      org_id: @account.org_id,
+      os_minor_version: 2
     )
     allow(PolicyHost).to receive(:os_major_supported?).and_return(true)
     allow(PolicyHost).to receive(:os_minors_supported?).and_return(true)
@@ -60,6 +74,22 @@ describe 'Profiles API' do
       end
 
       response '200', 'lists all profiles requested filtered by OS' do
+        before do
+          profile = FactoryBot.create(
+            :profile,
+            name: 'New (child) profile',
+            description: 'Profile to filter by OS',
+            account: @account,
+            policy: @policy,
+            os_major_version: 7
+          )
+          FactoryBot.create(:test_result, profile: @parent, host: @hosts.second, score: 0.42)
+          FactoryBot.create(
+            :test_result,
+            profile: Profile.find(profile.parent_profile_id),
+            host: @hosts.second, score: 0.68
+          )
+        end
         let(:'X-RH-IDENTITY') { encoded_header }
         let(:include) { '' } # work around buggy rswag
         let(:search) { 'os_major_version = 7' }
@@ -135,6 +165,13 @@ describe 'Profiles API' do
       }
 
       response '201', 'creates a profile' do
+        before do
+          @parent.update(policy_id: @policy.id)
+          rule1 = FactoryBot.create(:rule, benchmark: @parent.benchmark, description: 'Benchmark rule 1')
+          rule2 = FactoryBot.create(:rule, benchmark: @parent.benchmark, description: 'Benchmark rule 2')
+          @parent.rules << rule1
+          @parent.rules << rule2
+        end
         let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
         let(:data) do
@@ -233,6 +270,12 @@ describe 'Profiles API' do
       end
 
       response '200', 'retrieves a profile with included benchmark' do
+        before do
+          account = FactoryBot.create(:account)
+          @parent.update!(account: account)
+          host = FactoryBot.create(:host, account: account.account_number)
+          FactoryBot.create(:test_result, profile: @parent, host: host, score: 0.42)
+        end
         let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:id) do
           @parent.id
