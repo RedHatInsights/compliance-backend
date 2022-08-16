@@ -1,5 +1,5 @@
 ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tzdata"
-ARG devDeps="gcc gcc-c++ gzip libffi-devel make openssl-devel postgresql-devel ruby-devel tar util-linux"
+ARG devDeps="gcc gcc-c++ gzip libffi-devel make openssl-devel postgresql-devel ruby-devel tar util-linux zlib-devel"
 ARG without="development:test"
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS build

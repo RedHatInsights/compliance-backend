@@ -58,7 +58,13 @@ gem 'oj'
 gem 'uuid'
 
 # Prometheus exporter
-gem 'prometheus_exporter', '>= 0.5'
+gem 'yabeda'
+gem 'yabeda-puma-plugin'
+gem 'yabeda-rails'
+gem 'yabeda-sidekiq'
+gem 'yabeda-graphql'
+gem 'yabeda-prometheus-mmap'
+gem 'nokogiri', force_ruby_platform: true
 
 # Logging, incl. CloudWatch
 gem 'manageiq-loggers', '~> 0.6.0'
