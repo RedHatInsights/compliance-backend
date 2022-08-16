@@ -8,7 +8,8 @@ module ProfileSearching
     scoped_search on: %i[id account_id compliance_threshold
                          external parent_profile_id],
                   only_explicit: true
-    scoped_search on: %i[name ref_id]
+    scoped_search on: %i[ref_id]
+    scoped_search on: :name, ext_method: 'filter_by_policy_and_profile_names'
     scoped_search relation: :assigned_hosts, on: :id, rename: :system_ids
     scoped_search relation: :assigned_hosts, on: :display_name,
                   rename: :system_names
@@ -147,6 +148,18 @@ module ProfileSearching
       {
         conditions: "profiles.id IN (#{any_child_profile.to_sql})"
       }
+    end
+
+    def filter_by_policy_and_profile_names(_filter, operator, value)
+      field = scoped_search_definition.field_by_name('name')
+      values = ScopedSearch::QueryBuilder.preprocess_parameters(scoped_search_definition, field, operator, value)
+
+      policy_cond = sanitize_sql_for_conditions(["policies.name #{operator} (?)", values])
+      profile_cond = sanitize_sql_for_conditions(["profiles.name #{operator} (?)", values])
+
+      profiles = left_outer_joins(:policy).where(policy_cond).or(Profile.where(profile_cond))
+
+      { conditions: 'profiles.id IN (?)', parameter: [profiles.select(:id)] }
     end
   end
 

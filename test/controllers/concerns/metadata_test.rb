@@ -88,13 +88,13 @@ class MetadataTest < ActionDispatch::IntegrationTest
       FactoryBot.create(:profile)
     end
 
-    search_query = 'name != ""'
+    search_query = "name != ''"
     get profiles_url, params: { search: search_query, limit: 1, offset: 2 }
     assert_response :success
-    assert_includes json_body['links']['first'], 'search=name+%21%3D+%22%22'
-    assert_includes json_body['links']['last'], 'search=name+%21%3D+%22%22'
-    assert_includes json_body['links']['next'], 'search=name+%21%3D+%22%22'
-    assert_includes json_body['links']['previous'], 'search=name+%21%3D+%22%22'
+    assert_includes json_body['links']['first'], 'search=name+%21%3D+%27%27'
+    assert_includes json_body['links']['last'], 'search=name+%21%3D+%27%27'
+    assert_includes json_body['links']['next'], 'search=name+%21%3D+%27%27'
+    assert_includes json_body['links']['previous'], 'search=name+%21%3D+%27%27'
   end
 
   test 'meta adds relationships param to JSON response' do
