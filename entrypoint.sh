@@ -21,6 +21,11 @@ if [ -z "$APPLICATION_TYPE" ]; then
   exit 1
 fi
 
+if isClowderEnabled; then
+  PROMETHEUS_EXPORTER_PORT="$(ClowderConfigMetricsPort)"
+  export PROMETHEUS_EXPORTER_PORT
+fi
+
 if [ "$APPLICATION_TYPE" = "compliance-backend" ]; then
   check_number PUMA_WORKERS     "${PUMA_WORKERS:-0}"
   check_number PUMA_MIN_THREADS "${PUMA_MIN_THREADS:-0}"

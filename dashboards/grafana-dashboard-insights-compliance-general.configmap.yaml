@@ -98,7 +98,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "sum(increase(compliance_http_requests_total{}[$__range]))",
+              "expr": "sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "",
@@ -181,7 +181,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "sum(increase(compliance_http_requests_total{status=~\"2.*\"}[$__range])) / sum(increase(compliance_http_requests_total{}[$__range]))",
+              "expr": "sum(increase(rails_requests_total{application=\"compliance\",status=~\"2.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
@@ -749,7 +749,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "sum(increase(compliance_http_requests_total{status=~\"5.*\"}[$__range])) / sum(increase(compliance_http_requests_total{}[$__range]))",
+              "expr": "sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
@@ -831,7 +831,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "sum(increase(compliance_http_requests_total{status=~\"4.*\"}[$__range])) / sum(increase(compliance_http_requests_total{}[$__range]))",
+              "expr": "sum(increase(rails_requests_total{application=\"compliance\",status=~\"4.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
@@ -994,7 +994,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(compliance_http_requests_total{status=~\"[0-9]{3}\"}[$interval])) by (status)",
+              "expr": "sum(rate(rails_requests_total{application=\"compliance\",status=~\"[0-9]{3}\"}[$interval])) by (status)",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{status}}",
@@ -1084,7 +1084,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "1000 * sum(rate(compliance_http_duration_seconds_sum{}[$interval])) / sum(rate(compliance_http_duration_seconds_count{}[$interval]))",
+              "expr": "1000 * sum(rate(rails_request_duration_seconds_sum{application=\"compliance\"}[$interval])) / sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"}[$interval]))",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "",
@@ -1548,11 +1548,11 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(compliance_graphql_duration_seconds{quantile=\"0.5\"}) by (platform_key)",
+              "expr": "histogram_quantile(0.5, sum(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}) by (type,field,le))",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 10,
-              "legendFormat": "{{platform_key}}",
+              "legendFormat": "{{type}}.{{field}}",
               "refId": "A"
             }
           ],
@@ -1639,11 +1639,11 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(compliance_graphql_duration_seconds{quantile=\"0.99\"}) by (platform_key) ",
+              "expr": "histogram_quantile(0.99, sum(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}) by (type,field,le))",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 10,
-              "legendFormat": "{{platform_key}}",
+              "legendFormat": "{{type}}.{{field}}",
               "refId": "A"
             }
           ],
@@ -1730,21 +1730,21 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(compliance_http_duration_seconds{quantile=\"0.5\", action=\"query\",controller=\"graphql\"}) * 1000",
+              "expr": "histogram_quantile(0.5, sum(rails_request_duration_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "total",
               "refId": "A"
             },
             {
-              "expr": "avg(compliance_http_redis_duration_seconds{quantile=\"0.5\",action=\"query\",controller=\"graphql\"}) * 1000",
+              "expr": "histogram_quantile(0.5, sum(rails_view_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
-              "legendFormat": "redis",
+              "legendFormat": "view",
               "refId": "B"
             },
             {
-              "expr": "avg(compliance_http_sql_duration_seconds{quantile=\"0.5\",action=\"query\",controller=\"graphql\"}) * 1000",
+              "expr": "histogram_quantile(0.5, sum(rails_db_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "sql",
@@ -1834,21 +1834,21 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg(compliance_http_duration_seconds{quantile=\"0.99\", action=\"query\",controller=\"graphql\"}) * 1000",
+              "expr": "histogram_quantile(0.99, sum(rails_request_duration_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "total",
               "refId": "A"
             },
             {
-              "expr": "avg(compliance_http_redis_duration_seconds{quantile=\"0.99\",action=\"query\",controller=\"graphql\"}) * 1000",
+              "expr": "histogram_quantile(0.99, sum(rails_view_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
-              "legendFormat": "redis",
+              "legendFormat": "view",
               "refId": "B"
             },
             {
-              "expr": "avg(compliance_http_sql_duration_seconds{quantile=\"0.99\",action=\"query\",controller=\"graphql\"}) * 1000",
+              "expr": "histogram_quantile(0.99, sum(rails_db_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "sql",
@@ -2144,10 +2144,10 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(compliance_sidekiq_job_duration_seconds{}[$interval])) by (job_name)",
+              "expr": "sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (worker)",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "{{job_name}}",
+              "legendFormat": "{{worker}}",
               "refId": "A"
             }
           ],
@@ -2240,10 +2240,10 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(increase(compliance_sidekiq_jobs_total{}[$interval])) by (job_name)",
+              "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\"}[$interval])) by (worker)",
               "format": "time_series",
               "intervalFactor": 1,
-              "legendFormat": "{{job_name}}",
+              "legendFormat": "{{worker}}",
               "refId": "A"
             }
           ],
@@ -2756,7 +2756,7 @@ data:
           "spaceLength": 10,
           "targets": [
             {
-              "expr": "sum(increase(compliance_sidekiq_jobs_total{job_name=\"ParseReportJob\"}[$interval]) - increase(compliance_sidekiq_failed_jobs_total{job_name=\"ParseReportJob\"}[$interval]))",
+              "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval]) - increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval]))",
               "legendFormat": "{{job_name}}",
               "interval": "",
               "format": "time_series",
@@ -2861,7 +2861,7 @@ data:
           "spaceLength": 10,
           "targets": [
             {
-              "expr": "sum(increase(compliance_sidekiq_failed_jobs_total{job_name=\"ParseReportJob\"}[$interval]))",
+              "expr": "sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval]))",
               "legendFormat": "{{job_name}}",
               "interval": "",
               "format": "time_series",
