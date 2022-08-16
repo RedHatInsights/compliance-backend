@@ -261,6 +261,142 @@ module V1
         end)
       end
 
+      test 'search canonical profile name' do
+        canonical_profile = FactoryBot.create(:canonical_profile)
+
+        get v1_profiles_url, params: {
+          search: "name=\"#{canonical_profile.name}\""
+        }
+
+        assert_response :success
+
+        profiles = response.parsed_body
+
+        assert_equal 1, profiles['data'].count
+        assert_equal([canonical_profile.name], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
+      test 'search canonical profile name using like operator' do
+        canonical_profile = FactoryBot.create(:canonical_profile)
+
+        get v1_profiles_url, params: {
+          search: "name~\"#{canonical_profile.name}\""
+        }
+
+        assert_response :success
+
+        profiles = response.parsed_body
+
+        assert_equal 1, profiles['data'].count
+        assert_equal([canonical_profile.name], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
+      test 'search custom profile name with no spaces' do
+        FactoryBot.create(:profile, name: 'foo')
+        FactoryBot.create(
+          :profile,
+          name: 'foo',
+          policy: FactoryBot.create(:policy, name: 'bar')
+        )
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false and name=bar'
+        }
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(%w[bar], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
+      test 'search custom profile name with spaces' do
+        FactoryBot.create(:profile, name: 'foo')
+        FactoryBot.create(
+          :profile,
+          policy: FactoryBot.create(:policy, name: 'Custom Name')
+        )
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false and name="Custom Name"'
+        }
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(['Custom Name'], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
+      test 'search custom profile name with like operator' do
+        FactoryBot.create(:profile, name: 'foo')
+        FactoryBot.create(
+          :profile,
+          policy: FactoryBot.create(:policy, name: 'abc')
+        )
+        FactoryBot.create(
+          :profile,
+          policy: FactoryBot.create(:policy, name: 'bar')
+        )
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false and name~a',
+          sort_by: 'name'
+        }
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(%w[abc bar], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
+      test 'search custom profile name with not eq operator' do
+        FactoryBot.create(:profile, name: 'foo')
+        FactoryBot.create(
+          :profile,
+          policy: FactoryBot.create(:policy, name: 'abc')
+        )
+        FactoryBot.create(
+          :profile,
+          policy: FactoryBot.create(:policy, name: 'bar')
+        )
+
+        get v1_profiles_url, params: {
+          search: "canonical=false and name != ''",
+          sort_by: 'name'
+        }
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(%w[abc bar foo], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
+      test 'search custom profile name with not like operator' do
+        FactoryBot.create(:profile, name: 'foo')
+        FactoryBot.create(
+          :profile,
+          policy: FactoryBot.create(:policy, name: 'bar')
+        )
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false and name !~ a',
+          sort_by: 'name'
+        }
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(['foo'], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
       test 'fail if search contains null character' do
         get v1_profiles_url, params: {
           search: "foo\x00bar"
@@ -752,6 +888,17 @@ module V1
         assert_equal NAME, parsed_data.dig('attributes', 'name')
         assert_equal DESCRIPTION, parsed_data.dig('attributes', 'description')
         assert_audited 'Created policy'
+
+        get v1_profiles_url, params: {
+          search: 'canonical=false and name="A new name"',
+          sort_by: %w[name]
+        }
+
+        profiles = JSON.parse(response.body)
+
+        assert_equal(['A new name'], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
       end
 
       test 'create with all customized profile attributes' do
