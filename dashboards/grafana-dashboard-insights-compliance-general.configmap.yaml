@@ -1730,21 +1730,21 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.5, sum(rails_request_duration_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
+              "expr": "histogram_quantile(0.5, sum(rails_request_duration_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "total",
               "refId": "A"
             },
             {
-              "expr": "histogram_quantile(0.5, sum(rails_view_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
+              "expr": "histogram_quantile(0.5, sum(rails_view_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "view",
               "refId": "B"
             },
             {
-              "expr": "histogram_quantile(0.5, sum(rails_db_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
+              "expr": "histogram_quantile(0.5, sum(rails_db_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "sql",
@@ -1834,21 +1834,21 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rails_request_duration_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
+              "expr": "histogram_quantile(0.99, sum(rails_request_duration_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "total",
               "refId": "A"
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rails_view_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
+              "expr": "histogram_quantile(0.99, sum(rails_view_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "view",
               "refId": "B"
             },
             {
-              "expr": "histogram_quantile(0.99, sum(rails_db_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"})) by (le) * 1000",
+              "expr": "histogram_quantile(0.99, sum(rails_db_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
               "format": "time_series",
               "intervalFactor": 10,
               "legendFormat": "sql",
@@ -2756,7 +2756,7 @@ data:
           "spaceLength": 10,
           "targets": [
             {
-              "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval]) - increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval]))",
+              "expr": "(sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)) - (sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0))",
               "legendFormat": "{{job_name}}",
               "interval": "",
               "format": "time_series",
@@ -2861,7 +2861,7 @@ data:
           "spaceLength": 10,
           "targets": [
             {
-              "expr": "sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval]))",
+              "expr": "sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)",
               "legendFormat": "{{job_name}}",
               "interval": "",
               "format": "time_series",
