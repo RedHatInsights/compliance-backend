@@ -163,8 +163,6 @@ parameters:
     value: "5"
   - name: SIDEKIQ_CONCURRENCY
     value: "1"
-  - name: RAILS_MAX_THREADS
-    value: "1"
   - name: DISABLE_RBAC
     value: "false"
   - name: PUMA_WORKERS

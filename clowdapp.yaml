@@ -347,8 +347,6 @@ objects:
           value: "${REDIS_SSL}"
         - name: SETTINGS__REDIS_CACHE_SSL
           value: "${REDIS_SSL}"
-        - name: RAILS_MAX_THREADS
-          value: "${RAILS_MAX_THREADS}"
         - name: MALLOC_ARENA_MAX
           value: '2'
         - name: SECRET_KEY_BASE
@@ -517,8 +515,6 @@ parameters:
   required: true
   value: "5"
 - name: SIDEKIQ_CONCURRENCY
-  value: "1"
-- name: RAILS_MAX_THREADS
   value: "1"
 - name: DISABLE_RBAC
   value: "false"
