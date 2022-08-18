@@ -221,7 +221,7 @@ data:
           "gridPos": {
             "h": 3,
             "w": 3,
-            "x": 6,
+            "x": 12,
             "y": 1
           },
           "id": 9,
@@ -262,7 +262,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-backend-.*\"}))",
+              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-service-.*\"}))",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
@@ -302,7 +302,7 @@ data:
           "gridPos": {
             "h": 3,
             "w": 3,
-            "x": 9,
+            "x": 15,
             "y": 1
           },
           "id": 24,
@@ -343,7 +343,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-consumer-.*\"}))",
+              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-inventory-consumer-.*\"}))",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
@@ -383,7 +383,7 @@ data:
           "gridPos": {
             "h": 3,
             "w": 3,
-            "x": 12,
+            "x": 18,
             "y": 1
           },
           "id": 41,
@@ -424,14 +424,14 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-import-remediations-.*\"}))",
+              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-sidekiq-.*\"}))",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
             }
           ],
           "thresholds": "0.1,3",
-          "title": "Import-remediations restarts",
+          "title": "Sidekiq restarts",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -464,7 +464,7 @@ data:
           "gridPos": {
             "h": 3,
             "w": 3,
-            "x": 15,
+            "x": 21,
             "y": 1
           },
           "id": 45,
@@ -615,87 +615,6 @@ data:
             "#d44a3a"
           ],
           "datasource": "$datasource",
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 21,
-            "y": 1
-          },
-          "id": 54,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "expr": "max(kube_pod_container_status_restarts_total{pod=~\"compliance-prometheus-exporter-.*\"})",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "thresholds": "0.1,3",
-          "title": "Prometheus-exporter restarts",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "delta"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "$datasource",
           "decimals": 2,
           "format": "percentunit",
           "gauge": {
@@ -708,8 +627,8 @@ data:
           "gridPos": {
             "h": 3,
             "w": 3,
-            "x": 0,
-            "y": 4
+            "x": 6,
+            "y": 1
           },
           "id": 25,
           "interval": null,
@@ -749,7 +668,7 @@ data:
           "tableColumn": "",
           "targets": [
             {
-              "expr": "sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
+              "expr": "(sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) OR on() vector(0)",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
@@ -790,8 +709,8 @@ data:
           "gridPos": {
             "h": 3,
             "w": 3,
-            "x": 3,
-            "y": 4
+            "x": 9,
+            "y": 1
           },
           "id": 28,
           "interval": null,
@@ -849,87 +768,6 @@ data:
             }
           ],
           "valueName": "current"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "$datasource",
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 21,
-            "y": 4
-          },
-          "id": 55,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "expr": "max(kube_pod_container_status_restarts_total{pod=~\"compliance-redis-.*\"})",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "thresholds": "0.1,3",
-          "title": "Redis restarts",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "delta"
         },
         {
           "collapsed": false,
