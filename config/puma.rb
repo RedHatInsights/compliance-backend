@@ -44,6 +44,6 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 plugin :tmp_restart
 
 # Metrics
-activate_control_app
+activate_control_app("unix://#{File.expand_path(File.join(File.dirname(__FILE__), '../tmp/puma.sock'))}")
 plugin :yabeda
 plugin :yabeda_prometheus
