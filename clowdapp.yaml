@@ -21,7 +21,7 @@ objects:
     - rbac
     database:
       name: compliance
-      version: 12
+      version: 13
     kafkaTopics:
       - topicName: platform.upload.compliance
         partitions: 1
