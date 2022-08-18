@@ -165,6 +165,8 @@ parameters:
     value: "false"
   - name: PUMA_WORKERS
     value: "3"
+  - name: PUMA_MIN_THREADS
+    value: "5"
   - name: PUMA_MAX_THREADS
     value: "5"
   - name: OLD_PATH_PREFIX

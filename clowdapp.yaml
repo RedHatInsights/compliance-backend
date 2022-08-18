@@ -150,6 +150,8 @@ objects:
           value: ${DISABLE_RBAC}
         - name: PUMA_WORKERS
           value: "${PUMA_WORKERS}"
+        - name: PUMA_MIN_THREADS
+          value: "${PUMA_MIN_THREADS}"
         - name: PUMA_MAX_THREADS
           value: "${PUMA_MAX_THREADS}"
         - name: MALLOC_ARENA_MAX
@@ -518,6 +520,8 @@ parameters:
   value: "false"
 - name: PUMA_WORKERS
   value: "3"
+- name: PUMA_MIN_THREADS
+  value: "5"
 - name: PUMA_MAX_THREADS
   value: "5"
 - name: OLD_PATH_PREFIX
