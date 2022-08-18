@@ -46,4 +46,4 @@ plugin :tmp_restart
 # Metrics
 activate_control_app
 plugin :yabeda
-plugin :yabeda_prometheus
+# plugin :yabeda_prometheus

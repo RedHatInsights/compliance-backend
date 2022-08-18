@@ -44,4 +44,5 @@ Rails.application.routes.draw do
   draw_routes(Settings.old_path_prefix)
 
   mount Sidekiq::Web => "/sidekiq" if Rails.env.development?
+  get '/metrics', to: ->(_) { [500, {}, ['error']] }
 end

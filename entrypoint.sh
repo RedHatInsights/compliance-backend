@@ -40,7 +40,7 @@ if [ "$APPLICATION_TYPE" = "compliance-backend" ]; then
   fi
 
   if is_puma_installed; then
-    exec bundle exec "puma --config ./config/puma.cfg -b tcp://0.0.0.0:${PORT}"
+    exec bundle exec "puma --config ./config/puma.cfg -b tcp://0.0.0.0:${PORT} -b tcp://0.0.0.0:9090"
   else
 
     echo "You might consider adding 'puma' into your Gemfile."
