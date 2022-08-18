@@ -506,8 +506,6 @@ parameters:
 - name: REDIS_SSL
   description: 'Whether to use secured connection to Redis. Use string values of true or false'
   value: "true"
-- name: PUMA_MAX_THREADS
-  value: "5"
 - name: RACECAR_OFFSET_COMMIT_INTERVAL
   required: true
   value: "5"
