@@ -247,6 +247,8 @@ objects:
           value: "${REDIS_SSL}"
         - name: SETTINGS__REDIS_CACHE_SSL
           value: "${REDIS_SSL}"
+        - name: MALLOC_ARENA_MAX
+          value: '2'
         - name: SECRET_KEY_BASE
           valueFrom:
             secretKeyRef:
@@ -519,9 +521,9 @@ parameters:
 - name: PUMA_WORKERS
   value: "3"
 - name: PUMA_MIN_THREADS
-  value: "5"
+  value: "1"
 - name: PUMA_MAX_THREADS
-  value: "5"
+  value: "3"
 - name: OLD_PATH_PREFIX
   value: /r/insights/platform
 - name: SETTINGS__FORCE_IMPORT_SSGS
