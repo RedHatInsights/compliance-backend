@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'racecar/consumer'
+
 # Parent class for all Racecar consumers, contains general logic
 class ApplicationConsumer < Racecar::Consumer
   def process(message)
