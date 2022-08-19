@@ -247,6 +247,8 @@ objects:
           value: "${REDIS_SSL}"
         - name: SETTINGS__REDIS_CACHE_SSL
           value: "${REDIS_SSL}"
+        - name: MALLOC_ARENA_MAX
+          value: '2'
         - name: SECRET_KEY_BASE
           valueFrom:
             secretKeyRef:
