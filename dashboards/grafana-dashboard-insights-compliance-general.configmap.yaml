@@ -19,7 +19,7 @@ data:
       "gnetId": null,
       "graphTooltip": 0,
       "id": 84,
-      "iteration": 1598836624299,
+      "iteration": 1661169038202,
       "links": [],
       "panels": [
         {
@@ -841,7 +841,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "1000 * sum(rate(rails_request_duration_seconds_sum{application=\"compliance\"}[$interval])) / sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"}[$interval]))",
+              "expr": "sum(rate(rails_request_duration_seconds_sum{application=\"compliance\"}[$interval])) / sum(rate(rails_request_duration_seconds_count{application=\"compliance\"}[$interval]))",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "",
@@ -868,11 +868,8 @@ data:
           },
           "yaxes": [
             {
-              "format": "ms",
-              "label": null,
+              "format": "s",
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
@@ -1305,7 +1302,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.5, sum(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}) by (type,field,le))",
+              "expr": "histogram_quantile(0.5, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 10,
@@ -1396,7 +1393,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}) by (type,field,le))",
+              "expr": "histogram_quantile(0.99, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 10,
