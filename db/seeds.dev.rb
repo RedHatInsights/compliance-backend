@@ -72,6 +72,7 @@ Account.find_each do |account|
     FactoryBot.create_list(
       :host,
       host_count,
+      :with_tags,
       account: account.account_number,
       org_id: account.org_id,
       os_version_arr: version
