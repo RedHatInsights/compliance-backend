@@ -33,8 +33,8 @@ class GraphqlController < ApplicationController
 
     render json: {
       errors: [{
-        message: e.message,
-        backtrace: e.backtrace
+        message: exc.message,
+        backtrace: exc.backtrace
       }],
       data: {}
     }, status: :internal_server_error
