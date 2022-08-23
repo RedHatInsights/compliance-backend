@@ -589,11 +589,7 @@ class SystemQueryTest < ActiveSupport::TestCase
             node {
               id
               name
-              tags {
-                namespace
-                key
-                value
-              }
+              tags
             }
           }
         }
@@ -812,11 +808,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     query = <<-GRAPHQL
     query getSystems($first: Int) {
         systems(first: $first) {
-            osVersions {
-                name
-                major
-                minor
-            }
+            osVersions
         }
     }
     GRAPHQL
@@ -838,11 +830,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     query = <<-GRAPHQL
     query getSystems($limit: Int) {
         systems(limit: $limit) {
-            tags {
-                namespace
-                key
-                value
-            }
+            tags
         }
     }
     GRAPHQL
