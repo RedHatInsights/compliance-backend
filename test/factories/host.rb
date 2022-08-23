@@ -77,6 +77,18 @@ FactoryBot.define do
       end
     end
 
+    trait :with_tags do
+      transient do
+        tag_count { 5 }
+      end
+
+      tags do
+        tag_count.times.map do
+          { namespace: Faker::Hacker.ingverb, key: Faker::Hacker.noun, value: Faker::Hacker.adjective }
+        end
+      end
+    end
+
     transient do
       os_version_arr { [7, 9] }
       os_version { os_version_arr.join('.') }
