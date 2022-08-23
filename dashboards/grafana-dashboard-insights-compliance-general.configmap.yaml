@@ -2091,7 +2091,7 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rdsosmetrics_fileSys_usedPercent{exported_instance=\"compliance-prod\"}) by (mount_point)",
+              "expr": "sum(rdsosmetrics_fileSys_usedPercent{exported_instance=~\"compliance-(stage|prod)\"}) by (mount_point)",
               "legendFormat": "{{mount_point}}",
               "refId": "A"
             }
@@ -2186,14 +2186,14 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(label_replace(rdsosmetrics_processList_cpuUsedPc{exported_instance=\"compliance-prod\"}, \"db_user\", \"$1\", \"name\", \"postgres: ([^ ]+) .+\")) by (db_user)",
+              "expr": "sum(label_replace(rdsosmetrics_processList_cpuUsedPc{exported_instance=~\"compliance-(stage|prod)\"}, \"db_user\", \"$1\", \"name\", \"postgres: ([^ ]+) .+\")) by (db_user)",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "{{db_user}}",
               "refId": "B"
             },
             {
-              "expr": "sum(rdsosmetrics_processList_cpuUsedPc{exported_instance=\"compliance-prod\"})",
+              "expr": "sum(rdsosmetrics_processList_cpuUsedPc{exported_instance=~\"compliance-(stage|prod)\"})",
               "format": "time_series",
               "intervalFactor": 1,
               "legendFormat": "sum",
@@ -2290,22 +2290,22 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rdsosmetrics_memory_total{exported_instance=\"compliance-prod\"})",
+              "expr": "sum(rdsosmetrics_memory_total{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "total memory",
               "refId": "A"
             },
             {
-              "expr": "sum(rdsosmetrics_memory_free{exported_instance=\"compliance-prod\"})",
+              "expr": "sum(rdsosmetrics_memory_free{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "free memory",
               "refId": "B"
             },
             {
-              "expr": "sum(rdsosmetrics_memory_dirty{exported_instance=\"compliance-prod\"})",
+              "expr": "sum(rdsosmetrics_memory_dirty{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "dirty memory",
               "refId": "C"
             },
             {
-              "expr": "sum(rdsosmetrics_memory_active{exported_instance=\"compliance-prod\"})",
+              "expr": "sum(rdsosmetrics_memory_active{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "active memory",
               "refId": "D"
             }
@@ -2400,17 +2400,17 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rdsosmetrics_loadAverageMinute_one{exported_instance=\"compliance-prod\"})",
+              "expr": "sum(rdsosmetrics_loadAverageMinute_one{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "Load Avg 1 min",
               "refId": "A"
             },
             {
-              "expr": "sum(rdsosmetrics_loadAverageMinute_five{exported_instance=\"compliance-prod\"})",
+              "expr": "sum(rdsosmetrics_loadAverageMinute_five{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "Load Avg 5 min",
               "refId": "B"
             },
             {
-              "expr": "sum(rdsosmetrics_loadAverageMinute_fifteen{exported_instance=\"compliance-prod\"})",
+              "expr": "sum(rdsosmetrics_loadAverageMinute_fifteen{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "Load Avg 15 min",
               "refId": "C"
             }
