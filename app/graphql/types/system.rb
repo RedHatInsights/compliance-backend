@@ -48,7 +48,7 @@ module Types
                required: false
     end
 
-    field :tags, [Tag], null: true
+    field :tags, GraphQL::Types::JSON, null: true
 
     enforce_rbac Rbac::SYSTEM_READ
 

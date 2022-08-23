@@ -68,6 +68,11 @@ type BusinessObjective implements Node {
 }
 
 """
+Represents untyped JSON
+"""
+scalar JSON
+
+"""
 The mutation root of this schema
 """
 type Mutation implements Node {
@@ -134,19 +139,6 @@ interface Node {
   ID of the object.
   """
   id: ID!
-}
-
-"""
-An operating system with its version
-"""
-type OperatingSystem implements Node {
-  """
-  ID of the object.
-  """
-  id: ID!
-  major: Int!
-  minor: Int!
-  name: String!
 }
 
 """
@@ -706,7 +698,7 @@ type System implements Node {
   ): Int!
   staleTimestamp: String!
   staleWarningTimestamp: String!
-  tags: [Tag!]
+  tags: JSON
   testResultProfiles(
     """
     Filter results tested against a policy or profile ID
@@ -734,13 +726,13 @@ type SystemConnection implements Node {
   A list of nodes.
   """
   nodes: [System]
-  osVersions: [OperatingSystem!]!
+  osVersions: JSON!
 
   """
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
-  tags: [Tag!]!
+  tags: JSON!
   totalCount: Int!
 }
 
@@ -762,19 +754,6 @@ type SystemEdge implements Node {
   The item at the end of the edge.
   """
   node: System
-}
-
-"""
-A host inventory tag
-"""
-type Tag implements Node {
-  """
-  ID of the object.
-  """
-  id: ID!
-  key: String!
-  namespace: String
-  value: String
 }
 
 """
