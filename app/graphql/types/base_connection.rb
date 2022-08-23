@@ -9,7 +9,7 @@ module Types
     field :total_count, Integer, null: false
 
     def total_count
-      object.items.size
+      object.items.count
     end
   end
 end
