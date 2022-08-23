@@ -890,6 +890,8 @@ class SystemQueryTest < ActiveSupport::TestCase
     GRAPHQL
 
     setup_two_hosts
+    @host2.update!(policies: [@profile1.policy], org_id: @host1.org_id)
+
     result = Schema.execute(
       query,
       variables: { perPage: 1, page: 1 },
