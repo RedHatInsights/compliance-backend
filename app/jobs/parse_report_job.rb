@@ -12,13 +12,13 @@ class ParseReportJob
 
     @msg_value = message
     Sidekiq.logger.info(
-      "Parsing report for account #{@msg_value['account']}, "\
+      "Parsing report for account #{@msg_value['org_id']}, "\
       "system #{@msg_value['id']}"
     )
 
     @file = retrieve_file(idx)
 
-    Rails.logger.audit_with_account(@msg_value['account']) do
+    Rails.logger.audit_with_account(@msg_value['org_id']) do
       parse_and_save_report
     end
   end
