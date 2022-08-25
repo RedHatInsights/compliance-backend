@@ -50,7 +50,7 @@ module ReportParsing
     end
 
     def notify_report_failure(exc)
-      host = Host.find_by(id: id, account: account)
+      host = Host.find_by(id: id, org_id: org_id)
 
       # Do not fire a notification for a host that has been deleted
       return unless host
