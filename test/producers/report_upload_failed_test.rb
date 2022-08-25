@@ -5,7 +5,7 @@ require 'test_helper'
 class ReportUploadFailedTest < ActiveSupport::TestCase
   setup do
     @acc = FactoryBot.create(:account)
-    @host = FactoryBot.create(:host, account: @acc.account_number)
+    @host = FactoryBot.create(:host, org_id: @acc.org_id)
   end
 
   test 'delivers messages to the notifications topic' do

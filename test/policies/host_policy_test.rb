@@ -6,12 +6,11 @@ class HostPolicyTest < ActiveSupport::TestCase
   test 'only hosts matching the account are accessible' do
     user = FactoryBot.create(:user)
     h1 = Host.find(
-      FactoryBot.create(:host, account: user.account.account_number, org_id: user.account.org_id).id
+      FactoryBot.create(:host, org_id: user.account.org_id).id
     )
     a = FactoryBot.create(:account)
     h2 = Host.find(FactoryBot.create(
       :host,
-      account: a.account_number,
       org_id: a.org_id
     ).id)
 

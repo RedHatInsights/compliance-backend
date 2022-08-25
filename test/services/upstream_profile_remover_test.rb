@@ -15,7 +15,7 @@ class UpstreamProfileRemoverTest < ActiveSupport::TestCase
   end
 
   test 'removes upstream non-canonical profiles' do
-    host = FactoryBot.create(:host, account: @account.account_number)
+    host = FactoryBot.create(:host, org_id: @account.org_id)
     FactoryBot.create(:test_result, profile: @upstream, host: host)
     FactoryBot.create(:test_result, profile: @downstream, host: host)
 

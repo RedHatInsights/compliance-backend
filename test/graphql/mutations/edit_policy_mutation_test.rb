@@ -6,7 +6,7 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
   setup do
     @user = FactoryBot.create(:user)
     @profile = FactoryBot.create(:profile, account: @user.account)
-    @host = FactoryBot.create(:host, account: @user.account.account_number)
+    @host = FactoryBot.create(:host, org_id: @user.account.org_id)
     @tr = FactoryBot.create(:test_result, host: @host, profile: @profile)
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @profile.policy.update(hosts: [@host])

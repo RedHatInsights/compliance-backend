@@ -22,7 +22,7 @@ class RuleGroupRelationshipsTest < ActiveSupport::TestCase
   context 'without any required or conflicting rules or rule groups' do
     setup do
       @account = FactoryBot.create(:account)
-      @host = FactoryBot.create(:host, account: @account.account_number)
+      @host = FactoryBot.create(:host, org_id: @account.org_id)
       @benchmark = FactoryBot.create(:canonical_profile).benchmark
       parser = OpenscapParser::TestResultFile.new(
         file_fixture('rhel-xccdf-report.xml').read
@@ -55,7 +55,7 @@ class RuleGroupRelationshipsTest < ActiveSupport::TestCase
   context 'with required and conflicting rules or rule groups' do
     setup do
       @account = FactoryBot.create(:account)
-      @host = FactoryBot.create(:host, account: @account.account_number)
+      @host = FactoryBot.create(:host, org_id: @account.org_id)
       @benchmark = FactoryBot.create(:canonical_profile).benchmark
       parser = OpenscapParser::TestResultFile.new(
         file_fixture('xccdf_report.xml').read

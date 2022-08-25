@@ -10,7 +10,6 @@ module V1
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': '1234',
               'org_id': '1234',
               'auth_type': IdentityHeader::CERT_AUTH
             },
@@ -32,7 +31,6 @@ module V1
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': '1234',
               'org_id': '1234',
               'auth_type': IdentityHeader::CERT_AUTH
             },
@@ -55,7 +53,6 @@ module V1
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': '1234',
               'org_id': '1234',
               'auth_type': IdentityHeader::CERT_AUTH
             },
@@ -79,7 +76,6 @@ module V1
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': account.account_number,
               'org_id': account.org_id,
               'auth_type': IdentityHeader::CERT_AUTH
             },
@@ -107,7 +103,6 @@ module V1
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': account.account_number,
               'org_id': account.org_id,
               'auth_type': 'basic-auth'
             },
@@ -132,7 +127,6 @@ module V1
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': account.account_number,
               'org_id': account.org_id,
               'auth_type': IdentityHeader::CERT_AUTH
             },
@@ -158,7 +152,6 @@ module V1
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': account.account_number,
               'org_id': account.org_id,
               'auth_type': IdentityHeader::CERT_AUTH
             },

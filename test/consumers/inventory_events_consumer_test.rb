@@ -89,7 +89,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       ParseReportJob.clear
       SafeDownloader.stubs(:download_reports).returns(['report'])
       IdentityHeader.stubs(:new).returns(OpenStruct.new(valid?: true))
-      @host = Host.find(FactoryBot.create(:host, id: '37f7eeff-831b-5c41-984a-254965f58c0f', account: '1234').id)
+      @host = Host.find(FactoryBot.create(:host, id: '37f7eeff-831b-5c41-984a-254965f58c0f', org_id: '1234').id)
     end
 
     should 'not leak memory to subsequent messages' do
@@ -101,7 +101,6 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
-          account: @host.account,
           org_id: '1111'
         }
       }.to_json)
@@ -124,7 +123,6 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
-          account: @host.account,
           org_id: '1111'
         }
       }.to_json)
@@ -152,7 +150,6 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
-          account: @host.account,
           org_id: '1111'
         }
       }.to_json)
@@ -177,8 +174,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
-          account: @host.account,
-          org_id: '1111'
+          org_id: '1234'
         }
       }.to_json)
 
@@ -186,7 +182,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
       ReportUploadFailed.expects(:deliver).with(
         account_number: @host.account, host: @host,
-        request_id: '036738d6f4e541c4aa8cfc9f46f5a140', org_id: '1111',
+        request_id: '036738d6f4e541c4aa8cfc9f46f5a140', org_id: '1234',
         error: "Unable to locate any uploaded report from host #{@host.id}."
       )
 
@@ -213,8 +209,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
-          account: @host.account,
-          org_id: '1111'
+          org_id: '1234'
         }
       }.to_json)
 
@@ -245,8 +240,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
-          account: @host.account,
-          org_id: '1111'
+          org_id: '1234'
         }
       }.to_json)
       # Mock the actual 'sending the validation' to Kafka
@@ -254,7 +248,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
       ReportUploadFailed.expects(:deliver).with(
         account_number: @host.account, host: @host,
-        request_id: '036738d6f4e541c4aa8cfc9f46f5a140', org_id: '1111',
+        request_id: '036738d6f4e541c4aa8cfc9f46f5a140', org_id: '1234',
         error: "Failed to parse any uploaded report from host #{@host.id}: invalid format."
       )
 
@@ -282,14 +276,13 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
-          account: '1234',
-          org_id: '4321'
+          org_id: '1234'
         }
       }.to_json)
 
       ReportUploadFailed.expects(:deliver).with(
         account_number: @host.account, host: @host,
-        request_id: '036738d6f4e541c4aa8cfc9f46f5a140', org_id: '4321',
+        request_id: '036738d6f4e541c4aa8cfc9f46f5a140', org_id: '1234',
         error: "Failed to parse any uploaded report from host #{@host.id}: " \
                'invalid identity of missing insights entitlement.'
       )
@@ -318,8 +311,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
-          account: @host.account,
-          org_id: '1111'
+          org_id: '1234'
         }
       }.to_json)
       @consumer.stubs(:download_file)
@@ -351,8 +343,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           service: 'compliance',
           url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
           request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
-          account: @host.account,
-          org_id: '1111'
+          org_id: '1234'
         }
       }.to_json)
       # Mock the actual 'sending the validation' to Kafka

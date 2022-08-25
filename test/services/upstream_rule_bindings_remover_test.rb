@@ -6,7 +6,7 @@ class UpstreamRuleBindingsRemoverTest < ActiveSupport::TestCase
   setup do
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     account = FactoryBot.create(:account)
-    host = FactoryBot.create(:host, account: account.account_number)
+    host = FactoryBot.create(:host, org_id: account.org_id)
     @profile = FactoryBot.create(
       :profile,
       :with_rules,

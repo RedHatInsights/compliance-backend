@@ -23,13 +23,13 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     @account = FactoryBot.create(:account)
     @host = FactoryBot.create(
       :host,
-      account: @account.account_number,
+      org_id: @account.org_id,
       display_name: 'MyStringone'
     )
 
     @report_parser = TestParser
                      .new(fake_report,
-                          'account' => @account.account_number,
+                          'org_id' => @account.org_id,
                           'b64_identity' => @account.b64_identity,
                           'id' => @host.id,
                           'metadata' => {
@@ -186,7 +186,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       assert_raises(XccdfReportParser::MissingIdError) do
         TestParser.new(
           'fakereport',
-          'account' => @account.account_number,
+          'org_id' => @account.org_id,
           'b64_identity' => @account.b64_identity,
           'metadata' => { 'display_name': '123' }
         )
@@ -197,7 +197,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       assert_raises(XccdfReportParser::MissingIdError) do
         TestParser.new(
           'fakereport',
-          'account' => @account.account_number,
+          'org_id' => @account.org_id,
           'id' => @host.id,
           'metadata' => { 'display_name': '123' }
         )
@@ -324,7 +324,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       assert_raises(XccdfReportParser::WrongFormatError) do
         TestParser.new(
           fake_report,
-          'account' => @account.account_number,
+          'org_id' => @account.org_id,
           'id' => @host.id,
           'b64_identity' => @account.b64_identity,
           'metadata' => {

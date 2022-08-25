@@ -8,13 +8,12 @@ class HostInventoryApiTest < ActiveSupport::TestCase
     account = FactoryBot.create(:account)
     @host = FactoryBot.create(
       :host,
-      account: account.account_number,
       org_id: account.org_id
     )
 
     @inventory_host = { 'id' => @host.id,
                         'display_name' => @host.name,
-                        'account' => @host.account_number }
+                        'org_id' => @host.org_id }
     @account = @host.account_object
     @b64_identity = '1234abcd'
     @api = HostInventoryApi.new(b64_identity: @b64_identity)

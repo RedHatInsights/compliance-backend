@@ -23,7 +23,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @user = FactoryBot.create(:user)
     @profile = FactoryBot.create(:profile, account: @user.account)
-    @host = FactoryBot.create(:host, account: @user.account.account_number)
+    @host = FactoryBot.create(:host, org_id: @user.account.org_id)
     @tr = FactoryBot.create(
       :test_result,
       profile: @profile,
@@ -63,7 +63,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
       external: true
     )
 
-    host2 = FactoryBot.create(:host, account: @user.account.account_number)
+    host2 = FactoryBot.create(:host, org_id: @user.account.org_id)
     profile2.policy.update(hosts: [@host, host2])
     FactoryBot.create(:test_result, profile: profile2, host: host2)
 

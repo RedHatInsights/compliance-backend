@@ -23,7 +23,7 @@ class PolicyTest < ActiveSupport::TestCase
       @hosts = FactoryBot.create_list(
         :host,
         2,
-        account: @account.account_number
+        org_id: @account.org_id
       )
     end
 
@@ -119,7 +119,7 @@ class PolicyTest < ActiveSupport::TestCase
       @hosts = FactoryBot.create_list(
         :host,
         2,
-        account: @account.account_number
+        org_id: @account.org_id
       ).map { |wh| Host.find(wh.id) }
     end
 
@@ -221,7 +221,7 @@ class PolicyTest < ActiveSupport::TestCase
 
   context 'compliant?' do
     should 'be compliant if score is above compliance threshold' do
-      host = FactoryBot.create(:host, account: @account.account_number)
+      host = FactoryBot.create(:host, org_id: @account.org_id)
       FactoryBot.create(:profile, policy: @policy, account: @account)
       @policy.update(compliance_threshold: 90, hosts: [host])
       @policy.stubs(:score).returns(95)
@@ -244,7 +244,7 @@ class PolicyTest < ActiveSupport::TestCase
 
         host = FactoryBot.create(
           :host,
-          account: @account.account_number,
+          org_id: @account.org_id,
           policies: [@policy]
         )
 
@@ -261,7 +261,7 @@ class PolicyTest < ActiveSupport::TestCase
   context '#clone_to' do
     setup do
       @canonical = FactoryBot.create(:canonical_profile)
-      @host = FactoryBot.create(:host, account: @account.account_number)
+      @host = FactoryBot.create(:host, org_id: @account.org_id)
       @policy.update(hosts: [@host])
       @os_minor_version = '3'
     end
@@ -366,7 +366,7 @@ class PolicyTest < ActiveSupport::TestCase
       @profile = FactoryBot.create(:profile, account: @account, policy: @policy)
       @host = FactoryBot.create(
         :host,
-        account: @account.account_number,
+        org_id: @account.org_id,
         os_minor_version: 4
       )
       @policy.update(hosts: [@host])
@@ -453,8 +453,8 @@ class PolicyTest < ActiveSupport::TestCase
 
   context 'cached host counts' do
     setup do
-      @host1 = FactoryBot.create(:host, account: @account.account_number)
-      @host2 = FactoryBot.create(:host, account: @account.account_number)
+      @host1 = FactoryBot.create(:host, org_id: @account.org_id)
+      @host2 = FactoryBot.create(:host, org_id: @account.org_id)
       @profile = FactoryBot.create(:profile, policy: @policy, account: @account)
     end
 

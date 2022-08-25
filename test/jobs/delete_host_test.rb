@@ -6,7 +6,7 @@ require 'sidekiq/testing'
 class DeleteHostTest < ActiveSupport::TestCase
   setup do
     user = FactoryBot.create(:user)
-    @host = FactoryBot.create(:host, account: user.account.account_number)
+    @host = FactoryBot.create(:host, org_id: user.account.org_id)
     @profile = FactoryBot.create(:profile, :with_rules, account: user.account)
     tr = FactoryBot.create(:test_result, profile: @profile, host: @host)
     FactoryBot.create(

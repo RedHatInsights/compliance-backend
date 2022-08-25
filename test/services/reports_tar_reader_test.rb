@@ -7,13 +7,13 @@ class ReportsTarReaderTest < ActiveSupport::TestCase
     assert_nothing_raised do
       file = File.new(file_fixture('insights-archive.tar.gz'))
       account = FactoryBot.create(:account)
-      host = FactoryBot.create(:host, account: account.account_number)
+      host = FactoryBot.create(:host, org_id: account.org_id)
       reports = ReportsTarReader.new(file).reports
       assert_equal 3, reports.length
       reports.each do |report|
         XccdfReportParser.new(
           report,
-          'account' => account.account_number,
+          'org_id' => account.org_id,
           'id' => host.id,
           'b64_identity' => account.b64_identity,
           'metadata' => {
@@ -28,13 +28,13 @@ class ReportsTarReaderTest < ActiveSupport::TestCase
     assert_nothing_raised do
       file = File.new(file_fixture('insights-archive-long.tar.gz'))
       account = FactoryBot.create(:account)
-      host = FactoryBot.create(:host, account: account.account_number)
+      host = FactoryBot.create(:host, org_id: account.org_id)
       reports = ReportsTarReader.new(file).reports
       assert_equal 1, reports.length
       reports.each do |report|
         XccdfReportParser.new(
           report,
-          'account' => account.account_number,
+          'org_id' => account.org_id,
           'id' => host.id,
           'b64_identity' => account.b64_identity,
           'metadata' => {

@@ -36,7 +36,7 @@ class AuthenticationTest < ActionController::TestCase
 
   teardown do
     # expected to be cleared out by the middleware
-    Thread.current[:audit_account_number] = nil
+    Thread.current[:audit_org_id] = nil
   end
 
   context 'unauthorized access' do
@@ -57,7 +57,6 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity':
           {
-            'account_number': '1234',
             'org_id': '1234',
             'user': { 'username': 'username' }
           }
@@ -73,7 +72,6 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity':
           {
-            'account_number': '1234',
             'org_id': '1234',
             'user': { 'username': 'username' }
           },
@@ -94,7 +92,6 @@ class AuthenticationTest < ActionController::TestCase
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': '1234',
             'org_id': '1234',
             'user': { 'username': 'username' }
           },
@@ -118,11 +115,10 @@ class AuthenticationTest < ActionController::TestCase
       stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_VIEWER)
     end
 
-    should 'account number not found, creates a new account' do
+    should 'account org_id not found, creates a new account' do
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': '1234',
             'org_id': '1234',
             'user': {
               'username': 'username',
@@ -154,7 +150,6 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity':
           {
-            'account_number': '1234',
             'org_id': '1234',
             'user': { 'username': 'username' }
           },
@@ -184,7 +179,6 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity':
           {
-            'account_number': '1234',
             'org_id': '1234',
             'user': {
               'username': 'username',
@@ -211,7 +205,6 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity':
           {
-            'account_number': '1234',
             'org_id': '1234',
             'user': { 'username': 'username' }
           },
@@ -234,7 +227,6 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity':
           {
-            'account_number': '1234',
             'org_id': '1234',
             'user': { 'username': 'username' }
           },
@@ -261,7 +253,6 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity':
           {
-            'account_number': '1234',
             'org_id': '1234',
             'user': { 'username': 'username' }
           },
@@ -284,7 +275,6 @@ class AuthenticationTest < ActionController::TestCase
         {
           'identity':
           {
-            'account_number': '1234',
             'org_id': '1234',
             'user': { 'username': 'username' }
           },
@@ -310,7 +300,6 @@ class AuthenticationTest < ActionController::TestCase
         encoded_header = Base64.encode64(
           {
             'identity': {
-              'account_number': '1234',
               'org_id': '1234',
               'user': { 'username': 'username' }
             },
@@ -338,7 +327,6 @@ class AuthenticationTest < ActionController::TestCase
       encoded_header = Base64.encode64(
         {
           'identity': {
-            'account_number': '1234',
             'org_id': '1234',
             'auth_type': IdentityHeader::CERT_AUTH
           },
@@ -366,7 +354,6 @@ class AuthenticationTest < ActionController::TestCase
       {
         'identity':
         {
-          'account_number': '1234',
           'org_id': '1234',
           'user': { 'username': 'username' }
         },

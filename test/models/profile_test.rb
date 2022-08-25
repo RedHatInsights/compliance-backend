@@ -23,7 +23,7 @@ class ProfileTest < ActiveSupport::TestCase
 
   setup do
     @account = FactoryBot.create(:account)
-    @host = FactoryBot.create(:host, account: @account.account_number)
+    @host = FactoryBot.create(:host, org_id: @account.org_id)
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @policy = FactoryBot.create(:policy, account: @account, hosts: [@host])
   end
@@ -133,7 +133,7 @@ class ProfileTest < ActiveSupport::TestCase
 
   context 'compliance' do
     setup do
-      @host = FactoryBot.create(:host, account: @account.account_number)
+      @host = FactoryBot.create(:host, org_id: @account.org_id)
       @policy.hosts << @host
       @profile = FactoryBot.create(
         :profile,
@@ -180,7 +180,7 @@ class ProfileTest < ActiveSupport::TestCase
       @tr.update(score: 0.5)
       FactoryBot.create(
         :test_result,
-        host: FactoryBot.create(:host, account: @account.account_number),
+        host: FactoryBot.create(:host, org_id: @account.org_id),
         profile: @profile,
         score: 0.2
       )
@@ -191,7 +191,7 @@ class ProfileTest < ActiveSupport::TestCase
       @tr.update(score: 1)
       FactoryBot.create(
         :test_result,
-        host: FactoryBot.create(:host, account: @account.account_number),
+        host: FactoryBot.create(:host, org_id: @account.org_id),
         profile: @profile,
         score: 0
       )
@@ -202,7 +202,7 @@ class ProfileTest < ActiveSupport::TestCase
   context 'threshold' do
     setup do
       @profile = FactoryBot.create(:profile, account: @account, policy: @policy)
-      @host = FactoryBot.create(:host, account: @account.account_number)
+      @host = FactoryBot.create(:host, org_id: @account.org_id)
       FactoryBot.create(
         :test_result,
         host: @host,
@@ -279,7 +279,7 @@ class ProfileTest < ActiveSupport::TestCase
       FactoryBot.create(
         :test_result,
         profile: @profile,
-        host: FactoryBot.create(:host, account: @account.account_number)
+        host: FactoryBot.create(:host, org_id: @account.org_id)
       )
 
       assert_equal 1, @profile.test_results.count
@@ -292,7 +292,7 @@ class ProfileTest < ActiveSupport::TestCase
       tr = FactoryBot.create(
         :test_result,
         profile: @profile,
-        host: FactoryBot.create(:host, account: @account.account_number)
+        host: FactoryBot.create(:host, org_id: @account.org_id)
       )
 
       FactoryBot.create(
@@ -418,7 +418,7 @@ class ProfileTest < ActiveSupport::TestCase
   end
 
   test 'has_test_results filters by test results available' do
-    host = FactoryBot.create(:host, account: @account.account_number)
+    host = FactoryBot.create(:host, org_id: @account.org_id)
     profile1 = FactoryBot.create(:profile, account: @account)
     profile2 = FactoryBot.create(:profile, account: @account)
     FactoryBot.create(:test_result, profile: profile1, host: host)
@@ -438,7 +438,7 @@ class ProfileTest < ActiveSupport::TestCase
                                                     account: @account,
                                                     policy: @policy)
 
-      host = FactoryBot.create(:host, account: @account.account_number)
+      host = FactoryBot.create(:host, org_id: @account.org_id)
       FactoryBot.create_list(:test_result, 2, profile: @profile1, host: host)
     end
 
@@ -467,7 +467,7 @@ class ProfileTest < ActiveSupport::TestCase
     setup do
       @profile1 = FactoryBot.create(:profile, account: @account)
       @profile2 = FactoryBot.create(:profile, account: @account)
-      host = FactoryBot.create(:host, account: @account.account_number)
+      host = FactoryBot.create(:host, org_id: @account.org_id)
       FactoryBot.create(:test_result, profile: @profile1, host: host)
     end
 
@@ -720,7 +720,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'use the same profile when the host is assinged' do
-      host = FactoryBot.create(:host, account: @account.account_number)
+      host = FactoryBot.create(:host, org_id: @account.org_id)
       @policy.hosts << host
 
       FactoryBot.create(
@@ -753,7 +753,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'assign different SSG profile to a policy the host is part of' do
-      host = FactoryBot.create(:host, account: @account.account_number)
+      host = FactoryBot.create(:host, org_id: @account.org_id)
       @policy.hosts << host
 
       second_benchmark = @profile.benchmark.dup
@@ -776,7 +776,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'set the parent profile ID to the original profile' do
-      host = FactoryBot.create(:host, account: @account.account_number)
+      host = FactoryBot.create(:host, org_id: @account.org_id)
 
       assert @profile.canonical?
       assert_difference('Profile.count', 1) do
@@ -791,7 +791,7 @@ class ProfileTest < ActiveSupport::TestCase
     end
 
     should 'clone profiles as external by default' do
-      host = FactoryBot.create(:host, account: @account.account_number)
+      host = FactoryBot.create(:host, org_id: @account.org_id)
       assert_difference('PolicyHost.count' => 0, 'Profile.count' => 1) do
         cloned_profile = @profile.clone_to(
           account: @account,
@@ -805,7 +805,7 @@ class ProfileTest < ActiveSupport::TestCase
 
     should 'not add rules to existing profiles' do
       assert_not_empty(@profile.rules)
-      host = FactoryBot.create(:host, account: @account.account_number)
+      host = FactoryBot.create(:host, org_id: @account.org_id)
       @policy.hosts << host
 
       existing_profile = @profile.clone_to(

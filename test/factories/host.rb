@@ -32,14 +32,10 @@ FactoryBot.define do
     end
   end
 
-  sequence(:account_number) { |n| format('%05<num>d', num: n) }
   sequence(:org_id) { |n| format('%05<num>d', num: n) }
 
   factory :host, class: WHost do
     id { SecureRandom.uuid }
-    account do
-      User.current&.account&.account_number || generate(:account_number)
-    end
     org_id do
       User.current&.account&.org_id || generate(:org_id)
     end

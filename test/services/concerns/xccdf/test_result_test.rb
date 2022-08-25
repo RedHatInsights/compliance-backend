@@ -15,7 +15,7 @@ class TestResultTest < ActiveSupport::TestCase
     @end_time = DateTime.now
     @mock = Mock.new
     @mock.host_profile = FactoryBot.create(:profile, account: @account)
-    @mock.host = FactoryBot.create(:host, account: @account.account_number)
+    @mock.host = FactoryBot.create(:host, org_id: @account.org_id)
     @mock.op_test_result = OpenStruct.new(score: 30,
                                           start_time: @end_time - 2.minutes,
                                           end_time: @end_time)

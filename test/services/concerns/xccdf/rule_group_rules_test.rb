@@ -21,7 +21,7 @@ class RuleGroupRulesTest < ActiveSupport::TestCase
   context 'parent-child relationship between rule group and rule' do
     setup do
       @account = FactoryBot.create(:account)
-      @host = FactoryBot.create(:host, account: @account.account_number)
+      @host = FactoryBot.create(:host, org_id: @account.org_id)
       @benchmark = FactoryBot.create(:canonical_profile).benchmark
       parser = OpenscapParser::TestResultFile.new(
         file_fixture('xccdf_report.xml').read

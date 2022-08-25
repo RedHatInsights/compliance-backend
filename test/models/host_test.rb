@@ -16,7 +16,7 @@ class HostTest < ActiveSupport::TestCase
     @account = FactoryBot.create(:account)
     @host1 = Host.find(FactoryBot.create(
       :host,
-      account: @account.account_number,
+      org_id: @account.org_id,
       os_major_version: 7,
       os_minor_version: 4,
       tags: [
@@ -27,7 +27,7 @@ class HostTest < ActiveSupport::TestCase
 
     @host2 = Host.find(FactoryBot.create(
       :host,
-      account: @account.account_number,
+      org_id: @account.org_id,
       os_major_version: 8,
       os_minor_version: 3
     ).id)
@@ -397,8 +397,8 @@ class HostTest < ActiveSupport::TestCase
   end
 
   test '#available_tags' do
-    FactoryBot.create(:host, account: @account.account_number, tags: [])
-    FactoryBot.create(:host, account: @account.account_number, tags: {})
+    FactoryBot.create(:host, org_id: @account.org_id, tags: [])
+    FactoryBot.create(:host, org_id: @account.org_id, tags: {})
 
     assert_equal_sets(
       [

@@ -135,7 +135,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     assert_equal 'fail', log_msg['status']
   end
 
-  test 'setting account number context' do
+  test 'setting account org_id context' do
     app = MockRackApp.new
     mw = Insights::API::Common::AuditLog::Middleware.new(app)
     mw.logger = @audit
@@ -151,7 +151,7 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
     assert_equal 'success', log_msg['status']
 
     assert_not Thread.current[:audit_org_id],
-               'account number should be reset after request is done'
+               'account org_id should be reset after request is done'
   end
 
   test 'fallbacks to info loging' do
