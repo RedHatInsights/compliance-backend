@@ -9,7 +9,7 @@ module Insights
       module AuditLog
         # Audit Log formatter with evidence capture
         class Formatter < ManageIQ::Loggers::Container::Formatter
-          ALLOWED_PAYLOAD_KEYS = %i[message status account_number controller
+          ALLOWED_PAYLOAD_KEYS = %i[message status org_id controller
                                     remote_ip transaction_id].freeze
 
           # rubocop:disable Metrics/MethodLength
@@ -21,7 +21,7 @@ module Insights
               thread_id: thread_id,
               service: progname,
               level: 'audit',
-              account_number: account_number
+              org_id: org_id
             }
             payload.merge!(framework_evidence)
             JSON.generate(merge_message(payload, msg).compact) << "\n"
@@ -67,8 +67,8 @@ module Insights
             time.utc.strftime('%Y-%m-%dT%H:%M:%S.%6NZ')
           end
 
-          def account_number
-            Thread.current[:audit_account_number]
+          def org_id
+            Thread.current[:audit_org_id]
           end
 
           def rails_transation_id

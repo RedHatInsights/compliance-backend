@@ -146,11 +146,11 @@ class AuditLogMiddlewareTest < ActiveSupport::TestCase
 
     log_msg = capture_log
     assert_equal 'GET / -> 200 OK', log_msg['message']
-    assert_equal '1234', log_msg['account_number']
+    assert_equal '1234', log_msg['org_id']
     assert_equal '127.1.2.3', log_msg['remote_ip']
     assert_equal 'success', log_msg['status']
 
-    assert_not Thread.current[:audit_account_number],
+    assert_not Thread.current[:audit_org_id],
                'account number should be reset after request is done'
   end
 
