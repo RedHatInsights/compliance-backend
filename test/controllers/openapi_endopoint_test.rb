@@ -12,7 +12,6 @@ class OpenapiEndpointTest < ActionDispatch::IntegrationTest
     encoded_header = Base64.encode64(
       {
         'identity': {
-          'account_number': account.account_number,
           'auth_type': 'basic-auth',
           'org_id': account.org_id
         },

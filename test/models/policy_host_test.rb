@@ -39,14 +39,14 @@ class PolicyHostTest < ActiveSupport::TestCase
 
     @host1 = Host.find(FactoryBot.create(
       :host,
-      account: account.account_number,
+      org_id: account.org_id,
       os_major_version: 7,
       os_minor_version: 1
     ).id)
 
     @host2 = Host.find(FactoryBot.create(
       :host,
-      account: account.account_number,
+      org_id: account.org_id,
       os_major_version: 8,
       os_minor_version: 3
     ).id)

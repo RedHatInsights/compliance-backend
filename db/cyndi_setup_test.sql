@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS inventory.hosts_v1_1 CASCADE;
 
 CREATE TABLE inventory.hosts_v1_1 (
     id uuid PRIMARY KEY,
-    account character varying(10) NOT NULL,
+    account character varying(10),
     org_id character varying(10) NOT NULL,
     display_name character varying(200) NOT NULL,
     tags jsonb NOT NULL,

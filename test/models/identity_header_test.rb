@@ -12,7 +12,6 @@ class IdentityHeaderTest < ActiveSupport::TestCase
       },
       'identity': {
         'user': {},
-        'account_number': '293912',
         'auth_type': 'basic-auth'
       }
     }

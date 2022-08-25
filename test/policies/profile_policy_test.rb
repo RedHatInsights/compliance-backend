@@ -17,7 +17,7 @@ class ProfilePolicyTest < ActiveSupport::TestCase
     user.account = account
 
     profile2 = FactoryBot.create(:profile, account: account)
-    host = FactoryBot.create(:host, account: account.account_number)
+    host = FactoryBot.create(:host, org_id: account.org_id)
     profile2.policy.update!(hosts: [host])
 
     assert_includes Pundit.policy_scope(user, Profile), profile2

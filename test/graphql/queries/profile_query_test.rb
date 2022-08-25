@@ -132,7 +132,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
       @hosts = FactoryBot.create_list(
         :host,
         2,
-        account: @user.account.account_number
+        org_id: @user.account.org_id
       )
 
       @profile2 = FactoryBot.create(
@@ -334,7 +334,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
   end
 
   should 'query profile via a policy with failing rule stats' do
-    FactoryBot.create_list(:host, 2, account: @profile.account.account_number, org_id: @profile.account.org_id)
+    FactoryBot.create_list(:host, 2, org_id: @profile.account.org_id)
     @profile.policy.update!(hosts: Host.all)
     rules = @profile.rules.to_a
     duplicate_rule = rules.pop

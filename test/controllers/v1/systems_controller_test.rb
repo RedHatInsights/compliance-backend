@@ -173,7 +173,7 @@ module V1
       end
 
       should 'return 404 for hosts in other accounts' do
-        host = FactoryBot.create(:host, account: 'foo', org_id: 'foo')
+        host = FactoryBot.create(:host, org_id: 'foo')
         get system_path(host)
         assert_response :not_found
       end

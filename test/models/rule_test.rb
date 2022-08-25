@@ -20,7 +20,7 @@ class RuleTest < ActiveSupport::TestCase
 
     @rule = @profile.rules.first
 
-    @host = FactoryBot.create(:host, account: account.account_number)
+    @host = FactoryBot.create(:host, org_id: account.org_id)
   end
 
   test 'creates rules from openscap_parser Rule object' do

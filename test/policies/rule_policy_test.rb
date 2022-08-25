@@ -34,7 +34,7 @@ class RulePolicyTest < ActiveSupport::TestCase
     assert_empty Pundit.policy_scope(@user, Rule)
 
     profile = FactoryBot.create(:profile, :with_rules, account: @user.account)
-    host = FactoryBot.create(:host, account: @user.account.account_number)
+    host = FactoryBot.create(:host, org_id: @user.account.org_id)
     FactoryBot.create(:test_result, host: host, profile: profile)
 
     assert_includes Pundit.policy_scope(@user, Rule), profile.rules.sample

@@ -5,7 +5,7 @@ require 'test_helper'
 class RuleQueryTest < ActiveSupport::TestCase
   setup do
     @user = FactoryBot.create(:user)
-    @host = FactoryBot.create(:host, account: @user.account.account_number)
+    @host = FactoryBot.create(:host, org_id: @user.account.org_id)
     @profile = FactoryBot.create(
       :profile,
       :with_rules,

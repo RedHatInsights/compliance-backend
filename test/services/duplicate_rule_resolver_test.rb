@@ -58,10 +58,10 @@ class DuplicateRuleResolverTest < ActiveSupport::TestCase
 
   test 'resolves rule_results from a duplicate rule' do
     account = FactoryBot.create(:account)
-    host1 = FactoryBot.create(:host, account: account.account_number)
+    host1 = FactoryBot.create(:host, org_id: account.org_id)
     host2 = FactoryBot.create(
       :host,
-      account: FactoryBot.create(:account).account_number
+      org_id: FactoryBot.create(:account).org_id
     )
     profile = FactoryBot.create(
       :profile,

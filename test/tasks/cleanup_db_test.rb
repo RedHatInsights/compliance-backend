@@ -10,9 +10,9 @@ class CleanupDbTest < ActiveSupport::TestCase
 
   test 'cleanup_db removes dangling records' do
     account = FactoryBot.create(:account)
-    FactoryBot.create(:host, account: account.account_number, org_id: account.org_id)
+    FactoryBot.create(:host, org_id: account.org_id)
     policy = FactoryBot.create(:policy, account: account)
-    account.dup.update!(account_number: '8675309', org_id: '8675309')
+    account.dup.update!(org_id: '8675309')
 
     TestResult.new(host_id: UUID.generate).save(validate: false)
     RuleResult.new(host_id: UUID.generate).save(validate: false)
@@ -32,10 +32,10 @@ class CleanupDbTest < ActiveSupport::TestCase
 
   test 'cleanup_db does not remove accounts on a profile, policy, or host' do
     aorig = FactoryBot.create(:account)
-    FactoryBot.create(:host, account: aorig.account_number)
-    (account = aorig.dup).update!(account_number: '9797979', org_id: '9797979')
+    FactoryBot.create(:host, org_id: aorig.org_id)
+    (account = aorig.dup).update!(org_id: '9797979')
     FactoryBot.create(:profile, account: account)
-    (account = aorig.dup).update!(account_number: '3213213', org_id: '3213213')
+    (account = aorig.dup).update!(org_id: '3213213')
     FactoryBot.create(:policy, account: account)
     assert_difference('Account.count' => 0) do
       capture_io do

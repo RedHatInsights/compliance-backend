@@ -5,7 +5,7 @@ require 'test_helper'
 class OrphanedProfilesCleanerTest < ActiveSupport::TestCase
   setup do
     account = FactoryBot.create(:account)
-    host = FactoryBot.create(:host, account: account.account_number)
+    host = FactoryBot.create(:host, org_id: account.org_id)
     @profile = FactoryBot.create(:profile, account: account)
     @tr = FactoryBot.create(:test_result, profile: @profile, host: host)
   end

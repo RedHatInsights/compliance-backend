@@ -15,7 +15,6 @@ class AccountTest < ActiveSupport::TestCase
       acc = FactoryBot.create(:account, account_number: nil)
       ih = IdentityHeader.new(Base64.encode64({
         'identity' => {
-          'account_number' => acc.account_number,
           'org_id' => acc.org_id
         }
       }.to_json))
@@ -28,7 +27,6 @@ class AccountTest < ActiveSupport::TestCase
     should 'create an account if new' do
       ih = IdentityHeader.new(Base64.encode64({
         'identity' => {
-          'account_number' => '123456',
           'org_id' => '123456'
         }
       }.to_json))
@@ -41,7 +39,6 @@ class AccountTest < ActiveSupport::TestCase
     should 'update the is_internal field if set' do
       ih = IdentityHeader.new(Base64.encode64({
         'identity' => {
-          'account_number' => '123456',
           'org_id' => '123456',
           'user' => {
             'is_internal' => true
@@ -57,7 +54,6 @@ class AccountTest < ActiveSupport::TestCase
     should 'update the org_id field if set' do
       ih = IdentityHeader.new(Base64.encode64({
         'identity' => {
-          'account_number' => '123456',
           'org_id' => '654321'
         }
       }.to_json))

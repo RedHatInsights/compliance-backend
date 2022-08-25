@@ -42,7 +42,6 @@ class GraphqlControllerTest < ActionDispatch::IntegrationTest
       identity = Base64.encode64(
         {
           identity: {
-            account_number: account.account_number,
             org_id: account.org_id
           },
           entitlements: {
@@ -80,7 +79,6 @@ class GraphqlControllerTest < ActionDispatch::IntegrationTest
       identity = Base64.encode64(
         {
           identity: {
-            account_number: account.account_number,
             org_id: account.org_id
           },
           entitlements: {

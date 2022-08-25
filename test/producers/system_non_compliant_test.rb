@@ -5,7 +5,7 @@ require 'test_helper'
 class SystemNonCompliantTest < ActiveSupport::TestCase
   setup do
     @acc = FactoryBot.create(:account)
-    @host = FactoryBot.create(:host, account: @acc.account_number)
+    @host = FactoryBot.create(:host, org_id: @acc.org_id)
     @policy = FactoryBot.create(:policy, account: @acc)
   end
 

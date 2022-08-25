@@ -4,10 +4,9 @@ require 'test_helper'
 
 class ParseReportJobTest < ActiveSupport::TestCase
   setup do
-    @host = FactoryBot.create(:host, account: '1234')
+    @host = FactoryBot.create(:host, org_id: '1234')
     @msg_value = {
       'id' => @host.id,
-      'account' => '1234',
       'org_id' => '1111',
       'request_id' => '',
       'url' => ''

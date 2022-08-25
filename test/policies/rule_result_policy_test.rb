@@ -6,7 +6,7 @@ class RuleResultPolicyTest < ActiveSupport::TestCase
   test 'only rules within visible hosts are accessible' do
     user = FactoryBot.create(:user)
     host1 = Host.find(
-      FactoryBot.create(:host, account: user.account.account_number, org_id: user.account.org_id).id
+      FactoryBot.create(:host, org_id: user.account.org_id).id
     )
     assert_includes Pundit.policy_scope(user, Host), host1
 
@@ -27,7 +27,7 @@ class RuleResultPolicyTest < ActiveSupport::TestCase
     )
 
     account2 = FactoryBot.create(:account)
-    host2 = FactoryBot.create(:host, account: account2.account_number, org_id: account2.org_id)
+    host2 = FactoryBot.create(:host, org_id: account2.org_id)
     profile2 = FactoryBot.create(
       :profile,
       :with_rules,
