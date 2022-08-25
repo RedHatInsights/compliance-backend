@@ -7,7 +7,7 @@ task cleanup_db: :environment do
   puts 'Beginning cleanup_db.'
 
   num_deleted = Account.where.not(
-    account_number: Host.select(:account)
+    org_id: Host.select(:org_id)
   ).where.not(
     id: Profile.where.not(account_id: nil).select(:account_id)
   ).where.not(
