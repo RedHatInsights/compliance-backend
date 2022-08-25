@@ -35,8 +35,8 @@ module Insights
             audit(payload)
           end
 
-          def audit_with_account(account_number, &block)
-            AuditLog.audit_with_account(account_number, &block)
+          def audit_with_account(account_org_id, &block)
+            AuditLog.audit_with_account(account_org_id, &block)
           end
 
           def close
