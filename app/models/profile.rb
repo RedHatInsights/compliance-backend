@@ -54,7 +54,6 @@ class Profile < ApplicationRecord
 
   scope :joins_policy, -> { left_outer_joins(:policy) }
 
-  delegate :account_number, to: :account, allow_nil: true
   delegate :org_id, to: :account, allow_nil: true
 
   class << self

@@ -13,10 +13,6 @@ module SystemLike
                                 inverse_of: :hosts, class_name: 'Account'
   end
 
-  def account_number
-    account
-  end
-
   def compliant
     result = {}
     test_result_profiles.map do |profile|

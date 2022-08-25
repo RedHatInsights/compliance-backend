@@ -6,7 +6,6 @@ class BusinessObjective < ApplicationRecord
   has_many :profiles, through: :policies
   has_many :accounts, through: :policies
 
-  delegate :account_number, to: :account
   delegate :org_id, to: :account
 
   validates :title, presence: true
