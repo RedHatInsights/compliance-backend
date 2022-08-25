@@ -7,7 +7,6 @@ class User < ApplicationRecord
 
   belongs_to :account
 
-  delegate :account_number, to: :account
   delegate :org_id, to: :account
 
   def authorized_to?(access_request)
