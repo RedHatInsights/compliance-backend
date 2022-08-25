@@ -23,15 +23,15 @@ module Insights
           ::Logger.new(*args)
         end
 
-        def self.audit_with_account(account_number)
-          original = Thread.current[:audit_account_number]
-          Thread.current[:audit_account_number] = account_number
+        def self.audit_with_account(org_id)
+          original = Thread.current[:audit_org_id]
+          Thread.current[:audit_org_id] = org_id
           return unless block_given?
 
           begin
             yield
           ensure
-            Thread.current[:audit_account_number] = original
+            Thread.current[:audit_org_id] = original
           end
         end
       end

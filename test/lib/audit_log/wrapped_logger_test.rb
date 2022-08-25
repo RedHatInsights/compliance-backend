@@ -127,23 +127,23 @@ class AuditLogWrappedLoggerTest < ActiveSupport::TestCase
     end
   end
 
-  test 'setting account number' do
+  test 'setting account org_id' do
     begin
       @wrapped.audit_with_account('1')
       @wrapped.audit('Audit message')
       log_msg = capture_log
-      assert_equal '1', log_msg['account_number']
+      assert_equal '1', log_msg['org_id']
 
       @wrapped.audit_with_account('2') do
         @wrapped.audit('Audit message')
         log_msg = capture_log
-        assert_equal '2', log_msg['account_number']
+        assert_equal '2', log_msg['org_id']
       end
 
       @wrapped.audit_with_account(nil)
       @wrapped.audit('Audit message')
       log_msg = capture_log
-      assert_not log_msg['account_number']
+      assert_not log_msg['org_id']
     ensure
       @wrapped.audit_with_account(nil)
     end

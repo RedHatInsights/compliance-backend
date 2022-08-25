@@ -32,18 +32,18 @@ class AuditLogTest < ActiveSupport::TestCase
     end
   end
 
-  test 'setting account number context' do
+  test 'setting account org_id context' do
     begin
       Insights::API::Common::AuditLog.audit_with_account('1')
-      assert_equal '1', Thread.current[:audit_account_number]
+      assert_equal '1', Thread.current[:audit_org_id]
 
       Insights::API::Common::AuditLog.audit_with_account('2') do
-        assert_equal '2', Thread.current[:audit_account_number]
+        assert_equal '2', Thread.current[:audit_org_id]
       end
 
-      assert_equal '1', Thread.current[:audit_account_number]
+      assert_equal '1', Thread.current[:audit_org_id]
     ensure
-      Thread.current[:audit_account_number] = nil
+      Thread.current[:audit_org_id] = nil
     end
   end
 end
