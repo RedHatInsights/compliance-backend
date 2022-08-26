@@ -40,7 +40,6 @@ class Rule < ApplicationRecord
                                            inverse_of: :left, class_name: 'RuleGroupRelationship'
   has_many :right_rule_group_relationships, dependent: :delete_all, foreign_key: :right_id,
                                             inverse_of: :right, class_name: 'RuleGroupRelationship'
-  alias references rule_references
   has_one :rule_identifier, dependent: :destroy
   alias identifier rule_identifier
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
@@ -52,14 +51,6 @@ class Rule < ApplicationRecord
   validates :benchmark_id, presence: true
   validates_associated :profile_rules
   validates_associated :rule_results
-
-  scope :with_references, lambda { |reference_labels|
-    joins(:rule_references).where(rule_references: { label: reference_labels })
-  }
-
-  scope :with_identifier, lambda { |identifier_label|
-    joins(:rule_identifier).where(rule_identifiers: { label: identifier_label })
-  }
 
   scope :with_profiles, lambda {
     joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
