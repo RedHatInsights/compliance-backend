@@ -1180,25 +1180,25 @@ class SystemQueryTest < ActiveSupport::TestCase
   test 'query system rules when results contain wrong rule_ids' do
     query = <<-GRAPHQL
     query System($systemId: String!){
-        system(id: $systemId) {
-	    profiles {
-		id
-		name
-		totalHostCount
-		compliantHostCount
-		rules {
-		    title
-		    severity
-		    rationale
-		    refId
-		    description
-		    compliant
-		    remediationAvailable
-		    references
-		    identifier
-		}
-	    }
-	}
+      system(id: $systemId) {
+        profiles {
+          id
+          name
+          totalHostCount
+          compliantHostCount
+          rules {
+            title
+            severity
+            rationale
+            refId
+            description
+            compliant
+            remediationAvailable
+            references
+            identifier
+          }
+        }
+      }
     }
     GRAPHQL
     @host1.policies << @profile1.policy

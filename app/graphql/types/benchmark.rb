@@ -24,10 +24,17 @@ module Types
     end
 
     def rules(args = {})
-      return object.rules unless args[:lookahead].selects?(:identifier)
+      scopes = []
+      scopes << :with_references if args[:lookahead].selects?(:references)
+      scopes << :with_identifier if args[:lookahead].selects?(:identifier)
 
-      # Join and preselect an 'identifier' column
-      object.rules.with_identifier.select('rules.*')
+      ::CollectionLoader.for(object.class, :rules, *scopes).load(object)
+      # {
+      #   references: :with_references,
+      #   identifier: :with_identifier
+      # }.inject(object.rules) do |model, (selects, scope)|
+      #   args[:lookahead].selects?(selects) ? model.send(scope) : model
+      # end.select('rules.*')
     end
   end
 end

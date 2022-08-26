@@ -642,12 +642,12 @@ type Rule implements Node {
   description: String
   failedCount: Int
   id: ID!
-  identifier: String
+  identifier: JSON
   precedence: Int
   profiles: [Profile!]
   rationale: String
   refId: String!
-  references: String
+  references: JSON
   remediationAvailable: Boolean!
   severity: String!
   title: String!

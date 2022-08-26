@@ -15,8 +15,8 @@ module Types
     field :precedence, Int, null: true
     field :remediation_available, Boolean, null: false
     field :profiles, [::Types::Profile], null: true
-    field :identifier, String, null: true
-    field :references, String, null: true
+    field :identifier, GraphQL::Types::JSON, null: true
+    field :references, GraphQL::Types::JSON, null: true
     field :failed_count, Int, null: true
     field :compliant, Boolean, null: false do
       argument :system_id, String, 'Is a system compliant?',
@@ -36,27 +36,20 @@ module Types
     end
 
     def references
-      if context[:"rule_references_#{object.id}"].nil?
-        ::CollectionLoader.for(::Rule, :rule_references)
-                          .load(object).then do |references|
-          generate_references_json(references)
-        end
-      else
-        references_from_context
-      end
-    end
+      # Try to return with the preloaded references if available
+      return object['references'] if object.has_attribute?('references')
 
-    def references_from_context
-      ::RecordLoader.for(::RuleReference)
-                    .load_many(context[:"rule_references_#{object.id}"])
-                    .then do |references|
-        generate_references_json(references)
+      # Fall back to loading and building the references
+      ::CollectionLoader.for(::Rule, :rule_references).load(object).then do |refs|
+        refs.compact.map do |ref|
+          { href: ref.href, label: ref.label }
+        end.to_json
       end
     end
 
     def identifier
       # Try to return with the preloaded identifier if available
-      return object['identifier'].to_json if object.has_attribute?('identifier')
+      return object['identifier'] if object.has_attribute?('identifier')
 
       # Fall back to loading and building the identifiers
       ::CollectionLoader.for(::Rule, :rule_identifier)
@@ -84,12 +77,6 @@ module Types
 
     def profile_id(args)
       args[:profile_id] || context[:parent_profile_id][object.id]
-    end
-
-    def generate_references_json(references)
-      references.compact.map do |ref|
-        { href: ref.href, label: ref.label }
-      end.to_json
     end
 
     def latest_test_result_batch(args)

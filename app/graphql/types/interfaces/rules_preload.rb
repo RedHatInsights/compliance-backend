@@ -13,9 +13,9 @@ module Types
 
         latest_test_result_batch(args).then do |latest_test_result|
           latest_rule_results_batch(latest_test_result).then do |rule_results|
+            initialize_rule_results_context(rule_results) if args[:lookahead].selects?(:compliant)
             rules_for_rule_results_batch(rule_results).then do |rules|
-              initialize_rules_context(rules.compact, rule_results, args)
-              rules.compact
+              initialize_rules_context(rules)
             end
           end
         end
@@ -53,31 +53,14 @@ module Types
               .select('rules.*', 'failed.cnt AS failed_count').limit(10)
       end
 
-      def initialize_rules_context(rules, rule_results, args = {})
-        rules.each do |rule|
+      def initialize_rules_context(rules)
+        rules.compact.each do |rule|
           context[:parent_profile_id][rule.id] = object.id
-        end
-        if args[:lookahead].selects?(:references)
-          initialize_rule_references_context(rule_results)
-        end
-        return unless args[:lookahead].selects?(:compliant)
-
-        context[:rule_results] ||= {}
-        initialize_rule_results_context(rule_results)
-      end
-
-      def initialize_rule_references_context(rule_results)
-        rule_ids = rule_results.pluck(:rule_id)
-        grouped_rules_references = ::RuleReferencesRule.distinct.where(
-          rule_id: rule_ids
-        ).group_by(&:rule_id)
-        grouped_rules_references.each do |rule_id, references|
-          context[:"rule_references_#{rule_id}"] =
-            references.pluck(:rule_reference_id)
         end
       end
 
       def initialize_rule_results_context(rule_results)
+        context[:rule_results] ||= {}
         rule_results.each do |rule_result|
           context[:rule_results][rule_result.rule_id] ||= {}
           context[:rule_results][rule_result.rule_id][object.id] =

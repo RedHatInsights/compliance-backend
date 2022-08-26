@@ -167,7 +167,7 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
       context: { current_user: @user }
     )
 
-    identifiers = result['data']['benchmark']['rules'].map { |x| JSON.parse(x['identifier']) }
+    identifiers = result['data']['benchmark']['rules'].map { |x| x['identifier'] }
     ref = cp.rules.map { |rule| { 'label' => rule.rule_identifier.label, 'system' => rule.rule_identifier.system } }
     assert_same_elements(identifiers, ref)
   end
