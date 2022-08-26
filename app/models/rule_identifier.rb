@@ -8,7 +8,7 @@ class RuleIdentifier < ApplicationRecord
   validates :system, presence: true, uniqueness: { scope: %i[label rule_id] }
   validates :rule, presence: true, uniqueness: { scope: %i[label system] }
 
-  AS_JSON = Arel::Nodes::NamedFunction.new(
+  TO_JSON = Arel::Nodes::NamedFunction.new(
     'json_build_object',
     [
       Arel::Nodes::Quoted.new('label'), arel_table[:label],

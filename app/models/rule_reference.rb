@@ -18,6 +18,11 @@ class RuleReference < ApplicationRecord
                      message: 'and label combination already taken'
                    }
 
+  # FIXME: convert this to proper Arel
+  AGGREGATED_JSON = Arel.sql(
+    "json_agg(json_build_object('label', rule_references.label, 'href', rule_references.href))"
+  )
+
   def self.from_openscap_parser(op_rule_reference)
     find_or_initialize_by(
       href: op_rule_reference.href,

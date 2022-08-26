@@ -52,6 +52,17 @@ class Rule < ApplicationRecord
   validates_associated :profile_rules
   validates_associated :rule_results
 
+  scope :with_references, lambda {
+    sq = RuleReferencesRule.joins(:rule_reference).group(:rule_id).select(
+      'rule_id', RuleReference::AGGREGATED_JSON.as('references')
+    )
+    joins("LEFT OUTER JOIN (#{sq.to_sql}) sq ON sq.rule_id = rules.id").select('sq.references AS references')
+  }
+
+  scope :with_identifier, lambda {
+    left_outer_joins(:rule_identifier).select(RuleIdentifier::TO_JSON.as('identifier'))
+  }
+
   scope :with_profiles, lambda {
     joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
   }
@@ -62,10 +73,6 @@ class Rule < ApplicationRecord
 
   scope :canonical, lambda {
     includes(:profiles).where(profiles: { id: Profile.canonical })
-  }
-
-  scope :joins_identifier, lambda {
-    left_outer_joins(:rule_identifier).select('rules.*', RuleIdentifier::AS_JSON.as('identifier'))
   }
 
   def canonical?

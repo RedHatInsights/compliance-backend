@@ -26,7 +26,8 @@ module Types
     def rules(args = {})
       return object.rules unless args[:lookahead].selects?(:identifier)
 
-      object.rules.joins_identifier # Join and preselect an 'identifier' column
+      # Join and preselect an 'identifier' column
+      object.rules.with_identifier.select('rules.*')
     end
   end
 end
