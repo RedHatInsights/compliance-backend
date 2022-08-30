@@ -256,6 +256,7 @@ services:
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
       - HOSTNAME=rails
       - ACG_CONFIG=/app/devel.json
+      - SWAGGER_DRY_RUN=0
     ports:
       - 3000:3000
     tmpfs:
