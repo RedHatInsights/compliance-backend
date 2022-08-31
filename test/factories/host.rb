@@ -32,6 +32,7 @@ FactoryBot.define do
     end
   end
 
+  sequence(:account) { |n| format('%05<num>d', num: n) }
   sequence(:org_id) { |n| format('%05<num>d', num: n) }
 
   factory :host, class: WHost do
