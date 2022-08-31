@@ -340,9 +340,7 @@ describe 'Profiles API' do
         },
         example: {
           data: {
-            id: '02596112-042c-4fc2-a321-787e98537452',
             attributes: {
-              name: 'My updated custom profile',
               description: 'This profile contains rules to ensure standard '\
               'security baseline\nof a Red Hat Enterprise Linux 7 '\
               'system. Regardless of your system\'s workload\nall '\
