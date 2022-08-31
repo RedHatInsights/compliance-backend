@@ -30,7 +30,7 @@ class ApplicationProducer < Kafka::Client
     def kafka_ca_cert
       return unless %w[ssl sasl_ssl].include?(Settings.kafka.security_protocol.downcase)
 
-      File.read(Settings.kafka.ssl_ca_location)
+      File.read(Settings.kafka.ssl_ca_location) if Settings.kafka.ssl_ca_location
     end
 
     def sasl_config
