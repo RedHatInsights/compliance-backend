@@ -64,8 +64,10 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
       end
     end
 
-    def revision
-      raw_supported['revision']
+    def revision(force = false)
+      @revision = nil if force
+
+      @revision ||= load_raw_supported['revision']
     end
 
     # Multilevel map of latest supported SSG for OS major and minor version
@@ -98,8 +100,12 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def raw_supported
+      cache(:raw) { load_raw_supported }
+    end
+
+    def load_raw_supported
       SsgConfigDownloader.update_ssg_ds unless SsgConfigDownloader.exists?
-      cache(:raw) { YAML.safe_load(SsgConfigDownloader.ssg_ds) }
+      YAML.safe_load(SsgConfigDownloader.ssg_ds)
     end
 
     def build_latest_map

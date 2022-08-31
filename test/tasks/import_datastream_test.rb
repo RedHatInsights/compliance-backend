@@ -70,9 +70,7 @@ class ImportDatastreamTest < ActiveSupport::TestCase
 
   test 'ssg:check_synced fails if datastreams are not synced' do
     SupportedSsg.expects(:revision).at_least_once.returns('2021-07-15')
-    SupportedRemediations.expects(:revision).at_least_once.returns('2021-07-15')
     Revision.expects(:datastreams).at_least_once.returns('2021-06-01')
-    Revision.expects(:remediations).at_least_once.returns('2021-07-15')
 
     assert_raises(SystemExit, 'SSG datastreams not synced') do
       capture_io do

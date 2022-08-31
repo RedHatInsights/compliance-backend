@@ -6,14 +6,19 @@
 namespace :ssg do
   desc 'Check if the latest SSG has been synced'
   task check_synced: [:environment] do
-    datastreams_message = "SSG datastreams not synced\nDatastream config revision: " \
-      "#{SupportedSsg.revision.inspect}\nDB revision: " \
-      "#{Revision.datastreams.inspect}"
-    remediations_message = "SSG remediations not synced\nRemediation config revision: " \
-      "#{SupportedRemediations.revision.inspect}\nDB revision: " \
-      "#{Revision.remediations.inspect}"
-    abort datastreams_message if Revision.datastreams != SupportedSsg.revision
-    abort remediations_message if Revision.remediations != SupportedRemediations.revision
+    # SupportedSsg.revision should be force-loaded here to bypass memoizing
+    if Revision.datastreams != SupportedSsg.revision(true)
+      abort("SSG datastreams not synced\nDatastream config revision: " \
+        "#{SupportedSsg.revision.inspect}\nDB revision: " \
+        "#{Revision.datastreams.inspect}")
+    end
+
+    if Revision.remediations != SupportedRemediations.revision
+      abort("SSG remediations not synced\nRemediation config revision: " \
+        "#{SupportedRemediations.revision.inspect}\nDB revision: " \
+        "#{Revision.remediations.inspect}")
+    end
+
     Rails.logger.info('Datastreams and remediations synced to revision: ' \
                       "#{Revision.datastreams} and #{Revision.remediations}")
   end
@@ -29,7 +34,8 @@ namespace :ssg do
     # Force an SSG import if the datastream revision is unset
     Settings.force_import_ssgs = true if Revision.datastreams.nil?
 
-    if Revision.datastreams != SupportedSsg.revision
+    # Force the reloading of the memoized SSG revision
+    if Revision.datastreams != SupportedSsg.revision(true)
       downloader = DatastreamDownloader.new
       downloader.download_datastreams do |file|
         ENV['DATASTREAM_FILE'] = file
