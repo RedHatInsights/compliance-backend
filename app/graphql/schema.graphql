@@ -245,6 +245,7 @@ type Profile implements Node & RulesPreload {
   external: Boolean!
   hosts: [System!]
   id: ID!
+  inUse: Boolean
   lastScanned(
     """
     Last time this profile was scanned for a system

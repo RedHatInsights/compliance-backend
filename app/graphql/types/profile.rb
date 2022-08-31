@@ -47,6 +47,7 @@ module Types
     field :unsupported_host_count, Int, null: false
     field :external, Boolean, null: false
     field :parent_profile_id, ID, null: true
+    field :in_use, Boolean, null: true
 
     field :score, Float, null: false do
       argument :system_id, String,
@@ -105,6 +106,11 @@ module Types
 
     def benchmark
       ::CollectionLoader.for(::Profile, :benchmark).load(object)
+    end
+
+    # When listing supportedProfiles to properly mark the profile as already in use
+    def in_use
+      object.in_use if object.has_attribute?(:in_use)
     end
 
     private
