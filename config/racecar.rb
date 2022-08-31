@@ -5,7 +5,7 @@ Racecar.configure do |config|
   if Settings.kafka.security_protocol
     config.security_protocol = Settings.kafka.security_protocol.try(:downcase).try(:to_sym)
 
-    if %i[sasl_ssl ssl].include?(config.security_protocol)
+    if %i[sasl_ssl ssl].include?(config.security_protocol) && Settings.kafka.ssl_ca_location
       config.ssl_ca_location = Settings.kafka.ssl_ca_location
     end
 
