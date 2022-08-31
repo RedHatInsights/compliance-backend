@@ -115,13 +115,13 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "c8e42246-d51b-4d1d-9a60-6b0ad557114d",
+                    "id": "8d933a76-adb4-40ed-b99c-36d2772513c3",
                     "type": "benchmark",
                     "attributes": {
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                      "title": "Temporibus et iste officia.",
-                      "version": "100.0.1",
-                      "description": "Autem sed necessitatibus. Vel facilis aliquid. Enim veniam voluptatem.",
+                      "title": "Delectus eos ab nobis.",
+                      "version": "100.0.2",
+                      "description": "Itaque dolores ut. Voluptatem deleniti velit. Sequi qui assumenda.",
                       "os_major_version": "7",
                       "latest_supported_os_minor_versions": []
                     },
@@ -129,11 +129,11 @@
                       "rules": {
                         "data": [
                           {
-                            "id": "82ec0876-f42f-41d3-bffa-3b3f6a2fa7d5",
+                            "id": "648af826-025c-4033-9946-65417f7b601e",
                             "type": "rule"
                           },
                           {
-                            "id": "5c09fb65-c24c-440c-8c06-638a6d6a4cbf",
+                            "id": "ce602259-0149-4021-a1c4-e48ef68c44c1",
                             "type": "rule"
                           }
                         ]
@@ -141,7 +141,7 @@
                       "profiles": {
                         "data": [
                           {
-                            "id": "65b97346-2310-44f8-9a89-31cc8e0455c5",
+                            "id": "6287e2e2-bbab-400b-9a47-d4aaf8a8ad54",
                             "type": "profile"
                           }
                         ]
@@ -149,13 +149,13 @@
                     }
                   },
                   {
-                    "id": "f6fda185-a674-4a9a-999f-b4577342200e",
+                    "id": "a0bc7add-ac29-4ca0-bc2d-d3071272ef9d",
                     "type": "benchmark",
                     "attributes": {
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                      "title": "Molestiae quis repudiandae corrupti.",
-                      "version": "100.0.2",
-                      "description": "Aut ipsam voluptatem. Ut quia velit. Tempora cumque eos.",
+                      "title": "Assumenda et doloribus fuga.",
+                      "version": "100.0.1",
+                      "description": "Placeat sapiente mollitia. Voluptatum qui omnis. Ab dignissimos nulla.",
                       "os_major_version": "7",
                       "latest_supported_os_minor_versions": []
                     },
@@ -163,11 +163,11 @@
                       "rules": {
                         "data": [
                           {
-                            "id": "b1867145-5b2c-4b84-8097-9477c494b8c9",
+                            "id": "479dbe9e-908a-4f63-ac46-a9100c885ad6",
                             "type": "rule"
                           },
                           {
-                            "id": "682d26bb-bb3c-4eb3-9630-dd87413e2525",
+                            "id": "2e20fa3e-2bef-49ea-9e3d-bb54a0665e99",
                             "type": "rule"
                           }
                         ]
@@ -175,7 +175,7 @@
                       "profiles": {
                         "data": [
                           {
-                            "id": "d036cff4-05b7-4ea5-9aae-6d28918e1c7f",
+                            "id": "f1afa9e5-eb2f-41ea-a8b6-83fc78afbe1a",
                             "type": "profile"
                           }
                         ]
@@ -284,13 +284,13 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "eb9934b9-dd22-4a04-a2ed-5a48258c8aa9",
+                  "id": "a06e9863-d6ff-49c5-8b38-b59554bb91fb",
                   "type": "benchmark",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                    "title": "Commodi facere vitae corrupti.",
+                    "title": "Nisi reprehenderit corporis id.",
                     "version": "100.0.4",
-                    "description": "Facere alias cumque. Quia sed vel. Modi molestias et.",
+                    "description": "Ut eum ipsam. Pariatur accusamus fuga. Et expedita doloribus.",
                     "os_major_version": "7",
                     "latest_supported_os_minor_versions": []
                   },
@@ -298,43 +298,43 @@
                     "rules": {
                       "data": [
                         {
-                          "id": "9ad50a3f-3a59-4ef7-96ae-24895f6b91c6",
+                          "id": "b8a03fef-fb71-42e2-95f2-5d6cd89b3d41",
                           "type": "rule"
                         },
                         {
-                          "id": "d9a4bb15-b39a-40bf-bf62-c664840a0c79",
+                          "id": "31bb3deb-d9d5-4400-b781-8867fe434ee7",
                           "type": "rule"
                         },
                         {
-                          "id": "a9e193df-2e7c-4911-a3bf-e8a0f75bb673",
+                          "id": "46c951b7-8414-41b0-a99e-aacb628f361d",
                           "type": "rule"
                         },
                         {
-                          "id": "ce5c7d8c-8583-44e1-b3db-dc5062e44759",
+                          "id": "94da2371-cd6d-427a-9f98-a34aa81d54d0",
                           "type": "rule"
                         },
                         {
-                          "id": "d79d0c17-aa96-4565-8e42-e5259307ce90",
+                          "id": "ce109fc6-b5c1-4825-af98-6582429b925c",
                           "type": "rule"
                         },
                         {
-                          "id": "144dc2b1-071b-4432-b77a-dc6f77a1a741",
+                          "id": "28e250ca-e763-4fb0-b152-12c283d3f6d1",
                           "type": "rule"
                         },
                         {
-                          "id": "5f10d8fe-cef7-427d-b1b0-5abfff85c5bc",
+                          "id": "a569d680-2503-48bc-a357-90c9eed03939",
                           "type": "rule"
                         },
                         {
-                          "id": "d3d226cf-1ec6-4d07-b067-5ced31738387",
+                          "id": "bb9f4c9f-ea27-40d0-b67a-3d0e1dacdc8b",
                           "type": "rule"
                         },
                         {
-                          "id": "d2702cd5-94c1-47f4-9554-6ddac9afd7e9",
+                          "id": "f17d3bab-6456-422a-9aff-e9d71c1eb1af",
                           "type": "rule"
                         },
                         {
-                          "id": "c25a20f5-63a6-42a6-954b-d3e1becc5f29",
+                          "id": "b1e68521-dd56-4371-8272-8a5dcd4046f9",
                           "type": "rule"
                         }
                       ]
@@ -342,11 +342,11 @@
                     "profiles": {
                       "data": [
                         {
-                          "id": "53a0c949-83e6-4d8d-988c-2320727cdcd4",
+                          "id": "8872d19c-a8ab-45fb-aa3f-6f7cd379276b",
                           "type": "profile"
                         },
                         {
-                          "id": "5988a4e9-7fdf-4b8a-b781-b55e06d375d0",
+                          "id": "a1808d9e-a068-422d-b1c8-06f25fa8013b",
                           "type": "profile"
                         }
                       ]
@@ -497,16 +497,16 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "dd7b3c4c-a035-4689-8c72-da75b11f6cf5",
+                    "id": "d3a3dc1e-ba35-4dfb-ae91-6d3f0709a458",
                     "type": "business_objective",
                     "attributes": {
-                      "title": "Eveniet in autem quasi."
+                      "title": "Dolor fugiat quaerat saepe."
                     },
                     "relationships": {
                       "profiles": {
                         "data": [
                           {
-                            "id": "6bd528ac-6364-4b54-9891-e587f1b8a090",
+                            "id": "7c36d21e-f2f9-4c23-8b7e-bb639e1f186f",
                             "type": "profile"
                           }
                         ]
@@ -514,16 +514,16 @@
                     }
                   },
                   {
-                    "id": "17a0df5b-0e18-49d6-869e-eef4e0cb1c70",
+                    "id": "ad2d47c1-24b1-4c41-a41c-ff7cb9b8b61d",
                     "type": "business_objective",
                     "attributes": {
-                      "title": "Ullam eaque aut voluptatum."
+                      "title": "Nihil molestiae odit aperiam."
                     },
                     "relationships": {
                       "profiles": {
                         "data": [
                           {
-                            "id": "be07940c-7bac-4d27-ab2e-9acbf9f68ba2",
+                            "id": "59dcd624-73f2-471b-9a5e-2ae1aa60d177",
                             "type": "profile"
                           }
                         ]
@@ -630,16 +630,16 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "855b0c46-cbb1-4fee-bf8b-567d4a22fcfa",
+                  "id": "f3a834f0-415a-4662-a0bb-258abbb787c2",
                   "type": "business_objective",
                   "attributes": {
-                    "title": "Voluptatibus temporibus magni qui."
+                    "title": "Minus animi quod soluta."
                   },
                   "relationships": {
                     "profiles": {
                       "data": [
                         {
-                          "id": "8b14bbf7-a045-47e6-8113-27de346a369e",
+                          "id": "f97f8c9d-4843-4bc1-9946-eea9a945d946",
                           "type": "profile"
                         }
                       ]
@@ -796,10 +796,10 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "79416118-21af-46f8-870b-37afb503958f",
+                    "id": "12243855-c186-45d0-8c81-495041d7aeda",
                     "type": "profile",
                     "attributes": {
-                      "ref_id": "xccdf_org.ssgproject.content_profile_4f5feacc-fbfc-4344-8a9a-0b0d535f51b7",
+                      "ref_id": "xccdf_org.ssgproject.content_profile_ca1415cb-2b89-47af-a5ef-9127cf4593d9",
                       "score": 0.42,
                       "parent_profile_id": null,
                       "external": false,
@@ -827,7 +827,7 @@
                       },
                       "benchmark": {
                         "data": {
-                          "id": "2fd60a25-87a2-4af2-a63d-5b5d66a0e06d",
+                          "id": "b412b795-14f6-418f-9d89-993eaaec0597",
                           "type": "benchmark"
                         }
                       },
@@ -840,7 +840,7 @@
                       "hosts": {
                         "data": [
                           {
-                            "id": "e73a3509-eec0-483a-9f91-20ae2213932a",
+                            "id": "030860e6-087f-48df-8d43-2894cdf5c6f4",
                             "type": "host"
                           }
                         ]
@@ -848,7 +848,7 @@
                       "test_results": {
                         "data": [
                           {
-                            "id": "b7eaed78-5c8e-49ee-8e3f-99f82d78080a",
+                            "id": "f6b2e545-d27a-430a-85ce-794d1dd5272d",
                             "type": "test_result"
                           }
                         ]
@@ -856,10 +856,10 @@
                     }
                   },
                   {
-                    "id": "7a7481d1-e068-4f5f-8361-bee438db4316",
+                    "id": "a46db93d-2590-4284-b848-4d4eb4751b30",
                     "type": "profile",
                     "attributes": {
-                      "ref_id": "xccdf_org.ssgproject.content_profile_205af26d-01e0-42ed-a917-405b6dc1c2eb",
+                      "ref_id": "xccdf_org.ssgproject.content_profile_9feb0330-30fc-4919-ad43-1aa5e88b400f",
                       "score": 0.68,
                       "parent_profile_id": null,
                       "external": false,
@@ -869,8 +869,8 @@
                       "policy_profile_id": null,
                       "os_minor_version": "",
                       "parent_profile_ref_id": null,
-                      "name": "Odio qui non iusto.",
-                      "description": "Praesentium fuga tempora. Nobis vel quas. Sint eum sit.",
+                      "name": "Necessitatibus error voluptas pariatur.",
+                      "description": "Quas cumque expedita. Molestias debitis est. Dicta et sit.",
                       "canonical": true,
                       "tailored": false,
                       "total_host_count": 0,
@@ -879,7 +879,7 @@
                       "test_result_host_count": 0,
                       "unsupported_host_count": 0,
                       "business_objective": null,
-                      "policy_type": "Odio qui non iusto."
+                      "policy_type": "Necessitatibus error voluptas pariatur."
                     },
                     "relationships": {
                       "account": {
@@ -887,7 +887,7 @@
                       },
                       "benchmark": {
                         "data": {
-                          "id": "5a2a7e46-93d4-4ca1-8bc7-b5a1d3c9ce7b",
+                          "id": "53d3af3c-ae29-4977-9b78-5d6e832d193d",
                           "type": "benchmark"
                         }
                       },
@@ -900,7 +900,7 @@
                       "hosts": {
                         "data": [
                           {
-                            "id": "e73a3509-eec0-483a-9f91-20ae2213932a",
+                            "id": "030860e6-087f-48df-8d43-2894cdf5c6f4",
                             "type": "host"
                           }
                         ]
@@ -908,7 +908,7 @@
                       "test_results": {
                         "data": [
                           {
-                            "id": "edebd766-a773-454e-9abc-ce5e76689700",
+                            "id": "e0a3c691-6f27-49fa-8e5a-d98933a1de07",
                             "type": "test_result"
                           }
                         ]
@@ -989,19 +989,19 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "8a6679f9-7952-4089-8c7f-593bc9a1e41b",
+                  "id": "efe423ed-c975-4f40-975e-abed13959ee2",
                   "type": "profile",
                   "attributes": {
-                    "ref_id": "xccdf_org.ssgproject.content_profile_1a572217-ad20-419e-9bf7-51a74f61610f",
+                    "ref_id": "xccdf_org.ssgproject.content_profile_4af90d07-667c-48c3-9e6e-2d33b38871ec",
                     "score": 0.0,
-                    "parent_profile_id": "34372f2d-fed6-4f21-9986-7c278814f8b7",
+                    "parent_profile_id": "d2dd9320-9695-476e-99e5-9019466621db",
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
                     "os_version": "7",
-                    "policy_profile_id": "8a6679f9-7952-4089-8c7f-593bc9a1e41b",
+                    "policy_profile_id": "efe423ed-c975-4f40-975e-abed13959ee2",
                     "os_minor_version": "",
-                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_1a572217-ad20-419e-9bf7-51a74f61610f",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_4af90d07-667c-48c3-9e6e-2d33b38871ec",
                     "name": "A custom name",
                     "description": "Canonical (Generated) Profile",
                     "canonical": false,
@@ -1017,30 +1017,30 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "26a4feb0-858a-4bb3-8e9a-b84940a1c21e",
+                        "id": "dfa2ee7d-d651-4cfa-8c3e-d2989ce65e52",
                         "type": "account"
                       }
                     },
                     "benchmark": {
                       "data": {
-                        "id": "9285c210-e464-458c-a67c-282682aa8263",
+                        "id": "8df89456-c1ed-4ae7-8ca4-c2cb8f5f3c88",
                         "type": "benchmark"
                       }
                     },
                     "parent_profile": {
                       "data": {
-                        "id": "34372f2d-fed6-4f21-9986-7c278814f8b7",
+                        "id": "d2dd9320-9695-476e-99e5-9019466621db",
                         "type": "profile"
                       }
                     },
                     "rules": {
                       "data": [
                         {
-                          "id": "cc438282-5d45-40a4-8b2e-a52a6cb26049",
+                          "id": "59ae6df2-44c6-4cb0-a5e0-e5d43a1dbe59",
                           "type": "rule"
                         },
                         {
-                          "id": "690b3e08-b2d1-44e0-9c85-0c7652ee3508",
+                          "id": "3dea33f0-7a8a-43a4-9a80-926a4b34ddf8",
                           "type": "rule"
                         }
                       ]
@@ -1048,11 +1048,11 @@
                     "hosts": {
                       "data": [
                         {
-                          "id": "28c5142b-28a0-4912-9416-7ef55df61820",
+                          "id": "0359bdfe-592f-4240-a155-18548936f027",
                           "type": "host"
                         },
                         {
-                          "id": "4debff77-5bb7-40ba-a002-207420047d97",
+                          "id": "80446e0d-2360-4a74-ba02-80e7838d06b4",
                           "type": "host"
                         }
                       ]
@@ -1212,10 +1212,10 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "2cb14160-71e2-4eb9-982a-74dc6f4ad55d",
+                  "id": "c58463ff-a081-4ed7-a6ba-626f21a2bd35",
                   "type": "profile",
                   "attributes": {
-                    "ref_id": "xccdf_org.ssgproject.content_profile_9b5e02c2-94e3-464a-b36d-f95f554711f3",
+                    "ref_id": "xccdf_org.ssgproject.content_profile_0d3d3feb-9a1d-44c6-b9cc-4594cd86a5c8",
                     "score": 0.42,
                     "parent_profile_id": null,
                     "external": false,
@@ -1240,13 +1240,13 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "60c1fa13-2a75-4ec2-aac6-dd55c425f8f5",
+                        "id": "8337b86e-60a3-4a39-9e84-168f92bcf716",
                         "type": "account"
                       }
                     },
                     "benchmark": {
                       "data": {
-                        "id": "01ac06fe-5ff0-4fcb-8ba0-09ee8025357f",
+                        "id": "33b4955e-efd9-4a16-b32f-5cab037818f8",
                         "type": "benchmark"
                       }
                     },
@@ -1259,7 +1259,7 @@
                     "hosts": {
                       "data": [
                         {
-                          "id": "4b4fe8a3-b0ae-47c3-97ed-c07b070e3a3f",
+                          "id": "d6c3a28f-56e3-4750-ae57-9d9806b3194c",
                           "type": "host"
                         }
                       ]
@@ -1267,7 +1267,7 @@
                     "test_results": {
                       "data": [
                         {
-                          "id": "8cffca9a-36e2-4a90-b851-607b22e4d525",
+                          "id": "f3ecc1a6-5eb3-4792-9d81-4aa69d575f3b",
                           "type": "test_result"
                         }
                       ]
@@ -1276,13 +1276,13 @@
                 },
                 "included": [
                   {
-                    "id": "01ac06fe-5ff0-4fcb-8ba0-09ee8025357f",
+                    "id": "33b4955e-efd9-4a16-b32f-5cab037818f8",
                     "type": "benchmark",
                     "attributes": {
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                      "title": "Dolores saepe molestiae labore.",
+                      "title": "Unde et nam qui.",
                       "version": "100.0.19",
-                      "description": "Quos eum dolore. Architecto ipsum deserunt. Officia fugiat ducimus.",
+                      "description": "Consectetur praesentium aspernatur. Doloribus quia consequatur. Harum rem autem.",
                       "os_major_version": "7",
                       "latest_supported_os_minor_versions": []
                     },
@@ -1400,19 +1400,19 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "560fcf52-0aed-4ef4-b781-038023e0e2b7",
+                  "id": "b3e9c81e-a3b5-4d22-9ac7-5358c0c4a9ed",
                   "type": "profile",
                   "attributes": {
-                    "ref_id": "xccdf_org.ssgproject.content_profile_ee3203b1-77e4-4bc5-a345-dbeb32246abb",
+                    "ref_id": "xccdf_org.ssgproject.content_profile_6adce7d6-85d2-4e2f-ac4c-03d19b8bf1ae",
                     "score": 0.0,
-                    "parent_profile_id": "4a0fcdfc-78d4-4c85-833f-a6ebe1f1484c",
+                    "parent_profile_id": "b84bf769-bb8a-4000-84cb-ec59e72f7737",
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
                     "os_version": "7",
-                    "policy_profile_id": "560fcf52-0aed-4ef4-b781-038023e0e2b7",
+                    "policy_profile_id": "b3e9c81e-a3b5-4d22-9ac7-5358c0c4a9ed",
                     "os_minor_version": "",
-                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_1126b53c-0552-4633-aca5-33386831e948",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_16183fdd-9080-4ef6-8b47-83d395bdf727",
                     "name": "Policy for Profile",
                     "description": "An updated custom description",
                     "canonical": false,
@@ -1428,42 +1428,42 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "294a48d6-c49c-44c7-8b30-bd004d222e69",
+                        "id": "66f2ff5f-b192-4ea6-a607-f8f58601403d",
                         "type": "account"
                       }
                     },
                     "benchmark": {
                       "data": {
-                        "id": "1c36bc60-0ee7-434d-923c-ac154b52c28e",
+                        "id": "74c6b959-5827-4df0-97ce-dafa1bee3d59",
                         "type": "benchmark"
                       }
                     },
                     "parent_profile": {
                       "data": {
-                        "id": "4a0fcdfc-78d4-4c85-833f-a6ebe1f1484c",
+                        "id": "b84bf769-bb8a-4000-84cb-ec59e72f7737",
                         "type": "profile"
                       }
                     },
                     "rules": {
                       "data": [
                         {
-                          "id": "46047471-e9a4-4573-980c-84a89b5364ec",
+                          "id": "0cbfdd4e-2c2d-4857-a087-5dd56736c10c",
                           "type": "rule"
                         },
                         {
-                          "id": "cba13a05-68ff-4de8-821c-84c84d272ee3",
+                          "id": "2dcaf25d-6b99-4849-93aa-03ccdfcdbd62",
                           "type": "rule"
                         },
                         {
-                          "id": "2b35e6a2-45f1-454f-94db-c0ef300aad84",
+                          "id": "2f8ea7db-2c85-4491-96c6-0602339ae82f",
                           "type": "rule"
                         },
                         {
-                          "id": "e585491a-7f96-4725-b0bf-81b880e589be",
+                          "id": "9daa0566-550a-45fd-8e06-ce4cb8f7ff77",
                           "type": "rule"
                         },
                         {
-                          "id": "863154e6-23cf-4b94-a58e-7e68c53d8095",
+                          "id": "99f47e9d-3693-4545-b007-e625d604461a",
                           "type": "rule"
                         }
                       ]
@@ -1471,11 +1471,11 @@
                     "hosts": {
                       "data": [
                         {
-                          "id": "e6d0fe04-f44d-4fac-89ed-19b684c4878f",
+                          "id": "3acdfe21-740c-4cbb-ad36-abd8312135cd",
                           "type": "host"
                         },
                         {
-                          "id": "fe779c72-d232-43d6-9869-ac309d92a909",
+                          "id": "93cdaa82-cb79-44ea-936f-9a902df05293",
                           "type": "host"
                         }
                       ]
@@ -1551,9 +1551,7 @@
                 },
                 "example": {
                   "data": {
-                    "id": "02596112-042c-4fc2-a321-787e98537452",
                     "attributes": {
-                      "name": "My updated custom profile",
                       "description": "This profile contains rules to ensure standard security baseline\\nof a Red Hat Enterprise Linux 7 system. Regardless of your system's workload\\nall of these checks should pass.",
                       "compliance_threshold": 92.0,
                       "business_objective": "APAC Expansion"
@@ -1641,21 +1639,21 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "548fd420-57d8-4050-83fe-b4949dc54794",
+                  "id": "62ded80c-ff2c-40e7-a550-d59d0f4adb48",
                   "type": "profile",
                   "attributes": {
-                    "ref_id": "xccdf_org.ssgproject.content_profile_2ebdb8e3-47b4-4acb-9a55-c7b7db3e7507",
+                    "ref_id": "xccdf_org.ssgproject.content_profile_f3ed8477-82c3-4da9-a7aa-b4290c292cad",
                     "score": 0.0,
-                    "parent_profile_id": "e2368a77-b4e8-4161-8990-c6f55b474767",
+                    "parent_profile_id": "eb7b6826-7279-4e64-8b70-ab0ffa56af47",
                     "external": false,
                     "compliance_threshold": 100.0,
                     "os_major_version": "7",
                     "os_version": "7",
                     "policy_profile_id": null,
                     "os_minor_version": "",
-                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_2ebdb8e3-47b4-4acb-9a55-c7b7db3e7507",
-                    "name": "Iste corporis reprehenderit et.",
-                    "description": "Maxime ad dolor. Eos voluptas placeat. Expedita eveniet non.",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_f3ed8477-82c3-4da9-a7aa-b4290c292cad",
+                    "name": "Et fuga ducimus nihil.",
+                    "description": "Odio modi vel. Voluptatem molestiae aliquam. Magni sint cumque.",
                     "canonical": false,
                     "tailored": false,
                     "total_host_count": 0,
@@ -1664,24 +1662,24 @@
                     "test_result_host_count": 0,
                     "unsupported_host_count": 0,
                     "business_objective": null,
-                    "policy_type": "Optio voluptas nihil eos."
+                    "policy_type": "Adipisci quia beatae tenetur."
                   },
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "208c95e4-bbb4-4108-beab-cf7a6b5ec8ed",
+                        "id": "9e900b90-7ad7-41ca-8ca2-d962e615de37",
                         "type": "account"
                       }
                     },
                     "benchmark": {
                       "data": {
-                        "id": "0bba1f2a-88e2-46c9-bc39-c7f00b2cc8d6",
+                        "id": "41cbf4d6-bff0-4468-b358-376ba80a73e6",
                         "type": "benchmark"
                       }
                     },
                     "parent_profile": {
                       "data": {
-                        "id": "e2368a77-b4e8-4161-8990-c6f55b474767",
+                        "id": "eb7b6826-7279-4e64-8b70-ab0ffa56af47",
                         "type": "profile"
                       }
                     },
@@ -1840,7 +1838,7 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "3cfd96a8-bdff-47a3-aa99-42090c94648e",
+                    "id": "d65d25a0-7e54-4dea-9361-42a5b4affdfd",
                     "type": "rule_result",
                     "attributes": {
                       "result": "pass"
@@ -1848,13 +1846,13 @@
                     "relationships": {
                       "host": {
                         "data": {
-                          "id": "c478cccb-9b7e-46c4-9130-4c355b63bb64",
+                          "id": "72f9cc64-bc81-47b0-8332-a130432d56cc",
                           "type": "host"
                         }
                       },
                       "rule": {
                         "data": {
-                          "id": "fab518a1-3e38-44f2-8187-458d2f8ef9cd",
+                          "id": "4c1ba3a1-c622-41dd-a621-8973b8bf387d",
                           "type": "rule"
                         }
                       }
@@ -2027,33 +2025,33 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "0b04c81e-c431-421c-8491-f1fb028ced33",
+                    "id": "e2178697-7350-4830-a307-3df78de57934",
                     "type": "rule",
                     "attributes": {
-                      "ref_id": "foo_rule_255fd908-df34-4313-ba39-db5aa5edf5d3",
+                      "ref_id": "foo_rule_48508fc6-cddb-4f6f-b88a-d187ee79a8bf",
                       "remediation_issue_id": null,
-                      "title": "Fugit sit quidem iure.",
-                      "rationale": "Culpa quasi incidunt. Suscipit aut nihil. Impedit dolorem soluta.",
-                      "description": "Odio quibusdam laborum. Sed cumque consequatur. Vero et recusandae.",
-                      "severity": "medium",
-                      "slug": "foo_rule_255fd908-df34-4313-ba39-db5aa5edf5d3",
+                      "title": "Corrupti est esse explicabo.",
+                      "rationale": "Distinctio enim ullam. Distinctio perspiciatis debitis. Consequatur numquam et.",
+                      "description": "Eos ullam sunt. Iure quaerat cupiditate. Ipsum rem saepe.",
+                      "severity": "low",
+                      "slug": "foo_rule_48508fc6-cddb-4f6f-b88a-d187ee79a8bf",
                       "precedence": 1
                     },
                     "relationships": {
                       "benchmark": {
                         "data": {
-                          "id": "92a42ba4-07d7-4e1d-960f-b2979c9572c2",
+                          "id": "0adac8c6-9cb1-4835-bffe-6d57c56875c7",
                           "type": "benchmark"
                         }
                       },
                       "profiles": {
                         "data": [
                           {
-                            "id": "e9ca561b-9deb-42c8-8263-3efacc1d3579",
+                            "id": "15d71897-aed3-4e00-acce-fa2015db74a2",
                             "type": "profile"
                           },
                           {
-                            "id": "1e4299bd-6959-4253-bf5c-39079f511d92",
+                            "id": "45144702-c82c-46fd-bd1c-95b2e42ec519",
                             "type": "profile"
                           }
                         ]
@@ -2159,7 +2157,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "errors": [
-                  "Rule not found with ID 747aecc7-e649-4dd2-af73-e76e05534922"
+                  "Rule not found with ID 74ff7872-0711-41f5-8f39-7788ff5ee708"
                 ]
               }
             }
@@ -2169,33 +2167,33 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "d629ae95-913e-47f8-b2b4-15da0678ac73",
+                  "id": "5a2687db-5447-4ad2-aa55-31ab837ef956",
                   "type": "rule",
                   "attributes": {
-                    "ref_id": "foo_rule_87a2d234-b67b-4986-9586-afddbf0ede77",
+                    "ref_id": "foo_rule_79d1680b-546f-48d9-92f4-9e1b96868436",
                     "remediation_issue_id": null,
-                    "title": "Molestias vitae incidunt consequatur.",
-                    "rationale": "Sequi nesciunt in. Et debitis aut. Voluptatem nihil provident.",
-                    "description": "Omnis sequi nisi. Voluptatum consequatur quae. Rem quia asperiores.",
+                    "title": "Nulla sed necessitatibus omnis.",
+                    "rationale": "Quaerat nemo omnis. Ea sunt alias. Excepturi in architecto.",
+                    "description": "Esse natus quasi. Id dolorem in. Sed quia perferendis.",
                     "severity": "high",
-                    "slug": "foo_rule_87a2d234-b67b-4986-9586-afddbf0ede77",
+                    "slug": "foo_rule_79d1680b-546f-48d9-92f4-9e1b96868436",
                     "precedence": 1
                   },
                   "relationships": {
                     "benchmark": {
                       "data": {
-                        "id": "438d614d-8d88-4089-9ed4-a894eb060425",
+                        "id": "94c78df0-adba-498f-b2bf-eded9e95bfab",
                         "type": "benchmark"
                       }
                     },
                     "profiles": {
                       "data": [
                         {
-                          "id": "c6dbe06e-751f-4485-a0bd-26e0bf4642e4",
+                          "id": "685a2591-06ab-4dbc-a38f-2888c05c239b",
                           "type": "profile"
                         },
                         {
-                          "id": "62ac6ad1-0fc8-4685-b9cb-0e15510b2184",
+                          "id": "3926d42a-371a-4c83-b948-304847019507",
                           "type": "profile"
                         }
                       ]
@@ -2983,20 +2981,20 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "626f54f1-84fe-4d63-aa2f-07378be4a518",
+                    "id": "311de580-baea-4399-9b26-7e4e2165a1c0",
                     "type": "host",
                     "attributes": {
-                      "name": "swift.info",
+                      "name": "pacocha.biz",
                       "os_major_version": 7,
                       "os_minor_version": 9,
-                      "last_scanned": "2022-08-25T08:18:15Z",
+                      "last_scanned": "2022-08-31T11:48:18Z",
                       "rules_passed": 0,
                       "rules_failed": 0,
                       "has_policy": true,
-                      "culled_timestamp": "2032-09-08T08:18:14Z",
-                      "stale_timestamp": "2032-08-25T08:18:14Z",
-                      "stale_warning_timestamp": "2032-09-01T08:18:14Z",
-                      "updated": "2022-08-25T08:18:14Z",
+                      "culled_timestamp": "2032-09-14T11:48:18Z",
+                      "stale_timestamp": "2032-08-31T11:48:18Z",
+                      "stale_warning_timestamp": "2032-09-07T11:48:18Z",
+                      "updated": "2022-08-31T11:48:18Z",
                       "insights_id": null,
                       "compliant": false
                     },
@@ -3004,7 +3002,7 @@
                       "test_results": {
                         "data": [
                           {
-                            "id": "430c0df6-9f87-4d63-a92d-4ff487aec8f2",
+                            "id": "4c1e7298-2cbf-4804-b1c1-139226a56f14",
                             "type": "test_result"
                           }
                         ]
@@ -3012,7 +3010,7 @@
                       "profiles": {
                         "data": [
                           {
-                            "id": "688bc01d-1c15-4dc4-a46a-b7be1c526c62",
+                            "id": "61afe62d-a202-4cbe-b137-622890ae72da",
                             "type": "profile"
                           }
                         ]
@@ -3125,20 +3123,20 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "d6b24bc5-a55d-47d6-9f39-7fee91e1c83a",
+                  "id": "a47f2e79-3dc3-4fbc-82e0-0464d31b51cb",
                   "type": "host",
                   "attributes": {
-                    "name": "turner.org",
+                    "name": "brown.net",
                     "os_major_version": 7,
                     "os_minor_version": 9,
-                    "last_scanned": "2022-08-25T08:18:16Z",
+                    "last_scanned": "2022-08-31T11:48:19Z",
                     "rules_passed": 0,
                     "rules_failed": 0,
                     "has_policy": true,
-                    "culled_timestamp": "2032-09-08T08:18:15Z",
-                    "stale_timestamp": "2032-08-25T08:18:15Z",
-                    "stale_warning_timestamp": "2032-09-01T08:18:15Z",
-                    "updated": "2022-08-25T08:18:15Z",
+                    "culled_timestamp": "2032-09-14T11:48:19Z",
+                    "stale_timestamp": "2032-08-31T11:48:19Z",
+                    "stale_warning_timestamp": "2032-09-07T11:48:19Z",
+                    "updated": "2022-08-31T11:48:19Z",
                     "insights_id": null,
                     "compliant": false
                   },
@@ -3146,7 +3144,7 @@
                     "test_results": {
                       "data": [
                         {
-                          "id": "7be0b51d-029e-4117-b2ed-0b768d6d8de1",
+                          "id": "b819d897-f130-4a80-8aad-689113444648",
                           "type": "test_result"
                         }
                       ]
@@ -3154,7 +3152,7 @@
                     "profiles": {
                       "data": [
                         {
-                          "id": "6e5f1ebc-738d-49d1-acde-d1e284f968e5",
+                          "id": "97eaff71-c3ef-4341-8597-bcc6a8d2f1c2",
                           "type": "profile"
                         }
                       ]
