@@ -18,6 +18,8 @@ objects:
         - host-inventory
         - ingress
         - rbac
+      optionalDependencies:
+        - crc-pdf-generator
       database:
         name: compliance
         version: 13
