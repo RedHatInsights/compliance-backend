@@ -37,9 +37,9 @@ class ApplicationProducer < Kafka::Client
       return unless Settings.kafka.security_protocol.downcase == 'sasl_ssl'
 
       {
-        sasl_scram_username: Settings.kafka.sasl_username,
-        sasl_scram_password: Settings.kafka.sasl_password,
-        sasl_scram_mechanism: Settings.kafka.sasl_mechanism.try(:sub, /^SCRAM-SHA-/, 'sha')
+        sasl_prefix(:username) => Settings.kafka.sasl_username,
+        sasl_prefix(:password) => Settings.kafka.sasl_password,
+        sasl_prefix(:mechanism) => Settings.kafka.sasl_mechanism.try(:sub, /^SCRAM-SHA-/, 'sha')
       }
     end
 
@@ -54,6 +54,14 @@ class ApplicationProducer < Kafka::Client
 
     def kafka
       @kafka ||= Kafka.new(self::BROKERS, **kafka_config) if self::BROKERS.any?
+    end
+
+    def sasl_prefix(key)
+      if Settings.kafka.sasl_mechanism == 'PLAIN'
+        "sasl_plain_#{key}".to_sym
+      else
+        "sasl_scram_#{key}".to_sym
+      end
     end
   end
 end
