@@ -36,11 +36,14 @@ class ApplicationProducer < Kafka::Client
     def sasl_config
       return unless Settings.kafka.security_protocol.downcase == 'sasl_ssl'
 
-      {
+      config = {
         sasl_prefix(:username) => Settings.kafka.sasl_username,
-        sasl_prefix(:password) => Settings.kafka.sasl_password,
-        sasl_prefix(:mechanism) => Settings.kafka.sasl_mechanism.try(:sub, /^SCRAM-SHA-/, 'sha')
+        sasl_prefix(:password) => Settings.kafka.sasl_password
       }
+
+      return config if Settings.kafka.sasl_mechanism == 'PLAIN'
+
+      config.merge(sasl_scram_mechanism: Settings.kafka.sasl_mechanism.try(:sub, /^SCRAM-SHA-/, 'sha'))
     end
 
     def kafka_config
