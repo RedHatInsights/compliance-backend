@@ -34,7 +34,8 @@ class ApplicationProducerTest < ActiveSupport::TestCase
       ssl_ca_cert: "very secure\n",
       sasl_scram_username: 'user',
       sasl_scram_password: 'youwish',
-      sasl_scram_mechanism: 'sha512'
+      sasl_scram_mechanism: 'sha512',
+      ssl_ca_certs_from_system: true
     }
 
     assert_equal config, MockProducer.send(:kafka_config)

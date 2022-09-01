@@ -38,7 +38,8 @@ class ApplicationProducer < Kafka::Client
 
       config = {
         sasl_prefix(:username) => Settings.kafka.sasl_username,
-        sasl_prefix(:password) => Settings.kafka.sasl_password
+        sasl_prefix(:password) => Settings.kafka.sasl_password,
+        :ssl_ca_certs_from_system => true
       }
 
       return config if Settings.kafka.sasl_mechanism == 'PLAIN'
