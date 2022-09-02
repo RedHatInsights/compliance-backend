@@ -6,25 +6,38 @@ data:
         "list": [
           {
             "builtIn": 1,
-            "datasource": "-- Grafana --",
+            "datasource": {
+              "type": "datasource",
+              "uid": "grafana"
+            },
             "enable": true,
             "hide": true,
             "iconColor": "rgba(0, 211, 255, 1)",
             "name": "Annotations & Alerts",
+            "target": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
             "type": "dashboard"
           }
         ]
       },
       "editable": true,
-      "gnetId": null,
+      "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 84,
-      "iteration": 1661169038202,
+      "id": 65,
+      "iteration": 1662117501010,
       "links": [],
+      "liveNow": false,
       "panels": [
         {
           "collapsed": false,
-          "datasource": null,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "tuHy3WB7z"
+          },
           "gridPos": {
             "h": 1,
             "w": 24,
@@ -33,26 +46,58 @@ data:
           },
           "id": 20,
           "panels": [],
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "tuHy3WB7z"
+              },
+              "refId": "A"
+            }
+          ],
           "title": "Current values",
           "type": "row"
         },
         {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#d44a3a",
-            "rgba(237, 129, 40, 0.89)",
-            "#299c46"
-          ],
-          "datasource": "$datasource",
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#d44a3a",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 0.1
+                  },
+                  {
+                    "color": "#299c46",
+                    "value": 1
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
           },
           "gridPos": {
             "h": 3,
@@ -61,43 +106,28 @@ data:
             "y": 1
           },
           "id": 8,
-          "interval": null,
           "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
           "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "delta"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
           },
-          "tableColumn": "",
+          "pluginVersion": "9.0.3",
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
               "format": "time_series",
               "intervalFactor": 1,
@@ -105,37 +135,50 @@ data:
               "refId": "A"
             }
           ],
-          "thresholds": "0.1,1",
           "title": "Requests",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "delta"
+          "type": "stat"
         },
         {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#d44a3a",
-            "rgba(237, 129, 40, 0.89)",
-            "#299c46"
-          ],
-          "datasource": "$datasource",
-          "decimals": 2,
-          "format": "percentunit",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 2,
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#d44a3a",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 0.9
+                  },
+                  {
+                    "color": "#299c46",
+                    "value": 0.2
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
           },
           "gridPos": {
             "h": 3,
@@ -144,404 +187,78 @@ data:
             "y": 1
           },
           "id": 14,
-          "interval": null,
           "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
           "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
           },
-          "tableColumn": "",
+          "pluginVersion": "9.0.3",
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(increase(rails_requests_total{application=\"compliance\",status=~\"2.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
             }
           ],
-          "thresholds": "0.9,0.2",
           "title": "2xx ratio",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
+          "type": "stat"
         },
         {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "$datasource",
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
+          "datasource": {
+            "uid": "$datasource"
           },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 12,
-            "y": 1
-          },
-          "id": 9,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 2,
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#299c46",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 0.05
+                  },
+                  {
+                    "color": "#d44a3a",
+                    "value": 0.2
+                  }
+                ]
+              },
+              "unit": "percentunit"
             },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-service-.*\"}))",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "thresholds": "0.1,3",
-          "title": "Backend restarts",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "delta"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "$datasource",
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 15,
-            "y": 1
-          },
-          "id": 24,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-inventory-consumer-.*\"}))",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "thresholds": "0.1,3",
-          "title": "Consumer restarts",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "delta"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "$datasource",
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 18,
-            "y": 1
-          },
-          "id": 41,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-sidekiq-.*\"}))",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "thresholds": "0.1,3",
-          "title": "Sidekiq restarts",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "delta"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "$datasource",
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "gridPos": {
-            "h": 3,
-            "w": 3,
-            "x": 21,
-            "y": 1
-          },
-          "id": 45,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-import-ssg-.*\"}))",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "thresholds": "0.1,3",
-          "title": "Import-ssg restarts",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "delta"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "$datasource",
-          "decimals": 2,
-          "format": "percentunit",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
+            "overrides": []
           },
           "gridPos": {
             "h": 3,
@@ -550,80 +267,78 @@ data:
             "y": 1
           },
           "id": 25,
-          "interval": null,
           "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
           "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
           },
-          "tableColumn": "",
+          "pluginVersion": "9.0.3",
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "(sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) OR on() vector(0)",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
             }
           ],
-          "thresholds": "0.05,0.2",
           "title": "5xx ratio",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "current"
+          "type": "stat"
         },
         {
-          "cacheTimeout": null,
-          "colorBackground": true,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "$datasource",
-          "decimals": 2,
-          "format": "percentunit",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 2,
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#299c46",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 0.05
+                  },
+                  {
+                    "color": "#d44a3a",
+                    "value": 0.2
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
           },
           "gridPos": {
             "h": 3,
@@ -632,73 +347,376 @@ data:
             "y": 1
           },
           "id": 28,
-          "interval": null,
           "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
           "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "options": {},
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
           },
-          "tableColumn": "",
+          "pluginVersion": "9.0.3",
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(increase(rails_requests_total{application=\"compliance\",status=~\"4.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
               "format": "time_series",
               "intervalFactor": 1,
               "refId": "A"
             }
           ],
-          "thresholds": "0.05,0.2",
           "title": "4xx ratio",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#299c46",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 0.1
+                  },
+                  {
+                    "color": "#d44a3a",
+                    "value": 3
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 12,
+            "y": 1
+          },
+          "id": 9,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "delta"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "9.0.3",
+          "targets": [
             {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-service-.*\"}))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "refId": "A"
             }
           ],
-          "valueName": "current"
+          "title": "Backend restarts",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#299c46",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 0.1
+                  },
+                  {
+                    "color": "#d44a3a",
+                    "value": 3
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 15,
+            "y": 1
+          },
+          "id": 24,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "delta"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "9.0.3",
+          "targets": [
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-inventory-consumer-.*\"}))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "title": "Consumer restarts",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#299c46",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 0.1
+                  },
+                  {
+                    "color": "#d44a3a",
+                    "value": 3
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 18,
+            "y": 1
+          },
+          "id": 41,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "delta"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "9.0.3",
+          "targets": [
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-sidekiq-.*\"}))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "title": "Sidekiq restarts",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "#299c46",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 0.1
+                  },
+                  {
+                    "color": "#d44a3a",
+                    "value": 3
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 3,
+            "x": 21,
+            "y": 1
+          },
+          "id": 45,
+          "links": [],
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "delta"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "textMode": "auto"
+          },
+          "pluginVersion": "9.0.3",
+          "targets": [
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-import-ssg-.*\"}))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "refId": "A"
+            }
+          ],
+          "title": "Import-ssg restarts",
+          "type": "stat"
         },
         {
           "collapsed": false,
-          "datasource": null,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "tuHy3WB7z"
+          },
           "gridPos": {
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 7
+            "y": 4
           },
           "id": 18,
           "panels": [],
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "tuHy3WB7z"
+              },
+              "refId": "A"
+            }
+          ],
           "title": "Golden signals",
           "type": "row"
         },
@@ -713,14 +731,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 8
+            "y": 5
           },
           "hiddenSeries": false,
           "id": 10,
@@ -739,9 +765,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -751,6 +778,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(rate(rails_requests_total{application=\"compliance\",status=~\"[0-9]{3}\"}[$interval])) by (status)",
               "format": "time_series",
               "intervalFactor": 1,
@@ -759,9 +789,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Traffic",
           "tooltip": {
             "shared": true,
@@ -770,9 +798,7 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
@@ -781,22 +807,16 @@ data:
               "format": "short",
               "label": "per second",
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -804,14 +824,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 8
+            "y": 5
           },
           "hiddenSeries": false,
           "id": 27,
@@ -829,9 +857,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -841,6 +870,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(rate(rails_request_duration_seconds_sum{application=\"compliance\"}[$interval])) / sum(rate(rails_request_duration_seconds_count{application=\"compliance\"}[$interval]))",
               "format": "time_series",
               "intervalFactor": 1,
@@ -849,9 +881,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Latency",
           "tooltip": {
             "shared": true,
@@ -860,9 +890,7 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
@@ -874,16 +902,12 @@ data:
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -891,14 +915,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 14
+            "y": 11
           },
           "hiddenSeries": false,
           "id": 5,
@@ -916,9 +948,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -928,6 +961,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(rate(container_cpu_usage_seconds_total{pod=~\"compliance-.*\"}[$interval])) by (container)/ sum(kube_pod_container_resource_limits{resource=\"cpu\",pod=~\"compliance-.*\"}) by (container)",
               "format": "time_series",
               "intervalFactor": 1,
@@ -936,9 +972,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "CPU consumed",
           "tooltip": {
             "shared": true,
@@ -947,33 +981,25 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "percentunit",
-              "label": null,
               "logBase": 1,
               "max": "1",
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -981,14 +1007,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 14
+            "y": 11
           },
           "hiddenSeries": false,
           "id": 4,
@@ -1006,9 +1040,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -1018,6 +1053,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "avg(container_memory_usage_bytes{pod=~\"compliance-.*\"}) by (container)",
               "format": "time_series",
               "intervalFactor": 1,
@@ -1026,9 +1064,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Memory consumed",
           "tooltip": {
             "shared": true,
@@ -1037,46 +1073,49 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "bytes",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": false
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
           "collapsed": false,
-          "datasource": null,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "tuHy3WB7z"
+          },
           "gridPos": {
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 20
+            "y": 17
           },
           "id": 31,
           "panels": [],
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "tuHy3WB7z"
+              },
+              "refId": "A"
+            }
+          ],
           "title": "Advanced",
           "type": "row"
         },
@@ -1085,14 +1124,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 21
+            "y": 18
           },
           "hiddenSeries": false,
           "id": 29,
@@ -1110,9 +1157,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -1122,6 +1170,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(kube_pod_container_status_restarts_total{pod=~\"compliance-.*\"}) by (container)",
               "format": "time_series",
               "intervalFactor": 1,
@@ -1130,9 +1181,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Containers restarts",
           "tooltip": {
             "shared": true,
@@ -1141,33 +1190,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "none",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -1175,14 +1215,23 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 21
+            "y": 18
           },
           "hiddenSeries": false,
           "id": 33,
@@ -1200,9 +1249,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -1212,6 +1262,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(kafka_consumergroup_group_topic_sum_lag{topic=\"platform.inventory.events\", group=\"complianceinventory-events-consumer\"}) by (topic)",
               "format": "time_series",
               "intervalFactor": 1,
@@ -1220,9 +1273,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Kafka consumer lag",
           "tooltip": {
             "shared": true,
@@ -1231,33 +1282,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "none",
-              "label": null,
               "logBase": 2,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -1265,14 +1307,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 27
+            "y": 24
           },
           "hiddenSeries": false,
           "id": 36,
@@ -1290,9 +1340,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -1302,6 +1353,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "histogram_quantile(0.5, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))",
               "format": "time_series",
               "hide": false,
@@ -1311,9 +1365,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "GraphQL Median Performance",
           "tooltip": {
             "shared": true,
@@ -1322,33 +1374,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -1356,14 +1399,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 27
+            "y": 24
           },
           "hiddenSeries": false,
           "id": 56,
@@ -1381,9 +1432,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -1393,6 +1445,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "histogram_quantile(0.99, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))",
               "format": "time_series",
               "hide": false,
@@ -1402,9 +1457,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "GraphQL 99th percentile performance",
           "tooltip": {
             "shared": true,
@@ -1413,442 +1466,593 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$datasource",
-          "fill": 1,
-          "fillGradient": 0,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "area"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 2
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 33
+            "y": 30
           },
-          "hiddenSeries": false,
           "id": 35,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
           "links": [],
-          "nullPointMode": "null as zero",
           "options": {
-            "dataLinks": []
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
           },
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
+          "pluginVersion": "9.0.3",
           "targets": [
             {
-              "expr": "histogram_quantile(0.5, sum(rails_request_duration_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.5, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
               "format": "time_series",
               "intervalFactor": 10,
-              "legendFormat": "total",
+              "legendFormat": "{{ controller }}#{{ action }}",
+              "range": true,
               "refId": "A"
-            },
-            {
-              "expr": "histogram_quantile(0.5, sum(rails_view_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
-              "format": "time_series",
-              "intervalFactor": 10,
-              "legendFormat": "view",
-              "refId": "B"
-            },
-            {
-              "expr": "histogram_quantile(0.5, sum(rails_db_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
-              "format": "time_series",
-              "intervalFactor": 10,
-              "legendFormat": "sql",
-              "refId": "C"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Latest Page Median Performance",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "ms",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          "title": "Median Request Duration",
+          "type": "timeseries"
         },
         {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$datasource",
-          "fill": 1,
-          "fillGradient": 0,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "area"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 2
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 33
+            "y": 30
           },
-          "hiddenSeries": false,
           "id": 57,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
           "links": [],
-          "nullPointMode": "null as zero",
           "options": {
-            "dataLinks": []
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
           },
-          "percentage": false,
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
+          "pluginVersion": "9.0.3",
           "targets": [
             {
-              "expr": "histogram_quantile(0.99, sum(rails_request_duration_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
-              "format": "time_series",
-              "intervalFactor": 10,
-              "legendFormat": "total",
-              "refId": "A"
-            },
-            {
-              "expr": "histogram_quantile(0.99, sum(rails_view_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
-              "format": "time_series",
-              "intervalFactor": 10,
-              "legendFormat": "view",
-              "refId": "B"
-            },
-            {
-              "expr": "histogram_quantile(0.99, sum(rails_db_runtime_seconds_bucket{application=\"compliance\",action=\"query\",controller=\"graphql\"}) by (le)) * 1000",
-              "format": "time_series",
-              "intervalFactor": 10,
-              "legendFormat": "sql",
-              "refId": "C"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Latest Page 99th Percentile Performance",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "ms",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {
-            "all": "#ba43a9",
-            "last_upload: all": "#ba43a9",
-            "last_upload: last1D": "#7eb26d",
-            "last_upload: last30D": "#967302",
-            "last_upload: last7D": "#cca300"
-          },
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$datasource",
-          "fill": 1,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 0,
-            "y": 39
-          },
-          "hiddenSeries": false,
-          "id": 51,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {
-            "dataLinks": []
-          },
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(compliance_total_systems)",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "systems",
-              "refId": "A"
-            },
-            {
-              "expr": "sum(compliance_total_accounts)",
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
               "format": "time_series",
               "hide": false,
-              "intervalFactor": 1,
-              "legendFormat": "accounts",
-              "refId": "B"
+              "intervalFactor": 10,
+              "legendFormat": "{{ controller }}#{{ action }}",
+              "range": true,
+              "refId": "Total"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Database items (1)",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "none",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          "title": "99th Percentile Request Duration",
+          "type": "timeseries"
         },
         {
-          "aliasColors": {
-            "all": "#ba43a9",
-            "last_upload: all": "#ba43a9",
-            "last_upload: last1D": "#7eb26d",
-            "last_upload: last30D": "#967302",
-            "last_upload: last7D": "#cca300"
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
           },
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$datasource",
-          "fill": 1,
-          "fillGradient": 0,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "area"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 2
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
           "gridPos": {
-            "h": 6,
+            "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 39
+            "x": 0,
+            "y": 36
           },
-          "hiddenSeries": false,
-          "id": 59,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
+          "id": 23763572011,
           "links": [],
-          "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
           },
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
+          "pluginVersion": "9.0.3",
           "targets": [
             {
-              "expr": "sum(compliance_total_policies)",
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.5, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
               "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "policies",
+              "intervalFactor": 10,
+              "legendFormat": "{{ controller }}#{{ action }}",
+              "range": true,
               "refId": "A"
             }
           ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Database items (2)",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
+          "title": "Median View Duration",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
           },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "none",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "area"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 2
+                  }
+                ]
+              },
+              "unit": "s"
             },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 36
+          },
+          "id": 23763572007,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.3",
+          "targets": [
             {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.99, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 10,
+              "legendFormat": "{{ controller }}#{{ action }}",
+              "range": true,
+              "refId": "Total"
             }
           ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
+          "title": "99th Percentile View Duration",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "area"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 2
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 44
+          },
+          "id": 23763572014,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.3",
+          "targets": [
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.5, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 10,
+              "legendFormat": "{{ controller }}#{{ action }}",
+              "range": true,
+              "refId": "Total"
+            }
+          ],
+          "title": "Median SQL Duration",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "area"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 2
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 44
+          },
+          "id": 23763572015,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.3",
+          "targets": [
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.99, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 10,
+              "legendFormat": "{{ controller }}#{{ action }}",
+              "range": true,
+              "refId": "Total"
+            }
+          ],
+          "title": "99th Percentile SQL Duration",
+          "type": "timeseries"
         },
         {
           "aliasColors": {
@@ -1861,14 +2065,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 45
+            "y": 52
           },
           "hiddenSeries": false,
           "id": 42,
@@ -1886,9 +2098,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -1898,6 +2111,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (worker)",
               "format": "time_series",
               "intervalFactor": 1,
@@ -1906,9 +2122,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Sidekiq Job Duration",
           "tooltip": {
             "shared": true,
@@ -1917,33 +2131,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "s",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -1957,14 +2162,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$datasource",
+          "datasource": {
+            "uid": "$datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 45
+            "y": 52
           },
           "hiddenSeries": false,
           "id": 58,
@@ -1982,9 +2195,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -1994,6 +2208,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$datasource"
+              },
               "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\"}[$interval])) by (worker)",
               "format": "time_series",
               "intervalFactor": 1,
@@ -2002,9 +2219,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Sidekiq Job Count",
           "tooltip": {
             "shared": true,
@@ -2013,33 +2228,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -2054,14 +2260,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$rds_datasource",
+          "datasource": {
+            "uid": "$rds_datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 51
+            "y": 58
           },
           "hiddenSeries": false,
           "id": 53,
@@ -2079,9 +2293,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -2091,15 +2306,16 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(rdsosmetrics_fileSys_usedPercent{exported_instance=~\"compliance-(stage|prod)\"}) by (mount_point)",
               "legendFormat": "{{mount_point}}",
               "refId": "A"
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "RDS data capacity usage",
           "tooltip": {
             "shared": true,
@@ -2108,33 +2324,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "percent",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -2149,14 +2356,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$rds_datasource",
+          "datasource": {
+            "uid": "$rds_datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 51
+            "y": 58
           },
           "hiddenSeries": false,
           "id": 52,
@@ -2174,9 +2389,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -2186,6 +2402,9 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(label_replace(rdsosmetrics_processList_cpuUsedPc{exported_instance=~\"compliance-(stage|prod)\"}, \"db_user\", \"$1\", \"name\", \"postgres: ([^ ]+) .+\")) by (db_user)",
               "format": "time_series",
               "intervalFactor": 1,
@@ -2193,6 +2412,9 @@ data:
               "refId": "B"
             },
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(rdsosmetrics_processList_cpuUsedPc{exported_instance=~\"compliance-(stage|prod)\"})",
               "format": "time_series",
               "intervalFactor": 1,
@@ -2201,9 +2423,7 @@ data:
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "RDS CPU usage",
           "tooltip": {
             "shared": true,
@@ -2212,33 +2432,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "none",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -2253,14 +2464,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$rds_datasource",
+          "datasource": {
+            "uid": "$rds_datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 0,
-            "y": 57
+            "y": 64
           },
           "hiddenSeries": false,
           "id": 60,
@@ -2278,9 +2497,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -2290,30 +2510,40 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(rdsosmetrics_memory_total{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "total memory",
               "refId": "A"
             },
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(rdsosmetrics_memory_free{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "free memory",
               "refId": "B"
             },
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(rdsosmetrics_memory_dirty{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "dirty memory",
               "refId": "C"
             },
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(rdsosmetrics_memory_active{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "active memory",
               "refId": "D"
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "RDS memory",
           "tooltip": {
             "shared": true,
@@ -2322,33 +2552,24 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "deckbytes",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
@@ -2363,14 +2584,22 @@ data:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "$rds_datasource",
+          "datasource": {
+            "uid": "$rds_datasource"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
             "h": 6,
             "w": 12,
             "x": 12,
-            "y": 57
+            "y": 64
           },
           "hiddenSeries": false,
           "id": 61,
@@ -2388,9 +2617,10 @@ data:
           "links": [],
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "9.0.3",
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
@@ -2400,25 +2630,32 @@ data:
           "steppedLine": false,
           "targets": [
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(rdsosmetrics_loadAverageMinute_one{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "Load Avg 1 min",
               "refId": "A"
             },
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(rdsosmetrics_loadAverageMinute_five{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "Load Avg 5 min",
               "refId": "B"
             },
             {
+              "datasource": {
+                "uid": "$rds_datasource"
+              },
               "expr": "sum(rdsosmetrics_loadAverageMinute_fifteen{exported_instance=~\"compliance-(stage|prod)\"})",
               "legendFormat": "Load Avg 15 min",
               "refId": "C"
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "RDS memory",
           "tooltip": {
             "shared": true,
@@ -2427,1069 +2664,1256 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": true
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
-          "collapsed": false,
-          "datasource": null,
+          "collapsed": true,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "tuHy3WB7z"
+          },
           "gridPos": {
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 63
+            "y": 70
           },
           "id": 34,
-          "panels": [],
+          "panels": [
+            {
+              "aliasColors": {
+                "all": "#ba43a9",
+                "bugfix": "#ef843c",
+                "enhancement": "#9ac48a",
+                "security": "#e24d42",
+                "unknown": "#fce2de"
+              },
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "links": []
+                },
+                "overrides": []
+              },
+              "fill": 1,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 0,
+                "y": 56
+              },
+              "hiddenSeries": false,
+              "id": 23763571993,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 1,
+              "links": [],
+              "nullPointMode": "null",
+              "options": {
+                "alertThreshold": true
+              },
+              "percentage": false,
+              "pluginVersion": "9.0.3",
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "(sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)) - (sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0))",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{job_name}}",
+                  "refId": "A"
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "Successfully parsed reports",
+              "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "format": "short",
+                  "label": "Reports",
+                  "logBase": 1,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "logBase": 1,
+                  "show": true
+                }
+              ],
+              "yaxis": {
+                "align": false
+              }
+            },
+            {
+              "aliasColors": {
+                "all": "#ba43a9",
+                "bugfix": "#ef843c",
+                "enhancement": "#9ac48a",
+                "security": "#e24d42",
+                "unknown": "#fce2de"
+              },
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "links": []
+                },
+                "overrides": []
+              },
+              "fill": 1,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 12,
+                "y": 56
+              },
+              "hiddenSeries": false,
+              "id": 23763571992,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 1,
+              "links": [],
+              "nullPointMode": "null",
+              "options": {
+                "alertThreshold": true
+              },
+              "percentage": false,
+              "pluginVersion": "9.0.3",
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{job_name}}",
+                  "refId": "A"
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "Reports failed to upload",
+              "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "format": "short",
+                  "label": "Reports",
+                  "logBase": 1,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "logBase": 1,
+                  "show": true
+                }
+              ],
+              "yaxis": {
+                "align": false
+              }
+            },
+            {
+              "aliasColors": {
+                "all": "#ba43a9",
+                "last_upload: all": "#ba43a9",
+                "last_upload: last1D": "#7eb26d",
+                "last_upload: last30D": "#967302",
+                "last_upload: last7D": "#cca300"
+              },
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "links": []
+                },
+                "overrides": []
+              },
+              "fill": 1,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 0,
+                "y": 62
+              },
+              "hiddenSeries": false,
+              "id": 51,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 1,
+              "links": [],
+              "nullPointMode": "null",
+              "options": {
+                "alertThreshold": true
+              },
+              "percentage": false,
+              "pluginVersion": "9.0.3",
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_total_systems)",
+                  "format": "time_series",
+                  "intervalFactor": 1,
+                  "legendFormat": "systems",
+                  "refId": "A"
+                },
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_total_accounts)",
+                  "format": "time_series",
+                  "hide": false,
+                  "intervalFactor": 1,
+                  "legendFormat": "accounts",
+                  "refId": "B"
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "Database items (1)",
+              "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "format": "none",
+                  "logBase": 1,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "logBase": 1,
+                  "show": true
+                }
+              ],
+              "yaxis": {
+                "align": false
+              }
+            },
+            {
+              "aliasColors": {
+                "all": "#ba43a9",
+                "last_upload: all": "#ba43a9",
+                "last_upload: last1D": "#7eb26d",
+                "last_upload: last30D": "#967302",
+                "last_upload: last7D": "#cca300"
+              },
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "links": []
+                },
+                "overrides": []
+              },
+              "fill": 1,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 12,
+                "y": 62
+              },
+              "hiddenSeries": false,
+              "id": 59,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 1,
+              "links": [],
+              "nullPointMode": "null",
+              "options": {
+                "alertThreshold": true
+              },
+              "percentage": false,
+              "pluginVersion": "9.0.3",
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_total_policies)",
+                  "format": "time_series",
+                  "intervalFactor": 1,
+                  "legendFormat": "policies",
+                  "refId": "A"
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "Database items (2)",
+              "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "format": "none",
+                  "logBase": 1,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "logBase": 1,
+                  "show": true
+                }
+              ],
+              "yaxis": {
+                "align": false
+              }
+            },
+            {
+              "aliasColors": {},
+              "breakPoint": "50%",
+              "combine": {
+                "label": "Others",
+                "threshold": 0
+              },
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fontSize": "80%",
+              "format": "string",
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 0,
+                "y": 68
+              },
+              "id": 23763571994,
+              "legend": {
+                "header": "Count",
+                "percentage": true,
+                "show": true,
+                "values": true
+              },
+              "legendType": "Right side",
+              "links": [],
+              "nullPointMode": "connected",
+              "pieType": "pie",
+              "pluginVersion": "7.2.1",
+              "strokeWidth": 1,
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_total_systems_by_os) by (version)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{version}}",
+                  "refId": "A"
+                }
+              ],
+              "title": "Total number of systems reporting by OS version",
+              "type": "grafana-piechart-panel",
+              "valueName": "current"
+            },
+            {
+              "aliasColors": {},
+              "breakPoint": "50%",
+              "combine": {
+                "label": "Others",
+                "threshold": 0
+              },
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fontSize": "80%",
+              "format": "string",
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 12,
+                "y": 68
+              },
+              "id": 23763571995,
+              "legend": {
+                "header": "Count",
+                "percentage": true,
+                "show": true,
+                "values": true
+              },
+              "legendType": "Right side",
+              "links": [],
+              "nullPointMode": "connected",
+              "pieType": "pie",
+              "pluginVersion": "7.2.1",
+              "strokeWidth": 1,
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_client_systems_by_os) by (version)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{version}}",
+                  "refId": "A"
+                }
+              ],
+              "title": "Number of client systems reporting by OS version",
+              "type": "grafana-piechart-panel",
+              "valueName": "current"
+            },
+            {
+              "aliasColors": {},
+              "breakPoint": "50%",
+              "combine": {
+                "label": "Others",
+                "threshold": 0
+              },
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fontSize": "80%",
+              "format": "string",
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 0,
+                "y": 74
+              },
+              "id": 23763571998,
+              "legend": {
+                "header": "Count",
+                "percentage": true,
+                "show": true,
+                "values": true
+              },
+              "legendType": "Right side",
+              "links": [],
+              "nullPointMode": "connected",
+              "pieType": "pie",
+              "pluginVersion": "7.2.1",
+              "strokeWidth": 1,
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_total_policies_by_os_major) by (version)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "RHEL {{ version }}",
+                  "refId": "A"
+                }
+              ],
+              "title": "Total number of policies by OS major version",
+              "type": "grafana-piechart-panel",
+              "valueName": "current"
+            },
+            {
+              "aliasColors": {},
+              "breakPoint": "50%",
+              "combine": {
+                "label": "Others",
+                "threshold": 0
+              },
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fontSize": "80%",
+              "format": "string",
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 12,
+                "y": 74
+              },
+              "id": 23763571999,
+              "legend": {
+                "header": "Count",
+                "percentage": true,
+                "show": true,
+                "values": true
+              },
+              "legendType": "Right side",
+              "links": [],
+              "nullPointMode": "connected",
+              "pieType": "pie",
+              "pluginVersion": "7.2.1",
+              "strokeWidth": 1,
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_client_policies_by_os_major) by (version)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "RHEL {{ version }}",
+                  "refId": "A"
+                }
+              ],
+              "title": "Number of client policies by OS major version",
+              "type": "grafana-piechart-panel",
+              "valueName": "current"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "links": [],
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 0,
+                "y": 80
+              },
+              "id": 23763571996,
+              "links": [],
+              "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "mean"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true
+              },
+              "pluginVersion": "9.0.3",
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_total_50plus_policies)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "Total",
+                  "refId": "A"
+                },
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_client_50plus_policies)",
+                  "interval": "",
+                  "legendFormat": "Client",
+                  "refId": "B"
+                }
+              ],
+              "title": "Number of policies with 50 or more systems",
+              "type": "gauge"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "links": [],
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 12,
+                "y": 80
+              },
+              "id": 23763571997,
+              "links": [],
+              "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "mean"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true
+              },
+              "pluginVersion": "9.0.3",
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_total_accounts_with_50plus_hosts_per_policy)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "Total",
+                  "refId": "A"
+                },
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_client_accounts_with_50plus_hosts_per_policy)",
+                  "interval": "",
+                  "legendFormat": "Client",
+                  "refId": "B"
+                }
+              ],
+              "title": "Number of accounts with one or more policies having 50 or more systems",
+              "type": "gauge"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "links": [],
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 0,
+                "y": 86
+              },
+              "id": 23763572000,
+              "links": [],
+              "options": {
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "mean"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true
+              },
+              "pluginVersion": "9.0.3",
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_total_systems)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "Total",
+                  "refId": "A"
+                },
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_client_systems)",
+                  "interval": "",
+                  "legendFormat": "Client",
+                  "refId": "B"
+                }
+              ],
+              "title": "Systems covered by at least one policy (current)",
+              "type": "gauge"
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "dashLength": 10,
+              "dashes": false,
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "links": []
+                },
+                "overrides": []
+              },
+              "fill": 1,
+              "fillGradient": 0,
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 12,
+                "y": 86
+              },
+              "hiddenSeries": false,
+              "id": 23763572001,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 1,
+              "links": [],
+              "nullPointMode": "null",
+              "options": {
+                "alertThreshold": true
+              },
+              "percentage": false,
+              "pluginVersion": "9.0.3",
+              "pointradius": 2,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "spaceLength": 10,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_total_systems)",
+                  "format": "time_series",
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "Total",
+                  "refId": "A"
+                },
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "sum(compliance_client_systems)",
+                  "interval": "",
+                  "legendFormat": "Client",
+                  "refId": "B"
+                }
+              ],
+              "thresholds": [],
+              "timeRegions": [],
+              "title": "Systems covered by at least one policy (trend)",
+              "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+              },
+              "type": "graph",
+              "xaxis": {
+                "mode": "time",
+                "show": true,
+                "values": []
+              },
+              "yaxes": [
+                {
+                  "format": "short",
+                  "logBase": 1,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "logBase": 1,
+                  "show": true
+                }
+              ],
+              "yaxis": {
+                "align": false
+              }
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "custom": {
+                    "displayMode": "auto",
+                    "filterable": false,
+                    "inspect": false
+                  },
+                  "links": [],
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 0,
+                "y": 92
+              },
+              "id": 23763572002,
+              "links": [],
+              "options": {
+                "footer": {
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "Value"
+                  }
+                ]
+              },
+              "pluginVersion": "9.0.3",
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "topk(4, sum(compliance_total_policies_by_account) by (ref_id))",
+                  "format": "table",
+                  "instant": true,
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{ ref_id }}",
+                  "refId": "A"
+                }
+              ],
+              "title": "Top 4 most used profiles by accounts",
+              "type": "table"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "custom": {
+                    "displayMode": "auto",
+                    "filterable": false,
+                    "inspect": false
+                  },
+                  "links": [],
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 12,
+                "y": 92
+              },
+              "id": 23763572003,
+              "links": [],
+              "options": {
+                "footer": {
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "Value"
+                  }
+                ]
+              },
+              "pluginVersion": "9.0.3",
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "topk(4, sum(compliance_client_policies_by_account) by (ref_id))",
+                  "format": "table",
+                  "instant": true,
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{ ref_id }}",
+                  "refId": "A"
+                }
+              ],
+              "title": "Top 4 most used profiles by client accounts",
+              "type": "table"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "custom": {
+                    "displayMode": "auto",
+                    "filterable": false,
+                    "inspect": false
+                  },
+                  "links": [],
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 0,
+                "y": 98
+              },
+              "id": 23763572004,
+              "links": [],
+              "options": {
+                "footer": {
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "Value"
+                  }
+                ]
+              },
+              "pluginVersion": "9.0.3",
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "topk(4, sum(compliance_total_policies_by_host) by (ref_id))",
+                  "format": "table",
+                  "instant": true,
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{ ref_id }}",
+                  "refId": "A"
+                }
+              ],
+              "title": "Top 4 most used profiles by hosts",
+              "type": "table"
+            },
+            {
+              "datasource": {
+                "uid": "$datasource"
+              },
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "custom": {
+                    "displayMode": "auto",
+                    "filterable": false,
+                    "inspect": false
+                  },
+                  "links": [],
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 6,
+                "w": 12,
+                "x": 12,
+                "y": 98
+              },
+              "id": 23763572005,
+              "links": [],
+              "options": {
+                "footer": {
+                  "fields": "",
+                  "reducer": [
+                    "sum"
+                  ],
+                  "show": false
+                },
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "Value"
+                  }
+                ]
+              },
+              "pluginVersion": "9.0.3",
+              "targets": [
+                {
+                  "datasource": {
+                    "uid": "$datasource"
+                  },
+                  "expr": "topk(4, sum(compliance_client_policies_by_host) by (ref_id))",
+                  "format": "table",
+                  "instant": true,
+                  "interval": "",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{ ref_id }}",
+                  "refId": "A"
+                }
+              ],
+              "title": "Top 4 most used profiles by client hosts",
+              "type": "table"
+            }
+          ],
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "tuHy3WB7z"
+              },
+              "refId": "A"
+            }
+          ],
           "title": "Business metrics",
           "type": "row"
-        },
-        {
-          "aliasColors": {
-            "all": "#ba43a9",
-            "bugfix": "#ef843c",
-            "enhancement": "#9ac48a",
-            "security": "#e24d42",
-            "unknown": "#fce2de"
-          },
-          "dashLength": 10,
-          "datasource": "$datasource",
-          "fill": 1,
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 0,
-            "y": 64
-          },
-          "id": 23763571993,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {
-            "alertThreshold": true
-          },
-          "pointradius": 5,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "targets": [
-            {
-              "expr": "(sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)) - (sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0))",
-              "legendFormat": "{{job_name}}",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeRegions": [],
-          "title": "Successfully parsed reports",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": "Reports",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          },
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "bars": false,
-          "dashes": false,
-          "fillGradient": 0,
-          "hiddenSeries": false,
-          "percentage": false,
-          "points": false,
-          "stack": false,
-          "steppedLine": false,
-          "timeFrom": null,
-          "timeShift": null
-        },
-        {
-          "aliasColors": {
-            "all": "#ba43a9",
-            "bugfix": "#ef843c",
-            "enhancement": "#9ac48a",
-            "security": "#e24d42",
-            "unknown": "#fce2de"
-          },
-          "dashLength": 10,
-          "datasource": "$datasource",
-          "fill": 1,
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 12,
-            "y": 64
-          },
-          "id": 23763571992,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "options": {
-            "alertThreshold": true
-          },
-          "pointradius": 5,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "targets": [
-            {
-              "expr": "sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)",
-              "legendFormat": "{{job_name}}",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeRegions": [],
-          "title": "Reports failed to upload",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": "Reports",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          },
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "bars": false,
-          "dashes": false,
-          "fillGradient": 0,
-          "hiddenSeries": false,
-          "percentage": false,
-          "points": false,
-          "stack": false,
-          "steppedLine": false,
-          "timeFrom": null,
-          "timeShift": null
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 0,
-            "y": 70
-          },
-          "id": 23763571994,
-          "links": [],
-          "targets": [
-            {
-              "expr": "sum(compliance_total_systems_by_os) by (version)",
-              "legendFormat": "{{version}}",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Total number of systems reporting by OS version",
-          "type": "grafana-piechart-panel",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "pieType": "pie",
-          "legend": {
-            "show": true,
-            "values": true,
-            "header": "Count",
-            "percentage": true
-          },
-          "interval": null,
-          "cacheTimeout": null,
-          "nullPointMode": "connected",
-          "legendType": "Right side",
-          "breakPoint": "50%",
-          "aliasColors": {},
-          "format": "string",
-          "valueName": "current",
-          "strokeWidth": 1,
-          "fontSize": "80%",
-          "combine": {
-            "threshold": 0,
-            "label": "Others"
-          },
-          "description": "",
-          "decimals": null
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 12,
-            "y": 70
-          },
-          "id": 23763571995,
-          "links": [],
-          "targets": [
-            {
-              "expr": "sum(compliance_client_systems_by_os) by (version)",
-              "legendFormat": "{{version}}",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Number of client systems reporting by OS version",
-          "type": "grafana-piechart-panel",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "pieType": "pie",
-          "legend": {
-            "show": true,
-            "values": true,
-            "header": "Count",
-            "percentage": true
-          },
-          "interval": null,
-          "cacheTimeout": null,
-          "nullPointMode": "connected",
-          "legendType": "Right side",
-          "breakPoint": "50%",
-          "aliasColors": {},
-          "format": "string",
-          "valueName": "current",
-          "strokeWidth": 1,
-          "fontSize": "80%",
-          "combine": {
-            "threshold": 0,
-            "label": "Others"
-          },
-          "description": "",
-          "decimals": null
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 0,
-            "y": 76
-          },
-          "id": 23763571998,
-          "links": [],
-          "targets": [
-            {
-              "expr": "sum(compliance_total_policies_by_os_major) by (version)",
-              "legendFormat": "RHEL {{ version }}",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Total number of policies by OS major version",
-          "type": "grafana-piechart-panel",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "links": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "description": "",
-          "interval": null,
-          "cacheTimeout": null,
-          "pieType": "pie",
-          "legend": {
-            "show": true,
-            "values": true,
-            "header": "Count",
-            "percentage": true
-          },
-          "nullPointMode": "connected",
-          "legendType": "Right side",
-          "breakPoint": "50%",
-          "aliasColors": {},
-          "format": "string",
-          "valueName": "current",
-          "strokeWidth": 1,
-          "fontSize": "80%",
-          "combine": {
-            "threshold": 0,
-            "label": "Others"
-          }
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 12,
-            "y": 76
-          },
-          "id": 23763571999,
-          "links": [],
-          "targets": [
-            {
-              "expr": "sum(compliance_client_policies_by_os_major) by (version)",
-              "legendFormat": "RHEL {{ version }}",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Number of client policies by OS major version",
-          "type": "grafana-piechart-panel",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "links": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "description": "",
-          "interval": null,
-          "cacheTimeout": null,
-          "pieType": "pie",
-          "legend": {
-            "show": true,
-            "values": true,
-            "header": "Count",
-            "percentage": true
-          },
-          "nullPointMode": "connected",
-          "legendType": "Right side",
-          "breakPoint": "50%",
-          "aliasColors": {},
-          "format": "string",
-          "valueName": "current",
-          "strokeWidth": 1,
-          "fontSize": "80%",
-          "combine": {
-            "threshold": 0,
-            "label": "Others"
-          }
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 0,
-            "y": 82
-          },
-          "id": 23763571996,
-          "links": [],
-          "targets": [
-            {
-              "expr": "sum(compliance_total_50plus_policies)",
-              "legendFormat": "Total",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            },
-            {
-              "expr": "sum(compliance_client_50plus_policies)",
-              "legendFormat": "Client",
-              "interval": "",
-              "refId": "B"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Number of policies with 50 or more systems",
-          "type": "gauge",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": [],
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "options": {
-            "reduceOptions": {
-              "values": false,
-              "calcs": [
-                "mean"
-              ],
-              "fields": ""
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "description": ""
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 12,
-            "y": 82
-          },
-          "id": 23763571997,
-          "links": [],
-          "targets": [
-            {
-              "expr": "sum(compliance_total_accounts_with_50plus_hosts_per_policy)",
-              "legendFormat": "Total",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            },
-            {
-              "expr": "sum(compliance_client_accounts_with_50plus_hosts_per_policy)",
-              "legendFormat": "Client",
-              "interval": "",
-              "refId": "B"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Number of accounts with one or more policies having 50 or more systems",
-          "type": "gauge",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": [],
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "options": {
-            "reduceOptions": {
-              "values": false,
-              "calcs": [
-                "mean"
-              ],
-              "fields": ""
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          },
-          "description": ""
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 0,
-            "y": 88
-          },
-          "id": 23763572000,
-          "links": [],
-          "targets": [
-            {
-              "expr": "sum(compliance_total_systems)",
-              "legendFormat": "Total",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            },
-            {
-              "expr": "sum(compliance_client_systems)",
-              "legendFormat": "Client",
-              "interval": "",
-              "refId": "B"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Systems covered by at least one policy (current)",
-          "type": "gauge",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": [],
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "options": {
-            "reduceOptions": {
-              "values": false,
-              "calcs": [
-                "mean"
-              ],
-              "fields": ""
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          }
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 12,
-            "y": 88
-          },
-          "id": 23763572001,
-          "links": [],
-          "targets": [
-            {
-              "expr": "sum(compliance_total_systems)",
-              "legendFormat": "Total",
-              "interval": "",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "refId": "A"
-            },
-            {
-              "expr": "sum(compliance_client_systems)",
-              "legendFormat": "Client",
-              "interval": "",
-              "refId": "B"
-            }
-          ],
-          "title": "Systems covered by at least one policy (trend)",
-          "type": "graph",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
-              "links": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "timeFrom": null,
-          "timeShift": null,
-          "options": {
-            "alertThreshold": true
-          },
-          "renderer": "flot",
-          "yaxes": [
-            {
-              "label": null,
-              "show": true,
-              "logBase": 1,
-              "min": null,
-              "max": null,
-              "format": "short"
-            },
-            {
-              "label": null,
-              "show": true,
-              "logBase": 1,
-              "min": null,
-              "max": null,
-              "format": "short"
-            }
-          ],
-          "xaxis": {
-            "show": true,
-            "mode": "time",
-            "name": null,
-            "values": [],
-            "buckets": null
-          },
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          },
-          "lines": true,
-          "fill": 1,
-          "fillGradient": 0,
-          "linewidth": 1,
-          "dashes": false,
-          "hiddenSeries": false,
-          "dashLength": 10,
-          "spaceLength": 10,
-          "points": false,
-          "pointradius": 2,
-          "bars": false,
-          "stack": false,
-          "percentage": false,
-          "legend": {
-            "show": true,
-            "values": false,
-            "min": false,
-            "max": false,
-            "current": false,
-            "total": false,
-            "avg": false
-          },
-          "nullPointMode": "null",
-          "steppedLine": false,
-          "tooltip": {
-            "value_type": "individual",
-            "shared": true,
-            "sort": 0
-          },
-          "aliasColors": {},
-          "seriesOverrides": [],
-          "thresholds": [],
-          "timeRegions": []
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 0,
-            "y": 94
-          },
-          "id": 23763572002,
-          "links": [],
-          "options": {
-            "showHeader": true,
-            "sortBy": [
-              {
-                "displayName": "Value",
-                "desc": true
-              }
-            ]
-          },
-          "targets": [
-            {
-              "expr": "topk(4, sum(compliance_total_policies_by_account) by (ref_id))",
-              "legendFormat": "{{ ref_id }}",
-              "interval": "",
-              "format": "table",
-              "intervalFactor": 1,
-              "refId": "A",
-              "instant": true
-            }
-          ],
-          "title": "Top 4 most used profiles by accounts",
-          "type": "table",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {
-                "align": null,
-                "filterable": false
-              },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": [],
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "timeFrom": null,
-          "timeShift": null,
-          "description": ""
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 12,
-            "y": 94
-          },
-          "id": 23763572003,
-          "links": [],
-          "options": {
-            "showHeader": true,
-            "sortBy": [
-              {
-                "displayName": "Value",
-                "desc": true
-              }
-            ]
-          },
-          "targets": [
-            {
-              "expr": "topk(4, sum(compliance_client_policies_by_account) by (ref_id))",
-              "legendFormat": "{{ ref_id }}",
-              "interval": "",
-              "format": "table",
-              "intervalFactor": 1,
-              "refId": "A",
-              "instant": true
-            }
-          ],
-          "title": "Top 4 most used profiles by client accounts",
-          "type": "table",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {
-                "align": null,
-                "filterable": false
-              },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": [],
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "timeFrom": null,
-          "timeShift": null,
-          "description": ""
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 0,
-            "y": 100
-          },
-          "id": 23763572004,
-          "links": [],
-          "options": {
-            "showHeader": true,
-            "sortBy": [
-              {
-                "displayName": "Value",
-                "desc": true
-              }
-            ]
-          },
-          "targets": [
-            {
-              "expr": "topk(4, sum(compliance_total_policies_by_host) by (ref_id))",
-              "legendFormat": "{{ ref_id }}",
-              "interval": "",
-              "format": "table",
-              "intervalFactor": 1,
-              "refId": "A",
-              "instant": true
-            }
-          ],
-          "title": "Top 4 most used profiles by hosts",
-          "type": "table",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {
-                "align": null,
-                "filterable": false
-              },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": [],
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "timeFrom": null,
-          "timeShift": null,
-          "description": ""
-        },
-        {
-          "datasource": "$datasource",
-          "gridPos": {
-            "h": 6,
-            "w": 12,
-            "x": 12,
-            "y": 100
-          },
-          "id": 23763572005,
-          "links": [],
-          "options": {
-            "showHeader": true,
-            "sortBy": [
-              {
-                "displayName": "Value",
-                "desc": true
-              }
-            ]
-          },
-          "targets": [
-            {
-              "expr": "topk(4, sum(compliance_client_policies_by_host) by (ref_id))",
-              "legendFormat": "{{ ref_id }}",
-              "interval": "",
-              "format": "table",
-              "intervalFactor": 1,
-              "refId": "A",
-              "instant": true
-            }
-          ],
-          "title": "Top 4 most used profiles by client hosts",
-          "type": "table",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {
-                "align": null,
-                "filterable": false
-              },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "value": null,
-                    "color": "green"
-                  },
-                  {
-                    "value": 80,
-                    "color": "red"
-                  }
-                ]
-              },
-              "mappings": [],
-              "links": []
-            },
-            "overrides": []
-          },
-          "pluginVersion": "7.2.1",
-          "timeFrom": null,
-          "timeShift": null,
-          "description": ""
         }
       ],
       "refresh": false,
-      "schemaVersion": 22,
+      "schemaVersion": 36,
       "style": "dark",
       "tags": [],
       "templating": {
@@ -3499,12 +3923,11 @@ data:
             "auto_count": 30,
             "auto_min": "10s",
             "current": {
-              "selected": true,
+              "selected": false,
               "text": "10m",
               "value": "10m"
             },
             "hide": 0,
-            "label": null,
             "name": "interval",
             "options": [
               {
@@ -3570,13 +3993,12 @@ data:
           },
           {
             "current": {
-              "selected": true,
-              "text": "crcp01ue1-prometheus",
-              "value": "crcp01ue1-prometheus"
+              "selected": false,
+              "text": "crcs02ue1-prometheus",
+              "value": "crcs02ue1-prometheus"
             },
             "hide": 0,
             "includeAll": false,
-            "label": null,
             "multi": false,
             "name": "datasource",
             "options": [],
@@ -3588,10 +4010,9 @@ data:
           },
           {
             "current": {
-              "selected": true,
-              "tags": [],
-              "text": "app-sre-prod-01-prometheus",
-              "value": "app-sre-prod-01-prometheus"
+              "selected": false,
+              "text": "app-sre-stage-01-prometheus",
+              "value": "app-sre-stage-01-prometheus"
             },
             "hide": 0,
             "includeAll": false,
@@ -3608,7 +4029,7 @@ data:
         ]
       },
       "time": {
-        "from": "now-6h",
+        "from": "now-3h",
         "to": "now"
       },
       "timepicker": {
@@ -3639,7 +4060,8 @@ data:
       "timezone": "",
       "title": "Compliance",
       "uid": "compliance",
-      "version": 4177
+      "version": 7,
+      "weekStart": ""
     }
 kind: ConfigMap
 metadata:
