@@ -219,10 +219,10 @@ class MetadataTest < ActionDispatch::IntegrationTest
     end
 
     should 'not return invalid previous link if passed wrong params' do
-      get profiles_url, params: { limit: 1, offset: 1203 }
+      get profiles_url, params: { limit: 1, offset: 93 }
       assert_response :success
       assert_equal(1, json_body['meta']['limit'])
-      assert_equal(1203, json_body['meta']['offset'])
+      assert_equal(93, json_body['meta']['offset'])
       assert_not json_body['links']['previous']
       assert_match(/offset=1/, json_body['links']['first'])
       assert_match(/offset=#{Profile.canonical(false).count}/,

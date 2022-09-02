@@ -8,7 +8,6 @@ module Parameters
   ParamType.action_on_unpermitted_parameters = :raise
   ID_TYPE = ParamType.integer | ParamType.string
   ARRAY_OR_STRING = ParamType.array(ParamType.string) | ParamType.string
-  POSITIVE_NUMBER = ParamType.integer & ParamType.gt(0)
   DEFAULT_PERMITTED = StrongerParameters::ControllerSupport::PermittedParameters::DEFAULT_PERMITTED.merge(
     _json: ParamType.nil,
     include: ParamType.regexp(/^[a-zA-Z0-9,_]*$/)
@@ -29,8 +28,8 @@ module Parameters
       search: ParamType.string,
       sort_by: ARRAY_OR_STRING,
       tags: ARRAY_OR_STRING,
-      limit: POSITIVE_NUMBER,
-      offset: POSITIVE_NUMBER
+      limit: ParamType.integer & ParamType.gt(0) & ParamType.lte(100),
+      offset: ParamType.integer & ParamType.gt(0)
     }
 
     permitted_params_for_action :show, {
