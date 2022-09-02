@@ -2,8 +2,8 @@
 
 require 'swagger_helper'
 
-describe 'Status API' do
-  path "#{Settings.path_prefix}/#{Settings.app_name}/status" do
+describe 'Status API', swagger_doc: 'v1/openapi.json' do
+  path '/status' do
     get 'status' do
       tags 'status'
       description 'Display Compliance status'

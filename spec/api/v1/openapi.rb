@@ -15,11 +15,25 @@ module Api
         {
           openapi: '3.0.3',
           info: info,
+          servers: servers,
           paths: {},
           components: {
             schemas: SCHEMAS
           }
         }
+      end
+
+      def servers
+        [
+          {
+            url: 'https://{defaultHost}/api/compliance',
+            variables: { defaultHost: { default: 'console.redhat.com' } }
+          },
+          {
+            url: 'https://{defaultHost}/api/compliance/v1',
+            variables: { defaultHost: { default: 'console.redhat.com' } }
+          }
+        ]
       end
 
       def info
