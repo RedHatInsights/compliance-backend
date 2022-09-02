@@ -2,7 +2,7 @@
 
 require 'swagger_helper'
 
-describe 'Systems API' do
+describe 'Systems API', swagger_doc: 'v1/openapi.json' do
   before do
     allow_any_instance_of(PolicyHost).to receive(:host_supported?).and_return true
     @account = FactoryBot.create(:account)
@@ -24,7 +24,7 @@ describe 'Systems API' do
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/systems" do
+  path '/systems' do
     get 'List all hosts' do
       tags 'host'
       description 'Lists all hosts requested'
@@ -67,7 +67,7 @@ describe 'Systems API' do
     end
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/systems/{id}" do
+  path '/systems/{id}' do
     get 'Retrieve a system' do
       tags 'host'
       description 'Lists all hosts requested'

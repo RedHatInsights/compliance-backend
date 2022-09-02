@@ -2,7 +2,7 @@
 
 require 'swagger_helper'
 
-describe 'RuleResults API' do
+describe 'RuleResults API', swagger_doc: 'v1/openapi.json' do
   before do
     @account = FactoryBot.create(:account)
     host = FactoryBot.create(:host, account: @account.account_number, org_id: @account.org_id)
@@ -22,7 +22,7 @@ describe 'RuleResults API' do
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/rule_results" do
+  path '/rule_results' do
     get 'List all rule_results' do
       tags 'rule_result'
       description 'Lists all rule_results requested'

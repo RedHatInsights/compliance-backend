@@ -2,12 +2,12 @@
 
 require 'swagger_helper'
 
-describe 'Benchmarks API' do
+describe 'Benchmarks API', swagger_doc: 'v1/openapi.json' do
   before do
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/benchmarks" do
+  path '/benchmarks' do
     get 'List all benchmarks' do
       before do
         account = FactoryBot.create(:account)
@@ -72,7 +72,7 @@ describe 'Benchmarks API' do
     end
   end
 
-  path "#{Settings.path_prefix}/#{Settings.app_name}/benchmarks/{id}" do
+  path '/benchmarks/{id}' do
     get 'Retrieve a benchmark' do
       before do
         @profile = FactoryBot.create(:canonical_profile, :with_rules, name: 'First related profile')
