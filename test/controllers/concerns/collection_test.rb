@@ -11,6 +11,13 @@ class ControlleCollectionTest < ActionDispatch::IntegrationTest
     User.current = FactoryBot.create(:user)
   end
 
+  test 'per page limited to max 100 entities' do
+    get v1_profiles_url, params: { limit: 200 }
+
+    assert_response :unprocessable_entity
+    assert_match 'less than or equal to 100', response.parsed_body['errors'][0]
+  end
+
   test 'deterministic pagination' do
     created_profiles = FactoryBot.create_list(
       :profile, 44,
