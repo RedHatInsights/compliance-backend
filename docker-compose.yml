@@ -125,8 +125,7 @@ services:
     ports:
       - 9002:8080
     volumes:
-      - ./config/devel/rbac/permissions.json:/opt/app-root/src/rbac/management/role/permissions/compliance.json:z
-      - ./config/devel/rbac/definitions.json:/opt/app-root/src/rbac/management/role/definitions/compliance.json:z
+      - ./config/devel/rbac:/opt/app-root/src/rbac/management/role:z
   build-rbac-db:
     image: quay.io/cloudservices/rbac:latest
     environment:
