@@ -1,0 +1,16 @@
+{
+  "roles": [
+    {
+      "name": "Inventory administrator",
+      "description": "Perform any available operation against any Inventory resource.",
+      "system": true,
+      "platform_default": true,
+      "version": 2,
+      "access": [
+        {
+          "permission": "inventory:*:*"
+        }
+      ]
+    }
+  ]
+}
