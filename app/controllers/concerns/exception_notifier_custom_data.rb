@@ -5,15 +5,18 @@ module ExceptionNotifierCustomData
   extend ActiveSupport::Concern
 
   included do
-    before_action :prepare_exception_notifier
+    prepend_before_action :prepare_exception_notifier
+    before_action :extend_exception_notifier
   end
 
   private
 
   def prepare_exception_notifier
-    request.env[
-      'exception_notifier.exception_data'
-    ] = OpenshiftEnvironment.summary.merge(
+    request.env['exception_notifier.exception_data'] = OpenshiftEnvironment.summary
+  end
+
+  def extend_exception_notifier
+    request.env['exception_notifier.exception_data'].merge!(
       current_user: current_user&.account&.org_id
     )
   end
