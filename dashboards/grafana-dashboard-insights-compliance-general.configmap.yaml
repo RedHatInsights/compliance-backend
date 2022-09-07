@@ -4060,7 +4060,7 @@ data:
       "timezone": "",
       "title": "Compliance",
       "uid": "compliance",
-      "version": 7,
+      "version": 8,
       "weekStart": ""
     }
 kind: ConfigMap
