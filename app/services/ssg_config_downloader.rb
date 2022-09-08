@@ -52,10 +52,6 @@ class SsgConfigDownloader
       ].join('/')
     end
 
-    def exists?
-      File.exist?(DS_FILE_PATH)
-    end
-
     private
 
     def ssg_ds_file
