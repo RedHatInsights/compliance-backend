@@ -104,7 +104,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def load_raw_supported
-      SsgConfigDownloader.update_ssg_ds unless SsgConfigDownloader.exists?
+      SsgConfigDownloader.update_ssg_ds
       YAML.safe_load(SsgConfigDownloader.ssg_ds)
     end
 
