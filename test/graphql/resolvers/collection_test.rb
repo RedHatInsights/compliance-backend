@@ -10,28 +10,6 @@ class GraphQLCollectionTest < ActiveSupport::TestCase
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end
 
-  test 'per page limited to max 100 entities' do
-    query = <<-GRAPHQL
-      query Profiles($offset: Int, $limit: Int) {
-        profiles(offset: $offset, limit: $limit) {
-          edges {
-            node {
-              id
-            }
-          }
-        }
-      }
-    GRAPHQL
-
-    result = Schema.execute(
-      query,
-      variables: { offset: 0, limit: 200 },
-      context: { current_user: @user }
-    )
-
-    assert_match 'less than or equal to 100', result['errors'][0]['message']
-  end
-
   test 'deterministic pagination' do
     @num_created = 44
     @per_page = 10
