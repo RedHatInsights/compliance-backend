@@ -50,8 +50,8 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
       all.map(&:version).uniq
     end
 
-    def all
-      raw_supported['supported'].flat_map do |rhel, packages|
+    def all(force = false)
+      raw_supported(force)['supported'].flat_map do |rhel, packages|
         major, minor = os_version(rhel)
 
         packages.map do |raw_attrs|
@@ -67,12 +67,12 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     def revision(force = false)
       @revision = nil if force
 
-      @revision ||= load_raw_supported['revision']
+      @revision ||= raw_supported(force)['revision']
     end
 
     # Multilevel map of latest supported SSG for OS major and minor version
     def latest_map
-      cache(:map) { build_latest_map }
+      cache_wrapper(:map) { build_latest_map }
     end
 
     def by_os_major
@@ -80,7 +80,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def by_ssg_version
-      cache(:'by-ssg') { all.group_by(&:version) }
+      cache_wrapper(:'by-ssg') { all.group_by(&:version) }
     end
 
     def clear
@@ -99,13 +99,11 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
       rhel.scan(/(\d+)\.(\d+)$/)[0]
     end
 
-    def raw_supported
-      cache(:raw) { load_raw_supported }
-    end
-
-    def load_raw_supported
-      SsgConfigDownloader.update_ssg_ds
-      YAML.safe_load(SsgConfigDownloader.ssg_ds)
+    def raw_supported(force = false)
+      cache_wrapper(:raw, force) do
+        SsgConfigDownloader.update_ssg_ds
+        YAML.safe_load(SsgConfigDownloader.ssg_ds)
+      end
     end
 
     def build_latest_map
@@ -118,8 +116,9 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
       end.freeze
     end
 
-    def cache(key, &block)
-      Rails.cache.fetch("#{CACHE_PREFIX}/#{key}", expires_on: 1.day, &block)
+    # The optional force parameter is responsible for bypassing the cache when importing
+    def cache_wrapper(key, force = false, &block)
+      force ? block.call : Rails.cache.fetch("#{CACHE_PREFIX}/#{key}", expires_on: 1.day, &block)
     end
   end
 end
