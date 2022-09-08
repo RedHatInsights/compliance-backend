@@ -11,7 +11,9 @@ module Resolvers
       included do
         type ["Types::#{self::MODEL_CLASS}".safe_constantize], null: false
         argument :search, String, 'Search query', required: false
-        argument :limit, Integer, 'Pagination limit', required: false
+        argument :limit, Integer, 'Pagination limit', required: false, validates: {
+          numericality: { greater_than: 0, less_than_or_equal_to: 100 }
+        }
         argument :offset, Integer, 'Pagination offset', required: false
         argument :sort_by, [String], 'Sort results', required: false
 
