@@ -33,8 +33,8 @@ class OsMajorVersion < ApplicationRecord
     ]
   ).as('os_major_version')
 
-  PROFILE_LAST_ID = Arel.sql("(#{OsMajorVersion.aggregated_cast(Profile.arel_table[:id]).to_sql})[1] as \"id\"")
-  PROFILE_BM_VERSIONS = OsMajorVersion.aggregated_cast(Xccdf::Benchmark.arel_table[:version]).as('bm_versions')
+  PROFILE_LAST_ID = Arel.sql("(#{aggregated_cast(Profile.arel_table[:id]).to_sql})[1] as \"id\"")
+  PROFILE_BM_VERSIONS = aggregated_cast(Xccdf::Benchmark.arel_table[:version]).as('bm_versions')
 
   default_scope do
     select(OS_MAJOR_VERSION, :ref_id).distinct.order(:os_major_version)
