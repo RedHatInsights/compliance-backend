@@ -7,7 +7,7 @@ class DatastreamDownloader
   end
 
   def default_supported_ssgs
-    ::SupportedSsg.all
+    ::SupportedSsg.all(true)
                   .sort_by(&:version_with_revision)
                   .reverse
                   .uniq { |ssg| [ssg.version, ssg.os_major_version] }
