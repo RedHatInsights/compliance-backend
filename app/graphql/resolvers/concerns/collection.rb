@@ -36,6 +36,10 @@ module Resolvers
 
         filters << sort_filter(sort_by: sort_by) if sort_by.present?
 
+        # SystemConnection needs the scope without the tagging and pagination filters
+        # in order to return correct results.
+        filters << store_wide_scope
+
         filters << tags_filter(tags: tags) if permit_tags?(tags)
 
         if offset.present? || limit.present?
@@ -80,6 +84,10 @@ module Resolvers
           tags = parse_tags(tags)
           scope.where('tags @> ?', tags.to_json)
         end
+      end
+
+      def store_wide_scope
+        ->(scope) { context[:wide_scope] = scope }
       end
 
       def model_class
