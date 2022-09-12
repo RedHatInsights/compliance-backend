@@ -125,7 +125,8 @@ services:
     ports:
       - 9002:8080
     volumes:
-      - ./config/devel/rbac:/opt/app-root/src/rbac/management/role:z
+      - ./config/devel/rbac/definitions:/opt/app-root/src/rbac/management/role/definitions
+      - ./config/devel/rbac/permisisons:/opt/app-root/src/rbac/management/role/permissions
   build-rbac-db:
     image: quay.io/cloudservices/rbac:latest
     environment:
@@ -143,8 +144,8 @@ services:
     links:
       - db
     volumes:
-      - ./config/devel/rbac/permissions.json:/opt/app-root/src/rbac/management/role/permissions/compliance.json:z
-      - ./config/devel/rbac/definitions.json:/opt/app-root/src/rbac/management/role/definitions/compliance.json:z
+      - ./config/devel/rbac/definitions:/opt/app-root/src/rbac/management/role/definitions
+      - ./config/devel/rbac/permisisons:/opt/app-root/src/rbac/management/role/permissions
     entrypoint: /bin/sh
     command: -c './rbac/manage.py migrate ; ./rbac/manage.py seeds'
   inventory:
