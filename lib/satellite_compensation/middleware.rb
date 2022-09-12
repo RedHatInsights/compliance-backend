@@ -12,7 +12,7 @@ module Insights
           end
 
           def call(env)
-            if env['HTTP_USER_AGENT'] =~ /foreman/i
+            if env['HTTP_USER_AGENT'] =~ /foreman|satellite/i
               # Sometimes Satellite forwards the client requests with an empty string
               # as content-type and Rails does not like it.
               env['CONTENT_TYPE'] = nil if env['CONTENT_TYPE'] == ''
