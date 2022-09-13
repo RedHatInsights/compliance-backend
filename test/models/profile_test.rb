@@ -863,4 +863,136 @@ class ProfileTest < ActiveSupport::TestCase
       assert_equal [@rule1], @profile.removed_rules
     end
   end
+
+  context 'rules_and_rule_groups' do
+    setup do
+      @parent1 = FactoryBot.create(
+        :canonical_profile,
+        :with_rules,
+        :with_rule_groups,
+        rule_count: 5,
+        rule_group_count: 4
+      )
+
+      parent2 = FactoryBot.create(
+        :canonical_profile,
+        :with_rules,
+        :with_rule_groups,
+        rule_count: 2,
+        rule_group_count: 2
+      )
+
+      parent2.update!(benchmark_id: @parent1.benchmark_id)
+
+      @rule1 = @parent1.rules.first
+      @rule2 = @parent1.rules.second
+      @rule3 = @parent1.rules.third
+      @rule4 = @parent1.rules.fourth
+      @rule5 = @parent1.rules.fifth
+      @rule6 = FactoryBot.create(:rule)
+
+      @rule_group_1 = @parent1.rule_groups.first
+      @rule_group_2 = @parent1.rule_groups.second
+      @rule_group_3 = @parent1.rule_groups.third
+      @rule_group_4 = @parent1.rule_groups.fourth
+      @rule_group_5 = FactoryBot.create(:rule_group)
+      @rule_group_6 = FactoryBot.create(:rule_group)
+
+      FactoryBot.create(:rule_group_rule, rule_id: @rule1.id, rule_group_id: @rule_group_1.id)
+      FactoryBot.create(:rule_group_rule, rule_id: @rule2.id, rule_group_id: @rule_group_2.id)
+      FactoryBot.create(:rule_group_rule, rule_id: @rule3.id, rule_group_id: @rule_group_3.id)
+      FactoryBot.create(:rule_group_rule, rule_id: @rule5.id, rule_group_id: @rule_group_4.id)
+
+      rgr1 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
+      rgr2 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
+      rgr3 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_requires)
+      rgr4 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_requires)
+      rgr5 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
+      rgr6 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
+      rgr7 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
+      rgr8 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_requires)
+
+      rgr1.update!(left: @rule1, right: @rule_group_5)
+      rgr2.update!(left: @rule_group_3, right: @rule_group_6)
+      rgr3.update!(left: @rule4, right: @rule6)
+      rgr4.update!(left: @rule1, right: @rule6)
+      rgr5.update!(left: @rule_group_3, right: @rule6)
+      rgr6.update!(left: @rule_group_4, right: @rule_group_6)
+      rgr7.update!(left: @rule5, right: @rule6)
+      rgr8.update!(left: @rule5, right: @rule_group_6)
+
+      @rule_group_2.update!(parent_id: @rule_group_1.id)
+      @rule_group_4.update!(parent_id: @rule_group_2.id)
+    end
+
+    should 'correctly return nested rule and rule group children of rule groups in JSON' do
+      rules_and_rule_groups_json = @parent1.rules_and_rule_groups
+
+      expected_response1 = {
+        'rule_group' => @rule_group_1,
+        'group_children' => [
+          {
+            'rule_group' => @rule_group_2,
+            'group_children' => [
+              {
+                'rule_group' => @rule_group_4,
+                'group_children' => [],
+                'rule_children' => [
+                  {
+                    'rule' => @rule5,
+                    'requires' => [@rule_group_6],
+                    'conflicts' => [@rule6]
+                  }
+                ],
+                'requires' => nil,
+                'conflicts' => [@rule_group_6]
+              }
+            ],
+            'rule_children' => [
+              {
+                'rule' => @rule2,
+                'requires' => nil,
+                'conflicts' => nil
+              }
+            ],
+            'requires' => nil,
+            'conflicts' => nil
+          }
+        ],
+        'rule_children' => [
+          {
+            'rule' => @rule1,
+            'requires' => [@rule6],
+            'conflicts' => [@rule_group_5]
+          }
+        ],
+        'requires' => nil,
+        'conflicts' => nil
+      }
+
+      expected_response2 = {
+        'rule' => @rule4,
+        'requires' => [@rule6],
+        'conflicts' => nil
+      }
+
+      expected_response3 = {
+        'rule_group' => @rule_group_3,
+        'group_children' => [],
+        'rule_children' => [
+          {
+            'rule' => @rule3,
+            'requires' => nil,
+            'conflicts' => nil
+          }
+        ],
+        'requires' => nil,
+        'conflicts' => [@rule_group_6, @rule6]
+      }
+
+      assert_includes rules_and_rule_groups_json, expected_response1
+      assert_includes rules_and_rule_groups_json, expected_response2
+      assert_includes rules_and_rule_groups_json, expected_response3
+    end
+  end
 end

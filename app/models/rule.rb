@@ -73,6 +73,10 @@ class Rule < ApplicationRecord
     joins(:profiles).where(profiles: { id: Profile.canonical })
   }
 
+  scope :without_rule_group_parent, lambda {
+    where.missing(:rule_groups)
+  }
+
   scope :joins_identifier, lambda {
     left_outer_joins(:rule_identifier).select('rules.*', RuleIdentifier::AS_JSON.as('identifier'))
   }

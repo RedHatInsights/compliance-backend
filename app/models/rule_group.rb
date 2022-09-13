@@ -11,6 +11,8 @@ class RuleGroup < ApplicationRecord
                                            inverse_of: :left, class_name: 'RuleGroupRelationship'
   has_many :right_rule_group_relationships, dependent: :delete_all, foreign_key: :right_id,
                                             inverse_of: :right, class_name: 'RuleGroupRelationship'
+  has_many :rule_group_rules, dependent: :delete_all
+  has_many :rules, through: :rule_group_rules
 
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
 
@@ -29,5 +31,11 @@ class RuleGroup < ApplicationRecord
                                  parent_id: parent_id)
 
     rule_group
+  end
+
+  def rules_with_relationships(requires, conflicts)
+    rules.map do |r|
+      { 'rule' => r, 'requires' => requires[r], 'conflicts' => conflicts[r] }
+    end
   end
 end
