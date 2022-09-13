@@ -151,6 +151,7 @@ class PolicyTest < ActiveSupport::TestCase
     should 'add new hosts to an existing host set' do
       profile = FactoryBot.create(:profile, account: @account, policy: @policy, upstream: false)
       @policy.update(hosts: [@hosts.first])
+      @policy.update_counters!
 
       stub_supported_ssg(@hosts, [profile.benchmark.version])
 
@@ -163,6 +164,8 @@ class PolicyTest < ActiveSupport::TestCase
 
     should 'remove old hosts from an existing host set' do
       @policy.update(hosts: @hosts)
+      @policy.update_counters!
+
       assert_equal @hosts.count, @policy.hosts.count
       assert_equal @hosts.count, @policy.total_host_count
       assert_difference(HOST_COUNT_FIELDS, -@hosts.count) do
@@ -173,6 +176,8 @@ class PolicyTest < ActiveSupport::TestCase
 
     should 'add new and remove old hosts from an existing host set' do
       @policy.update(hosts: [@hosts.first])
+      @policy.update_counters!
+
       profile = FactoryBot.create(:profile, account: @account, policy: @policy, upstream: false)
 
       stub_supported_ssg(@hosts, [profile.benchmark.version])
@@ -456,15 +461,6 @@ class PolicyTest < ActiveSupport::TestCase
       @host1 = FactoryBot.create(:host, org_id: @account.org_id)
       @host2 = FactoryBot.create(:host, org_id: @account.org_id)
       @profile = FactoryBot.create(:profile, policy: @policy, account: @account)
-    end
-
-    should 'change the total host count when a host is assigned directly' do
-      @policy.update(hosts: [@host1])
-      assert_equal(@policy.reload.total_host_count, 1)
-      @policy.update(hosts: [@host1, @host2])
-      assert_equal(@policy.reload.total_host_count, 2)
-      @policy.update(hosts: [])
-      assert_equal(@policy.reload.total_host_count, 0)
     end
 
     should 'change the test result host count when test results are assigned' do

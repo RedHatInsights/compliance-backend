@@ -27,8 +27,6 @@ class Policy < ApplicationRecord
   after_update :destroy_orphaned_business_objective
   after_rollback :destroy_orphaned_business_objective
 
-  after_save :update_counters!
-
   scope :with_hosts, lambda { |hosts|
     joins(:hosts).where(hosts: { id: hosts }).distinct
   }
