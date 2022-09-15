@@ -50,7 +50,7 @@ module Authentication
   end
 
   def user
-    User.new(account: Account.from_identity_header(identity_header))
+    @user ||= User.new(account: Account.from_identity_header(identity_header))
   end
 
   def rbac_allowed?
