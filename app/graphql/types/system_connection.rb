@@ -11,7 +11,7 @@ module Types
     end
 
     def tags
-      context[:wide_scope].available_tags
+      object.items.limit(nil).available_tags
     end
   end
 end
