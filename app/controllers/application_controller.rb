@@ -41,6 +41,10 @@ class ApplicationController < ActionController::API
                  status: :forbidden
   end
 
+  rescue_from Rbac::AuthorizationError do |error|
+    render_error error.message, status: :unauthorized
+  end
+
   rescue_from ActiveRecord::RecordNotFound do |error|
     logger.info "#{error.message} (#{error.class})"
     render_error "#{error.model} not found with ID #{error.id}",

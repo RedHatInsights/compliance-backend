@@ -31,7 +31,7 @@ class Rbac
         ).data
       rescue RBACApiClient::ApiError => e
         Rails.logger.info(e.message)
-        raise AuthorizationError
+        raise AuthorizationError, e.message
       end
     end
 
