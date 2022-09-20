@@ -64,8 +64,7 @@ module Api
           properties: {
             benchmark: ref_schema('relationship'),
             rule_identifier: ref_schema('relationship'),
-            profiles: ref_schema('relationship_collection'),
-            rule_references: ref_schema('relationship_collection')
+            profiles: ref_schema('relationship_collection')
           }
         }.freeze
       end
