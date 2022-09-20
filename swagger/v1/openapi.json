@@ -115,13 +115,13 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "8d933a76-adb4-40ed-b99c-36d2772513c3",
+                    "id": "10fd70a8-195b-41f8-b395-4f2a69d9c349",
                     "type": "benchmark",
                     "attributes": {
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                      "title": "Delectus eos ab nobis.",
-                      "version": "100.0.2",
-                      "description": "Itaque dolores ut. Voluptatem deleniti velit. Sequi qui assumenda.",
+                      "title": "Animi molestias non quos.",
+                      "version": "100.0.1",
+                      "description": "Id aut animi. Velit quis voluptatem. Consequatur et quo.",
                       "os_major_version": "7",
                       "latest_supported_os_minor_versions": []
                     },
@@ -129,11 +129,11 @@
                       "rules": {
                         "data": [
                           {
-                            "id": "648af826-025c-4033-9946-65417f7b601e",
+                            "id": "dad7efa5-0f6c-4400-bb97-ca1ef208400b",
                             "type": "rule"
                           },
                           {
-                            "id": "ce602259-0149-4021-a1c4-e48ef68c44c1",
+                            "id": "d8dfee4a-263b-4fb0-b935-959871aae36c",
                             "type": "rule"
                           }
                         ]
@@ -141,7 +141,7 @@
                       "profiles": {
                         "data": [
                           {
-                            "id": "6287e2e2-bbab-400b-9a47-d4aaf8a8ad54",
+                            "id": "9bec64d3-408e-4ca7-8eb4-baedb5746dbf",
                             "type": "profile"
                           }
                         ]
@@ -149,13 +149,13 @@
                     }
                   },
                   {
-                    "id": "a0bc7add-ac29-4ca0-bc2d-d3071272ef9d",
+                    "id": "22cf1524-5850-4b4c-b764-c12f268aa0f5",
                     "type": "benchmark",
                     "attributes": {
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                      "title": "Assumenda et doloribus fuga.",
-                      "version": "100.0.1",
-                      "description": "Placeat sapiente mollitia. Voluptatum qui omnis. Ab dignissimos nulla.",
+                      "title": "Veniam repellat sint id.",
+                      "version": "100.0.2",
+                      "description": "Cupiditate harum at. Cupiditate repellendus inventore. Et voluptatum magnam.",
                       "os_major_version": "7",
                       "latest_supported_os_minor_versions": []
                     },
@@ -163,11 +163,11 @@
                       "rules": {
                         "data": [
                           {
-                            "id": "479dbe9e-908a-4f63-ac46-a9100c885ad6",
+                            "id": "2af93cb9-dfc0-49cb-bfed-8b2496a114b7",
                             "type": "rule"
                           },
                           {
-                            "id": "2e20fa3e-2bef-49ea-9e3d-bb54a0665e99",
+                            "id": "ea56f75f-4840-4ad3-ad0a-abcfcf08550c",
                             "type": "rule"
                           }
                         ]
@@ -175,7 +175,7 @@
                       "profiles": {
                         "data": [
                           {
-                            "id": "f1afa9e5-eb2f-41ea-a8b6-83fc78afbe1a",
+                            "id": "ceccda62-adc1-45a4-9d59-e1c79ebff529",
                             "type": "profile"
                           }
                         ]
@@ -284,13 +284,13 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "a06e9863-d6ff-49c5-8b38-b59554bb91fb",
+                  "id": "7243e139-28cd-4350-b09a-83cd858f5c35",
                   "type": "benchmark",
                   "attributes": {
                     "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                    "title": "Nisi reprehenderit corporis id.",
+                    "title": "Nesciunt sint ea ut.",
                     "version": "100.0.4",
-                    "description": "Ut eum ipsam. Pariatur accusamus fuga. Et expedita doloribus.",
+                    "description": "Reprehenderit maiores tenetur. Et quo est. Facere doloribus amet.",
                     "os_major_version": "7",
                     "latest_supported_os_minor_versions": []
                   },
@@ -298,43 +298,43 @@
                     "rules": {
                       "data": [
                         {
-                          "id": "b8a03fef-fb71-42e2-95f2-5d6cd89b3d41",
+                          "id": "bffc2d7d-b4e8-48ee-98b7-2a9d8b296fd0",
                           "type": "rule"
                         },
                         {
-                          "id": "31bb3deb-d9d5-4400-b781-8867fe434ee7",
+                          "id": "36d16dc8-9a6d-4347-8b8a-78e426b7d19c",
                           "type": "rule"
                         },
                         {
-                          "id": "46c951b7-8414-41b0-a99e-aacb628f361d",
+                          "id": "e8577292-7880-4aab-b156-fd4ed73570f3",
                           "type": "rule"
                         },
                         {
-                          "id": "94da2371-cd6d-427a-9f98-a34aa81d54d0",
+                          "id": "36b3b64e-46e2-412e-8e45-b2cd8334313d",
                           "type": "rule"
                         },
                         {
-                          "id": "ce109fc6-b5c1-4825-af98-6582429b925c",
+                          "id": "f8c361c9-4594-43d7-872a-7b06df652704",
                           "type": "rule"
                         },
                         {
-                          "id": "28e250ca-e763-4fb0-b152-12c283d3f6d1",
+                          "id": "03d37de4-e31c-4258-8348-9af0a7d7dc14",
                           "type": "rule"
                         },
                         {
-                          "id": "a569d680-2503-48bc-a357-90c9eed03939",
+                          "id": "bcd2f28a-aee8-4073-aa72-c8b15547d86d",
                           "type": "rule"
                         },
                         {
-                          "id": "bb9f4c9f-ea27-40d0-b67a-3d0e1dacdc8b",
+                          "id": "9af72d31-2f97-46eb-84bf-daa3f5367849",
                           "type": "rule"
                         },
                         {
-                          "id": "f17d3bab-6456-422a-9aff-e9d71c1eb1af",
+                          "id": "7dc9b13c-5e2b-4f8d-bb18-c13b11a70897",
                           "type": "rule"
                         },
                         {
-                          "id": "b1e68521-dd56-4371-8272-8a5dcd4046f9",
+                          "id": "a7c8e5f6-2347-4be6-9ea8-efc1625dde87",
                           "type": "rule"
                         }
                       ]
@@ -342,11 +342,11 @@
                     "profiles": {
                       "data": [
                         {
-                          "id": "8872d19c-a8ab-45fb-aa3f-6f7cd379276b",
+                          "id": "6b628122-0101-4b88-b07d-a9d7079224d8",
                           "type": "profile"
                         },
                         {
-                          "id": "a1808d9e-a068-422d-b1c8-06f25fa8013b",
+                          "id": "8b322f03-8cba-4afb-969e-db0bbc5c5699",
                           "type": "profile"
                         }
                       ]
@@ -497,16 +497,16 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "d3a3dc1e-ba35-4dfb-ae91-6d3f0709a458",
+                    "id": "07e5d7f3-ca5e-401d-af51-7283beed34b6",
                     "type": "business_objective",
                     "attributes": {
-                      "title": "Dolor fugiat quaerat saepe."
+                      "title": "Adipisci provident sunt ullam."
                     },
                     "relationships": {
                       "profiles": {
                         "data": [
                           {
-                            "id": "7c36d21e-f2f9-4c23-8b7e-bb639e1f186f",
+                            "id": "e769405e-f2bf-4cb6-8faf-125ebf1f705b",
                             "type": "profile"
                           }
                         ]
@@ -514,16 +514,16 @@
                     }
                   },
                   {
-                    "id": "ad2d47c1-24b1-4c41-a41c-ff7cb9b8b61d",
+                    "id": "703c243b-d2b0-41ba-bd4a-5e7edc5f96a3",
                     "type": "business_objective",
                     "attributes": {
-                      "title": "Nihil molestiae odit aperiam."
+                      "title": "Rerum vitae fugiat sed."
                     },
                     "relationships": {
                       "profiles": {
                         "data": [
                           {
-                            "id": "59dcd624-73f2-471b-9a5e-2ae1aa60d177",
+                            "id": "7db5215d-d14e-44bb-831d-c1b1c7aac689",
                             "type": "profile"
                           }
                         ]
@@ -630,16 +630,16 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "f3a834f0-415a-4662-a0bb-258abbb787c2",
+                  "id": "bf2b0ff0-24f2-43c4-827f-ae341fdf5c90",
                   "type": "business_objective",
                   "attributes": {
-                    "title": "Minus animi quod soluta."
+                    "title": "Rerum ut officiis accusamus."
                   },
                   "relationships": {
                     "profiles": {
                       "data": [
                         {
-                          "id": "f97f8c9d-4843-4bc1-9946-eea9a945d946",
+                          "id": "ba7fe75f-b42c-4691-aa9e-0fdd1672d9ed",
                           "type": "profile"
                         }
                       ]
@@ -796,10 +796,10 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "12243855-c186-45d0-8c81-495041d7aeda",
+                    "id": "afdaf2b9-5b43-4fdd-85a1-4ccc87f4fad1",
                     "type": "profile",
                     "attributes": {
-                      "ref_id": "xccdf_org.ssgproject.content_profile_ca1415cb-2b89-47af-a5ef-9127cf4593d9",
+                      "ref_id": "xccdf_org.ssgproject.content_profile_45d4236e-2323-4a3b-8a0b-39541e9e048e",
                       "score": 0.42,
                       "parent_profile_id": null,
                       "external": false,
@@ -827,7 +827,7 @@
                       },
                       "benchmark": {
                         "data": {
-                          "id": "b412b795-14f6-418f-9d89-993eaaec0597",
+                          "id": "b7f11391-f68e-46c6-a66f-66b98f5180d8",
                           "type": "benchmark"
                         }
                       },
@@ -840,7 +840,7 @@
                       "hosts": {
                         "data": [
                           {
-                            "id": "030860e6-087f-48df-8d43-2894cdf5c6f4",
+                            "id": "53c5f159-4cbe-40c4-bc78-206b2092cea9",
                             "type": "host"
                           }
                         ]
@@ -848,7 +848,7 @@
                       "test_results": {
                         "data": [
                           {
-                            "id": "f6b2e545-d27a-430a-85ce-794d1dd5272d",
+                            "id": "f666ea5e-5f78-4af5-a300-a7cde9a7d946",
                             "type": "test_result"
                           }
                         ]
@@ -856,10 +856,10 @@
                     }
                   },
                   {
-                    "id": "a46db93d-2590-4284-b848-4d4eb4751b30",
+                    "id": "3c41e339-611d-455d-ba43-16c08e5aabf3",
                     "type": "profile",
                     "attributes": {
-                      "ref_id": "xccdf_org.ssgproject.content_profile_9feb0330-30fc-4919-ad43-1aa5e88b400f",
+                      "ref_id": "xccdf_org.ssgproject.content_profile_c06f9bdf-3173-4c61-a950-b8564ff28803",
                       "score": 0.68,
                       "parent_profile_id": null,
                       "external": false,
@@ -869,8 +869,8 @@
                       "policy_profile_id": null,
                       "os_minor_version": "",
                       "parent_profile_ref_id": null,
-                      "name": "Necessitatibus error voluptas pariatur.",
-                      "description": "Quas cumque expedita. Molestias debitis est. Dicta et sit.",
+                      "name": "Sit nihil magni unde.",
+                      "description": "Aut inventore ad. Distinctio voluptatibus maxime. Voluptas natus non.",
                       "canonical": true,
                       "tailored": false,
                       "total_host_count": 0,
@@ -879,7 +879,7 @@
                       "test_result_host_count": 0,
                       "unsupported_host_count": 0,
                       "business_objective": null,
-                      "policy_type": "Necessitatibus error voluptas pariatur."
+                      "policy_type": "Sit nihil magni unde."
                     },
                     "relationships": {
                       "account": {
@@ -887,7 +887,7 @@
                       },
                       "benchmark": {
                         "data": {
-                          "id": "53d3af3c-ae29-4977-9b78-5d6e832d193d",
+                          "id": "171d937a-9821-4b3a-acb8-ad9589c781f4",
                           "type": "benchmark"
                         }
                       },
@@ -900,7 +900,7 @@
                       "hosts": {
                         "data": [
                           {
-                            "id": "030860e6-087f-48df-8d43-2894cdf5c6f4",
+                            "id": "53c5f159-4cbe-40c4-bc78-206b2092cea9",
                             "type": "host"
                           }
                         ]
@@ -908,7 +908,7 @@
                       "test_results": {
                         "data": [
                           {
-                            "id": "e0a3c691-6f27-49fa-8e5a-d98933a1de07",
+                            "id": "f2328315-64c9-4d8a-bd31-56fef93a4b16",
                             "type": "test_result"
                           }
                         ]
@@ -989,19 +989,19 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "efe423ed-c975-4f40-975e-abed13959ee2",
+                  "id": "1a8b4b6e-27c3-44be-a7f9-0b1a878be4d0",
                   "type": "profile",
                   "attributes": {
-                    "ref_id": "xccdf_org.ssgproject.content_profile_4af90d07-667c-48c3-9e6e-2d33b38871ec",
+                    "ref_id": "xccdf_org.ssgproject.content_profile_5d41f4c1-946d-4257-8e65-2008a87b29b8",
                     "score": 0.0,
-                    "parent_profile_id": "d2dd9320-9695-476e-99e5-9019466621db",
+                    "parent_profile_id": "a5d161ef-138f-4ca2-b14b-5be34e85eca7",
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
                     "os_version": "7",
-                    "policy_profile_id": "efe423ed-c975-4f40-975e-abed13959ee2",
+                    "policy_profile_id": "1a8b4b6e-27c3-44be-a7f9-0b1a878be4d0",
                     "os_minor_version": "",
-                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_4af90d07-667c-48c3-9e6e-2d33b38871ec",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_5d41f4c1-946d-4257-8e65-2008a87b29b8",
                     "name": "A custom name",
                     "description": "Canonical (Generated) Profile",
                     "canonical": false,
@@ -1017,30 +1017,30 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "dfa2ee7d-d651-4cfa-8c3e-d2989ce65e52",
+                        "id": "154f2969-164a-446a-b562-a112e9b4c86f",
                         "type": "account"
                       }
                     },
                     "benchmark": {
                       "data": {
-                        "id": "8df89456-c1ed-4ae7-8ca4-c2cb8f5f3c88",
+                        "id": "946cbd08-4ddf-4e87-88bb-b4484a90f7ae",
                         "type": "benchmark"
                       }
                     },
                     "parent_profile": {
                       "data": {
-                        "id": "d2dd9320-9695-476e-99e5-9019466621db",
+                        "id": "a5d161ef-138f-4ca2-b14b-5be34e85eca7",
                         "type": "profile"
                       }
                     },
                     "rules": {
                       "data": [
                         {
-                          "id": "59ae6df2-44c6-4cb0-a5e0-e5d43a1dbe59",
+                          "id": "efba6100-56e1-4b1c-b313-bfb9376723f1",
                           "type": "rule"
                         },
                         {
-                          "id": "3dea33f0-7a8a-43a4-9a80-926a4b34ddf8",
+                          "id": "89028642-62da-4283-b85b-2a07ac0bcad5",
                           "type": "rule"
                         }
                       ]
@@ -1048,11 +1048,11 @@
                     "hosts": {
                       "data": [
                         {
-                          "id": "0359bdfe-592f-4240-a155-18548936f027",
+                          "id": "b1db5193-8074-4302-ba3b-4d68d5883923",
                           "type": "host"
                         },
                         {
-                          "id": "80446e0d-2360-4a74-ba02-80e7838d06b4",
+                          "id": "cd7ad91c-0857-42bd-815d-a3b4eb568052",
                           "type": "host"
                         }
                       ]
@@ -1212,10 +1212,10 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "c58463ff-a081-4ed7-a6ba-626f21a2bd35",
+                  "id": "9d4d40e0-ae85-424a-b8f3-2bf7ea91cba8",
                   "type": "profile",
                   "attributes": {
-                    "ref_id": "xccdf_org.ssgproject.content_profile_0d3d3feb-9a1d-44c6-b9cc-4594cd86a5c8",
+                    "ref_id": "xccdf_org.ssgproject.content_profile_5628cf4b-396b-4765-a1fd-c2fe03f98e80",
                     "score": 0.42,
                     "parent_profile_id": null,
                     "external": false,
@@ -1240,13 +1240,13 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "8337b86e-60a3-4a39-9e84-168f92bcf716",
+                        "id": "af065750-88a1-4c11-843b-50822d091564",
                         "type": "account"
                       }
                     },
                     "benchmark": {
                       "data": {
-                        "id": "33b4955e-efd9-4a16-b32f-5cab037818f8",
+                        "id": "f9125e75-968c-4b9c-a3b8-b6721b4e1053",
                         "type": "benchmark"
                       }
                     },
@@ -1259,7 +1259,7 @@
                     "hosts": {
                       "data": [
                         {
-                          "id": "d6c3a28f-56e3-4750-ae57-9d9806b3194c",
+                          "id": "8caeb1a2-669c-456e-b0d3-4896e67836dc",
                           "type": "host"
                         }
                       ]
@@ -1267,7 +1267,7 @@
                     "test_results": {
                       "data": [
                         {
-                          "id": "f3ecc1a6-5eb3-4792-9d81-4aa69d575f3b",
+                          "id": "607ec6d4-07a8-4373-956f-1cd77e19e337",
                           "type": "test_result"
                         }
                       ]
@@ -1276,13 +1276,13 @@
                 },
                 "included": [
                   {
-                    "id": "33b4955e-efd9-4a16-b32f-5cab037818f8",
+                    "id": "f9125e75-968c-4b9c-a3b8-b6721b4e1053",
                     "type": "benchmark",
                     "attributes": {
                       "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                      "title": "Unde et nam qui.",
+                      "title": "Ea amet ipsa sit.",
                       "version": "100.0.19",
-                      "description": "Consectetur praesentium aspernatur. Doloribus quia consequatur. Harum rem autem.",
+                      "description": "Aut dolorum est. Autem aut ut. Tempora natus qui.",
                       "os_major_version": "7",
                       "latest_supported_os_minor_versions": []
                     },
@@ -1400,19 +1400,19 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "b3e9c81e-a3b5-4d22-9ac7-5358c0c4a9ed",
+                  "id": "88bf2863-81ba-428e-baf6-3ffae1a53346",
                   "type": "profile",
                   "attributes": {
-                    "ref_id": "xccdf_org.ssgproject.content_profile_6adce7d6-85d2-4e2f-ac4c-03d19b8bf1ae",
+                    "ref_id": "xccdf_org.ssgproject.content_profile_e44e413d-1ff6-46e9-9650-9c414ec44baf",
                     "score": 0.0,
-                    "parent_profile_id": "b84bf769-bb8a-4000-84cb-ec59e72f7737",
+                    "parent_profile_id": "a8633e69-80b3-4fc4-8b75-63109dc7cd50",
                     "external": false,
                     "compliance_threshold": 93.5,
                     "os_major_version": "7",
                     "os_version": "7",
-                    "policy_profile_id": "b3e9c81e-a3b5-4d22-9ac7-5358c0c4a9ed",
+                    "policy_profile_id": "88bf2863-81ba-428e-baf6-3ffae1a53346",
                     "os_minor_version": "",
-                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_16183fdd-9080-4ef6-8b47-83d395bdf727",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_aecb2320-9502-4e19-a97f-2f4f657b760b",
                     "name": "Policy for Profile",
                     "description": "An updated custom description",
                     "canonical": false,
@@ -1428,42 +1428,42 @@
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "66f2ff5f-b192-4ea6-a607-f8f58601403d",
+                        "id": "a2639785-b900-4c9b-a5d0-43ccc461e1a1",
                         "type": "account"
                       }
                     },
                     "benchmark": {
                       "data": {
-                        "id": "74c6b959-5827-4df0-97ce-dafa1bee3d59",
+                        "id": "1d94eeeb-53db-432f-a6b5-9f0eca521795",
                         "type": "benchmark"
                       }
                     },
                     "parent_profile": {
                       "data": {
-                        "id": "b84bf769-bb8a-4000-84cb-ec59e72f7737",
+                        "id": "a8633e69-80b3-4fc4-8b75-63109dc7cd50",
                         "type": "profile"
                       }
                     },
                     "rules": {
                       "data": [
                         {
-                          "id": "0cbfdd4e-2c2d-4857-a087-5dd56736c10c",
+                          "id": "897ac431-7a2a-4c84-b3b6-8d3c7d5022b1",
                           "type": "rule"
                         },
                         {
-                          "id": "2dcaf25d-6b99-4849-93aa-03ccdfcdbd62",
+                          "id": "3cafcfbd-2618-49f3-9e69-bb907806f5c5",
                           "type": "rule"
                         },
                         {
-                          "id": "2f8ea7db-2c85-4491-96c6-0602339ae82f",
+                          "id": "f0a1a3d5-3dc9-4542-95a7-8f1e75f483e9",
                           "type": "rule"
                         },
                         {
-                          "id": "9daa0566-550a-45fd-8e06-ce4cb8f7ff77",
+                          "id": "e213bffc-24b1-4464-b93e-41f708628505",
                           "type": "rule"
                         },
                         {
-                          "id": "99f47e9d-3693-4545-b007-e625d604461a",
+                          "id": "7e401eee-140e-4187-b87f-bbdb02d4f572",
                           "type": "rule"
                         }
                       ]
@@ -1471,11 +1471,11 @@
                     "hosts": {
                       "data": [
                         {
-                          "id": "3acdfe21-740c-4cbb-ad36-abd8312135cd",
+                          "id": "012cd623-bedd-4fd0-9f27-2bbbbff4822e",
                           "type": "host"
                         },
                         {
-                          "id": "93cdaa82-cb79-44ea-936f-9a902df05293",
+                          "id": "f0b5bc20-b67a-4490-a63e-3766c55b4e06",
                           "type": "host"
                         }
                       ]
@@ -1639,21 +1639,21 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "62ded80c-ff2c-40e7-a550-d59d0f4adb48",
+                  "id": "e0b00cb9-3ccc-4448-b063-bb6bdfb86687",
                   "type": "profile",
                   "attributes": {
-                    "ref_id": "xccdf_org.ssgproject.content_profile_f3ed8477-82c3-4da9-a7aa-b4290c292cad",
+                    "ref_id": "xccdf_org.ssgproject.content_profile_578dda94-4338-442c-8633-a9c6c37d2913",
                     "score": 0.0,
-                    "parent_profile_id": "eb7b6826-7279-4e64-8b70-ab0ffa56af47",
+                    "parent_profile_id": "b9a7ff3c-2383-4755-903b-f774ef659dbe",
                     "external": false,
                     "compliance_threshold": 100.0,
                     "os_major_version": "7",
                     "os_version": "7",
                     "policy_profile_id": null,
                     "os_minor_version": "",
-                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_f3ed8477-82c3-4da9-a7aa-b4290c292cad",
-                    "name": "Et fuga ducimus nihil.",
-                    "description": "Odio modi vel. Voluptatem molestiae aliquam. Magni sint cumque.",
+                    "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_578dda94-4338-442c-8633-a9c6c37d2913",
+                    "name": "In harum vel eos.",
+                    "description": "Quia est repudiandae. Ratione nesciunt exercitationem. Qui culpa nihil.",
                     "canonical": false,
                     "tailored": false,
                     "total_host_count": 0,
@@ -1662,24 +1662,24 @@
                     "test_result_host_count": 0,
                     "unsupported_host_count": 0,
                     "business_objective": null,
-                    "policy_type": "Adipisci quia beatae tenetur."
+                    "policy_type": "Beatae consequatur porro ut."
                   },
                   "relationships": {
                     "account": {
                       "data": {
-                        "id": "9e900b90-7ad7-41ca-8ca2-d962e615de37",
+                        "id": "63e6b85e-37f2-4a6a-9248-a50253d2346e",
                         "type": "account"
                       }
                     },
                     "benchmark": {
                       "data": {
-                        "id": "41cbf4d6-bff0-4468-b358-376ba80a73e6",
+                        "id": "bbfcd3fc-6907-4cf6-9ec0-6feb15447abe",
                         "type": "benchmark"
                       }
                     },
                     "parent_profile": {
                       "data": {
-                        "id": "eb7b6826-7279-4e64-8b70-ab0ffa56af47",
+                        "id": "b9a7ff3c-2383-4755-903b-f774ef659dbe",
                         "type": "profile"
                       }
                     },
@@ -1838,7 +1838,7 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "d65d25a0-7e54-4dea-9361-42a5b4affdfd",
+                    "id": "a9082206-34a0-4460-bacf-8c6d220aca7d",
                     "type": "rule_result",
                     "attributes": {
                       "result": "pass"
@@ -1846,13 +1846,13 @@
                     "relationships": {
                       "host": {
                         "data": {
-                          "id": "72f9cc64-bc81-47b0-8332-a130432d56cc",
+                          "id": "1aae4c5e-5e15-40f9-95df-48d15a496a18",
                           "type": "host"
                         }
                       },
                       "rule": {
                         "data": {
-                          "id": "4c1ba3a1-c622-41dd-a621-8973b8bf387d",
+                          "id": "1e3794c6-effc-4206-a765-1cbd09b11e2f",
                           "type": "rule"
                         }
                       }
@@ -2025,39 +2025,36 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "e2178697-7350-4830-a307-3df78de57934",
+                    "id": "2f65ed48-3e38-4d67-be87-b4d9e8f4f945",
                     "type": "rule",
                     "attributes": {
-                      "ref_id": "foo_rule_48508fc6-cddb-4f6f-b88a-d187ee79a8bf",
+                      "ref_id": "foo_rule_e77f5b3b-08a3-4627-8251-9c6541113bab",
                       "remediation_issue_id": null,
-                      "title": "Corrupti est esse explicabo.",
-                      "rationale": "Distinctio enim ullam. Distinctio perspiciatis debitis. Consequatur numquam et.",
-                      "description": "Eos ullam sunt. Iure quaerat cupiditate. Ipsum rem saepe.",
-                      "severity": "low",
-                      "slug": "foo_rule_48508fc6-cddb-4f6f-b88a-d187ee79a8bf",
+                      "title": "Pariatur veritatis dolores et.",
+                      "rationale": "Repellat a porro. Rem ea quidem. Ut et ab.",
+                      "description": "Quisquam pariatur laborum. Eligendi necessitatibus sit. Aliquid ipsam commodi.",
+                      "severity": "high",
+                      "slug": "foo_rule_e77f5b3b-08a3-4627-8251-9c6541113bab",
                       "precedence": 1
                     },
                     "relationships": {
                       "benchmark": {
                         "data": {
-                          "id": "0adac8c6-9cb1-4835-bffe-6d57c56875c7",
+                          "id": "04f97e86-0c92-4f32-85c9-8c72bdab079b",
                           "type": "benchmark"
                         }
                       },
                       "profiles": {
                         "data": [
                           {
-                            "id": "15d71897-aed3-4e00-acce-fa2015db74a2",
+                            "id": "1e618cef-b1fc-45dd-b384-fb5db7ff70ae",
                             "type": "profile"
                           },
                           {
-                            "id": "45144702-c82c-46fd-bd1c-95b2e42ec519",
+                            "id": "d4376d00-c5d1-4c74-932a-d31891680467",
                             "type": "profile"
                           }
                         ]
-                      },
-                      "rule_references": {
-                        "data": []
                       },
                       "rule_identifier": {
                         "data": null
@@ -2157,7 +2154,7 @@
             "examples": {
               "application/vnd.api+json": {
                 "errors": [
-                  "Rule not found with ID 74ff7872-0711-41f5-8f39-7788ff5ee708"
+                  "Rule not found with ID c39d4c1e-8e14-4bd9-ba93-9e3219c25071"
                 ]
               }
             }
@@ -2167,39 +2164,36 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "5a2687db-5447-4ad2-aa55-31ab837ef956",
+                  "id": "31402c55-3974-4393-bd5d-f6495e11c3dc",
                   "type": "rule",
                   "attributes": {
-                    "ref_id": "foo_rule_79d1680b-546f-48d9-92f4-9e1b96868436",
+                    "ref_id": "foo_rule_3fd16564-783c-49e6-abf3-4ecca6e75500",
                     "remediation_issue_id": null,
-                    "title": "Nulla sed necessitatibus omnis.",
-                    "rationale": "Quaerat nemo omnis. Ea sunt alias. Excepturi in architecto.",
-                    "description": "Esse natus quasi. Id dolorem in. Sed quia perferendis.",
-                    "severity": "high",
-                    "slug": "foo_rule_79d1680b-546f-48d9-92f4-9e1b96868436",
+                    "title": "Et reiciendis vel rem.",
+                    "rationale": "Qui molestias ea. Ut nihil repellat. Et eos et.",
+                    "description": "Consectetur in eligendi. Dolor ab nisi. Ratione accusantium aut.",
+                    "severity": "low",
+                    "slug": "foo_rule_3fd16564-783c-49e6-abf3-4ecca6e75500",
                     "precedence": 1
                   },
                   "relationships": {
                     "benchmark": {
                       "data": {
-                        "id": "94c78df0-adba-498f-b2bf-eded9e95bfab",
+                        "id": "90083f93-0d29-4622-b4a6-3be7988f9ed9",
                         "type": "benchmark"
                       }
                     },
                     "profiles": {
                       "data": [
                         {
-                          "id": "685a2591-06ab-4dbc-a38f-2888c05c239b",
+                          "id": "e0cede7a-2ce9-4d47-a866-0be32d84653c",
                           "type": "profile"
                         },
                         {
-                          "id": "3926d42a-371a-4c83-b948-304847019507",
+                          "id": "5ffae649-48d2-4736-b1b4-6f99b258c8b7",
                           "type": "profile"
                         }
                       ]
-                    },
-                    "rule_references": {
-                      "data": []
                     },
                     "rule_identifier": {
                       "data": null
@@ -2684,10 +2678,10 @@
                     }
                   },
                   {
-                    "id": "RHEL-7.9:scap-security-guide-0.1.54-3.el7_9",
+                    "id": "RHEL-7.9:scap-security-guide-0.1.54-7.el7_9",
                     "type": "supported_ssg",
                     "attributes": {
-                      "package": "scap-security-guide-0.1.54-3.el7_9",
+                      "package": "scap-security-guide-0.1.54-7.el7_9",
                       "version": "0.1.54",
                       "os_major_version": "7",
                       "os_minor_version": "9",
@@ -2711,6 +2705,41 @@
                         "rht-ccp",
                         "standard",
                         "stig"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-7.9:scap-security-guide-0.1.57-8.el7_9",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.57-8.el7_9",
+                      "version": "0.1.57",
+                      "os_major_version": "7",
+                      "os_minor_version": "9",
+                      "profiles": [
+                        "anssi_nt28_enhanced",
+                        "anssi_nt28_high",
+                        "anssi_nt28_intermediary",
+                        "anssi_nt28_minimal",
+                        "C2S",
+                        "cis",
+                        "cis_server_l1",
+                        "cis_workstation_l1",
+                        "cis_workstation_l2",
+                        "cjis",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ncp",
+                        "ospp",
+                        "pci-dss_centric",
+                        "pci-dss",
+                        "rhelh-stig",
+                        "rhelh-vpp",
+                        "rht-ccp",
+                        "standard",
+                        "stig",
+                        "stig_gui"
                       ]
                     }
                   },
@@ -2812,11 +2841,179 @@
                         "stig"
                       ]
                     }
+                  },
+                  {
+                    "id": "RHEL-8.4:scap-security-guide-0.1.57-10.el8_4",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.57-10.el8_4",
+                      "version": "0.1.57",
+                      "os_major_version": "8",
+                      "os_minor_version": "4",
+                      "profiles": [
+                        "anssi_bp28_enhanced",
+                        "anssi_bp28_high",
+                        "anssi_bp28_intermediary",
+                        "anssi_bp28_minimal",
+                        "cis",
+                        "cis_server_l1",
+                        "cis_workstation_l1",
+                        "cis_workstation_l2",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ism_o",
+                        "ospp",
+                        "pci-dss",
+                        "stig",
+                        "stig_gui"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.4:scap-security-guide-0.1.63-3.el8_4",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.63-3.el8_4",
+                      "version": "0.1.63",
+                      "os_major_version": "8",
+                      "os_minor_version": "4",
+                      "profiles": [
+                        "anssi_bp28_enhanced",
+                        "anssi_bp28_high",
+                        "anssi_bp28_intermediary",
+                        "anssi_bp28_minimal",
+                        "cis",
+                        "cis_server_l1",
+                        "cis_workstation_l1",
+                        "cis_workstation_l2",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ism_o",
+                        "ospp",
+                        "pci-dss",
+                        "stig",
+                        "stig_gui"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.5:scap-security-guide-0.1.57-5.el8",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.57-5.el8",
+                      "version": "0.1.57",
+                      "os_major_version": "8",
+                      "os_minor_version": "5",
+                      "profiles": [
+                        "anssi_bp28_enhanced",
+                        "anssi_bp28_high",
+                        "anssi_bp28_intermediary",
+                        "anssi_bp28_minimal",
+                        "cis",
+                        "cis_server_l1",
+                        "cis_workstation_l1",
+                        "cis_workstation_l2",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ism_o",
+                        "ospp",
+                        "pci-dss",
+                        "stig",
+                        "stig_gui"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.5:scap-security-guide-0.1.57-9.el8_5",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.57-9.el8_5",
+                      "version": "0.1.57",
+                      "os_major_version": "8",
+                      "os_minor_version": "5",
+                      "profiles": [
+                        "anssi_bp28_enhanced",
+                        "anssi_bp28_high",
+                        "anssi_bp28_intermediary",
+                        "anssi_bp28_minimal",
+                        "cis",
+                        "cis_server_l1",
+                        "cis_workstation_l1",
+                        "cis_workstation_l2",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ism_o",
+                        "ospp",
+                        "pci-dss",
+                        "stig",
+                        "stig_gui"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-8.6:scap-security-guide-0.1.60-9.el8_6",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.60-9.el8_6",
+                      "version": "0.1.60",
+                      "os_major_version": "8",
+                      "os_minor_version": "6",
+                      "profiles": [
+                        "anssi_bp28_enhanced",
+                        "anssi_bp28_high",
+                        "anssi_bp28_intermediary",
+                        "anssi_bp28_minimal",
+                        "cis",
+                        "cis_server_l1",
+                        "cis_workstation_l1",
+                        "cis_workstation_l2",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ism_o",
+                        "ospp",
+                        "pci-dss",
+                        "stig",
+                        "stig_gui"
+                      ]
+                    }
+                  },
+                  {
+                    "id": "RHEL-9.0:scap-security-guide-0.1.60-6.el9_0",
+                    "type": "supported_ssg",
+                    "attributes": {
+                      "package": "scap-security-guide-0.1.60-6.el9_0",
+                      "version": "0.1.60",
+                      "os_major_version": "9",
+                      "os_minor_version": "0",
+                      "profiles": [
+                        "anssi_bp28_enhanced",
+                        "anssi_bp28_high",
+                        "anssi_bp28_intermediary",
+                        "anssi_bp28_minimal",
+                        "cis",
+                        "cis_server_l1",
+                        "cis_workstation_l1",
+                        "cis_workstation_l2",
+                        "cui",
+                        "e8",
+                        "hipaa",
+                        "ism_o",
+                        "ospp",
+                        "pci-dss",
+                        "stig",
+                        "stig_gui"
+                      ]
+                    }
                   }
                 ],
                 "meta": {
-                  "total": 22,
-                  "revision": "2021-03-29"
+                  "total": 29,
+                  "revision": "2022-08-18"
                 }
               }
             },
@@ -2981,20 +3178,20 @@
               "application/vnd.api+json": {
                 "data": [
                   {
-                    "id": "311de580-baea-4399-9b26-7e4e2165a1c0",
+                    "id": "ee69f645-2bf9-403b-9f87-a8d5b6cbd6e4",
                     "type": "host",
                     "attributes": {
-                      "name": "pacocha.biz",
+                      "name": "donnelly.info",
                       "os_major_version": 7,
                       "os_minor_version": 9,
-                      "last_scanned": "2022-08-31T11:48:18Z",
+                      "last_scanned": "2022-09-20T09:19:26Z",
                       "rules_passed": 0,
                       "rules_failed": 0,
                       "has_policy": true,
-                      "culled_timestamp": "2032-09-14T11:48:18Z",
-                      "stale_timestamp": "2032-08-31T11:48:18Z",
-                      "stale_warning_timestamp": "2032-09-07T11:48:18Z",
-                      "updated": "2022-08-31T11:48:18Z",
+                      "culled_timestamp": "2032-10-04T09:19:26Z",
+                      "stale_timestamp": "2032-09-20T09:19:26Z",
+                      "stale_warning_timestamp": "2032-09-27T09:19:26Z",
+                      "updated": "2022-09-20T09:19:26Z",
                       "insights_id": null,
                       "compliant": false
                     },
@@ -3002,7 +3199,7 @@
                       "test_results": {
                         "data": [
                           {
-                            "id": "4c1e7298-2cbf-4804-b1c1-139226a56f14",
+                            "id": "9f63e648-2bd7-46ac-8dca-e0fe0a7a7505",
                             "type": "test_result"
                           }
                         ]
@@ -3010,7 +3207,7 @@
                       "profiles": {
                         "data": [
                           {
-                            "id": "61afe62d-a202-4cbe-b137-622890ae72da",
+                            "id": "46f8018a-52d4-4ee4-9605-e1ff11657eba",
                             "type": "profile"
                           }
                         ]
@@ -3123,20 +3320,20 @@
             "examples": {
               "application/vnd.api+json": {
                 "data": {
-                  "id": "a47f2e79-3dc3-4fbc-82e0-0464d31b51cb",
+                  "id": "7f83bce1-4aa0-406f-92f5-b9dda6b3d5b7",
                   "type": "host",
                   "attributes": {
-                    "name": "brown.net",
+                    "name": "hettinger.biz",
                     "os_major_version": 7,
                     "os_minor_version": 9,
-                    "last_scanned": "2022-08-31T11:48:19Z",
+                    "last_scanned": "2022-09-20T09:19:26Z",
                     "rules_passed": 0,
                     "rules_failed": 0,
                     "has_policy": true,
-                    "culled_timestamp": "2032-09-14T11:48:19Z",
-                    "stale_timestamp": "2032-08-31T11:48:19Z",
-                    "stale_warning_timestamp": "2032-09-07T11:48:19Z",
-                    "updated": "2022-08-31T11:48:19Z",
+                    "culled_timestamp": "2032-10-04T09:19:26Z",
+                    "stale_timestamp": "2032-09-20T09:19:26Z",
+                    "stale_warning_timestamp": "2032-09-27T09:19:26Z",
+                    "updated": "2022-09-20T09:19:26Z",
                     "insights_id": null,
                     "compliant": false
                   },
@@ -3144,7 +3341,7 @@
                     "test_results": {
                       "data": [
                         {
-                          "id": "b819d897-f130-4a80-8aad-689113444648",
+                          "id": "30ccd262-3b9c-4840-b7ba-4b701c8d04b0",
                           "type": "test_result"
                         }
                       ]
@@ -3152,7 +3349,7 @@
                     "profiles": {
                       "data": [
                         {
-                          "id": "97eaff71-c3ef-4341-8597-bcc6a8d2f1c2",
+                          "id": "5d499da5-661a-448d-90ae-05fdb1bad5e5",
                           "type": "profile"
                         }
                       ]
@@ -3622,9 +3819,6 @@
             "$ref": "#/components/schemas/relationship"
           },
           "profiles": {
-            "$ref": "#/components/schemas/relationship_collection"
-          },
-          "rule_references": {
             "$ref": "#/components/schemas/relationship_collection"
           }
         }
