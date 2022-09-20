@@ -11,11 +11,8 @@ RSpec.configure do |config|
   config.swagger_root = Rails.root.to_s + '/swagger'
 
   config.before(:each) do
-    # FIXME: Content-Type added as a temporary workaround for library bug
-    # SEE: https://github.com/RedHatInsights/insights-rbac-api-client-ruby/pull/11
     stub_request(:get, /#{Settings.rbac_url}/)
       .to_return(status: 200,
-                 headers: { 'Content-Type' => 'application/vnd.api+json' },
                  body: { 'data': [{ 'permission': 'compliance:*:*' }] }.to_json)
     stub_request(:get, /#{Settings.compliance_ssg_url}/).to_return(status: 404)
   end

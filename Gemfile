@@ -73,7 +73,7 @@ gem 'manageiq-loggers', '~> 0.6.0'
 gem 'openscap_parser', '~> 1.2.0'
 
 # RBAC service API
-gem 'insights-rbac-api-client', '~> 1.0.0'
+gem 'insights-rbac-api-client', '~> 1.0.1'
 
 # REST API parameter type checking
 gem 'stronger_parameters'
