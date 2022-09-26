@@ -23,13 +23,16 @@ RSpec.configure do |config|
 end
 
 def autogenerate_examples(example, label = 'Response example', summary = '', description = '')
+  content = example.metadata[:response][:content] || {}
   body = JSON.parse(response.body, symbolize_names: true)
-  content = { "#{label}": { value: body, summary: summary, description: description } }
-  example.metadata[:response][:content] = {
-    'application/json': {
-      examples: content
+  example_obj = { "#{label}": { value: body, summary: summary, description: description } }
+  example.metadata[:response][:content] = content.deep_merge(
+    {
+      'application/json': {
+        examples: example_obj
+      }
     }
-  }
+  )
 end
 
 def encoded_header(account = nil)
