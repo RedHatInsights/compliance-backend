@@ -22,10 +22,13 @@ RSpec.configure do |config|
   }
 end
 
-def autogenerate_examples(example)
-  example.metadata[:response][:examples] = {
-    'application/vnd.api+json' => JSON.parse(response.body,
-                                             symbolize_names: true)
+def autogenerate_examples(example, label = 'Response example', summary = '', description = '')
+  body = JSON.parse(response.body, symbolize_names: true)
+  content = { "#{label}": { value: body, summary: summary, description: description } }
+  example.metadata[:response][:content] = {
+    'application/json': {
+      examples: content
+    }
   }
 end
 
