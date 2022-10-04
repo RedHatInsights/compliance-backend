@@ -18,9 +18,12 @@ class RulePolicy < ApplicationPolicy
     def resolve
       return Rule.where('false') if user.account_id.blank?
 
-      Rule.includes(:profiles)
-          .where(profiles: { account: user.account_id })
-          .or(Rule.canonical)
+      # Due to the distinct, the rules have to be selected in a subquery.
+      # Otherwise the custom sorting by severity crashes.
+      rules = Rule.joins(:profiles)
+                  .where(profiles: { account: user.account_id })
+                  .or(Rule.canonical)
+      scope.where(id: rules)
     end
   end
 end

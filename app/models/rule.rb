@@ -70,7 +70,7 @@ class Rule < ApplicationRecord
   }
 
   scope :canonical, lambda {
-    includes(:profiles).where(profiles: { id: Profile.canonical })
+    joins(:profiles).where(profiles: { id: Profile.canonical })
   }
 
   scope :joins_identifier, lambda {
