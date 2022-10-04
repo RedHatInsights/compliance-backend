@@ -33,7 +33,7 @@ module V1
     end
 
     def includes
-      [profiles: :benchmark]
+      [profiles: :benchmark, rule_identifier: {}]
     end
 
     def search_by_id
