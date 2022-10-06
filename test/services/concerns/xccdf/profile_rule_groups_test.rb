@@ -33,7 +33,7 @@ module Xccdf
     end
 
     test 'saves profile rule groups only once' do
-      assert_difference('ProfileRuleGroup.count', 4) do
+      assert_difference('ProfileRuleGroup.count', 42) do
         save_profile_rule_groups
       end
 
@@ -52,12 +52,34 @@ module Xccdf
       )
       @profiles.first.update(rule_groups: [rule_group1, rule_group2])
 
-      assert_difference('ProfileRuleGroup.count', 2) do
+      assert_difference('ProfileRuleGroup.count', 40) do
         save_profile_rule_groups
       end
 
       assert_nil ProfileRuleGroup.find_by(rule_group: rule_group1, profile: @profiles.first)
       assert ProfileRuleGroup.find_by(rule_group: rule_group2, profile: @profiles.first)
+    end
+
+    test 'correctly associate selected rule groups with their profiles' do
+      save_profile_rule_groups
+
+      profile_id = Profile.find_by(ref_id: 'xccdf_org.ssgproject.content_profile_standard').id
+      op_profile = @op_profiles.select { |op| op.id == 'xccdf_org.ssgproject.content_profile_standard' }[0]
+      implicitly_selected_group_id = RuleGroup.find_by(
+        ref_id: 'xccdf_org.ssgproject.content_group_audit_unsuccessful_file_modification'
+      ).id
+      explicitly_selected_group_id = RuleGroup.find_by(
+        ref_id: 'xccdf_org.ssgproject.content_group_accounts-physical'
+      ).id
+      unselected_rg_ref_ids = op_profile.unselected_group_ids
+      selected_rg_ids = ProfileRuleGroup.where(profile_id: profile_id).map(&:rule_group_id)
+
+      assert_equal(unselected_rg_ref_ids.count + selected_rg_ids.count, @rule_groups.count)
+      assert_equal(selected_rg_ids.count, 42)
+      assert_equal(unselected_rg_ref_ids.count, 182)
+      assert_includes(selected_rg_ids, implicitly_selected_group_id)
+      assert_includes(selected_rg_ids, explicitly_selected_group_id)
+      assert_includes(unselected_rg_ref_ids, 'xccdf_org.ssgproject.content_group_snmp')
     end
   end
 end
