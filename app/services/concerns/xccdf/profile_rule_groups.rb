@@ -26,9 +26,10 @@ module Xccdf
       def profile_rule_groups
         @profile_rule_groups ||= @op_profiles.flat_map do |op_profile|
           profile_id = profile_id_for(ref_id: op_profile.id)
-          rule_group_ids_for(ref_ids: op_profile.selected_group_ids).map do |rule_group_id|
+          unselected_group_ids = rule_group_ids_for(ref_ids: op_profile.unselected_group_ids)
+          @rule_groups.reject { |rg| unselected_group_ids.include?(rg.id) }.map do |rg|
             ::ProfileRuleGroup.new(
-              profile_id: profile_id, rule_group_id: rule_group_id
+              profile_id: profile_id, rule_group_id: rg.id
             )
           end
         end
