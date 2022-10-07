@@ -20,6 +20,7 @@ class RuleResult < ApplicationRecord
                    uniqueness: { scope: %i[test_result_id host_id] }
 
   sortable_by :result
+  default_sort :host_id
 
   POSSIBLE_RESULTS = %w[pass fail error unknown notapplicable notchecked
                         notselected informational fixed].freeze
