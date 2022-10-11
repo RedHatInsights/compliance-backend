@@ -43,11 +43,6 @@ class Host < ApplicationRecord
     )
   }
 
-  scope :available_tags, lambda {
-    where.not(Arel.sql("tags = '[]'::jsonb"))
-         .where.not(Arel.sql("tags = '{}'::jsonb")).distinct.pluck(TAGS)
-  }
-
   def self.os_minor_versions(hosts)
     distinct.where(id: hosts).pluck(OS_MINOR_VERSION)
   end

@@ -733,7 +733,6 @@ type SystemConnection implements Node {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
-  tags: JSON!
   totalCount: Int!
 }
 

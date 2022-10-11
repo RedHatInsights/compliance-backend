@@ -639,38 +639,6 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_equal nodes.first['node']['id'], @host1.id
   end
 
-  should 'filtering by tags should not limit the available tags' do
-    query = <<-GRAPHQL
-      query getSystems($tags: [String!]) {
-        systems(tags: $tags) {
-          tags
-        }
-      }
-    GRAPHQL
-
-    WHost.find(@host1.id).update(
-      tags: [{ namespace: 'foo', key: 'bar', value: 'baz' }]
-    )
-
-    setup_two_hosts
-
-    WHost.find(@host2.id).update(
-      tags: [{ namespace: 'bar', key: 'baz', value: 'foo' }],
-      org_id: @host1.org_id
-    )
-
-    result = Schema.execute(
-      query,
-      variables: {
-        tags: ['foo/bar=baz']
-      },
-      context: { current_user: @user }
-    )
-
-    nodes = result['data']['systems']['tags']
-    assert_equal nodes.count, 2
-  end
-
   test 'query children profile only returns profiles owned by host' do
     query = <<-GRAPHQL
     query getSystems {
@@ -854,42 +822,6 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_equal(
       [{ 'name' => 'RHEL', 'major' => 7, 'minor' => 9 }],
       result.dig('systems', 'osVersions')
-    )
-  end
-
-  test 'available tags can be obtained on system query' do
-    query = <<-GRAPHQL
-    query getSystems($limit: Int) {
-        systems(limit: $limit) {
-            tags
-        }
-    }
-    GRAPHQL
-
-    setup_two_hosts
-
-    WHost.update(tags: [TAG])
-
-    result = Schema.execute(
-      query,
-      variables: { limit: 1 },
-      context: { current_user: @user }
-    )['data']
-
-    assert_equal_sets(
-      [TAG],
-      result.dig('systems', 'tags')
-    )
-
-    result = Schema.execute(
-      query,
-      variables: { limit: 1, offset: 2 },
-      context: { current_user: @user }
-    )['data']
-
-    assert_equal_sets(
-      [TAG],
-      result.dig('systems', 'tags')
     )
   end
 

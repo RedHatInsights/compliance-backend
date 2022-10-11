@@ -396,19 +396,6 @@ class HostTest < ActiveSupport::TestCase
     )
   end
 
-  test '#available_tags' do
-    FactoryBot.create(:host, org_id: @account.org_id, tags: [])
-    FactoryBot.create(:host, org_id: @account.org_id, tags: {})
-
-    assert_equal_sets(
-      [
-        { 'key' => 'foo', 'value' => '32', 'namespace' => 'insights-client' },
-        { 'key' => 'bar', 'value' => '7', 'namespace' => 'insights-client' }
-      ],
-      Host.available_tags
-    )
-  end
-
   should 'fail if a wrong operator is passed to filter_by_compliance_score' do
     assert_raises(ActiveRecord::StatementInvalid) do
       Host.filter_by_compliance_score(nil, '=\'\' or 1=1);--', 10)
