@@ -15,7 +15,7 @@ USER 0
 COPY ./Gemfile.lock ./Gemfile ./.gemrc.prod /opt/app-root/src/
 
 RUN microdnf install --nodocs -y $devDeps       && \
-    gem update bundler                          && \
+    gem install bundler -v 2.3.22               && \
     mv ./.gemrc.prod /etc/gemrc                 && \
     bundle config set --local without $without  && \
     bundle config set --local deployment 'true' && \
@@ -37,7 +37,7 @@ USER 0
 
 RUN rpm -e --nodeps tzdata             && \
     microdnf install --nodocs -y $deps && \
-    gem update bundler                 && \
+    gem install bundler -v 2.3.22      && \
     microdnf clean all -y              && \
     chown 1001:root ./                 && \
     install -v -d -m 1777 -o 1001 ./tmp ./log
