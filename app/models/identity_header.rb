@@ -10,12 +10,10 @@ class IdentityHeader
     @b64_identity = b64_identity
   end
 
-  def blank?
-    @b64_identity.blank?
-  end
+  delegate :present?, :blank?, to: :@b64_identity
 
   def valid?
-    identity.present? && entitled?
+    present? && entitled?
   end
 
   def content
