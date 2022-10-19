@@ -1,6 +1,7 @@
 # Metrics configuration
 Yabeda.configure do
   default_tag :application, 'compliance'
+  default_tag :org_id, nil
 end
 
 # Start the metrics server for sidekiq and racecar

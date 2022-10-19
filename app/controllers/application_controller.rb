@@ -31,6 +31,17 @@ class ApplicationController < ActionController::API
     Pundit.policy_scope(current_user, resource)
   end
 
+  # This method is being called before any before_action callbacks and it can set
+  # payload information for the metrics collector. As the User.current is not yet
+  # available at this moment, a short path to the org_id is being used to pass it
+  # to the payload if set.
+  #
+  # https://github.com/yabeda-rb/yabeda-rails#custom-tags
+  def append_info_to_payload(payload)
+    super
+    payload[:org_id] = identity_header.identity&.dig('org_id') if identity_header.present?
+  end
+
   rescue_from ActiveRecord::RecordNotUnique do |error|
     render_error "Duplicate record: #{error.message[/Key \(.+\).+\./]}",
                  status: :conflict
