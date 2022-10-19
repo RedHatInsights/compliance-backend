@@ -4034,6 +4034,34 @@ objects:
               "regex": "app-sre.*-prometheus",
               "skipUrlSync": false,
               "type": "datasource"
+            },
+            {
+              "current": {
+                "selected": true,
+                "text": "include",
+                "value": "1"
+              },
+              "hide": 0,
+              "includeAll": false,
+              "label": "QE",
+              "multi": false,
+              "name": "qe",
+              "options": [
+                {
+                  "selected": false,
+                  "text": "include",
+                  "value": "1"
+                },
+                {
+                  "selected": true,
+                  "text": "exclude",
+                  "value": "0"
+                }
+              ],
+              "query": "include : 1, exclude : 0",
+              "queryValue": "",
+              "skipUrlSync": false,
+              "type": "custom"
             }
           ]
         },
