@@ -726,194 +726,291 @@ objects:
             "type": "row"
           },
           {
-            "aliasColors": {
-              "304": "#64b0c8",
-              "400": "#c15c17",
-              "401": "#cca300",
-              "404": "#f4d598",
-              "500": "#bf1b00"
-            },
-            "bars": false,
-            "dashLength": 10,
-            "dashes": false,
-            "datasource": {
-              "uid": "$datasource"
-            },
-            "fieldConfig": {
-              "defaults": {
-                "links": []
-              },
-              "overrides": []
-            },
-            "fill": 1,
-            "fillGradient": 0,
+            "id": 10,
             "gridPos": {
               "h": 6,
               "w": 12,
               "x": 0,
               "y": 5
             },
-            "hiddenSeries": false,
-            "id": 10,
-            "interval": "",
-            "legend": {
-              "avg": false,
-              "current": false,
-              "max": false,
-              "min": false,
-              "show": true,
-              "total": false,
-              "values": false
+            "type": "timeseries",
+            "title": "Traffic",
+            "datasource": {
+              "uid": "$datasource",
+              "type": "prometheus"
             },
-            "lines": true,
-            "linewidth": 1,
-            "links": [],
-            "nullPointMode": "null",
-            "options": {
-              "alertThreshold": true
-            },
-            "percentage": false,
             "pluginVersion": "9.0.3",
-            "pointradius": 5,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [],
-            "spaceLength": 10,
-            "stack": false,
-            "steppedLine": false,
+            "links": [],
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "drawStyle": "line",
+                  "lineInterpolation": "linear",
+                  "barAlignment": 0,
+                  "lineWidth": 1,
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "spanNulls": false,
+                  "showPoints": "never",
+                  "pointSize": 5,
+                  "stacking": {
+                    "mode": "none",
+                    "group": "A"
+                  },
+                  "axisPlacement": "auto",
+                  "axisLabel": "per second",
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "hideFrom": {
+                    "tooltip": false,
+                    "viz": false,
+                    "legend": false
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "value": null,
+                      "color": "green"
+                    },
+                    {
+                      "value": 80,
+                      "color": "red"
+                    }
+                  ]
+                },
+                "links": [],
+                "unit": "short"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "304"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#64b0c8"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "400"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#c15c17"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "401"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#cca300"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "404"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#f4d598"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "500"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#bf1b00"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "tooltip": {
+                "mode": "multi",
+                "sort": "none"
+              },
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "calcs": []
+              }
+            },
             "targets": [
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(rate(rails_requests_total{application=\"compliance\",status=~\"[0-9]{3}\"}[$interval])) by (status)",
+                "expr": "sum(rate(rails_requests_total{application=\"compliance\",status=~\"[0-9]{3}\"}[$interval])) by (status)/$qe",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "{{status}}",
-                "refId": "A"
-              }
-            ],
-            "thresholds": [],
-            "timeRegions": [],
-            "title": "Traffic",
-            "tooltip": {
-              "shared": true,
-              "sort": 0,
-              "value_type": "individual"
-            },
-            "type": "graph",
-            "xaxis": {
-              "mode": "time",
-              "show": true,
-              "values": []
-            },
-            "yaxes": [
-              {
-                "format": "short",
-                "label": "per second",
-                "logBase": 1,
-                "show": true
+                "refId": "Total"
               },
               {
-                "format": "short",
-                "logBase": 1,
-                "show": true
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(rate(rails_requests_total{application=\"compliance\",status=~\"[0-9]{3}\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (status)/(-($qe - 1))",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "{{status}}",
+                "refId": "Excluding QE",
+                "hide": false
               }
             ],
-            "yaxis": {
-              "align": false
-            }
+            "interval": "",
+            "timeFrom": null,
+            "timeShift": null
           },
           {
-            "aliasColors": {},
-            "bars": false,
-            "dashLength": 10,
-            "dashes": false,
-            "datasource": {
-              "uid": "$datasource"
-            },
-            "fieldConfig": {
-              "defaults": {
-                "links": []
-              },
-              "overrides": []
-            },
-            "fill": 1,
-            "fillGradient": 0,
+            "id": 27,
             "gridPos": {
               "h": 6,
               "w": 12,
               "x": 12,
               "y": 5
             },
-            "hiddenSeries": false,
-            "id": 27,
-            "legend": {
-              "avg": false,
-              "current": false,
-              "max": false,
-              "min": false,
-              "show": false,
-              "total": false,
-              "values": false
+            "type": "timeseries",
+            "title": "Latency",
+            "datasource": {
+              "uid": "$datasource",
+              "type": "prometheus"
             },
-            "lines": true,
-            "linewidth": 1,
-            "links": [],
-            "nullPointMode": "null",
-            "options": {
-              "alertThreshold": true
-            },
-            "percentage": false,
             "pluginVersion": "9.0.3",
-            "pointradius": 5,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [],
-            "spaceLength": 10,
-            "stack": false,
-            "steppedLine": false,
+            "links": [],
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "drawStyle": "line",
+                  "lineInterpolation": "linear",
+                  "barAlignment": 0,
+                  "lineWidth": 1,
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "spanNulls": false,
+                  "showPoints": "never",
+                  "pointSize": 5,
+                  "stacking": {
+                    "mode": "none",
+                    "group": "A"
+                  },
+                  "axisPlacement": "auto",
+                  "axisLabel": "",
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "hideFrom": {
+                    "tooltip": false,
+                    "viz": false,
+                    "legend": false
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "value": null,
+                      "color": "green"
+                    },
+                    {
+                      "value": 80,
+                      "color": "red"
+                    }
+                  ]
+                },
+                "links": [],
+                "unit": "s"
+              },
+              "overrides": []
+            },
+            "options": {
+              "tooltip": {
+                "mode": "multi",
+                "sort": "none"
+              },
+              "legend": {
+                "displayMode": "hidden",
+                "placement": "bottom",
+                "calcs": []
+              }
+            },
             "targets": [
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(rate(rails_request_duration_seconds_sum{application=\"compliance\"}[$interval])) / sum(rate(rails_request_duration_seconds_count{application=\"compliance\"}[$interval]))",
+                "expr": "sum(rate(rails_request_duration_seconds_sum{application=\"compliance\"}[$interval])) / sum(rate(rails_request_duration_seconds_count{application=\"compliance\"}[$interval]))/$qe",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "",
-                "refId": "A"
-              }
-            ],
-            "thresholds": [],
-            "timeRegions": [],
-            "title": "Latency",
-            "tooltip": {
-              "shared": true,
-              "sort": 0,
-              "value_type": "individual"
-            },
-            "type": "graph",
-            "xaxis": {
-              "mode": "time",
-              "show": true,
-              "values": []
-            },
-            "yaxes": [
-              {
-                "format": "s",
-                "logBase": 1,
-                "show": true
+                "refId": "Total"
               },
               {
-                "format": "short",
-                "logBase": 1,
-                "show": true
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(rate(rails_request_duration_seconds_sum{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) / sum(rate(rails_request_duration_seconds_count{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval]))/(-($qe - 1))",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "",
+                "refId": "Excluding QE",
+                "hide": false
               }
             ],
-            "yaxis": {
-              "align": false
-            }
+            "timeFrom": null,
+            "timeShift": null
           },
           {
             "aliasColors": {},
@@ -1311,188 +1408,216 @@ objects:
             "timeShift": null
           },
           {
-            "aliasColors": {},
-            "bars": false,
-            "dashLength": 10,
-            "dashes": false,
-            "datasource": {
-              "uid": "$datasource"
-            },
-            "fieldConfig": {
-              "defaults": {
-                "links": []
-              },
-              "overrides": []
-            },
-            "fill": 1,
-            "fillGradient": 0,
+            "id": 36,
             "gridPos": {
               "h": 6,
               "w": 12,
               "x": 0,
               "y": 24
             },
-            "hiddenSeries": false,
-            "id": 36,
-            "legend": {
-              "avg": false,
-              "current": false,
-              "max": false,
-              "min": false,
-              "show": true,
-              "total": false,
-              "values": false
+            "type": "timeseries",
+            "title": "GraphQL Median Performance",
+            "datasource": {
+              "uid": "$datasource",
+              "type": "prometheus"
             },
-            "lines": true,
-            "linewidth": 1,
-            "links": [],
-            "nullPointMode": "null",
-            "options": {
-              "alertThreshold": true
-            },
-            "percentage": false,
             "pluginVersion": "9.0.3",
-            "pointradius": 2,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [],
-            "spaceLength": 10,
-            "stack": false,
-            "steppedLine": false,
+            "links": [],
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "drawStyle": "line",
+                  "lineInterpolation": "linear",
+                  "barAlignment": 0,
+                  "lineWidth": 1,
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "spanNulls": false,
+                  "showPoints": "never",
+                  "pointSize": 5,
+                  "stacking": {
+                    "mode": "none",
+                    "group": "A"
+                  },
+                  "axisPlacement": "auto",
+                  "axisLabel": "",
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "hideFrom": {
+                    "tooltip": false,
+                    "viz": false,
+                    "legend": false
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "value": null,
+                      "color": "green"
+                    },
+                    {
+                      "value": 80,
+                      "color": "red"
+                    }
+                  ]
+                },
+                "links": [],
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "tooltip": {
+                "mode": "multi",
+                "sort": "none"
+              },
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "calcs": []
+              }
+            },
             "targets": [
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "histogram_quantile(0.5, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))",
+                "expr": "histogram_quantile(0.5, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))/$qe",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
                 "legendFormat": "{{type}}.{{field}}",
-                "refId": "A"
-              }
-            ],
-            "thresholds": [],
-            "timeRegions": [],
-            "title": "GraphQL Median Performance",
-            "tooltip": {
-              "shared": true,
-              "sort": 0,
-              "value_type": "individual"
-            },
-            "type": "graph",
-            "xaxis": {
-              "mode": "time",
-              "show": true,
-              "values": []
-            },
-            "yaxes": [
-              {
-                "format": "short",
-                "logBase": 1,
-                "show": true
+                "refId": "Total"
               },
               {
-                "format": "short",
-                "logBase": 1,
-                "show": true
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "histogram_quantile(0.5, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (type,field,le))/(-($qe - 1))",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 10,
+                "legendFormat": "{{type}}.{{field}}",
+                "refId": "Excluding QE"
               }
             ],
-            "yaxis": {
-              "align": false
-            }
+            "timeFrom": null,
+            "timeShift": null
           },
           {
-            "aliasColors": {},
-            "bars": false,
-            "dashLength": 10,
-            "dashes": false,
-            "datasource": {
-              "uid": "$datasource"
-            },
-            "fieldConfig": {
-              "defaults": {
-                "links": []
-              },
-              "overrides": []
-            },
-            "fill": 1,
-            "fillGradient": 0,
+            "id": 56,
             "gridPos": {
               "h": 6,
               "w": 12,
               "x": 12,
               "y": 24
             },
-            "hiddenSeries": false,
-            "id": 56,
-            "legend": {
-              "avg": false,
-              "current": false,
-              "max": false,
-              "min": false,
-              "show": true,
-              "total": false,
-              "values": false
+            "type": "timeseries",
+            "title": "GraphQL 99th percentile performance",
+            "datasource": {
+              "uid": "$datasource",
+              "type": "prometheus"
             },
-            "lines": true,
-            "linewidth": 1,
-            "links": [],
-            "nullPointMode": "null",
-            "options": {
-              "alertThreshold": true
-            },
-            "percentage": false,
             "pluginVersion": "9.0.3",
-            "pointradius": 2,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [],
-            "spaceLength": 10,
-            "stack": false,
-            "steppedLine": false,
+            "links": [],
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "drawStyle": "line",
+                  "lineInterpolation": "linear",
+                  "barAlignment": 0,
+                  "lineWidth": 1,
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "spanNulls": false,
+                  "showPoints": "never",
+                  "pointSize": 5,
+                  "stacking": {
+                    "mode": "none",
+                    "group": "A"
+                  },
+                  "axisPlacement": "auto",
+                  "axisLabel": "",
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "hideFrom": {
+                    "tooltip": false,
+                    "viz": false,
+                    "legend": false
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "value": null,
+                      "color": "green"
+                    },
+                    {
+                      "value": 80,
+                      "color": "red"
+                    }
+                  ]
+                },
+                "links": [],
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "tooltip": {
+                "mode": "multi",
+                "sort": "none"
+              },
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "calcs": []
+              }
+            },
             "targets": [
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "histogram_quantile(0.99, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))",
+                "expr": "histogram_quantile(0.99, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))/$qe",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
                 "legendFormat": "{{type}}.{{field}}",
-                "refId": "A"
-              }
-            ],
-            "thresholds": [],
-            "timeRegions": [],
-            "title": "GraphQL 99th percentile performance",
-            "tooltip": {
-              "shared": true,
-              "sort": 0,
-              "value_type": "individual"
-            },
-            "type": "graph",
-            "xaxis": {
-              "mode": "time",
-              "show": true,
-              "values": []
-            },
-            "yaxes": [
-              {
-                "format": "short",
-                "logBase": 1,
-                "show": true
+                "refId": "Total"
               },
               {
-                "format": "short",
-                "logBase": 1,
-                "show": true
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "histogram_quantile(0.99, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (type,field,le))/(-($qe - 1))",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 10,
+                "legendFormat": "{{type}}.{{field}}",
+                "refId": "Excluding QE"
               }
             ],
-            "yaxis": {
-              "align": false
-            }
+            "timeFrom": null,
+            "timeShift": null
           },
           {
             "datasource": {
@@ -1577,12 +1702,24 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.5, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))/$qe",
                 "format": "time_series",
                 "intervalFactor": 10,
                 "legendFormat": "{{ controller }}#{{ action }}",
                 "range": true,
-                "refId": "A"
+                "refId": "Total"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "editorMode": "code",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "format": "time_series",
+                "intervalFactor": 10,
+                "legendFormat": "{{ controller }}#{{ action }}",
+                "range": true,
+                "refId": "Excluding QE"
               }
             ],
             "title": "Median Request Duration",
@@ -1671,13 +1808,26 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))/$qe",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
                 "legendFormat": "{{ controller }}#{{ action }}",
                 "range": true,
                 "refId": "Total"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "editorMode": "code",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 10,
+                "legendFormat": "{{ controller }}#{{ action }}",
+                "range": true,
+                "refId": "Excluding QE"
               }
             ],
             "title": "99th Percentile Request Duration",
@@ -1766,12 +1916,24 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.5, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))/$qe",
                 "format": "time_series",
                 "intervalFactor": 10,
                 "legendFormat": "{{ controller }}#{{ action }}",
                 "range": true,
-                "refId": "A"
+                "refId": "Total"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "editorMode": "code",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\"org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "format": "time_series",
+                "intervalFactor": 10,
+                "legendFormat": "{{ controller }}#{{ action }}",
+                "range": true,
+                "refId": "Excluding QE"
               }
             ],
             "title": "Median View Duration",
@@ -1860,13 +2022,26 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.99, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))/$qe",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
                 "legendFormat": "{{ controller }}#{{ action }}",
                 "range": true,
                 "refId": "Total"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "editorMode": "code",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 10,
+                "legendFormat": "{{ controller }}#{{ action }}",
+                "range": true,
+                "refId": "Excluding QE"
               }
             ],
             "title": "99th Percentile View Duration",
@@ -1955,13 +2130,26 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.5, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))/$qe",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
                 "legendFormat": "{{ controller }}#{{ action }}",
                 "range": true,
                 "refId": "Total"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "editorMode": "code",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 10,
+                "legendFormat": "{{ controller }}#{{ action }}",
+                "range": true,
+                "refId": "Excluding QE"
               }
             ],
             "title": "Median SQL Duration",
@@ -2050,13 +2238,26 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.99, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (le,controller,action))/$qe",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
                 "legendFormat": "{{ controller }}#{{ action }}",
                 "range": true,
                 "refId": "Total"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "editorMode": "code",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 10,
+                "legendFormat": "{{ controller }}#{{ action }}",
+                "range": true,
+                "refId": "Excluding QE"
               }
             ],
             "title": "99th Percentile SQL Duration",
