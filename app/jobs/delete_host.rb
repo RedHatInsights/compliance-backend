@@ -6,6 +6,11 @@ class DeleteHost
 
   MODELS = [RuleResult, TestResult, PolicyHost].freeze
 
+  # https://github.com/yabeda-rb/yabeda-sidekiq#custom-tags
+  def yabeda_tags(message, *_args)
+    { org_id: message['org_id'] }
+  end
+
   def perform(message)
     Rails.logger.audit_with_account(message['org_id']) do
       host_id = message['id']
