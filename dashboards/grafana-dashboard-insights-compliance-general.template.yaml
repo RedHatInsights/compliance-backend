@@ -2264,198 +2264,364 @@ objects:
             "type": "timeseries"
           },
           {
-            "aliasColors": {
-              "all": "#ba43a9",
-              "bugfix": "#ef843c",
-              "enhancement": "#9ac48a",
-              "security": "#e24d42",
-              "unknown": "#fce2de"
-            },
-            "bars": false,
-            "dashLength": 10,
-            "dashes": false,
-            "datasource": {
-              "uid": "$datasource"
-            },
-            "fieldConfig": {
-              "defaults": {
-                "links": []
-              },
-              "overrides": []
-            },
-            "fill": 1,
-            "fillGradient": 0,
+            "id": 42,
             "gridPos": {
               "h": 6,
               "w": 12,
               "x": 0,
               "y": 52
             },
-            "hiddenSeries": false,
-            "id": 42,
-            "legend": {
-              "avg": false,
-              "current": false,
-              "max": false,
-              "min": false,
-              "show": true,
-              "total": false,
-              "values": false
+            "type": "timeseries",
+            "title": "Sidekiq Job Duration",
+            "datasource": {
+              "uid": "$datasource",
+              "type": "prometheus"
             },
-            "lines": true,
-            "linewidth": 1,
-            "links": [],
-            "nullPointMode": "null",
-            "options": {
-              "alertThreshold": true
-            },
-            "percentage": false,
             "pluginVersion": "9.0.3",
-            "pointradius": 5,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [],
-            "spaceLength": 10,
-            "stack": false,
-            "steppedLine": false,
+            "links": [],
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "drawStyle": "line",
+                  "lineInterpolation": "linear",
+                  "barAlignment": 0,
+                  "lineWidth": 1,
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "spanNulls": false,
+                  "showPoints": "never",
+                  "pointSize": 5,
+                  "stacking": {
+                    "mode": "none",
+                    "group": "A"
+                  },
+                  "axisPlacement": "auto",
+                  "axisLabel": "",
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "hideFrom": {
+                    "tooltip": false,
+                    "viz": false,
+                    "legend": false
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "value": null,
+                      "color": "green"
+                    },
+                    {
+                      "value": 80,
+                      "color": "red"
+                    }
+                  ]
+                },
+                "links": [],
+                "unit": "s"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "all"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#ba43a9"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "bugfix"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#ef843c"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "enhancement"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#9ac48a"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "security"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#e24d42"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "unknown"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#fce2de"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "tooltip": {
+                "mode": "multi",
+                "sort": "none"
+              },
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "calcs": []
+              }
+            },
             "targets": [
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (worker)",
+                "expr": "sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (worker)/$qe",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "{{worker}}",
-                "refId": "A"
-              }
-            ],
-            "thresholds": [],
-            "timeRegions": [],
-            "title": "Sidekiq Job Duration",
-            "tooltip": {
-              "shared": true,
-              "sort": 0,
-              "value_type": "individual"
-            },
-            "type": "graph",
-            "xaxis": {
-              "mode": "time",
-              "show": true,
-              "values": []
-            },
-            "yaxes": [
-              {
-                "format": "s",
-                "logBase": 1,
-                "show": true
+                "refId": "Total"
               },
               {
-                "format": "short",
-                "logBase": 1,
-                "show": true
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (worker)/(-($qe - 1))",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "{{worker}}",
+                "refId": "Excluding QE",
+                "hide": false
               }
             ],
-            "yaxis": {
-              "align": false
-            }
+            "timeFrom": null,
+            "timeShift": null
           },
           {
-            "aliasColors": {
-              "all": "#ba43a9",
-              "bugfix": "#ef843c",
-              "enhancement": "#9ac48a",
-              "security": "#e24d42",
-              "unknown": "#fce2de"
-            },
-            "bars": false,
-            "dashLength": 10,
-            "dashes": false,
-            "datasource": {
-              "uid": "$datasource"
-            },
-            "fieldConfig": {
-              "defaults": {
-                "links": []
-              },
-              "overrides": []
-            },
-            "fill": 1,
-            "fillGradient": 0,
+            "id": 58,
             "gridPos": {
               "h": 6,
               "w": 12,
               "x": 12,
               "y": 52
             },
-            "hiddenSeries": false,
-            "id": 58,
-            "legend": {
-              "avg": false,
-              "current": false,
-              "max": false,
-              "min": false,
-              "show": true,
-              "total": false,
-              "values": false
+            "type": "timeseries",
+            "title": "Sidekiq Job Count",
+            "datasource": {
+              "uid": "$datasource",
+              "type": "prometheus"
             },
-            "lines": true,
-            "linewidth": 1,
-            "links": [],
-            "nullPointMode": "null",
-            "options": {
-              "alertThreshold": true
-            },
-            "percentage": false,
             "pluginVersion": "9.0.3",
-            "pointradius": 5,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [],
-            "spaceLength": 10,
-            "stack": false,
-            "steppedLine": false,
+            "links": [],
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "drawStyle": "line",
+                  "lineInterpolation": "linear",
+                  "barAlignment": 0,
+                  "lineWidth": 1,
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "spanNulls": false,
+                  "showPoints": "never",
+                  "pointSize": 5,
+                  "stacking": {
+                    "mode": "none",
+                    "group": "A"
+                  },
+                  "axisPlacement": "auto",
+                  "axisLabel": "",
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "hideFrom": {
+                    "tooltip": false,
+                    "viz": false,
+                    "legend": false
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "value": null,
+                      "color": "green"
+                    },
+                    {
+                      "value": 80,
+                      "color": "red"
+                    }
+                  ]
+                },
+                "links": [],
+                "unit": "short"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "all"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#ba43a9"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "bugfix"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#ef843c"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "enhancement"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#9ac48a"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "security"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#e24d42"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "unknown"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "fixed",
+                        "fixedColor": "#fce2de"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "tooltip": {
+                "mode": "multi",
+                "sort": "none"
+              },
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "calcs": []
+              }
+            },
             "targets": [
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\"}[$interval])) by (worker)",
+                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\"}[$interval])) by (worker)/$qe",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "{{worker}}",
-                "refId": "A"
-              }
-            ],
-            "thresholds": [],
-            "timeRegions": [],
-            "title": "Sidekiq Job Count",
-            "tooltip": {
-              "shared": true,
-              "sort": 0,
-              "value_type": "individual"
-            },
-            "type": "graph",
-            "xaxis": {
-              "mode": "time",
-              "show": true,
-              "values": []
-            },
-            "yaxes": [
-              {
-                "format": "short",
-                "logBase": 1,
-                "show": true
+                "refId": "Total"
               },
               {
-                "format": "short",
-                "logBase": 1,
-                "show": true
+                "datasource": {
+                  "uid": "$datasource",
+                  "type": "prometheus"
+                },
+                "refId": "Excluding QE",
+                "hide": false,
+                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (worker)/(-($qe - 1))"
               }
             ],
-            "yaxis": {
-              "align": false
-            }
+            "timeFrom": null,
+            "timeShift": null
           },
           {
             "aliasColors": {
@@ -4298,7 +4464,7 @@ objects:
         "timezone": "",
         "title": "Compliance",
         "uid": "compliance",
-        "version": 9,
+        "version": 10,
         "weekStart": ""
       }
   kind: ConfigMap
