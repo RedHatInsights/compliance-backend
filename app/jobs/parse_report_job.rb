@@ -7,6 +7,11 @@ class ParseReportJob
   include Sidekiq::Worker
   include Notifications
 
+  # https://github.com/yabeda-rb/yabeda-sidekiq#custom-tags
+  def yabeda_tags(_idx, message, *_args)
+    { org_id: message['org_id'] }
+  end
+
   def perform(idx, message)
     return if cancelled?
 
