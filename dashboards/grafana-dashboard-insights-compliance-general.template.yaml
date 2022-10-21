@@ -1821,7 +1821,7 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\"org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
@@ -1928,7 +1928,7 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.5, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\"org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
                 "format": "time_series",
                 "intervalFactor": 10,
                 "legendFormat": "{{ controller }}#{{ action }}",
