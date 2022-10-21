@@ -1,0 +1,407 @@
+{
+  "aliases": {},
+  "mappings": {
+    "dynamic": "false",
+    "properties": {
+      "account": {
+        "type": "keyword"
+      },
+      "ansible_host": {
+        "type": "keyword"
+      },
+      "canonical_facts": {
+        "properties": {
+          "fqdn": {
+            "type": "keyword",
+            "fields": {
+              "lowercase": {
+                "type": "keyword",
+                "normalizer": "case_insensitive"
+              }
+            }
+          },
+          "insights_id": {
+            "type": "keyword"
+          },
+          "provider_id": {
+            "type": "keyword"
+          },
+          "provider_type": {
+            "type": "keyword"
+          },
+          "satellite_id": {
+            "type": "keyword"
+          }
+        }
+      },
+      "created_on": {
+        "type": "date_nanos"
+      },
+      "display_name": {
+        "type": "keyword",
+        "fields": {
+          "lowercase": {
+            "type": "keyword",
+            "normalizer": "case_insensitive"
+          }
+        }
+      },
+      "id": {
+        "type": "keyword"
+      },
+      "ingest_timestamp": {
+        "type": "date"
+      },
+      "modified_on": {
+        "type": "date_nanos"
+      },
+      "org_id": {
+        "type": "keyword"
+      },
+      "per_reporter_staleness_flat": {
+        "type": "nested",
+        "properties": {
+          "check_in_succeeded": {
+            "type": "boolean"
+          },
+          "last_check_in": {
+            "type": "keyword"
+          },
+          "reporter": {
+            "type": "keyword"
+          },
+          "stale_timestamp": {
+            "type": "keyword"
+          }
+        }
+      },
+      "stale_timestamp": {
+        "type": "date_nanos"
+      },
+      "system_profile_facts": {
+        "properties": {
+          "ansible": {
+            "properties": {
+              "catalog_worker_version": {
+                "type": "keyword"
+              },
+              "controller_version": {
+                "type": "keyword"
+              },
+              "hub_version": {
+                "type": "keyword"
+              },
+              "sso_version": {
+                "type": "keyword"
+              }
+            }
+          },
+          "arch": {
+            "type": "keyword"
+          },
+          "bios_vendor": {
+            "type": "keyword"
+          },
+          "bios_version": {
+            "type": "keyword"
+          },
+          "captured_date": {
+            "type": "keyword"
+          },
+          "cloud_provider": {
+            "type": "keyword"
+          },
+          "cores_per_socket": {
+            "type": "integer"
+          },
+          "cpu_flags": {
+            "type": "keyword"
+          },
+          "cpu_model": {
+            "type": "keyword"
+          },
+          "disk_devices": {
+            "properties": {
+              "device": {
+                "type": "keyword"
+              },
+              "label": {
+                "type": "text"
+              },
+              "mount_point": {
+                "type": "keyword"
+              },
+              "type": {
+                "type": "keyword"
+              }
+            }
+          },
+          "dnf_modules": {
+            "properties": {
+              "name": {
+                "type": "keyword"
+              },
+              "stream": {
+                "type": "keyword"
+              }
+            }
+          },
+          "enabled_services": {
+            "type": "keyword"
+          },
+          "gpg_pubkeys": {
+            "type": "keyword"
+          },
+          "greenboot_fallback_detected": {
+            "type": "boolean"
+          },
+          "greenboot_status": {
+            "type": "keyword"
+          },
+          "host_type": {
+            "type": "keyword"
+          },
+          "infrastructure_type": {
+            "type": "keyword"
+          },
+          "infrastructure_vendor": {
+            "type": "keyword"
+          },
+          "insights_client_version": {
+            "type": "keyword"
+          },
+          "insights_egg_version": {
+            "type": "keyword"
+          },
+          "installed_packages": {
+            "type": "keyword"
+          },
+          "installed_products": {
+            "properties": {
+              "id": {
+                "type": "keyword"
+              },
+              "name": {
+                "type": "keyword"
+              },
+              "status": {
+                "type": "keyword"
+              }
+            }
+          },
+          "installed_services": {
+            "type": "keyword"
+          },
+          "is_marketplace": {
+            "type": "boolean"
+          },
+          "katello_agent_running": {
+            "type": "boolean"
+          },
+          "kernel_modules": {
+            "type": "keyword"
+          },
+          "last_boot_time": {
+            "type": "keyword"
+          },
+          "mssql": {
+            "properties": {
+              "version": {
+                "type": "keyword"
+              }
+            }
+          },
+          "network_interfaces": {
+            "properties": {
+              "ipv4_addresses": {
+                "type": "keyword"
+              },
+              "ipv6_addresses": {
+                "type": "keyword"
+              },
+              "mac_address": {
+                "type": "keyword"
+              },
+              "mtu": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "keyword"
+              },
+              "state": {
+                "type": "keyword"
+              },
+              "type": {
+                "type": "keyword"
+              }
+            }
+          },
+          "number_of_cpus": {
+            "type": "integer"
+          },
+          "number_of_sockets": {
+            "type": "integer"
+          },
+          "operating_system": {
+            "properties": {
+              "major": {
+                "type": "integer"
+              },
+              "minor": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "keyword"
+              }
+            }
+          },
+          "os_kernel_version": {
+            "type": "keyword"
+          },
+          "os_release": {
+            "type": "keyword"
+          },
+          "owner_id": {
+            "type": "keyword"
+          },
+          "rhc_client_id": {
+            "type": "keyword"
+          },
+          "rhc_config_state": {
+            "type": "keyword"
+          },
+          "rhsm": {
+            "properties": {
+              "version": {
+                "type": "keyword"
+              }
+            }
+          },
+          "rpm_ostree_deployments": {
+            "properties": {
+              "booted": {
+                "type": "boolean"
+              },
+              "checksum": {
+                "type": "keyword"
+              },
+              "id": {
+                "type": "keyword"
+              },
+              "origin": {
+                "type": "keyword"
+              },
+              "osname": {
+                "type": "keyword"
+              },
+              "pinned": {
+                "type": "boolean"
+              },
+              "version": {
+                "type": "keyword"
+              }
+            }
+          },
+          "sap_instance_number": {
+            "type": "keyword"
+          },
+          "sap_sids": {
+            "type": "keyword"
+          },
+          "sap_system": {
+            "type": "boolean"
+          },
+          "sap_version": {
+            "type": "keyword"
+          },
+          "satellite_managed": {
+            "type": "boolean"
+          },
+          "selinux_config_file": {
+            "type": "keyword"
+          },
+          "selinux_current_mode": {
+            "type": "keyword"
+          },
+          "subscription_auto_attach": {
+            "type": "keyword"
+          },
+          "subscription_status": {
+            "type": "keyword"
+          },
+          "system_memory_bytes": {
+            "type": "long"
+          },
+          "system_purpose": {
+            "properties": {
+              "role": {
+                "type": "keyword"
+              },
+              "sla": {
+                "type": "keyword"
+              },
+              "usage": {
+                "type": "keyword"
+              }
+            }
+          },
+          "tuned_profile": {
+            "type": "keyword"
+          }
+        }
+      },
+      "tags_search": {
+        "type": "keyword",
+        "fields": {
+          "lowercase": {
+            "type": "keyword",
+            "normalizer": "case_insensitive"
+          }
+        }
+      },
+      "tags_search_combined": {
+        "type": "keyword"
+      },
+      "tags_string": {
+        "type": "keyword"
+      },
+      "tags_structured": {
+        "type": "nested",
+        "properties": {
+          "key": {
+            "type": "keyword"
+          },
+          "namespace": {
+            "type": "keyword",
+            "null_value": "$$_XJOIN_SEARCH_NULL_VALUE"
+          },
+          "value": {
+            "type": "keyword",
+            "null_value": "$$_XJOIN_SEARCH_NULL_VALUE"
+          }
+        }
+      }
+    }
+  },
+  "settings": {
+    "index": {
+      "routing": {
+        "allocation": {
+          "include": {
+            "_tier_preference": "data_content"
+          }
+        }
+      },
+      "analysis": {
+        "normalizer": {
+          "case_insensitive": {
+            "filter": "lowercase"
+          }
+        }
+      },
+      "default_pipeline": "my-pipeline",
+      "number_of_shards": "1",
+      "number_of_replicas": "1"
+    }
+  }
+}

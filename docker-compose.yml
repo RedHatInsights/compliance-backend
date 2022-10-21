@@ -22,12 +22,21 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:32181
   createtopics:
     image: quay.io/cloudservices/cp-kafka
+    volumes:
+      - ./xjoin-config:/xjoin-config:Z
     depends_on:
       - kafka
+      - elasticsearch
+      - debezium
+      - xjoin
     links:
       - kafka
+      - elasticsearch
+      - debezium
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
-                       kafka-topics --create --if-not-exists --topic platform.upload.announce --bootstrap-server kafka:29092'"
+                       kafka-topics --create --if-not-exists --topic platform.upload.announce --bootstrap-server kafka:29092 && \
+                       kafka-topics --create --if-not-exists --topic platform.inventory.events --bootstrap-server kafka:29092 && \
+                       /xjoin-config/configure-xjoin.sh'"
   puptoo:
     image: quay.io/cloudservices/insights-puptoo:latest
     environment:
@@ -91,7 +100,7 @@ services:
     links:
       - kafka
   db:
-    image: docker.io/library/postgres
+    image: docker.io/debezium/postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: insights
@@ -156,6 +165,7 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - INVENTORY_LOG_LEVEL=ERROR
       - KAFKA_SECONDARY_TOPIC_ENABLED=True
+      - XJOIN_GRAPHQL_URL=http://xjoin:4000/graphql
     depends_on:
       - db
       - kafka
@@ -174,14 +184,70 @@ services:
       - INVENTORY_LOG_LEVEL=DEBUG
       - KAFKA_SECONDARY_TOPIC_ENABLED=True
       - LISTEN_PORT=8081
+      - XJOIN_GRAPHQL_URL=http://xjoin:4000/graphql
     ports:
       - 8081:8081
     depends_on:
       - db
       - kafka
+      - xjoin
     links:
       - db
       - kafka
+      - xjoin
+  debezium:
+    image: quay.io/cloudservices/xjoin-kafka-connect-strimzi
+    restart: always
+    entrypoint: /opt/kafka/kafka_connect_run.sh
+    volumes:
+      - ./xjoin-config/log4j.properties/:/opt/kafka/custom-config/log4j.properties:Z
+    environment:
+      - KAFKA_CONNECT_BOOTSTRAP_SERVERS=kafka:29092
+      - KAFKA_CONNECT_METRICS_ENABLED=false
+      - STRIMZI_KAFKA_GC_LOG_ENABLED=false
+      - |
+        KAFKA_CONNECT_CONFIGURATION=
+        offset.storage.topic=connect-cluster-offsets
+        value.converter=org.apache.kafka.connect.json.JsonConverter
+        config.storage.topic=connect-cluster-configs
+        key.converter=org.apache.kafka.connect.json.JsonConverter
+        group.id=connect-cluster
+        status.storage.topic=connect-cluster-status
+        config.storage.replication.factor=1
+        connector.client.config.override.policy=All
+        offset.storage.replication.factor=1
+        status.storage.replication.factor=1
+    depends_on:
+      - kafka
+      - db
+      - inventory
+    ports:
+      - 8083:8083
+  elasticsearch:
+    restart: always
+    image: docker.io/library/elasticsearch:7.10.1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - cluster.routing.allocation.disk.threshold_enabled=false
+  xjoin:
+    image: quay.io/cloudservices/xjoin-search:3c3f8b0
+    restart: always
+    environment:
+      - LOG_LEVEL=debug
+      - LOG_PRETTY=false
+      - NODE_ENV=development
+      - ES_NODES=http://elasticsearch:9200
+      - HOSTS_INDEX=xjoin.inventory
+    ports:
+      - 4000:4000
+    depends_on:
+      - elasticsearch
+      - debezium
   compliance-ssg:
     image: quay.io/cloudservices/compliance-ssg
     restart: on-failure

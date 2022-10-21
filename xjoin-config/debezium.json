@@ -1,0 +1,20 @@
+{
+    "name": "xjoin.inventory.db",
+    "config": {
+      "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+      "errors.log.include.messages": "true",
+      "database.dbname": "insights",
+      "database.user": "insights",
+      "transforms.unwrap.delete.handling.mode": "rewrite",
+      "slot.name": "xjoin_inventory",
+      "transforms": "unwrap",
+      "database.server.name": "xjoin.inventory",
+      "database.port": "5432",
+      "table.include.list": "public.hosts",
+      "database.hostname": "db-host-inventory",
+      "database.password": "insights",
+      "name": "xjoin.inventory.db",
+      "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+      "errors.log.enable": "true"
+    }
+}
