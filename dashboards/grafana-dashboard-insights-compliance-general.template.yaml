@@ -4369,8 +4369,8 @@ objects:
             {
               "current": {
                 "selected": true,
-                "text": "crcp01ue1-prometheus",
-                "value": "crcp01ue1-prometheus"
+                "text": "${DEFAULT_DATASOURCE}",
+                "value": "${DEFAULT_DATASOURCE}"
               },
               "hide": 0,
               "includeAll": false,
@@ -4387,8 +4387,8 @@ objects:
               "current": {
                 "selected": true,
                 "tags": [],
-                "text": "app-sre-prod-01-prometheus",
-                "value": "app-sre-prod-01-prometheus"
+                "text": "${DEFAULT_RDS_DATASOURCE}",
+                "value": "${DEFAULT_RDS_DATASOURCE}"
               },
               "hide": 0,
               "includeAll": false,
@@ -4477,4 +4477,10 @@ objects:
 parameters:
 - name: QE_ACCOUNTS
   description: A pipe separated list of account org_ids
+  required: true
+- name: DEFAULT_DATASOURCE
+  description: The default (pre-selected) value of the datasource field
+  required: true
+- name: DEFAULT_RDS_DATASOURCE
+  description: The default (pre-selected) value of the rds_datasource field
   required: true
