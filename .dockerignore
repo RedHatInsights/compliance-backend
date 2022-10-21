@@ -5,3 +5,4 @@ coverage/
 scap-security-guide-*
 log/
 tmp/
+xjoin-config
