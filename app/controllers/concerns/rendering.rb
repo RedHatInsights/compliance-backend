@@ -6,7 +6,7 @@ module Rendering
 
   included do
     def render_json(model, **args)
-      model = model.includes(includes) if index? && includes
+      model = model.includes(includes).references(includes) if index? && includes
       render({ json: serializer.new(model, serializer_opts) }.merge(args))
     end
 
