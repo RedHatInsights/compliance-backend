@@ -39,7 +39,10 @@ class ApplicationController < ActionController::API
   # https://github.com/yabeda-rb/yabeda-rails#custom-tags
   def append_info_to_payload(payload)
     super
-    payload[:org_id] = identity_header.identity&.dig('org_id') if identity_header.present?
+
+    return if identity_header.blank?
+
+    payload[:qe] = OpenshiftEnvironment.qe_account?(identity_header.identity&.dig('org_id'))
   end
 
   rescue_from ActiveRecord::RecordNotUnique do |error|

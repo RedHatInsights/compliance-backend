@@ -8,7 +8,7 @@ class DeleteHost
 
   # https://github.com/yabeda-rb/yabeda-sidekiq#custom-tags
   def yabeda_tags(message, *_args)
-    { org_id: message['org_id'] }
+    { qe: OpenshiftEnvironment.qe_account?(message['org_id']) }
   end
 
   def perform(message)
