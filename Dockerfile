@@ -40,6 +40,7 @@ RUN rpm -e --nodeps tzdata             && \
     gem install bundler -v 2.3.22      && \
     microdnf clean all -y              && \
     chown 1001:root ./                 && \
+    chmod +t /tmp                      && \
     install -v -d -m 1777 -o 1001 ./tmp ./log
 
 
