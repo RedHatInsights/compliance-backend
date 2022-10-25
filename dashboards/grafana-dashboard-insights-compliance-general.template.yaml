@@ -133,7 +133,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
+                "expr": "sum(increase(rails_requests_total{application=\"compliance\"}[$__range])) * $qe + sum(increase(rails_requests_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$__range])) * (-($qe - 1))",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "",
@@ -214,7 +214,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(increase(rails_requests_total{application=\"compliance\",status=~\"2.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
+                "expr": "((sum(increase(rails_requests_total{application=\"compliance\",status=~\"2.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) * $qe + (sum(increase(rails_requests_total{application=\"compliance\",status=~\"2.*\",org_id!~\"${QE_ACCOUNTS}\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$__range]))) * (-($qe - 1)))  OR on() vector(0)",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "refId": "A"
@@ -294,7 +294,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "(sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) OR on() vector(0)",
+                "expr": "((sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) * $qe + (sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\",org_id!~\"${QE_ACCOUNTS}\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$__range]))) * (-($qe - 1)))  OR on() vector(0)",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "refId": "A"
@@ -374,7 +374,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(increase(rails_requests_total{application=\"compliance\",status=~\"4.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))",
+                "expr": "((sum(increase(rails_requests_total{application=\"compliance\",status=~\"4.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) * $qe + (sum(increase(rails_requests_total{application=\"compliance\",status=~\"4.*\",org_id!~\"${QE_ACCOUNTS}\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$__range]))) * (-($qe - 1)))  OR on() vector(0)",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "refId": "A"
