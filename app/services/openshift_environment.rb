@@ -23,6 +23,13 @@ module OpenshiftEnvironment
       ENV['NAMESPACE']
     end
 
+    def qe_account?(org_id)
+      qe_accounts = ENV.fetch('QE_ACCOUNTS', nil)
+      return 0 if qe_accounts || org_id.nil?
+
+      org_id.scan(/^(#{qe_accounts})$/).size
+    end
+
     def summary
       {
         environment: environment,

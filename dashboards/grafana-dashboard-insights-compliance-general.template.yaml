@@ -133,7 +133,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(increase(rails_requests_total{application=\"compliance\"}[$__range])) * $qe + sum(increase(rails_requests_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$__range])) * (-($qe - 1))",
+                "expr": "sum(increase(rails_requests_total{application=\"compliance\"}[$__range])) * $qe + sum(increase(rails_requests_total{application=\"compliance\",qe!=\"1\"}[$__range])) * (-($qe - 1))",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "",
@@ -214,7 +214,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "((sum(increase(rails_requests_total{application=\"compliance\",status=~\"2.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) * $qe + (sum(increase(rails_requests_total{application=\"compliance\",status=~\"2.*\",org_id!~\"${QE_ACCOUNTS}\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$__range]))) * (-($qe - 1)))  OR on() vector(0)",
+                "expr": "((sum(increase(rails_requests_total{application=\"compliance\",status=~\"2.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) * $qe + (sum(increase(rails_requests_total{application=\"compliance\",status=~\"2.*\",qe!=\"1\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\",qe!=\"1\"}[$__range]))) * (-($qe - 1)))  OR on() vector(0)",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "refId": "A"
@@ -294,7 +294,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "((sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) * $qe + (sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\",org_id!~\"${QE_ACCOUNTS}\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$__range]))) * (-($qe - 1)))  OR on() vector(0)",
+                "expr": "((sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) * $qe + (sum(increase(rails_requests_total{application=\"compliance\",status=~\"5.*\",qe!=\"1\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\",qe!=\"1\"}[$__range]))) * (-($qe - 1)))  OR on() vector(0)",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "refId": "A"
@@ -374,7 +374,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "((sum(increase(rails_requests_total{application=\"compliance\",status=~\"4.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) * $qe + (sum(increase(rails_requests_total{application=\"compliance\",status=~\"4.*\",org_id!~\"${QE_ACCOUNTS}\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$__range]))) * (-($qe - 1)))  OR on() vector(0)",
+                "expr": "((sum(increase(rails_requests_total{application=\"compliance\",status=~\"4.*\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\"}[$__range]))) * $qe + (sum(increase(rails_requests_total{application=\"compliance\",status=~\"4.*\",qe!=\"1\"}[$__range])) / sum(increase(rails_requests_total{application=\"compliance\",qe!=\"1\"}[$__range]))) * (-($qe - 1)))  OR on() vector(0)",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "refId": "A"
@@ -895,7 +895,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(rate(rails_requests_total{application=\"compliance\",status=~\"[0-9]{3}\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (status)/(-($qe - 1))",
+                "expr": "sum(rate(rails_requests_total{application=\"compliance\",status=~\"[0-9]{3}\",qe!=\"1\"}[$interval])) by (status)/(-($qe - 1))",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "{{status}}",
@@ -1001,7 +1001,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(rate(rails_request_duration_seconds_sum{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) / sum(rate(rails_request_duration_seconds_count{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval]))/(-($qe - 1))",
+                "expr": "sum(rate(rails_request_duration_seconds_sum{application=\"compliance\",qe!=\"1\"}[$interval])) / sum(rate(rails_request_duration_seconds_count{application=\"compliance\",qe!=\"1\"}[$interval]))/(-($qe - 1))",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "",
@@ -1502,7 +1502,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "histogram_quantile(0.5, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (type,field,le))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.5, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (type,field,le))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
@@ -1608,7 +1608,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "histogram_quantile(0.99, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (type,field,le))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.99, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (type,field,le))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
@@ -1714,7 +1714,7 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.5, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
                 "format": "time_series",
                 "intervalFactor": 10,
                 "legendFormat": "{{ controller }}#{{ action }}",
@@ -1821,7 +1821,7 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
@@ -1928,7 +1928,7 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.5, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
                 "format": "time_series",
                 "intervalFactor": 10,
                 "legendFormat": "{{ controller }}#{{ action }}",
@@ -2035,7 +2035,7 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.99, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_view_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
@@ -2143,7 +2143,7 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.5, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
@@ -2251,7 +2251,7 @@ objects:
                   "uid": "$datasource"
                 },
                 "editorMode": "code",
-                "expr": "histogram_quantile(0.99, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_db_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (le,controller,action))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
@@ -2433,7 +2433,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (worker)/(-($qe - 1))",
+                "expr": "sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (worker)/(-($qe - 1))",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "{{worker}}",
@@ -2617,7 +2617,7 @@ objects:
                 },
                 "refId": "Excluding QE",
                 "hide": false,
-                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",org_id!~\"${QE_ACCOUNTS}\"}[$interval])) by (worker)/(-($qe - 1))"
+                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",qe!=\"1\"}[$interval])) by (worker)/(-($qe - 1))"
               }
             ],
             "timeFrom": null,
@@ -4464,7 +4464,7 @@ objects:
         "timezone": "",
         "title": "Compliance",
         "uid": "compliance",
-        "version": 10,
+        "version": 11,
         "weekStart": ""
       }
   kind: ConfigMap
@@ -4475,9 +4475,6 @@ objects:
     annotations:
       grafana-folder: /grafana-dashboard-definitions/Insights
 parameters:
-- name: QE_ACCOUNTS
-  description: A pipe separated list of account org_ids
-  required: true
 - name: DEFAULT_DATASOURCE
   description: The default (pre-selected) value of the datasource field
   required: true
