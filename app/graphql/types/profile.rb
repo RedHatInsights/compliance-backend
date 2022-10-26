@@ -125,7 +125,7 @@ module Types
 
     def latest_test_result_batch(args)
       ::RecordLoader.for(::TestResult, column: :host_id, where: { profile_id: object.id },
-                                       includes: :rule_results, order: 'created_at DESC').load(system_id(args))
+                                       order: 'created_at DESC').load(system_id(args))
     end
   end
 end
