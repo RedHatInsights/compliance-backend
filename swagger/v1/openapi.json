@@ -118,13 +118,13 @@
                     "value": {
                       "data": [
                         {
-                          "id": "2b1ca944-e3f5-4db5-9a02-d208e3c7be51",
+                          "id": "05378a1c-095d-4229-9e12-091a5ee19c36",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Quibusdam dolor enim qui.",
+                            "title": "Facilis reprehenderit dolor quibusdam.",
                             "version": "100.0.2",
-                            "description": "Et odit voluptatem. Qui ut rerum. In repellat delectus.",
+                            "description": "Consectetur qui explicabo. Magni laborum distinctio. Ad molestiae ex.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -132,11 +132,11 @@
                             "rules": {
                               "data": [
                                 {
-                                  "id": "c1716535-083f-47d2-8571-d903ca2d2c7d",
+                                  "id": "8fcdef25-b196-48a4-b04d-c700f6a4196f",
                                   "type": "rule"
                                 },
                                 {
-                                  "id": "ed2105b4-39de-4741-9b16-f6ad8aa0b420",
+                                  "id": "befe83d4-6c85-4c5c-896d-00c3a380f7d4",
                                   "type": "rule"
                                 }
                               ]
@@ -144,7 +144,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "2f729461-da9a-424b-b9df-795606989f5b",
+                                  "id": "7b59a93d-972e-4338-b6cb-9992b2f0b6e5",
                                   "type": "profile"
                                 }
                               ]
@@ -152,13 +152,13 @@
                           }
                         },
                         {
-                          "id": "4f7f0739-15c7-4455-8b0d-4b9a9992d25e",
+                          "id": "68c18893-7816-446f-9b19-6ae672155cfd",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Ex explicabo dolores enim.",
+                            "title": "Ipsam quo aut a.",
                             "version": "100.0.1",
-                            "description": "Aut placeat ut. Sunt sed ad. Corporis a labore.",
+                            "description": "Vel numquam ut. Nihil iure est. Ea quas voluptatem.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -166,11 +166,11 @@
                             "rules": {
                               "data": [
                                 {
-                                  "id": "59fd3509-bbdd-4e95-9f61-00fd0782f97b",
+                                  "id": "4ec5daca-60f0-4a84-a788-b5e663615854",
                                   "type": "rule"
                                 },
                                 {
-                                  "id": "a112eaea-2db0-43e5-8755-3fce685131aa",
+                                  "id": "9759a1eb-0216-425c-8537-c7dab5899b22",
                                   "type": "rule"
                                 }
                               ]
@@ -178,7 +178,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "1cf7030e-5a14-42a9-8f46-731266b33da3",
+                                  "id": "2ec41f7c-ea6b-4cbe-8bc3-39f9bb860b04",
                                   "type": "profile"
                                 }
                               ]
@@ -301,13 +301,13 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "48a58c5d-f0f1-403a-a20a-51d5c2d36701",
+                        "id": "7ebe07e8-5030-47bf-96f8-eda11cb751f8",
                         "type": "benchmark",
                         "attributes": {
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Sint itaque odit numquam.",
+                          "title": "Minus quae soluta laudantium.",
                           "version": "100.0.4",
-                          "description": "Similique at sed. Repudiandae et iure. Est qui vero.",
+                          "description": "Et vel et. Non et vitae. Nulla non ad.",
                           "os_major_version": "7",
                           "latest_supported_os_minor_versions": []
                         },
@@ -315,43 +315,43 @@
                           "rules": {
                             "data": [
                               {
-                                "id": "18f96f37-4c50-4ced-b3c2-385ef799e095",
+                                "id": "6db9d2b7-7863-4dcb-8c9d-f25af98de0c0",
                                 "type": "rule"
                               },
                               {
-                                "id": "c4022823-8bcb-4ee5-946b-1ad2eb7c91dd",
+                                "id": "abce4d3a-4de2-4732-8331-1d45be215d31",
                                 "type": "rule"
                               },
                               {
-                                "id": "a9356d82-afe5-49aa-b492-3390b7c0635b",
+                                "id": "8a1c1494-bdd5-4447-91de-eb04921798df",
                                 "type": "rule"
                               },
                               {
-                                "id": "024caca7-c738-4d40-9b48-2152e9a86022",
+                                "id": "4aed8844-b0ca-46cc-86ae-37759d063e64",
                                 "type": "rule"
                               },
                               {
-                                "id": "838e430b-cc71-49df-b281-63a53f105683",
+                                "id": "41ab36ab-6d37-4c79-9e22-afa14b6e0509",
                                 "type": "rule"
                               },
                               {
-                                "id": "a3d63720-138d-411a-b352-3a9115f6088d",
+                                "id": "12cca449-0fb0-4a9d-a72d-1e315adc6833",
                                 "type": "rule"
                               },
                               {
-                                "id": "58df7d3a-aa16-423b-9b73-93e029524d53",
+                                "id": "40e79123-2ced-400c-8d1a-58a14c154165",
                                 "type": "rule"
                               },
                               {
-                                "id": "fd176de8-91eb-4dad-a5d8-5b0e46df2022",
+                                "id": "8e40aff0-a0fd-4599-b8d0-31f15558f642",
                                 "type": "rule"
                               },
                               {
-                                "id": "18a1151b-9ccc-4dc7-bc45-9908eeae31be",
+                                "id": "078b0e50-02cc-4c9d-845b-e5accbbe938d",
                                 "type": "rule"
                               },
                               {
-                                "id": "4ebcb9fa-b4be-4872-9f0f-530d49c07748",
+                                "id": "e6440b72-52f4-44f9-8e9f-98ca7f60dc79",
                                 "type": "rule"
                               }
                             ]
@@ -359,11 +359,11 @@
                           "profiles": {
                             "data": [
                               {
-                                "id": "5a6d40dd-2191-4709-ba44-32da5293966d",
+                                "id": "4f60e818-1de8-417e-830f-498504b164f4",
                                 "type": "profile"
                               },
                               {
-                                "id": "a53055f7-7366-442d-91c8-b049211c6281",
+                                "id": "3607bd30-d7b9-4c12-bded-78492c9fd115",
                                 "type": "profile"
                               }
                             ]
@@ -520,16 +520,16 @@
                     "value": {
                       "data": [
                         {
-                          "id": "47eb9edb-fa6e-4fcc-8097-855090fe7467",
+                          "id": "c11b93e0-7762-4783-9bdc-3a11e45ecabd",
                           "type": "business_objective",
                           "attributes": {
-                            "title": "Et et et incidunt."
+                            "title": "Aut aut libero odit."
                           },
                           "relationships": {
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "f09d0346-6e4d-4f86-a9ca-42ed14733215",
+                                  "id": "c33a83af-6234-4d29-b4a5-933f1eca753d",
                                   "type": "profile"
                                 }
                               ]
@@ -537,16 +537,16 @@
                           }
                         },
                         {
-                          "id": "8027ffb6-ae43-49b6-966a-5b8b4080c6f2",
+                          "id": "a5e71190-c70c-4283-935e-bc27d57c0d7f",
                           "type": "business_objective",
                           "attributes": {
-                            "title": "Qui possimus vel sit."
+                            "title": "Non et et repellat."
                           },
                           "relationships": {
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "a4198cc7-6df4-4c9c-9eda-c6c71c492c4d",
+                                  "id": "191f01f0-5d96-4904-9561-2982dab9e081",
                                   "type": "profile"
                                 }
                               ]
@@ -667,16 +667,16 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "f26e6406-b8ea-45da-a071-144ded6a1b74",
+                        "id": "d76bbde7-501a-4ba9-9e01-51520370e413",
                         "type": "business_objective",
                         "attributes": {
-                          "title": "Doloribus ut enim architecto."
+                          "title": "Maiores eum quia cumque."
                         },
                         "relationships": {
                           "profiles": {
                             "data": [
                               {
-                                "id": "6bd85671-439a-4977-b35f-7b55e16c35a2",
+                                "id": "c228cb23-b5ff-40ce-8570-f5507806be2b",
                                 "type": "profile"
                               }
                             ]
@@ -839,10 +839,10 @@
                     "value": {
                       "data": [
                         {
-                          "id": "0457c60e-ef17-4711-bee9-2e8c941c42c9",
+                          "id": "a86c7efc-ca51-4db6-8f17-75f00b352508",
                           "type": "profile",
                           "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_profile_1d12c12d-5c03-48b7-9de4-394a67396438",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_cc16551d-0eed-4d9e-ab40-abbb1f79e942",
                             "score": 0.42,
                             "parent_profile_id": null,
                             "external": false,
@@ -870,7 +870,7 @@
                             },
                             "benchmark": {
                               "data": {
-                                "id": "0552c6a2-ddbb-48f0-93cf-f5eafb291619",
+                                "id": "1650c8f8-ec07-41ea-a432-dc5f650fe380",
                                 "type": "benchmark"
                               }
                             },
@@ -883,7 +883,7 @@
                             "hosts": {
                               "data": [
                                 {
-                                  "id": "70e75034-8440-460d-aff3-9e3c21c2ebf3",
+                                  "id": "abcdff90-628d-4d56-8c26-e8540f1a9e55",
                                   "type": "host"
                                 }
                               ]
@@ -891,7 +891,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "58a51d8b-62af-4482-8c67-0e91ad204438",
+                                  "id": "92a03891-689e-4bf6-a5f7-83d4be806377",
                                   "type": "test_result"
                                 }
                               ]
@@ -899,10 +899,10 @@
                           }
                         },
                         {
-                          "id": "f00e6aa1-137a-4ba4-b3a1-0fc7f5075662",
+                          "id": "aeccf5ce-7ada-4b8a-9ae1-62d34b4dc63c",
                           "type": "profile",
                           "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_profile_903436dd-563e-450d-b06f-4d63fd75ee23",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_af63e3f8-13d5-41b8-ad35-43cee6547011",
                             "score": 0.68,
                             "parent_profile_id": null,
                             "external": false,
@@ -912,8 +912,8 @@
                             "policy_profile_id": null,
                             "os_minor_version": "",
                             "parent_profile_ref_id": null,
-                            "name": "Est et ipsam iusto.",
-                            "description": "Ex quisquam laudantium. Omnis consequatur quia. Dolor est ea.",
+                            "name": "Ipsam pariatur inventore voluptatum.",
+                            "description": "Non velit consequatur. Qui beatae cupiditate. Voluptas quis nesciunt.",
                             "canonical": true,
                             "tailored": false,
                             "total_host_count": 0,
@@ -922,7 +922,7 @@
                             "test_result_host_count": 0,
                             "unsupported_host_count": 0,
                             "business_objective": null,
-                            "policy_type": "Est et ipsam iusto."
+                            "policy_type": "Ipsam pariatur inventore voluptatum."
                           },
                           "relationships": {
                             "account": {
@@ -930,7 +930,7 @@
                             },
                             "benchmark": {
                               "data": {
-                                "id": "0f8f5033-fc2c-409f-9acb-2392ff5fa9c5",
+                                "id": "743b8d80-6339-4537-9f2e-2b8b838c64da",
                                 "type": "benchmark"
                               }
                             },
@@ -943,7 +943,7 @@
                             "hosts": {
                               "data": [
                                 {
-                                  "id": "70e75034-8440-460d-aff3-9e3c21c2ebf3",
+                                  "id": "abcdff90-628d-4d56-8c26-e8540f1a9e55",
                                   "type": "host"
                                 }
                               ]
@@ -951,7 +951,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "9d9179d9-91b9-4d23-ab09-531320f2c2d3",
+                                  "id": "ea177ffd-182d-4cda-a047-4781a4901a8a",
                                   "type": "test_result"
                                 }
                               ]
@@ -1038,19 +1038,19 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "2dd992ba-3283-4049-8a0d-67c0564b43df",
+                        "id": "85483018-0017-45f1-bbeb-9e0eaa462d9e",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_6bc6fc2f-995e-4eab-b29d-237145f4537c",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_a1d33bcc-51de-4238-8301-6b39a842218a",
                           "score": 0.0,
-                          "parent_profile_id": "ff4da7de-3ad1-422c-ad4b-9d6f35d5dfdb",
+                          "parent_profile_id": "ee073e10-1712-4287-af3f-4fd4ef4441c5",
                           "external": false,
                           "compliance_threshold": 93.5,
                           "os_major_version": "7",
                           "os_version": "7",
-                          "policy_profile_id": "2dd992ba-3283-4049-8a0d-67c0564b43df",
+                          "policy_profile_id": "85483018-0017-45f1-bbeb-9e0eaa462d9e",
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_6bc6fc2f-995e-4eab-b29d-237145f4537c",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_a1d33bcc-51de-4238-8301-6b39a842218a",
                           "name": "A custom name",
                           "description": "Canonical (Generated) Profile",
                           "canonical": false,
@@ -1066,30 +1066,30 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "8249d0eb-3e74-418b-8b7c-e877eb9df4fa",
+                              "id": "4912b0ed-afbb-41be-8284-b1bfcfd817de",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "7b3f291b-f5ce-4cd1-9e0e-520a3f2ea330",
+                              "id": "b3e041c0-c0a9-491d-9e9c-ac344850bb46",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "ff4da7de-3ad1-422c-ad4b-9d6f35d5dfdb",
+                              "id": "ee073e10-1712-4287-af3f-4fd4ef4441c5",
                               "type": "profile"
                             }
                           },
                           "rules": {
                             "data": [
                               {
-                                "id": "3f97da39-da01-4c27-8dfa-7ad96af04168",
+                                "id": "69805727-35c9-40ab-b65d-3fb357eacf81",
                                 "type": "rule"
                               },
                               {
-                                "id": "17ae3336-48e9-4983-a589-56be77781117",
+                                "id": "1e829a6d-dbd8-42e6-aa94-4db4c736bf38",
                                 "type": "rule"
                               }
                             ]
@@ -1097,11 +1097,11 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "f7f6e2b2-5dc2-4014-a160-532af764a7c5",
+                                "id": "4cb5dd89-a198-42b7-96ef-278efa2f7259",
                                 "type": "host"
                               },
                               {
-                                "id": "df881f8e-1319-404d-a551-032ef1b57d8c",
+                                "id": "483f5c64-0dea-48dd-9ab6-d27d932c71ca",
                                 "type": "host"
                               }
                             ]
@@ -1275,10 +1275,10 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "35be66f1-8d01-4df7-8586-bb183a855357",
+                        "id": "cadc988c-062e-44f6-8c53-8b83786e1e81",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_97151b23-aa1b-4929-9d76-2d2dc83807a5",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_454534ab-7b13-4001-bacb-98b7bc159792",
                           "score": 0.42,
                           "parent_profile_id": null,
                           "external": false,
@@ -1303,13 +1303,13 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "55fb319b-7a41-474c-806b-d5f717f27e3d",
+                              "id": "37197952-dbdb-4619-9b15-a7de6f15189c",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "72b3a6aa-2469-4015-b5da-9b9efcb18ac0",
+                              "id": "339b0ea6-1037-49b0-86d9-1a0d1b711b15",
                               "type": "benchmark"
                             }
                           },
@@ -1322,7 +1322,7 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "6cf9952b-15ea-48fd-af96-bb4c29a058d4",
+                                "id": "7b2e0c08-9511-4fa7-adeb-e1f19dd4cb33",
                                 "type": "host"
                               }
                             ]
@@ -1330,7 +1330,7 @@
                           "test_results": {
                             "data": [
                               {
-                                "id": "6198ccf9-a747-4608-93fe-5c66a876405e",
+                                "id": "a6e5c130-98f4-45f8-87f1-c637352b7a06",
                                 "type": "test_result"
                               }
                             ]
@@ -1339,13 +1339,13 @@
                       },
                       "included": [
                         {
-                          "id": "72b3a6aa-2469-4015-b5da-9b9efcb18ac0",
+                          "id": "339b0ea6-1037-49b0-86d9-1a0d1b711b15",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Culpa omnis cumque distinctio.",
+                            "title": "Adipisci minus temporibus id.",
                             "version": "100.0.19",
-                            "description": "Rerum vel tempore. Qui error architecto. Explicabo porro recusandae.",
+                            "description": "Enim minus repellendus. Amet debitis velit. Ratione modi corporis.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -1477,19 +1477,19 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "f4ee3f40-8ea5-4215-8dab-1719c638b142",
+                        "id": "82fa2f29-591f-47e6-bd98-04eab7828d35",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_50079822-5a63-4d6a-8c22-61bc4c4b8184",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_aa102f05-9330-4501-aab4-ee52d8612e43",
                           "score": 0.0,
-                          "parent_profile_id": "e3ffef6b-6ce7-4c03-bf99-e40603320427",
+                          "parent_profile_id": "aea1551d-5f2a-488a-b78a-77da521d5f63",
                           "external": false,
                           "compliance_threshold": 93.5,
                           "os_major_version": "7",
                           "os_version": "7",
-                          "policy_profile_id": "f4ee3f40-8ea5-4215-8dab-1719c638b142",
+                          "policy_profile_id": "82fa2f29-591f-47e6-bd98-04eab7828d35",
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_e8218cc0-feef-40e5-9ada-cb3446963e3f",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_c3d568da-16b1-4d08-b0fc-9fa798717eba",
                           "name": "Policy for Profile",
                           "description": "An updated custom description",
                           "canonical": false,
@@ -1505,42 +1505,42 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "99dce39b-8315-4548-9808-ec98c6cda244",
+                              "id": "88b502dc-dc96-4493-869a-ba2929d93893",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "4873c6b2-cd70-486d-a133-aed5671d6a8d",
+                              "id": "c97de6e6-daa7-43b4-bb00-bd9403976799",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "e3ffef6b-6ce7-4c03-bf99-e40603320427",
+                              "id": "aea1551d-5f2a-488a-b78a-77da521d5f63",
                               "type": "profile"
                             }
                           },
                           "rules": {
                             "data": [
                               {
-                                "id": "d2d98994-7df6-4f06-9f00-c7daa7f97907",
+                                "id": "310c06cb-e806-458c-91ec-15ab8abd398b",
                                 "type": "rule"
                               },
                               {
-                                "id": "b7201d89-7ca0-47d8-aaef-01bbbbf5f565",
+                                "id": "517c36d8-c8c6-4ebc-ab88-e1d66bfd0829",
                                 "type": "rule"
                               },
                               {
-                                "id": "368f0f38-9e60-4bce-838d-6c938cbab9e7",
+                                "id": "41c50bfe-5f86-4544-8e16-b0aeaa8e17ea",
                                 "type": "rule"
                               },
                               {
-                                "id": "7e748959-1746-4579-9e1a-5b2261a9319e",
+                                "id": "233d5eae-e6f4-470e-b70f-737ea8db6871",
                                 "type": "rule"
                               },
                               {
-                                "id": "977f053e-7458-4abe-9d32-8152c3bd6aa1",
+                                "id": "7172834d-bba5-4420-824a-5df58316ac6c",
                                 "type": "rule"
                               }
                             ]
@@ -1548,11 +1548,11 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "61b84e28-ad5c-4eab-b488-c65524e6c920",
+                                "id": "0109dfab-64bc-4af0-a80c-8dc6b9f4dadc",
                                 "type": "host"
                               },
                               {
-                                "id": "0067b915-5db5-4ec8-93ca-862cf76c9f96",
+                                "id": "ddfbcd99-be52-4076-b712-49068dac85cc",
                                 "type": "host"
                               }
                             ]
@@ -1730,21 +1730,21 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "379ff70f-7bfe-4e25-a91b-166ca29755af",
+                        "id": "66c48b01-2638-4a7a-8c97-a9e51e4ca483",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_9ca0b199-1abb-40e9-a1b7-bfcdea60f4e4",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_c13e95af-3b58-4e3d-b2f2-4067a593a705",
                           "score": 0.0,
-                          "parent_profile_id": "7a8a2be7-d265-4f24-a142-a6627ea45a4c",
+                          "parent_profile_id": "18bcd27b-95ba-4e99-801b-d4ceb39a761f",
                           "external": false,
                           "compliance_threshold": 100.0,
                           "os_major_version": "7",
                           "os_version": "7",
                           "policy_profile_id": null,
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_9ca0b199-1abb-40e9-a1b7-bfcdea60f4e4",
-                          "name": "Dicta qui ea earum.",
-                          "description": "Fugiat doloribus rerum. Ex omnis sunt. Totam nesciunt ipsam.",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_c13e95af-3b58-4e3d-b2f2-4067a593a705",
+                          "name": "Rem et id blanditiis.",
+                          "description": "Repudiandae dolores provident. Et quia fugit. Voluptatem ea dolor.",
                           "canonical": false,
                           "tailored": false,
                           "total_host_count": 0,
@@ -1753,24 +1753,24 @@
                           "test_result_host_count": 0,
                           "unsupported_host_count": 0,
                           "business_objective": null,
-                          "policy_type": "Modi eveniet est inventore."
+                          "policy_type": "Aliquid sapiente delectus aut."
                         },
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "dcedf5ec-0377-47a2-ab95-268697201fe7",
+                              "id": "6b2c98e8-48ab-4544-a50c-2f4f6d8e3548",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "779c8b64-9148-42f1-8976-4418a5e6e33a",
+                              "id": "54f63f3b-5801-42d6-b219-d919ca904d5f",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "7a8a2be7-d265-4f24-a142-a6627ea45a4c",
+                              "id": "18bcd27b-95ba-4e99-801b-d4ceb39a761f",
                               "type": "profile"
                             }
                           },
@@ -1935,7 +1935,7 @@
                     "value": {
                       "data": [
                         {
-                          "id": "7f395841-6933-475f-981b-73849e0a0b53",
+                          "id": "b70999e2-abc3-46fd-9e26-6bd918bbac9d",
                           "type": "rule_result",
                           "attributes": {
                             "result": "pass"
@@ -1943,13 +1943,13 @@
                           "relationships": {
                             "host": {
                               "data": {
-                                "id": "91279e1d-6e32-4b70-821a-7f847971aa8f",
+                                "id": "ffebf71c-b81f-4fbb-8dd9-eaa1ab143108",
                                 "type": "host"
                               }
                             },
                             "rule": {
                               "data": {
-                                "id": "80f05675-9b96-454a-8e28-0f7c492cfb9e",
+                                "id": "b633aae6-30b4-4b47-b35f-bfd3ed6955e6",
                                 "type": "rule"
                               }
                             }
@@ -2128,33 +2128,33 @@
                     "value": {
                       "data": [
                         {
-                          "id": "8a39a186-861f-44ba-a56a-9a6268eb61b7",
+                          "id": "f56dd796-03df-4d86-baa6-eeb0c045bf18",
                           "type": "rule",
                           "attributes": {
-                            "ref_id": "foo_rule_7246d332-52a6-497b-82d7-a8a8a34dfd6c",
+                            "ref_id": "foo_rule_2e00d7e4-cfa5-44b1-a6d7-012f4b0896ea",
                             "remediation_issue_id": null,
-                            "title": "Est rerum et exercitationem.",
-                            "rationale": "Neque dolore eum. Corrupti ullam possimus. Ipsum fuga provident.",
-                            "description": "Impedit voluptas unde. Reprehenderit necessitatibus eligendi. In facere totam.",
-                            "severity": "low",
-                            "slug": "foo_rule_7246d332-52a6-497b-82d7-a8a8a34dfd6c",
+                            "title": "Illum ut ab quas.",
+                            "rationale": "Molestias quia sapiente. Et qui voluptate. Quia eaque est.",
+                            "description": "Aut ut autem. Voluptatum maiores quaerat. Nemo debitis harum.",
+                            "severity": "high",
+                            "slug": "foo_rule_2e00d7e4-cfa5-44b1-a6d7-012f4b0896ea",
                             "precedence": 1
                           },
                           "relationships": {
                             "benchmark": {
                               "data": {
-                                "id": "cc7a4abb-d507-4b2d-9890-7fd6ddef85f6",
+                                "id": "aed592d3-4294-4c1d-8b15-5eff54909658",
                                 "type": "benchmark"
                               }
                             },
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "7f232943-df15-4c2e-b89e-2d1d5c369e63",
+                                  "id": "1a930476-0aa2-4f16-b3f7-6aaacf7165de",
                                   "type": "profile"
                                 },
                                 {
-                                  "id": "200be7f9-326d-4a25-b9d9-5f18da90f5bf",
+                                  "id": "5ce7b64e-45be-4533-9f5e-5e959bcc2997",
                                   "type": "profile"
                                 }
                               ]
@@ -2263,7 +2263,7 @@
                   "Response example": {
                     "value": {
                       "errors": [
-                        "Rule not found with ID b88ba00c-f1fa-4d0a-9246-3c851e5e6a34"
+                        "Rule not found with ID 1fd64bc3-9fca-41ce-a2e3-def5bf62cf0e"
                       ]
                     },
                     "summary": "",
@@ -2281,33 +2281,33 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "2c8a09f5-17f7-4329-b8f5-da8df0980267",
+                        "id": "b3fa066e-2d17-447b-854c-9ae74862211a",
                         "type": "rule",
                         "attributes": {
-                          "ref_id": "foo_rule_d3251ad8-232e-4414-ab0c-595f19f262e5",
+                          "ref_id": "foo_rule_d27ae113-33a7-4f85-8d98-fb1be14b9fb1",
                           "remediation_issue_id": null,
-                          "title": "Delectus facilis illum sed.",
-                          "rationale": "Aliquid itaque at. Sit voluptatem amet. Iure placeat neque.",
-                          "description": "Soluta quia repellendus. Culpa reiciendis exercitationem. Dicta consequuntur eligendi.",
+                          "title": "Soluta beatae excepturi commodi.",
+                          "rationale": "Quidem necessitatibus omnis. Sint ad sint. Exercitationem unde numquam.",
+                          "description": "Dolore explicabo sequi. Eligendi quis fuga. Labore eius nemo.",
                           "severity": "medium",
-                          "slug": "foo_rule_d3251ad8-232e-4414-ab0c-595f19f262e5",
+                          "slug": "foo_rule_d27ae113-33a7-4f85-8d98-fb1be14b9fb1",
                           "precedence": 1
                         },
                         "relationships": {
                           "benchmark": {
                             "data": {
-                              "id": "97a60e37-17b1-44b7-a526-7294b9cba65a",
+                              "id": "fbc88dda-2ca3-42a5-998b-a21cdfa107e9",
                               "type": "benchmark"
                             }
                           },
                           "profiles": {
                             "data": [
                               {
-                                "id": "11e0952d-9145-4941-9b72-2540baee6f19",
+                                "id": "7923631b-eefa-4d76-a998-bee66d958ad3",
                                 "type": "profile"
                               },
                               {
-                                "id": "89c1f61d-c5fc-43a1-91ab-19d7181894d4",
+                                "id": "9fb0789e-c312-433e-9022-c78d5d600f10",
                                 "type": "profile"
                               }
                             ]
@@ -3041,7 +3041,7 @@
             "in": "query",
             "required": false,
             "type": "array",
-            "description": "An array of tags to narrow down the results against.",
+            "description": "An array of tags to narrow down the results against. The namespace, key and value are concatenated using `/` and `=` symbols. In case the values contain symbols used for separators, `/` is replaced with `%2F`, `=` is replaced with `%3D`.<br><br>e.g.: `namespace/key=value`, `insights-client/selinux-config=SELINUX%3Denforcing`",
             "schema": {
               "type": "array",
               "items": {
@@ -3116,20 +3116,20 @@
                     "value": {
                       "data": [
                         {
-                          "id": "aea98ff6-ff51-4232-822f-a03800a37d3f",
+                          "id": "f9c5c317-5b79-4047-871f-bc61645bac22",
                           "type": "host",
                           "attributes": {
-                            "name": "cole-torp.name",
+                            "name": "schmitt.co",
                             "os_major_version": 7,
                             "os_minor_version": 9,
-                            "last_scanned": "2022-09-26T06:56:53Z",
+                            "last_scanned": "2022-10-28T12:04:12Z",
                             "rules_passed": 0,
                             "rules_failed": 0,
                             "has_policy": true,
-                            "culled_timestamp": "2032-10-10T06:56:53Z",
-                            "stale_timestamp": "2032-09-26T06:56:53Z",
-                            "stale_warning_timestamp": "2032-10-03T06:56:53Z",
-                            "updated": "2022-09-26T06:56:53Z",
+                            "culled_timestamp": "2032-11-11T12:04:12Z",
+                            "stale_timestamp": "2032-10-28T12:04:12Z",
+                            "stale_warning_timestamp": "2032-11-04T12:04:12Z",
+                            "updated": "2022-10-28T12:04:12Z",
                             "insights_id": null,
                             "compliant": false
                           },
@@ -3137,7 +3137,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "1a274e02-22f8-4be5-a711-741694c1d6c1",
+                                  "id": "98a27bd5-42ce-48d9-81b8-b9d8303be31d",
                                   "type": "test_result"
                                 }
                               ]
@@ -3145,7 +3145,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "2917e107-8987-4e33-acb7-106d1a7357dd",
+                                  "id": "36bac871-289b-4774-8074-cf746aeaa833",
                                   "type": "profile"
                                 }
                               ]
@@ -3272,20 +3272,20 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "1458af6c-8b07-47c1-9296-e4ce537af4f4",
+                        "id": "b10c5672-bbb9-4e74-9f27-4c3f1c1fd324",
                         "type": "host",
                         "attributes": {
-                          "name": "hamill-robel.biz",
+                          "name": "rice.biz",
                           "os_major_version": 7,
                           "os_minor_version": 9,
-                          "last_scanned": "2022-09-26T06:56:54Z",
+                          "last_scanned": "2022-10-28T12:04:12Z",
                           "rules_passed": 0,
                           "rules_failed": 0,
                           "has_policy": true,
-                          "culled_timestamp": "2032-10-10T06:56:54Z",
-                          "stale_timestamp": "2032-09-26T06:56:54Z",
-                          "stale_warning_timestamp": "2032-10-03T06:56:54Z",
-                          "updated": "2022-09-26T06:56:54Z",
+                          "culled_timestamp": "2032-11-11T12:04:12Z",
+                          "stale_timestamp": "2032-10-28T12:04:12Z",
+                          "stale_warning_timestamp": "2032-11-04T12:04:12Z",
+                          "updated": "2022-10-28T12:04:12Z",
                           "insights_id": null,
                           "compliant": false
                         },
@@ -3293,7 +3293,7 @@
                           "test_results": {
                             "data": [
                               {
-                                "id": "72f9d06f-1232-4bac-9d34-8b157a7f9857",
+                                "id": "294ad547-f416-4776-9076-208fc859effd",
                                 "type": "test_result"
                               }
                             ]
@@ -3301,7 +3301,7 @@
                           "profiles": {
                             "data": [
                               {
-                                "id": "b28f800d-83aa-4ccb-bf49-41fc7a525cd3",
+                                "id": "0a5797c9-671d-48fc-9edc-5be28e45a64b",
                                 "type": "profile"
                               }
                             ]
