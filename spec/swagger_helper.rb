@@ -97,7 +97,11 @@ end
 
 def tags_params
   parameter name: :tags, in: :query, required: false, type: :array,
-            description: 'An array of tags to narrow down the results against.',
+            description: 'An array of tags to narrow down the results against. ' \
+            'The namespace, key and value are concatenated using `/` and `=` symbols. ' \
+            'In case the values contain symbols used for separators, `/` is replaced with `%2F`, ' \
+            '`=` is replaced with `%3D`.<br><br>' \
+            'e.g.: `namespace/key=value`, `insights-client/selinux-config=SELINUX%3Denforcing`',
             schema: { type: :array, items: { type: 'string' }, default: '' }
 end
 
