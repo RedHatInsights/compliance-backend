@@ -2423,7 +2423,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (worker)/$qe",
+                "expr": "(sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (worker))/$qe",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "{{worker}}",
@@ -2433,7 +2433,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (worker)/(-($qe - 1))",
+                "expr": "(sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (worker))/(-($qe - 1))",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "{{worker}}",
