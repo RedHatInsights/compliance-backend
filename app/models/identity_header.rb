@@ -33,6 +33,10 @@ class IdentityHeader
     @b64_identity
   end
 
+  def org_id
+    identity&.dig('org_id')
+  end
+
   # rubocop:disable Naming/PredicateName
   def is_internal
     identity&.dig('user', 'is_internal')

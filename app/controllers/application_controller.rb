@@ -42,7 +42,7 @@ class ApplicationController < ActionController::API
 
     return if identity_header.blank?
 
-    payload[:qe] = OpenshiftEnvironment.qe_account?(identity_header.identity&.dig('org_id'))
+    payload[:qe] = OpenshiftEnvironment.qe_account?(identity_header.org_id)
   end
 
   rescue_from ActiveRecord::RecordNotUnique do |error|
