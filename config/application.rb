@@ -42,6 +42,12 @@ module ComplianceBackend
     config.api_only = true
     config.active_job.queue_adapter = :sidekiq
 
+    # Tag log messages with org_id when available
+    config.log_tags = [
+      :request_id,
+      -> request { IdentityHeader.from_request(request)&.org_id }
+    ]
+
     # Attach audit logging for requests
     require 'audit_log/audit_log'
     config.middleware.use Insights::API::Common::AuditLog::Middleware

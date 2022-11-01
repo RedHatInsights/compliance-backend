@@ -6,6 +6,10 @@ require 'base64'
 class IdentityHeader
   CERT_AUTH = 'cert-auth'
 
+  def self.from_request(request)
+    new(request.headers['X-RH-IDENTITY']) if request.headers['X-RH-IDENTITY']
+  end
+
   def initialize(b64_identity)
     @b64_identity = b64_identity
   end
