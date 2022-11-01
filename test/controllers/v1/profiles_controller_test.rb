@@ -382,6 +382,7 @@ module V1
         FactoryBot.create(:profile, name: 'foo')
         FactoryBot.create(
           :profile,
+          name: 'bar',
           policy: FactoryBot.create(:policy, name: 'bar')
         )
 
