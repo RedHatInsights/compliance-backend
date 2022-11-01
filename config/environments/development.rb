@@ -63,6 +63,8 @@ Rails.application.configure do
     config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 64.megabytes)
   end
 
+  config.logger = ActiveSupport::TaggedLogging.new(config.logger)
+
   # Enable sessions in development for Sidekiq WebUI access
   config.session_store :cookie_store, key: '_compliance_session'
   config.middleware.use ActionDispatch::Cookies
