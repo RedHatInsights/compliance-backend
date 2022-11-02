@@ -63,6 +63,8 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
   test 'tailoring the list of rules via selectedRules' do
     tailored_rules = @parent.rules.sample(2).map(&:ref_id)
 
+    assert_audited_success 'Created policy'
+    assert_audited_success 'Updated tailoring of profile', "#{tailored_rules.count} rules added", '0 rules removed'
     result = Schema.execute(
       QUERY,
       variables: { input: {
@@ -83,9 +85,5 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
     assert_equal Set.new(cloned_profile.rules),
                  Set.new(Rule.where(ref_id: tailored_rules))
     assert_equal cloned_profile.parent_profile, @parent
-    assert_audited 'Created policy'
-    assert_audited 'Updated tailoring of profile'
-    assert_audited "#{tailored_rules.count} rules added"
-    assert_audited '0 rules removed'
   end
 end

@@ -17,10 +17,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       '"id": "fe314be5-4091-412d-85f6-00cc68fc001b", '\
       '"timestamp": "2019-05-13 21:18:15.797921"}'
     ).at_least_once
+    assert_audited_success('Enqueued DeleteHost job for host fe314be5-4091-412d-85f6-00cc68fc001b')
     @consumer.process(@message)
     assert_equal 1, DeleteHost.jobs.size
-    assert_audited 'Enqueued DeleteHost job for host'
-    assert_audited 'fe314be5-4091-412d-85f6-00cc68fc001b'
   end
 
   test 'if message is delete, and enqueue for deletion fails' do
@@ -31,10 +30,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     ).at_least_once
     DeleteHost.stubs(:perform_async).raises(:StandardError)
     assert_raises StandardError do
+      assert_audited_fail 'Failed to enqueue DeleteHost job for host fe314be5-4091-412d-85f6-00cc68fc001b:'
       @consumer.process(@message)
     end
-    assert_audited 'Failed to enqueue DeleteHost'
-    assert_audited 'fe314be5-4091-412d-85f6-00cc68fc001b'
   end
 
   test 'if message is not known, no job is enqueued' do
@@ -136,9 +134,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         topic: Settings.kafka_producer_topics.upload_validation
       )
 
+      assert_audited_success 'Enqueued report parsing of profileid'
       @consumer.process(@message)
       assert_equal 1, ParseReportJob.jobs.size
-      assert_audited 'Enqueued report parsing of profileid'
     end
 
     should 'pass ssl_only to reports downloader' do
@@ -195,9 +193,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         topic: Settings.kafka_producer_topics.upload_validation
       )
 
+      assert_audited_fail 'Failed to dowload report'
       @consumer.process(@message)
       assert_equal 0, ParseReportJob.jobs.size
-      assert_audited 'Failed to dowload report'
     end
 
     should 'not emit notification when host was deleted' do
@@ -226,9 +224,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         topic: Settings.kafka_producer_topics.upload_validation
       )
 
+      assert_audited_fail 'Failed to dowload report'
       @consumer.process(@message)
       assert_equal 0, ParseReportJob.jobs.size
-      assert_audited 'Failed to dowload report'
     end
 
     should 'not parse reports when validation fails' do
@@ -261,9 +259,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         topic: Settings.kafka_producer_topics.upload_validation
       )
 
+      assert_audited_fail 'Invalid Report'
       @consumer.process(@message)
       assert_equal 0, ParseReportJob.jobs.size
-      assert_audited 'Invalid Report'
     end
 
     should 'not parse reports if the entitlement check fails' do
@@ -297,9 +295,9 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         topic: Settings.kafka_producer_topics.upload_validation
       )
 
+      assert_audited_fail 'Rejected report'
       @consumer.process(@message)
       assert_equal 0, ParseReportJob.jobs.size
-      assert_audited 'Rejected report'
     end
 
     should 'notify payload tracker when a report is received' do
@@ -330,8 +328,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
         topic: Settings.kafka_producer_topics.upload_validation
       )
 
+      assert_audited_success 'Enqueued report parsing of profileid'
       @consumer.process(@message)
-      assert_audited 'Enqueued report parsing of profileid'
     end
 
     should 'handle db errors and db clear connections' do

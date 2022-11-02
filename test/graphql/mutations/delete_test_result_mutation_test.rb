@@ -35,6 +35,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
 
   test 'delete a test result keeps the profile if part of a policy' do
     @profile.update(external: true)
+    assert_audited_success 'Removed all user scoped test results', 'of policy', @profile.policy.id
     assert_difference('TestResult.count', -1) do
       assert_difference('Profile.count', 0) do
         result = Schema.execute(
@@ -48,9 +49,6 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
         assert_equal @tr.id, result.dig('testResults', 0, 'id')
       end
     end
-    assert_audited 'Removed all user scoped test results'
-    assert_audited 'of policy'
-    assert_audited @profile.policy.id
   end
 
   test 'delete test results from initial policy profile deletes all results'\
@@ -67,6 +65,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
     profile2.policy.update(hosts: [@host, host2])
     FactoryBot.create(:test_result, profile: profile2, host: host2)
 
+    assert_audited_success 'Removed all user scoped test results', 'of policy', @profile.policy.id
     assert_difference('TestResult.count', -2) do
       assert_difference('Profile.count', 0) do
         result = Schema.execute(
@@ -80,8 +79,5 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
         assert_includes result.dig('testResults').map { |tr| tr['id'] }, @tr.id
       end
     end
-    assert_audited 'Removed all user scoped test results'
-    assert_audited 'of policy'
-    assert_audited @profile.policy.id
   end
 end

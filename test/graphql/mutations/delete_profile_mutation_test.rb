@@ -20,6 +20,8 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
   GRAPHQL
 
   test 'delete a profile provided an ID' do
+    assert_audited_success 'Removed profile', @profile.id
+    assert_audited_success('Autoremoved policy').twice
     assert_difference('Profile.count', -1) do
       result = Schema.execute(
         QUERY,
@@ -30,8 +32,6 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
       )['data']['deleteProfile']['profile']
       assert_equal @profile.id, result['id']
     end
-    assert_audited 'Removed profile'
-    assert_audited @profile.id
   end
 
   test 'deleting internal profile detroys its policy with profiles' do
@@ -42,6 +42,9 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
       external: true
     )
 
+    assert_audited_success 'Removed profile', @profile.id
+    assert_audited_success 'Autoremoved policy', @profile.policy.id, 'with the initial/main profile'
+    assert_audited_success 'Autoremoved policy', 'with the last profile'
     assert_difference('Profile.count' => -2, 'Policy.count' => -1) do
       result = Schema.execute(
         QUERY,
@@ -52,11 +55,6 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
       )['data']['deleteProfile']['profile']
       assert_equal @profile.id, result['id']
     end
-    assert_audited 'Removed profile'
-    assert_audited @profile.id
-    assert_audited @profile.policy.id
-    assert_audited 'Autoremoved policy'
-    assert_audited 'with the initial/main profile'
   end
 
   test 'deleting other policy profile keeps policy and its profiles' do
@@ -67,6 +65,7 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
       external: true
     )
 
+    assert_audited_success 'Removed profile', @profile.policy.id
     assert_difference('Profile.count' => -1, 'Policy.count' => 0) do
       result = Schema.execute(
         QUERY,
@@ -77,8 +76,6 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
       )['data']['deleteProfile']['profile']
       assert_equal second.id, result['id']
     end
-    assert_audited 'Removed profile'
-    assert_audited @profile.policy.id
   end
 
   context 'unauthorized user' do

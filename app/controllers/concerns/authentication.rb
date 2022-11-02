@@ -68,9 +68,6 @@ module Authentication
 
   def set_authenticated_user
     User.current = user
-    Insights::API::Common::AuditLog.audit_with_account(
-      current_user.org_id
-    )
   end
 
   def valid_cert_endpoint?

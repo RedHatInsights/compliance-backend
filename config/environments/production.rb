@@ -95,10 +95,12 @@ Rails.application.configure do
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
+  require 'logger_with_audit'
   if ENV['RAILS_LOG_TO_STDOUT'].present?
-    config.logger       = ActiveSupport::Logger.new(STDOUT)
-    logger.formatter    = config.log_formatter
-    config.audit_logger = Logger.new(STDOUT)
+    config.logger       = Insights::API::Common::LoggerWithAudit.new(STDOUT)
+    config.logger.formatter    = config.log_formatter
+  else
+    config.logger = Insights::API::Common::LoggerWithAudit(config.paths['log'].first)
   end
   config.logger = ActiveSupport::TaggedLogging.new(config.logger)
 

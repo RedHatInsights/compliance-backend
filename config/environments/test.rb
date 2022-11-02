@@ -61,8 +61,8 @@ Rails.application.configure do
   config.active_support.disallowed_deprecation_warnings = []
 
   # Disable logging
-  config.logger = ActiveSupport::Logger.new(File::NULL)
-  config.audit_logger = Logger.new(File::NULL)
+  require 'logger_with_audit'
+  config.logger = ActiveSupport::TaggedLogging.new(Insights::API::Common::LoggerWithAudit.new(File::NULL))
 
   config.factory_bot.definition_file_paths = ["test/factories"]
 end

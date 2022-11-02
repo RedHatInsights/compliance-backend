@@ -21,6 +21,7 @@ class CreateBusinessObjectiveMutationTest < ActiveSupport::TestCase
   test 'create business objective' do
     user = FactoryBot.create(:user)
 
+    assert_audited_success 'Created Business Objective'
     result = Schema.execute(
       QUERY,
       variables: { input: {
@@ -30,13 +31,13 @@ class CreateBusinessObjectiveMutationTest < ActiveSupport::TestCase
     )['data']['createBusinessObjective']['businessObjective']
 
     assert_equal result['title'], 'foobar'
-    assert_audited 'Created Business Objective'
   end
 
   test 'does not duplicate business objectives' do
     bo = FactoryBot.create(:business_objective)
     user = FactoryBot.create(:user)
 
+    assert_audited_success 'Created Business Objective'
     result = Schema.execute(
       QUERY,
       variables: { input: {
@@ -47,6 +48,5 @@ class CreateBusinessObjectiveMutationTest < ActiveSupport::TestCase
 
     assert_equal result['id'], bo.id
     assert_equal result['title'], bo.title
-    assert_audited 'Created Business Objective'
   end
 end

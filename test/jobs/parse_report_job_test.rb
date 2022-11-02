@@ -60,8 +60,8 @@ class ParseReportJobTest < ActiveSupport::TestCase
     SafeDownloader.expects(:download_reports)
                   .with('', ssl_only: Settings.report_download_ssl_only)
                   .returns(ActiveSupport::Gzip.decompress(@file))
+    assert_audited_success 'Successful report of profileid policy policyUUID'
     @parse_report_job.perform(0, @msg_value)
-    assert_audited 'Successful report of profileid policy policyUUID'
   end
 
   test 'remediation service is notified about results with failed issues' do
@@ -111,8 +111,8 @@ class ParseReportJobTest < ActiveSupport::TestCase
     SafeDownloader.expects(:download_reports)
                   .with('', ssl_only: Settings.report_download_ssl_only)
                   .returns(ActiveSupport::Gzip.decompress(@file))
+    assert_audited_fail 'Failed to parse report profileid'
     @parse_report_job.perform(0, @msg_value)
-    assert_audited 'Failed to parse report profileid'
   end
 
   test 'notification service is notified about failed report parsing' do
@@ -137,8 +137,8 @@ class ParseReportJobTest < ActiveSupport::TestCase
     SafeDownloader.expects(:download_reports)
                   .with('', ssl_only: Settings.report_download_ssl_only)
                   .returns(ActiveSupport::Gzip.decompress(@file))
+    assert_audited_fail 'Failed to parse report profileid'
     @parse_report_job.perform(0, @msg_value)
-    assert_audited 'Failed to parse report profileid'
   end
 
   test 'payload tracker is notified about errored processing' do
@@ -168,8 +168,8 @@ class ParseReportJobTest < ActiveSupport::TestCase
     SafeDownloader.expects(:download_reports)
                   .with('', ssl_only: Settings.report_download_ssl_only)
                   .returns(ActiveSupport::Gzip.decompress(@file))
+    assert_audited_fail 'Failed to parse report profileid'
     @parse_report_job.perform(0, @msg_value)
-    assert_audited 'Failed to parse report profileid'
   end
 
   test 'no parsed data with parsing failure' do
@@ -182,8 +182,8 @@ class ParseReportJobTest < ActiveSupport::TestCase
     SafeDownloader.expects(:download_reports)
                   .with('', ssl_only: Settings.report_download_ssl_only)
                   .returns(ActiveSupport::Gzip.decompress(@file))
+    assert_audited_fail 'Failed to parse report'
     @parse_report_job.perform(0, @msg_value)
-    assert_audited 'Failed to parse report'
   end
 
   test 'emits notification non compliant without a report' do

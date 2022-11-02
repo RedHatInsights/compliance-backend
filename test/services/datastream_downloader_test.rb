@@ -28,13 +28,13 @@ class DatastreamDownloaderTest < ActiveSupport::TestCase
 
     downloader = DatastreamDownloader.new(@ssgs)
     yielded = 0
+    assert_audited_success 'Dowloaded datastream file'
     downloader.download_datastreams do |file|
       assert @ds_file.size, File.size(file)
       yielded += 1
     end
 
     assert_equal 1, yielded
-    assert_audited 'Dowloaded datastream file'
   end
 
   test 'audits download failure' do
@@ -42,11 +42,11 @@ class DatastreamDownloaderTest < ActiveSupport::TestCase
 
     downloader = DatastreamDownloader.new(@ssgs)
     yielded = 0
+    assert_audited_fail 'Failed to dowload datastream file'
     assert_raises StandardError do
       downloader.download_datastreams { yielded += 1 }
     end
 
-    assert_audited 'Failed to dowload datastream file'
     assert_equal 0, yielded
   end
 
