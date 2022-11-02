@@ -68,22 +68,12 @@ unless Rails.env.production?
         SimpleCov.result
       end
 
-      setup do
-        audit_log_capturing
+      def assert_audited_success(*msg)
+        Rails.logger.expects(:audit_success).with(includes(*msg))
       end
 
-      def audit_log_capturing
-        audit_logger = Rails.application.config.audit_logger
-        @audit_log = StringIO.new
-        audit_logger.instance_variable_set(:@logdev, @audit_log)
-      end
-
-      def assert_audited(msg)
-        msg_json = ::JSON.generate(msg)[1..-2]
-
-        assert_includes @audit_log.string,
-                        msg_json,
-                        "Message '#{msg}' not audited"
+      def assert_audited_fail(*msg)
+        Rails.logger.expects(:audit_fail).with(includes(*msg))
       end
 
       def assert_equal_sets(arr1, arr2)

@@ -13,7 +13,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   def process(message)
     super
 
-    Insights::API::Common::AuditLog.audit_with_account(org_id) do
+    Rails.logger.tagged(org_id) do
       dispatch
     end
   rescue PG::Error, ActiveRecord::StatementInvalid

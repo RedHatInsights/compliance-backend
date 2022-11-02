@@ -60,6 +60,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
     )
     assert_not_empty @profile.hosts
 
+    assert_audited_success 'Updated system associaton of policy', @profile.policy.id
     result = Schema.execute(
       QUERY,
       variables: { input: {
@@ -80,7 +81,5 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
     )
 
     assert_empty @profile.policy.reload.hosts
-    assert_audited 'Updated system associaton of policy'
-    assert_audited @profile.policy.id
   end
 end

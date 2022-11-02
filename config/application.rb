@@ -48,9 +48,6 @@ module ComplianceBackend
       -> request { IdentityHeader.from_request(request)&.org_id }
     ]
 
-    # Attach audit logging for requests
-    require 'audit_log/audit_log'
-    config.middleware.use Insights::API::Common::AuditLog::Middleware
     # Adjust params[tags] to be array
     require 'adjust_tags/middleware'
     config.middleware.use Insights::API::Common::AdjustTags::Middleware

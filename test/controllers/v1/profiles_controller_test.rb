@@ -204,11 +204,10 @@ module V1
 
         profile.rules.delete(profile.rules.sample)
 
+        assert_audited_success 'Sent computed tailoring file', profile.id
         get tailoring_file_v1_profile_url(profile.id)
         assert_response :success
         assert_equal Mime[:xml].to_s, @response.content_type
-        assert_audited 'Sent computed tailoring file'
-        assert_audited profile.id
       end
     end
 
@@ -669,6 +668,8 @@ module V1
 
       test 'destroy an existing, accessible profile' do
         profile_id = @profile.id
+        assert_audited_success('Autoremoved policy').twice
+        assert_audited_success 'Removed profile', profile_id
         assert_difference('Profile.count' => -1, 'Policy.count' => -1) do
           delete profile_path(profile_id)
         end
@@ -676,12 +677,12 @@ module V1
         assert_equal 202, response.status, 'Response should be 202 accepted'
         assert_equal profile_id, response.parsed_body.dig('data', 'id'),
                      'Profile ID did not match deleted profile'
-        assert_audited 'Removed profile'
-        assert_audited profile_id
       end
 
       test 'v1 destroy an existing, accessible profile' do
         profile_id = @profile.id
+        assert_audited_success('Autoremoved policy').twice
+        assert_audited_success 'Removed profile', profile_id
         assert_difference('Profile.count' => -1, 'Policy.count' => -1) do
           delete v1_profile_path(profile_id)
         end
@@ -689,8 +690,6 @@ module V1
         assert_equal 202, response.status, 'Response should be 202 accepted'
         assert_equal profile_id, response.parsed_body.dig('data', 'id'),
                      'Profile ID did not match deleted profile'
-        assert_audited 'Removed profile'
-        assert_audited profile_id
       end
 
       test 'destroing internal profile detroys its policy with profiles' do
@@ -702,6 +701,9 @@ module V1
         )
 
         profile_id = @profile.id
+        assert_audited_success 'Autoremoved policy', @profile.policy.id, 'with the initial/main profile'
+        assert_audited_success 'Autoremoved policy', 'with the last profile'
+        assert_audited_success 'Removed profile', profile_id
         assert_difference('Profile.count' => -2, 'Policy.count' => -1) do
           delete v1_profile_path(profile_id)
         end
@@ -709,11 +711,6 @@ module V1
         assert_equal 202, response.status, 'Response should be 202 accepted'
         assert_equal profile_id, response.parsed_body.dig('data', 'id'),
                      'Profile ID did not match deleted profile'
-        assert_audited 'Removed profile'
-        assert_audited profile_id
-        assert_audited @profile.policy.id
-        assert_audited 'Autoremoved policy'
-        assert_audited 'with the initial/main profile'
       end
 
       test 'destroy a non-existant profile' do
@@ -828,6 +825,7 @@ module V1
       test 'create with a found parent_profile_id and nonexisting ref_id '\
            'in the account' do
         parent = FactoryBot.create(:canonical_profile)
+        assert_audited_success 'Created policy'
         assert_difference('Profile.count' => 1, 'Policy.count' => 1) do
           post profiles_path, params: params(
             attributes: { parent_profile_id: parent.id }
@@ -836,7 +834,6 @@ module V1
         end
         assert_equal User.current.account.id,
                      parsed_data.dig('relationships', 'account', 'data', 'id')
-        assert_audited 'Created policy'
       end
 
       test 'create with an exisiting profile type for a major OS' do
@@ -855,6 +852,8 @@ module V1
       test 'create with a business objective' do
         parent = FactoryBot.create(:canonical_profile)
 
+        assert_audited_success 'Created policy'
+        assert_audited_success 'Created Business Objective'
         assert_difference('Profile.count' => 1, 'Policy.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -868,13 +867,12 @@ module V1
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal BUSINESS_OBJECTIVE,
                      parsed_data.dig('attributes', 'business_objective')
-        assert_audited 'Created policy'
-        assert_audited 'Created Business Objective'
       end
 
       test 'create with some customized profile attributes' do
         parent = FactoryBot.create(:canonical_profile)
 
+        assert_audited_success 'Created policy'
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -888,7 +886,6 @@ module V1
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal NAME, parsed_data.dig('attributes', 'name')
         assert_equal DESCRIPTION, parsed_data.dig('attributes', 'description')
-        assert_audited 'Created policy'
 
         get v1_profiles_url, params: {
           search: 'canonical=false and name="A new name"',
@@ -905,6 +902,8 @@ module V1
       test 'create with all customized profile attributes' do
         parent = FactoryBot.create(:canonical_profile)
 
+        assert_audited_success 'Created Business Objective'
+        assert_audited_success 'Created policy'
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -924,12 +923,13 @@ module V1
                      parsed_data.dig('attributes', 'compliance_threshold')
         assert_equal BUSINESS_OBJECTIVE,
                      parsed_data.dig('attributes', 'business_objective')
-        assert_audited 'Created policy'
       end
 
       test 'create copies rules from the parent profile' do
         parent = FactoryBot.create(:canonical_profile, :with_rules)
 
+        assert_audited_success 'Updated tailoring'
+        assert_audited_success 'Created policy'
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -945,13 +945,14 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
-        assert_audited 'Created policy'
       end
 
       test 'create allows custom rules' do
         parent = FactoryBot.create(:canonical_profile, :with_rules)
         rule_ids = parent.benchmark.rules.pluck(:id)
 
+        assert_audited_success 'Created policy'
+        assert_audited_success 'Updated tailoring of profile', "#{rule_ids.count} rules added", '0 rules removed'
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -974,10 +975,6 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
-        assert_audited 'Created policy'
-        assert_audited 'Updated tailoring of profile'
-        assert_audited "#{rule_ids.count} rules added"
-        assert_audited '0 rules removed'
       end
 
       test 'create only adds custom rules from the parent profile benchmark' do
@@ -995,6 +992,8 @@ module V1
         assert(parent.benchmark.rules.one?)
 
         rule_ids = parent.rules.pluck(:id) + extra_rule.pluck(:id)
+        assert_audited_success 'Created policy'
+        assert_audited_success 'Updated tailoring of profile', "#{extra_rule.count} rules added", '0 rules removed'
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -1017,10 +1016,6 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
-        assert_audited 'Created policy'
-        assert_audited 'Updated tailoring of profile'
-        assert_audited "#{extra_rule.count} rules added"
-        assert_audited '0 rules removed'
       end
 
       test 'create only adds custom rules from the parent profile benchmark'\
@@ -1039,6 +1034,8 @@ module V1
 
         assert(parent.benchmark.rules.one?)
         rule_ids = extra_rule.pluck(:id)
+        assert_audited_success 'Created policy'
+        assert_audited_success 'Updated tailoring of profile', "#{extra_rule.count} rules added", '0 rules removed'
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -1061,10 +1058,6 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
-        assert_audited 'Created policy'
-        assert_audited 'Updated tailoring of profile'
-        assert_audited "#{extra_rule.count} rules added"
-        assert_audited '0 rules removed'
       end
 
       test 'create allows hosts relationship' do
@@ -1074,6 +1067,9 @@ module V1
         stub_supported_ssg(hosts, [parent.benchmark.version])
 
         assert_empty(parent.hosts)
+        assert_audited_success 'Setting OS minor version'
+        assert_audited_success 'Created policy'
+        assert_audited_success 'Updated systems assignment on policy', "#{hosts.count} added", '0 removed'
         assert_difference('PolicyHost.count', hosts.count) do
           post profiles_path, params: params(
             attributes: {
@@ -1096,10 +1092,6 @@ module V1
           Set.new(parsed_data.dig('relationships', 'hosts', 'data')
                              .map { |r| r['id'] })
         )
-        assert_audited 'Created policy'
-        assert_audited 'Updated systems assignment on policy'
-        assert_audited "#{hosts.count} added"
-        assert_audited '0 removed'
       end
 
       test 'create fails with unsupported hosts' do
@@ -1157,6 +1149,7 @@ module V1
       end
 
       test 'update with a single attribute' do
+        assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
         assert_difference(
           "Policy.where(description: '#{DESCRIPTION}').count" => 1
         ) do
@@ -1166,12 +1159,11 @@ module V1
         end
         assert_response :success
         assert_equal DESCRIPTION, @profile.policy.reload.description
-        assert_audited 'Updated profile'
-        assert_audited @profile.id
-        assert_audited @profile.policy.id
       end
 
       test 'update with multiple attributes' do
+        assert_audited_success 'Created Business Objective'
+        assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
         assert_difference('BusinessObjective.count' => 1) do
           patch profile_path(@profile.id), params: params(
             attributes: {
@@ -1185,14 +1177,14 @@ module V1
         assert_equal DESCRIPTION, @profile.policy.reload.description
         assert_equal COMPLIANCE_THRESHOLD, @profile.compliance_threshold
         assert_equal BUSINESS_OBJECTIVE, @profile.business_objective.title
-        assert_audited 'Updated profile'
-        assert_audited @profile.id
-        assert_audited @profile.policy.id
       end
 
       test 'update with attributes and rules relationships' do
         @profile.rules = []
         benchmark_rules = @profile.benchmark.rules
+        assert_audited_success 'Created Business Objective'
+        assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
+        assert_audited_success 'Updated tailoring of profile', "#{benchmark_rules.count} rules added", '0 rules removed'
         assert_difference(
           '@profile.rules.count' => benchmark_rules.count
         ) do
@@ -1212,16 +1204,13 @@ module V1
         assert_response :success
         assert_equal BUSINESS_OBJECTIVE,
                      @profile.reload.business_objective.title
-        assert_audited 'Updated profile'
-        assert_audited @profile.id
-        assert_audited @profile.policy.id
-        assert_audited 'Updated tailoring of profile'
-        assert_audited "#{benchmark_rules.count} rules added"
-        assert_audited '0 rules removed'
       end
 
       test 'update to remove rules relationships' do
         benchmark_rules = @profile.benchmark.rules
+        assert_audited_success 'Created Business Objective'
+        assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
+        assert_audited_success 'Updated tailoring of profile', '0 rules added, 1 rules removed'
         assert_difference(
           '@profile.reload.rules.count' => -1
         ) do
@@ -1241,11 +1230,6 @@ module V1
         assert_response :success
         assert_equal BUSINESS_OBJECTIVE,
                      @profile.reload.business_objective.title
-        assert_audited 'Updated profile'
-        assert_audited @profile.id
-        assert_audited @profile.policy.id
-        assert_audited 'Updated tailoring of profile'
-        assert_audited '0 rules added, 1 rules removed'
       end
 
       test 'update to update hosts relationships' do
@@ -1254,6 +1238,9 @@ module V1
         stub_supported_ssg(hosts, [@profile.benchmark.version])
 
         @profile.policy.update!(hosts: hosts[0...-1])
+        assert_audited_success 'Setting OS minor version'
+        assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
+        assert_audited_success 'Updated systems assignment on policy', '1 added, 1 removed'
         assert_difference('@profile.policy.reload.hosts.count' => 0) do
           patch profile_path(@profile.id), params: params(
             attributes: {},
@@ -1267,11 +1254,6 @@ module V1
           )
         end
         assert_response :success
-        assert_audited 'Updated profile'
-        assert_audited @profile.id
-        assert_audited @profile.policy.id
-        assert_audited 'Updated systems assignment on policy'
-        assert_audited '1 added, 1 removed'
       end
 
       test 'update to remove hosts relationships' do
@@ -1279,6 +1261,9 @@ module V1
 
         stub_supported_ssg(hosts, [@profile.benchmark.version])
 
+        assert_audited_success 'Setting OS minor version'
+        assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
+        assert_audited_success 'Updated systems assignment on policy', '0 added, 1 removed'
         @profile.policy.update!(hosts: hosts)
         assert_difference(
           '@profile.policy.reload.hosts.count' => -1
@@ -1295,11 +1280,6 @@ module V1
           )
         end
         assert_response :success
-        assert_audited 'Updated profile'
-        assert_audited @profile.id
-        assert_audited @profile.policy.id
-        assert_audited 'Updated systems assignment on policy'
-        assert_audited '0 added, 1 removed'
       end
     end
   end

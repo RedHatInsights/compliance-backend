@@ -29,6 +29,7 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
 
     assert_nil @profile.policy.business_objective
 
+    assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
     result = Schema.execute(
       query,
       variables: { input: {
@@ -41,9 +42,6 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
 
     assert_equal @bo.id, result['businessObjectiveId']
     assert_equal 80.0, result['complianceThreshold']
-    assert_audited 'Updated profile'
-    assert_audited @profile.id
-    assert_audited @profile.policy.id
   end
 
   test 'unset the business objective' do
@@ -59,6 +57,8 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
 
     @profile.policy.update(business_objective: @bo)
 
+    assert_audited_success 'Autoremoved orphaned Business Objectives', @bo.id
+    assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
     Schema.execute(
       query,
       variables: { input: {
@@ -69,8 +69,5 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
     )['data']['updateProfile']['profile']
 
     assert_nil @profile.policy.reload.business_objective
-    assert_audited 'Updated profile'
-    assert_audited @profile.id
-    assert_audited @profile.policy.id
   end
 end

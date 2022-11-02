@@ -78,8 +78,8 @@ class ConfigDownloaderTest < ActiveSupport::TestCase
       SsgConfigDownloader.stub_const(:DS_FILE_PATH, @ds_config_file.path) do
         SafeDownloader.expects(:download)
 
+        assert_audited_success 'Downloaded config'
         SsgConfigDownloader.update_ssg_ds
-        assert_audited 'Downloaded config'
 
         assert_equal @ds_config_file.read, SsgConfigDownloader.ssg_ds
       end
@@ -89,8 +89,8 @@ class ConfigDownloaderTest < ActiveSupport::TestCase
       SsgConfigDownloader.stub_const(:AT_FILE_PATH, @at_config_file.path) do
         SafeDownloader.expects(:download)
 
+        assert_audited_success 'Downloaded config'
         SsgConfigDownloader.update_ssg_ansible_tasks
-        assert_audited 'Downloaded config'
 
         assert_equal @at_config_file.read, SsgConfigDownloader.ssg_ansible_tasks
       end
@@ -100,8 +100,8 @@ class ConfigDownloaderTest < ActiveSupport::TestCase
       SsgConfigDownloader.stub_const(:DS_FILE_PATH, @ds_config_file.path) do
         SafeDownloader.expects(:download).raises(StandardError)
 
+        assert_audited_fail 'Failed to download config'
         SsgConfigDownloader.update_ssg_ds
-        assert_audited 'Failed to download config'
 
         assert_equal @ds_config_file.read, SsgConfigDownloader.ssg_ds
       end
@@ -111,8 +111,8 @@ class ConfigDownloaderTest < ActiveSupport::TestCase
       SsgConfigDownloader.stub_const(:AT_FILE_PATH, @at_config_file.path) do
         SafeDownloader.expects(:download).raises(StandardError)
 
+        assert_audited_fail 'Failed to download config'
         SsgConfigDownloader.update_ssg_ansible_tasks
-        assert_audited 'Failed to download config'
 
         assert_equal @at_config_file.read, SsgConfigDownloader.ssg_ansible_tasks
       end

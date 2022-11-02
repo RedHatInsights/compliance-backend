@@ -23,7 +23,7 @@ class ParseReportJob
 
     @file = retrieve_file(idx)
 
-    Rails.logger.audit_with_account(@msg_value['org_id']) do
+    Rails.logger.tagged(@msg_value['org_id']) do
       parse_and_save_report
     end
   end

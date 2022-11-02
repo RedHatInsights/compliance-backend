@@ -39,6 +39,7 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
   end
 
   test 'external profiles are kept after associating internal profiles' do
+    assert_audited_success 'Associated host', @host.id, *@profiles.map(&:policy_id)
     Schema.execute(
       QUERY,
       variables: { input: {
@@ -50,10 +51,5 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
 
     assert_equal Set.new(@profiles.map(&:policy)),
                  Set.new(@host.reload.policies)
-    assert_audited 'Associated host'
-    assert_audited @host.id
-    @profiles.each do |profile|
-      assert_audited profile.policy.id
-    end
   end
 end

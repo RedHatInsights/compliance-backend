@@ -58,6 +58,7 @@ class AssociateRulesMutationTest < ActiveSupport::TestCase
 
         assert_not_empty profile.rules
 
+        assert_audited_success 'Updated rule assignments of profile', profile.id
         Schema.execute(
           QUERY,
           variables: { input: {
@@ -68,8 +69,6 @@ class AssociateRulesMutationTest < ActiveSupport::TestCase
         )['data']['associateRules']['profile']
 
         assert_empty profile.reload.rules
-        assert_audited 'Updated rule assignments of profile'
-        assert_audited profile.id
       end
     end
   end

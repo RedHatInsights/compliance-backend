@@ -57,10 +57,12 @@ Rails.application.configure do
   # Whitelist hosts
   config.hosts.clear
 
+  require 'logger_with_audit'
+
   if ENV['RAILS_LOG_TO_STDOUT'].present?
-    config.logger = ActiveSupport::Logger.new(STDOUT)
+    config.logger = Insights::API::Common::LoggerWithAudit.new(STDOUT)
   else # Impose a 64MB limit for the logfile
-    config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 1, 64.megabytes)
+    config.logger = Insights::API::Common::LoggerWithAudit.new(config.paths['log'].first, 1, 64.megabytes)
   end
 
   config.logger = ActiveSupport::TaggedLogging.new(config.logger)
