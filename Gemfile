@@ -7,7 +7,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'rails', '~> 7.0'
 gem 'pg'
 # Use Puma as the app server
-gem 'puma', '~> 5'
+gem 'puma', '~> 6'
 # Use Redis adapter to connect to Sidekiq
 gem 'redis', '~> 4.0'
 # Reduces boot times through caching; required in config/boot.rb
@@ -32,7 +32,7 @@ gem 'config'
 gem 'jsonapi-serializer'
 
 # GraphQL support
-gem 'graphql'
+gem 'graphql', '< 2'
 gem 'graphql-batch'
 
 # Pundit authorization system
