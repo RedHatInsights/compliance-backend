@@ -71,24 +71,24 @@ end
 # rubocop:enable Metrics/MethodLength
 
 def include_param
-  parameter name: :include, in: :query, type: :string, required: false,
+  parameter name: :include, in: :query, required: false,
             schema: { type: :string },
             description: 'A comma seperated list of resources to include in '\
                          'the response'
 end
 
 def pagination_params
-  parameter name: :limit, in: :query, required: false, type: :integer,
+  parameter name: :limit, in: :query, required: false,
             description: 'The number of items to return',
             schema: { type: :integer, maximum: 100, minimum: 1, default: 10 }
-  parameter name: :offset, in: :query, required: false, type: :integer,
+  parameter name: :offset, in: :query, required: false,
             description: 'The number of items to skip before starting '\
             'to collect the result set',
             schema: { type: :integer, minimum: 1, default: 1 }
 end
 
 def search_params
-  parameter name: :search, in: :query, required: false, type: :string,
+  parameter name: :search, in: :query, required: false,
             description: 'Query string compliant with scoped_search '\
             'query language: '\
             'https://github.com/wvanbergen/scoped_search/wiki/Query-language',
@@ -96,7 +96,7 @@ def search_params
 end
 
 def tags_params
-  parameter name: :tags, in: :query, required: false, type: :array,
+  parameter name: :tags, in: :query, required: false,
             description: 'An array of tags to narrow down the results against. ' \
             'The namespace, key and value are concatenated using `/` and `=` symbols. ' \
             'In case the values contain symbols used for separators, `/` is replaced with `%2F`, ' \
@@ -107,7 +107,6 @@ end
 
 def sort_params(model = nil)
   parameter name: :sort_by, in: :query, required: false,
-            type: { oneOf: [{ type: :string }, { type: :array }] },
             description: 'An array of fields with an optional direction '\
              '(:asc or :desc) to sort the results.',
             schema: {
