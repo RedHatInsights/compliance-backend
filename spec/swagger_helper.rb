@@ -28,7 +28,7 @@ def autogenerate_examples(example, label = 'Response example', summary = '', des
   example_obj = { "#{label}": { value: body, summary: summary, description: description } }
   example.metadata[:response][:content] = content.deep_merge(
     {
-      'application/json': {
+      'application/vnd.api+json': {
         examples: example_obj
       }
     }
