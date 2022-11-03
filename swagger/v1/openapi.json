@@ -26,7 +26,6 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -39,7 +38,6 @@
             "name": "offset",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -51,7 +49,6 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -62,16 +59,6 @@
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "type": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array"
-                }
-              ]
-            },
             "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
               "type": {
@@ -100,7 +87,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -118,13 +104,13 @@
                     "value": {
                       "data": [
                         {
-                          "id": "c79a4fbd-e4e6-4eb8-9e58-6f890db62137",
+                          "id": "6aec8494-c25f-4b55-8faa-94bf7065905c",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Sit ad reprehenderit veritatis.",
-                            "version": "100.0.1",
-                            "description": "Quo temporibus aut. Exercitationem odio cum. Unde assumenda aperiam.",
+                            "title": "Magnam mollitia voluptas rerum.",
+                            "version": "100.0.2",
+                            "description": "Aut fugit ullam. Similique nihil id. Id adipisci suscipit.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -132,11 +118,11 @@
                             "rules": {
                               "data": [
                                 {
-                                  "id": "46995fc3-0616-4a04-9795-8a7445ff56bc",
+                                  "id": "1aaec019-0c38-4312-8950-6cdeb7e10680",
                                   "type": "rule"
                                 },
                                 {
-                                  "id": "ee07001a-a0cb-4046-b47f-3c8980a54fe3",
+                                  "id": "1076dd6a-7b3d-4fe3-a48b-9e2f9af9e750",
                                   "type": "rule"
                                 }
                               ]
@@ -144,7 +130,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "7dd0ccd2-f006-4fca-90fd-8cec2a268a78",
+                                  "id": "37581f36-b2d4-4ad1-ae53-170d8f1f3a87",
                                   "type": "profile"
                                 }
                               ]
@@ -152,13 +138,13 @@
                           }
                         },
                         {
-                          "id": "d4520980-4aa9-472f-9de6-933633ca6f7b",
+                          "id": "8ff4be88-781d-4a9f-8cc8-f582a1449c63",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Expedita inventore est enim.",
-                            "version": "100.0.2",
-                            "description": "Quibusdam distinctio minima. Id quidem laborum. Reiciendis est non.",
+                            "title": "Quaerat nostrum esse nam.",
+                            "version": "100.0.1",
+                            "description": "Sed assumenda est. Porro ex accusamus. Ut ullam magni.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -166,11 +152,11 @@
                             "rules": {
                               "data": [
                                 {
-                                  "id": "573e2dc6-1f6a-4afd-b72e-e89ae528475e",
+                                  "id": "61525046-afbf-406a-b3ef-080ff8e5b147",
                                   "type": "rule"
                                 },
                                 {
-                                  "id": "14a5161c-ebdc-4264-8890-40644a8385fe",
+                                  "id": "219de42e-31f6-41bf-9266-a77cb68a0bd9",
                                   "type": "rule"
                                 }
                               ]
@@ -178,7 +164,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "ea65480c-6441-4260-9adc-610084a23f77",
+                                  "id": "d6262093-efcd-43b8-9ef4-4277182fe4c1",
                                   "type": "profile"
                                 }
                               ]
@@ -264,7 +250,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -299,13 +284,13 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "cd63a3d8-c6ef-4f66-b343-f890596b671b",
+                        "id": "a8a422a0-4332-4201-b75c-3176da10e412",
                         "type": "benchmark",
                         "attributes": {
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Tempore quisquam dolores id.",
+                          "title": "Ut et nihil impedit.",
                           "version": "100.0.4",
-                          "description": "Hic doloribus ut. Delectus voluptatem quis. Earum qui omnis.",
+                          "description": "Eligendi tenetur est. Aut rerum nam. Sit quasi rerum.",
                           "os_major_version": "7",
                           "latest_supported_os_minor_versions": []
                         },
@@ -313,43 +298,43 @@
                           "rules": {
                             "data": [
                               {
-                                "id": "88d45d86-964a-4760-b3fa-a0c8161eb0aa",
+                                "id": "d5d0ac07-3f61-4ba0-a097-cccdc8de4116",
                                 "type": "rule"
                               },
                               {
-                                "id": "bc3602a6-99f2-416b-ba74-bd09fd6b156f",
+                                "id": "86d87a25-d19a-487e-a5a9-9e6519155bd2",
                                 "type": "rule"
                               },
                               {
-                                "id": "b86b1f47-78ae-4edd-8b5f-0ad5ec9e6a8b",
+                                "id": "475adc58-992e-4f10-9157-3acbdb5d5f75",
                                 "type": "rule"
                               },
                               {
-                                "id": "b9aad8cf-85cc-44de-ba4d-34288a23fadd",
+                                "id": "540ca954-ca3a-4fbc-82f0-5ece62b97884",
                                 "type": "rule"
                               },
                               {
-                                "id": "393e341e-fb98-4530-97e9-90d68359a6f7",
+                                "id": "1c543283-93e5-42db-81d2-885d97a741fd",
                                 "type": "rule"
                               },
                               {
-                                "id": "400cd32a-82c3-4964-aaef-0fe7f84bb9fa",
+                                "id": "b6c213eb-432e-4a53-a7f4-46fe21c45da8",
                                 "type": "rule"
                               },
                               {
-                                "id": "bd951b3c-dcee-4a29-9ba8-da6976ac4409",
+                                "id": "a673822f-3be0-4168-9ec6-d92c5c72c168",
                                 "type": "rule"
                               },
                               {
-                                "id": "673d6a4f-8929-4240-b67d-cb785791c37f",
+                                "id": "3167d7eb-9a31-4030-8e31-3d2cc8c8cd0a",
                                 "type": "rule"
                               },
                               {
-                                "id": "f3570c89-ad9d-47a0-85cd-3ee8dcea5c1a",
+                                "id": "7469c353-4da3-46c2-8ecd-1ef950f88f5d",
                                 "type": "rule"
                               },
                               {
-                                "id": "a96665c9-b9a9-477b-a4dd-1bed4a9c6b2d",
+                                "id": "dd15e4b6-96d7-4fa2-a040-6f136a154934",
                                 "type": "rule"
                               }
                             ]
@@ -357,11 +342,11 @@
                           "profiles": {
                             "data": [
                               {
-                                "id": "1e9af05c-81c4-45b6-8e64-17032e0f24fc",
+                                "id": "46bd2cd4-4efd-430a-ad44-3026fc0a2d62",
                                 "type": "profile"
                               },
                               {
-                                "id": "dfd644ff-2d7a-4765-87fd-4ccf9980b457",
+                                "id": "79ee74f1-1f35-4a26-b1c4-849e5b902822",
                                 "type": "profile"
                               }
                             ]
@@ -427,7 +412,6 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -440,7 +424,6 @@
             "name": "offset",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -452,7 +435,6 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -463,16 +445,6 @@
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "type": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array"
-                }
-              ]
-            },
             "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
               "type": {
@@ -498,7 +470,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -516,16 +487,16 @@
                     "value": {
                       "data": [
                         {
-                          "id": "4fcf0d5a-e943-43e5-99f1-a98f60fe4e34",
+                          "id": "a2fbd305-27e8-4a16-aa39-e9160865092f",
                           "type": "business_objective",
                           "attributes": {
-                            "title": "Corrupti ut doloremque exercitationem."
+                            "title": "Eum explicabo sunt nemo."
                           },
                           "relationships": {
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "0ae8c37a-53ca-4346-9f61-e7413cbb5180",
+                                  "id": "09c2bbe0-c97f-46dc-b723-462b2c524772",
                                   "type": "profile"
                                 }
                               ]
@@ -533,16 +504,16 @@
                           }
                         },
                         {
-                          "id": "1219bcfb-1dd4-4423-90a7-e9ba30cbba19",
+                          "id": "f2e29bc4-09a6-43f4-a15d-4d08938e8895",
                           "type": "business_objective",
                           "attributes": {
-                            "title": "Deleniti voluptas commodi et."
+                            "title": "Modi molestiae in odit."
                           },
                           "relationships": {
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "fc95610c-2146-4518-ab80-cfb0f28f6e59",
+                                  "id": "4bf1027d-1de1-4f84-ac00-7e4bba2d3ed6",
                                   "type": "profile"
                                 }
                               ]
@@ -626,7 +597,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -661,16 +631,16 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "f5471601-ed04-42c3-9adf-f7425091f55a",
+                        "id": "46aac711-1379-4503-b939-e8833f0a9b21",
                         "type": "business_objective",
                         "attributes": {
-                          "title": "Sit ab non vitae."
+                          "title": "Eaque quos enim eos."
                         },
                         "relationships": {
                           "profiles": {
                             "data": [
                               {
-                                "id": "69b12c22-f2a3-48ef-bf98-16c01f5ec2fd",
+                                "id": "d537baa6-c8f7-4c32-95e8-a2b0924cc440",
                                 "type": "profile"
                               }
                             ]
@@ -736,7 +706,6 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -749,7 +718,6 @@
             "name": "offset",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -761,7 +729,6 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -772,16 +739,6 @@
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "type": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array"
-                }
-              ]
-            },
             "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
               "type": {
@@ -813,7 +770,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -831,10 +787,10 @@
                     "value": {
                       "data": [
                         {
-                          "id": "fd5e15d6-e137-4fed-8297-c2743bf7a48a",
+                          "id": "86204713-c558-4990-856c-fbd101825d13",
                           "type": "profile",
                           "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_profile_1b44e90e-ac6d-463e-8903-827d0b02cc7e",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_14b50f8b-5035-4adc-b6d9-af9075caf2c7",
                             "score": 0.42,
                             "parent_profile_id": null,
                             "external": false,
@@ -862,7 +818,7 @@
                             },
                             "benchmark": {
                               "data": {
-                                "id": "db4515d0-982d-4297-aa6f-c98f85ce0fa9",
+                                "id": "118f88ca-657a-4ffb-a379-d792dd46e340",
                                 "type": "benchmark"
                               }
                             },
@@ -875,7 +831,7 @@
                             "hosts": {
                               "data": [
                                 {
-                                  "id": "7f4fa1b2-d7c6-48c8-9bff-fd8a97d5ef99",
+                                  "id": "c72fed6b-177b-4c21-89c2-8dc77dc90815",
                                   "type": "host"
                                 }
                               ]
@@ -883,7 +839,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "66cc168f-f589-465d-b8c6-b1f37d6d63eb",
+                                  "id": "1f651da7-0de5-45b9-ab23-ef0d156bbfdd",
                                   "type": "test_result"
                                 }
                               ]
@@ -891,10 +847,10 @@
                           }
                         },
                         {
-                          "id": "17e7c60a-2eb2-4cbd-be32-b481a570c133",
+                          "id": "cb64752e-3d0a-4e57-99f0-c3f0c5b84aad",
                           "type": "profile",
                           "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_profile_01394e2d-456b-46d7-b14f-eab5b941bedb",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_684a28c5-4b23-4715-8bdc-ce7c1a96ef33",
                             "score": 0.68,
                             "parent_profile_id": null,
                             "external": false,
@@ -904,8 +860,8 @@
                             "policy_profile_id": null,
                             "os_minor_version": "",
                             "parent_profile_ref_id": null,
-                            "name": "Quia sunt voluptate veritatis.",
-                            "description": "Qui itaque sit. Aliquid delectus eos. Ipsum eos qui.",
+                            "name": "Occaecati soluta saepe doloremque.",
+                            "description": "Enim earum dolor. Non reiciendis eos. Eaque dolorem suscipit.",
                             "canonical": true,
                             "tailored": false,
                             "total_host_count": 0,
@@ -914,7 +870,7 @@
                             "test_result_host_count": 0,
                             "unsupported_host_count": 0,
                             "business_objective": null,
-                            "policy_type": "Quia sunt voluptate veritatis."
+                            "policy_type": "Occaecati soluta saepe doloremque."
                           },
                           "relationships": {
                             "account": {
@@ -922,7 +878,7 @@
                             },
                             "benchmark": {
                               "data": {
-                                "id": "d5b1e450-4579-4e3f-b59f-affff2182302",
+                                "id": "c2d1688a-cdb1-4770-9b1f-9e76a7b9cd33",
                                 "type": "benchmark"
                               }
                             },
@@ -935,7 +891,7 @@
                             "hosts": {
                               "data": [
                                 {
-                                  "id": "7f4fa1b2-d7c6-48c8-9bff-fd8a97d5ef99",
+                                  "id": "c72fed6b-177b-4c21-89c2-8dc77dc90815",
                                   "type": "host"
                                 }
                               ]
@@ -943,7 +899,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "cde2b8d9-3e28-4204-9ec0-d55a662b88ff",
+                                  "id": "dc6e4365-a41c-40d8-b98f-27bf8543d587",
                                   "type": "test_result"
                                 }
                               ]
@@ -1028,19 +984,19 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "a93ab532-b26f-40d3-9ce6-92d3cd43f7e7",
+                        "id": "a3040f8c-8328-4682-ad82-d38e6f70e556",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_b491378c-59fb-4a7a-ae8e-dccd44cea2cd",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_4030c237-9c67-4ae8-a91c-eff8fde56acb",
                           "score": 0.0,
-                          "parent_profile_id": "726bfe0d-a70f-44e5-ad71-1493132ff641",
+                          "parent_profile_id": "1cc3173f-1398-4b62-8be0-47714308ac47",
                           "external": false,
                           "compliance_threshold": 93.5,
                           "os_major_version": "7",
                           "os_version": "7",
-                          "policy_profile_id": "a93ab532-b26f-40d3-9ce6-92d3cd43f7e7",
+                          "policy_profile_id": "a3040f8c-8328-4682-ad82-d38e6f70e556",
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_b491378c-59fb-4a7a-ae8e-dccd44cea2cd",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_4030c237-9c67-4ae8-a91c-eff8fde56acb",
                           "name": "A custom name",
                           "description": "Canonical (Generated) Profile",
                           "canonical": false,
@@ -1056,30 +1012,30 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "fde2676d-5dc6-40c3-b2c1-2cdfe6943cd2",
+                              "id": "e7aac913-096a-434f-8f92-24e4fe2e2c54",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "91c63ccd-62cd-4263-a930-b71627cf8bae",
+                              "id": "41e928bb-e449-43b6-af74-89c8beb652da",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "726bfe0d-a70f-44e5-ad71-1493132ff641",
+                              "id": "1cc3173f-1398-4b62-8be0-47714308ac47",
                               "type": "profile"
                             }
                           },
                           "rules": {
                             "data": [
                               {
-                                "id": "563410bd-2b00-4f5a-aa9d-7f969282ccfc",
+                                "id": "68751803-e27e-4553-bd8f-5cff994a0109",
                                 "type": "rule"
                               },
                               {
-                                "id": "ee720a5e-0f78-47ad-8a76-69c98743bcae",
+                                "id": "6c99477b-6105-4e37-9fcb-de60e547f36c",
                                 "type": "rule"
                               }
                             ]
@@ -1087,11 +1043,11 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "8085f59d-d1f2-4685-bf84-a6e1b14e2e25",
+                                "id": "fb13fc84-cbeb-4acb-a802-f8bdb145fbb4",
                                 "type": "host"
                               },
                               {
-                                "id": "dbe3821d-b2bc-4ce4-88db-9dfe82998ef7",
+                                "id": "f8990ffa-23df-46b2-8ef0-071086ae3caa",
                                 "type": "host"
                               }
                             ]
@@ -1228,7 +1184,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -1263,10 +1218,10 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "2a4b6e52-a0eb-4247-905c-fa0d59a38bb3",
+                        "id": "8627b6fe-2d8c-4b24-88d4-eae2c42dafb0",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_3363ff05-400c-4502-ba53-51fb2cc9528f",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_5cdf5fe9-9512-43ee-a149-b4f6a4ac2272",
                           "score": 0.42,
                           "parent_profile_id": null,
                           "external": false,
@@ -1291,13 +1246,13 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "5ec79cf0-83da-4633-9209-c89cca172f3c",
+                              "id": "5dd5fe80-0e19-4df2-add4-070db7f8f73e",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "3cafc735-4cca-4b78-87f4-0f5b4922064d",
+                              "id": "bf2479ed-47bb-467f-980b-dcb2d504e61c",
                               "type": "benchmark"
                             }
                           },
@@ -1310,7 +1265,7 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "0464c8d1-b3e1-4169-8788-99bce6dd950c",
+                                "id": "65911d58-f945-4247-a7f4-bc977c085507",
                                 "type": "host"
                               }
                             ]
@@ -1318,7 +1273,7 @@
                           "test_results": {
                             "data": [
                               {
-                                "id": "4a9aa556-7d5f-4d2d-bf98-a5e9f85b700a",
+                                "id": "daa09f37-d7f2-495a-a395-ae2724d6de14",
                                 "type": "test_result"
                               }
                             ]
@@ -1327,13 +1282,13 @@
                       },
                       "included": [
                         {
-                          "id": "3cafc735-4cca-4b78-87f4-0f5b4922064d",
+                          "id": "bf2479ed-47bb-467f-980b-dcb2d504e61c",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Expedita magni possimus et.",
+                            "title": "Hic reiciendis dicta facilis.",
                             "version": "100.0.19",
-                            "description": "Mollitia numquam cumque. Vero vel reiciendis. Iste ab exercitationem.",
+                            "description": "Dolores ut consequatur. Rerum occaecati quisquam. Odit voluptates quia.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -1420,7 +1375,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -1463,19 +1417,19 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "81e5a402-f5ea-41f1-a9e2-9020937047c1",
+                        "id": "1cea80f3-5a06-4a68-94bf-4d8746d2ed61",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_70560b5b-389e-4bca-bd32-2ae7f1aab840",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_2f4bb406-14c0-4568-9c77-1cd8ad1f226b",
                           "score": 0.0,
-                          "parent_profile_id": "fddfa761-0ce1-45c3-8a7f-1aa42442d834",
+                          "parent_profile_id": "689dcbbd-6c7e-411f-a285-30ccc2bfcbf5",
                           "external": false,
                           "compliance_threshold": 93.5,
                           "os_major_version": "7",
                           "os_version": "7",
-                          "policy_profile_id": "81e5a402-f5ea-41f1-a9e2-9020937047c1",
+                          "policy_profile_id": "1cea80f3-5a06-4a68-94bf-4d8746d2ed61",
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_b0f67da5-9f4a-4fa6-9d1d-9e6b5fb2b8ca",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_b31af7dd-3c2f-463f-a553-fadddfbb11f2",
                           "name": "Policy for Profile",
                           "description": "An updated custom description",
                           "canonical": false,
@@ -1491,42 +1445,42 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "1f9dcef0-c3fd-46ab-aea0-14549394b53a",
+                              "id": "70f178dd-f5a5-47b2-8d24-505b475e0279",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "cf52b503-57fc-4db1-b7d4-0834a6ba1018",
+                              "id": "1b99a17a-2043-438d-975a-e72874abd851",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "fddfa761-0ce1-45c3-8a7f-1aa42442d834",
+                              "id": "689dcbbd-6c7e-411f-a285-30ccc2bfcbf5",
                               "type": "profile"
                             }
                           },
                           "rules": {
                             "data": [
                               {
-                                "id": "38ccb1a2-dc57-47dc-a960-420b45465e5b",
+                                "id": "dd0b763e-ee32-44dc-843c-c7d9a2181a68",
                                 "type": "rule"
                               },
                               {
-                                "id": "cb0d07d3-a04e-421e-8bd2-0922f72c87e2",
+                                "id": "459b1c55-74bb-4e10-b348-bbd3cfeaeb69",
                                 "type": "rule"
                               },
                               {
-                                "id": "5e3a8d8a-36d3-432b-b7f0-6648f41ef0cb",
+                                "id": "1a2f70d4-ab81-4790-aed9-5fa8b4643c4c",
                                 "type": "rule"
                               },
                               {
-                                "id": "8391858d-3fa0-40c4-8f4c-0efc03dc0794",
+                                "id": "3a85b845-ea6b-4f00-960c-82ec1a2bc0d0",
                                 "type": "rule"
                               },
                               {
-                                "id": "703fa66d-b5b5-4799-bcbf-1e1763eab00e",
+                                "id": "2d53032f-ad85-4c59-9318-e0febb325f29",
                                 "type": "rule"
                               }
                             ]
@@ -1534,11 +1488,11 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "958a5b52-c574-4d4e-b81a-7e928196f2e5",
+                                "id": "bd0c3ec2-b92e-4917-b92a-28f1528a17b0",
                                 "type": "host"
                               },
                               {
-                                "id": "fe9d924c-b784-44dd-b874-840d4344e642",
+                                "id": "50c02fca-5ab6-4ab6-ac11-056be2d17115",
                                 "type": "host"
                               }
                             ]
@@ -1679,7 +1633,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -1714,21 +1667,21 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "f4790d9d-f67d-4618-9d48-69ef1b396162",
+                        "id": "2f35695e-41c0-4cb0-97a9-ec99dde4e219",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_b0213496-46c6-430d-81fc-e34318395cc4",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_1ca032be-08be-4a0c-9ae5-a051d7b70b72",
                           "score": 0.0,
-                          "parent_profile_id": "2506690a-a7b3-460d-937f-b97296603c96",
+                          "parent_profile_id": "edeb7815-6df4-4594-8e81-43cc0ee509b1",
                           "external": false,
                           "compliance_threshold": 100.0,
                           "os_major_version": "7",
                           "os_version": "7",
                           "policy_profile_id": null,
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_b0213496-46c6-430d-81fc-e34318395cc4",
-                          "name": "Exercitationem iste deserunt officia.",
-                          "description": "Et et velit. Nobis odio inventore. Illo qui recusandae.",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_1ca032be-08be-4a0c-9ae5-a051d7b70b72",
+                          "name": "Modi laudantium quo sunt.",
+                          "description": "Beatae amet atque. Omnis magni facere. Mollitia quae fugiat.",
                           "canonical": false,
                           "tailored": false,
                           "total_host_count": 0,
@@ -1737,24 +1690,24 @@
                           "test_result_host_count": 0,
                           "unsupported_host_count": 0,
                           "business_objective": null,
-                          "policy_type": "Sed est eum architecto."
+                          "policy_type": "Harum eaque illo cumque."
                         },
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "d557d64b-3593-4605-aba9-36d9f5e82a9d",
+                              "id": "72e82630-2da5-42ad-97b4-1f458609be83",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "09a3d3b0-26a0-44b0-bc35-2cd37d4f5935",
+                              "id": "72f859c9-ce6c-4d27-895a-090f66773600",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "2506690a-a7b3-460d-937f-b97296603c96",
+                              "id": "edeb7815-6df4-4594-8e81-43cc0ee509b1",
                               "type": "profile"
                             }
                           },
@@ -1828,7 +1781,6 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -1841,7 +1793,6 @@
             "name": "offset",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -1853,7 +1804,6 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -1864,16 +1814,6 @@
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "type": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array"
-                }
-              ]
-            },
             "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
               "type": {
@@ -1899,7 +1839,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -1917,7 +1856,7 @@
                     "value": {
                       "data": [
                         {
-                          "id": "a55e008e-349f-4e95-a960-9adf471afc44",
+                          "id": "6b4d4a3c-65de-40db-89eb-cfe465395179",
                           "type": "rule_result",
                           "attributes": {
                             "result": "pass"
@@ -1925,13 +1864,13 @@
                           "relationships": {
                             "host": {
                               "data": {
-                                "id": "886ed6e4-4046-4eab-beaa-c9551ccf428f",
+                                "id": "ea325d2f-f199-451a-9324-7de57af9f70e",
                                 "type": "host"
                               }
                             },
                             "rule": {
                               "data": {
-                                "id": "dee41f04-6589-42b5-8be8-80272d43053a",
+                                "id": "26812e52-c5cf-4472-8523-82c9d17e5690",
                                 "type": "rule"
                               }
                             }
@@ -2010,7 +1949,6 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -2023,7 +1961,6 @@
             "name": "offset",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -2035,7 +1972,6 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -2046,16 +1982,6 @@
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "type": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array"
-                }
-              ]
-            },
             "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
               "type": {
@@ -2090,7 +2016,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -2108,33 +2033,33 @@
                     "value": {
                       "data": [
                         {
-                          "id": "33cdd105-d88e-46d3-a225-b29555a04c39",
+                          "id": "eb6ce4b3-b1b9-4e17-9a77-bd8ee1430001",
                           "type": "rule",
                           "attributes": {
-                            "ref_id": "foo_rule_183a4842-e34f-4c88-9d2a-0ab0621d2292",
+                            "ref_id": "foo_rule_8ab4606f-3f63-400d-9ad5-c64ed565ae71",
                             "remediation_issue_id": null,
-                            "title": "Est maxime rerum natus.",
-                            "rationale": "Est quisquam quo. Voluptatum tempora ea. Ab quod aut.",
-                            "description": "Cumque excepturi dicta. Rerum quam iure. Tenetur dolore consequuntur.",
-                            "severity": "low",
-                            "slug": "foo_rule_183a4842-e34f-4c88-9d2a-0ab0621d2292",
+                            "title": "Cum fugiat quis autem.",
+                            "rationale": "Consequuntur rerum ex. Necessitatibus aut ducimus. Aperiam consequatur ut.",
+                            "description": "Quas nisi dolorum. Veritatis repellat magnam. Molestiae tempore ad.",
+                            "severity": "high",
+                            "slug": "foo_rule_8ab4606f-3f63-400d-9ad5-c64ed565ae71",
                             "precedence": 1
                           },
                           "relationships": {
                             "benchmark": {
                               "data": {
-                                "id": "5bb8a1ee-59cb-401b-8468-256ccddec081",
+                                "id": "dce30a93-28df-47ce-9933-bebe96f327d8",
                                 "type": "benchmark"
                               }
                             },
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "17dbe8e9-e7c5-4f7f-8254-6fd5f4e4f94c",
+                                  "id": "b7405fe8-9167-4132-b0f4-82014eccda44",
                                   "type": "profile"
                                 },
                                 {
-                                  "id": "bae36fb2-7b2e-4921-bbaf-d20d4dd7eebc",
+                                  "id": "149fad7c-13ec-42fe-a41a-1338deee0fa3",
                                   "type": "profile"
                                 }
                               ]
@@ -2224,7 +2149,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -2241,7 +2165,7 @@
                   "Response example": {
                     "value": {
                       "errors": [
-                        "Rule not found with ID 64bcb21c-e1d0-4d36-9dc3-2cd01475747e"
+                        "Rule not found with ID ff26b5a6-2b14-408f-9fa5-d55e8c1bd97d"
                       ]
                     },
                     "summary": "",
@@ -2259,33 +2183,33 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "0799a280-21bc-4358-b2d4-cfee7b66cfe3",
+                        "id": "d5636f12-de9d-4c14-9bbd-7ca39af19a39",
                         "type": "rule",
                         "attributes": {
-                          "ref_id": "foo_rule_54b32700-8070-4298-a645-60408ca5b5d3",
+                          "ref_id": "foo_rule_3143fcbd-f25a-4a42-9b72-dd79d87dc56e",
                           "remediation_issue_id": null,
-                          "title": "Voluptate consequatur accusamus sed.",
-                          "rationale": "Omnis quia et. Et adipisci sint. Rerum illo dolores.",
-                          "description": "Perspiciatis iure culpa. Dolor nulla libero. Odit culpa odio.",
-                          "severity": "medium",
-                          "slug": "foo_rule_54b32700-8070-4298-a645-60408ca5b5d3",
+                          "title": "Sint consectetur est dolor.",
+                          "rationale": "Porro exercitationem quod. Et nesciunt dolores. Consequatur aliquam deserunt.",
+                          "description": "Aut minima aut. Corporis qui consequatur. Necessitatibus consequatur sit.",
+                          "severity": "high",
+                          "slug": "foo_rule_3143fcbd-f25a-4a42-9b72-dd79d87dc56e",
                           "precedence": 1
                         },
                         "relationships": {
                           "benchmark": {
                             "data": {
-                              "id": "5336a06a-6c8b-4376-8374-7622e063775d",
+                              "id": "f6a2f4fd-66b9-4994-963a-04362c11c145",
                               "type": "benchmark"
                             }
                           },
                           "profiles": {
                             "data": [
                               {
-                                "id": "f85810f8-bd95-40b4-91e3-aa336f6db307",
+                                "id": "ad166f5e-c2e8-4b79-b49d-242ed06b7de8",
                                 "type": "profile"
                               },
                               {
-                                "id": "69dfbbff-21ba-492c-a5f5-0bc88bc397f9",
+                                "id": "09d98864-db52-4bbd-b3a2-56eb165027ec",
                                 "type": "profile"
                               }
                             ]
@@ -2417,7 +2341,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -2974,7 +2897,6 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to return",
             "schema": {
               "type": "integer",
@@ -2987,7 +2909,6 @@
             "name": "offset",
             "in": "query",
             "required": false,
-            "type": "integer",
             "description": "The number of items to skip before starting to collect the result set",
             "schema": {
               "type": "integer",
@@ -2999,7 +2920,6 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "type": "string",
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
               "type": "string",
@@ -3010,7 +2930,6 @@
             "name": "tags",
             "in": "query",
             "required": false,
-            "type": "array",
             "description": "An array of tags to narrow down the results against. The namespace, key and value are concatenated using `/` and `=` symbols. In case the values contain symbols used for separators, `/` is replaced with `%2F`, `=` is replaced with `%3D`.<br><br>e.g.: `namespace/key=value`, `insights-client/selinux-config=SELINUX%3Denforcing`",
             "schema": {
               "type": "array",
@@ -3024,16 +2943,6 @@
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "type": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array"
-                }
-              ]
-            },
             "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
               "type": {
@@ -3068,7 +2977,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -3086,20 +2994,20 @@
                     "value": {
                       "data": [
                         {
-                          "id": "1ca41c24-92d5-48d9-b6e5-1d6a452f1c5e",
+                          "id": "950a491b-1e7d-4810-8bbe-ef337d743de0",
                           "type": "host",
                           "attributes": {
-                            "name": "blanda-sawayn.net",
+                            "name": "zieme-streich.com",
                             "os_major_version": 7,
                             "os_minor_version": 9,
-                            "last_scanned": "2022-11-03T11:15:01Z",
+                            "last_scanned": "2022-11-03T14:06:32Z",
                             "rules_passed": 0,
                             "rules_failed": 0,
                             "has_policy": true,
-                            "culled_timestamp": "2032-11-17T11:15:01Z",
-                            "stale_timestamp": "2032-11-03T11:15:01Z",
-                            "stale_warning_timestamp": "2032-11-10T11:15:01Z",
-                            "updated": "2022-11-03T11:15:01Z",
+                            "culled_timestamp": "2032-11-17T14:06:32Z",
+                            "stale_timestamp": "2032-11-03T14:06:32Z",
+                            "stale_warning_timestamp": "2032-11-10T14:06:32Z",
+                            "updated": "2022-11-03T14:06:32Z",
                             "insights_id": null,
                             "compliant": false
                           },
@@ -3107,7 +3015,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "ff646506-02a7-4e80-9e3b-96bbf6cd0c03",
+                                  "id": "e10a6298-f91c-41a0-acff-d2d9be1a9628",
                                   "type": "test_result"
                                 }
                               ]
@@ -3115,7 +3023,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "bfd3c0da-d8cc-45b0-9865-025a667b18c1",
+                                  "id": "eb54b4fc-5827-40f0-92f1-e1d5a1546f0e",
                                   "type": "profile"
                                 }
                               ]
@@ -3205,7 +3113,6 @@
           {
             "name": "include",
             "in": "query",
-            "type": "string",
             "required": false,
             "schema": {
               "type": "string"
@@ -3240,20 +3147,20 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "20fb5c82-1800-4ce8-97a2-050979e67e96",
+                        "id": "166c65bd-d77d-4541-b8dc-b7aaf09ec332",
                         "type": "host",
                         "attributes": {
-                          "name": "blick.io",
+                          "name": "macgyver.name",
                           "os_major_version": 7,
                           "os_minor_version": 9,
-                          "last_scanned": "2022-11-03T11:15:01Z",
+                          "last_scanned": "2022-11-03T14:06:32Z",
                           "rules_passed": 0,
                           "rules_failed": 0,
                           "has_policy": true,
-                          "culled_timestamp": "2032-11-17T11:15:01Z",
-                          "stale_timestamp": "2032-11-03T11:15:01Z",
-                          "stale_warning_timestamp": "2032-11-10T11:15:01Z",
-                          "updated": "2022-11-03T11:15:01Z",
+                          "culled_timestamp": "2032-11-17T14:06:32Z",
+                          "stale_timestamp": "2032-11-03T14:06:32Z",
+                          "stale_warning_timestamp": "2032-11-10T14:06:32Z",
+                          "updated": "2022-11-03T14:06:32Z",
                           "insights_id": null,
                           "compliant": false
                         },
@@ -3261,7 +3168,7 @@
                           "test_results": {
                             "data": [
                               {
-                                "id": "944385a5-00f9-4668-9a09-d86aa3e7ca46",
+                                "id": "d95fa898-50d8-491c-9aad-985f0c7f30a3",
                                 "type": "test_result"
                               }
                             ]
@@ -3269,7 +3176,7 @@
                           "profiles": {
                             "data": [
                               {
-                                "id": "3d19f9db-817b-4d68-804e-0e4b55951b2c",
+                                "id": "a219f9e1-96f8-469d-8214-ae333d89118d",
                                 "type": "profile"
                               }
                             ]
