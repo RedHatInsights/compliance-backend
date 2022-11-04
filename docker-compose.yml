@@ -276,27 +276,27 @@ services:
       RAILS_ENV=test bundle exec rails db -p < db/cyndi_setup_test.sql;
       '
     tmpfs:
-      - /app/log
-      - /app/tmp
+      - /opt/app-root/src/log
+      - /opt/app-root/src/tmp
     volumes:
-      - .:/app:z
+      - .:/opt/app-root/src:z
     depends_on:
       - db
     links:
       - db
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
-      - ACG_CONFIG=/app/devel.json
+      - ACG_CONFIG=/opt/app-root/src/devel.json
   import-ssg:
     image: compliance-backend-rails
     entrypoint: ''
     command: 'bundle exec rake ssg:import_rhel_supported'
     restart: on-failure
     tmpfs:
-      - /app/log
-      - /app/tmp
+      - /opt/app-root/src/log
+      - /opt/app-root/src/tmp
     volumes:
-      - .:/app:z
+      - .:/opt/app-root/src/:z
     depends_on:
       - db
       - compliance-ssg
@@ -307,13 +307,18 @@ services:
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - RAILS_LOG_TO_STDOUT=true
-      - ACG_CONFIG=/app/devel.json
+      - ACG_CONFIG=/opt/app-root/src/devel.json
   rails:
     env_file: .env
     build:
       context: .
-      dockerfile: devel.Dockerfile
+      target: build
+      args:
+        - prod=false
+        - extras=$EXTRA_PACKAGES
     image: compliance-backend-rails
+    entrypoint: '/opt/app-root/src/devel.entrypoint.sh'
+    command: 'bundle exec rails s -b 0.0.0.0'
     tty: true
     stdin_open: true
     restart: on-failure
@@ -321,15 +326,15 @@ services:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
       - HOSTNAME=rails
-      - ACG_CONFIG=/app/devel.json
+      - ACG_CONFIG=/opt/app-root/src/devel.json
       - SWAGGER_DRY_RUN=0
     ports:
       - 3000:3000
     tmpfs:
-      - /app/log
-      - /app/tmp
+      - /opt/app-root/src/log
+      - /opt/app-root/src/tmp
     volumes:
-      - .:/app:z
+      - .:/opt/app-root/src:z
     depends_on:
       - db
       - redis
@@ -350,12 +355,12 @@ services:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
       - HOSTNAME=inventory-consumer
-      - ACG_CONFIG=/app/devel.json
+      - ACG_CONFIG=/opt/app-root/src/devel.json
     tmpfs:
-      - /app/log
-      - /app/tmp
+      - /opt/app-root/src/log
+      - /opt/app-root/src/tmp
     volumes:
-      - .:/app:z
+      - .:/opt/app-root/src:z
     depends_on:
       - db
       - rbac
@@ -368,10 +373,10 @@ services:
     image: compliance-backend-rails
     restart: on-failure
     tmpfs:
-      - /app/log
-      - /app/tmp
+      - /opt/app-root/src/log
+      - /opt/app-root/src/tmp
     volumes:
-      - .:/app:z
+      - .:/opt/app-root/src:z
     depends_on:
       - redis
       - rbac
@@ -384,7 +389,7 @@ services:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - SIDEKIQ_CONCURRENCY=1
       - HOSTNAME=sidekiq
-      - ACG_CONFIG=/app/devel.json
+      - ACG_CONFIG=/opt/app-root/src/devel.json
   redis:
     image: quay.io/cloudservices/redis:latest
     ports:

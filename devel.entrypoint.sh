@@ -2,6 +2,6 @@
 set -e
 
 # Remove a potentially pre-existing server.pid for Rails.
-rm -f /app/tmp/pids/server.pid
+rm -f /opt/app-root/src/tmp/pids/server.pid
 
 exec "$@"
