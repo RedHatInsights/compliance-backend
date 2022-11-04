@@ -127,9 +127,3 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
-group :development, :test do
-  # load local gemfile
-  local_gemfile = File.join(File.dirname(__FILE__), 'Gemfile.local')
-  self.instance_eval(Bundler.read_file(local_gemfile)) if File.exist?(local_gemfile)
-end
