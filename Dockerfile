@@ -12,12 +12,15 @@ WORKDIR /opt/app-root/src
 
 USER 0
 
-COPY ./Gemfile.lock ./Gemfile ./.gemrc.prod /opt/app-root/src/
+COPY --chown=1001:0 ./Gemfile.lock ./Gemfile ./.gemrc.prod /opt/app-root/src/
 
 RUN microdnf install --nodocs -y $devDeps       && \
     gem install bundler -v 2.3.22               && \
-    mv ./.gemrc.prod /etc/gemrc                 && \
-    bundle config set --local without $without  && \
+    mv ./.gemrc.prod /etc/gemrc
+
+USER 1001
+
+RUN bundle config set --local without $without  && \
     bundle config set --local deployment 'true' && \
     bundle config set --local path './.bundle'  && \
     bundle config set --local retry '2'         && \
