@@ -41,7 +41,19 @@ jobs:
       with:
         ignore: vendor
         check_together: true
-
+  development-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up the environment
+      run: |
+        cp .env.example .env
+        pip3 install podman-compose
+    - name: Build using podman-compose
+      run: podman-compose build
+    - name: Build using docker-compose
+      run: docker-compose build
   unit-tests:
     runs-on: ubuntu-latest
     services:
