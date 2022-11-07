@@ -15,4 +15,11 @@ module Exceptions
       super("Result cannot be sorted by the '#{column}' column.")
     end
   end
+
+  # Exception for unparsable fields in tag(s)
+  class InvalidTagEncoding < StandardError
+    def initialize
+      super('Invalid encoding of tag(s)')
+    end
+  end
 end
