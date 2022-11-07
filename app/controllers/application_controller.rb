@@ -85,6 +85,7 @@ class ApplicationController < ActionController::API
     ActionController::UnpermittedParameters,
     ::Exceptions::InvalidSortingDirection,
     ::Exceptions::InvalidSortingColumn,
+    ::Exceptions::InvalidTagEncoding,
     RangeError
   ]
 

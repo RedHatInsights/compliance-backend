@@ -23,12 +23,8 @@ module TagFiltering
         key: Rack::Utils.unescape(key),
         value: value && Rack::Utils.unescape(value)
       }
-    end
-
-    def decode_value(str)
-      str.gsub(/\+|%\h\h/, URI::TBLDECWWWCOMP_)
-         .force_encoding(Encoding::UTF_8)
-         .scrub
+    rescue ArgumentError
+      raise ::Exceptions::InvalidTagEncoding
     end
   end
 
