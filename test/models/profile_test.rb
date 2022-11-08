@@ -990,9 +990,24 @@ class ProfileTest < ActiveSupport::TestCase
         'conflicts' => [@rule_group_6, @rule6]
       }
 
+      expected_response4 = {
+        'rule_group' => @rule_group_3,
+        'group_children' => [],
+        'rule_children' => [
+          {
+            'rule' => @rule3,
+            'requires' => nil,
+            'conflicts' => nil
+          }
+        ],
+        'requires' => nil,
+        'conflicts' => [@rule6, @rule_group_6]
+      }
+
       assert_includes rules_and_rule_groups_json, expected_response1
       assert_includes rules_and_rule_groups_json, expected_response2
-      assert_includes rules_and_rule_groups_json, expected_response3
+      assert rules_and_rule_groups_json.include?(expected_response3) ||
+             rules_and_rule_groups_json.include?(expected_response4)
     end
   end
 end

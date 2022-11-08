@@ -11,6 +11,7 @@ class Profile < ApplicationRecord
   include ProfileHosts
   include ProfileRules
   include ShortRefId
+  include RulesAndRuleGroups
 
   sortable_by :name, Arel.sql('COALESCE(policies.name, profiles.name)'),
               scope: :joins_policy
