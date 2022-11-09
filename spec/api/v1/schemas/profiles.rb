@@ -21,8 +21,7 @@ module Api
               type: 'string',
               format: 'uuid',
               nullable: true,
-              example: '0105a0f0-7379-4897-a891-f95cfb9ddf9c',
-              required: true
+              example: '0105a0f0-7379-4897-a891-f95cfb9ddf9c'
             },
             parent_profile_ref_id: {
               type: 'string',
@@ -83,7 +82,9 @@ module Api
               example: false
             },
             policy_profile_id: {
-              type: 'uuid',
+              type: 'string',
+              format: 'uuid',
+              nullable: true,
               example: '374399b7-e6ba-49b7-a405-9b620a2bd0b3'
             },
             os_major_version: {

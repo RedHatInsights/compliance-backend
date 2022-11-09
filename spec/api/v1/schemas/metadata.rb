@@ -28,10 +28,7 @@ module Api
           type: 'array',
           items: {
             type: 'string',
-            properties: {
-              type: 'string',
-              example: 'insights/environment=production'
-            }
+            example: 'insights/environment=production'
           }
         }.freeze
       end

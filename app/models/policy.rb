@@ -78,7 +78,7 @@ class Policy < ApplicationRecord
   end
 
   def initial_profile
-    # assuming that there is only one external=false profile in a policy
+    # there is only one internal (external=false) profile in a policy
     profiles.external(false).first
   end
 
