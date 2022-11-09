@@ -93,6 +93,7 @@ gem 'webrick'
 gem 'ancestry'
 
 group :development, :test do
+  gem 'awesome_print', require: false
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'

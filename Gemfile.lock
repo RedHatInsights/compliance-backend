@@ -76,6 +76,7 @@ GEM
     anyway_config (2.3.0)
       ruby-next-core (>= 0.14.0)
     ast (2.4.2)
+    awesome_print (1.9.2)
     bootsnap (1.9.3)
       msgpack (~> 1.0)
     brakeman (5.2.0)
@@ -442,6 +443,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-import
   ancestry
+  awesome_print
   bootsnap (>= 1.1.0)
   brakeman
   bullet
