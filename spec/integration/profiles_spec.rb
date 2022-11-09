@@ -307,8 +307,7 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
                      id: ref_schema('uuid'),
                      attributes: ref_schema('profile'),
                      relationships: ref_schema('profile_relationships')
-                   },
-                   relationships: ref_schema('profile_relationships')
+                   }
                  },
                  included: {
                    type: :array,

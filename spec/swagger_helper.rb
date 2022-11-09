@@ -110,7 +110,7 @@ def sort_params(model = nil)
             description: 'An array of fields with an optional direction '\
              '(:asc or :desc) to sort the results.',
             schema: {
-              type: { oneOf: [{ type: :string }, { type: :array }] },
+              type: :string,
               items: { enum: sort_combinations(model) },
               default: ''
             }

@@ -9,6 +9,7 @@ describe 'Systems API', swagger_doc: 'v1/openapi.json' do
     @host = FactoryBot.create(
       :host,
       account: @account.account_number,
+      insights_id: '45b7b025-4bf4-48a5-abbd-161c12ece8f4',
       org_id: @account.org_id,
       tags: [{ namespace: 'foo', key: 'bar', value: 'baz' }]
     )
@@ -70,8 +71,8 @@ describe 'Systems API', swagger_doc: 'v1/openapi.json' do
   path '/systems/{id}' do
     get 'Retrieve a system' do
       tags 'host'
-      description 'Lists all hosts requested'
-      operationId 'ListHosts'
+      description 'Retrieves data for a system'
+      operationId 'ShowHost'
 
       content_types
       auth_header

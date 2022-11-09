@@ -10,12 +10,17 @@ module Api
 
         STATUS = {
           type: 'object',
-          properties: { data: {
-            api: {
-              type: 'boolean',
-              example: true
+          properties: {
+            data: {
+              type: 'object',
+              properties: {
+                api: {
+                  type: 'boolean',
+                  example: true
+                }
+              }
             }
-          } }
+          }
         }.freeze
       end
     end
