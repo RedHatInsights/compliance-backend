@@ -6,6 +6,8 @@ module Xccdf
   # for a given set of software in a specific release of the SCAP Security
   # Guide (i.e. RHEL 7, v0.1.43)
   class Benchmark < ApplicationRecord
+    include RulesAndRuleGroups
+
     REF_PREFIX = 'xccdf_org.ssgproject.content_benchmark_RHEL'
     SORT_BY_VERSION = Arel::Nodes::NamedFunction.new(
       'CAST',
