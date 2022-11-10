@@ -47,7 +47,7 @@ class RuleGroupTest < ActiveSupport::TestCase
     requires = {}
     requires[rule] = required_rule_group
 
-    expected = [{ 'rule' => rule, 'requires' => required_rule_group, 'conflicts' => nil }]
+    expected = [{ rule: rule, requires: required_rule_group, conflicts: nil }]
 
     assert_equal @rule_group.rules_with_relationships(requires, {}), expected
   end

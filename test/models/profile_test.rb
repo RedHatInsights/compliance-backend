@@ -929,79 +929,79 @@ class ProfileTest < ActiveSupport::TestCase
       rules_and_rule_groups_json = @parent1.rules_and_rule_groups
 
       expected_response1 = {
-        'rule_group' => @rule_group_1,
-        'group_children' => [
+        rule_group: @rule_group_1,
+        group_children: [
           {
-            'rule_group' => @rule_group_2,
-            'group_children' => [
+            rule_group: @rule_group_2,
+            group_children: [
               {
-                'rule_group' => @rule_group_4,
-                'group_children' => [],
-                'rule_children' => [
+                rule_group: @rule_group_4,
+                group_children: [],
+                rule_children: [
                   {
-                    'rule' => @rule5,
-                    'requires' => [@rule_group_6],
-                    'conflicts' => [@rule6]
+                    rule: @rule5,
+                    requires: [@rule_group_6],
+                    conflicts: [@rule6]
                   }
                 ],
-                'requires' => nil,
-                'conflicts' => [@rule_group_6]
+                requires: nil,
+                conflicts: [@rule_group_6]
               }
             ],
-            'rule_children' => [
+            rule_children: [
               {
-                'rule' => @rule2,
-                'requires' => nil,
-                'conflicts' => nil
+                rule: @rule2,
+                requires: nil,
+                conflicts: nil
               }
             ],
-            'requires' => nil,
-            'conflicts' => nil
+            requires: nil,
+            conflicts: nil
           }
         ],
-        'rule_children' => [
+        rule_children: [
           {
-            'rule' => @rule1,
-            'requires' => [@rule6],
-            'conflicts' => [@rule_group_5]
+            rule: @rule1,
+            requires: [@rule6],
+            conflicts: [@rule_group_5]
           }
         ],
-        'requires' => nil,
-        'conflicts' => nil
+        requires: nil,
+        conflicts: nil
       }
 
       expected_response2 = {
-        'rule' => @rule4,
-        'requires' => [@rule6],
-        'conflicts' => nil
+        rule: @rule4,
+        requires: [@rule6],
+        conflicts: nil
       }
 
       expected_response3 = {
-        'rule_group' => @rule_group_3,
-        'group_children' => [],
-        'rule_children' => [
+        rule_group: @rule_group_3,
+        group_children: [],
+        rule_children: [
           {
-            'rule' => @rule3,
-            'requires' => nil,
-            'conflicts' => nil
+            rule: @rule3,
+            requires: nil,
+            conflicts: nil
           }
         ],
-        'requires' => nil,
-        'conflicts' => [@rule_group_6, @rule6]
+        requires: nil,
+        conflicts: [@rule_group_6, @rule6]
       }
 
       expected_response4 = {
-        'rule_group' => @rule_group_3,
-        'group_children' => [],
-        'rule_children' => [
+        rule_group: @rule_group_3,
+        group_children: [],
+        rule_children: [
           {
-            'rule' => @rule3,
-            'requires' => nil,
-            'conflicts' => nil
+            rule: @rule3,
+            requires: nil,
+            conflicts: nil
           }
         ],
-        'requires' => nil,
-        'conflicts' => [@rule6, @rule_group_6]
+        requires: nil,
+        conflicts: [@rule6, @rule_group_6]
       }
 
       assert_includes rules_and_rule_groups_json, expected_response1
