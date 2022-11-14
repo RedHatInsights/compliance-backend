@@ -6,7 +6,7 @@ module RulesAndRuleGroups
 
   included do
     # rubocop:disable Metrics/MethodLength
-    def rules_and_rule_groups
+    def rule_tree
       conflicts = relationships_for('conflicts')
       requires = relationships_for('requires')
       arranged_rule_groups = rule_groups.includes(:rules).arrange_serializable do |parent, children|

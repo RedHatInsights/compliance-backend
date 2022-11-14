@@ -527,7 +527,7 @@ module Xccdf
       end
 
       should 'correctly return nested rule and rule group children of rule groups in JSON' do
-        rules_and_rule_groups_json = @bm1.rules_and_rule_groups
+        rules_and_rule_groups_json = @bm1.rule_tree
 
         expected_response1 = {
           rule_group: @rule_group_1,
