@@ -197,6 +197,8 @@ objects:
               optional: true
         - name: IMAGE_TAG
           value: "${IMAGE}:${IMAGE_TAG}"
+        - name: QE_ACCOUNTS
+          value: "${QE_ACCOUNTS}"
         - name: NAMESPACE
           valueFrom:
             fieldRef:
@@ -288,6 +290,8 @@ objects:
               optional: true
         - name: IMAGE_TAG
           value: "${IMAGE}:${IMAGE_TAG}"
+        - name: QE_ACCOUNTS
+          value: "${QE_ACCOUNTS}"
         - name: NAMESPACE
           valueFrom:
             fieldRef:
@@ -390,6 +394,8 @@ objects:
               optional: true
         - name: IMAGE_TAG
           value: "${IMAGE}:${IMAGE_TAG}"
+        - name: QE_ACCOUNTS
+          value: "${QE_ACCOUNTS}"
         - name: NAMESPACE
           valueFrom:
             fieldRef:
@@ -555,3 +561,6 @@ parameters:
 - name: PRIMARY_REDIS_AS_CACHE
   description: Whether to use the clowder-provided Redis as cache or not
   value: 'false'
+- name: QE_ACCOUNTS
+  description: Pipe-separated list of numerical identifiers
+  required: false
