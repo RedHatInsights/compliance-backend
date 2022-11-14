@@ -9,7 +9,7 @@ module RulesAndRuleGroups
     def rule_tree
       conflicts = relationships_for('conflicts')
       requires = relationships_for('requires')
-      arranged_rule_groups = rule_groups.includes(:rules).arrange_serializable do |parent, children|
+      arranged_rule_groups = rule_groups.includes(:rules).references(:rules).arrange_serializable do |parent, children|
         {
           rule_group: parent,
           group_children: children,
