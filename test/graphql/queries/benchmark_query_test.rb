@@ -171,4 +171,27 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
     ref = cp.rules.map { |rule| { 'label' => rule.rule_identifier.label, 'system' => rule.rule_identifier.system } }
     assert_same_elements(identifiers, ref)
   end
+
+  test 'ruleTree returns rules and groups in a tree structure' do
+    bm = FactoryBot.create(:benchmark)
+
+    Xccdf::Benchmark.any_instance.expects(:rule_tree).returns('foo')
+
+    query = <<-GRAPHQL
+      query benchmarkQuery($id: String!) {
+        benchmark(id: $id) {
+          id
+          ruleTree
+        }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { id: bm.id },
+      context: { current_user: @user }
+    )
+
+    assert_equal result['data']['benchmark']['ruleTree'], 'foo'
+  end
 end

@@ -17,6 +17,8 @@ module Types
     field :profiles, [::Types::Profile], null: true
     field :rules, [::Types::Rule], null: true, extras: [:lookahead]
 
+    field :rule_tree, GraphQL::Types::JSON, null: true
+
     enforce_rbac Rbac::COMPLIANCE_VIEWER
 
     def profiles

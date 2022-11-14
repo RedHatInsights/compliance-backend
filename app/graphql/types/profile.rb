@@ -24,6 +24,7 @@ module Types
     field :account_id, ID, null: false
     field :policy, Types::Profile, null: true
     field :profiles, [::Types::Profile], null: true
+    field :rule_tree, GraphQL::Types::JSON, null: true
     field :rules, [::Types::Rule], null: true, extras: [:lookahead] do
       argument :system_id, String,
                'System ID to filter by', required: false
