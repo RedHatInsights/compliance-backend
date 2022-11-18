@@ -1,7 +1,9 @@
 #!/bin/bash
 
+export BONFIRE_REPO_BRANCH='add-shellcheck-to-scripts'
+export BONFIRE_REPO_ORG='Victoremepunto'
 # Install bonfire repo/initialize
-CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
+CICD_URL="https://raw.githubusercontent.com/${BONFIRE_REPO_ORG}/bonfire/${BONFIRE_REPO_BRANCH}/cicd"
 # shellcheck source=/dev/null
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 
