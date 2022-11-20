@@ -943,8 +943,8 @@ module V1
                      parsed_data.dig('attributes', 'business_objective')
       end
 
-      test 'create copies rules from the parent profile' do
-        parent = FactoryBot.create(:canonical_profile, :with_rules)
+      test 'create copies of rules and groups from the parent profile' do
+        parent = FactoryBot.create(:canonical_profile, :with_rules, :with_rule_groups)
 
         assert_audited_success 'Updated tailoring'
         assert_audited_success 'Created policy'
@@ -963,14 +963,25 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
+        assert_equal(
+          Set.new(parent.rule_group_ids),
+          Set.new(Profile.find(parsed_data['id']).rule_groups.pluck(:id))
+        )
       end
 
-      test 'create allows custom rules' do
-        parent = FactoryBot.create(:canonical_profile, :with_rules)
+      test 'create allows custom rules and groups' do
+        parent = FactoryBot.create(:canonical_profile, :with_rules, :with_rule_groups)
         rule_ids = parent.benchmark.rules.pluck(:id)
+        rule_group_ids = parent.benchmark.rule_groups.pluck(:id)
 
         assert_audited_success 'Created policy'
-        assert_audited_success 'Updated tailoring of profile', "#{rule_ids.count} rules added", '0 rules removed'
+        assert_audited_success(
+          'Updated tailoring of profile',
+          "#{rule_ids.count} rules added",
+          '0 rules removed',
+          "#{rule_group_ids.count} groups added",
+          '0 groups removed'
+        )
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -980,6 +991,11 @@ module V1
               rules: {
                 data: rule_ids.map do |id|
                   { id: id, type: 'rule' }
+                end
+              },
+              rule_groups: {
+                data: rule_group_ids.map do |id|
+                  { id: id, type: 'rule_grup' }
                 end
               }
             }
@@ -993,25 +1009,43 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
+        assert_equal(
+          Set.new(rule_group_ids),
+          Set.new(Profile.find(parsed_data['id']).rule_groups.pluck(:id))
+        )
       end
 
-      test 'create only adds custom rules from the parent profile benchmark' do
+      test 'create only adds custom rules and groups from the parent profile benchmark' do
         parent = FactoryBot.create(
           :canonical_profile,
           :with_rules,
-          rule_count: 1
+          :with_rule_groups,
+          rule_count: 1,
+          rule_group_count: 1
         )
-        extra_rule = FactoryBot.create(
+        extra = FactoryBot.create(
           :canonical_profile,
           :with_rules,
-          rule_count: 1
-        ).rules
+          :with_rule_groups,
+          rule_count: 1,
+          rule_group_count: 1
+        )
+
+        extra_rule_group = extra.rule_groups
+        extra_rule = extra.rules
 
         assert(parent.benchmark.rules.one?)
 
         rule_ids = parent.rules.pluck(:id) + extra_rule.pluck(:id)
+        rule_group_ids = parent.rule_groups.pluck(:id) + extra_rule_group.pluck(:id)
         assert_audited_success 'Created policy'
-        assert_audited_success 'Updated tailoring of profile', "#{extra_rule.count} rules added", '0 rules removed'
+        assert_audited_success(
+          'Updated tailoring of profile',
+          "#{extra_rule.count} rules added",
+          '0 rules removed',
+          "#{extra_rule_group.count} groups added",
+          '0 groups removed'
+        )
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -1021,6 +1055,11 @@ module V1
               rules: {
                 data: rule_ids.map do |id|
                   { id: id, type: 'rule' }
+                end
+              },
+              rule_groups: {
+                data: rule_group_ids.map do |id|
+                  { id: id, type: 'rule_grup' }
                 end
               }
             }
@@ -1034,26 +1073,47 @@ module V1
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
         )
+
+        assert_equal(
+          Set.new(parent.benchmark.rule_group_ids),
+          Set.new(Profile.find(parsed_data['id']).rule_groups.pluck(:id))
+        )
       end
 
-      test 'create only adds custom rules from the parent profile benchmark'\
-           'and defaults to parent profile rules' do
+      test 'create only adds custom rules and groups from the parent profile benchmark'\
+           'and defaults to parent profile rules and groups' do
         parent = FactoryBot.create(
           :canonical_profile,
           :with_rules,
-          rule_count: 1
+          :with_rule_groups,
+          rule_count: 1,
+          rule_group_count: 1
         )
 
-        extra_rule = FactoryBot.create(
+        extra = FactoryBot.create(
           :canonical_profile,
           :with_rules,
-          rule_count: 1
-        ).rules
+          :with_rule_groups,
+          rule_count: 1,
+          rule_group_count: 1
+        )
+
+        extra_rule = extra.rules
+        extra_rule_group = extra.rule_groups
 
         assert(parent.benchmark.rules.one?)
+        assert(parent.benchmark.rule_groups.one?)
+
         rule_ids = extra_rule.pluck(:id)
+        rule_group_ids = extra_rule_group.pluck(:id)
         assert_audited_success 'Created policy'
-        assert_audited_success 'Updated tailoring of profile', "#{extra_rule.count} rules added", '0 rules removed'
+        assert_audited_success(
+          'Updated tailoring of profile',
+          "#{extra_rule.count} rules added",
+          '0 rules removed',
+          "#{extra_rule_group.count} groups added",
+          '0 groups removed'
+        )
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
@@ -1063,6 +1123,11 @@ module V1
               rules: {
                 data: rule_ids.map do |id|
                   { id: id, type: 'rule' }
+                end
+              },
+              rule_groups: {
+                data: rule_group_ids.map do |id|
+                  { id: id, type: 'rule_grup' }
                 end
               }
             }
@@ -1075,6 +1140,10 @@ module V1
           Set.new(parent.rule_ids),
           Set.new(parsed_data.dig('relationships', 'rules', 'data')
                              .map { |r| r['id'] })
+        )
+        assert_equal(
+          Set.new(parent.rule_group_ids),
+          Set.new(Profile.find(parsed_data['id']).rule_groups.pluck(:id))
         )
       end
 
@@ -1142,7 +1211,7 @@ module V1
       BUSINESS_OBJECTIVE = 'LATAM Expansion'
 
       setup do
-        @profile = FactoryBot.create(:profile, :with_rules, upstream: false)
+        @profile = FactoryBot.create(:profile, :with_rules, :with_rule_groups, upstream: false)
       end
 
       test 'update without data' do
@@ -1197,14 +1266,23 @@ module V1
         assert_equal BUSINESS_OBJECTIVE, @profile.business_objective.title
       end
 
-      test 'update with attributes and rules relationships' do
+      test 'update with attributes and rules/groups relationships' do
         @profile.rules = []
+        @profile.rule_groups = []
         benchmark_rules = @profile.benchmark.rules
+        benchmark_rule_groups = @profile.benchmark.rule_groups
         assert_audited_success 'Created Business Objective'
         assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
-        assert_audited_success 'Updated tailoring of profile', "#{benchmark_rules.count} rules added", '0 rules removed'
+        assert_audited_success(
+          'Updated tailoring of profile',
+          "#{benchmark_rules.count} rules added",
+          '0 rules removed',
+          "#{benchmark_rule_groups.count} groups added",
+          '0 groups removed'
+        )
         assert_difference(
-          '@profile.rules.count' => benchmark_rules.count
+          '@profile.rules.count' => benchmark_rules.count,
+          '@profile.rule_groups.count' => benchmark_rule_groups.count
         ) do
           patch profile_path(@profile.id), params: params(
             attributes: {
@@ -1215,6 +1293,11 @@ module V1
                 data: benchmark_rules.map do |rule|
                   { id: rule.id, type: 'rule' }
                 end
+              },
+              rule_groups: {
+                data: benchmark_rule_groups.map do |rule_group|
+                  { id: rule_group.id, type: 'rule_group' }
+                end
               }
             }
           )
@@ -1224,13 +1307,21 @@ module V1
                      @profile.reload.business_objective.title
       end
 
-      test 'update to remove rules relationships' do
+      test 'update to remove rules/groups relationships' do
         benchmark_rules = @profile.benchmark.rules
+        benchmark_rule_groups = @profile.benchmark.rule_groups
         assert_audited_success 'Created Business Objective'
         assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
-        assert_audited_success 'Updated tailoring of profile', '0 rules added, 1 rules removed'
+        assert_audited_success(
+          'Updated tailoring of profile',
+          '0 rules added',
+          '1 rules removed',
+          '0 groups added',
+          '1 groups removed'
+        )
         assert_difference(
-          '@profile.reload.rules.count' => -1
+          '@profile.reload.rules.count' => -1,
+          '@profile.reload.rule_groups.count' => -1
         ) do
           patch profile_path(@profile.id), params: params(
             attributes: {
@@ -1240,6 +1331,11 @@ module V1
               rules: {
                 data: benchmark_rules[0...-1].map do |rule|
                   { id: rule.id, type: 'rule' }
+                end
+              },
+              rule_groups: {
+                data: benchmark_rule_groups[0...-1].map do |rule_group|
+                  { id: rule_group.id, type: 'rule_grup' }
                 end
               }
             }
