@@ -112,6 +112,7 @@ module Api
             benchmark: ref_schema('relationship'),
             parent_profile: ref_schema('relationship'),
             rules: ref_schema('relationship_collection'),
+            rule_groups: ref_schema('relationship_collection'),
             hosts: ref_schema('relationship_collection'),
             test_results: ref_schema('relationship_collection')
           }
