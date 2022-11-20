@@ -14,6 +14,7 @@ module Types
     field :associateSystems, mutation: Mutations::Profile::AssociateSystems
     field :associateProfiles, mutation: Mutations::System::AssociateProfiles
     field :associateRules, mutation: Mutations::Profile::AssociateRules
+    field :tailorProfile, mutation: Mutations::Profile::TailorProfile
     field :createBusinessObjective, mutation: Mutations::BusinessObjective::Create
   end
 end
