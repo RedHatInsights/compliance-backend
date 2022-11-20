@@ -9,7 +9,7 @@ class Profile < ApplicationRecord
   include ProfilePolicyAssociation
   include ProfileSearching
   include ProfileHosts
-  include ProfileRules
+  include ProfileLinks
   include ShortRefId
   include RulesAndRuleGroups
 
