@@ -29,6 +29,8 @@ RUN microdnf install --nodocs -y $deps $devDeps $extras                         
     bundle install                                                              && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 
+ENV prometheus_multiproc_dir=/opt/app-root/tmp
+
 #############################################################
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
