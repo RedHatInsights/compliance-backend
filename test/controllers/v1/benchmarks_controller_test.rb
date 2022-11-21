@@ -31,6 +31,24 @@ module V1
       assert_equal(response.parsed_body['included'].first['type'], 'rule')
     end
 
+    test '#index does not include rule_tree' do
+      bm1 = FactoryBot.create(:benchmark)
+      stub_supported_ssg(@hosts, [bm1.version])
+      Xccdf::Benchmark.any_instance.stubs(:rule_tree).returns('foo')
+      get v1_benchmarks_url
+      assert_response :success
+      assert_nil response.parsed_body['data'][0]['attributes']['rule_tree']
+    end
+
+    test '#show includes rule_tree' do
+      bm1 = FactoryBot.create(:benchmark)
+      Xccdf::Benchmark.any_instance.expects(:rule_tree).returns('foo')
+      stub_supported_ssg(@hosts, [bm1.version])
+      get v1_benchmark_url(bm1)
+      assert_response :success
+      assert_equal response.parsed_body['data']['attributes']['rule_tree'], 'foo'
+    end
+
     test 'fails when includes nested' do
       FactoryBot.create(:rule, benchmark: FactoryBot.create(:benchmark))
       get v1_benchmarks_url, params: { include: 'rules.benchmark' }

@@ -8,4 +8,5 @@ class BenchmarkSerializer < ApplicationSerializer
   has_many :profiles do |benchmark|
     Pundit.policy_scope(User.current, Profile).where(benchmark: benchmark)
   end
+  attribute :rule_tree, if: proc { |_, params| params[:action] == 'show' }
 end
