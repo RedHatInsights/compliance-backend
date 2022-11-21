@@ -223,6 +223,15 @@ module V1
                      profiles.dig('data', 0, 'attributes', 'policy_profile_id')
       end
 
+      test 'rule_tree is not exposed' do
+        FactoryBot.create(:profile)
+        Profile.any_instance.stubs(:rule_tree).returns('foo')
+        get v1_profiles_url
+        assert_response :success
+
+        assert_nil response.parsed_body['data'][0]['attributes']['rule_tree']
+      end
+
       test 'profiles are sorted by score by default' do
         p1 = FactoryBot.create(:profile, name: 'a')
         p2 = FactoryBot.create(:profile, name: 'b')
@@ -647,6 +656,15 @@ module V1
         body = response.parsed_body
         assert_equal @profile.policy_profile_id,
                      body.dig('data', 'attributes', 'policy_profile_id')
+      end
+
+      test 'rule_tree is included' do
+        Profile.any_instance.expects(:rule_tree).returns('foo')
+
+        get v1_profile_url(@profile.id)
+        assert_response :success
+
+        assert_equal response.parsed_body['data']['attributes']['rule_tree'], 'foo'
       end
 
       test 'os_minor_version is serialized' do

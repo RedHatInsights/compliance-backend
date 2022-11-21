@@ -43,4 +43,6 @@ class ProfileSerializer < ApplicationSerializer
     profile&.policy&.business_objective&.title
   end
   attribute :policy_type
+
+  attribute :rule_tree, if: proc { |_, params| params[:action] == 'show' }
 end
