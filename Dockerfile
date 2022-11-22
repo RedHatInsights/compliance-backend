@@ -29,7 +29,7 @@ RUN ( [[ $prod == "true" ]] || rpm -e --nodeps tzdata )                         
     bundle install                                                              && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 
-ENV prometheus_multiproc_dir=/opt/app-root/tmp
+ENV prometheus_multiproc_dir=/opt/app-root/src/tmp
 
 #############################################################
 
