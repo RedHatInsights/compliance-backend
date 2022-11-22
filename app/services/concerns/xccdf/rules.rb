@@ -16,11 +16,11 @@ module Xccdf
         # Import the new records first with validation
         ::Rule.import!(@new_rules, ignore: true)
 
-        # Update the precedence on existing rules, validation is not necessary
+        # Update the fields on existing rules, validation is not necessary
         ::Rule.import(@old_rules,
                       on_duplicate_key_update: {
                         conflict_target: %i[ref_id benchmark_id],
-                        columns: %i[precedence]
+                        columns: %i[description rationale severity precedence]
                       }, validate: false)
       end
     end

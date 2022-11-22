@@ -83,4 +83,19 @@ class RulesTest < ActiveSupport::TestCase
 
     assert_equal before, after.reverse
   end
+
+  %i[description rationale severity].each do |field|
+    test "updates #{field} field when needed" do
+      @mock.benchmark.rules.clear
+      @mock.save_rules
+
+      rule = @mock.benchmark.rules.order(:precedence).first
+
+      @mock.instance_variable_set(:@rules, nil)
+      @mock.instance_variable_get(:@op_rules).first.instance_variable_set("@#{field}".to_sym, 'foobar')
+      @mock.save_rules
+
+      assert_equal rule.reload[field], 'foobar'
+    end
+  end
 end
