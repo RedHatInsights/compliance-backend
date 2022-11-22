@@ -17,10 +17,9 @@ WORKDIR /opt/app-root/src
 
 COPY ./Gemfile.lock ./Gemfile ./.gemrc.prod /opt/app-root/src/
 
-RUN microdnf install --nodocs -y $deps $devDeps $extras                         && \
+RUN ( [[ $prod == "true" ]] || rpm -e --nodeps tzdata )                         && \
+    microdnf install --nodocs -y $deps $devDeps $extras                         && \
     chmod +t /tmp                                                               && \
-    ( [[ $prod == "true" ]] || rpm -e --nodeps tzdata )                         && \
-    ( [[ $prod == "true" ]] || microdnf install --nodocs -y $deps )             && \
     gem install bundler -v 2.3.22                                               && \
     mv /opt/app-root/src/.gemrc.prod /etc/gemrc                                 && \
     ( [[ $prod != "true" ]] || bundle config set --without 'development:test' ) && \
