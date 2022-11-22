@@ -15,7 +15,7 @@ module Xccdf
 
         ::RuleGroup.import!(rule_group_parents, on_duplicate_key_update: {
                               conflict_target: %i[ref_id benchmark_id],
-                              columns: %i[ancestry]
+                              columns: %i[description rationale ancestry]
                             }, validate: false)
       end
 
