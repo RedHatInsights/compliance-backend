@@ -269,6 +269,21 @@ module V1
         end)
       end
 
+      test 'implicit search on profile name with escaped content' do
+        FactoryBot.create(:canonical_profile, name: '0')
+
+        get v1_profiles_url, params: { search: '&0' }
+
+        assert_response :success
+
+        profiles = response.parsed_body
+
+        assert_equal 1, profiles['data'].count
+        assert_equal(['0'], profiles['data'].map do |profile|
+          profile['attributes']['name']
+        end)
+      end
+
       test 'search canonical profile name' do
         canonical_profile = FactoryBot.create(:canonical_profile)
 

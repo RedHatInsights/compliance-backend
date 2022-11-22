@@ -151,6 +151,7 @@ module ProfileSearching
     end
 
     def filter_by_policy_and_profile_names(_filter, operator, value)
+      operator ||= '='
       field = scoped_search_definition.field_by_name('name')
       values = ScopedSearch::QueryBuilder.preprocess_parameters(scoped_search_definition, field, operator, value)
 
