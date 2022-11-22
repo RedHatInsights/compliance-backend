@@ -12,7 +12,7 @@ class RulesTest < ActiveSupport::TestCase
     include Xccdf::ProfileRules
     include Xccdf::RuleReferences
 
-    attr_accessor :benchmark, :account, :op_profiles, :op_rules, :rules
+    attr_accessor :benchmark, :account, :op_profiles, :op_rules
 
     def initialize(report_contents)
       test_result_file = OpenscapParser::TestResultFile.new(report_contents)

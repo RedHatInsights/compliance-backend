@@ -5,7 +5,7 @@ require 'test_helper'
 class XccdfReportParserTest < ActiveSupport::TestCase
   class TestParser < ::XccdfReportParser
     attr_accessor :op_benchmark, :op_test_result, :op_profiles, :op_rules,
-                  :op_rule_results, :rules, :op_rule_groups, :rule_groups
+                  :op_rule_results, :op_rule_groups, :rule_groups
     attr_reader :test_result_file, :host, :profiles
 
     def package_name

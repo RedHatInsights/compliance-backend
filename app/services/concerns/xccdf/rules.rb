@@ -6,12 +6,21 @@ module Xccdf
     extend ActiveSupport::Concern
 
     included do
-      def save_rules
+      def rules
         @rules ||= @op_rules.each_with_index.map do |op_rule, idx|
-          ::Rule.from_openscap_parser(op_rule, precedence: idx, benchmark_id: @benchmark&.id)
-        end
+          rule_group = rule_group_for(ref_id: op_rule.parent_id)
 
-        @new_rules, @old_rules = @rules.partition(&:new_record?)
+          ::Rule.from_openscap_parser(
+            op_rule,
+            precedence: idx,
+            rule_group_id: rule_group&.id,
+            benchmark_id: @benchmark&.id
+          )
+        end
+      end
+
+      def save_rules
+        @new_rules, @old_rules = rules.partition(&:new_record?)
 
         # Import the new records first with validation
         ::Rule.import!(@new_rules, ignore: true)
@@ -20,7 +29,7 @@ module Xccdf
         ::Rule.import(@old_rules,
                       on_duplicate_key_update: {
                         conflict_target: %i[ref_id benchmark_id],
-                        columns: %i[description rationale severity precedence]
+                        columns: %i[description precedence rationale rule_group_id severity]
                       }, validate: false)
       end
     end
