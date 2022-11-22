@@ -83,7 +83,7 @@ class Rule < ApplicationRecord
     (profiles & Profile.canonical).any?
   end
 
-  def self.from_openscap_parser(op_rule, benchmark_id: nil, precedence: nil)
+  def self.from_openscap_parser(op_rule, rule_group_id: nil, benchmark_id: nil, precedence: nil)
     rule = find_or_initialize_by(ref_id: op_rule.id, benchmark_id: benchmark_id)
 
     rule.op_source = op_rule
@@ -93,6 +93,7 @@ class Rule < ApplicationRecord
                            rationale: op_rule.rationale,
                            severity: op_rule.severity,
                            precedence: precedence,
+                           rule_group_id: rule_group_id,
                            upstream: false)
 
     rule
