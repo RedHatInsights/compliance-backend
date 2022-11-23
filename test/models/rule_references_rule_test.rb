@@ -13,9 +13,9 @@ class RuleReferencesRuleTest < ActiveSupport::TestCase
     rule = FactoryBot.create(:rule)
     rref = FactoryBot.create(:rule_reference)
 
-    rule.references << rref
+    rule.rule_references << rref
     assert_raises(ActiveRecord::RecordInvalid) do
-      rule.references << rref
+      rule.rule_references << rref
     end
   end
 end

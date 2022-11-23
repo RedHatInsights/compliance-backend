@@ -38,9 +38,7 @@ class Rule < ApplicationRecord
                                            inverse_of: :left, class_name: 'RuleGroupRelationship'
   has_many :right_rule_group_relationships, dependent: :delete_all, foreign_key: :right_id,
                                             inverse_of: :right, class_name: 'RuleGroupRelationship'
-  alias references rule_references
   has_one :rule_identifier, dependent: :destroy
-  alias identifier rule_identifier
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
   belongs_to :rule_group
 
