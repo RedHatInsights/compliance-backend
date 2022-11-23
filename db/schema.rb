@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_02_104757) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_05_103400) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -220,6 +220,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_104757) do
     t.integer "precedence"
     t.uuid "rule_group_id"
     t.uuid "value_checks", default: [], array: true
+    t.jsonb "references", default: []
+    t.jsonb "identifier"
     t.index ["precedence"], name: "index_rules_on_precedence"
     t.index ["ref_id", "benchmark_id"], name: "index_rules_on_ref_id_and_benchmark_id", unique: true
     t.index ["ref_id"], name: "index_rules_on_ref_id"
