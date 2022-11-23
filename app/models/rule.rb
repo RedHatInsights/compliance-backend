@@ -73,7 +73,7 @@ class Rule < ApplicationRecord
   scope :without_rule_group_parent, -> { where.missing(:rule_group) }
 
   scope :joins_identifier, lambda {
-    left_outer_joins(:rule_identifier).select('rules.*', RuleIdentifier::AS_JSON.as('identifier'))
+    left_outer_joins(:rule_identifier).select('rules.*', RuleIdentifier::AS_JSON.as('rule_identifier'))
   }
 
   def should_generate_new_friendly_id?
@@ -96,7 +96,9 @@ class Rule < ApplicationRecord
     rule.assign_attributes(title: op_rule.title, description: op_rule.description,
                            rationale: op_rule.rationale, severity: op_rule.severity,
                            precedence: precedence, rule_group_id: rule_group_id,
-                           upstream: false, slug: rule.normalize_friendly_id(op_rule.id))
+                           upstream: false, slug: rule.normalize_friendly_id(op_rule.id),
+                           identifier: op_rule.identifier&.to_h,
+                           references: op_rule.rule_references.map(&:to_h))
 
     rule
   end
