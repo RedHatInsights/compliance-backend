@@ -204,7 +204,7 @@
       }
     },
     {
-      ...profile2
+      //...profile2
     }
   ],
   "meta": {
@@ -285,7 +285,7 @@
       }
     },
     {
-      ...rule2
+      //...rule2
     }
   ],
   "meta": {
@@ -315,3 +315,58 @@
   }
 }
 ```
+
+## Reports
+
+### `GET /reports` - list reports
+notes: remodel business objective to be a text field on policy, currently there is new business objective created (id and title) on each edit of the business objective
+```json
+{
+  "data": [
+    {
+      "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+      "type": "test_result",
+      "attributes": {
+        "name": "Example Server Profile",
+        "ref_id": "xccdf_org.ssgproject.content_profile_CS2",
+        "description": "This prfile is an example of a customized server profile.",
+        "policy_type": "Example Server Profile",
+        "total_host_count": 12,
+        "compliant_host_count": 2,
+        "test_result_host_count": 6,
+        "unsupported_host_count": 0,
+        "os_major_version": "6",
+        "compliance_threshold": 97.0,
+        "business_objective": "test",
+        "ssg_version": "0.1.28",
+      },
+      "relationships": {
+        "policy": {
+          "data": {
+            "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+            "name": "Example Server Profile"
+          }
+        }
+      }
+    },
+    {
+      //...test_result2
+    }
+  ],
+  "meta": {
+    "total": 20,
+    "search": "",
+    "limit": 20,
+    "offset": 1,
+    "sort_by": "score",
+    "relationships": true
+  },
+  "links": {
+    "first": "/api/compliance/profiles?limit=20&offset=1&relationships=true&search=canonical%3Dfalse+AND+has_test_results%3Dtrue&sort_by=score",
+    "last": "/api/compliance/profiles?limit=20&offset=2&relationships=true&search=canonical%3Dfalse+AND+has_test_results%3Dtrue&sort_by=score",
+    "next": "/api/compliance/profiles?limit=20&offset=2&relationships=true&search=canonical%3Dfalse+AND+has_test_results%3Dtrue&sort_by=score"
+  }
+}
+```
+
+
