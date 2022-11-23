@@ -28,6 +28,8 @@ class TailorProfileMutationTest < ActiveSupport::TestCase
   GRAPHQL
 
   %i[rule ruleGroup].each do |field|
+    next if field == :ruleGroup # FIXME: final cleanup of RHICOMPL-2124
+
     should "fail if no #{field} is passed" do
       assert_raises ActionController::ParameterMissing do
         Schema.execute(
@@ -43,6 +45,25 @@ class TailorProfileMutationTest < ActiveSupport::TestCase
         )['data']['tailorProfile']['profile']
       end
     end
+  end
+
+  # FIXME: final cleanup of RHICOMPL-2124
+  should 'add default rule groups to a profile' do
+    assert_empty @profile.rule_groups
+
+    Schema.execute(
+      QUERY,
+      variables: {
+        input: {
+          id: @profile.id,
+          ruleIds: [@rule.id]
+        }
+      },
+      context: { current_user: @user }
+    )['data']['tailorProfile']['profile']
+
+    assert_equal Set.new(@profile.reload.rule_groups),
+                 Set.new([@rule_group])
   end
 
   %i[id ref_id].each do |key|

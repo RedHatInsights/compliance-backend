@@ -50,6 +50,8 @@ module Mutations
         elsif args[:"#{type}_ref_ids"]
           { ref_ids: args[:"#{type}_ref_ids"] }
         else
+          return { ids: nil } if type == :rule_group # FIXME: final cleanup of RHICOMPL-2124
+
           raise(ActionController::ParameterMissing, "Missing argument identifying #{type.to_s.pluralize}")
         end
       end
