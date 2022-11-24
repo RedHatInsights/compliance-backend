@@ -262,7 +262,8 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         description: 'foo',
         severity: 'low',
         benchmark: profile.benchmark,
-        profiles: [profile]
+        profiles: [profile],
+        rule_group: FactoryBot.create(:rule_group, benchmark: profile.benchmark)
       )
       assert_nothing_raised do
         assert_difference('rule.profiles.count', 0) do

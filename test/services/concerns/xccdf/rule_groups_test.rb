@@ -6,7 +6,6 @@ require 'xccdf/rule_groups'
 class RuleGroupsTest < ActiveSupport::TestCase
   include Xccdf::Profiles
   include Xccdf::Rules
-  include Xccdf::RuleGroupRules
   include Xccdf::RuleGroups
   include Xccdf::ProfileRules
   include Xccdf::RuleReferences

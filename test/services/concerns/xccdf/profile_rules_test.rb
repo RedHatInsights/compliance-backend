@@ -21,8 +21,9 @@ module Xccdf
       end
       ::Profile.import!(@profiles, ignore: true)
       @op_rules = parser.benchmark.rules
+      rule_group = FactoryBot.create(:rule_group, benchmark: @benchmark)
       @rules = @op_rules.map do |op_rule|
-        ::Rule.from_openscap_parser(op_rule, benchmark_id: @benchmark&.id)
+        ::Rule.from_openscap_parser(op_rule, benchmark_id: @benchmark&.id, rule_group_id: rule_group.id)
       end
       ::Rule.import!(@rules, ignore: true)
     end

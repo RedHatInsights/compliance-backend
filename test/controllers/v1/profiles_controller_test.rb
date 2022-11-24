@@ -959,7 +959,7 @@ module V1
       end
 
       test 'create copies of rules and groups from the parent profile' do
-        parent = FactoryBot.create(:canonical_profile, :with_rules, :with_rule_groups)
+        parent = FactoryBot.create(:canonical_profile, :with_rules)
 
         assert_audited_success 'Updated tailoring'
         assert_audited_success 'Created policy'
@@ -985,7 +985,7 @@ module V1
       end
 
       test 'create allows custom rules and groups' do
-        parent = FactoryBot.create(:canonical_profile, :with_rules, :with_rule_groups)
+        parent = FactoryBot.create(:canonical_profile, :with_rules)
         rule_ids = parent.benchmark.rules.pluck(:id)
         rule_group_ids = parent.benchmark.rule_groups.pluck(:id)
 
@@ -1034,16 +1034,12 @@ module V1
         parent = FactoryBot.create(
           :canonical_profile,
           :with_rules,
-          :with_rule_groups,
-          rule_count: 1,
-          rule_group_count: 1
+          rule_count: 1
         )
         extra = FactoryBot.create(
           :canonical_profile,
           :with_rules,
-          :with_rule_groups,
-          rule_count: 1,
-          rule_group_count: 1
+          rule_count: 1
         )
 
         extra_rule_group = extra.rule_groups
@@ -1100,17 +1096,13 @@ module V1
         parent = FactoryBot.create(
           :canonical_profile,
           :with_rules,
-          :with_rule_groups,
-          rule_count: 1,
-          rule_group_count: 1
+          rule_count: 1
         )
 
         extra = FactoryBot.create(
           :canonical_profile,
           :with_rules,
-          :with_rule_groups,
-          rule_count: 1,
-          rule_group_count: 1
+          rule_count: 1
         )
 
         extra_rule = extra.rules
@@ -1226,7 +1218,7 @@ module V1
       BUSINESS_OBJECTIVE = 'LATAM Expansion'
 
       setup do
-        @profile = FactoryBot.create(:profile, :with_rules, :with_rule_groups, upstream: false)
+        @profile = FactoryBot.create(:profile, :with_rules, upstream: false)
       end
 
       test 'update without data' do
@@ -1323,6 +1315,7 @@ module V1
       end
 
       test 'update to remove rules/groups relationships' do
+        FactoryBot.create(:rule_group, profiles: [@profile], benchmark: @profile.benchmark)
         benchmark_rules = @profile.benchmark.rules
         benchmark_rule_groups = @profile.benchmark.rule_groups
         assert_audited_success 'Created Business Objective'

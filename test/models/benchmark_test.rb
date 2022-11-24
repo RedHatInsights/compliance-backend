@@ -475,16 +475,12 @@ module Xccdf
         should "builds an array of hashes with graphql=#{graphql}" do
           profile = FactoryBot.create(:canonical_profile)
           rg_1, rg_2 = FactoryBot.create_list(:rule_group, 2, benchmark: profile.benchmark, profiles: [profile])
-          r_11 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark)
-          FactoryBot.create(:rule_group_rule, rule_group: rg_1, rule: r_11)
+          r_11 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark, rule_group: rg_1)
           rg_21 = FactoryBot.create(:rule_group, profiles: [profile], benchmark: profile.benchmark, ancestry: rg_2.id)
           rg_211 = FactoryBot.create(:rule_group, profiles: [profile], benchmark: profile.benchmark, ancestry: rg_21.id)
-          r_2111 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark)
-          FactoryBot.create(:rule_group_rule, rule_group: rg_211, rule: r_2111)
-          r_211 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark)
-          FactoryBot.create(:rule_group_rule, rule_group: rg_21, rule: r_211)
-          r_21 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark)
-          FactoryBot.create(:rule_group_rule, rule_group: rg_2, rule: r_21)
+          r_2111 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark, rule_group: rg_211)
+          r_211 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark, rule_group: rg_21)
+          r_21 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark, rule_group: rg_2)
 
           def _adjust(field, graphql)
             graphql ? field.to_s.camelize(:lower).to_sym : field

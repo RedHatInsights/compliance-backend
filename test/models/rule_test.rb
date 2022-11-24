@@ -24,8 +24,10 @@ class RuleTest < ActiveSupport::TestCase
   end
 
   test 'creates rules from openscap_parser Rule object' do
+    rule_group = FactoryBot.create(:rule_group, benchmark: @profile.benchmark)
     assert Rule.from_openscap_parser(@op_rules.first,
-                                     benchmark_id: @profile.benchmark.id).save
+                                     benchmark_id: @profile.benchmark.id,
+                                     rule_group_id: rule_group.id).save
   end
 
   test 'host one is not compliant?' do
