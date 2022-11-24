@@ -24,7 +24,6 @@ module ProfileLinks
         profile_id: id,
         reflection.foreign_key => entity_ids_to_destroy(reflection, **args)
       ).destroy_all
-
       ids_to_add = entity_ids_to_add(reflection, **args)
       imported = klass.import!(ids_to_add.map do |entity_id|
         klass.new(profile_id: id, reflection.foreign_key => entity_id)

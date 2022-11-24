@@ -39,27 +39,16 @@ FactoryBot.define do
       end
 
       after(:create) do |profile, evaluator|
-        create_list(
+        rules = create_list(
           :rule,
           evaluator.rule_count,
           profiles: [profile, profile&.parent_profile].compact,
           benchmark: profile.benchmark
         )
-      end
-    end
 
-    trait :with_rule_groups do
-      transient do
-        rule_group_count { 5 }
-      end
-
-      after(:create) do |profile, evaluator|
-        create_list(
-          :rule_group,
-          evaluator.rule_group_count,
-          profiles: [profile, profile&.parent_profile].compact,
-          benchmark: profile.benchmark
-        )
+        rules.each do |rule|
+          rule.rule_group.update(profiles: [profile, profile&.parent_profile].compact)
+        end
       end
     end
   end

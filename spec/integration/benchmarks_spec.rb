@@ -83,11 +83,6 @@ describe 'Benchmarks API', swagger_doc: 'v1/openapi.json' do
           name: 'Second related profile',
           benchmark_id: @profile.benchmark_id
         )
-
-        group = FactoryBot.create(:rule_group, benchmark: @profile.benchmark)
-        @profile.benchmark.rules.each do |rule|
-          FactoryBot.create(:rule_group_rule, rule: rule, rule_group: group)
-        end
       end
 
       tags 'benchmark'

@@ -8,7 +8,6 @@ require 'xccdf/rule_references_rules'
 class RuleGroupRelationshipsTest < ActiveSupport::TestCase
   include Xccdf::Profiles
   include Xccdf::Rules
-  include Xccdf::RuleGroupRules
   include Xccdf::RuleGroups
   include Xccdf::ProfileRules
   include Xccdf::RuleReferences
@@ -34,7 +33,7 @@ class RuleGroupRelationshipsTest < ActiveSupport::TestCase
       end
       ::RuleGroup.import!(@rule_groups, ignore: true)
       @rules = @op_rules.map do |op_rule|
-        ::Rule.from_openscap_parser(op_rule, benchmark_id: @benchmark&.id)
+        ::Rule.from_openscap_parser(op_rule, benchmark_id: @benchmark&.id, rule_group_id: @rule_groups.first.id)
       end
       ::Rule.import!(@rules, ignore: true)
       @op_rules_and_rule_groups = @op_rules + @op_rule_groups
@@ -67,7 +66,7 @@ class RuleGroupRelationshipsTest < ActiveSupport::TestCase
       end
       ::RuleGroup.import!(@rule_groups, ignore: true)
       @rules = @op_rules.map do |op_rule|
-        ::Rule.from_openscap_parser(op_rule, benchmark_id: @benchmark&.id)
+        ::Rule.from_openscap_parser(op_rule, benchmark_id: @benchmark&.id, rule_group_id: @rule_groups.first.id)
       end
       ::Rule.import!(@rules, ignore: true)
       @op_rules_and_rule_groups = @op_rules + @op_rule_groups

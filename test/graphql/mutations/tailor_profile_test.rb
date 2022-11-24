@@ -5,7 +5,7 @@ require 'test_helper'
 class TailorProfileMutationTest < ActiveSupport::TestCase
   setup do
     @user = FactoryBot.create(:user)
-    parent = FactoryBot.create(:canonical_profile, :with_rules, :with_rule_groups, rule_count: 1, rule_group_count: 1)
+    parent = FactoryBot.create(:canonical_profile, :with_rules, rule_count: 1)
     @profile = FactoryBot.create(
       :profile,
       account: @user.account,

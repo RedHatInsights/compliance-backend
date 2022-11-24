@@ -8,6 +8,7 @@ FactoryBot.define do
     rationale { Faker::Lorem.paragraph }
     severity { %w[low medium high].sample }
     slug { ref_id.parameterize }
+    rule_group { association :rule_group, benchmark: benchmark }
     benchmark
   end
 end

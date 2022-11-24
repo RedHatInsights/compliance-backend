@@ -30,8 +30,6 @@ class Rule < ApplicationRecord
 
   has_many :profile_rules, dependent: :delete_all
   has_many :profiles, through: :profile_rules, source: :profile
-  has_one :rule_group_rule, dependent: :delete
-  has_one :rule_group, through: :rule_group_rule
   has_many :rule_results, dependent: :delete_all
   has_many :hosts, through: :rule_results, source: :host
   has_many :rule_references_rules, dependent: :delete_all
@@ -44,6 +42,7 @@ class Rule < ApplicationRecord
   has_one :rule_identifier, dependent: :destroy
   alias identifier rule_identifier
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
+  belongs_to :rule_group
 
   validates :title, presence: true
   validates :ref_id, uniqueness: { scope: %i[benchmark_id] }, presence: true

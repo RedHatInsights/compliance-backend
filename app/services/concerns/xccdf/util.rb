@@ -15,7 +15,6 @@ module Xccdf
       include ::Xccdf::ProfileRules
       include ::Xccdf::RuleReferences
       include ::Xccdf::RuleReferencesRules
-      include ::Xccdf::RuleGroupRules
       include ::Xccdf::RuleGroupRelationships
       include ::Xccdf::Hosts
       include ::Xccdf::RuleResults
@@ -30,7 +29,6 @@ module Xccdf
         save_rule_groups
         save_rules
         save_rule_identifiers
-        save_rule_group_rules
         save_rule_group_relationships
         save_profile_rule_groups
         save_profile_rules

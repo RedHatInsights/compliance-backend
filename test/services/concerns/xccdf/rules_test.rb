@@ -7,7 +7,6 @@ class RulesTest < ActiveSupport::TestCase
   class Mock
     include Xccdf::Profiles
     include Xccdf::Rules
-    include Xccdf::RuleGroupRules
     include Xccdf::RuleGroups
     include Xccdf::ProfileRules
     include Xccdf::RuleReferences
@@ -41,7 +40,8 @@ class RulesTest < ActiveSupport::TestCase
 
   test 'returns rules saved in the report' do
     rule = Rule.from_openscap_parser(@mock.op_rules.sample,
-                                     benchmark_id: @mock.benchmark.id)
+                                     benchmark_id: @mock.benchmark.id,
+                                     rule_group_id: @mock.benchmark.rule_groups.first.id)
     assert rule.save
     @mock.save_rules
     assert_includes @mock.rules, rule
@@ -56,7 +56,7 @@ class RulesTest < ActiveSupport::TestCase
     end
     rule = Rule.from_openscap_parser(@mock.op_rules.find do |r|
       r.id == @mock.op_profiles.first.selected_rule_ids.first
-    end, benchmark_id: @mock.benchmark.id)
+    end, benchmark_id: @mock.benchmark.id, rule_group_id: @mock.benchmark.rule_groups.first.id)
     assert rule.save
     assert_difference('Rule.count', 366) do
       @mock.save_rules
