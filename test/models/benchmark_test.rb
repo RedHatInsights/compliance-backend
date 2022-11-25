@@ -470,145 +470,111 @@ module Xccdf
       end
     end
 
-    context 'rules_and_rule_groups' do
-      setup do
-        supported_ssg1 = SupportedSsg.new(version: '0.1.50',
-                                          os_major_version: '7', os_minor_version: '1')
-        SupportedSsg.stubs(:all).returns([supported_ssg1])
-        @bm1 = FactoryBot.create(
-          :benchmark,
-          :with_rules,
-          :with_rule_groups,
-          version: supported_ssg1.version,
-          os_major_version: '7',
-          rule_count: 5,
-          rule_group_count: 4
-        )
+    context 'rule_tree' do
+      [true, false].each do |graphql|
+        should "builds an array of hashes with graphql=#{graphql}" do
+          profile = FactoryBot.create(:canonical_profile)
+          rg_1, rg_2 = FactoryBot.create_list(:rule_group, 2, benchmark: profile.benchmark, profiles: [profile])
+          r_11 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark)
+          FactoryBot.create(:rule_group_rule, rule_group: rg_1, rule: r_11)
+          rg_21 = FactoryBot.create(:rule_group, profiles: [profile], benchmark: profile.benchmark, ancestry: rg_2.id)
+          rg_211 = FactoryBot.create(:rule_group, profiles: [profile], benchmark: profile.benchmark, ancestry: rg_21.id)
+          r_2111 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark)
+          FactoryBot.create(:rule_group_rule, rule_group: rg_211, rule: r_2111)
+          r_211 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark)
+          FactoryBot.create(:rule_group_rule, rule_group: rg_21, rule: r_211)
+          r_21 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark)
+          FactoryBot.create(:rule_group_rule, rule_group: rg_2, rule: r_21)
 
-        @rule1 = @bm1.rules.first
-        @rule2 = @bm1.rules.second
-        @rule3 = @bm1.rules.third
-        @rule4 = @bm1.rules.fourth
-        @rule5 = @bm1.rules.fifth
-        @rule6 = FactoryBot.create(:rule)
+          def _adjust(field, graphql)
+            graphql ? field.to_s.camelize(:lower).to_sym : field
+          end
 
-        @rule_group_1 = @bm1.rule_groups.first
-        @rule_group_2 = @bm1.rule_groups.second
-        @rule_group_3 = @bm1.rule_groups.third
-        @rule_group_4 = @bm1.rule_groups.fourth
-        @rule_group_5 = FactoryBot.create(:rule_group)
-        @rule_group_6 = FactoryBot.create(:rule_group)
-
-        FactoryBot.create(:rule_group_rule, rule_id: @rule1.id, rule_group_id: @rule_group_1.id)
-        FactoryBot.create(:rule_group_rule, rule_id: @rule2.id, rule_group_id: @rule_group_2.id)
-        FactoryBot.create(:rule_group_rule, rule_id: @rule3.id, rule_group_id: @rule_group_3.id)
-        FactoryBot.create(:rule_group_rule, rule_id: @rule5.id, rule_group_id: @rule_group_4.id)
-
-        rgr1 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
-        rgr2 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
-        rgr3 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_requires)
-        rgr4 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_requires)
-        rgr5 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
-        rgr6 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
-        rgr7 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_conflicts)
-        rgr8 = FactoryBot.create(:rule_group_relationship, :for_rule_and_rule_group_requires)
-
-        rgr1.update!(left: @rule1, right: @rule_group_5)
-        rgr2.update!(left: @rule_group_3, right: @rule_group_6)
-        rgr3.update!(left: @rule4, right: @rule6)
-        rgr4.update!(left: @rule1, right: @rule6)
-        rgr5.update!(left: @rule_group_3, right: @rule6)
-        rgr6.update!(left: @rule_group_4, right: @rule_group_6)
-        rgr7.update!(left: @rule5, right: @rule6)
-        rgr8.update!(left: @rule5, right: @rule_group_6)
-
-        @rule_group_2.update!(parent_id: @rule_group_1.id)
-        @rule_group_4.update!(parent_id: @rule_group_2.id)
-      end
-
-      should 'correctly return nested rule and rule group children of rule groups in JSON' do
-        rules_and_rule_groups_json = @bm1.rule_tree
-
-        expected_response1 = {
-          rule_group: @rule_group_1,
-          group_children: [
+          expected_response = [
             {
-              rule_group: @rule_group_2,
-              group_children: [
+              _adjust(:type, graphql) => _adjust(:rule_group, graphql),
+              _adjust(:id, graphql) => rg_1.id,
+              _adjust(:ref_id, graphql) => rg_1.ref_id,
+              _adjust(:title, graphql) => rg_1.title,
+              _adjust(:description, graphql) => rg_1.description,
+              _adjust(:rationale, graphql) => rg_1.rationale,
+              _adjust(:children, graphql) => [
                 {
-                  rule_group: @rule_group_4,
-                  group_children: [],
-                  rule_children: [
+                  _adjust(:type, graphql) => _adjust(:rule, graphql),
+                  _adjust(:id, graphql) => r_11.id,
+                  _adjust(:ref_id, graphql) => r_11.ref_id,
+                  _adjust(:title, graphql) => r_11.title,
+                  _adjust(:description, graphql) => r_11.description,
+                  _adjust(:rationale, graphql) => r_11.rationale,
+                  _adjust(:severity, graphql) => r_11.severity,
+                  _adjust(:precedence, graphql) => r_11.precedence
+                }
+              ]
+            },
+            {
+              _adjust(:type, graphql) => _adjust(:rule_group, graphql),
+              _adjust(:id, graphql) => rg_2.id,
+              _adjust(:ref_id, graphql) => rg_2.ref_id,
+              _adjust(:title, graphql) => rg_2.title,
+              _adjust(:description, graphql) => rg_2.description,
+              _adjust(:rationale, graphql) => rg_2.rationale,
+              _adjust(:children, graphql) => [
+                {
+                  _adjust(:type, graphql) => _adjust(:rule_group, graphql),
+                  _adjust(:id, graphql) => rg_21.id,
+                  _adjust(:ref_id, graphql) => rg_21.ref_id,
+                  _adjust(:title, graphql) => rg_21.title,
+                  _adjust(:description, graphql) => rg_21.description,
+                  _adjust(:rationale, graphql) => rg_21.rationale,
+                  _adjust(:children, graphql) => [
                     {
-                      rule: @rule5,
-                      requires: [@rule_group_6],
-                      conflicts: [@rule6]
+                      _adjust(:type, graphql) => _adjust(:rule_group, graphql),
+                      _adjust(:id, graphql) => rg_211.id,
+                      _adjust(:ref_id, graphql) => rg_211.ref_id,
+                      _adjust(:title, graphql) => rg_211.title,
+                      _adjust(:description, graphql) => rg_211.description,
+                      _adjust(:rationale, graphql) => rg_211.rationale,
+                      _adjust(:children, graphql) => [
+                        {
+                          _adjust(:type, graphql) => _adjust(:rule, graphql),
+                          _adjust(:id, graphql) => r_2111.id,
+                          _adjust(:ref_id, graphql) => r_2111.ref_id,
+                          _adjust(:title, graphql) => r_2111.title,
+                          _adjust(:description, graphql) => r_2111.description,
+                          _adjust(:rationale, graphql) => r_2111.rationale,
+                          _adjust(:severity, graphql) => r_2111.severity,
+                          _adjust(:precedence, graphql) => r_2111.precedence
+                        }
+                      ]
+                    },
+                    {
+                      _adjust(:type, graphql) => _adjust(:rule, graphql),
+                      _adjust(:id, graphql) => r_211.id,
+                      _adjust(:ref_id, graphql) => r_211.ref_id,
+                      _adjust(:title, graphql) => r_211.title,
+                      _adjust(:description, graphql) => r_211.description,
+                      _adjust(:rationale, graphql) => r_211.rationale,
+                      _adjust(:severity, graphql) => r_211.severity,
+                      _adjust(:precedence, graphql) => r_211.precedence
                     }
-                  ],
-                  requires: nil,
-                  conflicts: [@rule_group_6]
-                }
-              ],
-              rule_children: [
+                  ]
+                },
                 {
-                  rule: @rule2,
-                  requires: nil,
-                  conflicts: nil
+                  _adjust(:type, graphql) => _adjust(:rule, graphql),
+                  _adjust(:id, graphql) => r_21.id,
+                  _adjust(:ref_id, graphql) => r_21.ref_id,
+                  _adjust(:title, graphql) => r_21.title,
+                  _adjust(:description, graphql) => r_21.description,
+                  _adjust(:rationale, graphql) => r_21.rationale,
+                  _adjust(:severity, graphql) => r_21.severity,
+                  _adjust(:precedence, graphql) => r_21.precedence
                 }
-              ],
-              requires: nil,
-              conflicts: nil
+              ]
             }
-          ],
-          rule_children: [
-            {
-              rule: @rule1,
-              requires: [@rule6],
-              conflicts: [@rule_group_5]
-            }
-          ],
-          requires: nil,
-          conflicts: nil
-        }
+          ]
 
-        expected_response2 = {
-          rule: @rule4,
-          requires: [@rule6],
-          conflicts: nil
-        }
-
-        expected_response3 = {
-          rule_group: @rule_group_3,
-          group_children: [],
-          rule_children: [
-            {
-              rule: @rule3,
-              requires: nil,
-              conflicts: nil
-            }
-          ],
-          requires: nil,
-          conflicts: [@rule_group_6, @rule6]
-        }
-
-        expected_response4 = {
-          rule_group: @rule_group_3,
-          group_children: [],
-          rule_children: [
-            {
-              rule: @rule3,
-              requires: nil,
-              conflicts: nil
-            }
-          ],
-          requires: nil,
-          conflicts: [@rule6, @rule_group_6]
-        }
-
-        assert_includes rules_and_rule_groups_json, expected_response1
-        assert_includes rules_and_rule_groups_json, expected_response2
-        assert rules_and_rule_groups_json.include?(expected_response3) ||
-               rules_and_rule_groups_json.include?(expected_response4)
+          assert_equal profile.benchmark.rule_tree(graphql), expected_response
+        end
       end
     end
   end

@@ -4,32 +4,31 @@
 module RulesAndRuleGroups
   extend ActiveSupport::Concern
 
-  included do
-    # rubocop:disable Metrics/MethodLength
-    def rule_tree
-      conflicts = relationships_for('conflicts')
-      requires = relationships_for('requires')
-      arranged_rule_groups = rule_groups.includes(:rules).references(:rules).arrange_serializable do |parent, children|
-        {
-          rule_group: parent,
-          group_children: children,
-          rule_children: parent.rules_with_relationships(requires, conflicts),
-          requires: requires[parent],
-          conflicts: conflicts[parent]
-        }
-      end
+  RULE_ATTRIBUTES = %i[id ref_id title description rationale severity precedence].freeze
+  RULE_GROUP_ATTRIBUTES = %i[id ref_id title description rationale].freeze
 
-      arranged_rule_groups + rules.without_rule_group_parent.map do |pr|
-        {
-          rule: pr,
-          requires: requires[pr],
-          conflicts: conflicts[pr]
-        }
+  included do
+    def rule_tree(graphql = false)
+      rule_groups.includes(:rules).references(:rules).arrange_serializable do |group, children|
+        serialize(group, RULE_GROUP_ATTRIBUTES, graphql).merge(
+          children: children + group.rules.map do |rule|
+            serialize(rule, RULE_ATTRIBUTES, graphql)
+          end
+        )
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     private
+
+    def serialize(item, attrs, graphql)
+      attrs.each_with_object(type: adjust_field(item.class, graphql)) do |key, obj|
+        obj[adjust_field(key, graphql)] = item[key]
+      end
+    end
+
+    def adjust_field(field, graphql)
+      (graphql ? field.to_s.camelize(:lower) : field.to_s.underscore).to_sym
+    end
 
     def hierarchical_rule_groups
       RuleGroup.where(id: rules.includes(:rule_group)
@@ -48,5 +47,6 @@ module RulesAndRuleGroups
         relationships[rgr.left] << rgr.right
       end
     end
+
   end
 end
