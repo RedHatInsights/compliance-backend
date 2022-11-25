@@ -20,7 +20,7 @@ COPY ./Gemfile.lock ./Gemfile ./.gemrc.prod /opt/app-root/src/
 RUN ( [[ $prod == "true" ]] || rpm -e --nodeps tzdata )                         && \
     microdnf install --nodocs -y $deps $devDeps $extras                         && \
     chmod +t /tmp                                                               && \
-    gem install bundler -v 2.3.22                                               && \
+    gem install bundler                                                         && \
     mv /opt/app-root/src/.gemrc.prod /etc/gemrc                                 && \
     ( [[ $prod != "true" ]] || bundle config set --without 'development:test' ) && \
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )    && \
@@ -44,7 +44,7 @@ USER 0
 
 RUN rpm -e --nodeps tzdata             && \
     microdnf install --nodocs -y $deps && \
-    gem install bundler -v 2.3.22      && \
+    gem install bundler                && \
     microdnf clean all -y              && \
     chown 1001:root ./                 && \
     chmod +t /tmp                      && \
