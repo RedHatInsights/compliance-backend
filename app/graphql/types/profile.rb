@@ -26,16 +26,12 @@ module Types
     field :profiles, [::Types::Profile], null: true
     field :rule_tree, GraphQL::Types::JSON, null: true
     field :rules, [::Types::Rule], null: true, extras: [:lookahead] do
-      argument :system_id, String,
-               'System ID to filter by', required: false
-      argument :identifier, String,
-               'Rule identifier to filter by', required: false
-      argument :references, [String],
-               'Rule references to filter by', required: false
+      argument :system_id, String, 'System ID to filter by', required: false
+      argument :identifier, String, 'Rule identifier to filter by', required: false
+      argument :references, [String], 'Rule references to filter by', required: false
     end
     field :top_failed_rules, [::Types::Rule], null: true do
-      argument :policy_id, ID,
-               'Policy ID to filter by', required: true
+      argument :policy_id, ID, 'Policy ID to filter by', required: true
     end
     field :hosts, [::Types::System], null: true
     field :benchmark, ::Types::Benchmark, null: true
@@ -90,6 +86,10 @@ module Types
     field :policy_type, String, null: false
 
     enforce_rbac Rbac::POLICY_READ
+
+    def rule_tree
+      object.rule_tree(true)
+    end
 
     def last_scanned(args = {})
       latest_test_result_batch(args).then do |latest_test_result|
