@@ -32,14 +32,4 @@ class RuleGroup < ApplicationRecord
 
     rule_group
   end
-
-  def rules_with_relationships(requires, conflicts)
-    rules.map do |r|
-      {
-        rule: r,
-        requires: requires[r],
-        conflicts: conflicts[r]
-      }
-    end
-  end
 end

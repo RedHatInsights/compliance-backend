@@ -38,17 +38,4 @@ class RuleGroupTest < ActiveSupport::TestCase
     assert_not_nil @rule_group.ancestry
     assert_equal @rule_group.parent_id, @parent_rule_group.id
   end
-
-  test 'rules_with_relationships' do
-    rule = FactoryBot.create(:rule)
-    required_rule_group = FactoryBot.create(:rule_group)
-    @rule_group.rules << rule
-
-    requires = {}
-    requires[rule] = required_rule_group
-
-    expected = [{ rule: rule, requires: required_rule_group, conflicts: nil }]
-
-    assert_equal @rule_group.rules_with_relationships(requires, {}), expected
-  end
 end
