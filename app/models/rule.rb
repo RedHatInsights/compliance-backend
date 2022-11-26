@@ -19,7 +19,7 @@ class Rule < ApplicationRecord
   sortable_by :remediation_available
 
   extend FriendlyId
-  friendly_id :ref_id, use: :slugged
+  friendly_id :ref_id, use: %i[slugged scoped], scope: :benchmark_id
   scoped_search on: %i[id severity], only_explicit: true
   scoped_search on: :ref_id
   scoped_search relation: :rule_references, on: :label, aliases: %i[reference]
