@@ -79,6 +79,14 @@ class Rule < ApplicationRecord
     left_outer_joins(:rule_identifier).select('rules.*', RuleIdentifier::AS_JSON.as('identifier'))
   }
 
+  def should_generate_new_friendly_id?
+    # Automatic slug generation is happening in a validation callback, that forces activerecord-import
+    # to run a query for each rule separately to ensure uniqueness. As the uniqueness of slugs is only
+    # required per benchmark and they are already ensured by the source ref_id, it is safe to manually
+    # generate friendly IDs when importing (see in self.from_openscap_parser).
+    false
+  end
+
   def canonical?
     (profiles & Profile.canonical).any?
   end
@@ -88,13 +96,10 @@ class Rule < ApplicationRecord
 
     rule.op_source = op_rule
 
-    rule.assign_attributes(title: op_rule.title,
-                           description: op_rule.description,
-                           rationale: op_rule.rationale,
-                           severity: op_rule.severity,
-                           precedence: precedence,
-                           rule_group_id: rule_group_id,
-                           upstream: false)
+    rule.assign_attributes(title: op_rule.title, description: op_rule.description,
+                           rationale: op_rule.rationale, severity: op_rule.severity,
+                           precedence: precedence, rule_group_id: rule_group_id,
+                           upstream: false, slug: rule.normalize_friendly_id(op_rule.id))
 
     rule
   end

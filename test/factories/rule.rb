@@ -7,6 +7,7 @@ FactoryBot.define do
     description { Faker::Lorem.paragraph }
     rationale { Faker::Lorem.paragraph }
     severity { %w[low medium high].sample }
+    slug { ref_id.parameterize }
     benchmark
   end
 end
