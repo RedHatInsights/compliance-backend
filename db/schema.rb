@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_22_204659) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_26_093700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -218,7 +218,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_22_204659) do
     t.uuid "rule_group_id"
     t.index ["ref_id", "benchmark_id"], name: "index_rules_on_ref_id_and_benchmark_id", unique: true
     t.index ["ref_id"], name: "index_rules_on_ref_id"
-    t.index ["slug"], name: "index_rules_on_slug", unique: true
+    t.index ["slug", "benchmark_id"], name: "index_rules_on_slug_and_benchmark_id", unique: true
     t.index ["upstream"], name: "index_rules_on_upstream"
   end
 
