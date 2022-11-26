@@ -12,6 +12,7 @@ module Xccdf
 
           ::Rule.from_openscap_parser(
             op_rule,
+            existing: old_rules[op_rule.id],
             precedence: idx,
             rule_group_id: rule_group&.id,
             benchmark_id: @benchmark&.id
@@ -20,17 +21,32 @@ module Xccdf
       end
 
       def save_rules
-        @new_rules, @old_rules = rules.partition(&:new_record?)
-
         # Import the new records first with validation
-        ::Rule.import!(@new_rules, ignore: true)
+        ::Rule.import!(new_rules, ignore: true)
 
         # Update the fields on existing rules, validation is not necessary
-        ::Rule.import(@old_rules,
+        ::Rule.import(old_rules.values,
                       on_duplicate_key_update: {
                         conflict_target: %i[ref_id benchmark_id],
                         columns: %i[description precedence rationale rule_group_id severity]
                       }, validate: false)
+      end
+
+      private
+
+      def new_rules
+        @new_rules ||= rules.select(&:new_record?)
+      end
+
+      def rule_for(ref_id:)
+        @cached_rules ||= @rules.index_by(&:ref_id)
+        @cached_rules[ref_id]
+      end
+
+      def old_rules
+        @old_rules ||= ::Rule.where(
+          ref_id: @op_rules.map(&:id), benchmark_id: @benchmark&.id
+        ).index_by(&:ref_id)
       end
     end
   end

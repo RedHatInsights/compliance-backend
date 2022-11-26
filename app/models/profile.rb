@@ -58,10 +58,8 @@ class Profile < ApplicationRecord
   delegate :org_id, to: :account, allow_nil: true
 
   class << self
-    def from_openscap_parser(op_profile, benchmark_id: nil, account_id: nil)
-      profile = find_or_initialize_by(ref_id: op_profile.id,
-                                      benchmark_id: benchmark_id,
-                                      account_id: account_id)
+    def from_openscap_parser(op_profile, existing: nil, benchmark_id: nil, account_id: nil)
+      profile = existing || new(ref_id: op_profile.id, benchmark_id: benchmark_id, account_id: account_id)
 
       profile.assign_attributes(
         name: op_profile.title,

@@ -44,11 +44,8 @@ module Xccdf
 
     test 'updates profile rule group connections' do
       rule_group1 = FactoryBot.create(:rule_group, benchmark: @benchmark)
-      rule_group2 = ::RuleGroup.from_openscap_parser(
-        @op_rule_groups.find do |rule_group|
-          rule_group.id == 'xccdf_org.ssgproject.content_group_accounts-physical'
-        end,
-        benchmark_id: @benchmark&.id
+      rule_group2 = ::RuleGroup.find_by(
+        ref_id: 'xccdf_org.ssgproject.content_group_accounts-physical', benchmark: @benchmark
       )
       @profiles.first.update(rule_groups: [rule_group1, rule_group2])
 

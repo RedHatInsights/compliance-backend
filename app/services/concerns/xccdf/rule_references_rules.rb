@@ -26,11 +26,6 @@ module Xccdf
           @cached_references[[rr.label, rr.href]]
         end.compact
       end
-
-      def rule_for(ref_id:)
-        @cached_rules ||= @rules.index_by(&:ref_id)
-        @cached_rules[ref_id]
-      end
     end
   end
 end

@@ -39,12 +39,7 @@ module Xccdf
 
     test 'updates profile rule connections' do
       rule1 = FactoryBot.create(:rule, benchmark: @benchmark)
-      rule2 = ::Rule.from_openscap_parser(
-        @op_rules.find do |rule|
-          rule.id == 'xccdf_org.ssgproject.content_rule_disable_prelink'
-        end,
-        benchmark_id: @benchmark&.id
-      )
+      rule2 = ::Rule.find_by(ref_id: 'xccdf_org.ssgproject.content_rule_disable_prelink', benchmark: @benchmark)
       @profiles.first.update(rules: [rule1, rule2])
 
       assert_difference('ProfileRule.count', 72) do

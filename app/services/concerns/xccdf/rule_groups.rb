@@ -8,7 +8,9 @@ module Xccdf
     included do
       def save_rule_groups
         @rule_groups ||= @op_rule_groups.map do |op_rule_group|
-          ::RuleGroup.from_openscap_parser(op_rule_group, benchmark_id: @benchmark&.id)
+          ::RuleGroup.from_openscap_parser(op_rule_group,
+                                           existing: old_rule_groups[op_rule_group.id],
+                                           benchmark_id: @benchmark&.id)
         end
 
         ::RuleGroup.import!(@rule_groups.select(&:new_record?), ignore: true)
@@ -20,6 +22,16 @@ module Xccdf
       end
 
       private
+
+      # def new_rule_groups
+      #   @new_rule_groups ||= @rule_groups.select(&:new_record?)
+      # end
+
+      def old_rule_groups
+        @old_rule_groups ||= ::RuleGroup.where(
+          ref_id: @op_rule_groups.map(&:id), benchmark: @benchmark&.id
+        ).index_by(&:ref_id)
+      end
 
       def rule_group_parents
         @op_rule_groups.select(&:parent_id).map do |op_rule_group|

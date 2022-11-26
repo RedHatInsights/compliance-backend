@@ -21,9 +21,8 @@ class RuleGroup < ApplicationRecord
   validates :description, presence: true
   validates :benchmark_id, presence: true
 
-  def self.from_openscap_parser(op_rule_group, benchmark_id: nil, parent_id: nil)
-    rule_group = find_or_initialize_by(ref_id: op_rule_group.id,
-                                       benchmark_id: benchmark_id)
+  def self.from_openscap_parser(op_rule_group, existing: nil, benchmark_id: nil, parent_id: nil)
+    rule_group = existing || new(ref_id: op_rule_group.id, benchmark_id: benchmark_id)
 
     rule_group.assign_attributes(title: op_rule_group.title,
                                  description: op_rule_group.description,
