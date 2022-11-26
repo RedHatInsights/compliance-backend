@@ -76,6 +76,8 @@ class RulesTest < ActiveSupport::TestCase
     before = @mock.benchmark.rules.order(:precedence).pluck(:ref_id)
 
     @mock.instance_variable_set(:@rules, nil)
+    @mock.instance_variable_set(:@old_rules, nil)
+    @mock.instance_variable_set(:@new_rules, nil)
     @mock.instance_variable_set(:@op_rules, @mock.instance_variable_get(:@op_rules).reverse)
     @mock.save_rules
 
@@ -92,6 +94,8 @@ class RulesTest < ActiveSupport::TestCase
       rule = @mock.benchmark.rules.order(:precedence).first
 
       @mock.instance_variable_set(:@rules, nil)
+      @mock.instance_variable_set(:@old_rules, nil)
+      @mock.instance_variable_set(:@new_rules, nil)
       @mock.instance_variable_get(:@op_rules).first.instance_variable_set("@#{field}".to_sym, 'foobar')
       @mock.save_rules
 

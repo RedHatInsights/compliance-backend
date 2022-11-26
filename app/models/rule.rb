@@ -91,8 +91,8 @@ class Rule < ApplicationRecord
     (profiles & Profile.canonical).any?
   end
 
-  def self.from_openscap_parser(op_rule, rule_group_id: nil, benchmark_id: nil, precedence: nil)
-    rule = find_or_initialize_by(ref_id: op_rule.id, benchmark_id: benchmark_id)
+  def self.from_openscap_parser(op_rule, existing: nil, rule_group_id: nil, benchmark_id: nil, precedence: nil)
+    rule = existing || new(ref_id: op_rule.id, benchmark_id: benchmark_id)
 
     rule.op_source = op_rule
 

@@ -8,8 +8,11 @@ module Xccdf
     included do
       def profiles
         @profiles ||= @op_profiles.map do |op_profile|
-          ::Profile.from_openscap_parser(op_profile,
-                                         benchmark_id: @benchmark&.id)
+          ::Profile.from_openscap_parser(
+            op_profile,
+            existing: old_profiles[op_profile.id],
+            benchmark_id: @benchmark&.id
+          )
         end
 
         ::Profile.import!(new_profiles, ignore: true)
@@ -18,16 +21,14 @@ module Xccdf
 
       private
 
-      def split_profiles
-        @split_profiles ||= @profiles.partition(&:new_record?)
+      def new_profiles
+        @new_profiles ||= @profiles.select(&:new_record?)
       end
 
       def old_profiles
-        split_profiles.last
-      end
-
-      def new_profiles
-        split_profiles.first
+        @old_profiles ||= ::Profile.where(
+          ref_id: @op_profiles.map(&:id), benchmark: @benchmark&.id
+        ).index_by(&:ref_id)
       end
     end
   end

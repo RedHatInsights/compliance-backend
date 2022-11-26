@@ -5,6 +5,7 @@ require 'xccdf/rule_references'
 
 # A class to test saving RuleReferencesRules from OpenscapParser
 class RuleReferencesRulesTest < ActiveSupport::TestCase
+  include Xccdf::Rules
   include Xccdf::RuleReferencesRules
 
   test 'only new rule references rules are saved' do
