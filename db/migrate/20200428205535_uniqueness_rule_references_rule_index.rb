@@ -1,4 +1,5 @@
 class UniquenessRuleReferencesRuleIndex < ActiveRecord::Migration[5.2]
+  class RuleReferencesRule < ApplicationRecord; end
   class NewRuleReferencesRule < ApplicationRecord; end
 
   def up

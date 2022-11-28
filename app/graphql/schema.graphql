@@ -649,7 +649,7 @@ type Rule implements Node {
   profiles: [Profile!]
   rationale: String
   refId: String!
-  references: String
+  references: JSON
   remediationAvailable: Boolean!
   severity: String!
   title: String!
