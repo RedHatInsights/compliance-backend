@@ -22,7 +22,6 @@ class RuleQueryTest < ActiveSupport::TestCase
       test_result: tr
     )
     @rr = FactoryBot.create(:rule_reference)
-    @ri = FactoryBot.create(:rule_identifier, rule: rule)
     @profile.rules.first.update!(
       rule_references: [@rr]
     )
@@ -76,7 +75,7 @@ class RuleQueryTest < ActiveSupport::TestCase
       query,
       variables: {
         id: @profile.id,
-        identifier: @ri.label
+        identifier: @profile.rules.first.identifier[:label]
       },
       context: { current_user: @user }
     )
@@ -84,8 +83,8 @@ class RuleQueryTest < ActiveSupport::TestCase
                "Query was unsuccessful: #{result.dig('errors')}"
     assert result.dig('data', 'profile', 'rules').any?, 'No rules returned!'
     assert_equal(
-      { label: @ri.label,
-        system: @ri.system }.to_json,
+      { 'label' => @profile.rules.first.identifier['label'],
+        'system' => @profile.rules.first.identifier['system'] },
       result.dig('data', 'profile', 'rules', 0, 'identifier')
     )
   end
