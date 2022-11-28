@@ -16,7 +16,7 @@ module Types
     field :remediation_available, Boolean, null: false
     field :profiles, [::Types::Profile], null: true
     field :identifier, GraphQL::Types::JSON, null: true
-    field :references, String, null: true
+    field :references, GraphQL::Types::JSON, null: true
     field :failed_count, Int, null: true
     field :compliant, Boolean, null: false do
       argument :system_id, String, 'Is a system compliant?',
@@ -33,25 +33,6 @@ module Types
         %w[pass notapplicable notselected].include?(
           context[:rule_results][object.id][profile_id(args)]
         )
-    end
-
-    def references
-      if context[:"rule_references_#{object.id}"].nil?
-        ::CollectionLoader.for(::Rule, :rule_references)
-                          .load(object).then do |references|
-          generate_references_json(references)
-        end
-      else
-        references_from_context
-      end
-    end
-
-    def references_from_context
-      ::RecordLoader.for(::RuleReference)
-                    .load_many(context[:"rule_references_#{object.id}"])
-                    .then do |references|
-        generate_references_json(references)
-      end
     end
 
     def profiles

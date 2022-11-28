@@ -21,9 +21,8 @@ class RuleQueryTest < ActiveSupport::TestCase
       rule: rule,
       test_result: tr
     )
-    @rr = FactoryBot.create(:rule_reference)
     @profile.rules.first.update!(
-      rule_references: [@rr]
+      references: [{ label: 'foo', href: 'bar' }]
     )
 
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
@@ -108,15 +107,15 @@ class RuleQueryTest < ActiveSupport::TestCase
       query,
       variables: {
         id: @profile.id,
-        references: [@rr.label]
+        references: ['foo']
       },
       context: { current_user: @user }
     )
     assert_not result.dig('errors'),
                "Query was unsuccessful: #{result.dig('errors')}"
     assert result.dig('data', 'profile', 'rules').any?, 'No rules returned!'
-    assert_equal [{ href: @rr.href,
-                    label: @rr.label }].to_json,
+    assert_equal [{ 'href' => 'bar',
+                    'label' => 'foo' }],
                  result.dig('data', 'profile', 'rules',
                             0, 'references')
   end

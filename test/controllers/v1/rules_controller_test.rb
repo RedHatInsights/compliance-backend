@@ -158,6 +158,22 @@ module V1
         assert_equal response.parsed_body['data'][0]['id'], rule.id
       end
 
+      %i[reference references rule_references].each do |references|
+        should "find rules by #{references}" do
+          rule = FactoryBot.create(:rule, profiles: [@profile], references: [{ label: 'foo-to-find', href: 'bar' }])
+          get v1_rules_url, params: { search: "#{references}=foo-to-find" }
+          assert_response :success
+          assert_equal response.parsed_body['data'][0]['id'], rule.id
+        end
+      end
+
+      should 'find rules by references implicitly' do
+        rule = FactoryBot.create(:rule, profiles: [@profile], references: [{ label: 'foo-to-find', href: 'bar' }])
+        get v1_rules_url, params: { search: 'foo-to-find' }
+        assert_response :success
+        assert_equal response.parsed_body['data'][0]['id'], rule.id
+      end
+
       should 'find a rule by ID with rule identifier included' do
         get v1_rule_url(@profile.rules.first.id),
             params: { include: 'rule_identifier' }

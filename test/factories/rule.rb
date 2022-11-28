@@ -11,5 +11,17 @@ FactoryBot.define do
     rule_group { association :rule_group, benchmark: benchmark }
     identifier { { system: Faker::Internet.url, label: Faker::Lorem.sentence } }
     benchmark
+
+    trait :with_references do
+      transient do
+        reference_count { 3 }
+      end
+
+      references do
+        reference_count.times.map do
+          { href: Faker::Internet.url, label: Faker::Lorem.sentence }
+        end
+      end
+    end
   end
 end
