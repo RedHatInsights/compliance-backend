@@ -9,6 +9,7 @@ FactoryBot.define do
     severity { %w[low medium high].sample }
     slug { ref_id.parameterize }
     rule_group { association :rule_group, benchmark: benchmark }
+    identifier { { system: Faker::Internet.url, label: Faker::Lorem.sentence } }
     benchmark
   end
 end

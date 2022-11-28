@@ -140,7 +140,6 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
 
   test 'query benchmark with rule identifiers' do
     cp = FactoryBot.create(:canonical_profile, :with_rules)
-    cp.rules.each { |rule| FactoryBot.create(:rule_identifier, rule: rule) }
 
     query = <<-GRAPHQL
       query benchmarkQuery($id: String!) {
@@ -167,8 +166,8 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
       context: { current_user: @user }
     )
 
-    identifiers = result['data']['benchmark']['rules'].map { |x| JSON.parse(x['identifier']) }
-    ref = cp.rules.map { |rule| { 'label' => rule.rule_identifier.label, 'system' => rule.rule_identifier.system } }
+    identifiers = result['data']['benchmark']['rules'].map { |x| x['identifier'] }
+    ref = cp.rules.map { |rule| { 'label' => rule.identifier['label'], 'system' => rule.identifier['system'] } }
     assert_same_elements(identifiers, ref)
   end
 

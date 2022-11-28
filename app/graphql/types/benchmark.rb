@@ -15,7 +15,7 @@ module Types
     field :os_major_version, String, null: false
     field :latest_supported_os_minor_versions, [String], null: false
     field :profiles, [::Types::Profile], null: true
-    field :rules, [::Types::Rule], null: true, extras: [:lookahead]
+    field :rules, [::Types::Rule], null: true
 
     field :rule_tree, GraphQL::Types::JSON, null: true
 
@@ -23,12 +23,6 @@ module Types
 
     def profiles
       object.profiles.canonical
-    end
-
-    def rules(args = {})
-      return object.rules unless args[:lookahead].selects?(:identifier)
-
-      object.rules.joins_identifier # Join and preselect an 'identifier' column
     end
   end
 end

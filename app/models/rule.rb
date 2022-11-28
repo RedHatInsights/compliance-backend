@@ -23,7 +23,8 @@ class Rule < ApplicationRecord
   scoped_search on: %i[id severity], only_explicit: true
   scoped_search on: :ref_id
   scoped_search relation: :rule_references, on: :label, aliases: %i[reference]
-  scoped_search relation: :rule_identifier, on: :label, aliases: %i[identifier]
+  scoped_search on: :identifier, aliases: %i[rule_identifier],
+                ext_method: 'filter_by_identifier', operators: ['=', '!=']
   include OpenscapParserDerived
   include RuleRemediation
   include ShortRefId
@@ -38,7 +39,6 @@ class Rule < ApplicationRecord
                                            inverse_of: :left, class_name: 'RuleGroupRelationship'
   has_many :right_rule_group_relationships, dependent: :delete_all, foreign_key: :right_id,
                                             inverse_of: :right, class_name: 'RuleGroupRelationship'
-  has_one :rule_identifier, dependent: :destroy
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
   belongs_to :rule_group
 
@@ -54,10 +54,6 @@ class Rule < ApplicationRecord
     joins(:rule_references).where(rule_references: { label: reference_labels })
   }
 
-  scope :with_identifier, lambda { |identifier_label|
-    joins(:rule_identifier).where(rule_identifiers: { label: identifier_label })
-  }
-
   scope :with_profiles, lambda {
     joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
   }
@@ -71,10 +67,6 @@ class Rule < ApplicationRecord
   }
 
   scope :without_rule_group_parent, -> { where.missing(:rule_group) }
-
-  scope :joins_identifier, lambda {
-    left_outer_joins(:rule_identifier).select('rules.*', RuleIdentifier::AS_JSON.as('rule_identifier'))
-  }
 
   def should_generate_new_friendly_id?
     # Automatic slug generation is happening in a validation callback, that forces activerecord-import
@@ -120,5 +112,9 @@ class Rule < ApplicationRecord
     return nil if test_result.blank?
 
     test_result.rule_results.find_by(rule_id: id)
+  end
+
+  def self.filter_by_identifier(_filter, operator, value)
+    { conditions: sanitize_sql_for_conditions(["rules.identifier ->> 'label' #{operator} ?", value]) }
   end
 end

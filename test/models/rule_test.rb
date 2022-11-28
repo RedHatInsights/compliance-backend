@@ -49,12 +49,6 @@ class RuleTest < ActiveSupport::TestCase
            'Expected rule not found by references'
   end
 
-  test 'rule is found with_identifier' do
-    ri = FactoryBot.create(:rule_identifier, rule: @rule)
-    assert Rule.with_identifier(ri.label).include?(@rule),
-           'Expected rule not found by identifier'
-  end
-
   test 'rule is identified properly as canonical' do
     rule = FactoryBot.create(:rule, benchmark: @profile.benchmark)
 

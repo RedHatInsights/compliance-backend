@@ -6,5 +6,7 @@ class RuleSerializer < ApplicationSerializer
              :severity, :slug, :precedence
   belongs_to :benchmark
   has_many :profiles
-  has_one :rule_identifier
+  has_one :rule_identifier, serializer: RuleIdentifierSerializer do |record|
+    OpenStruct.new(record.identifier.merge(id: SecureRandom.uuid)) if record.identifier.present?
+  end
 end

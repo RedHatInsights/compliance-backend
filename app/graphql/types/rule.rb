@@ -15,7 +15,7 @@ module Types
     field :precedence, Int, null: true
     field :remediation_available, Boolean, null: false
     field :profiles, [::Types::Profile], null: true
-    field :identifier, String, null: true
+    field :identifier, GraphQL::Types::JSON, null: true
     field :references, String, null: true
     field :failed_count, Int, null: true
     field :compliant, Boolean, null: false do
@@ -51,17 +51,6 @@ module Types
                     .load_many(context[:"rule_references_#{object.id}"])
                     .then do |references|
         generate_references_json(references)
-      end
-    end
-
-    def identifier
-      # Try to return with the preloaded identifier if available
-      return object['rule_identifier'].to_json if object.has_attribute?('rule_identifier')
-
-      # Fall back to loading and building the identifiers
-      ::CollectionLoader.for(::Rule, :rule_identifier)
-                        .load(object).then do |identifier|
-        { label: identifier&.label, system: identifier&.system }.to_json
       end
     end
 

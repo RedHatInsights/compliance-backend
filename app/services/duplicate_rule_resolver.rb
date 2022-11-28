@@ -31,7 +31,7 @@ class DuplicateRuleResolver
     def migrate_rule(existing_r, duplicate_r)
       migrate_profile_rules(existing_r, duplicate_r)
       migrate_rule_results(existing_r, duplicate_r)
-      duplicate_r.destroy # RuleResults, RuleReferenceRules, RuleIdentifier
+      duplicate_r.destroy # RuleResults, RuleReferenceRules
     end
 
     def duplicate_rules
