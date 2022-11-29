@@ -42,6 +42,7 @@ FactoryBot.define do
         rules = create_list(
           :rule,
           evaluator.rule_count,
+          :with_references,
           profiles: [profile, profile&.parent_profile].compact,
           benchmark: profile.benchmark
         )
