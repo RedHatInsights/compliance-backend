@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_26_093700) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_29_080807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -160,8 +160,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_26_093700) do
     t.string "ancestry"
     t.uuid "benchmark_id", null: false
     t.uuid "rule_id"
+    t.integer "precedence"
     t.index ["ancestry"], name: "index_rule_groups_on_ancestry"
     t.index ["benchmark_id"], name: "index_rule_groups_on_benchmark_id"
+    t.index ["precedence"], name: "index_rule_groups_on_precedence"
     t.index ["ref_id", "benchmark_id"], name: "index_rule_groups_on_ref_id_and_benchmark_id", unique: true
     t.index ["rule_id"], name: "index_rule_groups_on_rule_id", unique: true
   end
@@ -216,6 +218,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_26_093700) do
     t.boolean "upstream", default: true, null: false
     t.integer "precedence"
     t.uuid "rule_group_id"
+    t.index ["precedence"], name: "index_rules_on_precedence"
     t.index ["ref_id", "benchmark_id"], name: "index_rules_on_ref_id_and_benchmark_id", unique: true
     t.index ["ref_id"], name: "index_rules_on_ref_id"
     t.index ["slug", "benchmark_id"], name: "index_rules_on_slug_and_benchmark_id", unique: true
