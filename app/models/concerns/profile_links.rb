@@ -8,7 +8,7 @@ module ProfileLinks
     has_many :profile_rules, dependent: :delete_all
     has_many :rules, through: :profile_rules, source: :rule
     has_many :profile_rule_groups, dependent: :delete_all
-    has_many :rule_groups, through: :profile_rule_groups, source: :rule_group
+    has_many :rule_groups, -> { order(:precedence) }, through: :profile_rule_groups, source: :rule_group
 
     def update_rules(ids: nil, ref_ids: nil)
       update_entities(::ProfileRule.reflect_on_association(:rule), ids: ids, ref_ids: ref_ids)

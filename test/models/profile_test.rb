@@ -889,13 +889,60 @@ class ProfileTest < ActiveSupport::TestCase
     [true, false].each do |graphql|
       should "builds an array of hashes with graphql=#{graphql}" do
         profile = FactoryBot.create(:canonical_profile)
-        rg_1, rg_2 = FactoryBot.create_list(:rule_group, 2, benchmark: profile.benchmark, profiles: [profile])
-        r_11 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark, rule_group: rg_1)
-        rg_21 = FactoryBot.create(:rule_group, profiles: [profile], benchmark: profile.benchmark, ancestry: rg_2.id)
-        rg_211 = FactoryBot.create(:rule_group, profiles: [profile], benchmark: profile.benchmark, ancestry: rg_21.id)
-        r_2111 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark, rule_group: rg_211)
-        r_211 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark, rule_group: rg_21)
-        r_21 = FactoryBot.create(:rule, profiles: [profile], benchmark: profile.benchmark, rule_group: rg_2)
+        rg_1 = FactoryBot.create(
+          :rule_group,
+          benchmark: profile.benchmark,
+          profiles: [profile],
+          precedence: 1
+        )
+        rg_2 = FactoryBot.create(
+          :rule_group,
+          benchmark: profile.benchmark,
+          profiles: [profile],
+          precedence: 2
+        )
+        r_11 = FactoryBot.create(
+          :rule,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          rule_group: rg_1,
+          precedence: 3
+        )
+        rg_21 = FactoryBot.create(
+          :rule_group,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          ancestry: rg_2.id,
+          precedence: 4
+        )
+        rg_211 = FactoryBot.create(
+          :rule_group,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          ancestry: rg_21.id,
+          precedence: 5
+        )
+        r_2111 = FactoryBot.create(
+          :rule,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          rule_group: rg_211,
+          precedence: 6
+        )
+        r_211 = FactoryBot.create(
+          :rule,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          rule_group: rg_21,
+          precedence: 7
+        )
+        r_21 = FactoryBot.create(
+          :rule,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          rule_group: rg_2,
+          precedence: 8
+        )
 
         def _adjust(field, graphql)
           graphql ? field.to_s.camelize(:lower).to_sym : field
