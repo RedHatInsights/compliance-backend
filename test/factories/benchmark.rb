@@ -20,6 +20,7 @@ FactoryBot.define do
         create_list(
           :rule,
           evaluator.rule_count,
+          :with_references,
           benchmark: benchmark
         )
       end
