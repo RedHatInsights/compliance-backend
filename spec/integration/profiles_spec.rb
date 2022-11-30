@@ -153,12 +153,6 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
                   { id: '06a19f0e-5c7a-4d54-bc66-e932a96bf954', type: 'rule' }
                 ]
               },
-              rule_groups: {
-                data: [
-                  { id: '00010e27-94ef-4a4b-a14c-f2cd1c71ad21', type: 'rule_group' },
-                  { id: '0001df54-93a8-442e-bcfe-318a1f1f512f', type: 'rule_group' }
-                ]
-              },
               hosts: {
                 data: [
                   { id: '6c3837ed-edac-4522-83a1-147af958f0f2', type: 'host' },
@@ -175,12 +169,8 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
           @parent.update(policy_id: @policy.id)
           rule1 = FactoryBot.create(:rule, benchmark: @parent.benchmark, description: 'Benchmark rule 1')
           rule2 = FactoryBot.create(:rule, benchmark: @parent.benchmark, description: 'Benchmark rule 2')
-          group1 = FactoryBot.create(:rule_group, benchmark: @parent.benchmark, description: 'Benchmark group 1')
-          group2 = FactoryBot.create(:rule_group, benchmark: @parent.benchmark, description: 'Benchmark group 2')
           @parent.rules << rule1
           @parent.rules << rule2
-          @parent.rule_groups << group1
-          @parent.rule_groups << group2
         end
         let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
@@ -197,11 +187,6 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
                 rules: {
                   data: @parent.benchmark.rules.map do |rule|
                     { id: rule.id, type: 'rule' }
-                  end
-                },
-                rule_groups: {
-                  data: @parent.benchmark.rule_groups.map do |rule|
-                    { id: rule.id, type: 'rule_group' }
                   end
                 },
                 hosts: {
@@ -369,12 +354,6 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
                   { id: '06a19f0e-5c7a-4d54-bc66-e932a96bf954', type: 'rule' }
                 ]
               },
-              rule_groups: {
-                data: [
-                  { id: '00053e7b-5fbc-480c-8e75-b6aac5855209', type: 'rule_group' },
-                  { id: '00075403-3d77-4d65-b594-62066c5daaf2', type: 'rule_group' }
-                ]
-              },
               hosts: {
                 data: [
                   { id: '6c3837ed-edac-4522-83a1-147af958f0f2', type: 'host' },
@@ -421,11 +400,6 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
                 rules: {
                   data: @parent.benchmark.rules.map do |rule|
                     { id: rule.id, type: 'rule' }
-                  end
-                },
-                rule_groups: {
-                  data: @parent.benchmark.rule_groups.map do |rule|
-                    { id: rule.id, type: 'rule_group' }
                   end
                 },
                 hosts: {

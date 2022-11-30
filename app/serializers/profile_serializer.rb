@@ -7,7 +7,6 @@ class ProfileSerializer < ApplicationSerializer
   belongs_to :benchmark
   belongs_to :parent_profile, record_type: :profile
   has_many :rules
-  has_many :rule_groups, if: -> { false }
   has_many :hosts do |profile|
     if profile.policy
       profile.policy.hosts
