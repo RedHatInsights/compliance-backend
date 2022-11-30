@@ -45,18 +45,13 @@ module V1
     end
 
     def audit_tailoring
-      return unless tailoring_changed?
+      return unless rules_added&.nonzero? || rules_removed&.nonzero?
 
       audit_success(
         "Updated tailoring of profile #{profile.id}" \
         " of policy #{profile.policy_id}," \
-        " #{rules_added} rules added, #{rules_removed} rules removed" \
-        " #{rule_groups_added} groups added, #{rule_groups_removed} groups removed"
+        " #{rules_added} rules added, #{rules_removed} rules removed"
       )
-    end
-
-    def tailoring_changed?
-      %i[rules_added rules_removed rule_groups_added rule_groups_removed].map { |i| send(i)&.nonzero? }.any?
     end
 
     def audit_removal(profile)

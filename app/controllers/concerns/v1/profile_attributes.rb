@@ -69,7 +69,7 @@ module V1
       end
 
       def new_relationship_ids(model)
-        relationship = model.to_s.pluralize.underscore.to_sym
+        relationship = model.to_s.pluralize.downcase.to_sym
         ids = resource_relationships.to_h.dig(relationship, :data)&.map do |res|
           res[:id]
         end

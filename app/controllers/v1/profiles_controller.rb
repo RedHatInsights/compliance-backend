@@ -69,7 +69,7 @@ module V1
 
     private
 
-    attr_reader :hosts_added, :hosts_removed, :rules_added, :rules_removed, :rule_groups_added, :rule_groups_removed
+    attr_reader :hosts_added, :hosts_removed, :rules_added, :rules_removed
 
     def new_profile
       @new_profile ||= Profile.new(profile_create_attributes).fill_from_parent
@@ -82,11 +82,9 @@ module V1
 
     def update_relationships
       @hosts_added, @hosts_removed =
-        profile.policy.update_hosts(new_relationship_ids(Host))
+        profile.policy.update_hosts(new_host_ids)
       @rules_added, @rules_removed =
-        profile.update_rules(ids: new_relationship_ids(Rule))
-      @rule_groups_added, @rule_groups_removed =
-        profile.update_rule_groups(ids: new_relationship_ids(RuleGroup))
+        profile.update_rules(ids: new_rule_ids)
     end
 
     def tailoring_filename
@@ -109,6 +107,14 @@ module V1
       ).from_title(resource_attributes&.dig(:business_objective)) do |new_bo|
         audit_bo_creation(new_bo)
       end
+    end
+
+    def new_host_ids
+      new_relationship_ids(Host)
+    end
+
+    def new_rule_ids
+      new_relationship_ids(Rule)
     end
 
     def resource
