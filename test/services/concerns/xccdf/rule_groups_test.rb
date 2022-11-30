@@ -38,27 +38,40 @@ class RuleGroupsTest < ActiveSupport::TestCase
     assert_includes @rule_groups, rule_group
   end
 
-  test 'update ancestry column for rule group with parents' do
-    @rule_groups = @op_rule_groups.map do |op_rule_group|
-      ::RuleGroup.from_openscap_parser(op_rule_group, benchmark_id: @benchmark&.id)
-    end
-    ::RuleGroup.import!(@rule_groups, ignore: true)
-    assert_equal 0, @rule_groups.select(&:ancestry).count
-    @rule_groups_with_parents = send(:rule_group_parents)
-    ::RuleGroup.import!(@rule_groups_with_parents, on_duplicate_key_update: {
-                          conflict_target: %i[ref_id benchmark_id],
-                          columns: :all
-                        })
-    assert_equal 228, @rule_groups.select(&:ancestry).count
+  test 'update ancestry column for rule group with ancestors' do
+    save_rule_groups
+
+    assert_equal 228, @rule_groups.reject { |rg| rg.ancestry == '' }.count
+    assert_equal 4, @rule_groups.select { |rg| rg.ancestry == '' }.count
+
+    rg_with_ancestors = @rule_groups.select { |rg| rg.ref_id == 'xccdf_org.ssgproject.content_group_root_logins' }.first
+    parent1 = rg_with_ancestors.parent
+    parent2 = parent1.parent
+    root = parent2.parent
+    rg_ancestor_ids = rg_with_ancestors.ancestors.map(&:id)
+
+    assert_equal "#{root.id}/#{parent2.id}/#{parent1.id}", rg_with_ancestors.ancestry
+    assert_equal nil, root.parent
+    assert_equal '', @rule_groups[0].ancestry
+    assert_equal @rule_groups[2].parent.id.to_s, @rule_groups[2].ancestry
+    assert_includes rg_ancestor_ids, root.id
+    assert_includes rg_ancestor_ids, parent2.id
+    assert_includes rg_ancestor_ids, parent1.id
   end
 
   test 'saves rule groups only once' do
     assert_difference('RuleGroup.count', 232) do
       save_rule_groups
     end
+    assert_equal 228, @rule_groups.reject { |rg| rg.ancestry == '' }.count
+    assert_equal 4, @rule_groups.select { |rg| rg.ancestry == '' }.count
+
+    @new_rule_groups = nil
 
     assert_no_difference('RuleGroup.count') do
       save_rule_groups
     end
+    assert_equal 228, @rule_groups.reject { |rg| rg.ancestry == '' }.count
+    assert_equal 4, @rule_groups.select { |rg| rg.ancestry == '' }.count
   end
 end

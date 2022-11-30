@@ -13,19 +13,21 @@ module Xccdf
                                            benchmark_id: @benchmark&.id)
         end
 
-        ::RuleGroup.import!(@rule_groups.select(&:new_record?), ignore: true)
+        ::RuleGroup.import!(new_rule_groups, ignore: true)
 
-        ::RuleGroup.import!(rule_group_parents, on_duplicate_key_update: {
-                              conflict_target: %i[ref_id benchmark_id],
-                              columns: %i[description rationale ancestry]
-                            }, validate: false)
+        # Overwite a superset of old_rule_groups because the IDs of the ancestors are not
+        # available in the first import! above
+        ::RuleGroup.import(rule_groups_with_ancestry, on_duplicate_key_update: {
+                             conflict_target: %i[ref_id benchmark_id],
+                             columns: %i[description rationale ancestry]
+                           }, validate: false)
       end
 
       private
 
-      # def new_rule_groups
-      #   @new_rule_groups ||= @rule_groups.select(&:new_record?)
-      # end
+      def new_rule_groups
+        @new_rule_groups ||= @rule_groups.select(&:new_record?)
+      end
 
       def old_rule_groups
         @old_rule_groups ||= ::RuleGroup.where(
@@ -33,11 +35,17 @@ module Xccdf
         ).index_by(&:ref_id)
       end
 
-      def rule_group_parents
-        @op_rule_groups.select(&:parent_id).map do |op_rule_group|
-          rule_group = rule_group_for(ref_id: op_rule_group.id)
-          rule_group.parent_id = rule_group_for(ref_id: op_rule_group.parent_id)&.id
-          rule_group
+      def rule_groups_with_ancestry
+        @op_rule_groups.map do |op_rule_group|
+          group = rule_group_for(ref_id: op_rule_group.id)
+
+          # Setting up the ancestry column on the rule groups which should contain all
+          # ancestor rule_group ids in a string separated by a '/'
+          group.ancestry = op_rule_group.parent_ids.map do |parent_ref_id|
+            rule_group_for(ref_id: parent_ref_id).id
+          end.join('/')
+
+          group
         end
       end
 
