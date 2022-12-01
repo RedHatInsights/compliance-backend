@@ -46,13 +46,29 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
       parent_profile_id: @parent.id
     )
     rules = @parent.rules.take(2)
+
+    rule_group1 = FactoryBot.create(:rule_group)
+    rule_group2 = FactoryBot.create(:rule_group)
+    rule_group3 = FactoryBot.create(:rule_group)
+    rule_group4 = FactoryBot.create(:rule_group)
+
+    rule_group1.ancestry = "#{rule_group3.id}/#{rule_group2.id}"
+    rule_group1.save(validate: false)
+    rule_group2.ancestry = rule_group3.id.to_s
+    rule_group2.save(validate: false)
+
+    rules.first.update! rule_group: rule_group1
+    rules.last.update! rule_group: rule_group4
+
     @parent.benchmark.update!(rules: rules)
+
     tailoring_file = XccdfTailoringFile.new(
       profile: profile,
       rule_ref_ids: {
         rules.first.ref_id => false,
         rules.last.ref_id => true
-      }
+      },
+      rule_group_ref_ids: [rule_group1.ref_id, rule_group2.ref_id, rule_group3.ref_id, rule_group4.ref_id]
     )
     op_tailoring = OpenscapParser::TailoringFile.new(tailoring_file.to_xml)
                                                 .tailoring
@@ -66,6 +82,65 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
         "select[@selected='false']/@idref"
       ).text,
       rules.first.ref_id
+    )
+  end
+
+  test 'properly selects rule_group ref_ids' do
+    profile = Profile.create!(
+      ref_id: 'test',
+      name: 'test profile',
+      benchmark_id: @parent.benchmark.id,
+      parent_profile_id: @parent.id
+    )
+    rules = @parent.rules.take(2)
+
+    rule_group1 = FactoryBot.create(:rule_group)
+    rule_group2 = FactoryBot.create(:rule_group)
+    rule_group3 = FactoryBot.create(:rule_group)
+    rule_group4 = FactoryBot.create(:rule_group)
+
+    @parent.benchmark.update!(rules: rules)
+
+    tailoring_file = XccdfTailoringFile.new(
+      profile: profile,
+      rule_ref_ids: {
+        rules.first.ref_id => false,
+        rules.last.ref_id => true
+      },
+      rule_group_ref_ids: [rule_group1.ref_id, rule_group2.ref_id, rule_group3.ref_id, rule_group4.ref_id]
+    )
+    op_tailoring = OpenscapParser::TailoringFile.new(tailoring_file.to_xml)
+                                                .tailoring
+
+    assert_includes(
+      op_tailoring.profiles.first.xpath(
+        "select[@selected='true']/@idref"
+      ).text,
+      rule_group1.ref_id
+    )
+    assert_includes(
+      op_tailoring.profiles.first.xpath(
+        "select[@selected='true']/@idref"
+      ).text,
+      rule_group2.ref_id
+    )
+    assert_includes(
+      op_tailoring.profiles.first.xpath(
+        "select[@selected='true']/@idref"
+      ).text,
+      rule_group3.ref_id
+    )
+    assert_includes(
+      op_tailoring.profiles.first.xpath(
+        "select[@selected='true']/@idref"
+      ).text,
+      rule_group4.ref_id
+    )
+    assert_equal(
+      op_tailoring.profiles.first.xpath(
+        "select[@selected='true']/@idref"
+      ).length,
+      5
     )
   end
 

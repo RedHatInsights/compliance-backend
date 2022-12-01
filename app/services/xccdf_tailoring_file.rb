@@ -6,9 +6,10 @@ class XccdfTailoringFile
 
   XCCDF = 'xccdf'
 
-  def initialize(profile:, rule_ref_ids: {}, set_values: {})
+  def initialize(profile:, rule_ref_ids: {}, set_values: {}, rule_group_ref_ids: [])
     @profile = profile
     @rule_ref_ids = rule_ref_ids
+    @rule_group_ref_ids = rule_group_ref_ids
     @set_values = set_values
   end
 
@@ -41,7 +42,7 @@ class XccdfTailoringFile
       xml[XCCDF].description(@profile.description,
                              'xmlns:xhtml' => 'http://www.w3.org/1999/xhtml',
                              'xml:lang' => 'en-US', override: true)
-      rule_selections_builder(xml)
+      selections_builder(xml)
     end
   end
 
@@ -49,6 +50,17 @@ class XccdfTailoringFile
     @rule_ref_ids.each do |rule_ref_id, selected|
       xml[XCCDF].select(idref: rule_ref_id, selected: selected)
     end
+  end
+
+  def rule_group_selections_builder(xml)
+    @rule_group_ref_ids.each do |rule_group_ref_id|
+      xml[XCCDF].select(idref: rule_group_ref_id, selected: true)
+    end
+  end
+
+  def selections_builder(xml)
+    rule_selections_builder(xml)
+    rule_group_selections_builder(xml)
   end
 
   def create_builder
