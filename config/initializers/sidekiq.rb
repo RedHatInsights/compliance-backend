@@ -1,5 +1,3 @@
-Redis.exists_returns_integer = false # remove on sidekiq upgrade
-
 sidekiq_config = lambda do |config|
   config.redis = {
     url: "redis://#{Settings.redis_url}",
