@@ -9,7 +9,7 @@ gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 6'
 # Use Redis adapter to connect to Sidekiq
-gem 'redis', '~> 4.0'
+gem 'redis', '~> 5.0'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
@@ -43,7 +43,7 @@ gem 'exception_notification'
 gem 'slack-notifier'
 
 # Sidekiq - use reliable-fetch by Gitlab
-gem 'sidekiq', '< 7'
+gem 'sidekiq', '< 8'
 gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
 # Faraday to make requests easier
@@ -64,6 +64,8 @@ gem 'yabeda-rails'
 gem 'yabeda-sidekiq'
 gem 'yabeda-graphql'
 gem 'yabeda-prometheus-mmap'
+
+# Nokogiri
 gem 'nokogiri', force_ruby_platform: true
 
 # Logging, incl. CloudWatch
