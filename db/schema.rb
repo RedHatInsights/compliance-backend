@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_30_153701) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_01_094342) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -114,6 +114,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_30_153701) do
     t.string "os_minor_version", default: "", null: false
     t.decimal "score"
     t.boolean "upstream"
+    t.jsonb "value_overrides", default: {}
     t.index ["account_id"], name: "index_profiles_on_account_id"
     t.index ["external"], name: "index_profiles_on_external"
     t.index ["name"], name: "index_profiles_on_name"
@@ -218,6 +219,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_30_153701) do
     t.boolean "upstream", default: true, null: false
     t.integer "precedence"
     t.uuid "rule_group_id"
+    t.uuid "value_checks", default: [], array: true
     t.index ["precedence"], name: "index_rules_on_precedence"
     t.index ["ref_id", "benchmark_id"], name: "index_rules_on_ref_id_and_benchmark_id", unique: true
     t.index ["ref_id"], name: "index_rules_on_ref_id"
@@ -258,6 +260,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_30_153701) do
     t.index ["account_id"], name: "index_users_on_account_id"
   end
 
+  create_table "value_definitions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "ref_id"
+    t.string "title"
+    t.text "description"
+    t.string "value_type"
+    t.string "default_value"
+    t.decimal "lower_bound"
+    t.decimal "upper_bound"
+    t.uuid "benchmark_id", null: false
+    t.index ["benchmark_id"], name: "index_value_definitions_on_benchmark_id"
+    t.index ["ref_id", "benchmark_id"], name: "index_value_definitions_on_ref_id_and_benchmark_id", unique: true
+  end
+
   add_foreign_key "policies", "accounts"
   add_foreign_key "policies", "business_objectives"
   add_foreign_key "policy_hosts", "policies"
@@ -268,4 +283,5 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_30_153701) do
   add_foreign_key "rule_groups", "benchmarks"
   add_foreign_key "rule_groups", "rules"
   add_foreign_key "rules", "rule_groups"
+  add_foreign_key "value_definitions", "benchmarks"
 end

@@ -21,6 +21,7 @@ module Xccdf
 
     has_many :profiles, dependent: :destroy
     has_many :rules, dependent: :destroy
+    has_many :value_definitions, dependent: :destroy
     has_many :rule_groups, -> { order(:precedence) }, dependent: :destroy, inverse_of: :benchmark
     validates :ref_id, uniqueness: { scope: %i[version] }, presence: true
     validates :version, presence: true
