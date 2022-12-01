@@ -880,6 +880,104 @@ class ProfileTest < ActiveSupport::TestCase
       assert_equal [@rule3, @rule2], @profile.added_rules
     end
 
+    should 'sends the correct rule_group_ancestor_ref_ids to the tailoring file service' do
+      profile = @parent.clone_to(
+        account: @account,
+        policy: @policy
+      )
+      rg_1 = FactoryBot.create(
+        :rule_group,
+        benchmark: profile.benchmark,
+        profiles: [profile],
+        precedence: 1
+      )
+      r_1 = FactoryBot.create(
+        :rule,
+        profiles: [profile],
+        benchmark: profile.benchmark,
+        rule_group: rg_1,
+        precedence: 3
+      )
+      rg_21 = FactoryBot.create(
+        :rule_group,
+        profiles: [profile],
+        benchmark: profile.benchmark,
+        ancestry: nil,
+        precedence: 2
+      )
+      rg_2 = FactoryBot.create(
+        :rule_group,
+        profiles: [profile],
+        benchmark: profile.benchmark,
+        ancestry: rg_21.id,
+        precedence: 2
+      )
+      rg_3 = FactoryBot.create(
+        :rule_group,
+        benchmark: profile.benchmark,
+        profiles: [profile],
+        ancestry: "#{rg_21.id}/#{rg_2.id}",
+        precedence: 3
+      )
+      rg_4 = FactoryBot.create(
+        :rule_group,
+        profiles: [profile],
+        benchmark: profile.benchmark,
+        ancestry: "#{rg_21.id}/#{rg_2.id}/#{rg_3.id}",
+        precedence: 4
+      )
+      r_2 = FactoryBot.create(
+        :rule,
+        profiles: [profile],
+        benchmark: profile.benchmark,
+        rule_group: rg_3,
+        precedence: 7
+      )
+      r_3 = FactoryBot.create(
+        :rule,
+        profiles: [profile],
+        benchmark: profile.benchmark,
+        rule_group: rg_3,
+        precedence: 8
+      )
+      r_4 = FactoryBot.create(
+        :rule,
+        profiles: [profile],
+        benchmark: profile.benchmark,
+        rule_group: rg_4,
+        precedence: 6
+      )
+      rg_5 = FactoryBot.create(
+        :rule_group,
+        profiles: [profile],
+        benchmark: profile.benchmark,
+        ancestry: "#{rg_2.id}/#{rg_3.id}/#{rg_4.id}",
+        precedence: 5
+      )
+
+      profile.update! rules: [r_3, r_1, r_4, r_2]
+      r_1.update! rule_group: rg_1
+      r_2.update! rule_group: rg_3
+      r_3.update! rule_group: rg_4
+      r_4.update! rule_group: rg_2
+
+      assert_includes profile.added_rules, r_1
+      assert_includes profile.added_rules, r_2
+      assert_includes profile.added_rules, r_3
+      assert_includes profile.added_rules, r_4
+
+      assert_equal 4, profile.added_rules.length
+
+      assert_includes profile.rule_group_ancestor_ref_ids, rg_1.ref_id
+      assert_includes profile.rule_group_ancestor_ref_ids, rg_2.ref_id
+      assert_includes profile.rule_group_ancestor_ref_ids, rg_3.ref_id
+      assert_includes profile.rule_group_ancestor_ref_ids, rg_4.ref_id
+      assert_includes profile.rule_group_ancestor_ref_ids, rg_21.ref_id
+      assert_not_includes profile.rule_group_ancestor_ref_ids, rg_5.ref_id
+
+      assert_equal 5, profile.rule_group_ancestor_ref_ids.length
+    end
+
     should 'properly detects removed_rules' do
       assert_equal [@rule1], @profile.removed_rules
     end

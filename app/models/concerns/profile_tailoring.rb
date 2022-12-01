@@ -2,6 +2,24 @@
 
 # Methods that are related to profile tailoring
 module ProfileTailoring
+  GROUP_ANCESTRY_IDS = Arel::Nodes::NamedFunction.new(
+    'CAST',
+    [
+      Arel::Nodes::NamedFunction.new(
+        'unnest',
+        [
+          Arel::Nodes::NamedFunction.new(
+            'string_to_array',
+            [
+              RuleGroup.arel_table[:ancestry],
+              Arel::Nodes::Quoted.new('/')
+            ]
+          )
+        ]
+      ).as('uuid')
+    ]
+  )
+
   def tailored_rule_ref_ids
     return [] unless tailored?
 
@@ -10,6 +28,13 @@ module ProfileTailoring
     end + removed_rules.map do |rule|
       [rule.ref_id, false] # notselected
     end).to_h
+  end
+
+  def rule_group_ancestor_ref_ids
+    base = RuleGroup.where(id: added_rules.map(&:rule_group_id))
+    base.or(
+      RuleGroup.where(id: base.select(GROUP_ANCESTRY_IDS))
+    ).order(:precedence).pluck(:ref_id)
   end
 
   def tailored?
