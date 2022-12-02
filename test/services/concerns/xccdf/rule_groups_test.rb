@@ -74,4 +74,21 @@ class RuleGroupsTest < ActiveSupport::TestCase
     assert_equal 228, @rule_groups.reject { |rg| rg.ancestry == '' }.count
     assert_equal 4, @rule_groups.select { |rg| rg.ancestry == '' }.count
   end
+
+  test 'reorders rule groups when needed' do
+    save_rule_groups
+    before = @benchmark.rule_groups.order(:precedence).pluck(:ref_id)
+
+    @rule_groups = nil
+    @old_rule_groups = nil
+    @new_rule_groups = nil
+    @cached_rule_groups = nil
+    @op_rule_groups.reverse!
+
+    save_rule_groups
+
+    after = @benchmark.rule_groups.order(:precedence).pluck(:ref_id)
+
+    assert_equal before, after.reverse
+  end
 end
