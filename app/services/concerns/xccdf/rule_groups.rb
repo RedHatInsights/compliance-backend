@@ -7,10 +7,10 @@ module Xccdf
 
     included do
       def save_rule_groups
-        @rule_groups ||= @op_rule_groups.map do |op_rule_group|
+        @rule_groups ||= @op_rule_groups.each_with_index.map do |op_rule_group, idx|
           ::RuleGroup.from_openscap_parser(op_rule_group,
                                            existing: old_rule_groups[op_rule_group.id],
-                                           benchmark_id: @benchmark&.id)
+                                           precedence: idx, benchmark_id: @benchmark&.id)
         end
 
         ::RuleGroup.import!(new_rule_groups, ignore: true)
@@ -19,7 +19,7 @@ module Xccdf
         # available in the first import! above
         ::RuleGroup.import(rule_groups_with_ancestry, on_duplicate_key_update: {
                              conflict_target: %i[ref_id benchmark_id],
-                             columns: %i[description rationale ancestry]
+                             columns: %i[description rationale precedence ancestry]
                            }, validate: false)
       end
 
