@@ -87,6 +87,27 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rails zeitwerk:check
+    - name: Validate the OpenAPI schema
+      env:
+        RAILS_ENV: test
+        DATABASE_SERVICE_NAME: postgres
+        POSTGRES_SERVICE_HOST: localhost
+        POSTGRESQL_USER: insights
+        POSTGRESQL_PASSWORD: insights
+        POSTGRESQL_TEST_DATABASE: insights
+      run: |
+        cp swagger/v1/openapi.json openapi.old.json
+        bin/rake rswag:specs:swaggerize
+        symbols=( '"' '[' '{' )
+        for symbol in "${symbols[@]}"; do
+          NEW=$(cat swagger/v1/openapi.json | tr -cd "${symbol}" | wc -c)
+          OLD=$(cat openapi.old.json | tr -cd "${symbol}" | wc -c)
+          if [[ "${OLD}" != "${NEW}" ]]; then
+            rm openapi.old.json
+            exit 1
+          fi
+        done
+        rm openapi.old.json
     - name: Run rswag specs
       env:
         HOSTNAME: rails
