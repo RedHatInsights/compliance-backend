@@ -7,6 +7,10 @@ class Host < ApplicationRecord
   OS_MAJOR_VERSION = Arel.sql("system_profile->'operating_system'->'major'")
   OS_VERSION = Arel.sql("system_profile->'operating_system'")
   TAGS = Arel.sql('jsonb_array_elements(tags)')
+  JOIN_NO_BENCHMARK = arel_table.join(
+    Xccdf::Benchmark.arel_table,
+    Arel::Nodes::OuterJoin
+  ).on(Arel::Nodes::False.new).join_sources
 
   sortable_by :name, :display_name
   sortable_by :os_major_version, OS_MAJOR_VERSION
@@ -37,6 +41,9 @@ class Host < ApplicationRecord
 
   scope :with_benchmark, lambda { |profile = nil|
     profile ||= RequestStore.store['scoped_search_context_profiles']
+
+    # Join with nonexisting benchmarks if the hosts aren't scoped for a policy
+    return joins(JOIN_NO_BENCHMARK) if profile.nil?
 
     left_outer_joins(test_result_profiles: :benchmark).where(
       profiles: { id: profile.pluck(:id) }

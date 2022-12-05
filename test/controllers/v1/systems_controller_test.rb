@@ -48,6 +48,22 @@ module V1
         end)
       end
 
+      should 'sort systems without SSG version as nil' do
+        host_1, host_2 = FactoryBot.create_list(:host, 2, org_id: User.current.account.org_id)
+        profile_1 = FactoryBot.create(:profile, name: 'profile 1')
+        profile_2 = FactoryBot.create(:profile, name: 'profile 2')
+        FactoryBot.create(:test_result, profile: profile_1, host: host_1)
+        FactoryBot.create(:test_result, profile: profile_2, host: host_2)
+
+        get v1_systems_url, params: {
+          sort_by: %w[ssg_version name:desc]
+
+        }
+
+        assert_equal response.parsed_body['data'].count, 2
+        assert_response :success
+      end
+
       should 'filter systems based on stale_timestamp' do
         FactoryBot.create(:policy, hosts: Host.all)
 
