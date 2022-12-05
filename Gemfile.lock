@@ -235,7 +235,7 @@ GEM
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oj (3.10.6)
-    openscap_parser (1.4.0)
+    openscap_parser (1.5.1)
       nokogiri (~> 1.6)
     parallel (1.21.0)
     parser (3.1.0.0)
@@ -474,7 +474,7 @@ DEPENDENCIES
   mocha
   nokogiri
   oj
-  openscap_parser (~> 1.4.0)
+  openscap_parser (~> 1.5.1)
   pg
   pry-byebug
   pry-rails
