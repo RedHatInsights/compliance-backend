@@ -381,27 +381,4 @@ class ProfileQueryTest < ActiveSupport::TestCase
     assert_equal 2, profile['hosts'].count
     assert_equal 2, profile['topFailedRules'].count
   end
-
-  test 'ruleTree calls the rule_tree method and returns its output' do
-    profile = FactoryBot.create(:canonical_profile)
-
-    Profile.any_instance.expects(:rule_tree).returns('foo')
-
-    query = <<-GRAPHQL
-      query profileQuery($id: String!) {
-        profile(id: $id) {
-          id
-          ruleTree
-        }
-      }
-    GRAPHQL
-
-    result = Schema.execute(
-      query,
-      variables: { id: profile.id },
-      context: { current_user: @user }
-    )
-
-    assert_equal result['data']['profile']['ruleTree'], 'foo'
-  end
 end

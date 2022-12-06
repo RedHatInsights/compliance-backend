@@ -39,17 +39,13 @@ FactoryBot.define do
       end
 
       after(:create) do |profile, evaluator|
-        rules = create_list(
+        create_list(
           :rule,
           evaluator.rule_count,
           :with_references,
           profiles: [profile, profile&.parent_profile].compact,
           benchmark: profile.benchmark
         )
-
-        rules.each do |rule|
-          rule.rule_group.update(profiles: [profile, profile&.parent_profile].compact)
-        end
       end
     end
   end

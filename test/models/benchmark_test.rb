@@ -478,13 +478,11 @@ module Xccdf
           rg_1 = FactoryBot.create(
             :rule_group,
             benchmark: profile.benchmark,
-            profiles: [profile],
             precedence: 1
           )
           rg_2 = FactoryBot.create(
             :rule_group,
             benchmark: profile.benchmark,
-            profiles: [profile],
             precedence: 2
           )
           r_11 = FactoryBot.create(
@@ -496,14 +494,12 @@ module Xccdf
           )
           rg_21 = FactoryBot.create(
             :rule_group,
-            profiles: [profile],
             benchmark: profile.benchmark,
             ancestry: rg_2.id,
             precedence: 4
           )
           rg_211 = FactoryBot.create(
             :rule_group,
-            profiles: [profile],
             benchmark: profile.benchmark,
             ancestry: rg_21.id,
             precedence: 5
