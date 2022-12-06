@@ -97,12 +97,29 @@ Rails.application.configure do
 
   require 'logger_with_audit'
   if ENV['RAILS_LOG_TO_STDOUT'].present?
-    config.logger       = Insights::API::Common::LoggerWithAudit.new(STDOUT)
-    config.logger.formatter    = config.log_formatter
+    config.logger = Insights::API::Common::LoggerWithAudit.new(STDOUT)
+    config.logger.formatter = config.log_formatter
   else
     config.logger = Insights::API::Common::LoggerWithAudit(config.paths['log'].first)
   end
+
   config.logger = ActiveSupport::TaggedLogging.new(config.logger)
+
+  # Set up cloudwatch logging if available
+  # FIXME: change this to Settings.logging.type == "clowder"
+  if Settings.logging&.cloudwatch&.credentials&.accessKeyId
+    cloudwatch = CloudWatchLogger::Client.new(
+      Settings.logging.credentials,
+      Settings.logging.log_group,
+      Settings.logging.log_stream,
+      region: Settings.logging.region
+    )
+
+    cloudwatch_logger = ActiveSupport::TaggedLogging.new(
+      Insights::API::Common::LoggerWithAudit.new(cloudwatch)
+    )
+    config.logger.extend(ActiveSupport::Logger.broadcast(cloudwatch_logger))
+  end
 
   # Temporarily allow any origins
   config.hosts.clear
