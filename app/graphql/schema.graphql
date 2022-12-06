@@ -262,7 +262,6 @@ type Profile implements Node & RulesPreload {
   policyType: String!
   profiles: [Profile!]
   refId: String!
-  ruleTree: JSON
   rules(
     """
     Rule identifier to filter by

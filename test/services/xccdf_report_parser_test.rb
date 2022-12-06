@@ -223,7 +223,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
     should 'link the rules with the profile' do
       @report_parser.save_rules
       @report_parser.save_profile_rules
-      @report_parser.save_profile_rule_groups
       rule_ref_id = @report_parser.op_profiles
                                   .find { |p| p.id == @profile.keys.first }
                                   .selected_rule_ids.sample
@@ -269,7 +268,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         assert_difference('rule.profiles.count', 0) do
           @report_parser.save_rules
           @report_parser.save_profile_rules
-          @report_parser.save_profile_rule_groups
         end
       end
       assert_includes rule.profiles, profile
@@ -283,7 +281,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
 
       @report_parser.save_rules
       @report_parser.save_profile_rules
-      @report_parser.save_profile_rule_groups
       assert_empty(Profile.where(parent_profile: parent_profile))
       assert_difference(
         -> { Profile.count } => 1,
@@ -313,7 +310,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       ) do
         @report_parser.save_rules
         @report_parser.save_profile_rules
-        @report_parser.save_profile_rule_groups
         @report_parser.save_host_profile
       end
     end

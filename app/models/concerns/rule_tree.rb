@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Methods that are related to getting hierarchical structure of rules and rule groups
-module RulesAndRuleGroups
+module RuleTree
   extend ActiveSupport::Concern
 
   RULE_ATTRIBUTES = %i[id ref_id title description rationale identifier severity precedence].freeze

@@ -7,8 +7,6 @@ module ProfileRules
   included do
     has_many :profile_rules, dependent: :delete_all
     has_many :rules, through: :profile_rules, source: :rule
-    has_many :profile_rule_groups, dependent: :delete_all
-    has_many :rule_groups, through: :profile_rule_groups, source: :rule_group
 
     def update_rules(ids: nil, ref_ids: nil)
       removed = ::ProfileRule.where(
