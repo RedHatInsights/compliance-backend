@@ -1,7 +1,6 @@
 ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tzdata"
-ARG devDeps="gcc gcc-c++ gzip libffi-devel make openssl-devel postgresql postgresql-devel redhat-rpm-config ruby-devel tar util-linux xz"
+ARG devDeps="gcc gcc-c++ gzip libffi-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel tar util-linux xz"
 ARG extras=""
-ARG without="development:test"
 ARG prod="true"
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS build
@@ -15,18 +14,20 @@ USER 0
 
 WORKDIR /opt/app-root/src
 
-COPY ./Gemfile.lock ./Gemfile ./.gemrc.prod /opt/app-root/src/
+COPY ./.gemrc.prod /etc/gemrc
+COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
 
-RUN ( [[ $prod == "true" ]] || rpm -e --nodeps tzdata )                         && \
+RUN rpm -e --nodeps tzdata &>/dev/null                                          && \
     microdnf install --nodocs -y $deps $devDeps $extras                         && \
     chmod +t /tmp                                                               && \
+    gem update --system --install-dir=/usr/share/gems --bindir /usr/bin         && \
     gem install bundler                                                         && \
-    mv /opt/app-root/src/.gemrc.prod /etc/gemrc                                 && \
     ( [[ $prod != "true" ]] || bundle config set --without 'development:test' ) && \
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )    && \
     ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )     && \
     bundle config set --local retry '2'                                         && \
     bundle install                                                              && \
+    microdnf clean all -y                                                       && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 
 ENV prometheus_multiproc_dir=/opt/app-root/src/tmp
@@ -42,12 +43,12 @@ WORKDIR /opt/app-root/src
 
 USER 0
 
-RUN rpm -e --nodeps tzdata             && \
-    microdnf install --nodocs -y $deps && \
-    gem install bundler                && \
-    microdnf clean all -y              && \
-    chown 1001:root ./                 && \
-    chmod +t /tmp                      && \
+RUN rpm -e --nodeps tzdata &>/dev/null                                  && \
+    microdnf install --nodocs -y $deps                                  && \
+    chmod +t /tmp                                                       && \
+    gem update --system --install-dir=/usr/share/gems --bindir /usr/bin && \
+    microdnf clean all -y                                               && \
+    chown 1001:root ./                                                  && \
     install -v -d -m 1777 -o 1001 ./tmp ./log
 
 USER 1001
