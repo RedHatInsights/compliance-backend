@@ -51,7 +51,7 @@ class RuleGroupsTest < ActiveSupport::TestCase
     rg_ancestor_ids = rg_with_ancestors.ancestors.map(&:id)
 
     assert_equal "#{root.id}/#{parent2.id}/#{parent1.id}", rg_with_ancestors.ancestry
-    assert_equal nil, root.parent
+    assert_nil root.parent
     assert_equal '', @rule_groups[0].ancestry
     assert_equal @rule_groups[2].parent.id.to_s, @rule_groups[2].ancestry
     assert_includes rg_ancestor_ids, root.id
