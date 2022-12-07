@@ -4,7 +4,7 @@
 module RulesAndRuleGroups
   extend ActiveSupport::Concern
 
-  RULE_ATTRIBUTES = %i[id ref_id title description rationale identifier references severity precedence].freeze
+  RULE_ATTRIBUTES = %i[id ref_id title description rationale identifier severity precedence].freeze
   RULE_GROUP_ATTRIBUTES = %i[id ref_id title description rationale].freeze
 
   included do
