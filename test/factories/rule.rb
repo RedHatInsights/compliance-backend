@@ -17,10 +17,8 @@ FactoryBot.define do
         reference_count { 3 }
       end
 
-      references do
-        reference_count.times.map do
-          { href: Faker::Internet.url, label: Faker::Lorem.sentence }
-        end
+      after(:create) do |rule, evaluator|
+        FactoryBot.create_list(:rule_reference, evaluator.reference_count, rules: [rule])
       end
     end
   end

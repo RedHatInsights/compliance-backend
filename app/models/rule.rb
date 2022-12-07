@@ -89,8 +89,7 @@ class Rule < ApplicationRecord
                            rationale: op_rule.rationale, severity: op_rule.severity,
                            precedence: precedence, rule_group_id: rule_group_id,
                            upstream: false, slug: rule.normalize_friendly_id(op_rule.id),
-                           identifier: op_rule.identifier&.to_h,
-                           references: op_rule.rule_references.map(&:to_h))
+                           identifier: op_rule.identifier&.to_h)
 
     rule
   end
