@@ -35,6 +35,25 @@ module Types
         )
     end
 
+    def references
+      if context[:"rule_references_#{object.id}"].nil?
+        ::CollectionLoader.for(::Rule, :rule_references)
+                          .load(object).then do |references|
+          generate_references_json(references)
+        end
+      else
+        references_from_context
+      end
+    end
+
+    def references_from_context
+      ::RecordLoader.for(::RuleReference)
+                    .load_many(context[:"rule_references_#{object.id}"])
+                    .then do |references|
+        generate_references_json(references)
+      end
+    end
+
     def profiles
       ::CollectionLoader.for(::Rule, :profiles).load(object).then do |profiles|
         Pundit.policy_scope(context[:current_user], profiles)
@@ -59,7 +78,7 @@ module Types
     def generate_references_json(references)
       references.compact.map do |ref|
         { href: ref.href, label: ref.label }
-      end.to_json
+      end
     end
 
     def latest_test_result_batch(args)
