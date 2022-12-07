@@ -28,7 +28,7 @@ module Xccdf
         ::Rule.import(old_rules.values,
                       on_duplicate_key_update: {
                         conflict_target: %i[ref_id benchmark_id],
-                        columns: %i[identifier description precedence rationale references rule_group_id severity]
+                        columns: %i[identifier description precedence rationale rule_group_id severity]
                       }, validate: false)
       end
 
