@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_07_113117) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_08_090957) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -183,6 +183,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_113117) do
     t.index ["href", "label"], name: "index_rule_references_on_href_and_label", unique: true
   end
 
+  create_table "rule_references_containers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "rule_id", null: false
+    t.jsonb "rule_references"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rule_id"], name: "index_rule_references_containers_on_rule_id", unique: true
+  end
+
   create_table "rule_references_rules", id: false, force: :cascade do |t|
     t.uuid "rule_id", null: false
     t.uuid "rule_reference_id", null: false
@@ -283,6 +291,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_07_113117) do
   add_foreign_key "rule_group_rules", "rules"
   add_foreign_key "rule_groups", "benchmarks"
   add_foreign_key "rule_groups", "rules"
+  add_foreign_key "rule_references_containers", "rules"
   add_foreign_key "rules", "rule_groups"
   add_foreign_key "value_definitions", "benchmarks"
 end
