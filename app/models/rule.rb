@@ -22,8 +22,8 @@ class Rule < ApplicationRecord
   friendly_id :ref_id, use: %i[slugged scoped], scope: :benchmark_id
   scoped_search on: %i[id severity], only_explicit: true
   scoped_search on: :ref_id
-  scoped_search relation: :rule_references, on: :label, aliases: %i[reference]
-  scoped_search on: :identifier, aliases: %i[rule_identifier],
+  scoped_search relation: :rule_references, on: :label, aliases: %i[reference], only_explicit: true
+  scoped_search on: :identifier, aliases: %i[rule_identifier], only_explicit: true,
                 ext_method: 'filter_by_identifier', operators: ['=', '!=']
   include OpenscapParserDerived
   include RuleRemediation
