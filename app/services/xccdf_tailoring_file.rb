@@ -42,7 +42,7 @@ class XccdfTailoringFile
       xml[XCCDF].description(@profile.description,
                              'xmlns:xhtml' => 'http://www.w3.org/1999/xhtml',
                              'xml:lang' => 'en-US', override: true)
-      selections_builder(xml)
+      tailoring_builder(xml)
     end
   end
 
@@ -58,9 +58,17 @@ class XccdfTailoringFile
     end
   end
 
-  def selections_builder(xml)
+  def value_builder(xml)
+    @set_values.each do |value_ref_id, value|
+      # nokogiri maintainers recommend using send for tags with hyphens
+      xml[XCCDF].send('set-value', value, idref: value_ref_id)
+    end
+  end
+
+  def tailoring_builder(xml)
     rule_selections_builder(xml)
     rule_group_selections_builder(xml)
+    value_builder(xml)
   end
 
   def create_builder

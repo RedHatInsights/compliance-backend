@@ -60,7 +60,7 @@ module V1
 
       send_data XccdfTailoringFile.new(
         profile: profile, rule_ref_ids: profile.tailored_rule_ref_ids,
-        rule_group_ref_ids: profile.rule_group_ancestor_ref_ids
+        rule_group_ref_ids: profile.rule_group_ancestor_ref_ids, set_values: profile.value_overrides
       ).to_xml, filename: tailoring_filename, type: Mime[:xml]
 
       audit_tailoring_file
