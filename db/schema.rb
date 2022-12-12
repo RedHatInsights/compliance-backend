@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_08_104648) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_12_124930) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -189,6 +189,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_08_104648) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["rule_id"], name: "index_rule_references_containers_on_rule_id", unique: true
+    t.index ["rule_references"], name: "index_rule_references_containers_on_rule_references", opclass: :jsonb_path_ops, using: :gin
   end
 
   create_table "rule_references_rules", id: false, force: :cascade do |t|
@@ -229,6 +230,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_08_104648) do
     t.uuid "rule_group_id"
     t.uuid "value_checks", default: [], array: true
     t.jsonb "identifier"
+    t.index "((identifier -> 'label'::text))", name: "index_rules_on_identifier_labels", using: :gin
     t.index ["precedence"], name: "index_rules_on_precedence"
     t.index ["ref_id", "benchmark_id"], name: "index_rules_on_ref_id_and_benchmark_id", unique: true
     t.index ["ref_id"], name: "index_rules_on_ref_id"
