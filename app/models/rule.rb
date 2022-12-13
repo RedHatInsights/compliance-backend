@@ -78,7 +78,9 @@ class Rule < ApplicationRecord
     (profiles & Profile.canonical).any?
   end
 
-  def self.from_openscap_parser(op_rule, existing: nil, rule_group_id: nil, benchmark_id: nil, precedence: nil)
+  # rubocop:disable Metrics/ParameterLists
+  def self.from_openscap_parser(op_rule, existing: nil, rule_group_id: nil,
+                                benchmark_id: nil, precedence: nil, value_checks: nil)
     rule = existing || new(ref_id: op_rule.id, benchmark_id: benchmark_id)
 
     rule.op_source = op_rule
@@ -87,10 +89,11 @@ class Rule < ApplicationRecord
                            rationale: op_rule.rationale, severity: op_rule.severity,
                            precedence: precedence, rule_group_id: rule_group_id,
                            upstream: false, slug: rule.normalize_friendly_id(op_rule.id),
-                           identifier: op_rule.identifier&.to_h)
+                           value_checks: value_checks, identifier: op_rule.identifier&.to_h)
 
     rule
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def compliant?(host, profile)
     Rails.cache.fetch("#{id}/#{host.id}/compliant") do

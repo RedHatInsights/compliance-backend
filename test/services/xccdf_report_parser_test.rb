@@ -216,6 +216,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
         # rubocop:enable Layout/LineLength
       ]
       @report_parser.save_benchmark
+      @report_parser.save_value_definitions
       @report_parser.save_profiles
       @report_parser.save_rule_groups
     end

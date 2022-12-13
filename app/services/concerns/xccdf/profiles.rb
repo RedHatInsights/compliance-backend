@@ -11,7 +11,8 @@ module Xccdf
           ::Profile.from_openscap_parser(
             op_profile,
             existing: old_profiles[op_profile.id],
-            benchmark_id: @benchmark&.id
+            benchmark_id: @benchmark&.id,
+            value_overrides: value_overrides(op_profile)
           )
         end
 
@@ -29,6 +30,13 @@ module Xccdf
         @old_profiles ||= ::Profile.where(
           ref_id: @op_profiles.map(&:id), benchmark: @benchmark&.id
         ).index_by(&:ref_id)
+      end
+
+      def value_overrides(op_profile)
+        op_profile.refined_values.each_with_object({}) do |(value_id, selector), value_map|
+          op_value = value_definition_for(ref_id: value_id).op_source
+          value_map[value_id] = op_value.value(selector)
+        end
       end
     end
   end
