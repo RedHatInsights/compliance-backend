@@ -72,7 +72,7 @@ gem 'nokogiri', force_ruby_platform: true
 gem 'manageiq-loggers', '~> 0.6.0'
 
 # Parsing OpenSCAP reports library
-gem 'openscap_parser', '~> 1.5.1'
+gem 'openscap_parser', '~> 1.6.0'
 
 # RBAC service API
 gem 'insights-rbac-api-client', '~> 1.0.1'
