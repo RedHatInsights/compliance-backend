@@ -57,9 +57,9 @@ module Types
         rules.each do |rule|
           context[:parent_profile_id][rule.id] = object.id
         end
-        if args[:lookahead].selects?(:references)
-          initialize_rule_references_context(rule_results)
-        end
+
+        initialize_rule_references_context(rule_results) if args[:lookahead].selects?(:references)
+
         return unless args[:lookahead].selects?(:compliant)
 
         context[:rule_results] ||= {}
@@ -68,12 +68,9 @@ module Types
 
       def initialize_rule_references_context(rule_results)
         rule_ids = rule_results.pluck(:rule_id)
-        grouped_rules_references = ::RuleReferencesRule.distinct.where(
-          rule_id: rule_ids
-        ).group_by(&:rule_id)
-        grouped_rules_references.each do |rule_id, references|
-          context[:"rule_references_#{rule_id}"] =
-            references.pluck(:rule_reference_id)
+
+        RuleReferencesContainer.where(rule_id: rule_ids).find_each do |reference|
+          context[:"rule_references_#{reference.rule_id}"] = reference.rule_references
         end
       end
 

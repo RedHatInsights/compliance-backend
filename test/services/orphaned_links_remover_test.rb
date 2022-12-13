@@ -48,6 +48,7 @@ class OrphanedLinksRemoverTest < ActiveSupport::TestCase
   end
 
   test 'removes RuleResult records for dead profiles' do
+    @rr.rule.rule_references_container.delete
     @rr.rule.delete
 
     assert_not_empty RuleResult.where(id: @rr.id)

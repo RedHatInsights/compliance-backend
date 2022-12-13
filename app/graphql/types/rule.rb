@@ -36,21 +36,12 @@ module Types
     end
 
     def references
-      if context[:"rule_references_#{object.id}"].nil?
-        ::CollectionLoader.for(::Rule, :rule_references)
-                          .load(object).then do |references|
-          generate_references_json(references)
-        end
-      else
-        references_from_context
-      end
-    end
+      # Try to find the references in the current context
+      key = :"rule_references_#{object.id}"
+      return context[key] if context[key]
 
-    def references_from_context
-      ::RecordLoader.for(::RuleReference)
-                    .load_many(context[:"rule_references_#{object.id}"])
-                    .then do |references|
-        generate_references_json(references)
+      ::CollectionLoader.for(::Rule, :rule_references_container).load(object).then do |rrc|
+        rrc&.rule_references
       end
     end
 

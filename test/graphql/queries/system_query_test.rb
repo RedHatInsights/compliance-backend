@@ -1185,7 +1185,7 @@ class SystemQueryTest < ActiveSupport::TestCase
       rule: rule2
     )
 
-    rule1.delete
+    rule1.destroy
 
     assert_nothing_raised do
       result = Schema.execute(

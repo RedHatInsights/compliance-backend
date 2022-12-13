@@ -12,8 +12,6 @@ module Xccdf
       include ::Xccdf::RuleGroups
       include ::Xccdf::ProfileRules
       include ::Xccdf::RuleReferencesContainers
-      include ::Xccdf::RuleReferences
-      include ::Xccdf::RuleReferencesRules
       include ::Xccdf::RuleGroupRelationships
       include ::Xccdf::Hosts
       include ::Xccdf::RuleResults
@@ -30,8 +28,6 @@ module Xccdf
         save_rule_group_relationships
         save_profile_rules
         save_rule_references_containers
-        save_rule_references
-        save_rule_references_rules
       end
       # rubocop:enable Metrics/MethodLength
 
@@ -48,8 +44,6 @@ module Xccdf
         @op_rule_groups = @op_benchmark.groups
         @op_profiles = @op_benchmark.profiles
         @op_rules = @op_benchmark.rules
-        @op_rule_references =
-          @op_benchmark.rule_references.reject { |rr| rr.label.empty? }
         @op_rule_results = @op_test_result.rule_results
       end
 

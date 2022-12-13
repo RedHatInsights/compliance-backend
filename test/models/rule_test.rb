@@ -41,14 +41,6 @@ class RuleTest < ActiveSupport::TestCase
     assert @rule.compliant?(@host, @profile)
   end
 
-  test 'rule is found with_references' do
-    rr = FactoryBot.create(:rule_reference, rules: [@rule])
-
-    assert Rule.with_references(rr.label)
-               .include?(@rule),
-           'Expected rule not found by references'
-  end
-
   test 'rule is identified properly as canonical' do
     rule = FactoryBot.create(:rule, benchmark: @profile.benchmark)
 
