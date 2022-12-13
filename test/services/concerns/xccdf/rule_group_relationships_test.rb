@@ -3,15 +3,12 @@
 require 'test_helper'
 require 'xccdf/rule_group_relationships'
 require 'xccdf/rule_groups'
-require 'xccdf/rule_references_rules'
 
 class RuleGroupRelationshipsTest < ActiveSupport::TestCase
   include Xccdf::Profiles
   include Xccdf::Rules
   include Xccdf::RuleGroups
   include Xccdf::ProfileRules
-  include Xccdf::RuleReferences
-  include Xccdf::RuleReferencesRules
   include Xccdf::RuleGroupRelationships
 
   attr_accessor :benchmark, :account, :op_profiles, :op_rules, :rules,

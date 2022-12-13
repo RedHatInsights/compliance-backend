@@ -18,7 +18,7 @@ FactoryBot.define do
       end
 
       after(:create) do |rule, evaluator|
-        FactoryBot.create_list(:rule_reference, evaluator.reference_count, rules: [rule])
+        FactoryBot.create(:rule_references_container, rule_id: rule.id, reference_count: evaluator.reference_count)
       end
     end
   end

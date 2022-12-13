@@ -22,9 +22,10 @@ class Rule < ApplicationRecord
   friendly_id :ref_id, use: %i[slugged scoped], scope: :benchmark_id
   scoped_search on: %i[id severity], only_explicit: true
   scoped_search on: :ref_id
-  scoped_search relation: :rule_references, on: :label, aliases: %i[reference], only_explicit: true
   scoped_search on: :identifier, aliases: %i[rule_identifier], only_explicit: true,
                 ext_method: 'filter_by_identifier', operators: ['=', '!=']
+  scoped_search on: :references, aliases: %i[rule_references reference], only_explicit: true,
+                ext_method: 'filter_by_references', operators: ['=', '!=']
   include OpenscapParserDerived
   include RuleRemediation
   include ShortRefId
@@ -33,8 +34,9 @@ class Rule < ApplicationRecord
   has_many :profiles, through: :profile_rules, source: :profile
   has_many :rule_results, dependent: :delete_all
   has_many :hosts, through: :rule_results, source: :host
-  has_many :rule_references_rules, dependent: :delete_all
-  has_many :rule_references, through: :rule_references_rules
+
+  has_one :rule_references_container, dependent: :destroy
+
   has_many :left_rule_group_relationships, dependent: :delete_all, foreign_key: :left_id,
                                            inverse_of: :left, class_name: 'RuleGroupRelationship'
   has_many :right_rule_group_relationships, dependent: :delete_all, foreign_key: :right_id,
@@ -49,10 +51,6 @@ class Rule < ApplicationRecord
   validates :benchmark_id, presence: true
   validates_associated :profile_rules
   validates_associated :rule_results
-
-  scope :with_references, lambda { |reference_labels|
-    joins(:rule_references).where(rule_references: { label: reference_labels })
-  }
 
   scope :with_profiles, lambda {
     joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
@@ -115,5 +113,15 @@ class Rule < ApplicationRecord
 
   def self.filter_by_identifier(_filter, operator, value)
     { conditions: sanitize_sql_for_conditions(["rules.identifier ->> 'label' #{operator} ?", value]) }
+  end
+
+  def self.filter_by_references(_filter, operator, value)
+    rules = RuleReferencesContainer.select(:rule_id).where(
+      sanitize_sql_for_conditions(['rule_references @> ?::jsonb', [{ label: value }].to_json])
+    )
+
+    operator = operator == '!=' ? 'NOT' : ''
+
+    { conditions: "rules.id #{operator} IN (#{rules.to_sql})" }
   end
 end

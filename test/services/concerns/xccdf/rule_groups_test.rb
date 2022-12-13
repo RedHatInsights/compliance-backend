@@ -8,7 +8,6 @@ class RuleGroupsTest < ActiveSupport::TestCase
   include Xccdf::Rules
   include Xccdf::RuleGroups
   include Xccdf::ProfileRules
-  include Xccdf::RuleReferences
 
   attr_accessor :benchmark, :account, :op_profiles, :op_rules, :rules,
                 :rule_groups, :op_rule_groups, :rule_groups_with_parents

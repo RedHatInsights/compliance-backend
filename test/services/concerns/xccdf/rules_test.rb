@@ -9,7 +9,6 @@ class RulesTest < ActiveSupport::TestCase
     include Xccdf::Rules
     include Xccdf::RuleGroups
     include Xccdf::ProfileRules
-    include Xccdf::RuleReferences
 
     attr_accessor :benchmark, :account, :op_profiles, :op_rules
 
@@ -28,6 +27,7 @@ class RulesTest < ActiveSupport::TestCase
     @mock.benchmark = FactoryBot.create(
       :canonical_profile, :with_rules
     ).benchmark
+    RuleReferencesContainer.delete_all
     @mock.account = FactoryBot.create(:account)
     @mock.save_rule_groups
   end

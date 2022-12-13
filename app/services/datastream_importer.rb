@@ -10,8 +10,6 @@ class DatastreamImporter
     @op_profiles = @op_benchmark.profiles
     @op_rule_groups = @op_benchmark.groups
     @op_rules = @op_benchmark.rules
-    @op_rule_references =
-      @op_benchmark.rule_references.reject { |rr| rr.label.empty? }
   end
 
   def import!
