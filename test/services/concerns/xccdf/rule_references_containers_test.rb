@@ -9,6 +9,7 @@ class RuleReferencesContainersTest < ActiveSupport::TestCase
     include Xccdf::Profiles
     include Xccdf::Rules
     include Xccdf::RuleGroups
+    include Xccdf::ValueDefinitions
     include Xccdf::RuleReferencesContainers
 
     attr_accessor :benchmark, :account, :op_profiles, :op_rules
@@ -20,6 +21,7 @@ class RuleReferencesContainersTest < ActiveSupport::TestCase
       @op_rules = @op_benchmark.rules
       @op_profiles = @op_benchmark.profiles
       @op_rule_groups = @op_benchmark.groups
+      @op_value_definitions = @op_benchmark.values
     end
   end
 
@@ -30,6 +32,7 @@ class RuleReferencesContainersTest < ActiveSupport::TestCase
     ).benchmark
     @mock.account = FactoryBot.create(:account)
     @mock.save_rule_groups
+    @mock.save_value_definitions
     @mock.save_rules
   end
 

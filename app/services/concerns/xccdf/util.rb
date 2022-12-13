@@ -10,6 +10,7 @@ module Xccdf
       include ::Xccdf::Profiles
       include ::Xccdf::Rules
       include ::Xccdf::RuleGroups
+      include ::Xccdf::ValueDefinitions
       include ::Xccdf::ProfileRules
       include ::Xccdf::RuleReferencesContainers
       include ::Xccdf::RuleGroupRelationships
@@ -22,6 +23,7 @@ module Xccdf
         return if benchmark_contents_equal_to_op?
 
         save_benchmark
+        save_value_definitions
         save_profiles
         save_rule_groups
         save_rules
@@ -43,6 +45,7 @@ module Xccdf
         @op_test_result = @test_result_file.test_result
         @op_rule_groups = @op_benchmark.groups
         @op_profiles = @op_benchmark.profiles
+        @op_value_definitions = @op_benchmark.values
         @op_rules = @op_benchmark.rules
         @op_rule_results = @op_test_result.rule_results
       end
