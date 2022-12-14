@@ -1,0 +1,461 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "https://{defaultHost}/api/compliance",
+      "variables": {
+        "defaultHost": {
+          "description": "",
+          "default": "console.redhat.com"
+        }
+      }
+    },
+    {
+      "url": "https://{defaultHost}/api/compliance/v1",
+      "description": "",
+      "variables": {
+        "defaultHost": {
+          "description": "",
+          "default": "console.redhat.com"
+        }
+      }
+    }
+  ],
+  "info": {
+    "description": "This is the API for Cloud Services for RHEL Compliance. You can find out more about Red Hat Cloud Services for RHEL at [https://console.redhat.com/](https://console.redhat.com/)",
+    "version": "v2",
+    "title": "Cloud Services for RHEL Compliance API V2"
+  },
+  "paths": {
+    "/reports": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "Report"
+        ]
+      }
+    },
+    "/systems": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [],
+        "operationId": "",
+        "tags": [
+          "System"
+        ],
+        "responses": {
+          "200": {
+            "description": "show system with given ID",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response exmaple": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "54322ed4-3ccc-4ad7-8acb-749d1878e112",
+                          "type": "host",
+                          "attributes": {
+                            "name": "ortiz.name",
+                            "os_major_version": 8,
+                            "os_minor_version": 6,
+                            "last_scanned": "Never",
+                            "rules_passed": 0,
+                            "rules_failed": 0,
+                            "has_policy": true,
+                            "culled_timestamp": "2032-11-04T14:14:30Z",
+                            "stale_timestamp": "2032-10-21T14:14:30Z",
+                            "stale_warning_timestamp": "2032-10-28T14:14:30Z",
+                            "updated": "2022-10-21T14:14:30Z",
+                            "insights_id": "9a3acaf0-3378-013b-ca1f-1ab2effbf581",
+                            "compliant": true
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 60,
+                        "search": "has_test_results=true or has_policy=true",
+                        "tags": [],
+                        "limit": 20,
+                        "offset": 1,
+                        "relationships": true
+                      },
+                      "links": {
+                        "first": "/api/compliance/systems?limit=20&offset=1&relationships=true&search=has_test_results%3Dtrue+or+has_policy%3Dtrue",
+                        "last": "/api/compliance/systems?limit=20&offset=3&relationships=true&search=has_test_results%3Dtrue+or+has_policy%3Dtrue",
+                        "next": "/api/compliance/systems?limit=20&offset=2&relationships=true&search=has_test_results%3Dtrue+or+has_policy%3Dtrue"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/systems/{systemId}/policies/{policyId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/reports/{reportId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "Report"
+        ]
+      }
+    },
+    "/systems/{systemId}/profiles/{profileId}/rules": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/systems/{systemId}/profiles": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/systems/{systemId}/profiles/{profileId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/ssgs/{ssgId}/profiles/{profileId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "ssgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "SSG"
+        ]
+      }
+    },
+    "/systems/{systemId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "200": {
+            "description": "show system with given ID",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response exmaple": {
+                    "value": {
+                      "data": {
+                        "id": "54322ed4-3ccc-4ad7-8acb-749d1878e112",
+                        "type": "host",
+                        "attributes": {
+                          "name": "ortiz.name",
+                          "os_major_version": 8,
+                          "os_minor_version": 6,
+                          "last_scanned": "Never",
+                          "rules_passed": 0,
+                          "rules_failed": 0,
+                          "has_policy": true,
+                          "culled_timestamp": "2032-11-04T14:14:30Z",
+                          "stale_timestamp": "2032-10-21T14:14:30Z",
+                          "stale_warning_timestamp": "2032-10-28T14:14:30Z",
+                          "updated": "2022-10-21T14:14:30Z",
+                          "insights_id": "9a3acaf0-3378-013b-ca1f-1ab2effbf581",
+                          "compliant": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/ssgs/{ssgId}/rules": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "ssgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "SSG"
+        ]
+      }
+    },
+    "/system/{systemId}/policies": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/ssgs/{ssgId}/rules/{ruleId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "ssgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ruleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        },
+        "tags": [
+          "SSG"
+        ]
+      }
+    },
+    "/policies": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        }
+      }
+    },
+    "/policies/{policyId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "",
+        "responses": {
+          "default": {
+            "description": "Default response"
+          }
+        }
+      }
+    }
+  }
+}
