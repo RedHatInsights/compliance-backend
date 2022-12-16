@@ -11,6 +11,12 @@ class RuleGroup < ApplicationRecord
                                             inverse_of: :right, class_name: 'RuleGroupRelationship'
   has_many :rules, -> { order(:precedence) }, dependent: :nullify, inverse_of: :rule_group
 
+  has_many :rules_with_references, lambda {
+    left_outer_joins(:rule_references_container).select(
+      'rules.*', 'rule_references_containers.rule_references AS references'
+    )
+  }, inverse_of: :rule_group, dependent: :nullify, class_name: 'Rule'
+
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
 
   validates :title, presence: true

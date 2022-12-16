@@ -548,6 +548,7 @@ module Xccdf
                   _adjust(:description, graphql) => r_11.description,
                   _adjust(:rationale, graphql) => r_11.rationale,
                   _adjust(:identifier, graphql) => r_11.identifier,
+                  _adjust(:references, graphql) => r_11.references,
                   _adjust(:severity, graphql) => r_11.severity,
                   _adjust(:precedence, graphql) => r_11.precedence
                 }
@@ -585,6 +586,7 @@ module Xccdf
                           _adjust(:description, graphql) => r_2111.description,
                           _adjust(:rationale, graphql) => r_2111.rationale,
                           _adjust(:identifier, graphql) => r_2111.identifier,
+                          _adjust(:references, graphql) => r_2111.references,
                           _adjust(:severity, graphql) => r_2111.severity,
                           _adjust(:precedence, graphql) => r_2111.precedence
                         }
@@ -598,6 +600,7 @@ module Xccdf
                       _adjust(:description, graphql) => r_211.description,
                       _adjust(:rationale, graphql) => r_211.rationale,
                       _adjust(:identifier, graphql) => r_211.identifier,
+                      _adjust(:references, graphql) => r_211.references,
                       _adjust(:severity, graphql) => r_211.severity,
                       _adjust(:precedence, graphql) => r_211.precedence
                     }
@@ -611,6 +614,7 @@ module Xccdf
                   _adjust(:description, graphql) => r_21.description,
                   _adjust(:rationale, graphql) => r_21.rationale,
                   _adjust(:identifier, graphql) => r_21.identifier,
+                  _adjust(:references, graphql) => r_21.references,
                   _adjust(:severity, graphql) => r_21.severity,
                   _adjust(:precedence, graphql) => r_21.precedence
                 }

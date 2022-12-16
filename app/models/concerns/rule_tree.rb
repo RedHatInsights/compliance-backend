@@ -4,14 +4,14 @@
 module RuleTree
   extend ActiveSupport::Concern
 
-  RULE_ATTRIBUTES = %i[id ref_id title description rationale identifier severity precedence].freeze
+  RULE_ATTRIBUTES = %i[id ref_id title description rationale identifier references severity precedence].freeze
   RULE_GROUP_ATTRIBUTES = %i[id ref_id title description rationale].freeze
 
   included do
     def rule_tree(graphql = false)
-      rule_groups.includes(:rules).references(:rules).arrange_serializable do |group, children|
+      rule_groups.includes(:rules_with_references).arrange_serializable do |group, children|
         serialize(group, RULE_GROUP_ATTRIBUTES, graphql).merge(
-          children: children + group.rules.map do |rule|
+          children: children + group.rules_with_references.map do |rule|
             serialize(rule, RULE_ATTRIBUTES, graphql)
           end
         )
