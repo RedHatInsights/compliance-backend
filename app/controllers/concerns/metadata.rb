@@ -16,7 +16,7 @@ module Metadata
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
     def metadata(opts = {})
-      opts[:total] ||= resolve_collection.count
+      opts[:total] ||= count_collection
 
       {
         meta: {
@@ -74,6 +74,13 @@ module Metadata
     end
 
     private
+
+    def count_collection
+      # Count the whole collection using a single column and not the whole table. This column
+      # by default is the primary key of the table, however, in certain cases using a different
+      # indexed column might produce faster results without even accessing the table.
+      resolve_collection.except(:select).select(resolve_collection.base_class.count_by).count
+    end
 
     def base_link_url
       api_version = request.fullpath.delete_prefix("#{path_prefix}/#{Settings.app_name}")
