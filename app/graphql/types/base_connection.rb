@@ -9,7 +9,10 @@ module Types
     field :total_count, Integer, null: false
 
     def total_count
-      object.items.count
+      # Count the whole collection using a single column and not the whole table. This column
+      # by default is the primary key of the table, however, in certain cases using a different
+      # indexed column might produce faster results without even accessing the table.
+      object.items.except(:select).select(object.items.base_class.count_by).count
     end
   end
 end
