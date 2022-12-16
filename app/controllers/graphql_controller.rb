@@ -4,8 +4,6 @@
 class GraphqlController < ApplicationController
   QUERY_RE = /\s*((query|mutation) ([a-zA-Z0-9]{1,32}))[ (]/m.freeze
 
-  # TODO: Pass a filtered schema for each user, depending on RBAC
-  # http://graphql-ruby.org/schema/limiting_visibility.html
   def query
     result = Schema.execute(
       params[:query],
