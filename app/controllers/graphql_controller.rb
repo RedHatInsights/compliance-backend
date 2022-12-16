@@ -2,6 +2,8 @@
 
 # Entrypoint for all GraphQL API queries
 class GraphqlController < ApplicationController
+  QUERY_RE = /\s*((query|mutation) ([a-zA-Z0-9]{1,32}))[ (]/m.freeze
+
   # TODO: Pass a filtered schema for each user, depending on RBAC
   # http://graphql-ruby.org/schema/limiting_visibility.html
   def query
@@ -22,6 +24,20 @@ class GraphqlController < ApplicationController
   end
 
   private
+
+  # Very primitive way to determine the first occurence of an operation name after
+  # a query or a mutation. This does not work with multiplex queries, but as long
+  # as we don't use them in our codebase, it is fine.
+  def parse_gql_op
+    params[:query]&.match(QUERY_RE).try(:[], 1)
+  end
+
+  # Pass the GQL operation name to the payload for Yabeda metrics tagging
+  def append_info_to_payload(payload)
+    super
+
+    payload[:gql_op] = parse_gql_op
+  end
 
   def rbac_allowed?
     user.authorized_to?(Rbac::INVENTORY_VIEWER)

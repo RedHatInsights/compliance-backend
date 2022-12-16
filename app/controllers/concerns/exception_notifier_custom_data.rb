@@ -17,7 +17,8 @@ module ExceptionNotifierCustomData
 
   def extend_exception_notifier
     request.env['exception_notifier.exception_data'].merge!(
-      current_user: current_user&.account&.org_id
+      current_user: current_user&.account&.org_id,
+      gql_op: respond_to?(:parse_gql_op, true) ? parse_gql_op : nil
     )
   end
 end
