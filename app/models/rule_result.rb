@@ -36,6 +36,12 @@ class RuleResult < ApplicationRecord
   scope :for_policy, ->(policy_id) { joins(:profile).where(profiles: ::Profile.in_policy(policy_id)) }
   scope :latest, ->(policy_id) { for_policy(policy_id).joins(:test_result).joins(::TestResult.with_latest) }
 
+  # When requesting rule results, the DB response is scoped down by org_id numbers on the joined inventory. By
+  # using the same index to join hosts and count results, we can save a lot of time.
+  def self.count_by
+    :host_id
+  end
+
   def self.from_openscap_parser(op_rule_result, test_result_id: nil,
                                 rule_id: nil, host_id: nil)
     find_or_initialize_by(
