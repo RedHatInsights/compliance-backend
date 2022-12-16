@@ -113,13 +113,13 @@
                     "value": {
                       "data": [
                         {
-                          "id": "01d7460c-c0ce-455d-9c51-6620ef392c6b",
+                          "id": "95bb275c-827a-4b84-b976-bb7b73013070",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "A nobis porro quas.",
+                            "title": "Quasi voluptas rem exercitationem.",
                             "version": "100.0.2",
-                            "description": "Qui molestiae maxime. Repellat in provident. Eum qui ut.",
+                            "description": "Enim nam harum. Itaque repellendus quod. Adipisci commodi et.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -127,11 +127,11 @@
                             "rules": {
                               "data": [
                                 {
-                                  "id": "4cddc62b-8ef9-43ed-85ca-af15532e86ea",
+                                  "id": "9416bded-3a33-4f4a-8040-7f523f172f89",
                                   "type": "rule"
                                 },
                                 {
-                                  "id": "78941625-53b5-47ff-bd30-fe70358c108b",
+                                  "id": "5f40cee2-35c1-4987-b82b-dbf975e03c86",
                                   "type": "rule"
                                 }
                               ]
@@ -139,7 +139,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "16e3dce6-1453-4bd8-b4ca-77e40dff5f74",
+                                  "id": "20e25cf3-4057-4f3f-993a-bd10c661d11a",
                                   "type": "profile"
                                 }
                               ]
@@ -147,13 +147,13 @@
                           }
                         },
                         {
-                          "id": "575f9c42-fac8-4899-acc9-49c4920c4c63",
+                          "id": "b6574efe-7730-4c23-98e1-e39c536808ec",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Odit nam sit dignissimos.",
+                            "title": "Est ipsum et est.",
                             "version": "100.0.1",
-                            "description": "Vel rerum eum. Dolores consequuntur dolor. Exercitationem iure sequi.",
+                            "description": "Quis consectetur et. A consectetur quidem. Qui asperiores sit.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -161,11 +161,11 @@
                             "rules": {
                               "data": [
                                 {
-                                  "id": "f162f0ac-c556-4ba9-950d-512e235c2380",
+                                  "id": "ce25534e-cbe9-491c-9b39-4ad91c315749",
                                   "type": "rule"
                                 },
                                 {
-                                  "id": "99a59c25-f26a-4631-9cc8-9cfd137f6428",
+                                  "id": "012000c2-5a4e-4ff8-a59d-287131f78d57",
                                   "type": "rule"
                                 }
                               ]
@@ -173,7 +173,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "1cad57a8-6b25-47c5-a797-99d215dbcdd2",
+                                  "id": "ea09c422-ddbc-413b-9a7b-be76ba9e1f08",
                                   "type": "profile"
                                 }
                               ]
@@ -293,35 +293,49 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "0b0c7fe7-a26f-4e6e-ac88-a37371aaac38",
+                        "id": "be0fde9c-c3ca-4e23-b158-20161f974144",
                         "type": "benchmark",
                         "attributes": {
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Quisquam tenetur quibusdam et.",
+                          "title": "Neque consequatur necessitatibus similique.",
                           "version": "100.0.4",
-                          "description": "Sint provident voluptas. Velit et et. Aut laborum nisi.",
+                          "description": "Magnam placeat qui. Qui at rerum. Qui exercitationem quae.",
                           "os_major_version": "7",
                           "latest_supported_os_minor_versions": [],
                           "rule_tree": [
                             {
                               "type": "rule_group",
-                              "id": "6957c93c-be49-4363-902c-539c61137f28",
-                              "ref_id": "foo_group_e59de1fd-52d6-46a3-bc2b-83402611c217",
-                              "title": "Ea rem tempore et.",
-                              "description": "Eos quam quo. Quaerat sit modi. Sunt molestiae quam.",
-                              "rationale": "Libero dolorem aliquid. Ut saepe neque. Laborum ipsum dolor.",
+                              "id": "a141a055-03e4-4acb-b79e-c9312ab12464",
+                              "ref_id": "foo_group_53643b51-3967-4f74-b8c7-cc01c0ebbbe0",
+                              "title": "Nihil quo dolores aut.",
+                              "description": "Maxime eligendi omnis. Optio quasi praesentium. Ipsam corrupti quo.",
+                              "rationale": "Aut ullam quam. Et iure quod. Temporibus sequi officiis.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "55975b7e-cf19-417f-8ac0-93bf8b50d54d",
-                                  "ref_id": "foo_rule_32aa826e-d9cb-4bd2-b511-8acd347e3858",
-                                  "title": "Dolor excepturi placeat omnis.",
-                                  "description": "Ut aut qui. Et maiores unde. Quas fugiat ut.",
-                                  "rationale": "Officia voluptatem eligendi. Eos rerum qui. Dolores odio eius.",
+                                  "id": "5615454e-092d-4702-8988-433f71cebc9a",
+                                  "ref_id": "foo_rule_3d57f754-c1a3-44ca-8335-9b6dcd6816c0",
+                                  "title": "Quibusdam ipsam aut consectetur.",
+                                  "description": "Ullam ut distinctio. Quae eos aut. Repudiandae architecto earum.",
+                                  "rationale": "Beatae consequatur occaecati. Quis fuga fugit. Maxime natus omnis.",
                                   "identifier": {
-                                    "label": "Nemo at perferendis earum.",
-                                    "system": "http://kunde.biz/noe"
+                                    "label": "Ducimus et odit aperiam.",
+                                    "system": "http://kuhic-koelpin.co/elna"
                                   },
+                                  "references": [
+                                    {
+                                      "href": "http://bartell-koss.io/maren",
+                                      "label": "Aut explicabo sed dolor."
+                                    },
+                                    {
+                                      "href": "http://mayer.com/jamar_flatley",
+                                      "label": "Aliquid cumque nostrum sint."
+                                    },
+                                    {
+                                      "href": "http://pollich.io/celina",
+                                      "label": "Error praesentium enim aliquam."
+                                    }
+                                  ],
                                   "severity": "high",
                                   "precedence": null
                                 }
@@ -329,23 +343,37 @@
                             },
                             {
                               "type": "rule_group",
-                              "id": "1fae4e1e-9971-48f1-b977-135b3c2a69e1",
-                              "ref_id": "foo_group_adc6c758-dff8-41f5-9dc4-1341ccc78505",
-                              "title": "Consequuntur nihil voluptas consequatur.",
-                              "description": "Qui nulla fugit. Cupiditate blanditiis fugit. Esse voluptas quis.",
-                              "rationale": "Molestias et fugiat. Provident facere sit. Rerum et corrupti.",
+                              "id": "8c82e5bb-1b9e-4dc9-afce-088dbeb03b23",
+                              "ref_id": "foo_group_5e6a4465-fd54-44c5-9dbd-3b4a9309de56",
+                              "title": "Eos maxime illo dolor.",
+                              "description": "Earum eos fugiat. Repellendus ex ea. Officiis rerum sunt.",
+                              "rationale": "Accusantium minima eos. Exercitationem accusantium qui. Facere aspernatur sed.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "3bfc0e3e-f550-49a8-b939-4a082a7ede5e",
-                                  "ref_id": "foo_rule_6ae19c21-7f82-4f91-9cab-71eb24f95c82",
-                                  "title": "Consequatur aperiam nobis cumque.",
-                                  "description": "Qui maiores est. Velit aspernatur dolore. Velit illum consequatur.",
-                                  "rationale": "Unde consequuntur labore. Necessitatibus ad amet. Explicabo molestiae nam.",
+                                  "id": "e01b5782-e66c-4d05-bd3b-672659d3c608",
+                                  "ref_id": "foo_rule_c0bf66dd-916d-4946-995b-e13048ad37fc",
+                                  "title": "Occaecati nulla unde incidunt.",
+                                  "description": "Vel exercitationem voluptas. Fugiat voluptatem aut. Eum vitae ab.",
+                                  "rationale": "Consectetur hic quis. Ut ducimus reprehenderit. Ab ex aut.",
                                   "identifier": {
-                                    "label": "Autem eum libero est.",
-                                    "system": "http://klein.name/owen"
+                                    "label": "Laborum molestiae amet eum.",
+                                    "system": "http://okon-frami.info/johnathon"
                                   },
+                                  "references": [
+                                    {
+                                      "href": "http://ferry.net/jordan",
+                                      "label": "Consequuntur tempore officia dolorum."
+                                    },
+                                    {
+                                      "href": "http://vonrueden.org/dong",
+                                      "label": "Dolor recusandae voluptas numquam."
+                                    },
+                                    {
+                                      "href": "http://mitchell.biz/epifania_quigley",
+                                      "label": "Aut unde cumque rerum."
+                                    }
+                                  ],
                                   "severity": "low",
                                   "precedence": null
                                 }
@@ -353,23 +381,37 @@
                             },
                             {
                               "type": "rule_group",
-                              "id": "d977dc02-834b-42d0-84f0-1d334222459c",
-                              "ref_id": "foo_group_125a32e5-c3db-4332-9656-7b2e85957185",
-                              "title": "Quibusdam quia nesciunt accusantium.",
-                              "description": "Reiciendis totam est. Et quasi quod. Doloremque officia consequatur.",
-                              "rationale": "Ab ut dolores. Laborum non velit. Quibusdam inventore quas.",
+                              "id": "f9dc6152-dafe-458a-a684-95ab0c0f5564",
+                              "ref_id": "foo_group_aa0c7bb0-3ad9-46e6-8665-69723977a357",
+                              "title": "Pariatur et dolorem in.",
+                              "description": "Voluptate aut quis. Non vel odit. Odit facilis eius.",
+                              "rationale": "Odit et eos. Ex sit ad. Culpa minus non.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "832cc17a-11f4-4a2f-9d39-a123692f7043",
-                                  "ref_id": "foo_rule_90141483-940c-4e86-a018-52c8d6338a65",
-                                  "title": "Consequatur fugit rerum qui.",
-                                  "description": "Consequatur perspiciatis saepe. Dolorem excepturi commodi. Sit et perspiciatis.",
-                                  "rationale": "Est iusto sapiente. Repudiandae cumque quidem. Iure perferendis id.",
+                                  "id": "f040e6b2-c1a7-466f-811b-963226a32abf",
+                                  "ref_id": "foo_rule_5326756e-b4aa-4b94-a4d0-732582c9cc40",
+                                  "title": "Dolorem neque provident et.",
+                                  "description": "Qui quia quia. Ut qui rerum. Nobis eum sit.",
+                                  "rationale": "Nulla in tenetur. Placeat illum alias. Sint dolorem laboriosam.",
                                   "identifier": {
-                                    "label": "Iusto quae odio omnis.",
-                                    "system": "http://gutmann.io/colton"
+                                    "label": "Omnis facere illo quia.",
+                                    "system": "http://rice.info/dwight"
                                   },
+                                  "references": [
+                                    {
+                                      "href": "http://tremblay.info/tobias_mayert",
+                                      "label": "Dolores iusto qui qui."
+                                    },
+                                    {
+                                      "href": "http://jenkins.biz/kymberly",
+                                      "label": "Animi aut voluptas quis."
+                                    },
+                                    {
+                                      "href": "http://glover.co/vonnie_gerlach",
+                                      "label": "Eius ipsam non quia."
+                                    }
+                                  ],
                                   "severity": "low",
                                   "precedence": null
                                 }
@@ -377,119 +419,37 @@
                             },
                             {
                               "type": "rule_group",
-                              "id": "03a00f1e-f36f-49c4-9d52-7c196a00e498",
-                              "ref_id": "foo_group_797ce6a6-f599-4d35-901e-ddf3044e5710",
-                              "title": "Ipsam minima saepe sapiente.",
-                              "description": "Velit delectus omnis. Libero et nihil. Quis voluptatibus vitae.",
-                              "rationale": "Impedit et sequi. Tempora quasi quo. Earum sed dolore.",
+                              "id": "a81a355c-5fd0-4c84-b682-3f23f5e8c04f",
+                              "ref_id": "foo_group_9212fa1e-bf0b-4f71-9b7c-5ea53bc899be",
+                              "title": "Enim eos minima velit.",
+                              "description": "In ea explicabo. Porro aliquam et. Blanditiis eos molestiae.",
+                              "rationale": "Officiis natus eos. Fugit est et. Odio eveniet consequuntur.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "fc66cd59-8c12-4cee-9953-6f009c5c63b9",
-                                  "ref_id": "foo_rule_b58048cb-ccf4-4eeb-a133-075bc01c72f8",
-                                  "title": "Quae distinctio molestiae eos.",
-                                  "description": "Aliquam odit deserunt. Maxime sit libero. Voluptatem asperiores dolorem.",
-                                  "rationale": "Odit hic dignissimos. Quaerat molestias laboriosam. Repudiandae praesentium ut.",
+                                  "id": "35349760-e134-4a0a-9e46-767c32531660",
+                                  "ref_id": "foo_rule_632b0b20-f27b-4745-9a7e-a34d84881f8c",
+                                  "title": "Deleniti unde est saepe.",
+                                  "description": "Earum eaque ut. Totam libero reprehenderit. Quia laudantium ratione.",
+                                  "rationale": "Necessitatibus eum eaque. Molestias rerum totam. Ad et eaque.",
                                   "identifier": {
-                                    "label": "Qui tempore atque ullam.",
-                                    "system": "http://conroy.org/bryon_emmerich"
+                                    "label": "Quia fuga exercitationem consequatur.",
+                                    "system": "http://grant.com/josette.dibbert"
                                   },
-                                  "severity": "medium",
-                                  "precedence": null
-                                }
-                              ]
-                            },
-                            {
-                              "type": "rule_group",
-                              "id": "11fc6b08-2757-4de0-872e-795aa22e43cb",
-                              "ref_id": "foo_group_c027e690-60f9-40ad-b93e-1d5525dd563e",
-                              "title": "Asperiores corrupti doloribus et.",
-                              "description": "Et maiores error. Iusto voluptatem neque. Voluptate et quasi.",
-                              "rationale": "Nisi quis quasi. Facere nemo minima. Voluptates ipsam molestias.",
-                              "children": [
-                                {
-                                  "type": "rule",
-                                  "id": "b184e776-0d75-4327-9086-2c8e486f46cf",
-                                  "ref_id": "foo_rule_56fab6dc-1891-4a68-872b-7c8b5b82c71c",
-                                  "title": "Exercitationem id eos corrupti.",
-                                  "description": "Ut natus consequatur. Reprehenderit rerum explicabo. Debitis facere voluptatem.",
-                                  "rationale": "Soluta in qui. Rerum aperiam sed. Sed quos inventore.",
-                                  "identifier": {
-                                    "label": "Et nostrum voluptatum unde.",
-                                    "system": "http://hoeger.io/mohammed"
-                                  },
-                                  "severity": "medium",
-                                  "precedence": null
-                                }
-                              ]
-                            },
-                            {
-                              "type": "rule_group",
-                              "id": "397afa19-9922-40cf-a06b-955ef8d471e0",
-                              "ref_id": "foo_group_ab8ff28c-f067-4ac6-9bac-d38eb412daef",
-                              "title": "Dolor reiciendis sit ducimus.",
-                              "description": "Qui eligendi et. Quis rerum explicabo. Molestias laboriosam molestiae.",
-                              "rationale": "Tenetur quasi labore. Voluptatibus voluptas adipisci. Consectetur incidunt sint.",
-                              "children": [
-                                {
-                                  "type": "rule",
-                                  "id": "ed793291-c3de-49cc-8828-98925e645fd7",
-                                  "ref_id": "foo_rule_98b61001-e592-459c-9542-02a30bf58cc7",
-                                  "title": "Voluptate voluptas totam et.",
-                                  "description": "Quidem laudantium mollitia. Pariatur aliquam est. Aut dolorem commodi.",
-                                  "rationale": "Error officiis repellendus. Dolores sit voluptas. Dolorum libero dolores.",
-                                  "identifier": {
-                                    "label": "Ad odit laudantium eaque.",
-                                    "system": "http://mclaughlin-dickinson.co/ricardo_yost"
-                                  },
-                                  "severity": "high",
-                                  "precedence": null
-                                }
-                              ]
-                            },
-                            {
-                              "type": "rule_group",
-                              "id": "843c0bc0-e176-40c5-a93e-3928812bfddf",
-                              "ref_id": "foo_group_ba01b353-a80f-4d34-8e17-9b6d9859c481",
-                              "title": "Magnam voluptatum nesciunt ut.",
-                              "description": "Possimus officia praesentium. Nam consequuntur maiores. Voluptas doloremque modi.",
-                              "rationale": "Dolore quibusdam nulla. Quidem velit nemo. Corporis esse in.",
-                              "children": [
-                                {
-                                  "type": "rule",
-                                  "id": "ae04b04c-a54a-449c-9ed5-3d10d66ef716",
-                                  "ref_id": "foo_rule_9236b00b-8638-4bf0-9874-22cbb72c3e53",
-                                  "title": "Mollitia ullam itaque expedita.",
-                                  "description": "Nemo eligendi reprehenderit. Et nulla quod. Iure qui debitis.",
-                                  "rationale": "Nostrum inventore natus. Ipsum ducimus omnis. Vel ut eaque.",
-                                  "identifier": {
-                                    "label": "Veritatis officia a repellat.",
-                                    "system": "http://kshlerin.co/sha_pacocha"
-                                  },
-                                  "severity": "high",
-                                  "precedence": null
-                                }
-                              ]
-                            },
-                            {
-                              "type": "rule_group",
-                              "id": "1e085c01-4c61-407c-b90b-848a81e23ca8",
-                              "ref_id": "foo_group_b91a5576-a00c-4b2b-b69b-64aaf0d373f2",
-                              "title": "Quas dolorem architecto ad.",
-                              "description": "Adipisci ut qui. Dolorem adipisci et. Voluptatem ratione qui.",
-                              "rationale": "Provident nesciunt libero. Ut fuga et. Placeat culpa consequatur.",
-                              "children": [
-                                {
-                                  "type": "rule",
-                                  "id": "467508cf-d290-484f-833e-de5ef4e00da3",
-                                  "ref_id": "foo_rule_e9b42119-e7ce-44ea-be69-7726de633926",
-                                  "title": "Et corporis numquam et.",
-                                  "description": "Voluptatem recusandae est. Eum vitae voluptatem. Autem tempore nam.",
-                                  "rationale": "Laudantium et eum. Ut amet minus. Ratione dolor quia.",
-                                  "identifier": {
-                                    "label": "Culpa est harum voluptatem.",
-                                    "system": "http://gusikowski.biz/darleen.kulas"
-                                  },
+                                  "references": [
+                                    {
+                                      "href": "http://adams.info/belkis",
+                                      "label": "Asperiores doloribus nam sit."
+                                    },
+                                    {
+                                      "href": "http://boehm.info/teresa.christiansen",
+                                      "label": "Eius quia nobis explicabo."
+                                    },
+                                    {
+                                      "href": "http://bashirian.org/coy.kreiger",
+                                      "label": "Exercitationem quisquam eum assumenda."
+                                    }
+                                  ],
                                   "severity": "low",
                                   "precedence": null
                                 }
@@ -497,23 +457,37 @@
                             },
                             {
                               "type": "rule_group",
-                              "id": "ecead277-ff94-44f9-9eec-1fbea018e3bf",
-                              "ref_id": "foo_group_aaaa19a8-d695-4881-8a97-32b999bca825",
-                              "title": "Sed corporis at aut.",
-                              "description": "Velit nam aperiam. Mollitia est omnis. Dolore consequuntur a.",
-                              "rationale": "Reiciendis aut velit. Nihil beatae est. Et doloribus nam.",
+                              "id": "61c4646c-bff9-4c31-bac5-4168f99e5b8e",
+                              "ref_id": "foo_group_19547ee1-2ea1-4842-bada-873d8e42d7c5",
+                              "title": "Aliquid voluptate vel aut.",
+                              "description": "Molestiae hic et. Labore consequatur praesentium. Molestiae aut praesentium.",
+                              "rationale": "Dolorem reprehenderit maiores. Dolor expedita et. Aliquam ipsa consequuntur.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "3155b7d2-b6e9-4ddf-9074-735a08e67574",
-                                  "ref_id": "foo_rule_eeea08af-664b-4fbf-9177-a98a09a79ff4",
-                                  "title": "Voluptas qui suscipit est.",
-                                  "description": "Aut dolor earum. Quia inventore aut. Beatae vel consectetur.",
-                                  "rationale": "Dicta omnis necessitatibus. Et voluptatem corporis. Vero totam quae.",
+                                  "id": "e26888ea-61f2-406b-a3e9-41473aab8cd1",
+                                  "ref_id": "foo_rule_6f8ebd72-32d3-46ac-8779-4a6c33bf4592",
+                                  "title": "Vero nesciunt optio est.",
+                                  "description": "Ipsum fugit possimus. Aut beatae ipsam. Dolorem id at.",
+                                  "rationale": "Aspernatur sequi ullam. Non eius veritatis. Dicta et vero.",
                                   "identifier": {
-                                    "label": "Similique voluptatem ipsa ab.",
-                                    "system": "http://gerlach.info/annalisa.crooks"
+                                    "label": "Est esse atque accusantium.",
+                                    "system": "http://ratke.name/branden"
                                   },
+                                  "references": [
+                                    {
+                                      "href": "http://quigley-willms.info/cherelle.walter",
+                                      "label": "Quisquam laboriosam quidem accusamus."
+                                    },
+                                    {
+                                      "href": "http://carter-sipes.net/kim_rogahn",
+                                      "label": "Dignissimos omnis rerum autem."
+                                    },
+                                    {
+                                      "href": "http://bernhard-robel.co/broderick",
+                                      "label": "Blanditiis optio quas voluptatibus."
+                                    }
+                                  ],
                                   "severity": "medium",
                                   "precedence": null
                                 }
@@ -521,24 +495,190 @@
                             },
                             {
                               "type": "rule_group",
-                              "id": "89ede1f4-fc27-495f-98d0-ca0d55eeef24",
-                              "ref_id": "foo_group_4a574456-68d5-485a-8ea3-c94d66e91604",
-                              "title": "Magnam molestias facilis dolores.",
-                              "description": "Rerum vitae culpa. Consequuntur tempora quo. Quam officiis mollitia.",
-                              "rationale": "Cum incidunt debitis. Et modi nobis. Ea non deleniti.",
+                              "id": "206c3265-4e34-42c2-b407-1706dacbc553",
+                              "ref_id": "foo_group_e4572089-9208-4acb-8d28-046bd8aeed9d",
+                              "title": "Numquam cupiditate porro possimus.",
+                              "description": "Officia ut vero. Eum repellendus culpa. Nam nihil non.",
+                              "rationale": "Pariatur voluptate vitae. Voluptatibus molestiae praesentium. Nesciunt molestiae inventore.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "9fe4cd41-afbf-441e-9d69-f2db1d4b9043",
-                                  "ref_id": "foo_rule_0b63673b-55e1-4b1b-b402-8c043253c3b5",
-                                  "title": "Quas at nihil ipsa.",
-                                  "description": "Ex temporibus vel. Quia dolorum id. Accusantium quia ut.",
-                                  "rationale": "Dolores quidem rem. Et consequatur error. Rem natus possimus.",
+                                  "id": "28f1a5bc-7ef6-45ee-b7a3-f465abc2db0e",
+                                  "ref_id": "foo_rule_048881ea-2937-4ba1-81b6-030619ea61a3",
+                                  "title": "Qui excepturi ducimus qui.",
+                                  "description": "Sint porro vitae. Impedit aut quidem. Optio minus consequuntur.",
+                                  "rationale": "Voluptatibus asperiores deserunt. Quis unde sed. Odit voluptas reiciendis.",
                                   "identifier": {
-                                    "label": "Iste voluptas aperiam quibusdam.",
-                                    "system": "http://abshire-murray.name/kenny.orn"
+                                    "label": "Repellat nemo minima velit.",
+                                    "system": "http://kohler.co/gigi.gleason"
                                   },
+                                  "references": [
+                                    {
+                                      "href": "http://schulist.co/silas_lowe",
+                                      "label": "Dolorum perspiciatis dolore ducimus."
+                                    },
+                                    {
+                                      "href": "http://carroll.biz/houston",
+                                      "label": "Consequatur natus occaecati et."
+                                    },
+                                    {
+                                      "href": "http://heaney-aufderhar.net/rita",
+                                      "label": "Non ea accusamus quod."
+                                    }
+                                  ],
                                   "severity": "high",
+                                  "precedence": null
+                                }
+                              ]
+                            },
+                            {
+                              "type": "rule_group",
+                              "id": "2e0d2f9b-eb82-4c67-a163-1a20b4a61802",
+                              "ref_id": "foo_group_269f5322-87bc-4227-8853-50e8a08e051b",
+                              "title": "Ut necessitatibus quam quis.",
+                              "description": "Cum dolores adipisci. Architecto dolorum quia. Voluptas veritatis nesciunt.",
+                              "rationale": "Quo soluta earum. Est magni suscipit. Molestiae dolores quia.",
+                              "children": [
+                                {
+                                  "type": "rule",
+                                  "id": "c9c9ad0b-8009-41e9-8ea1-664f8289557e",
+                                  "ref_id": "foo_rule_add7dbff-8554-406b-9c7f-135887e16cf1",
+                                  "title": "Molestiae aut illum iusto.",
+                                  "description": "Id vitae voluptatum. Consequatur velit numquam. Est veritatis pariatur.",
+                                  "rationale": "Eaque at iure. Ut eum suscipit. Similique eaque accusantium.",
+                                  "identifier": {
+                                    "label": "Suscipit voluptatem cum voluptatem.",
+                                    "system": "http://vandervort.io/lashaunda"
+                                  },
+                                  "references": [
+                                    {
+                                      "href": "http://douglas-jast.info/elizbeth.emard",
+                                      "label": "Dolores explicabo eum dolor."
+                                    },
+                                    {
+                                      "href": "http://nader.biz/tequila.schinner",
+                                      "label": "Est harum modi eos."
+                                    },
+                                    {
+                                      "href": "http://gutkowski.info/cristi.stroman",
+                                      "label": "Voluptatem qui sunt et."
+                                    }
+                                  ],
+                                  "severity": "high",
+                                  "precedence": null
+                                }
+                              ]
+                            },
+                            {
+                              "type": "rule_group",
+                              "id": "35c47569-430b-4483-ad16-8d7f3f56e0c4",
+                              "ref_id": "foo_group_b8b157e7-0ec5-4c18-bf4f-bb97955dcb10",
+                              "title": "Deleniti eum perferendis ut.",
+                              "description": "Corrupti et qui. Modi omnis laudantium. Voluptatem ut dolorem.",
+                              "rationale": "Velit eligendi eos. Aliquid corrupti atque. Ut minus sed.",
+                              "children": [
+                                {
+                                  "type": "rule",
+                                  "id": "4a5f87d1-1179-4820-a540-6d7beb83c82e",
+                                  "ref_id": "foo_rule_abcdb6cc-10ec-490d-8346-55076f6a7d1d",
+                                  "title": "Qui quisquam vel repellat.",
+                                  "description": "Similique doloribus distinctio. Accusantium iste qui. Ut doloribus sit.",
+                                  "rationale": "Assumenda dolor maxime. Minima sapiente aut. Quia ab sed.",
+                                  "identifier": {
+                                    "label": "Blanditiis autem est similique.",
+                                    "system": "http://beer.biz/miesha_adams"
+                                  },
+                                  "references": [
+                                    {
+                                      "href": "http://douglas-hamill.io/numbers.lueilwitz",
+                                      "label": "Ab vel laudantium rerum."
+                                    },
+                                    {
+                                      "href": "http://wilderman.name/darren",
+                                      "label": "Pariatur quis fuga officiis."
+                                    },
+                                    {
+                                      "href": "http://emmerich-lubowitz.org/dannie",
+                                      "label": "Impedit alias tenetur dolorem."
+                                    }
+                                  ],
+                                  "severity": "medium",
+                                  "precedence": null
+                                }
+                              ]
+                            },
+                            {
+                              "type": "rule_group",
+                              "id": "c6ea5ffd-5f41-4245-87ae-1a80db1633cd",
+                              "ref_id": "foo_group_97e8c8f0-6a02-41f5-bdae-4052f861ad49",
+                              "title": "Laboriosam dolor ullam et.",
+                              "description": "Molestiae minus eos. Et fugit qui. Sit quod impedit.",
+                              "rationale": "Eaque cumque expedita. Et sunt possimus. Molestias sed in.",
+                              "children": [
+                                {
+                                  "type": "rule",
+                                  "id": "b863a2f3-66a5-415d-b68e-a152b92c4190",
+                                  "ref_id": "foo_rule_173a2704-c995-4656-905f-235c56a6e368",
+                                  "title": "Explicabo autem perspiciatis labore.",
+                                  "description": "Dolorum quas voluptatibus. Cum animi nostrum. Enim et delectus.",
+                                  "rationale": "Eius sint nisi. Aut laborum omnis. Reiciendis est tempora.",
+                                  "identifier": {
+                                    "label": "Quis error aut numquam.",
+                                    "system": "http://wisoky.org/valarie_kovacek"
+                                  },
+                                  "references": [
+                                    {
+                                      "href": "http://rogahn.io/myrtle.kertzmann",
+                                      "label": "Fugit cum cumque voluptatem."
+                                    },
+                                    {
+                                      "href": "http://nikolaus-bayer.io/donovan",
+                                      "label": "Deserunt voluptatibus sed quo."
+                                    },
+                                    {
+                                      "href": "http://kirlin-daugherty.name/tammy.hessel",
+                                      "label": "Vitae earum et recusandae."
+                                    }
+                                  ],
+                                  "severity": "high",
+                                  "precedence": null
+                                }
+                              ]
+                            },
+                            {
+                              "type": "rule_group",
+                              "id": "652bb8f0-2c57-454e-b07d-1d4cd1d2ea8c",
+                              "ref_id": "foo_group_968ee9a4-cdca-470a-9470-f6e0478848c7",
+                              "title": "Qui quis ab praesentium.",
+                              "description": "Magni magnam at. Illo autem harum. Eum voluptatem sed.",
+                              "rationale": "Est nostrum placeat. Voluptatem non eos. Atque nostrum alias.",
+                              "children": [
+                                {
+                                  "type": "rule",
+                                  "id": "90d876a7-9deb-4a16-bc8b-6d528ed00efa",
+                                  "ref_id": "foo_rule_784d4da1-158f-4281-ab84-cb08a5023475",
+                                  "title": "Deserunt voluptas consequuntur iusto.",
+                                  "description": "Voluptatum sed est. Ipsa nulla sint. Aut sed officiis.",
+                                  "rationale": "Eos ipsa nobis. Doloremque molestiae repellendus. Cum assumenda dignissimos.",
+                                  "identifier": {
+                                    "label": "Ducimus consequatur dolor consequatur.",
+                                    "system": "http://turcotte.biz/elden"
+                                  },
+                                  "references": [
+                                    {
+                                      "href": "http://marks.biz/veronika",
+                                      "label": "Totam quo et aut."
+                                    },
+                                    {
+                                      "href": "http://hand-hahn.org/donnell_kuphal",
+                                      "label": "Quas qui qui tempora."
+                                    },
+                                    {
+                                      "href": "http://block-bergstrom.co/lawana",
+                                      "label": "Rem perferendis quas optio."
+                                    }
+                                  ],
+                                  "severity": "medium",
                                   "precedence": null
                                 }
                               ]
@@ -549,43 +689,43 @@
                           "rules": {
                             "data": [
                               {
-                                "id": "55975b7e-cf19-417f-8ac0-93bf8b50d54d",
+                                "id": "5615454e-092d-4702-8988-433f71cebc9a",
                                 "type": "rule"
                               },
                               {
-                                "id": "3bfc0e3e-f550-49a8-b939-4a082a7ede5e",
+                                "id": "e01b5782-e66c-4d05-bd3b-672659d3c608",
                                 "type": "rule"
                               },
                               {
-                                "id": "832cc17a-11f4-4a2f-9d39-a123692f7043",
+                                "id": "f040e6b2-c1a7-466f-811b-963226a32abf",
                                 "type": "rule"
                               },
                               {
-                                "id": "fc66cd59-8c12-4cee-9953-6f009c5c63b9",
+                                "id": "35349760-e134-4a0a-9e46-767c32531660",
                                 "type": "rule"
                               },
                               {
-                                "id": "b184e776-0d75-4327-9086-2c8e486f46cf",
+                                "id": "e26888ea-61f2-406b-a3e9-41473aab8cd1",
                                 "type": "rule"
                               },
                               {
-                                "id": "ed793291-c3de-49cc-8828-98925e645fd7",
+                                "id": "28f1a5bc-7ef6-45ee-b7a3-f465abc2db0e",
                                 "type": "rule"
                               },
                               {
-                                "id": "ae04b04c-a54a-449c-9ed5-3d10d66ef716",
+                                "id": "c9c9ad0b-8009-41e9-8ea1-664f8289557e",
                                 "type": "rule"
                               },
                               {
-                                "id": "467508cf-d290-484f-833e-de5ef4e00da3",
+                                "id": "4a5f87d1-1179-4820-a540-6d7beb83c82e",
                                 "type": "rule"
                               },
                               {
-                                "id": "3155b7d2-b6e9-4ddf-9074-735a08e67574",
+                                "id": "b863a2f3-66a5-415d-b68e-a152b92c4190",
                                 "type": "rule"
                               },
                               {
-                                "id": "9fe4cd41-afbf-441e-9d69-f2db1d4b9043",
+                                "id": "90d876a7-9deb-4a16-bc8b-6d528ed00efa",
                                 "type": "rule"
                               }
                             ]
@@ -593,11 +733,11 @@
                           "profiles": {
                             "data": [
                               {
-                                "id": "97be9015-b459-401e-925d-e7cc63eeac28",
+                                "id": "629ee804-fef3-4595-ae6a-77120e0ba820",
                                 "type": "profile"
                               },
                               {
-                                "id": "148f91e1-77c2-4f4e-b165-b0747ede6981",
+                                "id": "67ba36dd-e0c1-4517-b5a7-2ec24e93515a",
                                 "type": "profile"
                               }
                             ]
@@ -729,16 +869,16 @@
                     "value": {
                       "data": [
                         {
-                          "id": "507eda53-78c5-4e3b-8714-899e620cdf4d",
+                          "id": "7b12e4ec-4cb5-4126-8aea-95296775f4c2",
                           "type": "business_objective",
                           "attributes": {
-                            "title": "Veritatis ut repellat quibusdam."
+                            "title": "Autem porro harum exercitationem."
                           },
                           "relationships": {
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "bf11563e-34a1-4f9f-9378-dd2f2c2a2253",
+                                  "id": "d8e00f63-960e-44dd-80af-6fad92c5943f",
                                   "type": "profile"
                                 }
                               ]
@@ -746,16 +886,16 @@
                           }
                         },
                         {
-                          "id": "d05324f3-42ab-46e8-be5d-b2c79f05dad2",
+                          "id": "5f5214c0-16cb-433e-9deb-0f290c2e3a24",
                           "type": "business_objective",
                           "attributes": {
-                            "title": "Voluptatem expedita blanditiis molestias."
+                            "title": "Eaque dolorum quis ut."
                           },
                           "relationships": {
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "4e5b3018-dcd3-4d66-890c-adb3eacd361d",
+                                  "id": "fa4ecc03-33e8-4f96-8b80-34ebff61eefa",
                                   "type": "profile"
                                 }
                               ]
@@ -873,16 +1013,16 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "a7a73e24-48c3-4233-a4d4-ffe45e2ed1c9",
+                        "id": "bafd7cb3-d662-4c19-8920-6fdfe1d9fd37",
                         "type": "business_objective",
                         "attributes": {
-                          "title": "Tempore aliquam molestias enim."
+                          "title": "Officiis quae fugit qui."
                         },
                         "relationships": {
                           "profiles": {
                             "data": [
                               {
-                                "id": "afec02db-6c36-41c2-98f0-bcfee96fc9e7",
+                                "id": "f41d6693-7d47-4207-86d3-6598feecd190",
                                 "type": "profile"
                               }
                             ]
@@ -1020,10 +1160,10 @@
                     "value": {
                       "data": [
                         {
-                          "id": "9b559535-d200-4dea-afe3-0ed8b7cd111b",
+                          "id": "fc710105-0635-4135-8659-d741d112a680",
                           "type": "profile",
                           "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_profile_a17697f7-7cee-4be8-b8b0-333baa8737b9",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_37efb996-90ba-4c2d-aeae-49cfba769730",
                             "score": 0.42,
                             "parent_profile_id": null,
                             "external": false,
@@ -1051,7 +1191,7 @@
                             },
                             "benchmark": {
                               "data": {
-                                "id": "3ed5c636-26b3-488c-b4df-86a8c32e629f",
+                                "id": "f1c9708c-ea88-4243-a1ad-091e5c1d23e9",
                                 "type": "benchmark"
                               }
                             },
@@ -1064,7 +1204,7 @@
                             "hosts": {
                               "data": [
                                 {
-                                  "id": "6619e8cf-4de8-4f26-8af8-cc4faeb70615",
+                                  "id": "f624487e-fc88-4a50-a444-003d66b01fbc",
                                   "type": "host"
                                 }
                               ]
@@ -1072,7 +1212,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "c34c612f-274b-4922-9ece-4bee4c543ba1",
+                                  "id": "a270c428-0915-424b-86c0-b9d4002870c5",
                                   "type": "test_result"
                                 }
                               ]
@@ -1080,10 +1220,10 @@
                           }
                         },
                         {
-                          "id": "d0e9a56d-4887-41cc-9911-85a9bdf3c278",
+                          "id": "3ebe508c-efbd-44e2-ad65-41d45c4dfa0d",
                           "type": "profile",
                           "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_profile_02cf217e-6fb5-44bd-aa7a-045b5188671d",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_37b19b40-365f-4728-8853-6f73a017dc1b",
                             "score": 0.68,
                             "parent_profile_id": null,
                             "external": false,
@@ -1093,8 +1233,8 @@
                             "policy_profile_id": null,
                             "os_minor_version": "",
                             "parent_profile_ref_id": null,
-                            "name": "Id magni numquam eum.",
-                            "description": "Magnam voluptas omnis. Sint ut dolore. Rerum eveniet odio.",
+                            "name": "Qui modi fugit nulla.",
+                            "description": "Quae aliquid consequuntur. Voluptatem assumenda voluptate. Eum ullam vitae.",
                             "canonical": true,
                             "tailored": false,
                             "total_host_count": 0,
@@ -1103,7 +1243,7 @@
                             "test_result_host_count": 0,
                             "unsupported_host_count": 0,
                             "business_objective": null,
-                            "policy_type": "Id magni numquam eum."
+                            "policy_type": "Qui modi fugit nulla."
                           },
                           "relationships": {
                             "account": {
@@ -1111,7 +1251,7 @@
                             },
                             "benchmark": {
                               "data": {
-                                "id": "a05fef29-1fef-49c5-99e7-fc078149b822",
+                                "id": "a698bd7a-0b01-4aa5-889e-ea37a738f0be",
                                 "type": "benchmark"
                               }
                             },
@@ -1124,7 +1264,7 @@
                             "hosts": {
                               "data": [
                                 {
-                                  "id": "6619e8cf-4de8-4f26-8af8-cc4faeb70615",
+                                  "id": "f624487e-fc88-4a50-a444-003d66b01fbc",
                                   "type": "host"
                                 }
                               ]
@@ -1132,7 +1272,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "f470515a-98c3-478d-a335-c029c2515cc2",
+                                  "id": "171a5c0e-d432-4c83-8560-77c9b32d2334",
                                   "type": "test_result"
                                 }
                               ]
@@ -1217,19 +1357,19 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "327f71eb-fbdc-4c73-ae92-3acb2f3805c6",
+                        "id": "d851c018-d55d-4096-acdd-92703bb88e1c",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_8b457bad-63b1-456e-8a50-a0ff13bd0384",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_6c294e9d-3a43-4ef7-8095-cb5bd8ec8e18",
                           "score": 0.0,
-                          "parent_profile_id": "d09bfffb-777d-4a64-b401-74cb96a4f0eb",
+                          "parent_profile_id": "4f46837d-75c0-41c2-976f-0bad96bc7929",
                           "external": false,
                           "compliance_threshold": 93.5,
                           "os_major_version": "7",
                           "os_version": "7",
-                          "policy_profile_id": "327f71eb-fbdc-4c73-ae92-3acb2f3805c6",
+                          "policy_profile_id": "d851c018-d55d-4096-acdd-92703bb88e1c",
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_8b457bad-63b1-456e-8a50-a0ff13bd0384",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_6c294e9d-3a43-4ef7-8095-cb5bd8ec8e18",
                           "name": "A custom name",
                           "description": "Canonical (Generated) Profile",
                           "canonical": false,
@@ -1245,30 +1385,30 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "87f230d7-420c-4e9d-b3d9-c807d1604d3c",
+                              "id": "83a4416e-24f6-4e23-942b-f81ba1b2f2cc",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "2a2efd0b-9099-4f2c-9a49-5fa5f699b4e2",
+                              "id": "16673d65-51ed-4f25-b0c2-90ef39121d25",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "d09bfffb-777d-4a64-b401-74cb96a4f0eb",
+                              "id": "4f46837d-75c0-41c2-976f-0bad96bc7929",
                               "type": "profile"
                             }
                           },
                           "rules": {
                             "data": [
                               {
-                                "id": "f3c7c992-a140-41cf-8a20-d6f98e72e2e5",
+                                "id": "27ec1a20-ce22-41c6-a3df-2dd351fce071",
                                 "type": "rule"
                               },
                               {
-                                "id": "e4c757a0-0388-47ea-883a-e87ed095bae0",
+                                "id": "06bf9bc9-7c96-4b06-9e30-cbe2a5360328",
                                 "type": "rule"
                               }
                             ]
@@ -1276,11 +1416,11 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "f2747fb5-7e52-42ad-a45e-fe65d5ae0504",
+                                "id": "1f0b0f14-04a8-4c8a-8c0e-a979accb23c1",
                                 "type": "host"
                               },
                               {
-                                "id": "73a85bc7-1214-4edf-ad02-70f2552b440d",
+                                "id": "b2866b44-f0b8-4c5f-bc02-a457f551654e",
                                 "type": "host"
                               }
                             ]
@@ -1451,10 +1591,10 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "f2c3c607-7109-452e-8e10-e5cfcf16bac3",
+                        "id": "7a9830b1-96d7-43ee-91be-9218d59ec09e",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_15ab6e1f-d7a4-4ed5-8d4d-2d11e062ae52",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_7ff3baf3-8f91-41cb-9bf4-ace2e45fc05b",
                           "score": 0.42,
                           "parent_profile_id": null,
                           "external": false,
@@ -1479,13 +1619,13 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "53f52d13-ee35-4d5a-a670-9f4e9ceb58de",
+                              "id": "98aed2bb-5394-4908-bd2c-a38e9eec44e1",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "e28206c9-6754-4828-91c6-c4967778d2cb",
+                              "id": "23a61c7d-e300-4b45-9793-6335c30e566a",
                               "type": "benchmark"
                             }
                           },
@@ -1498,7 +1638,7 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "e2a9d811-3124-45fa-9dac-4f8e61b7583a",
+                                "id": "5011bc47-3998-4984-b85f-539589157042",
                                 "type": "host"
                               }
                             ]
@@ -1506,7 +1646,7 @@
                           "test_results": {
                             "data": [
                               {
-                                "id": "e788c476-3326-4eca-a8e8-707e521a85b3",
+                                "id": "751ac0d0-881c-4ccb-b89a-1cc25e595e8f",
                                 "type": "test_result"
                               }
                             ]
@@ -1515,13 +1655,13 @@
                       },
                       "included": [
                         {
-                          "id": "e28206c9-6754-4828-91c6-c4967778d2cb",
+                          "id": "23a61c7d-e300-4b45-9793-6335c30e566a",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Molestiae iusto nesciunt nulla.",
+                            "title": "Quam doloribus occaecati nisi.",
                             "version": "100.0.19",
-                            "description": "Provident est doloribus. Voluptates et debitis. Sunt praesentium itaque.",
+                            "description": "Sunt sed reprehenderit. Perferendis autem tempore. Commodi laborum officia.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": [],
                             "rule_tree": []
@@ -1648,19 +1788,19 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "1d4e9885-2ec2-4795-8fbc-922a692eb716",
+                        "id": "d4136789-723d-4386-ac13-ec4dfa559731",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_020e4646-4d28-4be3-a1a7-c9caaa3ec90c",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_ea6dd040-f364-482b-b8df-4744b4383403",
                           "score": 0.0,
-                          "parent_profile_id": "c79b6b50-50c5-4f0b-8d92-eaf7827456e6",
+                          "parent_profile_id": "d45e4b97-758f-4715-ab8c-783251fdd02b",
                           "external": false,
                           "compliance_threshold": 93.5,
                           "os_major_version": "7",
                           "os_version": "7",
-                          "policy_profile_id": "1d4e9885-2ec2-4795-8fbc-922a692eb716",
+                          "policy_profile_id": "d4136789-723d-4386-ac13-ec4dfa559731",
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_3a64d5db-090a-4cde-ac1b-bb66d4e5ff99",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_48e63f05-c3f6-4c6f-9c40-c3b3da4bd7d0",
                           "name": "Policy for Profile",
                           "description": "An updated custom description",
                           "canonical": false,
@@ -1676,42 +1816,42 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "300c5a96-5ca2-4fa1-bd47-89a91d82938e",
+                              "id": "288ec2a6-5315-41a4-8c65-580f0b8bbfc3",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "88466ffa-8eec-4cb9-8357-b9ff4c4c530b",
+                              "id": "0025b371-a0bf-462c-8182-75b7f4d72222",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "c79b6b50-50c5-4f0b-8d92-eaf7827456e6",
+                              "id": "d45e4b97-758f-4715-ab8c-783251fdd02b",
                               "type": "profile"
                             }
                           },
                           "rules": {
                             "data": [
                               {
-                                "id": "f73df8c1-1ee1-4293-8d11-cd9a92e751d9",
+                                "id": "ecafa1e4-569e-4f89-abe3-75b328b64283",
                                 "type": "rule"
                               },
                               {
-                                "id": "f82c04f3-ea1c-460f-ad43-f1b4464e0fa8",
+                                "id": "131c9186-a798-4657-b24e-8ad4d9f13c17",
                                 "type": "rule"
                               },
                               {
-                                "id": "aacdd62c-3864-4ced-ac49-c2ad30469aae",
+                                "id": "8e885d49-de3b-4be5-917f-bdcccc54d968",
                                 "type": "rule"
                               },
                               {
-                                "id": "07fda838-9917-4ea6-b920-6b9add3596e3",
+                                "id": "615475f9-5f5c-4f95-8308-3afacf170e53",
                                 "type": "rule"
                               },
                               {
-                                "id": "f4cbf7af-91f3-4d6a-92c3-fe85b8c9a1ef",
+                                "id": "00114c6b-282d-48b2-8484-586d6fea378e",
                                 "type": "rule"
                               }
                             ]
@@ -1719,11 +1859,11 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "5bddf9db-3c17-4718-bb99-d4075db9b16f",
+                                "id": "9e27447c-5e12-4e8b-b5ff-acda94de01d4",
                                 "type": "host"
                               },
                               {
-                                "id": "94061fae-5fa5-4889-be00-69c551e52f94",
+                                "id": "74f20179-e9c2-4b47-aaef-ae7a18c35f41",
                                 "type": "host"
                               }
                             ]
@@ -1898,21 +2038,21 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "eb244370-55f3-4a59-8b9f-bf02d7c9794c",
+                        "id": "a059ba6c-493d-4bc3-bdbd-6449bb1b080e",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_85ad2d15-bd62-4e2c-9c1c-8a496802abfb",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_cceaca8f-7ceb-4ca6-94c3-88b187497a9e",
                           "score": 0.0,
-                          "parent_profile_id": "fe41786c-542a-472e-bfb3-724a53dfd972",
+                          "parent_profile_id": "c4a87afe-32f2-4703-b6ba-27e823bfb89d",
                           "external": false,
                           "compliance_threshold": 100.0,
                           "os_major_version": "7",
                           "os_version": "7",
                           "policy_profile_id": null,
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_85ad2d15-bd62-4e2c-9c1c-8a496802abfb",
-                          "name": "Quos beatae expedita quo.",
-                          "description": "Quisquam fugiat dolor. Qui optio explicabo. Consectetur quia maiores.",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_cceaca8f-7ceb-4ca6-94c3-88b187497a9e",
+                          "name": "Voluptates qui omnis eos.",
+                          "description": "Sunt voluptate minus. Quod velit et. Aspernatur tempore enim.",
                           "canonical": false,
                           "tailored": false,
                           "total_host_count": 0,
@@ -1921,24 +2061,24 @@
                           "test_result_host_count": 0,
                           "unsupported_host_count": 0,
                           "business_objective": null,
-                          "policy_type": "Molestiae repudiandae vitae dolorum."
+                          "policy_type": "Facere eos est et."
                         },
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "0e008be5-b0bd-4de6-9c5a-5537e65e349c",
+                              "id": "f9ecb8ef-47da-4455-8be0-ae77f52b20a6",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "fa5ac5e5-d347-443d-8129-569f5020afb7",
+                              "id": "65a528b3-dde0-4421-9ca4-8e1468bddae5",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "fe41786c-542a-472e-bfb3-724a53dfd972",
+                              "id": "c4a87afe-32f2-4703-b6ba-27e823bfb89d",
                               "type": "profile"
                             }
                           },
@@ -2078,7 +2218,7 @@
                     "value": {
                       "data": [
                         {
-                          "id": "b625dca0-bdea-4d49-9e86-b8adba42c100",
+                          "id": "8b824faa-3b6f-4b9c-9d57-7b6b2b0a281c",
                           "type": "rule_result",
                           "attributes": {
                             "result": "pass"
@@ -2086,13 +2226,13 @@
                           "relationships": {
                             "host": {
                               "data": {
-                                "id": "10ea2d5e-ebd3-4287-97f1-3bb5305a2d41",
+                                "id": "9716d7f6-6311-4cf2-bfa0-0e3b24ca562f",
                                 "type": "host"
                               }
                             },
                             "rule": {
                               "data": {
-                                "id": "1ce9b300-43a8-41ad-b766-8fd9b186da13",
+                                "id": "57ba8962-1e60-4060-9c57-4f7707181560",
                                 "type": "rule"
                               }
                             }
@@ -2246,40 +2386,40 @@
                     "value": {
                       "data": [
                         {
-                          "id": "73912aa0-d993-4cd5-9e3e-22e1e3dafacf",
+                          "id": "e143994e-3a2a-4a8d-847b-d2f38d3430de",
                           "type": "rule",
                           "attributes": {
-                            "ref_id": "foo_rule_ea011eb8-1f94-4077-a900-9cfbac633d63",
+                            "ref_id": "foo_rule_1b4b9260-34e5-4cfa-9ea4-5d4ddacf4721",
                             "remediation_issue_id": null,
-                            "title": "Voluptatum quae sunt et.",
-                            "rationale": "Et modi officiis. Sequi laboriosam alias. Mollitia quidem tempore.",
-                            "description": "Nihil soluta totam. Quos quia rerum. Explicabo architecto saepe.",
-                            "severity": "medium",
-                            "slug": "foo_rule_ea011eb8-1f94-4077-a900-9cfbac633d63",
+                            "title": "Aut et est et.",
+                            "rationale": "Quae ut ut. Quam qui praesentium. Autem earum sint.",
+                            "description": "Possimus ducimus omnis. Deleniti sunt et. Quae molestiae aut.",
+                            "severity": "low",
+                            "slug": "foo_rule_1b4b9260-34e5-4cfa-9ea4-5d4ddacf4721",
                             "precedence": 1
                           },
                           "relationships": {
                             "benchmark": {
                               "data": {
-                                "id": "676ac18d-74cd-4c02-8b36-57ddaebc2cda",
+                                "id": "8b2642c5-173d-47f3-b0d9-7866ef202e7b",
                                 "type": "benchmark"
                               }
                             },
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "ad486119-703e-4bf5-9a4f-3f50db260273",
+                                  "id": "c848702f-30f1-4a88-9443-5d52d9c6b38a",
                                   "type": "profile"
                                 },
                                 {
-                                  "id": "100d62f1-4c74-4689-8bd4-3a9c077d79b6",
+                                  "id": "94b00c2e-d83a-44ae-9087-05cf707e7daf",
                                   "type": "profile"
                                 }
                               ]
                             },
                             "rule_identifier": {
                               "data": {
-                                "id": "29ff0ee4-0695-4102-8930-baeb36469111",
+                                "id": "14860fd4-fa30-46ad-9ecb-649a619315bf",
                                 "type": "rule_identifier"
                               }
                             }
@@ -2381,7 +2521,7 @@
                   "Response example": {
                     "value": {
                       "errors": [
-                        "Rule not found with ID 37cea6f7-4f3e-42d3-8c47-c8582ac55eaa"
+                        "Rule not found with ID 8ddca490-6883-4b71-9b35-fcc9d778b8d8"
                       ]
                     },
                     "summary": "",
@@ -2399,40 +2539,40 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "559512c3-08f0-449f-a5ed-dae73b6482eb",
+                        "id": "584e5540-f37a-4906-9c43-deb6aae867a9",
                         "type": "rule",
                         "attributes": {
-                          "ref_id": "foo_rule_f8996fcf-dcc1-4969-9c36-de3bc4bb49b9",
+                          "ref_id": "foo_rule_6264fdb0-82d5-40f1-b8f1-87d46c82bed9",
                           "remediation_issue_id": null,
-                          "title": "Sed fugit rerum ab.",
-                          "rationale": "Molestias ea minima. Ipsum dicta est. Dolores praesentium ut.",
-                          "description": "Quo quia qui. Voluptatibus ut aut. Numquam praesentium recusandae.",
-                          "severity": "medium",
-                          "slug": "foo_rule_f8996fcf-dcc1-4969-9c36-de3bc4bb49b9",
+                          "title": "Sit fuga quaerat et.",
+                          "rationale": "Molestiae sint architecto. Est culpa nesciunt. Expedita rem voluptatem.",
+                          "description": "Cumque ab placeat. Quos omnis dolores. Aut aut accusamus.",
+                          "severity": "high",
+                          "slug": "foo_rule_6264fdb0-82d5-40f1-b8f1-87d46c82bed9",
                           "precedence": 1
                         },
                         "relationships": {
                           "benchmark": {
                             "data": {
-                              "id": "e8d18e47-39a0-49f7-8410-a9c1a891f3c6",
+                              "id": "06099f92-ca19-406c-8c63-593fcbd07d75",
                               "type": "benchmark"
                             }
                           },
                           "profiles": {
                             "data": [
                               {
-                                "id": "5008340b-3f6e-4603-84b6-300de7d59515",
+                                "id": "e277eda4-3117-47b5-8531-da0fb07aadf3",
                                 "type": "profile"
                               },
                               {
-                                "id": "298f84bf-49a3-4cc9-90e3-5b8ac1bd9adc",
+                                "id": "7494965d-1337-409a-97eb-d9287012b056",
                                 "type": "profile"
                               }
                             ]
                           },
                           "rule_identifier": {
                             "data": {
-                              "id": "0ef6e684-7e1c-497a-a173-188e0a991bfc",
+                              "id": "c176e90a-8687-4d48-96cd-db06729cf3d5",
                               "type": "rule_identifier"
                             }
                           }
@@ -3204,20 +3344,20 @@
                     "value": {
                       "data": [
                         {
-                          "id": "79c1182f-bdb8-4a0c-b5d6-a904395f639e",
+                          "id": "7f622e1a-7a43-48b4-b18d-b37f11b75a85",
                           "type": "host",
                           "attributes": {
-                            "name": "will-schulist.org",
+                            "name": "jerde-willms.net",
                             "os_major_version": 7,
                             "os_minor_version": 9,
-                            "last_scanned": "2022-12-08T08:16:56Z",
+                            "last_scanned": "2022-12-16T15:59:34Z",
                             "rules_passed": 0,
                             "rules_failed": 0,
                             "has_policy": true,
-                            "culled_timestamp": "2032-12-22T08:16:56Z",
-                            "stale_timestamp": "2032-12-08T08:16:56Z",
-                            "stale_warning_timestamp": "2032-12-15T08:16:56Z",
-                            "updated": "2022-12-08T08:16:56Z",
+                            "culled_timestamp": "2032-12-30T15:59:34Z",
+                            "stale_timestamp": "2032-12-16T15:59:34Z",
+                            "stale_warning_timestamp": "2032-12-23T15:59:34Z",
+                            "updated": "2022-12-16T15:59:34Z",
                             "insights_id": "45b7b025-4bf4-48a5-abbd-161c12ece8f4",
                             "compliant": false
                           },
@@ -3225,7 +3365,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "c7c0284d-d0c6-4792-9d82-372278c85600",
+                                  "id": "d3f6769f-8703-4443-9aae-d3391158da29",
                                   "type": "test_result"
                                 }
                               ]
@@ -3233,7 +3373,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "0ed76df2-2610-48c3-84a5-e04ef74f04d3",
+                                  "id": "c3e5b5f4-eab4-4ea5-b958-8048ef598374",
                                   "type": "profile"
                                 }
                               ]
@@ -3357,20 +3497,20 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "d0ff7a57-19cc-4633-ac5b-8daaba6370d8",
+                        "id": "241f2fb7-3cfe-46ee-9f16-866b287184ff",
                         "type": "host",
                         "attributes": {
-                          "name": "bauch.net",
+                          "name": "mitchell-becker.io",
                           "os_major_version": 7,
                           "os_minor_version": 9,
-                          "last_scanned": "2022-12-08T08:16:57Z",
+                          "last_scanned": "2022-12-16T15:59:34Z",
                           "rules_passed": 0,
                           "rules_failed": 0,
                           "has_policy": true,
-                          "culled_timestamp": "2032-12-22T08:16:56Z",
-                          "stale_timestamp": "2032-12-08T08:16:56Z",
-                          "stale_warning_timestamp": "2032-12-15T08:16:56Z",
-                          "updated": "2022-12-08T08:16:56Z",
+                          "culled_timestamp": "2032-12-30T15:59:34Z",
+                          "stale_timestamp": "2032-12-16T15:59:34Z",
+                          "stale_warning_timestamp": "2032-12-23T15:59:34Z",
+                          "updated": "2022-12-16T15:59:34Z",
                           "insights_id": "45b7b025-4bf4-48a5-abbd-161c12ece8f4",
                           "compliant": false
                         },
@@ -3378,7 +3518,7 @@
                           "test_results": {
                             "data": [
                               {
-                                "id": "d8288ded-6b25-4c64-9220-ee2114a5464e",
+                                "id": "83c458fe-e0ee-43d0-af81-981a40432f49",
                                 "type": "test_result"
                               }
                             ]
@@ -3386,7 +3526,7 @@
                           "profiles": {
                             "data": [
                               {
-                                "id": "e4fa3ed2-9916-4c7e-878f-f1a191654b75",
+                                "id": "78387914-10e8-4585-a68e-3238b054bf5f",
                                 "type": "profile"
                               }
                             ]

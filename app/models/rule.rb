@@ -114,6 +114,11 @@ class Rule < ApplicationRecord
     test_result.rule_results.find_by(rule_id: id)
   end
 
+  def references
+    # Try to reach for this in the cached attributes if possible
+    attributes['references'] || rule_references_container&.rule_references
+  end
+
   def self.filter_by_identifier(_filter, operator, value)
     { conditions: sanitize_sql_for_conditions(["rules.identifier ->> 'label' #{operator} ?", value]) }
   end
