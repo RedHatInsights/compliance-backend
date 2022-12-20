@@ -34,8 +34,8 @@ module Xccdf
 
       def value_overrides(op_profile)
         op_profile.refined_values.each_with_object({}) do |(value_id, selector), value_map|
-          op_value = value_definition_for(ref_id: value_id).op_source
-          value_map[value_id] = op_value.value(selector)
+          value_definition = value_definition_for(ref_id: value_id)
+          value_map[value_definition.id] = value_definition.op_source.value(selector)
         end
       end
     end
