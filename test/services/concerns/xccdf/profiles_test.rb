@@ -46,18 +46,24 @@ module Xccdf
       profile1 = Profile.find_by(ref_id: 'xccdf_org.ssgproject.content_profile_pci-dss')
       profile2 = Profile.find_by(ref_id: 'xccdf_org.ssgproject.content_profile_standard')
 
-      expected_overrides = { 'xccdf_org.ssgproject.content_value_var_auditd_num_logs' => '5',
-                             'xccdf_org.ssgproject.content_value_sshd_idle_timeout_value' => '900',
-                             'xccdf_org.ssgproject.content_value_var_password_pam_minlen' => '7',
-                             'xccdf_org.ssgproject.content_value_var_multiple_time_servers' =>
-                             '0.rhel.pool.ntp.org,1.rhel.pool.ntp.org,2.rhel.pool.ntp.org,3.rhel.pool.ntp.org',
-                             'xccdf_org.ssgproject.content_value_var_password_pam_minclass' => '2',
-                             'xccdf_org.ssgproject.content_value_var_password_pam_unix_remember' => '4',
-                             'xccdf_org.ssgproject.content_value_var_accounts_maximum_age_login_defs' => '90',
-                             'xccdf_org.ssgproject.content_value_var_account_disable_post_pw_expiration' => '90',
-                             'xccdf_org.ssgproject.content_value_var_accounts_passwords_pam_faillock_deny' => '6',
-                             'xccdf_org.ssgproject.content_value_var_accounts_passwords_pam_faillock_unlock_time' =>
-                             '1800' }
+      expected_overrides = {
+        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_auditd_num_logs').id => '5',
+        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_sshd_idle_timeout_value').id => '900',
+        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_password_pam_minlen').id => '7',
+        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_multiple_time_servers').id =>
+          '0.rhel.pool.ntp.org,1.rhel.pool.ntp.org,2.rhel.pool.ntp.org,3.rhel.pool.ntp.org',
+        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_password_pam_minclass').id => '2',
+        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_password_pam_unix_remember').id =>
+          '4',
+        send(:value_definition_for, ref_id:
+          'xccdf_org.ssgproject.content_value_var_accounts_maximum_age_login_defs').id => '90',
+        send(:value_definition_for, ref_id:
+          'xccdf_org.ssgproject.content_value_var_account_disable_post_pw_expiration').id => '90',
+        send(:value_definition_for, ref_id:
+          'xccdf_org.ssgproject.content_value_var_accounts_passwords_pam_faillock_deny').id => '6',
+        send(:value_definition_for, ref_id:
+          'xccdf_org.ssgproject.content_value_var_accounts_passwords_pam_faillock_unlock_time').id => '1800'
+      }
 
       assert_equal expected_overrides, profile1.value_overrides
       assert_equal 0, profile2.value_overrides.length
