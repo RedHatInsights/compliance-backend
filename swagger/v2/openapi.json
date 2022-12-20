@@ -24,18 +24,77 @@
   "info": {
     "description": "This is the API for Cloud Services for RHEL Compliance. You can find out more about Red Hat Cloud Services for RHEL at [https://console.redhat.com/](https://console.redhat.com/)",
     "version": "v2",
-    "title": "Cloud Services for RHEL Compliance API V2"
+    "title": "Cloud Services for RHEL Compliance API V2",
+    "contact": {}
   },
   "paths": {
     "/reports": {
       "get": {
         "summary": "",
         "description": "",
-        "parameters": [],
-        "operationId": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": "Default response"
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Report"
+        ]
+      }
+    },
+    "/reports/{reportId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -47,8 +106,15 @@
       "get": {
         "summary": "",
         "description": "",
-        "parameters": [],
-        "operationId": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "tags": [
           "System"
         ],
@@ -103,194 +169,19 @@
         }
       }
     },
-    "/systems/{systemId}/policies/{policyId}": {
-      "get": {
-        "summary": "",
-        "description": "",
-        "parameters": [
-          {
-            "name": "systemId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "policyId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "operationId": "",
-        "responses": {
-          "default": {
-            "description": "Default response"
-          }
-        },
-        "tags": [
-          "System"
-        ]
-      }
-    },
-    "/reports/{reportId}": {
-      "get": {
-        "summary": "",
-        "description": "",
-        "parameters": [
-          {
-            "name": "reportId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "operationId": "",
-        "responses": {
-          "default": {
-            "description": "Default response"
-          }
-        },
-        "tags": [
-          "Report"
-        ]
-      }
-    },
-    "/systems/{systemId}/profiles/{profileId}/rules": {
-      "get": {
-        "summary": "",
-        "description": "",
-        "parameters": [
-          {
-            "name": "systemId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "profileId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "operationId": "",
-        "responses": {
-          "default": {
-            "description": "Default response"
-          }
-        },
-        "tags": [
-          "System"
-        ]
-      }
-    },
-    "/systems/{systemId}/profiles": {
-      "get": {
-        "summary": "",
-        "description": "",
-        "parameters": [
-          {
-            "name": "systemId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "operationId": "",
-        "responses": {
-          "default": {
-            "description": "Default response"
-          }
-        },
-        "tags": [
-          "System"
-        ]
-      }
-    },
-    "/systems/{systemId}/profiles/{profileId}": {
-      "get": {
-        "summary": "",
-        "description": "",
-        "parameters": [
-          {
-            "name": "systemId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "profileId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "operationId": "",
-        "responses": {
-          "default": {
-            "description": "Default response"
-          }
-        },
-        "tags": [
-          "System"
-        ]
-      }
-    },
-    "/ssgs/{ssgId}/profiles/{profileId}": {
-      "get": {
-        "summary": "",
-        "description": "",
-        "parameters": [
-          {
-            "name": "ssgId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "profileId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "operationId": "",
-        "responses": {
-          "default": {
-            "description": "Default response"
-          }
-        },
-        "tags": [
-          "SSG"
-        ]
-      }
-    },
     "/systems/{systemId}": {
       "get": {
         "summary": "",
         "description": "",
         "parameters": [
           {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "systemId",
             "in": "path",
             "required": true,
@@ -299,7 +190,6 @@
             }
           }
         ],
-        "operationId": "",
         "responses": {
           "200": {
             "description": "show system with given ID",
@@ -339,36 +229,18 @@
         ]
       }
     },
-    "/ssgs/{ssgId}/rules": {
-      "get": {
-        "summary": "",
-        "description": "",
-        "parameters": [
-          {
-            "name": "ssgId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "operationId": "",
-        "responses": {
-          "default": {
-            "description": "Default response"
-          }
-        },
-        "tags": [
-          "SSG"
-        ]
-      }
-    },
     "/system/{systemId}/policies": {
       "get": {
         "summary": "",
         "description": "",
         "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "systemId",
             "in": "path",
@@ -378,10 +250,20 @@
             }
           }
         ],
-        "operationId": "",
         "responses": {
-          "default": {
-            "description": "Default response"
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -389,11 +271,505 @@
         ]
       }
     },
+    "/systems/{systemId}/policies/{policyId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/systems/{systemId}/profiles/{profileId}/rules": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/systems/{systemId}/profiles": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+    "/systems/{systemId}/profiles/{profileId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
+
+
+    "/ssgs": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "SSG"
+        ]
+      }
+    },
+    "/ssgs/{ssgId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ssgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "SSG"
+        ]
+      }
+    },
+    "/ssgs/{ssgId}/profiles": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ssgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                          "type": "profile",
+                          "attributes": {
+                            "ref_id": "xccdf_org.ssgproject.content_profile_stig-rhel6-server-upstream",
+                            "score": 0.0,
+                            "parent_profile_id": null,
+                            "external": false,
+                            "compliance_threshold": 100.0,
+                            "os_major_version": "6",
+                            "os_version": "6",
+                            "policy_profile_id": null,
+                            "os_minor_version": "",
+                            "parent_profile_ref_id": null,
+                            "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                            "description": "Profile description",
+                            "canonical": true,
+                            "tailored": false,
+                            "total_host_count": 0,
+                            "ssg_version": "0.1.28",
+                            "compliant_host_count": 0,
+                            "test_result_host_count": 0,
+                            "unsupported_host_count": 0,
+                            "business_objective": null,
+                            "policy_type": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
+                          },
+                          "relationships": {
+                            "rules": {
+                              "data": [
+                                {
+                                  "id": "00013fff-191c-48d9-87e5-1483af035127",
+                                  "type": "rule"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 225,
+                        "search": "",
+                        "limit": 20,
+                        "offset": 1,
+                        "sort_by": "score"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "SSG"
+        ]
+      }
+    },
+    "/ssgs/{ssgId}/profiles/{profileId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ssgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data":{
+                        "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                        "type": "profile",
+                        "attributes": {
+                          "ref_id": "xccdf_org.ssgproject.content_profile_stig-rhel6-server-upstream",
+                          "score": 0.0,
+                          "parent_profile_id": null,
+                          "external": false,
+                          "compliance_threshold": 100.0,
+                          "os_major_version": "6",
+                          "os_version": "6",
+                          "policy_profile_id": null,
+                          "os_minor_version": "",
+                          "parent_profile_ref_id": null,
+                          "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                          "description": "Profile description",
+                          "canonical": true,
+                          "tailored": false,
+                          "total_host_count": 0,
+                          "ssg_version": "0.1.28",
+                          "compliant_host_count": 0,
+                          "test_result_host_count": 0,
+                          "unsupported_host_count": 0,
+                          "business_objective": null,
+                          "policy_type": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
+                        },
+                        "relationships": {
+                          "rules": {
+                            "data": [
+                              {
+                                "id": "00013fff-191c-48d9-87e5-1483af035127",
+                                "type": "rule"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "SSG"
+        ]
+      }
+    },
+    "/ssgs/{ssgId}/rules": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ssgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "SSG"
+        ]
+      }
+    },
+
+
     "/ssgs/{ssgId}/rules/{ruleId}": {
       "get": {
         "summary": "",
         "description": "",
         "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "ssgId",
             "in": "path",
@@ -411,10 +787,20 @@
             }
           }
         ],
-        "operationId": "",
         "responses": {
-          "default": {
-            "description": "Default response"
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -426,13 +812,66 @@
       "get": {
         "summary": "",
         "description": "",
-        "parameters": [],
-        "operationId": "",
-        "responses": {
-          "default": {
-            "description": "Default response"
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
           }
-        }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      },
+      "post": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
       }
     },
     "/policies/{policyId}": {
@@ -440,6 +879,13 @@
         "summary": "",
         "description": "",
         "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "policyId",
             "in": "path",
@@ -449,13 +895,436 @@
             }
           }
         ],
-        "operationId": "",
         "responses": {
-          "default": {
-            "description": "Default response"
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      },
+      "put": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      },
+      "delete": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      }
+    },
+    "/policies/{policyId}/systems": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      },
+      "post": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Policy"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
+    },
+    "/policies/{policyId}/systems/{systemId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      }
+    },
+    "/policies/{policyId}/reports/{reportId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      }
+    },
+    "/policies/{policyId}/profiles": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      }
+    },
+    "/policies/{policyId}/profiles/{profileId}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      }
+    },
+    "/policies/{policyId}/profiles/{profileId}/rules": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      }
     }
+  },
+  "security": [],
+  "components": {
+    "links": {},
+    "callbacks": {},
+    "schemas": {}
   }
 }
