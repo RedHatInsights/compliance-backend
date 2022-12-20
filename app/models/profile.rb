@@ -44,6 +44,9 @@ class Profile < ApplicationRecord
   validates :benchmark_id, presence: true
   validates :account, presence: true, if: -> { parent_profile_id && hosts.any? }
   validates :policy, presence: true, if: -> { policy_id }
+  validate :value_uuids, if: -> { !canonical? }
+
+  alias_attribute :values, :value_overrides
 
   scope :canonical_for_os, lambda { |os_major_version, os_minor_version|
     benchmarks = Xccdf::Benchmark.latest_for_os(
@@ -69,5 +72,23 @@ class Profile < ApplicationRecord
 
       profile
     end
+
+    # Transforming value keys from ref_id to uuid
+    def prepare_values(values)
+      return nil unless values
+
+      value_definitions = ValueDefinition.where(ref_id: values.keys).index_by(&:ref_id)
+
+      raise ActiveRecord::RecordNotFound unless value_definitions.count == values.count
+
+      values.transform_keys { |key| value_definitions[key].id }
+    end
+  end
+
+  def value_uuids
+    keys = value_overrides.keys
+    return if ValueDefinition.where(id: keys).select(:id).count == keys.count
+
+    errors.add(:value_overrides, 'invalid value(s)')
   end
 end

@@ -58,6 +58,28 @@ class ProfileQueryTest < ActiveSupport::TestCase
                  result['data']['profile']['policyType']
   end
 
+  test 'query profile values' do
+    vd = FactoryBot.create(:value_definition)
+    query = <<-GRAPHQL
+      query Profile($id: String!){
+          profile(id: $id) {
+              id
+              values
+          }
+      }
+    GRAPHQL
+
+    @profile.update(value_overrides: { vd.id => 'bar' })
+
+    result = Schema.execute(
+      query,
+      variables: { id: @profile.id },
+      context: { current_user: @user }
+    )
+
+    assert_equal result['data']['profile']['values'], vd.id => 'bar'
+  end
+
   test 'query profile parentProfileId' do
     query = <<-GRAPHQL
       query Profile($id: String!){

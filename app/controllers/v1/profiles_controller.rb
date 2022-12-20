@@ -44,7 +44,7 @@ module V1
 
     def update
       Policy.transaction do
-        if profile.policy.update(policy_update_attributes)
+        if profile.policy.update(policy_update_attributes) && profile.update(profile_update_attributes || {})
           update_relationships
           render_json profile
           audit_update

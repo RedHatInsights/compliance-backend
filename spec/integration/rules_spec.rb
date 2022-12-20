@@ -11,6 +11,10 @@ describe 'Rules API', swagger_doc: 'v1/openapi.json' do
       rule_count: 1,
       account: @account
     )
+    values = FactoryBot.create_list(:value_definition, 10, benchmark: @profile.benchmark)
+    @profile.rules.each do |rule|
+      rule.update(value_checks: values.sample(3).map(&:id))
+    end
     @profile.rules.update(precedence: 1)
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
   end

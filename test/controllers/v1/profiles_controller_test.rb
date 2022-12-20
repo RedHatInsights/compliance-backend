@@ -886,13 +886,15 @@ module V1
 
       test 'create with some customized profile attributes' do
         parent = FactoryBot.create(:canonical_profile)
+        vd = FactoryBot.create(:value_definition)
 
         assert_audited_success 'Created policy'
         assert_difference('Profile.count' => 1) do
           post profiles_path, params: params(
             attributes: {
               parent_profile_id: parent.id,
-              name: NAME, description: DESCRIPTION
+              name: NAME, description: DESCRIPTION,
+              values: { vd.id => 'foo' }
             }
           )
         end
@@ -901,6 +903,7 @@ module V1
                      parsed_data.dig('relationships', 'account', 'data', 'id')
         assert_equal NAME, parsed_data.dig('attributes', 'name')
         assert_equal DESCRIPTION, parsed_data.dig('attributes', 'description')
+        assert_equal({ vd.id => 'foo' }, parsed_data.dig('attributes', 'values'))
 
         get v1_profiles_url, params: {
           search: 'canonical=false and name="A new name"',
@@ -916,6 +919,7 @@ module V1
 
       test 'create with all customized profile attributes' do
         parent = FactoryBot.create(:canonical_profile)
+        vd = FactoryBot.create(:value_definition)
 
         assert_audited_success 'Created Business Objective'
         assert_audited_success 'Created policy'
@@ -925,7 +929,8 @@ module V1
               parent_profile_id: parent.id,
               name: NAME, description: DESCRIPTION,
               compliance_threshold: COMPLIANCE_THRESHOLD,
-              business_objective: BUSINESS_OBJECTIVE
+              business_objective: BUSINESS_OBJECTIVE,
+              values: { vd.id => 'foo' }
             }
           )
         end
@@ -938,6 +943,23 @@ module V1
                      parsed_data.dig('attributes', 'compliance_threshold')
         assert_equal BUSINESS_OBJECTIVE,
                      parsed_data.dig('attributes', 'business_objective')
+        assert_equal({ vd.id => 'foo' },
+                     parsed_data.dig('attributes', 'values'))
+      end
+
+      test 'create with invalid values' do
+        parent = FactoryBot.create(:canonical_profile)
+
+        assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: parent.id,
+              values: { foo: 'bar' }
+            }
+          )
+        end
+        assert_match 'invalid value', response.parsed_body['errors'][0]
+        assert_response :not_acceptable
       end
 
       test 'create copies rules from the parent profile' do
@@ -1176,7 +1198,20 @@ module V1
         assert_equal DESCRIPTION, @profile.policy.reload.description
       end
 
+      test 'update with invalid values' do
+        assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
+          patch profile_path(@profile.id), params: params(
+            attributes: {
+              values: { foo: 'bar' }
+            }
+          )
+        end
+        assert_match 'invalid value', response.parsed_body['errors'][0]
+        assert_response :not_acceptable
+      end
+
       test 'update with multiple attributes' do
+        vd = FactoryBot.create(:value_definition)
         assert_audited_success 'Created Business Objective'
         assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
         assert_difference('BusinessObjective.count' => 1) do
@@ -1184,7 +1219,8 @@ module V1
             attributes: {
               description: DESCRIPTION,
               compliance_threshold: COMPLIANCE_THRESHOLD,
-              business_objective: BUSINESS_OBJECTIVE
+              business_objective: BUSINESS_OBJECTIVE,
+              values: { vd.id => 'foo' }
             }
           )
         end
@@ -1192,6 +1228,7 @@ module V1
         assert_equal DESCRIPTION, @profile.policy.reload.description
         assert_equal COMPLIANCE_THRESHOLD, @profile.compliance_threshold
         assert_equal BUSINESS_OBJECTIVE, @profile.business_objective.title
+        assert_equal({ vd.id => 'foo' }, @profile.reload.values)
       end
 
       test 'update with attributes and rules relationships' do

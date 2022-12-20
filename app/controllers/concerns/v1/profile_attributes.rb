@@ -14,7 +14,7 @@ module V1
       POLICY_UPDATE_ATTRIBUTES = %i[description
                                     compliance_threshold
                                     business_objective].freeze
-      ALLOWED_CREATE_ATTRIBUTES = %i[parent_profile_id].freeze
+      ALLOWED_CREATE_ATTRIBUTES = %i[parent_profile_id values].freeze
 
       RELATIONSHIP_TYPE = ParamType.map(
         id: ParamType.string,
@@ -52,8 +52,14 @@ module V1
         end
       end
 
+      def profile_update_attributes
+        # Values has to be explicit here, because it is not a scalar
+        resource_params[:attributes]&.except(*POLICY_UPDATE_ATTRIBUTES)&.permit(values: ParamType.map) || {}
+      end
+
       def policy_update_params
-        resource_params[:attributes]&.permit(*POLICY_UPDATE_ATTRIBUTES)
+        # Values has to be explicit here, because it is not a scalar
+        resource_params[:attributes]&.except(:values)&.permit(*POLICY_UPDATE_ATTRIBUTES)
       end
 
       def resource_params
@@ -61,7 +67,8 @@ module V1
       end
 
       def resource_attributes
-        resource_params[:attributes]&.permit(ProfileSerializer.attributes_to_serialize.keys)
+        # Values has to be explicit here, because it is not a scalar
+        resource_params[:attributes]&.permit(*ProfileSerializer.attributes_to_serialize.keys, values: ParamType.map)
       end
 
       def resource_relationships

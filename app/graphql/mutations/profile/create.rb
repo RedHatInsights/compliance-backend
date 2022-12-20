@@ -14,6 +14,7 @@ module Mutations
       argument :description, String, required: false
       argument :compliance_threshold, Float, required: false
       argument :selected_rule_ref_ids, [String], required: false
+      argument :values, GraphQL::Types::JSON, required: false
       field :profile, Types::Profile, null: false
 
       enforce_rbac Rbac::POLICY_CREATE
@@ -34,8 +35,7 @@ module Mutations
         Policy.transaction do
           policy.save!
           profile.update!(policy: policy, external: false)
-          rule_changes =
-            profile.update_rules(ref_ids: rule_ref_ids)
+          rule_changes = profile.update_rules(ref_ids: rule_ref_ids)
         end
         rule_changes
       end
@@ -63,8 +63,9 @@ module Mutations
       def new_profile_options(args)
         {
           account_id: context[:current_user].account_id,
-          parent_profile_id: args[:clone_from_profile_id]
-        }
+          parent_profile_id: args[:clone_from_profile_id],
+          values: ::Profile.prepare_values(args[:values])
+        }.compact
       end
 
       def audit_mutation(profile, policy, rules_added, rules_removed)

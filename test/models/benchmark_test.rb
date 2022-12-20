@@ -475,6 +475,7 @@ module Xccdf
       [true, false].each do |graphql|
         should "builds an array of hashes with graphql=#{graphql}" do
           profile = FactoryBot.create(:canonical_profile)
+          vds = FactoryBot.create_list(:value_definition, 3)
           rg_1 = FactoryBot.create(
             :rule_group,
             benchmark: profile.benchmark,
@@ -490,6 +491,7 @@ module Xccdf
             profiles: [profile],
             benchmark: profile.benchmark,
             rule_group: rg_1,
+            values: vds.map(&:id),
             precedence: 3
           )
           rg_21 = FactoryBot.create(
@@ -550,6 +552,7 @@ module Xccdf
                   _adjust(:identifier, graphql) => r_11.identifier,
                   _adjust(:references, graphql) => r_11.references,
                   _adjust(:severity, graphql) => r_11.severity,
+                  _adjust(:values, graphql) => r_11.values,
                   _adjust(:precedence, graphql) => r_11.precedence
                 }
               ]
@@ -588,6 +591,7 @@ module Xccdf
                           _adjust(:identifier, graphql) => r_2111.identifier,
                           _adjust(:references, graphql) => r_2111.references,
                           _adjust(:severity, graphql) => r_2111.severity,
+                          _adjust(:values, graphql) => r_2111.values,
                           _adjust(:precedence, graphql) => r_2111.precedence
                         }
                       ]
@@ -602,6 +606,7 @@ module Xccdf
                       _adjust(:identifier, graphql) => r_211.identifier,
                       _adjust(:references, graphql) => r_211.references,
                       _adjust(:severity, graphql) => r_211.severity,
+                      _adjust(:values, graphql) => r_211.values,
                       _adjust(:precedence, graphql) => r_211.precedence
                     }
                   ]
@@ -616,6 +621,7 @@ module Xccdf
                   _adjust(:identifier, graphql) => r_21.identifier,
                   _adjust(:references, graphql) => r_21.references,
                   _adjust(:severity, graphql) => r_21.severity,
+                  _adjust(:values, graphql) => r_21.values,
                   _adjust(:precedence, graphql) => r_21.precedence
                 }
               ]

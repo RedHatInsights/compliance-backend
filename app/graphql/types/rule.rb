@@ -17,6 +17,7 @@ module Types
     field :profiles, [::Types::Profile], null: true
     field :identifier, GraphQL::Types::JSON, null: true
     field :references, GraphQL::Types::JSON, null: true
+    field :values, [ID], null: true
     field :failed_count, Int, null: true
     field :compliant, Boolean, null: false do
       argument :system_id, String, 'Is a system compliant?',
