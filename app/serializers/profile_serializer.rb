@@ -24,6 +24,8 @@ class ProfileSerializer < ApplicationSerializer
     profile.parent_profile&.ref_id
   end
 
+  attribute :values
+
   attribute :name do |profile|
     profile.policy&.name || profile.name
   end

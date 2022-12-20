@@ -313,6 +313,7 @@ type Profile implements Node & RulesPreload {
   ): [Rule!]
   totalHostCount: Int!
   unsupportedHostCount: Int!
+  values: JSON
 }
 
 """
@@ -652,6 +653,7 @@ type Rule implements Node {
   remediationAvailable: Boolean!
   severity: String!
   title: String!
+  values: [ID!]
 }
 
 interface RulesPreload {
@@ -830,6 +832,7 @@ input UpdateProfileInput {
   description: String
   id: ID!
   name: String
+  values: JSON
 }
 
 """
@@ -954,6 +957,7 @@ input createProfileInput {
   name: String!
   refId: ID!
   selectedRuleRefIds: [String!]
+  values: JSON
 }
 
 """

@@ -52,6 +52,8 @@ class Rule < ApplicationRecord
   validates_associated :profile_rules
   validates_associated :rule_results
 
+  alias_attribute :values, :value_checks
+
   scope :with_profiles, lambda {
     joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
   }

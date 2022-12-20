@@ -5,14 +5,17 @@ module ProfileCloning
   extend ActiveSupport::Concern
 
   included do
+    # rubocop:disable Metrics/AbcSize
     def fill_from_parent
       self.ref_id = parent_profile.ref_id
       self.benchmark_id = parent_profile.benchmark_id
       self.name ||= parent_profile.name
       self.description ||= parent_profile.description
+      self.value_overrides ||= parent_profile.value_overrides
 
       self
     end
+    # rubocop:enable Metrics/AbcSize
 
     def clone_to(account:, policy:,
                  os_minor_version: nil, set_os_minor_version: nil)

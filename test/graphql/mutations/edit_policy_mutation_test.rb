@@ -70,4 +70,55 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
 
     assert_nil @profile.policy.reload.business_objective
   end
+
+  test 'set the value overrides' do
+    vd = FactoryBot.create(:value_definition)
+    query = <<-GRAPHQL
+        mutation updateProfile($input: UpdateProfileInput!) {
+            updateProfile(input: $input) {
+                profile {
+                    id,
+                    values
+                }
+            }
+        }
+    GRAPHQL
+
+    assert_audited_success 'Updated profile', @profile.id, @profile.policy.id
+
+    Schema.execute(
+      query,
+      variables: { input: {
+        id: @profile.id,
+        values: { vd.ref_id => 'foo' }
+      } },
+      context: { current_user: @user }
+    )['data']['updateProfile']['profile']
+
+    assert_equal @profile.reload.values, { vd.id => 'foo' }
+  end
+
+  test 'set invalid value overrides' do
+    query = <<-GRAPHQL
+        mutation updateProfile($input: UpdateProfileInput!) {
+            updateProfile(input: $input) {
+                profile {
+                    id,
+                    values
+                }
+            }
+        }
+    GRAPHQL
+
+    assert_raises ActiveRecord::RecordNotFound do
+      Schema.execute(
+        query,
+        variables: { input: {
+          id: @profile.id,
+          values: { 'foo' => 'bar' }
+        } },
+        context: { current_user: @user }
+      )['data']['updateProfile']['profile']
+    end
+  end
 end

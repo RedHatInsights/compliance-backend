@@ -33,6 +33,20 @@ FactoryBot.define do
       os_major_version { '7' }
     end
 
+    trait :with_values do
+      transient do
+        value_count { 5 }
+      end
+
+      after(:create) do |profile, evaluator|
+        create_list(:value_definition, evaluator.value_count, benchmark: profile.benchmark)
+        values = profile.benchmark.value_definitions.each_with_object({}) do |value, object|
+          object[value.id] = Faker::Alphanumeric.alpha(number: 6)
+        end
+        profile.update!(values: values)
+      end
+    end
+
     trait :with_rules do
       transient do
         rule_count { 5 }

@@ -57,6 +57,13 @@ module Api
               type: 'string',
               example: '0.1.49'
             },
+            values: {
+              type: 'object',
+              example: {
+                'uuid1': 'value1',
+                'uuid2': 'value2'
+              }
+            },
             total_host_count: {
               type: 'integer',
               example: 5

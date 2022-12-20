@@ -35,6 +35,13 @@ module Api
               type: 'string',
               example: 'Low'
             },
+            values: {
+              type: :array,
+              items: {
+                type: :string
+              },
+              examples: %w[uuid1 uuid2]
+            },
             description: {
               type: 'string',
               example: 'The audit system should collect access '\

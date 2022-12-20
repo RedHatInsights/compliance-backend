@@ -39,6 +39,44 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
     assert_equal cloned_profile.parent_profile, @parent
   end
 
+  test 'provide all required arguments and values' do
+    vd = FactoryBot.create(:value_definition)
+    result = Schema.execute(
+      QUERY,
+      variables: { input: {
+        benchmarkId: @parent.benchmark_id,
+        cloneFromProfileId: @parent.id,
+        refId: 'xccdf-customized',
+        name: 'customized profile',
+        description: 'abcdf',
+        complianceThreshold: 90.0,
+        values: { vd.ref_id => 'foo' }
+      } },
+      context: { current_user: @user }
+    )['data']['createProfile']['profile']
+
+    cloned_profile = ::Profile.find(result['id'])
+    assert_equal cloned_profile.values, { vd.id => 'foo' }
+  end
+
+  test 'provide all required arguments but invalid values' do
+    assert_raises ActiveRecord::RecordNotFound do
+      Schema.execute(
+        QUERY,
+        variables: { input: {
+          benchmarkId: @parent.benchmark_id,
+          cloneFromProfileId: @parent.id,
+          refId: 'xccdf-customized',
+          name: 'customized profile',
+          description: 'abcdf',
+          complianceThreshold: 90.0,
+          values: { 'foo' => 'bar' }
+        } },
+        context: { current_user: @user }
+      )['data']['createProfile']['profile']
+    end
+  end
+
   test 'provide all required arguments with selectedRuleRefIds' do
     result = Schema.execute(
       QUERY,

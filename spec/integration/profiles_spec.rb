@@ -48,7 +48,7 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
 
       response '200', 'lists all profiles requested' do
         before do
-          FactoryBot.create(:profile, account: @account, policy: @policy)
+          FactoryBot.create(:profile, :with_values, account: @account, policy: @policy)
         end
 
         let(:'X-RH-IDENTITY') { encoded_header(@account) }
@@ -77,6 +77,7 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
         before do
           profile = FactoryBot.create(
             :profile,
+            :with_values,
             name: 'New (child) profile',
             description: 'Profile to filter by OS',
             account: @account,
@@ -171,6 +172,7 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
           rule2 = FactoryBot.create(:rule, benchmark: @parent.benchmark, description: 'Benchmark rule 2')
           @parent.rules << rule1
           @parent.rules << rule2
+          FactoryBot.create_list(:value_definition, 3, benchmark: @parent.benchmark)
         end
         let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
@@ -181,7 +183,10 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
                 parent_profile_id: @parent.id,
                 name: 'A custom name',
                 compliance_threshold: 93.5,
-                business_objective: 'LATAM Expansion'
+                business_objective: 'LATAM Expansion',
+                values: @parent.benchmark.value_definitions.sample(3).each_with_object({}) do |value, obj|
+                  obj[value.id] = Faker::Alphanumeric.alpha(number: 6)
+                end
               },
               relationships: {
                 rules: {
@@ -244,6 +249,7 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
         let(:id) do
           FactoryBot.create(
             :profile,
+            :with_values,
             parent_profile: @profile,
             policy: @policy,
             account: @account
@@ -345,7 +351,11 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
               'system. Regardless of your system\'s workload\nall '\
               'of these checks should pass.',
               compliance_threshold: 92.0,
-              business_objective: 'APAC Expansion'
+              business_objective: 'APAC Expansion',
+              values: {
+                'd411821f-d9e4-45cd-9829-7200087ebb11': 12,
+                'aac60333-9234-49ad-aac7-40b2b9a46f02': 'false'
+              }
             },
             relationships: {
               rules: {
@@ -382,6 +392,7 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
           FactoryBot.create(
             :profile,
             :with_rules,
+            :with_values,
             account: @account,
             policy: @policy,
             parent_profile: @parent
@@ -394,7 +405,10 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
               attributes: {
                 description: 'An updated custom description',
                 compliance_threshold: 93.5,
-                business_objective: 'APAC Expansion'
+                business_objective: 'APAC Expansion',
+                values: @parent.benchmark.value_definitions.sample(3).each_with_object({}) do |value, obj|
+                  obj[value.id] = Faker::Alphanumeric.alpha(number: 6)
+                end
               },
               relationships: {
                 rules: {

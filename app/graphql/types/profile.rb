@@ -35,6 +35,7 @@ module Types
     field :hosts, [::Types::System], null: true
     field :benchmark, ::Types::Benchmark, null: true
     field :ssg_version, String, null: false
+    field :values, GraphQL::Types::JSON, null: true
     field :supported_os_versions, [String], null: false
     field :business_objective, ::Types::BusinessObjective, null: true
     field :business_objective_id, ID, null: true
