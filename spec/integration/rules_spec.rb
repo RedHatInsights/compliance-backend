@@ -73,7 +73,7 @@ describe 'Rules API', swagger_doc: 'v1/openapi.json' do
       include_param
 
       response '404', 'rule not found' do
-        let(:id) { FactoryBot.create(:rule).id }
+        let(:id) { 'invalid' }
         let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
 
