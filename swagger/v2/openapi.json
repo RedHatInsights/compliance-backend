@@ -30,52 +30,12 @@
   "paths": {
     "/reports": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve all reports",
+        "description": "Gets all reports",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
             "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/vnd.api+json": {
-                "examples": {
-                  "Response example": {
-                    "value": {}
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Report"
-        ]
-      }
-    },
-    "/reports/{reportId}": {
-      "get": {
-        "summary": "",
-        "description": "",
-        "parameters": [
-          {
-            "name": "X-RH-IDENTITY",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "reportId",
-            "in": "path",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -89,7 +49,40 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": [
+                        {
+                          "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                          "type": "test_result",
+                          "attributes": {
+                            "name": "Example Server Profile",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_CS2",
+                            "description": "This prfile is an example of a customized server profile.",
+                            "policy_type": "Example Server Profile",
+                            "total_host_count": 12,
+                            "compliant_host_count": 2,
+                            "test_result_host_count": 6,
+                            "unsupported_host_count": 0,
+                            "os_major_version": "6",
+                            "compliance_threshold": 97.0,
+                            "business_objective": "test",
+                            "ssg_version": "0.1.28"
+                          },
+                          "relationships": {
+                            "policy": {
+                              "data": {
+                                "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                                "name": "Example Server Profile"
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 20,
+                        "limit": 20,
+                        "offset": 1,
+                        "sort_by": "score"
+                      }
                     }
                   }
                 }
@@ -104,8 +97,8 @@
     },
     "/systems": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve all compliance systems",
+        "description": "Retrieves all compliance systems",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -120,7 +113,7 @@
         ],
         "responses": {
           "200": {
-            "description": "show system with given ID",
+            "description": "show all compliance systems",
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -144,21 +137,40 @@
                             "updated": "2022-10-21T14:14:30Z",
                             "insights_id": "9a3acaf0-3378-013b-ca1f-1ab2effbf581",
                             "compliant": true
+                          },
+                          "relationships": {
+                            "policies": {
+                              "data": [
+                                {
+                                  "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                                  "type": "policy"
+                                }
+                              ]
+                            },
+                            "test_results": {
+                              "data": [
+                                {
+                                  "id": "c7c0284d-d0c6-4792-9d82-372278c85600",
+                                  "type": "test_result"
+                                }
+                              ]
+                            },
+                            "profiles": {
+                              "data": [
+                                {
+                                  "id": "0ed76df2-2610-48c3-84a5-e04ef74f04d3",
+                                  "type": "profile"
+                                }
+                              ]
+                            }
                           }
                         }
                       ],
                       "meta": {
                         "total": 60,
-                        "search": "has_test_results=true or has_policy=true",
                         "tags": [],
                         "limit": 20,
-                        "offset": 1,
-                        "relationships": true
-                      },
-                      "links": {
-                        "first": "/api/compliance/systems?limit=20&offset=1&relationships=true&search=has_test_results%3Dtrue+or+has_policy%3Dtrue",
-                        "last": "/api/compliance/systems?limit=20&offset=3&relationships=true&search=has_test_results%3Dtrue+or+has_policy%3Dtrue",
-                        "next": "/api/compliance/systems?limit=20&offset=2&relationships=true&search=has_test_results%3Dtrue+or+has_policy%3Dtrue"
+                        "offset": 1
                       }
                     }
                   }
@@ -171,8 +183,8 @@
     },
     "/systems/{systemId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve system by ID",
+        "description": "Retrieves system by ID",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -215,6 +227,32 @@
                           "updated": "2022-10-21T14:14:30Z",
                           "insights_id": "9a3acaf0-3378-013b-ca1f-1ab2effbf581",
                           "compliant": true
+                        },
+                        "relationships": {
+                          "policies": {
+                            "data": [
+                              {
+                                "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                                "type": "policy"
+                              }
+                            ]
+                          },
+                          "test_results": {
+                            "data": [
+                              {
+                                "id": "c7c0284d-d0c6-4792-9d82-372278c85600",
+                                "type": "test_result"
+                              }
+                            ]
+                          },
+                          "profiles": {
+                            "data": [
+                              {
+                                "id": "0ed76df2-2610-48c3-84a5-e04ef74f04d3",
+                                "type": "profile"
+                              }
+                            ]
+                          }
                         }
                       }
                     }
@@ -231,8 +269,8 @@
     },
     "/system/{systemId}/policies": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve policies for given system",
+        "description": "Retrieves policies for given system",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -258,7 +296,43 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": [
+                        {
+                          "id": "00013fff-191c-48d9-87e5-1483af035127",
+                          "type": "policy",
+                          "attributes": {
+                            "compliance_threshold": 95.0,
+                            "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                            "description": "Sample description",
+                            "total_host_count": 43,
+                            "business_objective": "Sample Objective",
+                            "test_result_host_count": 37,
+                            "compliant_host_count": 33,
+                            "unsupported_host_count": 5
+                          },
+                          "relationships": {
+                            "account": {
+                              "data": null
+                            },
+                            "profiles": {
+                              "data": [
+                                {
+                                  "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                                  "type": "profile"
+                                }
+                              ]
+                            },
+                            "hosts": {
+                              "data": [
+                                {
+                                  "id": "54322ed4-3ccc-4ad7-8acb-749d1878e112",
+                                  "type": "host"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
                     }
                   }
                 }
@@ -273,8 +347,8 @@
     },
     "/systems/{systemId}/policies/{policyId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve policy by id scoped to system",
+        "description": "Retrieves policy by id scoped to system",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -308,57 +382,41 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "System"
-        ]
-      }
-    },
-    "/systems/{systemId}/profiles/{profileId}/rules": {
-      "get": {
-        "summary": "",
-        "description": "",
-        "parameters": [
-          {
-            "name": "X-RH-IDENTITY",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "systemId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "profileId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/vnd.api+json": {
-                "examples": {
-                  "Response example": {
-                    "value": {
-
+                      "data": {
+                        "id": "00013fff-191c-48d9-87e5-1483af035127",
+                        "type": "policy",
+                        "attributes": {
+                          "compliance_threshold": 95.0,
+                          "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                          "description": "Sample description",
+                          "total_host_count": 43,
+                          "business_objective": "Sample Objective",
+                          "test_result_host_count": 37,
+                          "compliant_host_count": 33,
+                          "unsupported_host_count": 5
+                        }
+                      },
+                      "relationships": {
+                        "account": {
+                          "data": null
+                        },
+                        "profiles": {
+                          "data": [
+                            {
+                              "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                              "type": "profile"
+                            }
+                          ]
+                        },
+                        "hosts": {
+                          "data": [
+                            {
+                              "id": "54322ed4-3ccc-4ad7-8acb-749d1878e112",
+                              "type": "host"
+                            }
+                          ]
+                        }
+                      }
                     }
                   }
                 }
@@ -373,8 +431,8 @@
     },
     "/systems/{systemId}/profiles": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve profiles for system",
+        "description": "Retrieves profiles for system",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -400,7 +458,42 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": [
+                        {
+                          "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                          "type": "profile",
+                          "attributes": {
+                            "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_stig-rhel6-server-upstream",
+                            "description": "Profile description",
+                            "parent_profile_id": null,
+                            "tailored": false,
+                            "score": 0.0,
+                            "external": false,
+                            "os_major_version": "6",
+                            "os_version": "6",
+                            "os_minor_version": "",
+                            "canonical": false,
+                            "ssg_version": "0.1.28",
+                            "policy_type": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
+                          },
+                          "relationships": {
+                            "rules": {
+                              "data": [
+                                {
+                                  "id": "00013fff-191c-48d9-87e5-1483af035127",
+                                  "type": "rule"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 30,
+                        "limit": 20,
+                        "offset": 1
+                      }
                     }
                   }
                 }
@@ -415,8 +508,8 @@
     },
     "/systems/{systemId}/profiles/{profileId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve profile scoped to system",
+        "description": "Retrieves profile scoped to system",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -450,7 +543,35 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": {
+                        "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                        "type": "profile",
+                        "attributes": {
+                          "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_stig-rhel6-server-upstream",
+                          "description": "Profile description",
+                          "parent_profile_id": null,
+                          "tailored": false,
+                          "score": 0.0,
+                          "external": false,
+                          "os_major_version": "6",
+                          "os_version": "6",
+                          "os_minor_version": "",
+                          "canonical": false,
+                          "ssg_version": "0.1.28",
+                          "policy_type": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
+                        },
+                        "relationships": {
+                          "rules": {
+                            "data": [
+                              {
+                                "id": "00013fff-191c-48d9-87e5-1483af035127",
+                                "type": "rule"
+                              }
+                            ]
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -463,12 +584,81 @@
         ]
       }
     },
-
-
+    "/systems/{systemId}/profiles/{profileId}/rules": {
+      "get": {
+        "summary": "Retrieve rules of given profile",
+        "description": "Retrieves rules of given profile",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "systemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "00013fff-191c-48d9-87e5-1483af035127",
+                          "type": "rule",
+                          "attributes": {
+                            "ref_id": "xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events",
+                            "remediation_issue_id": "c0f7301e-08b7-4a0a-97fc-d59580a66e8f",
+                            "title": "Ensure auditd Collects File Deletion Events by User",
+                            "rationale": "Some Rationale",
+                            "description": "A rule description",
+                            "severity": "medium",
+                            "slug": "xccdf_org-ssgproject-content_rule_audit_rules_file_deletion_events-53af87f5-25f3-4222-9511-467c023afc01",
+                            "precedence": 983
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 30,
+                        "tags": [],
+                        "limit": 20,
+                        "offset": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "System"
+        ]
+      }
+    },
     "/ssgs": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve all SSGs",
+        "description": "Retrieves all SSGs",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -486,7 +676,43 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": [
+                        {
+                          "id": "01eef473-8b7a-4dec-bcb4-83e6922bf353",
+                          "type": "ssg",
+                          "attributes": {
+                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
+                            "version": "0.1.43",
+                            "description": "Some description",
+                            "os_major_version": "7",
+                            "latest_supported_os_minor_version": ["7"]
+                          },
+                          "relationships": {
+                            "canonical_profiles": {
+                              "data": [
+                                {
+                                  "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                                  "type": "profile"
+                                }
+                              ]
+                            },
+                            "rules": {
+                              "data": [
+                                {
+                                  "id": "00013fff-191c-48d9-87e5-1483af035127",
+                                  "type": "rule"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 22,
+                        "limit": 20,
+                        "offset": 1
+                      }
                     }
                   }
                 }
@@ -501,8 +727,8 @@
     },
     "/ssgs/{ssgId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve SSG by ID",
+        "description": "Retrieves SSG by ID",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -528,7 +754,36 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": {
+                        "id": "01eef473-8b7a-4dec-bcb4-83e6922bf353",
+                        "type": "ssg",
+                        "attributes": {
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
+                          "version": "0.1.43",
+                          "description": "Some description",
+                          "os_major_version": "7",
+                          "latest_supported_os_minor_version": ["7"]
+                        },
+                        "relationships": {
+                          "rules": {
+                            "data": [
+                              {
+                                "id": "00013fff-191c-48d9-87e5-1483af035127",
+                                "type": "rule"
+                              }
+                            ]
+                          },
+                          "canonical_profiles": {
+                            "data": [
+                              {
+                                "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                                "type": "profile"
+                              }
+                            ]
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -543,8 +798,8 @@
     },
     "/ssgs/{ssgId}/profiles": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve profiles for given SSG",
+        "description": "Retrieves profiles for given SSG",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -575,26 +830,17 @@
                           "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
                           "type": "profile",
                           "attributes": {
+                            "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
                             "ref_id": "xccdf_org.ssgproject.content_profile_stig-rhel6-server-upstream",
-                            "score": 0.0,
+                            "description": "Profile description",
                             "parent_profile_id": null,
+                            "tailored": false,
+                            "score": 0.0,
                             "external": false,
-                            "compliance_threshold": 100.0,
                             "os_major_version": "6",
                             "os_version": "6",
-                            "policy_profile_id": null,
-                            "os_minor_version": "",
-                            "parent_profile_ref_id": null,
-                            "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
-                            "description": "Profile description",
-                            "canonical": true,
-                            "tailored": false,
-                            "total_host_count": 0,
+                            "os_minor_version": "10",
                             "ssg_version": "0.1.28",
-                            "compliant_host_count": 0,
-                            "test_result_host_count": 0,
-                            "unsupported_host_count": 0,
-                            "business_objective": null,
                             "policy_type": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
                           },
                           "relationships": {
@@ -630,8 +876,8 @@
     },
     "/ssgs/{ssgId}/profiles/{profileId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve specific profile from SSG",
+        "description": "Retrieves specific profile from SSG",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -673,22 +919,14 @@
                           "score": 0.0,
                           "parent_profile_id": null,
                           "external": false,
-                          "compliance_threshold": 100.0,
                           "os_major_version": "6",
-                          "os_version": "6",
+                          "os_version": "6.10",
                           "policy_profile_id": null,
-                          "os_minor_version": "",
+                          "os_minor_version": "10",
                           "parent_profile_ref_id": null,
                           "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
                           "description": "Profile description",
-                          "canonical": true,
-                          "tailored": false,
-                          "total_host_count": 0,
                           "ssg_version": "0.1.28",
-                          "compliant_host_count": 0,
-                          "test_result_host_count": 0,
-                          "unsupported_host_count": 0,
-                          "business_objective": null,
                           "policy_type": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
                         },
                         "relationships": {
@@ -716,8 +954,8 @@
     },
     "/ssgs/{ssgId}/rules": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve rules from SSG",
+        "description": "Retrieves rules from SSG",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -743,7 +981,27 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": [
+                        {
+                          "id": "00013fff-191c-48d9-87e5-1483af035127",
+                          "type": "rule",
+                          "attributes": {
+                            "ref_id": "xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events",
+                            "remediation_issue_id": null,
+                            "title": "Ensure auditd Collects File Deletion Events by User",
+                            "rationale": "Rationale",
+                            "description": "Description",
+                            "severity": "medium",
+                            "slug": "xccdf_org-ssgproject-content_rule_audit_rules_file_deletion_events-53af87f5-25f3-4222-9511-467c023afc01",
+                            "precedence": 983
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 9759,
+                        "limit": 20,
+                        "offset": 1
+                      }
                     }
                   }
                 }
@@ -756,12 +1014,10 @@
         ]
       }
     },
-
-
     "/ssgs/{ssgId}/rules/{ruleId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve specific rule from SSG",
+        "description": "Retrieves specific rule from SSG",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -795,7 +1051,20 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": {
+                        "id": "00013fff-191c-48d9-87e5-1483af035127",
+                        "type": "rule",
+                        "attributes": {
+                          "ref_id": "xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events",
+                          "remediation_issue_id": null,
+                          "title": "Ensure auditd Collects File Deletion Events by User",
+                          "rationale": "Rationale",
+                          "description": "Description",
+                          "severity": "medium",
+                          "slug": "xccdf_org-ssgproject-content_rule_audit_rules_file_deletion_events-53af87f5-25f3-4222-9511-467c023afc01",
+                          "precedence": 983
+                        }
+                      }
                     }
                   }
                 }
@@ -810,8 +1079,8 @@
     },
     "/policies": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve all policies",
+        "description": "Retrieves all policies",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -829,7 +1098,53 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": [
+                        {
+                          "id": "00013fff-191c-48d9-87e5-1483af035127",
+                          "type": "policy",
+                          "attributes": {
+                            "compliance_threshold": 95.0,
+                            "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                            "description": "Sample description",
+                            "total_host_count": 43,
+                            "business_objective": "Sample Objective",
+                            "test_result_host_count": 37,
+                            "compliant_host_count": 33,
+                            "unsupported_host_count": 5
+                          },
+                          "relationships": {
+                            "profiles": {
+                              "data": [
+                                {
+                                  "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                                  "type": "profile"
+                                }
+                              ]
+                            },
+                            "systems": {
+                              "data": [
+                                {
+                                  "id": "",
+                                  "type": "system"
+                                }
+                              ]
+                            },
+                            "reports": {
+                              "data": [
+                                {
+                                  "id": "",
+                                  "type": "report"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 30,
+                        "limit": 20,
+                        "offset": 1
+                      }
                     }
                   }
                 }
@@ -842,8 +1157,8 @@
         ]
       },
       "post": {
-        "summary": "",
-        "description": "",
+        "summary": "Create new policy",
+        "description": "Create new policy",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -853,6 +1168,49 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json":{
+              "example": {
+                "data": {
+                  "attributes": {
+                    "name": "my custom profile",
+                    "parent_profile_id": "0105a0f0-7379-4897-a891-f95cfb9ddf9c",
+                    "description": "This profile contains rules to ensure standard security baseline\\nof a Red Hat Enterprise Linux 7 system. Regardless of your system's workload\\nall of these checks should pass.",
+                    "compliance_threshold": 95,
+                    "business_objective": "APAC Expansion"
+                  },
+                  "relationships": {
+                    "rules": {
+                      "data": [
+                        {
+                          "id": "cc9afa66-3536-4d2e-bc8e-10111d13ec50",
+                          "type": "rule"
+                        },
+                        {
+                          "id": "06a19f0e-5c7a-4d54-bc66-e932a96bf954",
+                          "type": "rule"
+                        }
+                      ]
+                    },
+                    "hosts": {
+                      "data": [
+                        {
+                          "id": "6c3837ed-edac-4522-83a1-147af958f0f2",
+                          "type": "host"
+                        },
+                        {
+                          "id": "f896d5e7-e44e-41cb-8e8e-96aab6d895d6",
+                          "type": "host"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "",
@@ -861,7 +1219,46 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": {
+                        "id": "00013fff-191c-48d9-87e5-1483af035127",
+                        "type": "policy",
+                        "attributes": {
+                          "compliance_threshold": 95.0,
+                          "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                          "description": "Sample description",
+                          "total_host_count": 43,
+                          "business_objective": "Sample Objective",
+                          "test_result_host_count": 37,
+                          "compliant_host_count": 33,
+                          "unsupported_host_count": 5
+                        },
+                        "relationships": {
+                          "profiles": {
+                            "data": [
+                              {
+                                "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                                "type": "profile"
+                              }
+                            ]
+                          },
+                          "systems": {
+                            "data": [
+                              {
+                                "id": "6619e8cf-4de8-4f26-8af8-cc4faeb70615",
+                                "type": "host"
+                              }
+                            ]
+                          },
+                          "reports": {
+                            "data": [
+                              {
+                                "id": "",
+                                "type": "report"
+                              }
+                            ]
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -876,8 +1273,8 @@
     },
     "/policies/{policyId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve policy by ID",
+        "description": "Retrieves policy by ID",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -903,7 +1300,46 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": {
+                        "id": "00013fff-191c-48d9-87e5-1483af035127",
+                        "type": "policy",
+                        "attributes": {
+                          "compliance_threshold": 95.0,
+                          "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                          "description": "Sample description",
+                          "total_host_count": 43,
+                          "business_objective": "Sample Objective",
+                          "test_result_host_count": 37,
+                          "compliant_host_count": 33,
+                          "unsupported_host_count": 5
+                        },
+                        "relationships": {
+                          "profiles": {
+                            "data": [
+                              {
+                                "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                                "type": "profile"
+                              }
+                            ]
+                          },
+                          "systems": {
+                            "data": [
+                              {
+                                "id": "6619e8cf-4de8-4f26-8af8-cc4faeb70615",
+                                "type": "host"
+                              }
+                            ]
+                          },
+                          "reports": {
+                            "data": [
+                              {
+                                "id": "",
+                                "type": "report"
+                              }
+                            ]
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -915,9 +1351,9 @@
           "Policy"
         ]
       },
-      "put": {
-        "summary": "",
-        "description": "",
+      "patch": {
+        "summary": "Update policy",
+        "description": "Updates policy",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -935,6 +1371,35 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "example": {
+                "data": {
+                  "attributes": {
+                    "description": "This profile contains rules to ensure standard security baseline\\nof a Red Hat Enterprise Linux 7 system. Regardless of your system's workload\\nall of these checks should pass.",
+                    "compliance_threshold": 92,
+                    "business_objective": "APAC Expansion"
+                  },
+                  "relationships": {
+                    "systems": {
+                      "data": [
+                        {
+                          "id": "6c3837ed-edac-4522-83a1-147af958f0f2",
+                          "type": "system"
+                        },
+                        {
+                          "id": "f896d5e7-e44e-41cb-8e8e-96aab6d895d6",
+                          "type": "system"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "",
@@ -943,7 +1408,50 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": {
+                        "id": "00013fff-191c-48d9-87e5-1483af035127",
+                        "type": "policy",
+                        "attributes": {
+                          "compliance_threshold": 92.0,
+                          "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                          "description": "This profile contains rules to ensure standard security baseline\\nof a Red Hat Enterprise Linux 7 system. Regardless of your system's workload\\nall of these checks should pass.",
+                          "total_host_count": 43,
+                          "business_objective": "APAC Expansion",
+                          "test_result_host_count": 37,
+                          "compliant_host_count": 33,
+                          "unsupported_host_count": 5
+                        },
+                        "relationships": {
+                          "profiles": {
+                            "data": [
+                              {
+                                "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                                "type": "profile"
+                              }
+                            ]
+                          },
+                          "systems": {
+                            "data": [
+                              {
+                                "id": "6c3837ed-edac-4522-83a1-147af958f0f2",
+                                "type": "system"
+                              },
+                              {
+                                "id": "f896d5e7-e44e-41cb-8e8e-96aab6d895d6",
+                                "type": "system"
+                              }
+                            ]
+                          },
+                          "reports": {
+                            "data": [
+                              {
+                                "id": "c9d67b86-82b4-11ed-a1eb-0242ac120002",
+                                "type": "report"
+                              }
+                            ]
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -956,8 +1464,8 @@
         ]
       },
       "delete": {
-        "summary": "",
-        "description": "",
+        "summary": "Delete policy",
+        "description": "Deletes policy",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -998,8 +1506,8 @@
     },
     "/policies/{policyId}/systems": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve policy systems",
+        "description": "Retrieves policy systems",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -1025,7 +1533,59 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": [
+                        {
+                          "id": "54322ed4-3ccc-4ad7-8acb-749d1878e112",
+                          "type": "host",
+                          "attributes": {
+                            "name": "ortiz.name",
+                            "os_major_version": 8,
+                            "os_minor_version": 6,
+                            "last_scanned": "Never",
+                            "rules_passed": 0,
+                            "rules_failed": 0,
+                            "has_policy": true,
+                            "culled_timestamp": "2032-11-04T14:14:30Z",
+                            "stale_timestamp": "2032-10-21T14:14:30Z",
+                            "stale_warning_timestamp": "2032-10-28T14:14:30Z",
+                            "updated": "2022-10-21T14:14:30Z",
+                            "insights_id": "9a3acaf0-3378-013b-ca1f-1ab2effbf581",
+                            "compliant": true
+                          },
+                          "relationships": {
+                            "policies": {
+                              "data": [
+                                {
+                                  "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                                  "type": "policy"
+                                }
+                              ]
+                            },
+                            "test_results": {
+                              "data": [
+                                {
+                                  "id": "c7c0284d-d0c6-4792-9d82-372278c85600",
+                                  "type": "test_result"
+                                }
+                              ]
+                            },
+                            "profiles": {
+                              "data": [
+                                {
+                                  "id": "0ed76df2-2610-48c3-84a5-e04ef74f04d3",
+                                  "type": "profile"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 60,
+                        "tags": [],
+                        "limit": 20,
+                        "offset": 1
+                      }
                     }
                   }
                 }
@@ -1037,9 +1597,9 @@
           "Policy"
         ]
       },
-      "post": {
-        "summary": "",
-        "description": "",
+      "patch": {
+        "summary": "Update systems associated with a policy",
+        "description": "Updates systems associated with a policy",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -1068,7 +1628,16 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data":[
+                        {
+                          "id": "54322ed4-3ccc-4ad7-8acb-749d1878e112",
+                          "type": "system"
+                        },
+                        {
+                          "id": "9a3acaf0-3378-013b-ca1f-1ab2effbf581",
+                          "type": "system"
+                        }
+                      ]
                     }
                   }
                 }
@@ -1080,8 +1649,8 @@
     },
     "/policies/{policyId}/systems/{systemId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve system associated with policy",
+        "description": "Retrieves system associated with policy",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -1115,7 +1684,134 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": {
+                        "id": "54322ed4-3ccc-4ad7-8acb-749d1878e112",
+                        "type": "host",
+                        "attributes": {
+                          "name": "ortiz.name",
+                          "os_major_version": 8,
+                          "os_minor_version": 6,
+                          "last_scanned": "Never",
+                          "rules_passed": 0,
+                          "rules_failed": 0,
+                          "has_policy": true,
+                          "culled_timestamp": "2032-11-04T14:14:30Z",
+                          "stale_timestamp": "2032-10-21T14:14:30Z",
+                          "stale_warning_timestamp": "2032-10-28T14:14:30Z",
+                          "updated": "2022-10-21T14:14:30Z",
+                          "insights_id": "9a3acaf0-3378-013b-ca1f-1ab2effbf581",
+                          "compliant": true
+                        },
+                        "relationships": {
+                          "policies": {
+                            "data": [
+                              {
+                                "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                                "type": "policy"
+                              }
+                            ]
+                          },
+                          "test_results": {
+                            "data": [
+                              {
+                                "id": "c7c0284d-d0c6-4792-9d82-372278c85600",
+                                "type": "test_result"
+                              }
+                            ]
+                          },
+                          "profiles": {
+                            "data": [
+                              {
+                                "id": "0ed76df2-2610-48c3-84a5-e04ef74f04d3",
+                                "type": "profile"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Policy"
+        ]
+      }
+    },
+    "/policies/{policyId}/reports": {
+      "get": {
+        "summary": "Retrieve reports for policy",
+        "description": "Retrieves reports for policy",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                          "type": "test_result",
+                          "attributes": {
+                            "name": "Example Server Profile",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_CS2",
+                            "description": "This prfile is an example of a customized server profile.",
+                            "policy_type": "Example Server Profile",
+                            "total_host_count": 12,
+                            "compliant_host_count": 2,
+                            "test_result_host_count": 6,
+                            "unsupported_host_count": 0,
+                            "os_major_version": "6",
+                            "compliance_threshold": 97.0,
+                            "business_objective": "test",
+                            "ssg_version": "0.1.28"
+                          },
+                          "relationships": {
+                            "policy": {
+                              "data": {
+                                "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                                "name": "Example Server Profile"
+                              }
+                            },
+                            "systems": {
+                              "data": [
+                                {
+                                  "id": "",
+                                  "type": "system"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 20,
+                        "limit": 20,
+                        "offset": 1,
+                        "sort_by": "score"
+                      }
                     }
                   }
                 }
@@ -1130,8 +1826,8 @@
     },
     "/policies/{policyId}/reports/{reportId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve specific policy report",
+        "description": "Retrieve specific policy report",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -1165,7 +1861,40 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": {
+                        "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                        "type": "test_result",
+                        "attributes": {
+                          "name": "Example Server Profile",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_CS2",
+                          "description": "This prfile is an example of a customized server profile.",
+                          "policy_type": "Example Server Profile",
+                          "total_host_count": 12,
+                          "compliant_host_count": 2,
+                          "test_result_host_count": 6,
+                          "unsupported_host_count": 0,
+                          "os_major_version": "6",
+                          "compliance_threshold": 97.0,
+                          "business_objective": "test",
+                          "ssg_version": "0.1.28"
+                        },
+                        "relationships": {
+                          "policy": {
+                            "data": {
+                              "id": "2a40fd66-6385-434b-b55e-1f484030f9d2",
+                              "type": "policy"
+                            }
+                          },
+                          "systems": {
+                            "data": [
+                              {
+                                "id": "",
+                                "type": "system"
+                              }
+                            ]
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -1180,8 +1909,8 @@
     },
     "/policies/{policyId}/profiles": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve policy profiles",
+        "description": "Retrieves policy profiles",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -1207,7 +1936,42 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": [
+                        {
+                          "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                          "type": "profile",
+                          "attributes": {
+                            "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_stig-rhel6-server-upstream",
+                            "description": "Profile description",
+                            "parent_profile_id": null,
+                            "tailored": false,
+                            "score": 0.0,
+                            "external": false,
+                            "os_major_version": "6",
+                            "os_version": "6",
+                            "os_minor_version": "",
+                            "canonical": false,
+                            "ssg_version": "0.1.28",
+                            "policy_type": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
+                          },
+                          "relationships": {
+                            "rules": {
+                              "data": [
+                                {
+                                  "id": "00013fff-191c-48d9-87e5-1483af035127",
+                                  "type": "rule"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 30,
+                        "limit": 20,
+                        "offset": 1
+                      }
                     }
                   }
                 }
@@ -1222,8 +1986,8 @@
     },
     "/policies/{policyId}/profiles/{profileId}": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve specefic policy profile",
+        "description": "Retrieve specefic policy profile",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -1257,7 +2021,35 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": {
+                        "id": "331ee972-66a4-45a1-baf4-d4ddb577295c",
+                        "type": "profile",
+                        "attributes": {
+                          "name": "Upstream STIG for Red Hat Enterprise Linux 6 Server",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_stig-rhel6-server-upstream",
+                          "description": "Profile description",
+                          "parent_profile_id": null,
+                          "tailored": false,
+                          "score": 0.0,
+                          "external": false,
+                          "os_major_version": "6",
+                          "os_version": "6",
+                          "os_minor_version": "",
+                          "canonical": false,
+                          "ssg_version": "0.1.28",
+                          "policy_type": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
+                        },
+                        "relationships": {
+                          "rules": {
+                            "data": [
+                              {
+                                "id": "00013fff-191c-48d9-87e5-1483af035127",
+                                "type": "rule"
+                              }
+                            ]
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -1272,8 +2064,8 @@
     },
     "/policies/{policyId}/profiles/{profileId}/rules": {
       "get": {
-        "summary": "",
-        "description": "",
+        "summary": "Retrieve rules from policy profile",
+        "description": "Retrieves rules from policy profile",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -1307,7 +2099,27 @@
                 "examples": {
                   "Response example": {
                     "value": {
-
+                      "data": [
+                        {
+                          "id": "00013fff-191c-48d9-87e5-1483af035127",
+                          "type": "rule",
+                          "attributes": {
+                            "ref_id": "xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events",
+                            "remediation_issue_id": null,
+                            "title": "Ensure auditd Collects File Deletion Events by User",
+                            "rationale": "Rationale",
+                            "description": "Description",
+                            "severity": "medium",
+                            "slug": "xccdf_org-ssgproject-content_rule_audit_rules_file_deletion_events-53af87f5-25f3-4222-9511-467c023afc01",
+                            "precedence": 983
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 9759,
+                        "limit": 20,
+                        "offset": 1
+                      }
                     }
                   }
                 }
