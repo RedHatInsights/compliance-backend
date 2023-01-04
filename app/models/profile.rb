@@ -12,8 +12,11 @@ class Profile < ApplicationRecord
   include ProfileRules
   include ShortRefId
 
-  sortable_by :name, Arel.sql('COALESCE(policies.name, profiles.name)'),
-              scope: :joins_policy
+  sortable_by :name, Arel::Nodes::NamedFunction.new(
+    'COALESCE',
+    [Policy.arel_table[:name], Profile.arel_table[:name]]
+  ), scope: :joins_policy
+
   sortable_by :os_minor_version
   sortable_by :score
 

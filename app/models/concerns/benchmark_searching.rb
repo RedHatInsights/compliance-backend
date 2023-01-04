@@ -51,7 +51,18 @@ module BenchmarkSearching
 
     scope :order_by_version, lambda {
       order(
-        Arel.sql("string_to_array(benchmarks.version, '.')::int[] DESC")
+        Arel::Nodes::NamedFunction.new(
+          'CAST',
+          [
+            Arel::Nodes::NamedFunction.new(
+              'string_to_array',
+              [
+                Xccdf::Benchmark.arel_table[:version],
+                Arel::Nodes::Quoted.new('.')
+              ]
+            ).as('int[]')
+          ]
+        ).desc
       )
     }
   end
