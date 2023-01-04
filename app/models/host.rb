@@ -1,12 +1,29 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
+
 # Host representation in insights compliance backend. Most of the times
 # these hosts will also show up in the insights-platform host inventory.
 class Host < ApplicationRecord
-  OS_MINOR_VERSION = Arel.sql("system_profile->'operating_system'->'minor'")
-  OS_MAJOR_VERSION = Arel.sql("system_profile->'operating_system'->'major'")
-  OS_VERSION = Arel.sql("system_profile->'operating_system'")
-  TAGS = Arel.sql('jsonb_array_elements(tags)')
+  OS_VERSION = Arel::Nodes::InfixOperation.new(
+    '->',
+    Host.arel_table[:system_profile],
+    Arel::Nodes::Quoted.new('operating_system')
+  )
+  OS_MINOR_VERSION = Arel::Nodes::InfixOperation.new(
+    '->',
+    OS_VERSION,
+    Arel::Nodes::Quoted.new('minor')
+  )
+  OS_MAJOR_VERSION = Arel::Nodes::InfixOperation.new(
+    '->',
+    OS_VERSION,
+    Arel::Nodes::Quoted.new('major')
+  )
+  TAGS = Arel::Nodes::NamedFunction.new(
+    'jsonb_array_elements',
+    [Host.arel_table[:tags]]
+  )
   JOIN_NO_BENCHMARK = arel_table.join(
     Xccdf::Benchmark.arel_table,
     Arel::Nodes::OuterJoin
@@ -17,7 +34,18 @@ class Host < ApplicationRecord
   sortable_by :os_minor_version, OS_MINOR_VERSION
   sortable_by(
     :ssg_version,
-    Arel.sql("string_to_array(benchmarks.version, '.')::int[]"),
+    Arel::Nodes::NamedFunction.new(
+      'CAST',
+      [
+        Arel::Nodes::NamedFunction.new(
+          'string_to_array',
+          [
+            Xccdf::Benchmark.arel_table[:version],
+            Arel::Nodes::Quoted.new('.')
+          ]
+        ).as('int[]')
+      ]
+    ),
     scope: :with_benchmark
   )
 
@@ -104,3 +132,5 @@ class Host < ApplicationRecord
            .distinct
   end
 end
+
+# rubocop:enable Metrics/ClassLength
