@@ -15,15 +15,25 @@ module Xccdf
             value_overrides: value_overrides(op_profile)
           )
         end
-
-        ::Profile.import!(new_profiles, ignore: true)
       end
-      alias_method :save_profiles, :profiles
+
+      def save_profiles
+        # Import the new records first with validation
+        ::Profile.import!(new_profiles, ignore: true)
+
+        # Update the fields on existing profiles, validation is not necessary
+        ::Profile.import(old_profiles.values,
+                         on_duplicate_key_update: {
+                           conflict_target: %i[ref_id benchmark_id],
+                           index_predicate: 'parent_profile_id IS NULL',
+                           columns: %i[value_overrides]
+                         }, validate: false)
+      end
 
       private
 
       def new_profiles
-        @new_profiles ||= @profiles.select(&:new_record?)
+        @new_profiles ||= profiles.select(&:new_record?)
       end
 
       def old_profiles
