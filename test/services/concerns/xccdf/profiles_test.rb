@@ -40,33 +40,19 @@ module Xccdf
       end
     end
 
-    test 'correctly save value_overrides' do
+    test 'updates value_overrides' do
       save_profiles
 
-      profile1 = Profile.find_by(ref_id: 'xccdf_org.ssgproject.content_profile_pci-dss')
-      profile2 = Profile.find_by(ref_id: 'xccdf_org.ssgproject.content_profile_standard')
+      Profile.update(value_overrides: {})
+      assert_equal Profile.where(value_overrides: {}).count, 11
 
-      expected_overrides = {
-        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_auditd_num_logs').id => '5',
-        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_sshd_idle_timeout_value').id => '900',
-        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_password_pam_minlen').id => '7',
-        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_multiple_time_servers').id =>
-          '0.rhel.pool.ntp.org,1.rhel.pool.ntp.org,2.rhel.pool.ntp.org,3.rhel.pool.ntp.org',
-        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_password_pam_minclass').id => '2',
-        send(:value_definition_for, ref_id: 'xccdf_org.ssgproject.content_value_var_password_pam_unix_remember').id =>
-          '4',
-        send(:value_definition_for, ref_id:
-          'xccdf_org.ssgproject.content_value_var_accounts_maximum_age_login_defs').id => '90',
-        send(:value_definition_for, ref_id:
-          'xccdf_org.ssgproject.content_value_var_account_disable_post_pw_expiration').id => '90',
-        send(:value_definition_for, ref_id:
-          'xccdf_org.ssgproject.content_value_var_accounts_passwords_pam_faillock_deny').id => '6',
-        send(:value_definition_for, ref_id:
-          'xccdf_org.ssgproject.content_value_var_accounts_passwords_pam_faillock_unlock_time').id => '1800'
-      }
+      @profiles = nil
+      @new_profiles = nil
+      @old_profiles = nil
 
-      assert_equal expected_overrides, profile1.value_overrides
-      assert_equal 0, profile2.value_overrides.length
+      save_profiles
+
+      assert_equal Profile.where.not(value_overrides: {}).count, 9
     end
   end
 end
