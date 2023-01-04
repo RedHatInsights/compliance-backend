@@ -53,7 +53,7 @@ gem 'faraday'
 gem 'friendly_id', '~> 5.2.4'
 gem 'scoped_search'
 gem 'will_paginate'
-gem 'activerecord-import' # Substitute on upgrade to Rails 6
+gem 'activerecord-import'
 gem 'oj'
 gem 'uuid'
 
