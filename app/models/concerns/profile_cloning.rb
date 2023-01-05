@@ -11,7 +11,7 @@ module ProfileCloning
       self.benchmark_id = parent_profile.benchmark_id
       self.name ||= parent_profile.name
       self.description ||= parent_profile.description
-      self.value_overrides ||= parent_profile.value_overrides
+      self.value_overrides = parent_profile.value_overrides unless value_overrides&.any?
 
       self
     end
