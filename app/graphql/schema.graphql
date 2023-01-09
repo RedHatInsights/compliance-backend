@@ -11,6 +11,7 @@ type Benchmark implements Node {
   ruleTree: JSON
   rules: [Rule!]
   title: String!
+  valueDefinitions: [ValueDefinition!]
   version: String!
 }
 
@@ -844,6 +845,18 @@ type UpdateProfilePayload {
   """
   clientMutationId: String
   profile: Profile
+}
+
+"""
+A representation of a Value Definition
+"""
+type ValueDefinition implements Node {
+  defaultValue: String!
+  description: String
+  id: ID!
+  refId: String!
+  title: String
+  valueType: String!
 }
 
 """
