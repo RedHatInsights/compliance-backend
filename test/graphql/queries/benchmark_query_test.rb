@@ -193,4 +193,37 @@ class BenchmarkQueryTest < ActiveSupport::TestCase
 
     assert_equal result['data']['benchmark']['ruleTree'], 'foo'
   end
+
+  test 'query benchmark with value definitions' do
+    vd1 = FactoryBot.create(:value_definition, title: 'test1')
+    vd2 = FactoryBot.create(:value_definition, title: 'test2')
+    vd2.update!(benchmark_id: vd1.benchmark_id)
+
+    query = <<-GRAPHQL
+      query benchmarkQuery($id: String!) {
+        benchmark(id: $id) {
+          id
+          valueDefinitions {
+            id
+            refId
+            valueType
+            title
+            description
+            defaultValue
+          }
+        }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { id: vd1.benchmark_id },
+      context: { current_user: @user }
+    )
+
+    assert_equal result['data']['benchmark']['valueDefinitions'].count, 2
+    assert_equal(%w[test1 test2], result['data']['benchmark']['valueDefinitions'].map do |value_definition|
+      value_definition['title']
+    end.sort)
+  end
 end
