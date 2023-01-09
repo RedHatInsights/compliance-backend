@@ -6,6 +6,9 @@ class ValueDefinition < ApplicationRecord
 
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'
 
+  scoped_search on: %i[ref_id title]
+  scoped_search on: %i[benchmark_id], only_explicit: true
+
   POSSIBLE_VALUE_TYPES = %w[string number boolean].freeze
 
   validates :benchmark_id, presence: true
