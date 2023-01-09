@@ -9,6 +9,7 @@ require './spec/api/v1/schemas/business_objectives'
 require './spec/api/v1/schemas/profiles'
 require './spec/api/v1/schemas/rule_results'
 require './spec/api/v1/schemas/rules'
+require './spec/api/v1/schemas/value_definitions'
 require './spec/api/v1/schemas/status'
 require './spec/api/v1/schemas/supported_ssgs'
 
@@ -24,6 +25,7 @@ module Api
       include Profiles
       include RuleResults
       include Rules
+      include ValueDefinitions
       include Status
       include SupportedSggs
 
@@ -47,6 +49,8 @@ module Api
         rule_result_relationships: RULE_RESULT_RELATIONSHIPS,
         rule: RULE,
         rule_relationships: RULE_RELATIONSHIPS,
+        value_definition: VALUE_DEFINITION,
+        value_definition_relationships: VALUE_DEFINITION_RELATIONSHIPS,
         status: STATUS,
         supported_ssg: SUPPORTED_SSG
       }.freeze
