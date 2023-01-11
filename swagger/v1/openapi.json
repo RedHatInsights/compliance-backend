@@ -67,7 +67,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "description": "Query string compliant with [scoped_search query language](https://github.com/wvanbergen/scoped_search/wiki/Query-language)",
             "schema": {
               "type": "string",
               "default": ""
@@ -845,7 +845,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "description": "Query string compliant with [scoped_search query language](https://github.com/wvanbergen/scoped_search/wiki/Query-language)",
             "schema": {
               "type": "string",
               "default": ""
@@ -1130,7 +1130,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "description": "Query string compliant with [scoped_search query language](https://github.com/wvanbergen/scoped_search/wiki/Query-language)",
             "schema": {
               "type": "string",
               "default": ""
@@ -2214,7 +2214,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "description": "Query string compliant with [scoped_search query language](https://github.com/wvanbergen/scoped_search/wiki/Query-language)",
             "schema": {
               "type": "string",
               "default": ""
@@ -2373,7 +2373,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "description": "Query string compliant with [scoped_search query language](https://github.com/wvanbergen/scoped_search/wiki/Query-language)",
             "schema": {
               "type": "string",
               "default": ""
@@ -3503,7 +3503,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "description": "Query string compliant with [scoped_search query language](https://github.com/wvanbergen/scoped_search/wiki/Query-language)",
             "schema": {
               "type": "string",
               "default": ""
@@ -3839,7 +3839,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
+            "description": "Query string compliant with [scoped_search query language](https://github.com/wvanbergen/scoped_search/wiki/Query-language)",
             "schema": {
               "type": "string",
               "default": ""
