@@ -849,6 +849,11 @@ class ProfileTest < ActiveSupport::TestCase
       @rule2.update(precedence: 4)
       @rule3.update(precedence: 1)
 
+      @value1 = FactoryBot.create(:value_definition)
+      @value2 = FactoryBot.create(:value_definition)
+
+      @profile.update! value_overrides: { @value1.id => 'true', @value2.id => '4' }
+
       @policy2 = FactoryBot.create(:policy, account: @account, hosts: [@host])
 
       @profile2 = @parent.clone_to(
@@ -878,6 +883,11 @@ class ProfileTest < ActiveSupport::TestCase
 
     should 'properly detects added_rules in the correct order' do
       assert_equal [@rule3, @rule2], @profile.added_rules
+    end
+
+    should 'properly update value_overrides keys from uuids to ref_ids' do
+      expected_value_overrides_by_ref_id = { @value1.ref_id => 'true', @value2.ref_id => '4' }
+      assert_equal expected_value_overrides_by_ref_id, @profile.value_overrides_by_ref_id
     end
 
     should 'sends the correct rule_group_ancestor_ref_ids to the tailoring file service' do
