@@ -164,7 +164,7 @@ GEM
       activerecord (>= 4.0.0)
     gitlab-sidekiq-fetcher (0.8.0)
       sidekiq (~> 6.1)
-    globalid (1.0.0)
+    globalid (1.0.1)
       activesupport (>= 5.0)
     graphiql-rails (1.7.0)
       railties
@@ -206,7 +206,7 @@ GEM
     method_source (1.0.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    minitest (5.16.3)
+    minitest (5.17.0)
     minitest-reporters (1.4.2)
       ansi
       builder
