@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_04_132131) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_20_125405) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -80,16 +80,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_04_132131) do
     t.index ["policy_id"], name: "index_policy_hosts_on_policy_id"
   end
 
-  create_table "profile_rule_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "profile_id", null: false
-    t.uuid "rule_group_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["profile_id", "rule_group_id"], name: "index_profile_rule_groups_on_profile_id_and_rule_group_id", unique: true
-    t.index ["profile_id"], name: "index_profile_rule_groups_on_profile_id"
-    t.index ["rule_group_id"], name: "index_profile_rule_groups_on_rule_group_id"
-  end
-
   create_table "profile_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "profile_id", null: false
     t.uuid "rule_id", null: false
@@ -145,14 +135,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_04_132131) do
     t.index ["right_type", "right_id"], name: "index_rule_group_relationships_on_right"
   end
 
-  create_table "rule_group_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "rule_group_id"
-    t.uuid "rule_id"
-    t.index ["rule_group_id", "rule_id"], name: "index_rule_group_rules_on_rule_group_id_and_rule_id", unique: true
-    t.index ["rule_group_id"], name: "index_rule_group_rules_on_rule_group_id"
-    t.index ["rule_id"], name: "index_rule_group_rules_on_rule_id"
-  end
-
   create_table "rule_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "ref_id"
     t.string "title"
@@ -169,20 +151,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_04_132131) do
     t.index ["rule_id"], name: "index_rule_groups_on_rule_id", unique: true
   end
 
-  create_table "rule_identifiers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "label"
-    t.string "system"
-    t.uuid "rule_id"
-    t.index ["label", "system", "rule_id"], name: "index_rule_identifiers_on_label_and_system_and_rule_id", unique: true
-    t.index ["rule_id"], name: "index_rule_identifiers_on_rule_id"
-  end
-
-  create_table "rule_references", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "href"
-    t.string "label"
-    t.index ["href", "label"], name: "index_rule_references_on_href_and_label", unique: true
-  end
-
   create_table "rule_references_containers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "rule_id", null: false
     t.jsonb "rule_references"
@@ -190,14 +158,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_04_132131) do
     t.datetime "updated_at", null: false
     t.index ["rule_id"], name: "index_rule_references_containers_on_rule_id", unique: true
     t.index ["rule_references"], name: "index_rule_references_containers_on_rule_references", opclass: :jsonb_path_ops, using: :gin
-  end
-
-  create_table "rule_references_rules", id: false, force: :cascade do |t|
-    t.uuid "rule_id", null: false
-    t.uuid "rule_reference_id", null: false
-    t.index ["rule_id", "rule_reference_id"], name: "index_rule_references_rules_on_rule_id_and_rule_reference_id", unique: true
-    t.index ["rule_id"], name: "index_rule_references_rules_on_rule_id"
-    t.index ["rule_reference_id"], name: "index_rule_references_rules_on_rule_reference_id"
   end
 
   create_table "rule_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -289,8 +249,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_04_132131) do
   add_foreign_key "policy_hosts", "policies"
   add_foreign_key "profiles", "policies"
   add_foreign_key "profiles", "profiles", column: "parent_profile_id"
-  add_foreign_key "rule_group_rules", "rule_groups"
-  add_foreign_key "rule_group_rules", "rules"
   add_foreign_key "rule_groups", "benchmarks"
   add_foreign_key "rule_groups", "rules"
   add_foreign_key "rule_references_containers", "rules"
