@@ -2,8 +2,9 @@
 
 # JSON API serialization for an OpenSCAP Rule
 class RuleSerializer < ApplicationSerializer
-  attributes :ref_id, :remediation_issue_id, :title, :rationale, :description,
+  attributes :ref_id, :title, :rationale, :description,
              :severity, :slug, :values, :precedence
+  attribute :remediation_issue_id, if: proc { |_, params| [Rule, Profile].include? params[:root_resource] }
   belongs_to :benchmark
 
   has_many :profiles do |rule|
