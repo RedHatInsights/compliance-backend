@@ -24,10 +24,9 @@ class Account < ApplicationRecord
       # Set the identity header for further use
       account.identity_header = identity_header
 
-      # Update the 'is_internal' and the 'account_number' fields if set and differs
+      # Update the 'is_internal' field if set and differs
       updates = {
-        is_internal: (identity_header.is_internal unless identity_header.is_internal.nil?),
-        account_number: (identity_header.identity['account_number'] if account.account_number.blank?)
+        is_internal: (identity_header.is_internal unless identity_header.is_internal.nil?)
       }.compact
 
       account.update!(updates) if updates.any?
