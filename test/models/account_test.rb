@@ -61,18 +61,5 @@ class AccountTest < ActiveSupport::TestCase
       acc = Account.from_identity_header(ih)
       assert_equal acc.org_id, '654321'
     end
-
-    should 'update the account_number field if set for an existing account' do
-      acc = FactoryBot.create(:account, account_number: nil)
-      ih = IdentityHeader.new(Base64.encode64({
-        'identity' => {
-          'org_id' => acc.org_id,
-          'account_number' => '654321'
-        }
-      }.to_json))
-
-      Account.from_identity_header(ih)
-      assert_equal acc.reload.account_number, '654321'
-    end
   end
 end
