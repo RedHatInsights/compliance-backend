@@ -42,6 +42,7 @@ pipeline {
                         ```
                     }
                 }
+
                 stage('Run smoke tests') {
                     steps {
                         sh ```
