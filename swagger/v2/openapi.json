@@ -85,6 +85,33 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/report"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/report_relationships"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -174,6 +201,33 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/system"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/system_relationships"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -257,6 +311,31 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/system"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/system_relationships"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -333,6 +412,33 @@
                           }
                         }
                       ]
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/policy"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/policy_relationships"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -419,6 +525,31 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/policy"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/policy_relationships"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -493,6 +624,33 @@
                         "total": 30,
                         "limit": 20,
                         "offset": 1
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/profile"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/profile_relationships"
+                          }
+                        }
                       }
                     }
                   }
@@ -574,6 +732,31 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/profile"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/profile_relationships"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -642,6 +825,33 @@
                         "tags": [],
                         "limit": 20,
                         "offset": 1
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/rule"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/rule_relationships"
+                          }
+                        }
                       }
                     }
                   }
@@ -722,6 +932,33 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/ssg"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/ssg_relationships"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -789,6 +1026,31 @@
                               }
                             ]
                           }
+                        }
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/ssg"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/ssg_relationships"
                         }
                       }
                     }
@@ -871,6 +1133,33 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/profile"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/profile_relationships"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -949,6 +1238,31 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/profile"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/profile_relationships"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1011,6 +1325,33 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/rule"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/rule_relationships"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1070,6 +1411,31 @@
                           "severity": "medium",
                           "slug": "xccdf_org-ssgproject-content_rule_audit_rules_file_deletion_events-53af87f5-25f3-4222-9511-467c023afc01",
                           "precedence": 983
+                        }
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/rule"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/rule_relationships"
                         }
                       }
                     }
@@ -1154,6 +1520,33 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/policy"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/policy_relationships"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1214,7 +1607,32 @@
                     }
                   }
                 }
-              }
+              },
+              "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/policy"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/policy_relationships"
+                        }
+                      }
+                    }
+                  }
+                }
             }
           }
         },
@@ -1264,6 +1682,31 @@
                               }
                             ]
                           }
+                        }
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/policy"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/policy_relationships"
                         }
                       }
                     }
@@ -1349,6 +1792,31 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/rule"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/rule_relationships"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1403,7 +1871,32 @@
                     }
                   }
                 }
-              }
+              },
+              "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/policy"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/policy_relationships"
+                        }
+                      }
+                    }
+                  }
+                }
             }
           }
         },
@@ -1461,6 +1954,31 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/policy"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/policy_relationships"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1491,7 +2009,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "202": {
             "description": "",
             "content": {
               "application/vnd.api+json": {
@@ -1592,6 +2110,33 @@
                         "tags": [],
                         "limit": 20,
                         "offset": 1
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/system"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/system_relationships"
+                          }
+                        }
                       }
                     }
                   }
@@ -1738,6 +2283,31 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/system"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/system_relationships"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1818,6 +2388,33 @@
                         "limit": 20,
                         "offset": 1,
                         "sort_by": "score"
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/report"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/report_relationships"
+                          }
+                        }
                       }
                     }
                   }
@@ -1904,6 +2501,31 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/report"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/report_relationships"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1978,6 +2600,33 @@
                         "total": 30,
                         "limit": 20,
                         "offset": 1
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/profile"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/profile_relationships"
+                          }
+                        }
                       }
                     }
                   }
@@ -2059,6 +2708,31 @@
                       }
                     }
                   }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/uuid"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/profile"
+                        },
+                        "relationships": {
+                          "$ref": "#/components/schemas/profile_relationships"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2126,6 +2800,33 @@
                         "total": 9759,
                         "limit": 20,
                         "offset": 1
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/profile"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/profile_relationships"
+                          }
+                        }
                       }
                     }
                   }
@@ -2483,6 +3184,124 @@
         "properties": {
           "policy": {
             "$ref": "#/components/schemas/relationship"
+          }
+        }
+      },
+      "policy": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
+          },
+          "description": {
+            "type": "string",
+            "example": "Sample description"
+          },
+          "compliance_threshold": {
+            "type": "integer",
+            "example": 97
+          },
+          "total_host_count": {
+            "type": "integer",
+            "example": 43
+          },
+          "business_objective": {
+            "type": "string",
+            "example": "Sample objective"
+          },
+          "test_result_host_count": {
+            "type": "integer",
+            "example": 37
+          },
+          "compliant_host_count": {
+            "type": "integer",
+            "example": 33
+          },
+          "unsupported_host_count": {
+            "type": "integer",
+            "example": 5
+          }
+        }
+      },
+      "policy_relationships": {
+        "type": "object",
+        "properties": {
+          "profiles": {
+            "$ref": "#/components/schemas/relationship_collection"
+          },
+          "systems": {
+            "$ref": "#/components/schemas/relationship_collection"
+          },
+          "reports": {
+            "$ref": "#/components/schemas/relationship_collection"
+          }
+        }
+      },
+      "profile": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
+          } ,
+          "ref_id": {
+            "type": "string",
+            "example": "xccdf_org.ssgproject.content_profile_stig-rhel6-server-upstream"
+          },
+          "description": {
+            "type": "string",
+            "example": "Profile description"
+          },
+          "parent_profile_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "example": "0105a0f0-7379-4897-a891-f95cfb9ddf9c"
+          },
+          "tailored": {
+            "type": "boolean",
+            "example": false
+          },
+          "score": {
+            "type": "number",
+            "example": 0
+          },
+          "external": {
+            "type": "boolean",
+            "example": false
+          },
+          "os_major_version": {
+            "type": "string",
+            "example": "6"
+          },
+          "os_version": {
+            "type": "string",
+            "example": "6.10"
+          },
+          "os_minor_version": {
+            "type": "string",
+            "example": "10"
+          },
+          "canonical": {
+            "type": "boolean",
+            "example": false
+          },
+          "ssg_version": {
+            "type": "string",
+            "example": "0.1.28"
+          },
+          "policy_type": {
+            "type": "string",
+            "exmaple": "Upstream STIG for Red Hat Enterprise Linux 6 Server"
+          }
+        }
+      },
+      "profile_relationships": {
+        "type": "object",
+        "properties": {
+          "rules": {
+            "$ref": "#/components/schemas/relationship_collection"
           }
         }
       }
