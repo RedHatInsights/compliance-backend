@@ -1450,6 +1450,90 @@
         ]
       }
     },
+    "/ssgs/{ssgId}/value_definitions": {
+      "get": {
+        "summary": "Retrieve all value definitions",
+        "description": "Retrieves all value definitions",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "00013fff-191c-48d9-87e5-1483af035127",
+                          "type": "value_definition",
+                          "attributes": {
+                            "defaultValue": "60",
+                            "description": "Maximum age of password in days",
+                            "refId": "xccdf_org.ssgproject.content_value_var_accounts_maximum_age_login_defs",
+                            "title": "maximum password age",
+                            "valueType": "number"
+                          },
+                          "relationships": {
+                            "ssg": {
+                              "id": "",
+                              "type": "ssg"
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 30,
+                        "limit": 20,
+                        "offset": 1
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/value_definition"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/value_definition_relatioships"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "SSG"
+        ]
+      }
+    },
     "/policies": {
       "get": {
         "summary": "Retrieve all policies",
@@ -3302,6 +3386,39 @@
         "properties": {
           "rules": {
             "$ref": "#/components/schemas/relationship_collection"
+          }
+        }
+      },
+      "value_definition": {
+        "type": "object",
+        "properties": {
+          "refId": {
+            "type": "string",
+            "example": "xccdf_org.ssgproject.content_value_var_ssh_client_rekey_limit_size"
+          },
+          "tile": {
+            "type": "string",
+            "example": "SSH client RekeyLimit - size"
+          },
+          "description": {
+            "type": "string",
+            "example": "Specify the size component of the rekey limit. This limit signifies amount of data. After this amount of data is transferred through the connection, the session key is renegotiated. The number is followed by K, M or G for kilobytes, megabytes or gigabytes. Note that the RekeyLimit can be also configured according to elapsed time."
+          },
+          "valueType": {
+            "type": "string",
+            "example": "string"
+          },
+          "defaultValue": {
+            "type": "string",
+            "example": "512M"
+          }
+        }
+      },
+      "value_definition_relatioships": {
+        "type": "object",
+        "properties": {
+          "ssg": {
+            "$ref": "#/components/schemas/relationship"
           }
         }
       }
