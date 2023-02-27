@@ -1,19 +1,28 @@
+# frozen_string_literal: true
+
+def build_endpoint_url(endpoint, config)
+  return URI::HTTPS.build(host: endpoint&.hostname, port: endpoint&.tlsPort).to_s if config.tlsCAPath
+
+  URI::HTTP.build(host: endpoint&.hostname, port: endpoint&.port).to_s
+end
 
 if ClowderCommonRuby::Config.clowder_enabled?
 
   config = ClowderCommonRuby::Config.load
 
+  ENV['SSL_CERT_FILE'] = config.tlsCAPath if config.tlsCAPath
+
   # compliance-ssg
   compliance_ssg_config = config.private_dependency_endpoints&.dig('compliance-ssg', 'service')
-  compliance_ssg_url = "http://#{compliance_ssg_config&.hostname}:#{compliance_ssg_config&.port}"
+  compliance_ssg_url = build_endpoint_url(compliance_ssg_config, config)
 
   # RBAC
   rbac_config = config.dependency_endpoints.dig('rbac', 'service')
-  rbac_url = "http://#{rbac_config&.hostname}:#{rbac_config&.port}"
+  rbac_url = build_endpoint_url(rbac_config, config)
 
   # Inventory
   host_inventory_config = config.dependency_endpoints&.dig('host-inventory', 'service')
-  host_inventory_url = "http://#{host_inventory_config&.hostname}:#{host_inventory_config&.port}"
+  host_inventory_url = build_endpoint_url(host_inventory_config, config)
 
   # Redis (in-memory db)
   redis_url = "#{config.dig('inMemoryDb', 'hostname')}:#{config.dig('inMemoryDb', 'port')}"
