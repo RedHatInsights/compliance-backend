@@ -132,7 +132,7 @@ services:
       - db
       - redis
     ports:
-      - 9002:8080
+      - 9002:8000
     volumes:
       - ./config/devel/rbac/definitions:/opt/app-root/src/rbac/management/role/definitions
       - ./config/devel/rbac/permisisons:/opt/app-root/src/rbac/management/role/permissions
