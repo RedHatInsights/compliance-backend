@@ -1,13 +1,19 @@
 #!/bin/bash
 
+APP_ROOT=${APP_ROOT:-.}
 cd "$APP_ROOT"
 export IMAGE="quay.io/cloudservices/compliance-backend"
 IMAGE_TAG=$(git rev-parse --short=7 HEAD)
 export IMAGE_TAG
 
-DB_CONTAINER_NAME="compliance-db-${IMAGE_TAG}"
-TEST_CONTAINER_NAME="compliance-test-${IMAGE_TAG}"
-POD_NAME="compliance-pod-${IMAGE_TAG}"
+
+RANDOM_ID=$(md5sum -z <<< "$RANDOM" | cut -c -6)
+DB_CONTAINER_NAME="compliance-db-${RANDOM_ID}"
+TEST_CONTAINER_NAME="compliance-test-${RANDOM_ID}"
+POD_NAME="compliance-pod-${RANDOM_ID}"
+COMPLIANCE_POD_ID=''
+DB_CONTAINER_ID=''
+TEST_CONTAINER_ID=''
 
 POSTGRES_IMAGE="quay.io/cloudservices/postgresql-rds:cyndi-12-1"
 IMAGE="quay.io/cloudservices/compliance-backend"
@@ -22,37 +28,37 @@ if [[ -n "$ghprbPullId" ]]; then
 fi
 
 function teardown_podman {
-  podman rm -f "$DB_CONTAINER_NAME" || true
-  podman rm -f "$TEST_CONTAINER_NAME" || true
-  podman pod rm "$POD_NAME" || true
+  podman rm -f "$DB_CONTAINER_ID" || true
+  podman rm -f "$TEST_CONTAINER_ID" || true
+  podman pod rm -f "$COMPLIANCE_POD_ID" || true
 }
 
 trap "teardown_podman" EXIT SIGINT SIGTERM
 
-podman pod create --name "$POD_NAME" || exit 1
+if ! COMPLIANCE_POD_ID=$(podman pod create --name "$POD_NAME"); then
+    exit 1
+fi
 
-DB_CONTAINER_ID=$(podman run -d \
-  --name "${DB_CONTAINER_NAME}" \
-  --pod "${POD_NAME}" \
+if ! DB_CONTAINER_ID=$(podman run -d \
+  --pod "${COMPLIANCE_POD_ID}" \
   --rm \
+  --name "${DB_CONTAINER_NAME}" \
   -e POSTGRESQL_USER="$DATABASE_USER" \
   -e POSTGRESQL_PASSWORD="$DATABASE_PASSWORD" \
   -e POSTGRESQL_DATABASE="$DATABASE_NAME" \
-  "$POSTGRES_IMAGE" || echo "0")
+  "$POSTGRES_IMAGE"); then
 
-if [[ "$DB_CONTAINER_ID" == "0" ]]; then
   echo "Failed to start DB container"
   exit 1
 fi
 
 # Do tests
-TEST_CONTAINER_ID=$(podman run -d \
-  --name "${TEST_CONTAINER_NAME}" \
-  --pod "${POD_NAME}" \
+if ! TEST_CONTAINER_ID=$(podman run -d \
+  --pod "${COMPLIANCE_POD_ID}" \
   --rm \
   -e HOSTNAME="$TEST_CONTAINER_NAME" \
-  -e DATABASE_SERVICE_NAME=postgresql \
   -e POSTGRESQL_SERVICE_HOST="$POD_NAME" \
+  -e DATABASE_SERVICE_NAME=postgresql \
   -e POSTGRESQL_USER="$DATABASE_USER" \
   -e POSTGRESQL_PASSWORD="$DATABASE_PASSWORD" \
   -e POSTGRESQL_DATABASE="$DATABASE_NAME" \
@@ -67,9 +73,8 @@ TEST_CONTAINER_ID=$(podman run -d \
   -e ghprbPullId="$ghprbPullId" \
   -e BUILD_URL="$BUILD_URL" \
   "$IMAGE:$IMAGE_TAG" \
-  /bin/bash -c 'sleep infinity' || echo "0")
+  /bin/bash -c 'sleep infinity'); then
 
-if [[ "$TEST_CONTAINER_ID" == "0" ]]; then
   echo "Failed to start test container"
   exit 1
 fi
