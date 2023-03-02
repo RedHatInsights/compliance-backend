@@ -32,9 +32,15 @@ pipeline {
         COMPONENTS_W_RESOURCES="compliance"
     }
     stages {
+        stage('test') {
+            // when { expression { return false } }
+            steps {
+                    sh 'env'
+                }
+            }
         stage('Build') {
             // Temporarily disable
-            // when { expression { return false } }
+            when { expression { return false } }
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh './build_deploy.sh'
@@ -42,6 +48,7 @@ pipeline {
             }
         }
         stage('Run tests') {
+            when { expression { return false } }
             parallel {
                 stage('Integration tests') {
                     // Temporarily disable

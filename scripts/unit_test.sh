@@ -50,7 +50,6 @@ if ! DB_CONTAINER_ID=$(podman run -d \
 
   echo "Failed to start DB container"
   exit 1
-
 fi
 
 # Do tests
