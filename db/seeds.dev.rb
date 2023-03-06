@@ -85,9 +85,9 @@ Account.find_each do |account|
     canonical_profile = profiles.sample
     supported_minor_versions = canonical_profile.supported_os_versions.map { |sv| sv.version[/[^.]+$/] }
     hosts = Host.where(id: host_ids)
-                .where("#{Host::OS_MAJOR_VERSION} = ?",
+                .where("#{Host::OS_MAJOR_VERSION.to_sql} = ?",
                        canonical_profile.os_major_version)
-    supported_hosts = hosts.where("#{Host::OS_MINOR_VERSION} IN (?)", supported_minor_versions)
+    supported_hosts = hosts.where("#{Host::OS_MINOR_VERSION.to_sql} IN (?)", supported_minor_versions)
 
     next if supported_hosts.empty? || [true, true, false].sample
 
