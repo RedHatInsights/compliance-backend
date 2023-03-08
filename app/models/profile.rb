@@ -82,7 +82,7 @@ class Profile < ApplicationRecord
 
       value_definitions = ValueDefinition.where(ref_id: values.keys).index_by(&:ref_id)
 
-      raise ActiveRecord::RecordNotFound unless value_definitions.count == values.count
+      raise ActiveRecord::RecordNotFound unless value_definitions.count == values.keys.count
 
       values.transform_keys { |key| value_definitions[key].id }
     end
