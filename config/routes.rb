@@ -22,9 +22,39 @@ Rails.application.routes.draw do
         end
       end
 
+      concern :rest_api_v2 do
+        scope module: 'v2' do
+          resources :reports, only: [:index]
+          resources :systems, only: [:index, :show] do
+            resources :policies, only: [:index, :show], controller: 'system_policies'
+            resources :profiles, only: [:index, :show], controller: 'system_profiles' do
+              resources :rules, only: [:index], controller: 'system_profile_rules'
+            end
+          end
+          resources :ssgs, only: [:index, :show] do
+            resources :profiles, only: [:index, :show], controller: 'ssg_profiles'
+            resources :rules, only: [:index, :show], controller: 'ssg_rules'
+            resources :value_definitions, only: [:index], controller: 'value_definitions'
+          end
+          resources :policies do
+            resources :systems, only: [:index, :show, :update], controller: 'policy_systems'
+            resources :reports, only: [:index, :show], controller: 'policy_reports'
+            resources :profiles, only: [:index, :show], controller: 'policy_profiles' do
+              resources :rules, only: [:index], controller: 'policy_profile_rules'
+            end
+          end
+
+        end
+      end
+
       concerns :rest_api_v1
       scope 'v1', as: 'v1' do
         concerns :rest_api_v1
+      end
+
+      concerns :rest_api_v2
+      scope 'v2', as: 'v2' do
+        concerns :rest_api_v2
       end
 
       mount Rswag::Api::Engine => '/',
