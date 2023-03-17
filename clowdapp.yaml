@@ -23,7 +23,7 @@ objects:
     - crc-pdf-generator
     database:
       name: compliance
-      version: 13
+      version: 14
     kafkaTopics:
       - topicName: platform.upload.compliance
         partitions: 1
