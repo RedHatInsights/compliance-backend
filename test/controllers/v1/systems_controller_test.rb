@@ -180,6 +180,7 @@ module V1
       end
 
       %w[
+        tags=0%2F%00
         tags=0%2F%25
         tags=%06%22%2F%F3%86%A4%8C%25%F1%B1%B5%99
         tags=%C2%A5%06%22%2F%F3%86%A4%8C%25%F1%B1%B5%99l

@@ -19,13 +19,19 @@ module TagFiltering
       return nil if namespace.nil? || key.nil?
 
       {
-        namespace: Rack::Utils.unescape(namespace),
-        key: Rack::Utils.unescape(key),
-        value: value && Rack::Utils.unescape(value)
+        namespace: unescape(namespace),
+        key: unescape(key),
+        value: value && unescape(value)
       }
     rescue ArgumentError
       raise ::Exceptions::InvalidTagEncoding
     end
+  end
+
+  def unescape(field)
+    raise ArgumentError if field.match('\u0000')
+
+    Rack::Utils.unescape(field)
   end
 
   def self.tags_supported?(resource)
