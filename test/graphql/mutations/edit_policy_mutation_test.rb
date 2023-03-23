@@ -72,7 +72,7 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
   end
 
   test 'set the value overrides' do
-    vd = FactoryBot.create(:value_definition)
+    vd = FactoryBot.create(:value_definition, benchmark: @profile.benchmark)
     query = <<-GRAPHQL
         mutation updateProfile($input: UpdateProfileInput!) {
             updateProfile(input: $input) {
