@@ -10,7 +10,10 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   config = ClowderCommonRuby::Config.load
 
-  ENV['SSL_CERT_FILE'] = config.tlsCAPath if config.tlsCAPath
+  if config.tlsCAPath
+    system('cat /etc/pki/tls/certs/ca-bundle.crt /cdapp/certs/service-ca.crt > /tmp/combined.crt')
+    ENV['SSL_CERT_FILE'] = '/tmp/combined.crt'
+  end
 
   # compliance-ssg
   compliance_ssg_config = config.private_dependency_endpoints&.dig('compliance-ssg', 'service')
