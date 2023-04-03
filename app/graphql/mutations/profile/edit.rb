@@ -20,7 +20,7 @@ module Mutations
 
       def resolve(args = {})
         profile = authorized_profile(args)
-        profile.update(values: ::Profile.prepare_values(args[:values])) if args[:values]
+        profile.update(values: ::Profile.prepare_values(args[:values], profile.benchmark_id)) if args[:values]
         profile.policy.update(args.slice(*POLICY_ATTRIBUTES))
         audit_mutation(profile)
         { profile: profile }

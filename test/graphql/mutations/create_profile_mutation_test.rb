@@ -40,7 +40,7 @@ class CreateProfileMutationTest < ActiveSupport::TestCase
   end
 
   test 'provide all required arguments and values' do
-    vd = FactoryBot.create(:value_definition)
+    vd = FactoryBot.create(:value_definition, benchmark: @parent.benchmark)
     result = Schema.execute(
       QUERY,
       variables: { input: {

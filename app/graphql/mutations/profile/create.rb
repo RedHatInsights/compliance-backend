@@ -64,7 +64,7 @@ module Mutations
         {
           account_id: context[:current_user].account_id,
           parent_profile_id: args[:clone_from_profile_id],
-          values: ::Profile.prepare_values(args[:values])
+          values: ::Profile.prepare_values(args[:values], args[:benchmark_id])
         }.compact
       end
 

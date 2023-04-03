@@ -77,10 +77,10 @@ class Profile < ApplicationRecord
     end
 
     # Transforming value keys from ref_id to uuid
-    def prepare_values(values)
+    def prepare_values(values, benchmark_id)
       return nil unless values
 
-      value_definitions = ValueDefinition.where(ref_id: values.keys).index_by(&:ref_id)
+      value_definitions = ValueDefinition.where(ref_id: values.keys, benchmark_id: benchmark_id).index_by(&:ref_id)
 
       raise ActiveRecord::RecordNotFound unless value_definitions.count == values.keys.count
 
