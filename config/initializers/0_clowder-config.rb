@@ -11,8 +11,12 @@ if ClowderCommonRuby::Config.clowder_enabled?
   config = ClowderCommonRuby::Config.load
 
   if config.tlsCAPath
-    system('cat /etc/pki/tls/certs/ca-bundle.crt /cdapp/certs/service-ca.crt > /tmp/combined.crt')
-    ENV['SSL_CERT_FILE'] = '/tmp/combined.crt'
+    ENV['SSL_CERT_FILE'] = 'tmp/cacert.crt'
+
+    File.open(ENV['SSL_CERT_FILE'], 'w') do |f|
+      f.write(File.read('/etc/pki/tls/certs/ca-bundle.crt'))
+      f.write(File.read('/cdapp/certs/service-ca.crt'))
+    end
   end
 
   # compliance-ssg
