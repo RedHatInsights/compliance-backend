@@ -11,7 +11,7 @@
       }
     },
     {
-      "url": "https://{defaultHost}/api/compliance/v1",
+      "url": "https://{defaultHost}/api/compliance/v2",
       "description": "",
       "variables": {
         "defaultHost": {
@@ -28,6 +28,70 @@
     "contact": {}
   },
   "paths": {
+    "/status": {
+      "get": {
+        "summary": "Status",
+        "tags": [
+          "Status"
+        ],
+        "description": "Display Compliance status",
+        "operationId": "Status",
+        "responses": {
+          "200": {
+            "description": "successful status",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data": {
+                        "api": true
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/status"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unsuccessful status",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data": {
+                        "api": false
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/status"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/reports": {
       "get": {
         "summary": "Retrieve all reports",
@@ -38,6 +102,29 @@
             "in": "header",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
             }
           }
         ],
@@ -132,6 +219,29 @@
             "in": "header",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
             }
           }
         ],
@@ -365,6 +475,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -411,7 +544,12 @@
                             }
                           }
                         }
-                      ]
+                      ],
+                      "meta": {
+                        "total": 60,
+                        "limit": 20,
+                        "offset": 1
+                      }
                     }
                   }
                 },
@@ -578,6 +716,29 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
             }
           }
         ],
@@ -794,6 +955,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -883,6 +1067,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -921,6 +1128,10 @@
                                   "type": "rule"
                                 }
                               ]
+                            },
+                            "value_definitions": {
+                              "id": "3cc4dd58-1110-4d16-9b7d-95e674ccb269",
+                              "type": "value_definition"
                             }
                           }
                         }
@@ -1084,6 +1295,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -1197,6 +1431,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -1291,6 +1548,29 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
             }
           }
         ],
@@ -1461,6 +1741,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -1534,6 +1837,203 @@
         ]
       }
     },
+    "/value_definitions": {
+      "get": {
+        "summary": "Retrieve all value definitions",
+        "description": "Retrieves all value definitions",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "00013fff-191c-48d9-87e5-1483af035127",
+                          "type": "value_definition",
+                          "attributes": {
+                            "defaultValue": "60",
+                            "description": "Maximum age of password in days",
+                            "refId": "xccdf_org.ssgproject.content_value_var_accounts_maximum_age_login_defs",
+                            "title": "maximum password age",
+                            "valueType": "number"
+                          },
+                          "relationships": {
+                            "ssg": {
+                              "id": "",
+                              "type": "ssg"
+                            }
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "total": 30,
+                        "limit": 20,
+                        "offset": 1
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/value_definition"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/value_definition_relatioships"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Value definition"
+        ]
+      }
+    },
+    "/value_definitions/{valueDefinitionId}": {
+      "get": {
+        "summary": "Retrieve specific value definition",
+        "description": "Retrieves specific value definition",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "valueDefinitionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data":{
+                        "id": "00013fff-191c-48d9-87e5-1483af035127",
+                        "type": "value_definition",
+                        "attributes": {
+                          "defaultValue": "60",
+                          "description": "Maximum age of password in days",
+                          "refId": "xccdf_org.ssgproject.content_value_var_accounts_maximum_age_login_defs",
+                          "title": "maximum password age",
+                          "valueType": "number"
+                        },
+                        "relationships": {
+                          "ssg": {
+                            "id": "",
+                            "type": "ssg"
+                          }
+                        }
+                      },
+                      "meta": {
+                        "total": 30,
+                        "limit": 20,
+                        "offset": 1
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/meta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/uuid"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/value_definition"
+                          },
+                          "relationships": {
+                            "$ref": "#/components/schemas/value_definition_relatioships"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Value definition"
+        ]
+      }
+    },
     "/policies": {
       "get": {
         "summary": "Retrieve all policies",
@@ -1544,6 +2044,29 @@
             "in": "header",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
             }
           }
         ],
@@ -1641,8 +2164,8 @@
         ]
       },
       "post": {
-        "summary": "Create new policy",
-        "description": "Create new policy",
+        "summary": "Create a new policy",
+        "description": "Create a new policy",
         "parameters": [
           {
             "name": "X-RH-IDENTITY",
@@ -2132,6 +2655,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -2421,6 +2967,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -2639,6 +3208,29 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
           }
         ],
         "responses": {
@@ -2853,6 +3445,29 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to return",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
             }
           }
         ],
