@@ -16,6 +16,8 @@ class InventoryEventsConsumer < ApplicationConsumer
     Rails.logger.tagged(org_id) do
       dispatch
     end
+  rescue Redis::CannotConnectError
+    handle_redis_error
   rescue PG::Error, ActiveRecord::StatementInvalid
     handle_db_error
   ensure
@@ -56,6 +58,11 @@ class InventoryEventsConsumer < ApplicationConsumer
       'Database error, clearing active connection for further reconnect'
     )
     ActiveRecord::Base.clear_active_connections!
+    raise
+  end
+
+  def handle_redis_error
+    logger.error('Failed to connect to elasticache/redis')
     raise
   end
 
