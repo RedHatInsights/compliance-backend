@@ -353,5 +353,25 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
       end
       assert_equal 0, ParseReportJob.jobs.size
     end
+
+    should 'handle redis connection problems' do
+      @message.stubs(:value).returns({
+        host: {
+          id: @host.id
+        },
+        platform_metadata: {
+          service: 'compliance',
+          url: '/tmp/uploads/insights-upload-quarantine/036738d6f4e541c4aa8cf',
+          request_id: '036738d6f4e541c4aa8cfc9f46f5a140',
+          org_id: '1234'
+        }
+      }.to_json)
+
+      @consumer.stubs(:dispatch).raises(Redis::CannotConnectError)
+
+      assert_raises Redis::CannotConnectError do
+        @consumer.process(@message)
+      end
+    end
   end
 end
