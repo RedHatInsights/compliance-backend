@@ -47,7 +47,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Set up the environment
-      run: cp .env.example .env
+      run: |
+        cp .env.example .env
+        pip3 install podman-compose
+    - name: Build using podman-compose
+      run: podman-compose build
     - name: Build using docker-compose
       run: docker-compose build
   unit-tests:
