@@ -157,13 +157,12 @@ class ParseReportJobTest < ActiveSupport::TestCase
       request_id: @msg_value['request_id'], status: :processing,
       status_msg: 'Job 1 is now processing', org_id: @msg_value['org_id']
     )
-    error_msg = @msg_value.to_json
     PayloadTracker.expects(:deliver).with(
       account: @msg_value['account'], system_id: @msg_value['id'],
       request_id: @msg_value['request_id'], status: :error,
       status_msg:
       "Failed to parse report profileid from host #{@msg_value['id']}: XccdfReportParser::WrongFormatError:" \
-      " Wrong format or benchmark - #{error_msg}", org_id: @msg_value['org_id']
+      " Wrong format or benchmark \n #{JSON.pretty_generate(@msg_value)}", org_id: @msg_value['org_id']
     )
     SafeDownloader.expects(:download_reports)
                   .with('', ssl_only: Settings.report_download_ssl_only)
