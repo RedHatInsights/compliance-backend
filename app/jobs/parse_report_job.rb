@@ -63,7 +63,7 @@ class ParseReportJob
 
   def handle_error(exc)
     msg = error_message(exc)
-    msg_with_values = "#{msg} - #{@msg_value.to_json}"
+    msg_with_values = "#{msg} \n #{JSON.pretty_generate(@msg_value)}"
     notify_payload_tracker(:error, msg_with_values)
     ReportUploadFailed.deliver(host: Host.find_by(id: @msg_value['id'], account: @msg_value['account']),
                                account_number: @msg_value['account'], request_id: @msg_value['request_id'],
