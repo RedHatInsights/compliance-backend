@@ -15,6 +15,7 @@ QUAY_EXPIRE_TIME="${QUAY_EXPIRE_TIME:-3d}"
 CONTAINER_ENGINE_CMD=''
 IMAGE_TAG=''
 PREFER_CONTAINER_ENGINE="${PREFER_CONTAINER_ENGINE:-}"
+DISABLE_BUILD_CACHE=''
 
 local_build() {
   [ "$LOCAL_BUILD" = true ]
@@ -26,6 +27,10 @@ additional_tags() {
 
 is_pr_or_mr_build() {
     [ -n "$ghprbPullId" ] || [ -n "$gitlabMergeRequestId" ]
+}
+
+disable_build_cache() {
+    [ -n "$DISABLE_BUILD_CACHE" ]
 }
 
 get_pr_build_id() {
@@ -223,10 +228,15 @@ build_image() {
 
     local BUILD_ARGS_CMD=''
     local LABEL_PARAMETER=''
+    local DISABLE_CACHE_PARAMETER=''
 
 
     if is_pr_or_mr_build; then
         LABEL_PARAMETER=$(get_expiry_label_parameter)
+    fi
+
+    if disable_build_cache; then
+        DISABLE_CACHE_PARAMETER='--no-cache'
     fi
 
     if [ -n "$BUILD_ARGS" ]; then
@@ -235,6 +245,7 @@ build_image() {
 
     #shellcheck disable=SC2086
     container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD $LABEL_PARAMETER \
+        $DISABLE_CACHE_PARAMETER \
         -t "${IMAGE_NAME}:${IMAGE_TAG}" .
 
     #shellcheck disable=SC2181
