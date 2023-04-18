@@ -15,7 +15,7 @@ QUAY_EXPIRE_TIME="${QUAY_EXPIRE_TIME:-3d}"
 CONTAINER_ENGINE_CMD=''
 IMAGE_TAG=''
 PREFER_CONTAINER_ENGINE="${PREFER_CONTAINER_ENGINE:-}"
-DISABLE_BUILD_CACHE=''
+DISABLE_BUILD_CACHE="${DISABLE_BUILD_CACHE:-}"
 
 local_build() {
   [ "$LOCAL_BUILD" = true ]
@@ -29,8 +29,16 @@ is_pr_or_mr_build() {
     [ -n "$ghprbPullId" ] || [ -n "$gitlabMergeRequestId" ]
 }
 
-disable_build_cache() {
+_disable_build_cache() {
     [ -n "$DISABLE_BUILD_CACHE" ]
+}
+
+_podman_version() {
+    podman version -f '{{ .Version }}'
+}
+
+_podman_version_under_4_5_0() {
+    [ "$(echo -en "4.5.0\n$(_podman_version)" | sort -V | head -1)" != "4.5.0" ]
 }
 
 get_pr_build_id() {
@@ -145,17 +153,21 @@ check_required_registry_credentials() {
 
 container_engine_cmd() {
 
-    if [ -z "$CONTAINER_ENGINE_CMD" ]; then
+    if [ -z "$(get_container_engine_cmd)" ]; then
         if ! set_container_engine_cmd; then
             return 1
         fi
     fi
 
-    if [ "$CONTAINER_ENGINE_CMD" = "podman" ]; then
+    if [ "$(get_container_engine_cmd)" = "podman" ]; then
         podman "$@"
     else
         docker "--config=${DOCKER_CONF}" "$@"
     fi
+}
+
+get_container_engine_cmd() {
+    echo -n "$CONTAINER_ENGINE_CMD"
 }
 
 set_container_engine_cmd() {
@@ -193,19 +205,14 @@ _configured_container_engine_available() {
 
 container_engine_available() {
 
-    local CONTAINER_ENGINE_CMD="$1"
+    local CONTAINER_ENGINE_TO_CHECK="$1"
     local CONTAINER_ENGINE_AVAILABLE=1
 
-    if [ "$CONTAINER_ENGINE_CMD" = "podman" ]; then
-        if _command_is_present 'podman'; then
-            CONTAINER_ENGINE_AVAILABLE=0
-        fi
-    elif [ "$CONTAINER_ENGINE_CMD" = "docker" ]; then
-        if _command_is_present 'docker' && ! _docker_seems_emulated; then
+    if _command_is_present "$CONTAINER_ENGINE_TO_CHECK"; then
+        if [[ "$CONTAINER_ENGINE_TO_CHECK" != "docker" ]] || ! _docker_seems_emulated; then
             CONTAINER_ENGINE_AVAILABLE=0
         fi
     fi
-
     return "$CONTAINER_ENGINE_AVAILABLE"
 }
 
@@ -230,12 +237,13 @@ build_image() {
     local LABEL_PARAMETER=''
     local DISABLE_CACHE_PARAMETER=''
 
-
     if is_pr_or_mr_build; then
         LABEL_PARAMETER=$(get_expiry_label_parameter)
     fi
 
-    if disable_build_cache; then
+    if _disable_build_cache || ([[ "$(get_container_engine_cmd)" == "podman" ]] && _podman_version_under_4_5_0); then
+        echo 'Podman version under 4.5.0, disabling build cache:' >&2
+        echo 'https://url.corp.redhat.com/buildah-issue-4632' >&2
         DISABLE_CACHE_PARAMETER='--no-cache'
     fi
 
