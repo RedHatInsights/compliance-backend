@@ -20,6 +20,9 @@ module HostSearching
     scoped_search on: :compliance_score,
                   ext_method: 'filter_by_compliance_score',
                   only_explicit: true
+    scoped_search on: :failed_rules_with_severity,
+                  ext_method: 'filter_by_failed_rules_severity',
+                  only_explicit: true
     scoped_search on: :has_test_results, ext_method: 'test_results?',
                   only_explicit: true, operators: ['=']
     scoped_search relation: :test_results, on: :profile_id
@@ -118,9 +121,11 @@ module HostSearching
       profiles = RequestStore.store['scoped_search_context_profiles']
       values = value.split(',').map(&:strip)
 
-      where = { benchmarks: { version: values } }
-      base = TestResult.latest.joins(profile: :benchmark).where(profile: profiles).select(:host_id)
-      hosts = ['=', 'IN'].include?(operator) ? base.where(where) : base.where.not(where)
+      hosts = search_in(
+        TestResult.latest.joins(profile: :benchmark).where(profile: profiles).select(:host_id),
+        operator,
+        { benchmarks: { version: values } }
+      )
 
       { conditions: "hosts.id IN(#{hosts.to_sql})" }
     end
@@ -138,6 +143,23 @@ module HostSearching
                           .where(profile: profiles)
                           .latest
                           .select('test_results.host_id')
+
+      { conditions: "hosts.id IN(#{hosts.to_sql})" }
+    end
+
+    def search_in(base, operator, where)
+      ['=', 'IN'].include?(operator) ? base.where(where) : base.where.not(where)
+    end
+
+    def filter_by_failed_rules_severity(_filter, operator, value)
+      profiles = RequestStore.store['scoped_search_context_profiles']
+      raise ScopedSearch::QueryNotSupported if profiles.nil?
+
+      hosts = search_in(
+        ::RuleResult.latest(profiles.compact.first.policy_id).joins(:rule).distinct.select(:host_id),
+        operator,
+        { rule: { severity: value.split(',').map(&:strip) } }
+      )
 
       { conditions: "hosts.id IN(#{hosts.to_sql})" }
     end

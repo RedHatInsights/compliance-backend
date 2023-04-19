@@ -261,6 +261,182 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_equal result.first['node']['id'], @host2.id
     end
 
+    should 'filter hosts by failed severe rules using scoped_search filter' do
+      TestResult.delete_all
+      RuleResult.delete_all
+      @host_failing_severe_rule = FactoryBot.create(
+        :host,
+        org_id: @host1.org_id,
+        display_name: 'host_severe_rule.failed',
+        stale_timestamp: 2.days.ago(Time.zone.now)
+      )
+      @policy = FactoryBot.create(
+        :policy,
+        account: @user.account,
+        hosts: [
+          @host_failing_severe_rule,
+          @host1
+        ]
+      )
+      @profile_failing = FactoryBot.create(
+        :profile,
+        account: @user.account,
+        policy: @policy
+      )
+      @rule_failed_severe = FactoryBot.create(
+        :rule,
+        title: 'Severe failing rule',
+        severity: 'high',
+        profiles: [@profile_failing]
+      )
+      @rule_failed_not_severe = FactoryBot.create(
+        :rule,
+        title: 'Low severity failing rule',
+        severity: 'low',
+        profiles: [@profile_failing]
+      )
+      FactoryBot.create(
+        :rule_result,
+        host: @host_failing_severe_rule,
+        rule: @rule_failed_severe,
+        test_result: FactoryBot.create(
+          :test_result,
+          host: @host_failing_severe_rule,
+          score: 0,
+          profile: @profile_failing
+        ),
+        result: 'fail'
+      )
+      FactoryBot.create(
+        :rule_result,
+        host: @host1,
+        rule: @rule_failed_not_severe,
+        test_result: FactoryBot.create(
+          :test_result,
+          host: @host1,
+          score: 0,
+          profile: @profile_failing
+        ),
+        result: 'fail'
+      )
+
+      query = <<-GRAPHQL
+        query getSystems($filter: String!) {
+          systems(search: $filter, limit: 50, offset: 1) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      GRAPHQL
+
+      filter = <<-FILTER
+        (policy_id = #{@policy.id}) and
+        (failed_rules_with_severity ^ (high))
+      FILTER
+
+      result = Schema.execute(
+        query,
+        variables: {
+          policyId: @policy.id,
+          filter: filter
+        },
+        context: { current_user: @user }
+      ).first.second['systems']['edges'].map { |node| node['node']['id'] }
+
+      assert_equal result.first, @host_failing_severe_rule.id
+    end
+
+    should 'filter hosts by failed rules using scoped_search filter' do
+      TestResult.delete_all
+      RuleResult.delete_all
+      @host_failing_severe_rule = FactoryBot.create(
+        :host,
+        org_id: @host1.org_id,
+        display_name: 'host_severe_rule.failed',
+        stale_timestamp: 2.days.ago(Time.zone.now)
+      )
+      @policy = FactoryBot.create(
+        :policy,
+        account: @user.account,
+        hosts: [
+          @host_failing_severe_rule,
+          @host1
+        ]
+      )
+      @profile_failing = FactoryBot.create(
+        :profile,
+        account: @user.account,
+        policy: @policy
+      )
+      @rule_failed_severe = FactoryBot.create(
+        :rule,
+        title: 'Severe failing rule',
+        severity: 'high',
+        profiles: [@profile_failing]
+      )
+      @rule_failed_not_severe = FactoryBot.create(
+        :rule,
+        title: 'Low severity failing rule',
+        severity: 'low',
+        profiles: [@profile_failing]
+      )
+      FactoryBot.create(
+        :rule_result,
+        host: @host_failing_severe_rule,
+        rule: @rule_failed_severe,
+        test_result: FactoryBot.create(
+          :test_result,
+          host: @host_failing_severe_rule,
+          score: 0,
+          profile: @profile_failing
+        ),
+        result: 'fail'
+      )
+      FactoryBot.create(
+        :rule_result,
+        host: @host1,
+        rule: @rule_failed_not_severe,
+        test_result: FactoryBot.create(
+          :test_result,
+          host: @host1,
+          score: 0,
+          profile: @profile_failing
+        ),
+        result: 'fail'
+      )
+
+      query = <<-GRAPHQL
+        query getSystems($filter: String!) {
+          systems(search: $filter, limit: 50, offset: 1) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      GRAPHQL
+
+      filter = <<-FILTER
+        (policy_id = #{@policy.id}) and
+        (failed_rules_with_severity ^ (high low))
+      FILTER
+
+      result = Schema.execute(
+        query,
+        variables: {
+          policyId: @policy.id,
+          filter: filter
+        },
+        context: { current_user: @user }
+      ).first.second['systems']['edges'].map { |node| node['node']['id'] }
+
+      assert_equal result.sort, [@host_failing_severe_rule.id, @host1.id].sort
+    end
+
     should 'filter test result profiles by policyId using an internal' \
            ' profile id' do
       query = <<-GRAPHQL
