@@ -17,7 +17,6 @@ module Types
     field :profiles, [::Types::Profile], null: true
     field :rules, [::Types::Rule], null: true
     field :value_definitions, [::Types::ValueDefinition], null: true
-
     field :rule_tree, GraphQL::Types::JSON, null: true
 
     enforce_rbac Rbac::COMPLIANCE_VIEWER
