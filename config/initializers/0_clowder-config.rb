@@ -25,7 +25,13 @@ if ClowderCommonRuby::Config.clowder_enabled?
 
   # RBAC
   rbac_config = config.dependency_endpoints.dig('rbac', 'service')
-  rbac_url = build_endpoint_url(rbac_config, config)
+  if config.tlsCAPath
+    rbac_host = "#{rbac_config.hostname}:#{rbac_config.tlsPort}"
+    rbac_scheme = 'https'
+  else
+    rbac_host = "#{rbac_config.hostname}:#{rbac_config.port}"
+    rbac_scheme = 'http'
+  end
 
   # Inventory
   host_inventory_config = config.dependency_endpoints&.dig('host-inventory', 'service')
@@ -75,7 +81,10 @@ if ClowderCommonRuby::Config.clowder_enabled?
       remediation_updates: config.kafka_topics&.dig('platform.remediation-updates.compliance', 'name'),
       notifications: config.kafka_topics&.dig('platform.notifications.ingress', 'name')
     },
-    rbac_url: rbac_url,
+    rbac: {
+      host: rbac_host,
+      scheme: rbac_scheme
+    },
     redis_url: redis_url,
     redis_password: redis_password,
     host_inventory_url: host_inventory_url,
