@@ -19,6 +19,8 @@ if ClowderCommonRuby::Config.clowder_enabled?
     end
   end
 
+  cloudwatch = config.logging&.cloudwatch
+
   # compliance-ssg
   compliance_ssg_config = config.private_dependency_endpoints&.dig('compliance-ssg', 'service')
   compliance_ssg_url = build_endpoint_url(compliance_ssg_config, config)
@@ -80,6 +82,16 @@ if ClowderCommonRuby::Config.clowder_enabled?
       payload_tracker: config.kafka_topics&.dig('platform.payload-status', 'name'),
       remediation_updates: config.kafka_topics&.dig('platform.remediation-updates.compliance', 'name'),
       notifications: config.kafka_topics&.dig('platform.notifications.ingress', 'name')
+    },
+    logging: {
+      credentials: {
+        access_key_id: cloudwatch&.accessKeyId,
+        secret_access_key: cloudwatch&.secretAccessKey
+      },
+      region: cloudwatch&.region,
+      log_group: cloudwatch&.logGroup,
+      log_stream: Socket.gethostname,
+      type: config.logging&.type
     },
     rbac: {
       host: rbac_host,

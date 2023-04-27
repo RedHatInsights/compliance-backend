@@ -77,6 +77,18 @@ GEM
       ruby-next-core (>= 0.14.0)
     ast (2.4.2)
     awesome_print (1.9.2)
+    aws-eventstream (1.2.0)
+    aws-partitions (1.755.0)
+    aws-sdk-cloudwatchlogs (1.62.0)
+      aws-sdk-core (~> 3, >= 3.165.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-core (3.171.0)
+      aws-eventstream (~> 1, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.651.0)
+      aws-sigv4 (~> 1.5)
+      jmespath (~> 1, >= 1.6.1)
+    aws-sigv4 (1.5.2)
+      aws-eventstream (~> 1, >= 1.0.2)
     bootsnap (1.9.4)
       msgpack (~> 1.0)
     brakeman (5.2.3)
@@ -86,6 +98,10 @@ GEM
       uniform_notifier (~> 1.11)
     byebug (11.1.3)
     cgi (0.3.6)
+    cloudwatchlogger (1.0.1)
+      aws-sdk-cloudwatchlogs (~> 1)
+      multi_json (~> 1)
+      uuid (~> 2)
     clowder-common-ruby (0.2.5)
     coderay (1.1.3)
     concurrent-ruby (1.1.10)
@@ -182,6 +198,7 @@ GEM
     io-console (0.5.11)
     irb (1.2.9)
       reline (>= 0.1.5)
+    jmespath (1.6.2)
     json (2.6.3)
     json-schema (3.0.0)
       addressable (>= 2.8)
@@ -198,10 +215,6 @@ GEM
       systemu (~> 2.6.5)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
-    manageiq-loggers (0.6.0)
-      activesupport (>= 5.0)
-      manageiq-password (~> 0.1)
-    manageiq-password (0.3.0)
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
@@ -215,6 +228,7 @@ GEM
     minitest-stub-const (0.6)
     mocha (1.11.2)
     msgpack (1.4.5)
+    multi_json (1.15.0)
     multipart-post (2.1.1)
     net-imap (0.2.3)
       digest
@@ -447,6 +461,7 @@ DEPENDENCIES
   bullet
   byebug
   cgi
+  cloudwatchlogger
   clowder-common-ruby
   config
   dotenv-rails
@@ -463,7 +478,6 @@ DEPENDENCIES
   irb (>= 1.2)
   jsonapi-serializer
   listen (>= 3.0.5)
-  manageiq-loggers (~> 0.6.0)
   minitest-reporters
   minitest-stub-const
   mocha

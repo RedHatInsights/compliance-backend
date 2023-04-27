@@ -69,7 +69,7 @@ gem 'yabeda-prometheus-mmap'
 gem 'nokogiri', force_ruby_platform: true
 
 # Logging, incl. CloudWatch
-gem 'manageiq-loggers', '~> 0.6.0'
+gem 'cloudwatchlogger'
 
 # Parsing OpenSCAP reports library
 gem 'openscap_parser', '~> 1.6.0'
