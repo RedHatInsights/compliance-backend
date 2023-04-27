@@ -63,6 +63,22 @@ Rails.application.configure do
 
     # Override is necessary as it gets set during initialization without the proper config available
     Rails.cache = ActiveSupport::Cache.lookup_store(*config.cache_store)
+
+    # Set up cloudwatch logging if available
+    # FIXME: change this to Settings.logging.type == "cloudwatch"
+    if Settings.logging&.credentials&.access_key_id.present?
+      cloudwatch_client = CloudWatchLogger::Client.new(
+        Settings.logging.credentials,
+        Settings.logging.log_group,
+        Settings.logging.log_stream,
+        region: Settings.logging.region
+      )
+      cloudwatch_logger = ActiveSupport::TaggedLogging.new(
+        Insights::API::Common::LoggerWithAudit.new(cloudwatch_client)
+      )
+      cloudwatch_logger.formatter = cloudwatch_client.formatter(:json)
+      config.logger.extend(ActiveSupport::Logger.broadcast(cloudwatch_logger))
+    end
   end
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
@@ -104,23 +120,6 @@ Rails.application.configure do
     config.logger = Insights::API::Common::LoggerWithAudit(config.paths['log'].first)
   end
   config.logger = ActiveSupport::TaggedLogging.new(config.logger)
-
-  # Set up cloudwatch logging if available
-  # FIXME: change this to Settings.logging.type == "clowder"
-  if Settings.logging&.cloudwatch&.credentials&.accessKeyId
-    cloudwatch_client = CloudWatchLogger::Client.new(
-      Settings.logging.credentials,
-      Settings.logging.log_group,
-      Settings.logging.log_stream,
-      region: Settings.logging.region
-    )
-    cloudwatch_logger = ActiveSupport::TaggedLogging.new(
-      Insights::API::Common::LoggerWithAudit.new(cloudwatch_client)
-    )
-    cloudwatch_logger.formatter = cloudwatch_client.formatter(:json)
-    config.logger.extend(ActiveSupport::Logger.broadcast(cloudwatch_logger))
-  end
-
 
   # Temporarily allow any origins
   config.hosts.clear
