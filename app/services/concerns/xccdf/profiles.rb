@@ -22,7 +22,7 @@ module Xccdf
         ::Profile.import!(new_profiles, ignore: true)
 
         # Update the fields on existing profiles, validation is not necessary
-        ::Profile.import(old_profiles.values.reject(&:parent_profile_id),
+        ::Profile.import(old_profiles.values,
                          on_duplicate_key_update: {
                            conflict_target: %i[ref_id benchmark_id],
                            columns: %i[value_overrides],
@@ -39,7 +39,7 @@ module Xccdf
 
       def old_profiles
         @old_profiles ||= ::Profile.where(
-          ref_id: @op_profiles.map(&:id), benchmark: @benchmark&.id
+          ref_id: @op_profiles.map(&:id), benchmark: @benchmark&.id, parent_profile_id: nil
         ).index_by(&:ref_id)
       end
 
