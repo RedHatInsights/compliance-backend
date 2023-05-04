@@ -1,26 +1,7 @@
 app_name: 'compliance'
 path_prefix: '/api'
 old_path_prefix: '/r/insights/platform'
-kafka:
-  brokers: ''
-  security_protocol: plaintext
-  ssl_ca_location:
-  sasl_username:
-  sasl_password:
-kafka_consumer_topics:
-  inventory_events: 'platform.inventory.events'
-kafka_producer_topics:
-  upload_validation: 'platform.upload.validation'
-  payload_tracker: 'platform.payload-status'
-  remediation_updates: 'platform.remediation-updates.compliance'
-  notifications: 'platform.notifications.ingress'
-compliance_ssg_url: http://compliance-ssg:8080
-host_inventory_url: http://inventory-web:8081
-rbac_url: http://rbac:8080
 report_download_ssl_only: false
-prometheus_exporter_port: 9394
-redis_url: redis:6379
-redis_password:
 redis_ssl: false
 redis_cache_url:
 redis_cache_password:

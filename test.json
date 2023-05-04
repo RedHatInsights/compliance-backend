@@ -1,0 +1,86 @@
+{
+    "webPort": 8000,
+    "metricsPort": 9090,
+    "privatePort": 10000,
+    "metricsPath": "/metrics",
+    "logging": {
+        "type": "cloudwatch",
+        "cloudwatch": {
+            "accessKeyId": "ACCESS_KEY",
+            "secretAccessKey": "SECRET_ACCESS_KEY",
+            "region": "EU",
+            "logGroup": "base_app"
+            }
+        },
+    "kafka": {
+        "topics": [
+            {
+                "requestedName": "platform.inventory.events",
+                "name": "platform.inventory.events",
+                "consumerGroup": "someGroupName"
+            },
+            {
+                "requestedName": "platform.upload.compliance",
+                "name": "platform.upload.compliance",
+                "consumerGroup": "someGroupName"
+            },
+            {
+                "requestedName": "platform.payload-status",
+                "name": "platform.payload-status",
+                "consumerGroup": "someGroupName"
+            },
+            {
+                "requestedName": "platform.notifications.ingress",
+                "name": "platform.notifications.ingress",
+                "consumerGroup": "someGroupName"
+            },
+            {
+                "requestedName": "platform.remediation-updates.compliance",
+                "name": "platform.remediation-updates.compliance",
+                "consumerGroup": "someGroupName"
+            },
+            {
+                "requestedName": "originalName",
+                "name": "someTopic",
+                "consumerGroup": "someGroupName"
+            }
+        ]
+    },
+    "inMemoryDb": {
+        "hostname": "redis",
+        "port": "6379"
+    },
+    "database": {
+        "name": "compliance-test",
+        "username": "compliance",
+        "password": "changeme",
+        "hostname": "localhost",
+        "port": 5432,
+        "adminUsername": "postgres",
+        "adminPassword": "insights",
+        "rdsCa": "ca",
+        "sslMode": "disable"
+    },
+    "endpoints": [
+        {
+            "name": "service",
+            "app": "rbac",
+            "hostname": "rbac",
+            "port": 8080
+        },
+        {
+            "name": "service",
+            "app": "host-inventory",
+            "hostname": "inventory-web",
+            "port": 8081
+        }
+    ],
+    "privateEndpoints": [
+        {
+            "name": "service",
+            "app": "compliance-ssg",
+            "hostname": "compliance-ssg",
+            "port": 8088
+        }
+    ]
+}

@@ -74,6 +74,7 @@ jobs:
     - name: Setup database
       env:
         RAILS_ENV: test
+        ACG_CONFIG: ./github-ci.json
         DATABASE_SERVICE_NAME: postgres
         POSTGRES_SERVICE_HOST: localhost
         POSTGRESQL_USER: insights
@@ -85,6 +86,7 @@ jobs:
     - name: Run zeitwerk check
       env:
         RAILS_ENV: test
+        ACG_CONFIG: ./github-ci.json
         DATABASE_SERVICE_NAME: postgres
         POSTGRES_SERVICE_HOST: localhost
         POSTGRESQL_USER: insights
@@ -95,6 +97,7 @@ jobs:
       env:
         HOSTNAME: rails
         RAILS_ENV: test
+        ACG_CONFIG: ./github-ci.json
         DATABASE_SERVICE_NAME: postgres
         POSTGRES_SERVICE_HOST: localhost
         POSTGRESQL_USER: insights
@@ -105,6 +108,7 @@ jobs:
       env:
         HOSTNAME: rails
         RAILS_ENV: test
+        ACG_CONFIG: ./github-ci.json
         DATABASE_SERVICE_NAME: postgres
         POSTGRES_SERVICE_HOST: localhost
         POSTGRESQL_USER: insights
@@ -133,6 +137,7 @@ jobs:
     - name: Setup database and run migrations
       env:
         RAILS_ENV: test
+        ACG_CONFIG: ./github-ci.json
         DATABASE_SERVICE_NAME: postgres
         POSTGRES_SERVICE_HOST: localhost
         POSTGRESQL_USER: insights

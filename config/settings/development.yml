@@ -1,9 +1,0 @@
-host_inventory_url: http://inventory-web:8081
-rbac_url: http://rbac:8080
-disable_rbac: false
-# platform_basic_auth_username: myusername
-# platform_basic_auth_password: secret
-prometheus_exporter_port: 9394
-redis_url: localhost:6379
-redis_cache_url: localhost:6379
-compliance_ssg_url: http://compliance-ssg:8088

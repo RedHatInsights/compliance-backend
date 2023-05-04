@@ -107,7 +107,7 @@ echo '===================================='
 echo '===     Setting Up Database     ===='
 echo '===================================='
 set +e
-podman exec "$TEST_CONTAINER_ID" /bin/bash -c 'bundle exec rake db:test:prepare'
+podman exec "$TEST_CONTAINER_ID" /bin/bash -c 'ACG_CONFIG=/opt/app-root/src/test.json bundle exec rake db:test:prepare'
 TEST_RESULT=$?
 set -e
 if [[ $TEST_RESULT -ne 0 ]]; then
@@ -140,7 +140,7 @@ echo '===================================='
 echo '===     Running Unit Tests      ===='
 echo '===================================='
 set +e
-podman exec "$TEST_CONTAINER_ID" /bin/bash -c 'bundle exec rake test:validate'
+podman exec "$TEST_CONTAINER_ID" /bin/bash -c 'ACG_CONFIG=/opt/app-root/src/test.json bundle exec rake test:validate'
 TEST_RESULT=$?
 set -e
 # Copy test reports

@@ -48,7 +48,9 @@ if ClowderCommonRuby::Config.clowder_enabled?
   kafka_security_protocol = first_kafka_server_config&.dig('authtype')
 
   kafka_server_config = {
-    brokers: config.dig('kafka', 'brokers')&.map { |b| "#{b&.dig('hostname')}:#{b&.dig('port')}" }.join(',')
+    brokers: config.dig('kafka', 'brokers')&.map do |broker|
+      "#{broker&.dig('hostname')}:#{broker&.dig('port')}"
+    end&.join(',') || ''
   }
 
   if kafka_security_protocol
