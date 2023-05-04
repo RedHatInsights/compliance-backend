@@ -78,6 +78,7 @@ Rails.application.configure do
       )
       cloudwatch_logger.formatter = cloudwatch_client.formatter(:json)
       config.logger.extend(ActiveSupport::Logger.broadcast(cloudwatch_logger))
+      cloudwatch_logger.log_level = Logger::WARN # Different logging level for CloudWatch
     end
   end
 
