@@ -170,7 +170,7 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       failed_rule_results = @report_parser.failed_rule_results
       assert_equal failed_rule_results.count, 45
       assert failed_rule_results.all? do |rr|
-        ::RuleResult::FAIL.include?(rr.result)
+        ::RuleResult::FAILED.include?(rr.result)
       end
     end
 

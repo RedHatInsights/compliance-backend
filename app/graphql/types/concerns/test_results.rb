@@ -44,7 +44,7 @@ module Types
       end
 
       def rules_failed(args = {})
-        rules_count(args, RuleResult::FAIL)
+        rules_count(args, RuleResult::FAILED)
       end
 
       def rules_count(args, subset)
