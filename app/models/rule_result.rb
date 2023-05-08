@@ -27,11 +27,11 @@ class RuleResult < ApplicationRecord
   NOT_SELECTED = %w[notapplicable notchecked informational notselected].freeze
   SELECTED = (POSSIBLE_RESULTS - NOT_SELECTED).freeze
   PASSED = %w[pass].freeze
-  FAIL = (SELECTED - PASSED).freeze
+  FAILED = (SELECTED - PASSED).freeze
 
   scope :passed, -> { where(result: PASSED) }
   scope :selected, -> { where(result: SELECTED) }
-  scope :failed, -> { where(result: FAIL) }
+  scope :failed, -> { where(result: FAILED) }
   scope :for_system, ->(host_id) { where(host_id: host_id) }
   scope :for_policy, ->(policy_id) { joins(:profile).where(profiles: ::Profile.in_policy(policy_id)) }
   scope :latest, ->(policy_id) { for_policy(policy_id).joins(:test_result).joins(::TestResult.with_latest) }
