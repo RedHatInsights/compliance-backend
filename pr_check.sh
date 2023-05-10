@@ -40,3 +40,4 @@ source "${CICD_ROOT}/deploy_ephemeral_env.sh"
 source "${CICD_ROOT}/cji_smoke_test.sh"
 # shellcheck source=/dev/null
 source "${CICD_ROOT}/post_test_results.sh"
+
