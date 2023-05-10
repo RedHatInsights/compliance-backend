@@ -5,6 +5,7 @@ CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/maknop/moving-
 # shellcheck source=/dev/null
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 
+
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------
