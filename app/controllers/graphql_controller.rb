@@ -14,7 +14,7 @@ class GraphqlController < ApplicationController
 
     handle_error_in_development(e)
   ensure
-    GC.compact
+    GC.start
   end
 
   rescue_from GraphQL::UnauthorizedError do
