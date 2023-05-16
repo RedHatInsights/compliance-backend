@@ -539,21 +539,11 @@ module Xccdf
               _adjust(:id, graphql) => rg_1.id,
               _adjust(:ref_id, graphql) => rg_1.ref_id,
               _adjust(:title, graphql) => rg_1.title,
-              _adjust(:description, graphql) => rg_1.description,
-              _adjust(:rationale, graphql) => rg_1.rationale,
               _adjust(:children, graphql) => [
                 {
                   _adjust(:type, graphql) => _adjust(:rule, graphql),
                   _adjust(:id, graphql) => r_11.id,
-                  _adjust(:ref_id, graphql) => r_11.ref_id,
-                  _adjust(:title, graphql) => r_11.title,
-                  _adjust(:description, graphql) => r_11.description,
-                  _adjust(:rationale, graphql) => r_11.rationale,
-                  _adjust(:identifier, graphql) => r_11.identifier,
-                  _adjust(:references, graphql) => r_11.references,
-                  _adjust(:severity, graphql) => r_11.severity,
-                  _adjust(:values, graphql) => r_11.values,
-                  _adjust(:precedence, graphql) => r_11.precedence
+                  _adjust(:ref_id, graphql) => r_11.ref_id
                 }
               ]
             },
@@ -562,67 +552,37 @@ module Xccdf
               _adjust(:id, graphql) => rg_2.id,
               _adjust(:ref_id, graphql) => rg_2.ref_id,
               _adjust(:title, graphql) => rg_2.title,
-              _adjust(:description, graphql) => rg_2.description,
-              _adjust(:rationale, graphql) => rg_2.rationale,
               _adjust(:children, graphql) => [
                 {
                   _adjust(:type, graphql) => _adjust(:rule_group, graphql),
                   _adjust(:id, graphql) => rg_21.id,
                   _adjust(:ref_id, graphql) => rg_21.ref_id,
                   _adjust(:title, graphql) => rg_21.title,
-                  _adjust(:description, graphql) => rg_21.description,
-                  _adjust(:rationale, graphql) => rg_21.rationale,
                   _adjust(:children, graphql) => [
                     {
                       _adjust(:type, graphql) => _adjust(:rule_group, graphql),
                       _adjust(:id, graphql) => rg_211.id,
                       _adjust(:ref_id, graphql) => rg_211.ref_id,
                       _adjust(:title, graphql) => rg_211.title,
-                      _adjust(:description, graphql) => rg_211.description,
-                      _adjust(:rationale, graphql) => rg_211.rationale,
                       _adjust(:children, graphql) => [
                         {
                           _adjust(:type, graphql) => _adjust(:rule, graphql),
                           _adjust(:id, graphql) => r_2111.id,
-                          _adjust(:ref_id, graphql) => r_2111.ref_id,
-                          _adjust(:title, graphql) => r_2111.title,
-                          _adjust(:description, graphql) => r_2111.description,
-                          _adjust(:rationale, graphql) => r_2111.rationale,
-                          _adjust(:identifier, graphql) => r_2111.identifier,
-                          _adjust(:references, graphql) => r_2111.references,
-                          _adjust(:severity, graphql) => r_2111.severity,
-                          _adjust(:values, graphql) => r_2111.values,
-                          _adjust(:precedence, graphql) => r_2111.precedence
+                          _adjust(:ref_id, graphql) => r_2111.ref_id
                         }
                       ]
                     },
                     {
                       _adjust(:type, graphql) => _adjust(:rule, graphql),
                       _adjust(:id, graphql) => r_211.id,
-                      _adjust(:ref_id, graphql) => r_211.ref_id,
-                      _adjust(:title, graphql) => r_211.title,
-                      _adjust(:description, graphql) => r_211.description,
-                      _adjust(:rationale, graphql) => r_211.rationale,
-                      _adjust(:identifier, graphql) => r_211.identifier,
-                      _adjust(:references, graphql) => r_211.references,
-                      _adjust(:severity, graphql) => r_211.severity,
-                      _adjust(:values, graphql) => r_211.values,
-                      _adjust(:precedence, graphql) => r_211.precedence
+                      _adjust(:ref_id, graphql) => r_211.ref_id
                     }
                   ]
                 },
                 {
                   _adjust(:type, graphql) => _adjust(:rule, graphql),
                   _adjust(:id, graphql) => r_21.id,
-                  _adjust(:ref_id, graphql) => r_21.ref_id,
-                  _adjust(:title, graphql) => r_21.title,
-                  _adjust(:description, graphql) => r_21.description,
-                  _adjust(:rationale, graphql) => r_21.rationale,
-                  _adjust(:identifier, graphql) => r_21.identifier,
-                  _adjust(:references, graphql) => r_21.references,
-                  _adjust(:severity, graphql) => r_21.severity,
-                  _adjust(:values, graphql) => r_21.values,
-                  _adjust(:precedence, graphql) => r_21.precedence
+                  _adjust(:ref_id, graphql) => r_21.ref_id
                 }
               ]
             }
