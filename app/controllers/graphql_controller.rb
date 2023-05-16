@@ -6,15 +6,15 @@ class GraphqlController < ApplicationController
 
   def query
     result = Schema.execute(
-      params[:query],
-      variables: params[:variables],
-      context: { current_user: current_user }
+      params[:query], variables: params[:variables], context: { current_user: current_user }
     )
     render json: result
   rescue StandardError => e
     raise e unless Rails.env.development?
 
     handle_error_in_development(e)
+  ensure
+    GC.compact
   end
 
   rescue_from GraphQL::UnauthorizedError do
