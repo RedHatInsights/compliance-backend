@@ -134,11 +134,13 @@ services:
     ports:
       - 9002:8080
     volumes:
-      - ./config/devel/rbac/definitions:/opt/app-root/src/rbac/management/role/definitions
-      - ./config/devel/rbac/permissions:/opt/app-root/src/rbac/management/role/permissions
+      - ./config/devel/rbac/definitions:/opt/rbac/rbac/management/role/definitions
+      - ./config/devel/rbac/permissions:/opt/rbac/rbac/management/role/permissions
   build-rbac-db:
     image: quay.io/cloudservices/rbac:latest
     environment:
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
       - DATABASE_NAME=insights
@@ -150,11 +152,13 @@ services:
       - MAX_SEED_THREADS=2
     depends_on:
       - db
+      - redis
     links:
       - db
+      - redis
     volumes:
-      - ./config/devel/rbac/definitions:/opt/app-root/src/rbac/management/role/definitions
-      - ./config/devel/rbac/permissions:/opt/app-root/src/rbac/management/role/permissions
+      - ./config/devel/rbac/definitions:/opt/rbac/rbac/management/role/definitions
+      - ./config/devel/rbac/permissions:/opt/rbac/rbac/management/role/permissions
     entrypoint: /bin/sh
     command: -c './rbac/manage.py migrate ; ./rbac/manage.py seeds'
   inventory:
