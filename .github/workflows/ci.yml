@@ -101,6 +101,16 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rake spec
+    - name: Debug kafka
+      env:
+        HOSTNAME: rails
+        RAILS_ENV: test
+        DATABASE_SERVICE_NAME: postgres
+        POSTGRES_SERVICE_HOST: localhost
+        POSTGRESQL_USER: insights
+        POSTGRESQL_PASSWORD: insights
+        POSTGRESQL_TEST_DATABASE: insights
+      run: bin/rails r "puts Settings.kafka.brokers.inspect"
     - name: Run unit tests
       env:
         HOSTNAME: rails
