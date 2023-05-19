@@ -2,7 +2,7 @@
 
 # Common space for Insights API stuff
 module Insights
-  module API
+  module Api
     module Common
       module SatelliteCompensation
         # Rack middleware to compensate issues in Satellite-forwarded requests

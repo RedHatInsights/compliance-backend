@@ -31,6 +31,9 @@ module ComplianceBackend
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
 
+    # Load platform modules
+    require 'insights'
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
@@ -48,13 +51,11 @@ module ComplianceBackend
       -> request { IdentityHeader.from_request(request)&.org_id }
     ]
 
-    # Adjust params[tags] to be array
-    require 'adjust_tags/middleware'
-    config.middleware.use Insights::API::Common::AdjustTags::Middleware
-    # Compensate the missing MIME type in Satellite-forwarded requests
-    require 'satellite_compensation/middleware'
-    config.middleware.use Insights::API::Common::SatelliteCompensation::Middleware
 
+    # Adjust params[tags] to be array
+    config.middleware.use Insights::Api::Common::AdjustTags::Middleware
+    # Compensate the missing MIME type in Satellite-forwarded requests
+    config.middleware.use Insights::Api::Common::SatelliteCompensation::Middleware
 
     # GraphiQL
     if Rails.env.development?
