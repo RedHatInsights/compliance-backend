@@ -74,7 +74,7 @@ Rails.application.configure do
         region: Settings.logging.region
       )
       cloudwatch_logger = ActiveSupport::TaggedLogging.new(
-        Insights::API::Common::LoggerWithAudit.new(cloudwatch_client)
+        Insights::Api::Common::LoggerWithAudit.new(cloudwatch_client)
       )
       cloudwatch_logger.formatter = cloudwatch_client.formatter(:json)
       config.logger.extend(ActiveSupport::Logger.broadcast(cloudwatch_logger))
@@ -112,13 +112,11 @@ Rails.application.configure do
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-  require 'logger_with_audit'
-
   if ENV['RAILS_LOG_TO_STDOUT'].present?
-    config.logger = Insights::API::Common::LoggerWithAudit.new(STDOUT)
+    config.logger = Insights::Api::Common::LoggerWithAudit.new(STDOUT)
     config.logger.formatter = config.log_formatter
   else
-    config.logger = Insights::API::Common::LoggerWithAudit(config.paths['log'].first)
+    config.logger = Insights::Api::Common::LoggerWithAudit(config.paths['log'].first)
   end
   config.logger = ActiveSupport::TaggedLogging.new(config.logger)
 

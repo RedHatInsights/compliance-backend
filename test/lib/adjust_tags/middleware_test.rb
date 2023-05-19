@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'adjust_tags/middleware'
 
 class MiddlewareTest < ActiveSupport::TestCase
   class DummyRack
@@ -11,7 +10,7 @@ class MiddlewareTest < ActiveSupport::TestCase
   end
 
   setup do
-    @mw = Insights::API::Common::AdjustTags::Middleware.new(DummyRack.new)
+    @mw = Insights::Api::Common::AdjustTags::Middleware.new(DummyRack.new)
   end
 
   test 'replaces tags= with tags[]=' do

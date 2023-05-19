@@ -2,7 +2,7 @@
 
 # Common space for Insights API stuff
 module Insights
-  module API
+  module Api
     module Common
       module AdjustTags
         # Rack middleware to adjust params[tags] to be an array

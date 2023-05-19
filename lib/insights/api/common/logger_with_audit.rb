@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Insights
-  module API
+  module Api
     module Common
       # Additional helper methods for audit logging
       class LoggerWithAudit < ActiveSupport::Logger
