@@ -2,6 +2,7 @@
 
 # Install bonfire repo/initialize
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/maknop/moving-cicd-scripts/cicd
+
 # shellcheck source=/dev/null
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 
