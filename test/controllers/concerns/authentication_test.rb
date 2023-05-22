@@ -340,8 +340,8 @@ class AuthenticationTest < ActionController::TestCase
       AuthenticatedMockController.any_instance
                                  .stubs(:valid_cert_endpoint?)
                                  .returns(true)
-      HostInventoryApi.any_instance.expects(:hosts)
-                      .raises(Faraday::Error.new(''))
+      Insights::Api::Common::HostInventory.any_instance.expects(:hosts)
+                                          .raises(Faraday::Error.new(''))
       process_test(headers: { 'X-RH-IDENTITY': encoded_header })
       assert_response :forbidden
       assert_not User.current, 'current user must be reset after request'

@@ -77,7 +77,7 @@ module Authentication
   end
 
   def valid_cert_auth?
-    valid_cert_endpoint? && HostInventoryApi.new(
+    valid_cert_endpoint? && Insights::Api::Common::HostInventory.new(
       b64_identity: raw_identity_header
     ).hosts.dig('results').present?
   rescue Faraday::Error => e

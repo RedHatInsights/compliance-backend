@@ -26,9 +26,9 @@ module V1
           }
         }.to_json
       )
-      HostInventoryApi.any_instance
-                      .expects(:hosts)
-                      .returns('results' => [:foo])
+      Insights::Api::Common::HostInventory.any_instance
+                                          .expects(:hosts)
+                                          .returns('results' => [:foo])
       get rule_url(Rule.first),
           headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
@@ -51,9 +51,9 @@ module V1
           }
         }.to_json
       )
-      HostInventoryApi.any_instance
-                      .expects(:hosts)
-                      .never
+      Insights::Api::Common::HostInventory.any_instance
+                                          .expects(:hosts)
+                                          .never
       get rules_url,
           headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :forbidden
