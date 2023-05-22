@@ -86,7 +86,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     setup do
       ParseReportJob.clear
       SafeDownloader.stubs(:download_reports).returns(['report'])
-      IdentityHeader.stubs(:new).returns(OpenStruct.new(valid?: true))
+      Insights::Api::Common::IdentityHeader.stubs(:new).returns(OpenStruct.new(valid?: true))
       @host = Host.find(FactoryBot.create(:host, id: '37f7eeff-831b-5c41-984a-254965f58c0f', org_id: '1234').id)
     end
 
@@ -265,7 +265,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
     end
 
     should 'not parse reports if the entitlement check fails' do
-      IdentityHeader.stubs(:new).returns(OpenStruct.new(valid?: false))
+      Insights::Api::Common::IdentityHeader.stubs(:new).returns(OpenStruct.new(valid?: false))
       @message.stubs(:value).returns({
         host: {
           id: '37f7eeff-831b-5c41-984a-254965f58c0f'

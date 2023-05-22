@@ -91,6 +91,6 @@ module Authentication
   end
 
   def identity_header
-    @identity_header ||= IdentityHeader.new(raw_identity_header)
+    @identity_header ||= Insights::Api::Common::IdentityHeader.new(raw_identity_header)
   end
 end

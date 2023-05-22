@@ -11,7 +11,7 @@ module V1
           {
             'identity': {
               'org_id': '1234',
-              'auth_type': IdentityHeader::CERT_AUTH
+              'auth_type': Insights::Api::Common::IdentityHeader::CERT_AUTH
             },
             'entitlements':
             {
@@ -32,7 +32,7 @@ module V1
           {
             'identity': {
               'org_id': '1234',
-              'auth_type': IdentityHeader::CERT_AUTH
+              'auth_type': Insights::Api::Common::IdentityHeader::CERT_AUTH
             },
             'entitlements':
             {
@@ -54,7 +54,7 @@ module V1
           {
             'identity': {
               'org_id': '1234',
-              'auth_type': IdentityHeader::CERT_AUTH
+              'auth_type': Insights::Api::Common::IdentityHeader::CERT_AUTH
             },
             'entitlements':
             {
@@ -77,7 +77,7 @@ module V1
           {
             'identity': {
               'org_id': account.org_id,
-              'auth_type': IdentityHeader::CERT_AUTH
+              'auth_type': Insights::Api::Common::IdentityHeader::CERT_AUTH
             },
             'entitlements':
             {
@@ -128,7 +128,7 @@ module V1
           {
             'identity': {
               'org_id': account.org_id,
-              'auth_type': IdentityHeader::CERT_AUTH
+              'auth_type': Insights::Api::Common::IdentityHeader::CERT_AUTH
             },
             'entitlements':
             {
@@ -153,7 +153,7 @@ module V1
           {
             'identity': {
               'org_id': account.org_id,
-              'auth_type': IdentityHeader::CERT_AUTH
+              'auth_type': Insights::Api::Common::IdentityHeader::CERT_AUTH
             },
             'entitlements':
             {

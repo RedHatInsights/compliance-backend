@@ -35,7 +35,7 @@ class XccdfReportParser
 
     validate_message_format!
 
-    @account = Account.from_identity_header(IdentityHeader.new(@b64_identity))
+    @account = Account.from_identity_header(Insights::Api::Common::IdentityHeader.new(@b64_identity))
     @host = Host.find(message['id'])
     @test_result_file = OpenscapParser::TestResultFile.new(report_contents)
     set_openscap_parser_data

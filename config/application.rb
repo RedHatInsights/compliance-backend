@@ -48,7 +48,7 @@ module ComplianceBackend
     # Tag log messages with org_id when available
     config.log_tags = [
       :request_id,
-      -> request { IdentityHeader.from_request(request)&.org_id }
+      -> request { Insights::Api::Common::IdentityHeader.from_request(request)&.org_id }
     ]
 
 

@@ -13,7 +13,7 @@ class AccountTest < ActiveSupport::TestCase
   context '.from_identity_header' do
     should 'find an existing account' do
       acc = FactoryBot.create(:account, account_number: nil)
-      ih = IdentityHeader.new(Base64.encode64({
+      ih = Insights::Api::Common::IdentityHeader.new(Base64.encode64({
         'identity' => {
           'org_id' => acc.org_id
         }
@@ -25,7 +25,7 @@ class AccountTest < ActiveSupport::TestCase
     end
 
     should 'create an account if new' do
-      ih = IdentityHeader.new(Base64.encode64({
+      ih = Insights::Api::Common::IdentityHeader.new(Base64.encode64({
         'identity' => {
           'org_id' => '123456'
         }
@@ -37,7 +37,7 @@ class AccountTest < ActiveSupport::TestCase
     end
 
     should 'update the is_internal field if set' do
-      ih = IdentityHeader.new(Base64.encode64({
+      ih = Insights::Api::Common::IdentityHeader.new(Base64.encode64({
         'identity' => {
           'org_id' => '123456',
           'user' => {
@@ -52,7 +52,7 @@ class AccountTest < ActiveSupport::TestCase
     end
 
     should 'update the org_id field if set' do
-      ih = IdentityHeader.new(Base64.encode64({
+      ih = Insights::Api::Common::IdentityHeader.new(Base64.encode64({
         'identity' => {
           'org_id' => '654321'
         }

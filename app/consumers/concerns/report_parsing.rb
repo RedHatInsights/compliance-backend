@@ -124,7 +124,7 @@ module ReportParsing
     end
 
     def identity
-      IdentityHeader.new(b64_identity)
+      Insights::Api::Common::IdentityHeader.new(b64_identity)
     end
   end
 end
