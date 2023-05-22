@@ -13,6 +13,7 @@ class ApplicationController < ActionController::API
   include Collection
   include Rendering
   include Parameters
+  include ErrorHandling
 
   before_action :set_csp_hsts
 
@@ -43,69 +44,6 @@ class ApplicationController < ActionController::API
     return if identity_header.blank?
 
     payload[:qe] = OpenshiftEnvironment.qe_account?(identity_header.org_id)
-  end
-
-  rescue_from ActiveRecord::RecordNotUnique do |error|
-    render_error "Duplicate record: #{error.message[/Key \(.+\).+\./]}",
-                 status: :conflict
-  end
-
-  rescue_from Pundit::NotAuthorizedError do
-    render_error 'You are not authorized to access this action.',
-                 status: :forbidden
-  end
-
-  rescue_from Rbac::AuthorizationError do |error|
-    render_error error.message, status: :unauthorized
-  end
-
-  rescue_from ActiveRecord::RecordNotFound do |error|
-    logger.info "#{error.message} (#{error.class})"
-    render_error "#{error.model} not found with ID #{error.id}",
-                 status: :not_found
-  end
-
-  rescue_from ActiveRecord::RecordInvalid do |error|
-    logger.info "#{error.message} (#{error.class})"
-    if error.record
-      render_model_errors(error.record)
-    else
-      render_error(error.message)
-    end
-  end
-
-  rescue_from ActionController::ParameterMissing do |error|
-    logger.info "#{error.message} (#{error.class})"
-    render_error "Parameter missing: #{error.message}",
-                 status: :unprocessable_entity
-  end
-
-  invalid_parameter_exceptions = [
-    StrongerParameters::InvalidParameter,
-    ActionController::UnpermittedParameters,
-    ::Exceptions::InvalidSortingDirection,
-    ::Exceptions::InvalidSortingColumn,
-    ::Exceptions::InvalidTagEncoding,
-    RangeError
-  ]
-
-  rescue_from(*invalid_parameter_exceptions) do |error|
-    logger.info "#{error.message} (#{error.class})"
-    render_error error.message,
-                 status: :unprocessable_entity
-  end
-
-  rescue_from JSONAPI::Serializer::UnsupportedIncludeError do |error|
-    message = "Invalid parameter: #{error.message.sub(/ on .*Serializer$/, '')}"
-    logger.info "#{message} (#{StrongerParameters::InvalidParameter})"
-    render_error message,
-                 status: :unprocessable_entity
-  end
-
-  rescue_from ScopedSearch::QueryNotSupported do |error|
-    message = "Invalid parameter: #{error.message}"
-    logger.info "#{message} (#{ScopedSearch::QueryNotSupported})"
-    render_error message, status: :unprocessable_entity
   end
 
   protected
