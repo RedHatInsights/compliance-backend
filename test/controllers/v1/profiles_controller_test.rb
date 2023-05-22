@@ -21,8 +21,8 @@ module V1
             }
           }.to_json
         )
-        HostInventoryApi.any_instance.expects(:hosts)
-                        .raises(Faraday::Error.new(''))
+        Insights::Api::Common::HostInventory.any_instance.expects(:hosts)
+                                            .raises(Faraday::Error.new(''))
         get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :forbidden
       end
@@ -42,9 +42,9 @@ module V1
             }
           }.to_json
         )
-        HostInventoryApi.any_instance
-                        .expects(:hosts)
-                        .returns('results' => [:foo])
+        Insights::Api::Common::HostInventory.any_instance
+                                            .expects(:hosts)
+                                            .returns('results' => [:foo])
         get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :success
       end
@@ -64,7 +64,7 @@ module V1
             }
           }.to_json
         )
-        HostInventoryApi.any_instance.expects(:hosts).returns('results' => [])
+        Insights::Api::Common::HostInventory.any_instance.expects(:hosts).returns('results' => [])
         get profiles_url, headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :forbidden
       end
@@ -87,9 +87,9 @@ module V1
             }
           }.to_json
         )
-        HostInventoryApi.any_instance
-                        .expects(:hosts)
-                        .returns('results' => [:foo])
+        Insights::Api::Common::HostInventory.any_instance
+                                            .expects(:hosts)
+                                            .returns('results' => [:foo])
         get tailoring_file_profile_url(profile.id),
             headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :success
@@ -138,14 +138,14 @@ module V1
             }
           }.to_json
         )
-        HostInventoryApi.any_instance.expects(:hosts).returns('results' => [])
+        Insights::Api::Common::HostInventory.any_instance.expects(:hosts).returns('results' => [])
         get tailoring_file_profile_url(profile),
             headers: { 'X-RH-IDENTITY': encoded_header }
         assert_response :forbidden
       end
 
       should 'disallow access to profiles#show' do
-        HostInventoryApi.any_instance.expects(:hosts).never
+        Insights::Api::Common::HostInventory.any_instance.expects(:hosts).never
         account = FactoryBot.create(:account)
         profile = FactoryBot.create(:profile, account: account)
 
