@@ -1152,6 +1152,32 @@ module V1
         end
         assert_response :not_acceptable
       end
+
+      test 'create fails if duplication is detected' do
+        parent = FactoryBot.create(:canonical_profile)
+        Policy.any_instance.expects(:save).raises(ActiveRecord::RecordNotUnique)
+
+        post profiles_path, params: params(
+          attributes: { parent_profile_id: parent.id }
+        )
+
+        assert 'Duplicate record: ', response.parsed_body['errors'][0]
+
+        assert_response :conflict
+      end
+
+      test 'create fails with unknown model errors' do
+        parent = FactoryBot.create(:canonical_profile)
+        Policy.any_instance.expects(:save).raises(ActiveRecord::RecordInvalid)
+
+        post profiles_path, params: params(
+          attributes: { parent_profile_id: parent.id }
+        )
+
+        assert 'Record invalid', response.parsed_body['errors'][0]
+
+        assert_response :not_acceptable
+      end
     end
 
     class UpdateTest < ProfilesControllerTest
