@@ -22,6 +22,12 @@ Rails.application.routes.draw do
         end
       end
 
+      unless Rails.env.production?
+        scope 'v2', module: 'v2', as: 'v2' do
+          resources :security_guides, only: [:index, :show]
+        end
+      end
+
       concerns :rest_api_v1
       scope 'v1', as: 'v1' do
         concerns :rest_api_v1

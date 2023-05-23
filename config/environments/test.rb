@@ -63,5 +63,5 @@ Rails.application.configure do
   # Disable logging
   config.logger = ActiveSupport::TaggedLogging.new(Insights::Api::Common::LoggerWithAudit.new(File::NULL))
 
-  config.factory_bot.definition_file_paths = ["test/factories"]
+  config.factory_bot.definition_file_paths = ["test/factories", "spec/factories"]
 end
