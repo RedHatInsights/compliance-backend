@@ -8,6 +8,10 @@ curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------
+
+echo "here!"
+exit 99
+
 export APP_NAME="compliance"  # name of app-sre "application" folder this component lives in
 export COMPONENT_NAME="compliance"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
 export IMAGE="quay.io/cloudservices/compliance-backend"
