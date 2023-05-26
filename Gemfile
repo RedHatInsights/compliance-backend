@@ -34,6 +34,7 @@ gem 'jsonapi-serializer'
 # GraphQL support
 gem 'graphql', '< 2'
 gem 'graphql-batch'
+gem 'graphql-fragment_cache'
 
 # Pundit authorization system
 gem 'pundit'

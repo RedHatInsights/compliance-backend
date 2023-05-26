@@ -9,6 +9,7 @@ require_relative 'types/mutation'
 # remove here.
 class Schema < GraphQL::Schema
   use Yabeda::GraphQL
+  use GraphQL::FragmentCache
   use ComplianceTimeout, max_seconds: 20
   query Types::Query
   mutation Types::Mutation

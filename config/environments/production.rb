@@ -63,6 +63,7 @@ Rails.application.configure do
 
     # Override is necessary as it gets set during initialization without the proper config available
     Rails.cache = ActiveSupport::Cache.lookup_store(*config.cache_store)
+    Rails.application.config.graphql_fragment_cache.store = Rails.cache
 
     # Set up cloudwatch logging if available
     # FIXME: change this to Settings.logging.type == "cloudwatch"
