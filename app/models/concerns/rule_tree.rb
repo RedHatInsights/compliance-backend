@@ -10,7 +10,7 @@ module RuleTree
 
   included do
     def rule_tree(graphql = false)
-      cached_rules = rules.select(*RULE_ATTRIBUTES, :rule_group_id).group_by(&:rule_group_id)
+      cached_rules = rules.group_by(&:rule_group_id)
 
       rule_groups.arrange_serializable do |group, children|
         serialize(group, RULE_GROUP_ATTRIBUTES, graphql).merge(
