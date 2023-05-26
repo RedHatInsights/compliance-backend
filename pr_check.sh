@@ -3,16 +3,16 @@
 # Install bonfire repo/initialize
 CICD_REPO_ORG=Victoremepunto
 CICD_REPO_BRANCH=bugfix
-CICD_URL="https://raw.githubusercontent.com/${CICD_REPO_ORG}/Victoremepunto/${CICD_REPO_BRANCH}/cicd"
+WORKSPACE=${WORKSPACE:-$PWD}
+CICD_URL="https://raw.githubusercontent.com/${CICD_REPO_ORG}/bonfire/${CICD_REPO_BRANCH}/cicd"
 # shellcheck source=/dev/null
+set -x 
 curl -s $CICD_URL/bootstrap.sh > ${WORKSPACE}/cicd_bootstrap.sh && source ${WORKSPACE}/cicd_bootstrap.sh
+exit 99
 
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------
-
-echo "here!"
-exit 99
 
 export APP_NAME="compliance"  # name of app-sre "application" folder this component lives in
 export COMPONENT_NAME="compliance"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
