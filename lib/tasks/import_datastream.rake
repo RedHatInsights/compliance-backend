@@ -41,7 +41,10 @@ namespace :ssg do
         ENV['DATASTREAM_FILE'] = file
         Rake::Task['ssg:import'].execute
       end
-      SupportedSsg.clear # Clear the old cached values
+      # Clear the old cached values
+      SupportedSsg.clear
+      # Clear the GraphQL fragment cache
+      Rails.cache.delete_matched('graphql/benchmark/*')
     end
     Revision.datastreams = SupportedSsg.revision
     Rails.logger.info "Datastreams synced to revision: #{Revision.datastreams}"
