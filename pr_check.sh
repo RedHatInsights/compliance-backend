@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # Install bonfire repo/initialize
-CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
+CICD_REPO_ORG=Victoremepunto
+CICD_REPO_BRANCH=bugfix
+CICD_URL="https://raw.githubusercontent.com/${CICD_REPO_ORG}/Victoremepunto/${CICD_REPO_BRANCH}/cicd"
 # shellcheck source=/dev/null
-curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
+curl -s $CICD_URL/bootstrap.sh > ${WORKSPACE}/cicd_bootstrap.sh && source ${WORKSPACE}/cicd_bootstrap.sh
 
 # --------------------------------------------
 # Options that must be configured by app owner
