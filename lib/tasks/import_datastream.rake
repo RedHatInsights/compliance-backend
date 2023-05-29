@@ -44,7 +44,7 @@ namespace :ssg do
       # Clear the old cached values
       SupportedSsg.clear
       # Clear the GraphQL fragment cache
-      Rails.cache.delete_matched('graphql/benchmark/*')
+      Rails.cache.delete_matched('graphql/*')
     end
     Revision.datastreams = SupportedSsg.revision
     Rails.logger.info "Datastreams synced to revision: #{Revision.datastreams}"
