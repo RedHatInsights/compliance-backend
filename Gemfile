@@ -32,7 +32,7 @@ gem 'config'
 gem 'jsonapi-serializer'
 
 # GraphQL support
-gem 'graphql', '< 2'
+gem 'graphql'
 gem 'graphql-batch'
 gem 'graphql-fragment_cache'
 
