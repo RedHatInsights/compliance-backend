@@ -1,5 +1,5 @@
 {
-    "webPort": 8000,
+    "webPort": 3000,
     "metricsPort": 9090,
     "privatePort": 10000,
     "metricsPath": "/metrics",

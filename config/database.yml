@@ -1,45 +1,24 @@
-<%
-  if ClowderCommonRuby::Config.clowder_enabled?
-    database_config = ClowderCommonRuby::Config.load.database
-    if database_config.rdsCa
-      rdsCaFile = File.new('tmp/rdsCa', 'wt')
-      rdsCaFile.write(database_config.rdsCa)
-      database_config.sslrootcert = File.expand_path(rdsCaFile.path)
-    end
-    Settings.database = database_config
+<% 
+  require 'clowder-common-ruby/rails_config'
 
-    username = Settings.database.username
-    password = Settings.database.password
-    host = Settings.database.hostname
-    database = Settings.database.name
-    port = Settings.database.port
-    sslrootcert = Settings.database.sslrootcert
-    sslmode = Settings.database.sslMode
-  else
-    db_service = ENV.fetch("DATABASE_SERVICE_NAME","").upcase.sub("-", "_")
-    username = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? "postgres" : ENV["POSTGRESQL_USER"]
-    password = ENV.key?("POSTGRESQL_ADMIN_PASSWORD") ? ENV["POSTGRESQL_ADMIN_PASSWORD"] : ENV["POSTGRESQL_PASSWORD"]
-    host = ENV.fetch("#{db_service}_SERVICE_HOST")
-    database = Rails.env.test? ? ENV['POSTGRESQL_TEST_DATABASE'] || ENV["POSTGRESQL_DATABASE"] : ENV["POSTGRESQL_DATABASE"]
-    port = ENV.key?("POSTGRESQL_PORT") ? ENV["POSTGRESQL_PORT"] : 5432
-  end
+  config = ClowderCommonRuby::RailsConfig.db_config
  %>
 
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV["POSTGRESQL_MAX_CONNECTIONS"] || 5 %>
-  username: <%= username %>
-  password: <%= password %>
-  host: <%= host %>
-  database: <%= database %>
-  port: <%= port %>
-  sslmode: <%= sslmode || "prefer" %>
-  sslrootcert: <%= sslrootcert  || "" %>
+  pool: <%= ENV['POSTGRESQL_MAX_CONNECTIONS'] || 5 %>
+  username: <%= config[:username] %>
+  password: <%= config[:password] %>
+  host: <%= config[:host] %>
+  database: <%= config[:database] %>
+  port: <%= config[:port] %>
+  sslmode: <%= config[:ssl_mode] || 'prefer' %>
+  sslrootcert: <%= config[:ssl_root_cert]  || '' %>
 
 test:
   <<: *default
-  database: <%= ENV['POSTGRESQL_TEST_DATABASE'] || database %>
+  database: <%= ENV['POSTGRESQL_TEST_DATABASE'] || config[:database] %>
 
 production:
   <<: *default

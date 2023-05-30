@@ -33,7 +33,7 @@ class DatastreamDownloader
 
   def datastream_url(ssg)
     [
-      Settings.compliance_ssg_url,
+      Settings.private_endpoints.compliance_ssg.url,
       'datastreams',
       "rhel#{ssg.os_major_version}",
       ssg.package,

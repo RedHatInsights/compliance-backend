@@ -27,7 +27,7 @@ class PlaybookDownloader
 
     def playbook_list_url(os_major_version)
       [
-        Settings.compliance_ssg_url,
+        Settings.private_endpoints.compliance_ssg.url,
         'playbooks',
         "rhel#{os_major_version}",
         'all'

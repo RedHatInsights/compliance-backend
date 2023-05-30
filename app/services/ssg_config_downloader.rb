@@ -40,14 +40,14 @@ class SsgConfigDownloader
 
     def ssg_datastream_config_url
       [
-        Settings.compliance_ssg_url,
+        Settings.private_endpoints.compliance_ssg.url,
         Settings.supported_ssg_ds_config
       ].join('/')
     end
 
     def ssg_ansible_tasks_config_url
       [
-        Settings.compliance_ssg_url,
+        Settings.private_endpoints.compliance_ssg.url,
         Settings.supported_ssg_ansible_tasks_config
       ].join('/')
     end

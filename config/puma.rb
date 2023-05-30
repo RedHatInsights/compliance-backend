@@ -12,11 +12,7 @@ threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 #
-if ClowderCommonRuby::Config.clowder_enabled?
-  port ClowderCommonRuby::Config.load.webPort
-else
-  port ENV.fetch('PORT') { 3000 }
-end
+port Settings.web_port
 
 # Specifies the `environment` that Puma will run in.
 #

@@ -2,7 +2,7 @@
 
 # A Kafka producer client for payload-tracker
 class RemediationUpdates < ApplicationProducer
-  TOPIC = Settings.kafka_producer_topics.remediation_updates
+  TOPIC = Settings.kafka.topics.remediation_updates_compliance
 
   def self.deliver(host_id:, issue_ids:)
     deliver_message(

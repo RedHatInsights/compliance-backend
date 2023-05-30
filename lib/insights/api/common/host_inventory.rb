@@ -8,7 +8,7 @@ module Insights
     module Common
       # Interact with the Insights Host Inventory. Usually HTTP calls are all that's needed.
       class HostInventory
-        def initialize(account: nil, url: Settings.host_inventory_url,
+        def initialize(account: nil, url: Settings.endpoints.host_inventory.url,
                        b64_identity: nil)
           @url = "#{URI.parse(url)}#{Settings.path_prefix}/inventory/v1/hosts"
           @account = account
