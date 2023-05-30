@@ -2,7 +2,7 @@
 
 # A Kafka producer client for notifications
 class Notification < ApplicationProducer
-  TOPIC = Settings.kafka_producer_topics.notifications
+  TOPIC = Settings.kafka.topics.notifications_ingress
   EVENT_TYPE = nil
   BUNDLE = 'rhel'
   VERSION = 'v1.1.0'

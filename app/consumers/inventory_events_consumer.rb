@@ -3,7 +3,7 @@
 # Receives messages from the Kafka topic, converts them into jobs
 # for processing
 class InventoryEventsConsumer < ApplicationConsumer
-  subscribes_to Settings.kafka_consumer_topics.inventory_events
+  subscribes_to Settings.kafka.topics.inventory_events
 
   # Raise an error with a cause if a report isn't valid
   class ReportValidationError < StandardError; end
@@ -36,7 +36,7 @@ class InventoryEventsConsumer < ApplicationConsumer
 
   def handle_report_parsing
     parse_output = parse_report
-    validation_topic = Settings.kafka_producer_topics.upload_validation
+    validation_topic = Settings.kafka.topics.upload_compliance
     produce(parse_output, topic: validation_topic) if validation_topic
   end
 

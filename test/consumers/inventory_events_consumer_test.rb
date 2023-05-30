@@ -5,7 +5,7 @@ require 'sidekiq/testing'
 
 class InventoryEventsConsumerTest < ActiveSupport::TestCase
   setup do
-    Settings.kafka_producer_topics.upload_validation = 'validation'
+    Settings.kafka.topics.upload_compliance = 'validation'
     @message = stub(message: nil)
     @consumer = InventoryEventsConsumer.new
     DeleteHost.clear
@@ -131,7 +131,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'success'
         }.to_json,
-        topic: Settings.kafka_producer_topics.upload_validation
+        topic: Settings.kafka.topics.upload_compliance
       )
 
       assert_audited_success 'Enqueued report parsing of profileid'
@@ -190,7 +190,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'failure'
         }.to_json,
-        topic: Settings.kafka_producer_topics.upload_validation
+        topic: Settings.kafka.topics.upload_compliance
       )
 
       assert_audited_fail 'Failed to dowload report'
@@ -221,7 +221,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'failure'
         }.to_json,
-        topic: Settings.kafka_producer_topics.upload_validation
+        topic: Settings.kafka.topics.upload_compliance
       )
 
       assert_audited_fail 'Failed to dowload report'
@@ -256,7 +256,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'failure'
         }.to_json,
-        topic: Settings.kafka_producer_topics.upload_validation
+        topic: Settings.kafka.topics.upload_compliance
       )
 
       assert_audited_fail 'Invalid Report'
@@ -292,7 +292,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'failure'
         }.to_json,
-        topic: Settings.kafka_producer_topics.upload_validation
+        topic: Settings.kafka.topics.upload_compliance
       )
 
       assert_audited_fail 'Rejected report'
@@ -325,7 +325,7 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
           'service': 'compliance',
           'validation': 'success'
         }.to_json,
-        topic: Settings.kafka_producer_topics.upload_validation
+        topic: Settings.kafka.topics.upload_compliance
       )
 
       assert_audited_success 'Enqueued report parsing of profileid'

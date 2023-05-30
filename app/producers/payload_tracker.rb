@@ -2,7 +2,7 @@
 
 # A Kafka producer client for payload-tracker
 class PayloadTracker < ApplicationProducer
-  TOPIC = Settings.kafka_producer_topics.payload_tracker
+  TOPIC = Settings.kafka.topics.payload_status
   DATE_FORMAT = :rfc3339
 
   # rubocop:disable Metrics/ParameterLists
