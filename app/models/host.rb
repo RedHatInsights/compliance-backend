@@ -30,6 +30,10 @@ class Host < ApplicationRecord
   ).on(Arel::Nodes::False.new).join_sources
 
   sortable_by :name, :display_name
+  sortable_by :score, Arel::Nodes::NamedFunction.new(
+    'COALESCE',
+    [TestResult.arel_table[:score]]
+  ), scope: :joins_test_result_profiles
   sortable_by :os_major_version, OS_MAJOR_VERSION
   sortable_by :os_minor_version, OS_MINOR_VERSION
   sortable_by(
@@ -76,6 +80,10 @@ class Host < ApplicationRecord
     left_outer_joins(test_result_profiles: :benchmark).where(
       profiles: { id: profile.pluck(:id) }
     )
+  }
+
+  scope :joins_test_result_profiles, lambda {
+    left_outer_joins(:test_result_profiles)
   }
 
   def self.os_minor_versions(hosts)
