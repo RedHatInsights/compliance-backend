@@ -14,10 +14,11 @@ module Types
     field :version, String, null: false
     field :os_major_version, String, null: false
     field :latest_supported_os_minor_versions, [String], null: false
-    field :profiles, [::Types::Profile], null: true, cache_fragment: true
-    field :rules, [::Types::Rule], null: true, cache_fragment: true
-    field :value_definitions, [::Types::ValueDefinition], null: true, cache_fragment: true
-    field :rule_tree, GraphQL::Types::JSON, null: true, cache_fragment: true
+
+    cached_static_field :profiles, [::Types::Profile], null: true
+    cached_static_field :rules, [::Types::Rule], null: true
+    cached_static_field :value_definitions, [::Types::ValueDefinition], null: true
+    cached_static_field :rule_tree, GraphQL::Types::JSON, null: true
 
     enforce_rbac Rbac::COMPLIANCE_VIEWER
 

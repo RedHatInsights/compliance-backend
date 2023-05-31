@@ -34,6 +34,15 @@ module Types
       def enforce_rbac(*permissions)
         @rbac_permissions = permissions
       end
+
+      # This the field to be stored in the GraphQL fragment cache with a `title/` prefix
+      # Please note that only static and context-free fields, such as SSG content can be
+      # stored in this cache and that it gets cleared upon a successful SSG import.
+      def cached_static_field(title, type, **args)
+        field(title, type, **args.merge(
+          cache_fragment: { path_cache_key: title.to_s, cache_key: :object }
+        ))
+      end
     end
 
     protected
