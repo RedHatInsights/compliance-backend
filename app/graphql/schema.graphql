@@ -647,7 +647,6 @@ type Rule implements Node {
   id: ID!
   identifier: JSON
   precedence: Int
-  profiles: [Profile!]
   rationale: String
   refId: String!
   references: JSON

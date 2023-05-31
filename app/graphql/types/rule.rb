@@ -14,7 +14,6 @@ module Types
     field :severity, String, null: false
     field :precedence, Int, null: true
     field :remediation_available, Boolean, null: false
-    field :profiles, [::Types::Profile], null: true
     field :identifier, GraphQL::Types::JSON, null: true
     field :references, GraphQL::Types::JSON, null: true
     field :values, [ID], null: true
@@ -43,12 +42,6 @@ module Types
 
       ::CollectionLoader.for(::Rule, :rule_references_container).load(object).then do |rrc|
         rrc&.rule_references
-      end
-    end
-
-    def profiles
-      ::CollectionLoader.for(::Rule, :profiles).load(object).then do |profiles|
-        Pundit.policy_scope(context[:current_user], profiles)
       end
     end
 
