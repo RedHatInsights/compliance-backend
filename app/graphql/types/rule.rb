@@ -18,21 +18,14 @@ module Types
     field :references, GraphQL::Types::JSON, null: true
     field :values, [ID], null: true
     field :failed_count, Int, null: true
-    field :compliant, Boolean, null: false do
-      argument :system_id, String, 'Is a system compliant?',
-               required: false
-      argument :profile_id, String, 'Is a system compliant with this profile?',
-               required: false
-    end
+    field :compliant, Boolean, null: false
 
     enforce_rbac Rbac::COMPLIANCE_VIEWER
 
-    def compliant(args = {})
-      system_id(args) &&
-        profile_id(args) &&
-        %w[pass notapplicable notselected].include?(
-          context[:rule_results][object.id][profile_id(args)]
-        )
+    def compliant
+      system_id && profile_id && %w[pass notapplicable notselected].include?(
+        context[:rule_results][object.id][profile_id]
+      )
     end
 
     def references
@@ -52,12 +45,12 @@ module Types
 
     private
 
-    def system_id(args)
-      args[:system_id] || context[:parent_system_id]
+    def system_id
+      context[:parent_system_id]
     end
 
-    def profile_id(args)
-      args[:profile_id] || context[:parent_profile_id][object.id]
+    def profile_id
+      context[:parent_profile_id][object.id]
     end
   end
 end

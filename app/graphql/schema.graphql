@@ -631,17 +631,7 @@ type Query implements Node {
 A Rule registered in Insights Compliance
 """
 type Rule implements Node {
-  compliant(
-    """
-    Is a system compliant with this profile?
-    """
-    profileId: String
-
-    """
-    Is a system compliant?
-    """
-    systemId: String
-  ): Boolean!
+  compliant: Boolean!
   description: String
   failedCount: Int
   id: ID!
