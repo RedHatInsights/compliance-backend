@@ -59,20 +59,5 @@ module Types
     def profile_id(args)
       args[:profile_id] || context[:parent_profile_id][object.id]
     end
-
-    def generate_references_json(references)
-      references.compact.map do |ref|
-        { href: ref.href, label: ref.label }
-      end
-    end
-
-    def latest_test_result_batch(args)
-      ::RecordLoader.for(
-        ::TestResult,
-        column: :profile_id,
-        where: { host_id: system_id(args) },
-        order: 'created_at DESC'
-      ).load(profile_id(args))
-    end
   end
 end
