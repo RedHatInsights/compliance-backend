@@ -72,7 +72,7 @@ Let's examine how to run the project:
         - name: compliance
           host: local
           repo: ~/path/to/local/compliance-backend
-          path: clowdapp.yaml
+          path: deploy/clowdapp.yaml
           parameters:
             REDIS_SSL: 'false'
     ```
