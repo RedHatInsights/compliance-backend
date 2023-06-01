@@ -40,7 +40,7 @@ module Api
               items: {
                 type: :string
               },
-              examples: %w[uuid1 uuid2]
+              example: %w[uuid1 uuid2]
             },
             description: {
               type: 'string',
