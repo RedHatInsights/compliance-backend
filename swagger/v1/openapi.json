@@ -4370,7 +4370,7 @@
             "items": {
               "type": "string"
             },
-            "examples": [
+            "example": [
               "uuid1",
               "uuid2"
             ]
