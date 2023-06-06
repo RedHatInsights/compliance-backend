@@ -51,14 +51,14 @@ Rails.application.configure do
     # Use a different cache store in production.
     config.cache_store = :redis_cache_store, begin
       if ENV.fetch('PRIMARY_REDIS_AS_CACHE', false) == 'true' # Fall-back to the clowder-redis in ephemeral
-        redis_url = "redis://#{Settings.redis_url}"
-        redis_password = Settings.redis_password
+        redis_url = Settings.redis.url
+        redis_password = Settings.redis.password
       else # Use the dedicated redis if available
-        redis_url = "redis://#{Settings.redis_cache_hostname}:#{Settings.redis_cache_port}"
-        redis_password = Settings.redis_cache_password.present? ? Settings.redis_cache_password : nil
+        redis_url = "redis://#{Settings.redis.cache_hostname}:#{Settings.redis.cache_port}"
+        redis_password = Settings.redis.cache_password.present? ? Settings.redis.cache_password : nil
       end
 
-      { url: redis_url, password: redis_password, ssl: Settings.redis_cache_ssl}
+      { url: redis_url, password: redis_password, ssl: Settings.redis.ssl}
     end
 
     # Override is necessary as it gets set during initialization without the proper config available

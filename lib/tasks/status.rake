@@ -17,9 +17,9 @@ namespace :redis do
   task status: [:environment] do
     begin
       Redis.new(
-        url: "redis://#{Settings.redis_url}",
-        password: Settings.redis_password.presence,
-        ssl: Settings.redis_ssl
+        url: Settings.redis.url,
+        password: Settings.redis.password.presence,
+        ssl: Settings.redis.ssl
       ).ping
     rescue Redis::BaseError
       abort('ERROR: Redis unavailable')
