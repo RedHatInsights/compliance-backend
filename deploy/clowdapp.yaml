@@ -85,23 +85,23 @@ objects:
           value: "${SETTINGS__FORCE_IMPORT_SSGS}"
         - name: MAX_INIT_TIMEOUT_SECONDS
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
+        - name: SETTINGS__REDIS__SSL
+          value: "${REDIS_SSL}"
         - name: PRIMARY_REDIS_AS_CACHE
           value: "${PRIMARY_REDIS_AS_CACHE}"
-        - name: SETTINGS__REDIS_CACHE_SSL
-          value: "${REDIS_SSL}"
-        - name: SETTINGS__REDIS_CACHE_HOSTNAME
+        - name: SETTINGS__REDIS__CACHE_HOSTNAME
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
               key: db.endpoint
               optional: true
-        - name: SETTINGS__REDIS_CACHE_PORT
+        - name: SETTINGS__REDIS__CACHE_PORT
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
               key: db.port
               optional: true
-        - name: SETTINGS__REDIS_CACHE_PASSWORD
+        - name: SETTINGS__REDIS__CACHE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
@@ -144,10 +144,6 @@ objects:
           value: "${RAILS_LOGLEVEL}"
         - name: RAILS_LOG_TO_STDOUT
           value: "${RAILS_LOG_TO_STDOUT}"
-        - name: SETTINGS__REDIS_SSL
-          value: "${REDIS_SSL}"
-        - name: SETTINGS__REDIS_CACHE_SSL
-          value: "${REDIS_SSL}"
         - name: SETTINGS__DISABLE_RBAC
           value: ${DISABLE_RBAC}
         - name: PUMA_WORKERS
@@ -177,19 +173,21 @@ objects:
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
         - name: PRIMARY_REDIS_AS_CACHE
           value: "${PRIMARY_REDIS_AS_CACHE}"
-        - name: SETTINGS__REDIS_CACHE_HOSTNAME
+        - name: SETTINGS__REDIS__SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__REDIS__CACHE_HOSTNAME
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
               key: db.endpoint
               optional: true
-        - name: SETTINGS__REDIS_CACHE_PORT
+        - name: SETTINGS__REDIS__CACHE_PORT
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
               key: db.port
               optional: true
-        - name: SETTINGS__REDIS_CACHE_PASSWORD
+        - name: SETTINGS__REDIS__CACHE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
@@ -247,10 +245,6 @@ objects:
           value: "${RACECAR_QUEUE_SIZE}"
         - name: RACECAR_OFFSET_COMMIT_INTERVAL
           value: "${RACECAR_OFFSET_COMMIT_INTERVAL}"
-        - name: SETTINGS__REDIS_SSL
-          value: "${REDIS_SSL}"
-        - name: SETTINGS__REDIS_CACHE_SSL
-          value: "${REDIS_SSL}"
         - name: MALLOC_ARENA_MAX
           value: '2'
         - name: SECRET_KEY_BASE
@@ -270,19 +264,21 @@ objects:
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
         - name: PRIMARY_REDIS_AS_CACHE
           value: "${PRIMARY_REDIS_AS_CACHE}"
-        - name: SETTINGS__REDIS_CACHE_HOSTNAME
+        - name: SETTINGS__REDIS__SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__REDIS__CACHE_HOSTNAME
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
               key: db.endpoint
               optional: true
-        - name: SETTINGS__REDIS_CACHE_PORT
+        - name: SETTINGS__REDIS__CACHE_PORT
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
               key: db.port
               optional: true
-        - name: SETTINGS__REDIS_CACHE_PASSWORD
+        - name: SETTINGS__REDIS__CACHE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
@@ -351,10 +347,6 @@ objects:
           value: "${APP_NAME}"
         - name: SIDEKIQ_CONCURRENCY
           value: "${SIDEKIQ_CONCURRENCY}"
-        - name: SETTINGS__REDIS_SSL
-          value: "${REDIS_SSL}"
-        - name: SETTINGS__REDIS_CACHE_SSL
-          value: "${REDIS_SSL}"
         - name: MALLOC_ARENA_MAX
           value: '2'
         - name: SECRET_KEY_BASE
@@ -374,19 +366,21 @@ objects:
           value: "${MAX_INIT_TIMEOUT_SECONDS}"
         - name: PRIMARY_REDIS_AS_CACHE
           value: "${PRIMARY_REDIS_AS_CACHE}"
-        - name: SETTINGS__REDIS_CACHE_HOSTNAME
+        - name: SETTINGS__REDIS__SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__REDIS__CACHE_HOSTNAME
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
               key: db.endpoint
               optional: true
-        - name: SETTINGS__REDIS_CACHE_PORT
+        - name: SETTINGS__REDIS__CACHE_PORT
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache
               key: db.port
               optional: true
-        - name: SETTINGS__REDIS_CACHE_PASSWORD
+        - name: SETTINGS__REDIS__CACHE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: compliance-rails-cache

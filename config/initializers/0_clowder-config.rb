@@ -40,7 +40,7 @@ if ClowderCommonRuby::Config.clowder_enabled?
   host_inventory_url = build_endpoint_url(host_inventory_config, config)
 
   # Redis (in-memory db)
-  redis_url = "#{config.dig('inMemoryDb', 'hostname')}:#{config.dig('inMemoryDb', 'port')}"
+  redis_url = "redis://#{config.dig('inMemoryDb', 'hostname')}:#{config.dig('inMemoryDb', 'port')}"
   redis_password = config.dig('inMemoryDb', 'password')
 
   # Kafka
@@ -99,8 +99,10 @@ if ClowderCommonRuby::Config.clowder_enabled?
       host: rbac_host,
       scheme: rbac_scheme
     },
-    redis_url: redis_url,
-    redis_password: redis_password,
+    redis: {
+      url: redis_url,
+      password: redis_password
+    },
     host_inventory_url: host_inventory_url,
     clowder_config_enabled: true,
     prometheus_exporter_port: config&.metricsPort

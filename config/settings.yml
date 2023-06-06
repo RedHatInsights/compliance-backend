@@ -2,10 +2,10 @@ app_name: 'compliance'
 path_prefix: '/api'
 old_path_prefix: '/r/insights/platform'
 report_download_ssl_only: false
-redis_ssl: false
-redis_cache_url:
-redis_cache_password:
-redis_cache_ssl: false
+redis:
+  ssl: false
+  cache_url:
+  cache_password:
 slack_webhook: 'this is set through a env var in Openshift and not shared for security reasons'
 disable_rbac: false
 async: true
