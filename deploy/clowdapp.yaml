@@ -298,7 +298,8 @@ objects:
             port: metrics
           timeoutSeconds: 5
         readinessProbe:
-          timeoutSeconds: 5
+          timeoutSeconds: 15
+          periodSeconds: 30
           exec:
             command: ["bash", "-c", "bundle exec rake --trace db:status redis:status kafka:status"]
         resources:
@@ -331,7 +332,8 @@ objects:
             port: metrics
           timeoutSeconds: 5
         readinessProbe:
-          timeoutSeconds: 5
+          timeoutSeconds: 15
+          periodSeconds: 30
           exec:
             command: ["bash", "-c", "bundle exec rake --trace db:status redis:status"]
         env:
