@@ -16,33 +16,27 @@
         "topics": [
             {
                 "requestedName": "platform.inventory.events",
-                "name": "platform.inventory.events",
-                "consumerGroup": "someGroupName"
+                "name": "platform.inventory.events"
             },
             {
                 "requestedName": "platform.upload.compliance",
-                "name": "platform.upload.compliance",
-                "consumerGroup": "someGroupName"
+                "name": "platform.upload.compliance"
             },
             {
                 "requestedName": "platform.payload-status",
-                "name": "platform.payload-status",
-                "consumerGroup": "someGroupName"
+                "name": "platform.payload-status"
             },
             {
                 "requestedName": "platform.notifications.ingress",
-                "name": "platform.notifications.ingress",
-                "consumerGroup": "someGroupName"
+                "name": "platform.notifications.ingress"
             },
             {
                 "requestedName": "platform.remediation-updates.compliance",
-                "name": "platform.remediation-updates.compliance",
-                "consumerGroup": "someGroupName"
+                "name": "platform.remediation-updates.compliance"
             },
             {
                 "requestedName": "originalName",
-                "name": "someTopic",
-                "consumerGroup": "someGroupName"
+                "name": "someTopic"
             }
         ]
     },
