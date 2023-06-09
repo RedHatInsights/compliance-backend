@@ -207,11 +207,13 @@ objects:
             path: /api/compliance/v1/openapi.json
             port: web
           initialDelaySeconds: 5
+          periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /api/compliance/v1/status
             port: web
           initialDelaySeconds: 5
+          periodSeconds: 30
         resources:
           limits:
             cpu: ${CPU_LIMIT_SERV}
@@ -297,6 +299,7 @@ objects:
             path: /metrics
             port: metrics
           timeoutSeconds: 5
+          periodSeconds: 30
         readinessProbe:
           timeoutSeconds: 15
           periodSeconds: 30
@@ -331,6 +334,7 @@ objects:
             path: /metrics
             port: metrics
           timeoutSeconds: 5
+          periodSeconds: 30
         readinessProbe:
           timeoutSeconds: 15
           periodSeconds: 30
