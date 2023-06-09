@@ -24,10 +24,6 @@ class ApplicationController < ActionController::API
     end
   end
 
-  def openapi
-    send_file Rails.root.join('swagger/v1/openapi.json')
-  end
-
   def pundit_scope
     Pundit.policy_scope(current_user, resource)
   end
