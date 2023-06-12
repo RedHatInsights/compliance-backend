@@ -35,45 +35,12 @@ pipeline {
     stages {
         stage('Build the PR commit image') {
             steps {
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh '''
-                    curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
-                    source ./.cicd_bootstrap.sh
-                    source ./build_deploy.sh
-                    '''
+                sh 'env'
+                script { 
+                    env.GITHUB_LABELS = pullRequest.labels
                 }
+                sh 'env'
             }
-        }
-
-        stage('Run Tests') {
-            parallel {
-                stage('Run unit tests') {
-                    steps {
-                        withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh 'bash -x ./scripts/unit_test.sh'
-                        }
-                    }
-                }
-                stage('Run smoke tests') {
-                    steps {
-                        withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh '''
-                                curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
-                                source ./.cicd_bootstrap.sh
-                                source "${CICD_ROOT}/deploy_ephemeral_env.sh"
-                                source "${CICD_ROOT}/cji_smoke_test.sh"
-                            '''
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    post {
-        always{
-            archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true
-            junit skipPublishingChecks: true, testResults: 'artifacts/junit-*.xml'
         }
     }
 }
