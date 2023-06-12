@@ -156,6 +156,8 @@ objects:
           value: '2'
         - name: OLD_PATH_PREFIX
           value: "${OLD_PATH_PREFIX}"
+        - name: RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR
+          value: '0.9'
         - name: SECRET_KEY_BASE
           valueFrom:
             secretKeyRef:
