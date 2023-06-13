@@ -30,8 +30,8 @@ class DuplicateBenchmarkResolver
 
     def duplicate_benchmarks
       Xccdf::Benchmark.joins(
-        "JOIN (#{grouped_nonunique_benchmark_tuples.to_sql}) as bm on "\
-        'benchmarks.ref_id = bm.ref_id AND '\
+        "JOIN (#{grouped_nonunique_benchmark_tuples.to_sql}) as bm on " \
+        'benchmarks.ref_id = bm.ref_id AND ' \
         'benchmarks.version = bm.version'
       )
     end

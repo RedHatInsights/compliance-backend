@@ -50,10 +50,10 @@ task import_remediations: :environment do
     end_time = Time.now.utc
     duration = end_time - start_time
     Rails.logger.info "Remediations synced to revision: #{Revision.remediations}"
-    Rails.logger.info "Finishing import_remediations job at #{end_time} "\
+    Rails.logger.info "Finishing import_remediations job at #{end_time} " \
          "and last #{duration} seconds "
   rescue StandardError => e
-    Rails.logger.error "import_remediations job failed at #{end_time} "\
+    Rails.logger.error "import_remediations job failed at #{end_time} " \
          "and lasted #{duration} seconds "
     ExceptionNotifier.notify_exception(
       e,

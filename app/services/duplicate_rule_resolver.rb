@@ -36,8 +36,8 @@ class DuplicateRuleResolver
 
     def duplicate_rules
       Rule.joins(
-        "JOIN (#{grouped_nonunique_rule_tuples.to_sql}) as r on "\
-        'rules.ref_id = r.ref_id AND '\
+        "JOIN (#{grouped_nonunique_rule_tuples.to_sql}) as r on " \
+        'rules.ref_id = r.ref_id AND ' \
         'rules.benchmark_id = r.benchmark_id'
       )
     end

@@ -13,8 +13,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
   test 'if message is delete, host is enqueued for deletion' do
     @message.expects(:value).returns(
-      '{"type": "delete", '\
-      '"id": "fe314be5-4091-412d-85f6-00cc68fc001b", '\
+      '{"type": "delete", ' \
+      '"id": "fe314be5-4091-412d-85f6-00cc68fc001b", ' \
       '"timestamp": "2019-05-13 21:18:15.797921"}'
     ).at_least_once
     assert_audited_success('Enqueued DeleteHost job for host fe314be5-4091-412d-85f6-00cc68fc001b')
@@ -24,8 +24,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
   test 'if message is delete, and enqueue for deletion fails' do
     @message.expects(:value).returns(
-      '{"type": "delete", '\
-      '"id": "fe314be5-4091-412d-85f6-00cc68fc001b", '\
+      '{"type": "delete", ' \
+      '"id": "fe314be5-4091-412d-85f6-00cc68fc001b", ' \
       '"timestamp": "2019-05-13 21:18:15.797921"}'
     ).at_least_once
     DeleteHost.stubs(:perform_async).raises(:StandardError)
@@ -37,8 +37,8 @@ class InventoryEventsConsumerTest < ActiveSupport::TestCase
 
   test 'if message is not known, no job is enqueued' do
     @message.expects(:value).returns(
-      '{"type": "somethingelse", '\
-      '"id": "fe314be5-4091-412d-85f6-00cc68fc001b", '\
+      '{"type": "somethingelse", ' \
+      '"id": "fe314be5-4091-412d-85f6-00cc68fc001b", ' \
       '"timestamp": "2019-05-13 21:18:15.797921"}'
     ).at_least_once
     @consumer.process(@message)

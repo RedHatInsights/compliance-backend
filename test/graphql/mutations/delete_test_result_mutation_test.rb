@@ -51,7 +51,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
     end
   end
 
-  test 'delete test results from initial policy profile deletes all results'\
+  test 'delete test results from initial policy profile deletes all results' \
        'in the policy' do
     profile2 = FactoryBot.create(
       :profile,

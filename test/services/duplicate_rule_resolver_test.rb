@@ -27,7 +27,7 @@ class DuplicateRuleResolverTest < ActiveSupport::TestCase
     end
   end
 
-  test 'resolves profile_rules from a duplicate rule with '\
+  test 'resolves profile_rules from a duplicate rule with ' \
        'different profiles' do
     p1 = FactoryBot.create(:canonical_profile)
     p2 = FactoryBot.create(:canonical_profile)
@@ -42,7 +42,7 @@ class DuplicateRuleResolverTest < ActiveSupport::TestCase
     end
   end
 
-  test 'resolves profile_rules from a duplicate rule with '\
+  test 'resolves profile_rules from a duplicate rule with ' \
        'the same profiles' do
     profile = FactoryBot.create(:canonical_profile)
 

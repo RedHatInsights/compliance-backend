@@ -18,7 +18,7 @@ module Api
             },
             title: {
               type: 'string',
-              example: 'Guide to the Secure Configuration of Red Hat '\
+              example: 'Guide to the Secure Configuration of Red Hat ' \
               'Enterprise Linux 7'
             },
             version: {

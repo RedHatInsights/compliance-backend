@@ -18,7 +18,7 @@ module Api
             },
             ref_id: {
               type: 'string',
-              example: 'xccdf_org.ssgproject.content_value_var_polipo_session_'\
+              example: 'xccdf_org.ssgproject.content_value_var_polipo_session_' \
               'bind_all_unreserved_ports'
             },
             title: {
@@ -29,7 +29,7 @@ module Api
             description: {
               type: 'string',
               nullable: true,
-              example: 'default - Default SELinux boolean setting. on - SELinux'\
+              example: 'default - Default SELinux boolean setting. on - SELinux' \
                'boolean is enabled. off - SELinux boolean is disabled.'
             },
             value_type: {

@@ -4,7 +4,7 @@ module Exceptions
   # Exception for wrong sorting directions in ActiveRecord
   class InvalidSortingDirection < ArgumentError
     def initialize(direction)
-      super("Sorting direction #{direction} is invalid. Valid directions "\
+      super("Sorting direction #{direction} is invalid. Valid directions " \
             "are 'asc' or 'desc'.")
     end
   end

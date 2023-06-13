@@ -54,7 +54,7 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
     end
   end
 
-  test 'resolves profiles from a duplicate benchmark '\
+  test 'resolves profiles from a duplicate benchmark ' \
        'with the same profile ref_id' do
     assert_difference('Profile.count' => 2) do
       @profile.dup.update!(ref_id: 'foo', benchmark: @benchmark)
@@ -66,7 +66,7 @@ class DuplicateBenchmarkResolverTest < ActiveSupport::TestCase
     end
   end
 
-  test 'resolves profiles from a duplicate benchmark '\
+  test 'resolves profiles from a duplicate benchmark ' \
        'with different profile ref_id' do
     assert_difference('Profile.count' => 2) do
       @profile.dup.update!(ref_id: 'foo', benchmark: @benchmark)
