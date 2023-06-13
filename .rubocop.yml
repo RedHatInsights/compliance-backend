@@ -28,7 +28,7 @@ Metrics/ClassLength:
     - 'spec/**/*'
 
 Metrics/BlockLength:
-  IgnoredMethods: ['included', 'class_methods', 'GraphQL::ObjectType.define']
+  AllowedMethods: ['included', 'class_methods', 'GraphQL::ObjectType.define']
   Exclude:
     - 'test/**/*'
     - 'spec/**/*'
