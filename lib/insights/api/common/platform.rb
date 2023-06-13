@@ -16,7 +16,7 @@ module Insights
           backoff_factor: 2,
           methods: %i[get],
           exceptions: [
-            *Faraday::Request::Retry::DEFAULT_EXCEPTIONS, Faraday::ConnectionFailed
+            *Faraday::Retry::Middleware::DEFAULT_EXCEPTIONS, Faraday::ConnectionFailed
           ]
         }.freeze
 
