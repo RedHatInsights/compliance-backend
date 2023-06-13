@@ -17,7 +17,7 @@ class ParseReportJob
 
     @msg_value = message
     Sidekiq.logger.info(
-      "Parsing report for account #{@msg_value['org_id']}, "\
+      "Parsing report for account #{@msg_value['org_id']}, " \
       "system #{@msg_value['id']}"
     )
 

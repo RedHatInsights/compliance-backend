@@ -66,7 +66,7 @@ class XccdfReportParser
     if benchmark.os_major_version.to_s != @host.os_major_version.to_s
       raise OSVersionMismatch,
             "OS major version (#{@host.os_major_version}) does not match with " \
-            "benchmark #{benchmark.ref_id} (#{benchmark.os_major_version}). "\
+            "benchmark #{benchmark.ref_id} (#{benchmark.os_major_version}). " \
             "#{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
@@ -76,7 +76,7 @@ class XccdfReportParser
     # rubocop:disable Style/GuardClause
     if external_report?
       raise ExternalReportError,
-            "No policy found matching benchmark #{benchmark.ref_id}. "\
+            "No policy found matching benchmark #{benchmark.ref_id}. " \
             "#{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
@@ -92,7 +92,7 @@ class XccdfReportParser
     # rubocop:disable Style/GuardClause
     unless benchmark.persisted?
       raise UnknownBenchmarkError,
-            "No benchmark found matching ref_id #{benchmark.ref_id} and "\
+            "No benchmark found matching ref_id #{benchmark.ref_id} and " \
             "SSG #{benchmark.version}. #{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
@@ -102,8 +102,8 @@ class XccdfReportParser
     # rubocop:disable Style/GuardClause
     unless test_result_profile.persisted?
       raise UnknownProfileError,
-            "No profile found matching ref_id #{test_result_profile.ref_id} "\
-            "in benchmark #{benchmark.ref_id} with SSG "\
+            "No profile found matching ref_id #{test_result_profile.ref_id} " \
+            "in benchmark #{benchmark.ref_id} with SSG " \
             "#{benchmark.version}. #{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
@@ -113,9 +113,9 @@ class XccdfReportParser
     # rubocop:disable Style/GuardClause
     if test_result_rules_unknown.any?
       raise UnknownRuleError,
-            'The following rules are missing from profile '\
-            "#{test_result_profile.ref_id} in benchmark #{benchmark.ref_id} "\
-            "with SSG #{benchmark.version}:\n"\
+            'The following rules are missing from profile ' \
+            "#{test_result_profile.ref_id} in benchmark #{benchmark.ref_id} " \
+            "with SSG #{benchmark.version}:\n" \
             "#{test_result_rules_unknown.join("\n")}\n#{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
@@ -140,7 +140,7 @@ class XccdfReportParser
   private
 
   def parse_failure_message
-    "Report for profile #{@test_result_file.test_result.profile_id} against "\
+    "Report for profile #{@test_result_file.test_result.profile_id} against " \
       "#{@host.name} of account #{@account.org_id} could not be parsed."
   end
 end

@@ -192,14 +192,14 @@ module V1
         assert_response :no_content
       end
 
-      test 'tailoring_file with a noncanonical profile matching its parent'\
+      test 'tailoring_file with a noncanonical profile matching its parent' \
         'returns no content' do
         profile = FactoryBot.create(:profile, :with_rules)
         get tailoring_file_v1_profile_url(profile.id)
         assert_response :no_content
       end
 
-      test 'tailoring_file with a noncanonical profile '\
+      test 'tailoring_file with a noncanonical profile ' \
         'returns tailoring file' do
         profile = FactoryBot.create(:profile, :with_rules)
 
@@ -570,7 +570,7 @@ module V1
         external = FactoryBot.create(:profile, parent_profile: parent,
                                                external: true)
 
-        search_query = 'canonical=true or canonical=false '\
+        search_query = 'canonical=true or canonical=false ' \
                        'or external=false or external=true'
         get v1_profiles_url, params: { search: search_query }
         assert_response :success
@@ -749,7 +749,7 @@ module V1
         assert_response :not_found
       end
 
-      test 'destroy an existing, accessible profile that is not authorized '\
+      test 'destroy an existing, accessible profile that is not authorized ' \
            'to be deleted' do
         profile = FactoryBot.create(
           :canonical_profile,
@@ -812,7 +812,7 @@ module V1
           )
         end
         assert_response :unprocessable_entity
-        assert_match 'param is missing or the value is empty: '\
+        assert_match 'param is missing or the value is empty: ' \
                      'parent_profile_id',
                      response.parsed_body.dig('errors', 0)
       end
@@ -824,7 +824,7 @@ module V1
         assert_response :not_found
       end
 
-      test 'create with a found parent_profile_id but existing ref_id '\
+      test 'create with a found parent_profile_id but existing ref_id ' \
            'in the account' do
         profile = FactoryBot.create(:profile)
         assert_difference('Profile.count' => 0, 'Policy.count' => 0) do
@@ -838,7 +838,7 @@ module V1
         assert_response :not_acceptable
       end
 
-      test 'create with a found parent_profile_id and nonexisting ref_id '\
+      test 'create with a found parent_profile_id and nonexisting ref_id ' \
            'in the account' do
         parent = FactoryBot.create(:canonical_profile)
         assert_audited_success 'Created policy'
@@ -1056,7 +1056,7 @@ module V1
         )
       end
 
-      test 'create only adds custom rules from the parent profile benchmark'\
+      test 'create only adds custom rules from the parent profile benchmark' \
            'and defaults to parent profile rules' do
         parent = FactoryBot.create(
           :canonical_profile,

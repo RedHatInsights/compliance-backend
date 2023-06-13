@@ -92,7 +92,7 @@ class XccdfTailoringFile
                     @profile.benchmark.rules
                             .where(ref_id: @rule_ref_ids.keys).pluck(:ref_id)
 
-    e = ArgumentError.new("Benchmark(id=#{@profile.benchmark.id}) does not "\
+    e = ArgumentError.new("Benchmark(id=#{@profile.benchmark.id}) does not " \
                           "contain selected rules: #{missing_rules.join(', ')}")
     raise e if missing_rules.any?
   end

@@ -33,9 +33,9 @@ class DuplicateTestResultResolver
 
     def duplicate_test_results
       TestResult.joins(
-        "JOIN (#{grouped_nonunique_test_result_tuples.to_sql}) as tr on "\
-        'test_results.host_id = tr.host_id AND '\
-        'test_results.profile_id = tr.profile_id AND '\
+        "JOIN (#{grouped_nonunique_test_result_tuples.to_sql}) as tr on " \
+        'test_results.host_id = tr.host_id AND ' \
+        'test_results.profile_id = tr.profile_id AND ' \
         'test_results.end_time = tr.end_time'
       )
     end

@@ -28,7 +28,7 @@ module ProfilePolicyAssociation
     def no_duplicate_policy_types
       return if canonical? || external
 
-      error_msg = 'must be unique. Another policy with '\
+      error_msg = 'must be unique. Another policy with ' \
                   'this policy type already exists.'
 
       profile = ::Profile.includes(:benchmark).find_by(

@@ -32,9 +32,9 @@ class DuplicateRuleResultResolver
 
     def duplicate_rule_results
       RuleResult.joins(
-        "JOIN (#{grouped_nonunique_rule_result_tuples.to_sql}) as rr on "\
-        'rule_results.host_id = rr.host_id AND '\
-        'rule_results.rule_id = rr.rule_id AND '\
+        "JOIN (#{grouped_nonunique_rule_result_tuples.to_sql}) as rr on " \
+        'rule_results.host_id = rr.host_id AND ' \
+        'rule_results.rule_id = rr.rule_id AND ' \
         'rule_results.test_result_id = rr.test_result_id'
       )
     end

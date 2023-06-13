@@ -139,9 +139,9 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
             attributes: {
               name: 'my custom profile',
               parent_profile_id: '0105a0f0-7379-4897-a891-f95cfb9ddf9c',
-              description: 'This profile contains rules to ensure standard '\
-              'security baseline\nof a Red Hat Enterprise Linux 7 '\
-              'system. Regardless of your system\'s workload\nall '\
+              description: 'This profile contains rules to ensure standard ' \
+              'security baseline\nof a Red Hat Enterprise Linux 7 ' \
+              'system. Regardless of your system\'s workload\nall ' \
               'of these checks should pass.',
               compliance_threshold: 95.0,
               business_objective: 'APAC Expansion'
@@ -345,9 +345,9 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
         example: {
           data: {
             attributes: {
-              description: 'This profile contains rules to ensure standard '\
-              'security baseline\nof a Red Hat Enterprise Linux 7 '\
-              'system. Regardless of your system\'s workload\nall '\
+              description: 'This profile contains rules to ensure standard ' \
+              'security baseline\nof a Red Hat Enterprise Linux 7 ' \
+              'system. Regardless of your system\'s workload\nall ' \
               'of these checks should pass.',
               compliance_threshold: 92.0,
               business_objective: 'APAC Expansion',

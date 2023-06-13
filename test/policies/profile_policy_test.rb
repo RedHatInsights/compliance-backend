@@ -6,7 +6,7 @@ class ProfilePolicyTest < ActiveSupport::TestCase
   setup do
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
   end
-  test 'only noncanonical profiles within the account and '\
+  test 'only noncanonical profiles within the account and ' \
        'canonical profiles are accessible' do
     user = FactoryBot.create(:user)
     account = FactoryBot.create(:account)

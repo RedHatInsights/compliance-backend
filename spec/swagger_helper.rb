@@ -72,7 +72,7 @@ end
 def include_param
   parameter name: :include, in: :query, required: false,
             schema: { type: :string },
-            description: 'A comma seperated list of resources to include in '\
+            description: 'A comma seperated list of resources to include in ' \
                          'the response'
 end
 
@@ -81,15 +81,15 @@ def pagination_params
             description: 'The number of items to return',
             schema: { type: :integer, maximum: 100, minimum: 1, default: 10 }
   parameter name: :offset, in: :query, required: false,
-            description: 'The number of items to skip before starting '\
+            description: 'The number of items to skip before starting ' \
             'to collect the result set',
             schema: { type: :integer, minimum: 1, default: 1 }
 end
 
 def search_params
   parameter name: :search, in: :query, required: false,
-            description: 'Query string compliant with scoped_search '\
-            'query language: '\
+            description: 'Query string compliant with scoped_search ' \
+            'query language: ' \
             'https://github.com/wvanbergen/scoped_search/wiki/Query-language',
             schema: { type: :string }
 end
@@ -106,7 +106,7 @@ end
 
 def sort_params(model = nil)
   parameter name: :sort_by, in: :query, required: false,
-            description: 'A string or an array of fields with an optional direction '\
+            description: 'A string or an array of fields with an optional direction ' \
              '(:asc or :desc) to sort the results.',
             schema: {
               oneOf: [{ type: :array, items: { type: 'string' } }, { type: :string }],

@@ -45,9 +45,9 @@ module Api
       end
 
       def description
-        'This is the API for Cloud Services for RHEL Compliance. '\
-          'You can find out more about Red Hat Cloud Services for RHEL at '\
-          '[https://console.redhat.com/]'\
+        'This is the API for Cloud Services for RHEL Compliance. ' \
+          'You can find out more about Red Hat Cloud Services for RHEL at ' \
+          '[https://console.redhat.com/]' \
           '(https://console.redhat.com/)'
       end
     end

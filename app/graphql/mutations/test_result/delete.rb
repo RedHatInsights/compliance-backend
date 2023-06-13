@@ -36,7 +36,7 @@ module Mutations
       end
 
       def audit_mutation(profile, test_results)
-        msg = "Removed all user scoped test results (#{test_results.count}) "\
+        msg = "Removed all user scoped test results (#{test_results.count}) " \
           "of policy #{profile.policy_id}"
         audit_success(msg)
       end

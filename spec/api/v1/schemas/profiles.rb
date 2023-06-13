@@ -31,9 +31,9 @@ module Api
             description: {
               type: 'string',
               nullable: true,
-              example: 'This profile contains rules to ensure standard '\
-              'security baseline\nof a Red Hat Enterprise Linux 7 '\
-              'system. Regardless of your system\'s workload\nall '\
+              example: 'This profile contains rules to ensure standard ' \
+              'security baseline\nof a Red Hat Enterprise Linux 7 ' \
+              'system. Regardless of your system\'s workload\nall ' \
               'of these checks should pass.'
             },
             compliance_threshold: {
