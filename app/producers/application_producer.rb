@@ -26,7 +26,7 @@ class ApplicationProducer
       msg = msg.merge(
         date: DateTime.now.utc.send(self::DATE_FORMAT),
         service: SERVICE,
-        source: ENV['APPLICATION_TYPE']
+        source: ENV.fetch('APPLICATION_TYPE', nil)
       )
       kafka&.produce(payload: msg.to_json, topic: self::TOPIC)&.wait
     end

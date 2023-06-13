@@ -8,19 +8,19 @@ module OpenshiftEnvironment
     end
 
     def application
-      ENV['APPLICATION_TYPE']
+      ENV.fetch('APPLICATION_TYPE', nil)
     end
 
     def pod
-      ENV['HOSTNAME']
+      ENV.fetch('HOSTNAME', nil)
     end
 
     def build
-      ENV['IMAGE_TAG']
+      ENV.fetch('IMAGE_TAG', nil)
     end
 
     def namespace
-      ENV['NAMESPACE']
+      ENV.fetch('NAMESPACE', nil)
     end
 
     def qe_account?(org_id)
