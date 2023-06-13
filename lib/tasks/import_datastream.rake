@@ -54,7 +54,7 @@ namespace :ssg do
   desc 'Update compliance DB with data from an Xccdf datastream file'
   task import: [:environment] do
     begin
-      if (filename = ENV['DATASTREAM_FILE'])
+      if (filename = ENV.fetch('DATASTREAM_FILE', nil))
         start = Time.zone.now
         Rails.logger.info "Importing #{filename} at #{start}"
         DatastreamImporter.new(filename).import!
