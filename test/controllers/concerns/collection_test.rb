@@ -35,8 +35,8 @@ class ControlleCollectionTest < ActionDispatch::IntegrationTest
       data = response.parsed_body
 
       batch = data['data']
-      batch_ids = batch.map { |p| p['id'] }.to_set
-      collected_ids = collected_profiles.map { |p| p['id'] }.to_set
+      batch_ids = batch.to_set { |p| p['id'] }
+      collected_ids = collected_profiles.to_set { |p| p['id'] }
       intersection = collected_ids.intersection(batch_ids)
 
       assert_equal 0, intersection.count,
@@ -52,9 +52,9 @@ class ControlleCollectionTest < ActionDispatch::IntegrationTest
     end
 
     assert_equal created_profiles.count, collected_profiles.count
-    created_ids = created_profiles.map(&:id).to_set
+    created_ids = created_profiles.to_set(&:id)
     assert_equal created_profiles.count, created_ids.count
-    collected_ids = collected_profiles.map { |p| p['id'] }.to_set
+    collected_ids = collected_profiles.to_set { |p| p['id'] }
     assert_equal 0, (created_ids - collected_ids).count
   end
 end
