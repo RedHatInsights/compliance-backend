@@ -12,8 +12,10 @@ module Insights
           end
 
           def call(env)
+            # rubocop:disable Style/RedundantRegexpArgument
             qs = env['QUERY_STRING'].sub(/^tags=/, 'tags[]=')
                                     .gsub(/&tags=/, '&tags[]=')
+            # rubocop:enable Style/RedundantRegexpArgument
 
             # Match the QUERY_STRING at the end of the line only
             re = /#{Regexp.quote(env['QUERY_STRING'])}$/

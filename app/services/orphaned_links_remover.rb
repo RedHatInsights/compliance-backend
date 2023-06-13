@@ -7,15 +7,15 @@ class OrphanedLinksRemover
     def run!
       return unless Host.table_exists?
 
-      ProfileRule.left_outer_joins(:profile).left_outer_joins(:rule).where(profiles: { id: nil }).or(
+      ProfileRule.left_outer_joins(:profile).left_outer_joins(:rule).where.missing(:profile).or(
         ProfileRule.where(rules: { id: nil })
       ).destroy_all
 
-      RuleResult.left_outer_joins(:rule).left_outer_joins(:host).where(rules: { id: nil }).or(
+      RuleResult.left_outer_joins(:rule).left_outer_joins(:host).where.missing(:rule).or(
         RuleResult.where('inventory.hosts': { id: nil })
       ).destroy_all
 
-      TestResult.left_outer_joins(:profile).left_outer_joins(:host).where(profiles: { id: nil }).or(
+      TestResult.left_outer_joins(:profile).left_outer_joins(:host).where.missing(:profile).or(
         RuleResult.where('inventory.hosts': { id: nil })
       ).destroy_all
     end

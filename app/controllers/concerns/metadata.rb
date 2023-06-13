@@ -60,7 +60,7 @@ module Metadata
     end
 
     def previous_offset
-      (pagination_offset - 1) <= 1 ? 1 : (pagination_offset - 1)
+      [(pagination_offset - 1), 1].max
     end
 
     def next_offset(last_offset)
@@ -103,12 +103,14 @@ module Metadata
       link_params = base_link_params.merge(other_params).compact
       # As the tags aren't a "real" array, unfortunately, we have to do these
       # kind of jugglings to build the URL properly
+      # rubocop:disable Style/RedundantRegexpArgument
       [
         base_link_url,
         link_params.to_query
                    .sub(/^tag%5B%5D\=/, 'tags=')
                    .gsub(/\&tags%5B%5D\=/, '&tags=')
       ].join('?')
+      # rubocop:enable Style/RedundantRegexpArgument
     end
 
     def tags

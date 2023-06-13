@@ -120,7 +120,16 @@ Rails/SquishedSQLHeredocs:
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
 
+Rails/ActionControllerTestCase:
+  Enabled: false
+
 Rails/ActiveRecordCallbacksOrder:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/Pluck:
   Enabled: false
 
 Rails/PluckInWhere:
