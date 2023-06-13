@@ -7,14 +7,14 @@ class ApplicationController < ActionController::API
   SEARCH = :search
 
   include ActionController::Helpers
-  include Pundit
+  include Pundit::Authorization
   include Authentication
   include ExceptionNotifierCustomData
   include Metadata
   include Pagination
   include Collection
   include Rendering
-  include Parameters
+  include ParameterHandling
   include ErrorHandling
 
   before_action :set_csp_hsts
