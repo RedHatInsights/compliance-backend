@@ -6,13 +6,9 @@ require 'test_helper'
 class ConfigDownloaderTest < ActiveSupport::TestCase
   context 'fallback file' do
     setup do
-      if File.exist?(SsgConfigDownloader::DS_FILE_PATH)
-        File.delete(SsgConfigDownloader::DS_FILE_PATH)
-      end
+      FileUtils.rm_f(SsgConfigDownloader::DS_FILE_PATH)
 
-      if File.exist?(SsgConfigDownloader::AT_FILE_PATH)
-        File.delete(SsgConfigDownloader::AT_FILE_PATH)
-      end
+      FileUtils.rm_f(SsgConfigDownloader::AT_FILE_PATH)
 
       @ds_config_file = File.new(SsgConfigDownloader::DS_FALLBACK_PATH)
       @at_config_file = File.new(SsgConfigDownloader::AT_FALLBACK_PATH)

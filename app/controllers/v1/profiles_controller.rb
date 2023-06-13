@@ -20,14 +20,6 @@ module V1
     end
     permission_for_action :show, Rbac::COMPLIANCE_VIEWER
 
-    def destroy
-      authorize profile
-      destroyed_profile = profile.destroy
-      audit_removal(destroyed_profile)
-      render_json destroyed_profile, status: :accepted
-    end
-    permission_for_action :destroy, Rbac::POLICY_DELETE
-
     def create
       Policy.transaction do
         if new_policy.save && new_profile.update(policy: new_policy)
@@ -54,6 +46,14 @@ module V1
       end
     end
     permission_for_action :update, Rbac::POLICY_WRITE
+
+    def destroy
+      authorize profile
+      destroyed_profile = profile.destroy
+      audit_removal(destroyed_profile)
+      render_json destroyed_profile, status: :accepted
+    end
+    permission_for_action :destroy, Rbac::POLICY_DELETE
 
     def tailoring_file
       return unless profile.tailored?

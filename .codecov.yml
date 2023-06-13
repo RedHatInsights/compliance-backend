@@ -5,6 +5,7 @@ coverage:
         target: 90
 ignore:
   - "bundle"
+  - "lib/tasks"
 codecov:
   notify:
     after_n_builds: 2

@@ -27,7 +27,9 @@ class SafeDownloader
     def download(url, max_size: nil, ssl_only: false)
       uri = encode_url(url, ssl_only)
       downloaded_file = open_url(uri, create_options(max_size))
+      # rubocop:disable Style/ZeroLengthPredicate
       raise EmptyFileError if downloaded_file.size.zero?
+      # rubocop:enable Style/ZeroLengthPredicate
 
       downloaded_file
     rescue *DOWNLOAD_ERRORS => e
