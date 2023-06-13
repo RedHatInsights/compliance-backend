@@ -38,8 +38,8 @@ module Mutations
 
       def audit_mutation(profile)
         audit_success(
-          "Updated profile #{profile.id} and" \
-          " its policy #{profile.policy_id}"
+          "Updated profile #{profile.id} and " \
+          "its policy #{profile.policy_id}"
         )
       end
     end

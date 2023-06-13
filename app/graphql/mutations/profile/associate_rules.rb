@@ -31,8 +31,8 @@ module Mutations
 
       def audit_mutation(profile, added, removed)
         audit_success(
-          "Updated rule assignments of profile #{profile.id}," \
-          " #{added} rules added, #{removed} rules removed"
+          "Updated rule assignments of profile #{profile.id}, " \
+          "#{added} rules added, #{removed} rules removed"
         )
       end
 

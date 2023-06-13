@@ -121,8 +121,8 @@ module HostSearching
                      .select(:id)
 
       {
-        conditions: "hosts.id IN (#{with_policy.to_sql})" \
-                    " OR hosts.id IN (#{with_profile.to_sql})"
+        conditions: "hosts.id IN (#{with_policy.to_sql}) " \
+                    "OR hosts.id IN (#{with_profile.to_sql})"
       }
     end
 

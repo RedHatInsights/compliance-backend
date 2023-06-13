@@ -811,8 +811,8 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_equal result.sort, [@host_failing_severe_rule.id, @host1.id].sort
     end
 
-    should 'filter test result profiles by policyId using an internal' \
-           ' profile id' do
+    should 'filter test result profiles by policyId using an internal ' \
+           'profile id' do
       query = <<-GRAPHQL
       query getSystems($policyId: ID) {
           systems(limit: 50, offset: 1) {
@@ -860,8 +860,8 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_equal 1, result_profile_ids.length
     end
 
-    should 'return test results filtered by policyId even if the host' \
-           ' is not associated to the policy' do
+    should 'return test results filtered by policyId even if the host ' \
+           'is not associated to the policy' do
       query = <<-GRAPHQL
       query getSystems($policyId: ID) {
           systems(limit: 50, offset: 1) {
@@ -945,8 +945,8 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_equal 2, result_profile_ids.length
     end
 
-    should 'filter test result profiles by policyId using any policy' \
-           ' profile id' do
+    should 'filter test result profiles by policyId using any policy ' \
+           'profile id' do
       query = <<-GRAPHQL
       query getSystems($policyId: ID) {
         systems(limit: 50, offset: 1) {
@@ -987,8 +987,8 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_equal 1, result_profile_ids.length
     end
 
-    should 'return external profile using an external profile id' \
-           ' via policyId' do
+    should 'return external profile using an external profile id ' \
+           'via policyId' do
       query = <<-GRAPHQL
       query getSystems($policyId: ID) {
           systems(limit: 50, offset: 1) {

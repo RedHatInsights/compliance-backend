@@ -202,8 +202,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
                    result['data']['profile']['policy']['name']
     end
 
-    should 'query profile with a policy profiles using first policy profile' \
-    ' owned by the user' do
+    should 'query profile with a policy profiles using first policy profile ' \
+    'owned by the user' do
       query = <<-GRAPHQL
       query Profile($id: String!){
           profile(id: $id) {
@@ -250,8 +250,8 @@ class ProfileQueryTest < ActiveSupport::TestCase
       assert_equal @profile.policy.description, second_profile['description']
     end
 
-    should 'query profile with a policy profiles using any policy profile' \
-           ' owned by the user' do
+    should 'query profile with a policy profiles using any policy profile ' \
+           'owned by the user' do
       query = <<-GRAPHQL
         query Profile($id: String!){
             profile(id: $id) {

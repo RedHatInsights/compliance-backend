@@ -9,8 +9,8 @@ class IncorrectProfileRemover
       find_incorrect_profiles(policy).destroy_all.count
     end.compact
 
-    Logger.new(STDOUT).info "#{counts.sum} profiles removed from policies with"\
-                            ' mismatched ref_ids'
+    Logger.new(STDOUT).info "#{counts.sum} profiles removed from policies with "\
+                            'mismatched ref_ids'
   end
 
   def self.find_incorrect_profiles(policy)

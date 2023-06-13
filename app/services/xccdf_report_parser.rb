@@ -65,8 +65,8 @@ class XccdfReportParser
     # rubocop:disable Style/GuardClause
     if benchmark.os_major_version.to_s != @host.os_major_version.to_s
       raise OSVersionMismatch,
-            "OS major version (#{@host.os_major_version}) does not match with" \
-            " benchmark #{benchmark.ref_id} (#{benchmark.os_major_version}). "\
+            "OS major version (#{@host.os_major_version}) does not match with " \
+            "benchmark #{benchmark.ref_id} (#{benchmark.os_major_version}). "\
             "#{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
