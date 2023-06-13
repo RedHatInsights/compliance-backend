@@ -218,11 +218,11 @@ objects:
           periodSeconds: 30
         resources:
           limits:
-            cpu: ${CPU_LIMIT_SERV}
-            memory: ${MEMORY_LIMIT_SERV}
+            cpu: ${CPU_LIMIT_SERVICE}
+            memory: ${MEMORY_LIMIT_SERVICE}
           requests:
-            cpu: ${CPU_REQUEST_SERV}
-            memory: ${MEMORY_REQUEST_SERV}
+            cpu: ${CPU_REQUEST_SERVICE}
+            memory: ${MEMORY_REQUEST_SERVICE}
     - name: inventory-consumer
       # TODO: check requirement for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_CONSUMER}}
@@ -309,11 +309,11 @@ objects:
             command: ["bash", "-c", "bundle exec rake --trace db:status redis:status kafka:status"]
         resources:
           limits:
-            cpu: ${CPU_LIMIT_CONS}
-            memory: ${MEMORY_LIMIT_CONS}
+            cpu: ${CPU_LIMIT_CONSUMER}
+            memory: ${MEMORY_LIMIT_CONSUMER}
           requests:
-            cpu: ${CPU_REQUEST_CONS}
-            memory: ${MEMORY_REQUEST_CONS}
+            cpu: ${CPU_REQUEST_CONSUMER}
+            memory: ${MEMORY_REQUEST_CONSUMER}
     - name: sidekiq
       minReplicas: ${{REPLICAS_SIDEKIQ}}
       deploymentStrategy:
@@ -326,11 +326,11 @@ objects:
           inheritEnv: true
         resources:
           limits:
-            cpu: ${CPU_LIMIT_SIDE}
-            memory: ${MEMORY_LIMIT_SIDE}
+            cpu: ${CPU_LIMIT_SIDEKIQ}
+            memory: ${MEMORY_LIMIT_SIDEKIQ}
           requests:
-            cpu: ${CPU_REQUEST_SIDE}
-            memory: ${MEMORY_REQUEST_SIDE}
+            cpu: ${CPU_REQUEST_SIDEKIQ}
+            memory: ${MEMORY_REQUEST_SIDEKIQ}
         livenessProbe:
           httpGet:
             path: /metrics
@@ -475,46 +475,38 @@ parameters:
 - name: APP_NAME
   required: true
   value: compliance
-- name: MEMORY_LIMIT_PROM
-  value: 300Mi
-- name: MEMORY_REQUEST_PROM
-  value: 200Mi
-- name: CPU_LIMIT_PROM
-  value: 400m
-- name: CPU_REQUEST_PROM
-  value: 100m
-- name: MEMORY_LIMIT_SERV
-  value: 1000Mi
-- name: MEMORY_REQUEST_SERV
-  value: 500Mi
-- name: CPU_LIMIT_SERV
+- name: MEMORY_LIMIT_SERVICE
+  value: 1200Mi
+- name: MEMORY_REQUEST_SERVICE
+  value: 600Mi
+- name: CPU_LIMIT_SERVICE
   value: 700m
-- name: CPU_REQUEST_SERV
-  value: 400m
-- name: MEMORY_LIMIT_CONS
+- name: CPU_REQUEST_SERVICE
+  value: 200m
+- name: MEMORY_LIMIT_CONSUMER
   value: 800Mi
-- name: MEMORY_REQUEST_CONS
+- name: MEMORY_REQUEST_CONSUMER
   value: 400Mi
-- name: CPU_LIMIT_CONS
+- name: CPU_LIMIT_CONSUMER
   value: 500m
-- name: CPU_REQUEST_CONS
+- name: CPU_REQUEST_CONSUMER
   value: 50m
-- name: MEMORY_LIMIT_SIDE
-  value: 1000Mi
-- name: MEMORY_REQUEST_SIDE
-  value: 500Mi
-- name: CPU_LIMIT_SIDE
-  value: 1000m
-- name: CPU_REQUEST_SIDE
+- name: MEMORY_LIMIT_SIDEKIQ
+  value: 800Mi
+- name: MEMORY_REQUEST_SIDEKIQ
+  value: 400Mi
+- name: CPU_LIMIT_SIDEKIQ
+  value: 500m
+- name: CPU_REQUEST_SIDEKIQ
   value: 100m
 - name: MEMORY_LIMIT_IMPORT_SSG
   value: 1000Mi
 - name: MEMORY_REQUEST_IMPORT_SSG
-  value: 500Mi
+  value: 100Mi
 - name: CPU_LIMIT_IMPORT_SSG
-  value: 1000m
+  value: 800m
 - name: CPU_REQUEST_IMPORT_SSG
-  value: 300m
+  value: 100m
 - name: REDIS_SSL
   description: 'Whether to use secured connection to Redis. Use string values of true or false'
   value: "true"
