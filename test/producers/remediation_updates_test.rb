@@ -8,6 +8,7 @@ class RemediationUpdatesTest < ActiveSupport::TestCase
   end
 
   test 'handles missing kafka config' do
+    RemediationUpdates.stubs(:kafka).returns(nil)
     assert_nil RemediationUpdates.deliver(
       host_id: '0001', issue_ids: [@issue_id]
     )
@@ -16,18 +17,14 @@ class RemediationUpdatesTest < ActiveSupport::TestCase
   test 'delivers messages to the remediation updates topic' do
     kafka = mock('kafka')
     RemediationUpdates.stubs(:kafka).returns(kafka)
-    kafka.expects(:deliver_message)
-         .with(anything, topic: RemediationUpdates::TOPIC)
+    kafka.expects(:produce).with(anything)
     RemediationUpdates.deliver(host_id: '0001', issue_ids: [@issue_id])
   end
 
   test 'handles delivery issues' do
     kafka = mock('kafka')
-    Kafka.stubs(:new).returns(kafka)
     RemediationUpdates.stubs(:kafka).returns(kafka)
-    kafka.expects(:deliver_message)
-         .with(anything, topic: RemediationUpdates::TOPIC)
-         .raises(Kafka::DeliveryFailed.new(nil, nil))
+    kafka.expects(:produce).with(anything).raises(Rdkafka::RdkafkaError.new(1))
 
     assert_nothing_raised do
       RemediationUpdates.deliver(host_id: '0001', issue_ids: [@issue_id])

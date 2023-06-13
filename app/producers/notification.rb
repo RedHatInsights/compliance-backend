@@ -22,8 +22,8 @@ class Notification < ApplicationProducer
       recipients: []
     }
 
-    kafka&.deliver_message(msg.to_json, topic: self::TOPIC)
-  rescue Kafka::DeliveryFailed => e
+    kafka&.produce(payload: msg.to_json, topic: self::TOPIC)
+  rescue *EXCEPTIONS => e
     logger.error("Notification delivery failed: #{e}")
   end
   # rubocop:enable Metrics/MethodLength

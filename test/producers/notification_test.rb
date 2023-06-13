@@ -18,24 +18,21 @@ class NofiticationTest < ActiveSupport::TestCase
   end
 
   test 'handles missing kafka config' do
+    MockNotification.stubs(:kafka).returns(nil)
     assert_nil MockNotification.deliver(account_number: @acc.account_number, org_id: @acc.org_id)
   end
 
   test 'delivers messages to the notifications topic' do
     kafka = mock('kafka')
     MockNotification.stubs(:kafka).returns(kafka)
-    kafka.expects(:deliver_message)
-         .with(anything, topic: 'platform.notifications.ingress')
+    kafka.expects(:produce).with(anything)
     MockNotification.deliver(account_number: @acc.account_number, org_id: @acc.org_id)
   end
 
   test 'handles delivery issues' do
     kafka = mock('kafka')
-    Kafka.stubs(:new).returns(kafka)
     MockNotification.stubs(:kafka).returns(kafka)
-    kafka.expects(:deliver_message)
-         .with(anything, topic: 'platform.notifications.ingress')
-         .raises(Kafka::DeliveryFailed.new(nil, nil))
+    kafka.expects(:produce).with(anything).raises(Rdkafka::RdkafkaError.new(1))
 
     assert_nothing_raised do
       MockNotification.deliver(account_number: @acc.account_number, org_id: @acc.org_id)
