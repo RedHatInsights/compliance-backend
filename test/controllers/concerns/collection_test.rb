@@ -40,8 +40,8 @@ class ControlleCollectionTest < ActionDispatch::IntegrationTest
       intersection = collected_ids.intersection(batch_ids)
 
       assert_equal 0, intersection.count,
-                   'Intersected items from previous page(s):' \
-                   " #{intersection}"
+                   'Intersected items from previous page(s): ' \
+                   "#{intersection}"
 
       collected_profiles.append(*batch)
 

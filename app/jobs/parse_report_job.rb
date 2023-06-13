@@ -114,9 +114,9 @@ class ParseReportJob
 
   def audit_success
     Rails.logger.audit_success(
-      "Successful report of #{report_profile_id}" \
-      " policy #{parser.host_profile.policy_id}" \
-      " from host #{@msg_value['id']}"
+      "Successful report of #{report_profile_id} " \
+      "policy #{parser.host_profile.policy_id} " \
+      "from host #{@msg_value['id']}"
     )
   end
 end

@@ -119,8 +119,8 @@ module V1
         assert_response :success
       end
 
-      should 'disallow access to profiles#tailoring_file' \
-             ' with invalid identity' do
+      should 'disallow access to profiles#tailoring_file ' \
+             'with invalid identity' do
         account = FactoryBot.create(:account)
         profile = FactoryBot.create(:canonical_profile, account: account)
 

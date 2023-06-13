@@ -70,16 +70,16 @@ module Mutations
 
       def audit_mutation(profile, policy, rules_added, rules_removed)
         audit_success(
-          "Created policy #{policy.id} with initial profile #{profile.id}" \
-          ' including tailoring (no systems assigned yet)'
+          "Created policy #{policy.id} with initial profile #{profile.id} " \
+          'including tailoring (no systems assigned yet)'
         )
 
         return unless rules_added&.nonzero? || rules_removed&.nonzero?
 
         audit_success(
-          "Updated tailoring of profile #{profile.id}" \
-          " of policy #{profile.policy_id}," \
-          " #{rules_added} rules added, #{rules_removed} rules removed"
+          "Updated tailoring of profile #{profile.id} " \
+          "of policy #{profile.policy_id}, " \
+          "#{rules_added} rules added, #{rules_removed} rules removed"
         )
       end
     end

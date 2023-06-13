@@ -62,8 +62,8 @@ module ReportParsing
     def msg_for_exception(exc)
       case exc
       when EntitlementError
-        "Rejected report with request id #{request_id}:" \
-        ' invalid identity or missing insights entitlement'
+        "Rejected report with request id #{request_id}: " \
+        'invalid identity or missing insights entitlement'
       when SafeDownloader::DownloadError
         "Failed to dowload report with request id #{request_id}: #{exc.message}"
       when InventoryEventsConsumer::ReportValidationError

@@ -33,8 +33,8 @@ class SupportedSsgTest < ActiveSupport::TestCase
       assert ref_ids.all?(&:present?)
     end
 
-    should 'provide a map of latest supported SSG for combination of OS major' \
-           ' an minor version' do
+    should 'provide a map of latest supported SSG for combination of OS major ' \
+           'an minor version' do
       SupportedSsg.instance_variable_set(:@latest_map, nil)
       latest_map = SupportedSsg.latest_map
 

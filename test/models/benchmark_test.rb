@@ -282,11 +282,11 @@ module Xccdf
         assert_equal 0, result.count
       end
 
-      should 'search by a list of supported minor version ' \
-             ' for selected major version' do
+      should 'search by a list of supported minor version  ' \
+             'for selected major version' do
         result = Xccdf::Benchmark.search_for(
-          'os_major_version = 7' \
-          ' and latest_supported_os_minor_version ^ (1, 100)'
+          'os_major_version = 7 ' \
+          'and latest_supported_os_minor_version ^ (1, 100)'
         )
         assert_equal 1, result.count
         assert_equal @rhel_7_ref, result.first.ref_id
@@ -316,8 +316,8 @@ module Xccdf
         assert_equal '0.1.32', result.first.version
 
         result = Xccdf::Benchmark.search_for(
-          'os_major_version = 8' \
-          ' and latest_supported_os_minor_version ^ (1, 9, 10)'
+          'os_major_version = 8 ' \
+          'and latest_supported_os_minor_version ^ (1, 9, 10)'
         )
         assert_equal 0, result.count
       end
