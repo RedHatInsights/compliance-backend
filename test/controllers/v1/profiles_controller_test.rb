@@ -322,7 +322,7 @@ module V1
           search: 'canonical=false and name=bar'
         }
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(%w[bar], profiles['data'].map do |profile|
           profile['attributes']['name']
@@ -340,7 +340,7 @@ module V1
           search: 'canonical=false and name="Custom Name"'
         }
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(['Custom Name'], profiles['data'].map do |profile|
           profile['attributes']['name']
@@ -363,7 +363,7 @@ module V1
           sort_by: 'name'
         }
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(%w[abc bar], profiles['data'].map do |profile|
           profile['attributes']['name']
@@ -386,7 +386,7 @@ module V1
           sort_by: 'name'
         }
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(%w[abc bar foo], profiles['data'].map do |profile|
           profile['attributes']['name']
@@ -406,7 +406,7 @@ module V1
           sort_by: 'name'
         }
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(['foo'], profiles['data'].map do |profile|
           profile['attributes']['name']
@@ -496,7 +496,7 @@ module V1
           sort_by: %w[name]
         }
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(%w[asd bar foo], profiles['data'].map do |profile|
           profile['attributes']['name']
@@ -911,7 +911,7 @@ module V1
           sort_by: %w[name]
         }
 
-        profiles = JSON.parse(response.body)
+        profiles = response.parsed_body
 
         assert_equal(['A new name'], profiles['data'].map do |profile|
           profile['attributes']['name']
