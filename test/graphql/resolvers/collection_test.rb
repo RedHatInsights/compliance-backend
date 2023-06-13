@@ -45,7 +45,7 @@ class GraphQLCollectionTest < ActiveSupport::TestCase
         edge['node']
       end
 
-      batch_ids = batch.map { |p| p['id'] }.to_set
+      batch_ids = batch.to_set { |p| p['id'] }
       intersection = collected_ids.intersection(batch_ids)
 
       assert_equal 0, intersection.count,
@@ -56,7 +56,7 @@ class GraphQLCollectionTest < ActiveSupport::TestCase
     end
 
     assert_equal created_profiles.count, collected_ids.count
-    created_ids = created_profiles.map(&:id).to_set
+    created_ids = created_profiles.to_set(&:id)
     assert_equal created_profiles.count, created_ids.count
     assert_equal 0, (created_ids - collected_ids).count
   end
