@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'rdkafka'
-
 # Common Kafka producer client
 class ApplicationProducer
   BROKERS = Settings.kafka.brokers.split(',').freeze
-  EXCEPTIONS = [Rdkafka::RdkafkaError, Rdkafka::AbstractHandle::WaitTimeoutError].freeze
+  EXCEPTIONS = [::Rdkafka::RdkafkaError, ::Rdkafka::AbstractHandle::WaitTimeoutError].freeze
   CLIENT_ID = 'compliance-backend'
   SERVICE = 'compliance'
   DATE_FORMAT = :iso8601
@@ -60,7 +58,7 @@ class ApplicationProducer
     end
 
     def kafka
-      @kafka ||= Rdkafka::Config.new(kafka_config).producer if self::BROKERS.any?
+      @kafka ||= ::Rdkafka::Config.new(kafka_config).producer if self::BROKERS.any?
     end
   end
 end
