@@ -41,6 +41,26 @@ class ApplicationProducerTest < ActiveSupport::TestCase
     assert_equal config, MockProducer.send(:kafka_config)
   end
 
+  test 'handles PLAIN settings' do
+    Settings.kafka.security_protocol = 'sasl_ssl'
+    Settings.kafka.ssl_ca_location = 'test/fixtures/files/test_ca.crt'
+    Settings.kafka.sasl_username = 'user'
+    Settings.kafka.sasl_password = 'youwish'
+    Settings.kafka.sasl_mechanism = 'PLAIN'
+
+    class MockProducer < ApplicationProducer; end
+
+    config = {
+      client_id: ApplicationProducer::CLIENT_ID,
+      ssl_ca_cert: "very secure\n",
+      sasl_plain_username: 'user',
+      sasl_plain_password: 'youwish',
+      ssl_ca_certs_from_system: true
+    }
+
+    assert_equal config, MockProducer.send(:kafka_config)
+  end
+
   test 'handles plaintext settings' do
     Settings.kafka.security_protocol = 'plaintext'
 
