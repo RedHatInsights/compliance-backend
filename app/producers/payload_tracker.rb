@@ -17,7 +17,7 @@ class PayloadTracker < ApplicationProducer
       system_id: system_id,
       status_msg: status_msg
     )
-  rescue *EXCEPTIONS => e
+  rescue Kafka::DeliveryFailed => e
     logger.error("Payload tracker delivery failed: #{e}")
   end
   # rubocop:enable Metrics/ParameterLists

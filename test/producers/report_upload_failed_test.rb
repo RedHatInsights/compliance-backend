@@ -11,7 +11,8 @@ class ReportUploadFailedTest < ActiveSupport::TestCase
   test 'delivers messages to the notifications topic' do
     kafka = mock('kafka')
     ReportUploadFailed.stubs(:kafka).returns(kafka)
-    kafka.expects(:produce).with(anything)
+    kafka.expects(:deliver_message)
+         .with(anything, topic: 'platform.notifications.ingress')
     ReportUploadFailed.deliver(account_number: @acc.account_number, org_id: @acc.org_id,
                                host: @host, request_id: 'bar', error: 'foo')
   end
@@ -19,7 +20,8 @@ class ReportUploadFailedTest < ActiveSupport::TestCase
   test 'delivers messages to the notifications topic without host' do
     kafka = mock('kafka')
     ReportUploadFailed.stubs(:kafka).returns(kafka)
-    kafka.expects(:produce).with(anything)
+    kafka.expects(:deliver_message)
+         .with(anything, topic: 'platform.notifications.ingress')
     ReportUploadFailed.deliver(account_number: @acc.account_number, org_id: @acc.org_id,
                                host: nil, request_id: 'bar', error: 'foo')
   end
