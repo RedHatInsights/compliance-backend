@@ -38,7 +38,7 @@ class ApplicationProducer
     def kafka_ca_cert
       return unless %w[ssl sasl_ssl].include?(Settings.kafka.security_protocol.downcase)
 
-      Settings.kafka.ssl_ca_location
+      File.read(Settings.kafka.ssl_ca_location) if Settings.kafka.ssl_ca_location
     end
 
     def sasl_config
@@ -55,7 +55,7 @@ class ApplicationProducer
       {
         'bootstrap.servers' => Settings.kafka.brokers,
         'client.id' => self::CLIENT_ID,
-        'ssl.ca.location' => kafka_ca_cert
+        'ssl_ca' => kafka_ca_cert
       }.merge(sasl_config).compact
     end
 

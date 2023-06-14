@@ -16,7 +16,7 @@ class ApplicationProducerTest < ActiveSupport::TestCase
 
     config = {
       'client.id' => ApplicationProducer::CLIENT_ID,
-      'ssl.ca.location' => 'test/fixtures/files/test_ca.crt',
+      'ssl_ca' => "very secure\n",
       'bootstrap.servers' => 'kafka:29092'
     }
     assert_equal config, MockProducer.send(:kafka_config)
@@ -35,7 +35,7 @@ class ApplicationProducerTest < ActiveSupport::TestCase
     config = {
       'bootstrap.servers' => 'kafka:29092',
       'client.id' => ApplicationProducer::CLIENT_ID,
-      'ssl.ca.location' => 'test/fixtures/files/test_ca.crt',
+      'ssl_ca' => "very secure\n",
       'sasl.username' => 'user',
       'sasl.password' => 'youwish',
       'sasl.mechanism' => 'SCRAM-SHA-512'
