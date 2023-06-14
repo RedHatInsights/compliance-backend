@@ -131,6 +131,9 @@ objects:
         - command: ["/bin/sh"]
           args: ["-c", "$HOME/scripts/check_migration_status_and_ssg_synced.sh"]
           inheritEnv: true
+          env:
+            - name: RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR
+              value: '2.0'
         env:
         - name: APPLICATION_TYPE
           value: compliance-backend
