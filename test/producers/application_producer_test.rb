@@ -8,22 +8,19 @@ class ApplicationProducerTest < ActiveSupport::TestCase
   end
 
   test 'handles SSL settings' do
-    Settings.kafka.brokers = 'kafka:29092'
     Settings.kafka.security_protocol = 'ssl'
     Settings.kafka.ssl_ca_location = 'test/fixtures/files/test_ca.crt'
 
     class MockProducer < ApplicationProducer; end
 
     config = {
-      'client.id' => ApplicationProducer::CLIENT_ID,
-      'ssl_ca' => "very secure\n",
-      'bootstrap.servers' => 'kafka:29092'
+      client_id: ApplicationProducer::CLIENT_ID,
+      ssl_ca_cert: "very secure\n"
     }
     assert_equal config, MockProducer.send(:kafka_config)
   end
 
   test 'handles SASL SSL settings' do
-    Settings.kafka.brokers = 'kafka:29092'
     Settings.kafka.security_protocol = 'sasl_ssl'
     Settings.kafka.ssl_ca_location = 'test/fixtures/files/test_ca.crt'
     Settings.kafka.sasl_username = 'user'
@@ -33,12 +30,12 @@ class ApplicationProducerTest < ActiveSupport::TestCase
     class MockProducer < ApplicationProducer; end
 
     config = {
-      'bootstrap.servers' => 'kafka:29092',
-      'client.id' => ApplicationProducer::CLIENT_ID,
-      'ssl_ca' => "very secure\n",
-      'sasl.username' => 'user',
-      'sasl.password' => 'youwish',
-      'sasl.mechanism' => 'SCRAM-SHA-512'
+      client_id: ApplicationProducer::CLIENT_ID,
+      ssl_ca_cert: "very secure\n",
+      sasl_scram_username: 'user',
+      sasl_scram_password: 'youwish',
+      sasl_scram_mechanism: 'sha512',
+      ssl_ca_certs_from_system: true
     }
 
     assert_equal config, MockProducer.send(:kafka_config)
@@ -46,13 +43,11 @@ class ApplicationProducerTest < ActiveSupport::TestCase
 
   test 'handles plaintext settings' do
     Settings.kafka.security_protocol = 'plaintext'
-    Settings.kafka.brokers = 'kafka:29092'
 
     class MockProducer < ApplicationProducer; end
 
     config = {
-      'client.id' => ApplicationProducer::CLIENT_ID,
-      'bootstrap.servers' => 'kafka:29092'
+      client_id: ApplicationProducer::CLIENT_ID
     }
 
     assert_equal config, MockProducer.send(:kafka_config)
