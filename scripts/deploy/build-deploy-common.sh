@@ -282,7 +282,10 @@ push_image() {
 
     local IMAGE_TAG="$1"
 
-    container_engine_cmd push "${IMAGE_NAME}:${IMAGE_TAG}"
+    if ! container_engine_cmd push "${IMAGE_NAME}:${IMAGE_TAG}"; then
+        echo "Error pushing image '${IMAGE_NAME}:${IMAGE_TAG}'"
+        return 1
+    fi
 }
 
 tag_image() {
@@ -349,7 +352,7 @@ build_deploy_main() {
     fi
     build_image || return 1
     if ! local_build; then
-        push_image "$IMAGE_TAG"
+        push_image "$IMAGE_TAG" || return 1
     fi
 
     if ! is_pr_or_mr_build && additional_tags; then
