@@ -53,6 +53,8 @@ class Host < ApplicationRecord
     scope: :with_benchmark
   )
 
+  sortable_by(:rules_failed, 'sq.rules_failed', scope: :with_failed_rules_count)
+
   self.table_name = 'inventory.hosts'
   self.primary_key = 'id'
 
@@ -84,6 +86,14 @@ class Host < ApplicationRecord
 
   scope :joins_test_result_profiles, lambda {
     left_outer_joins(:test_result_profiles)
+  }
+
+  scope :with_failed_rules_count, lambda {
+    sq = Host.left_outer_joins(test_result_profiles: :rule_results)
+             .where(rule_results: { result: RuleResult::FAILED })
+             .select(arel_table[:id].as('id'), RuleResult.arel_table[:result].count.as('rules_failed'))
+             .group('hosts.id')
+    joins("INNER JOIN (#{sq.to_sql}) sq ON sq.id = hosts.id")
   }
 
   def self.os_minor_versions(hosts)

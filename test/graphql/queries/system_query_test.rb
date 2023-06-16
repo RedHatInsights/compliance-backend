@@ -796,6 +796,79 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_equal 50, returned_profile3.dig(0, 'score')
       assert_equal 98, returned_profile4.dig(0, 'score')
     end
+
+    should 'properly sort by rules failed' do
+      host2 = FactoryBot.create(:host, org_id: @user.account.org_id)
+
+      # An outdated test result made in the past
+      FactoryBot.create(
+        :test_result,
+        profile: @profile1,
+        host: host2,
+        end_time: 1.minute.ago,
+        score: 100
+      )
+
+      FactoryBot.create(
+        :rule_result,
+        host: host2,
+        rule: @profile1.rules.first,
+        result: 'fail',
+        test_result: FactoryBot.create(
+          :test_result,
+          profile: @profile1,
+          host: host2,
+          score: 50
+        )
+      )
+
+      query = <<-GRAPHQL
+      query getSystems($policyId: ID, $sortBy: [String!]) {
+          systems(limit: 50, offset: 1, sortBy: $sortBy) {
+              edges {
+                  node {
+                      id
+                      name
+                      testResultProfiles(policyId: $policyId) {
+                          id
+                          rulesPassed
+                          rulesFailed
+                          lastScanned
+                          compliant
+                          score
+                          supported
+                          ssgVersion
+                      }
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      asc_result = Schema.execute(
+        query,
+        variables: { policyId: @profile1.id, sortBy: ['rulesFailed'] },
+        context: { current_user: @user }
+      )['data']['systems']['edges']
+
+      desc_result = Schema.execute(
+        query,
+        variables: { policyId: @profile1.id, sortBy: ['rulesFailed:DESC'] },
+        context: { current_user: @user }
+      )['data']['systems']['edges']
+
+      returned_profile1 = asc_result.dig(0, 'node', 'testResultProfiles')
+      returned_profile2 = asc_result.dig(1, 'node', 'testResultProfiles')
+
+      returned_profile3 = desc_result.dig(0, 'node', 'testResultProfiles')
+      returned_profile4 = desc_result.dig(1, 'node', 'testResultProfiles')
+
+      assert_equal 1, returned_profile1.dig(0, 'rulesFailed')
+      assert_equal 0, returned_profile2.dig(0, 'rulesFailed')
+
+      assert_equal 0, returned_profile3.dig(0, 'rulesFailed')
+      assert_equal 1, returned_profile4.dig(0, 'rulesFailed')
+    end
   end
 
   should 'sort results' do
