@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'with metadata' do
-  let(:item_count) { 20 }
   let(:meta_keys) { %w[total limit offset relationships] }
 
   it 'contains total, limit, offset and relationships keys' do
