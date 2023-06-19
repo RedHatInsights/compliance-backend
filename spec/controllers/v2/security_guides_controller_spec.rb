@@ -41,6 +41,7 @@ describe V2::SecurityGuidesController do
 
         expect(response).to have_http_status :ok
         expect(response_body_data).to match_array(collection)
+
         response_body_data.each do |sg|
           expect(sg['attributes'].keys.count).to eq(attributes.keys.count)
         end
@@ -48,8 +49,8 @@ describe V2::SecurityGuidesController do
 
       it_behaves_like 'searchable'
       it_behaves_like 'paginable'
-      it_behaves_like 'with metadata'
       it_behaves_like 'sortable'
+      include_examples 'with metadata'
 
       context 'RBAC denied' do
         let(:rbac_allowed?) { false }
