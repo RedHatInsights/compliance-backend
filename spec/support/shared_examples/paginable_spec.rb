@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'paginable' do
-  let(:item_count) { 20 }
+  let(:item_count) { 20 } # We need more items to be created to test pagination properly
 
-  [2, 5, 10, 15].each do |per_page|
+  [2, 5, 10, 15, 20].each do |per_page|
     it "returns with the requested #{per_page} records per page" do
       items # force creation
 
@@ -19,7 +19,7 @@ RSpec.shared_examples 'paginable' do
           hash_including(
             'id' => sg.id,
             'type' => 'security_guide',
-            'attributes' => hash_including
+            'attributes' => a_kind_of(Hash)
           )
         end
 
