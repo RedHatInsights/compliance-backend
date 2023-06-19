@@ -5,4 +5,4 @@ coverage:
         target: 90
 ignore:
   - "bundle"
-  - "**/v2"
+  - "spec"

@@ -98,6 +98,10 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rake spec
+    - name: Upload code coverage from specs
+      uses: codecov/codecov-action@v2
+    - name: Clean up spec coverage
+      run: rm -rf coverage
     - name: Validate the OpenAPI schema
       env:
         RAILS_ENV: test
@@ -142,7 +146,7 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rake test
-    - name: Upload code coverage
+    - name: Upload code coverage from tests
       uses: codecov/codecov-action@v2
   migration-robustness:
     runs-on: ubuntu-latest
