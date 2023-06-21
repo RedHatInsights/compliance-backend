@@ -62,4 +62,8 @@ class OsMajorVersion < ApplicationRecord
   def os_major_version
     attributes['os_major_version']
   end
+
+  def graphql_cache_key
+    "#{self.class.model_name.cache_key}/#{os_major_version}"
+  end
 end
