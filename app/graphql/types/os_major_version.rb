@@ -8,7 +8,7 @@ module Types
     description 'Major version of a supported operating system'
 
     field :os_major_version, Int, null: false
-    field :profiles, [::Types::Profile], null: true
+    cached_static_field :profiles, [::Types::Profile], null: true
 
     enforce_rbac Rbac::COMPLIANCE_VIEWER
   end
