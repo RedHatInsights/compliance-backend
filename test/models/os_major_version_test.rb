@@ -5,8 +5,6 @@ require 'test_helper'
 class OsMajorVersionTest < ActiveSupport::TestCase
   context 'supported_profiles' do
     should 'list all supported profiles' do
-      User.current = FactoryBot.create(:user)
-
       supported_ssg1 = SupportedSsg.new(version: '0.1.50',
                                         os_major_version: '7', os_minor_version: '1')
       supported_ssg2 = SupportedSsg.new(version: '0.1.51',
@@ -41,8 +39,6 @@ class OsMajorVersionTest < ActiveSupport::TestCase
       assert_includes(result, p1)
       assert_includes(result, p2)
       assert_not_includes(result, p3)
-
-      User.current = nil
     end
   end
 
