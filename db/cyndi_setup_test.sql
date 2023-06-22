@@ -19,6 +19,7 @@ CREATE TABLE inventory.hosts_v1_1 (
     created timestamp with time zone NOT NULL,
     stale_timestamp timestamp with time zone NOT NULL,
     system_profile jsonb NOT NULL,
+    groups jsonb,
     insights_id uuid
 );
 
@@ -36,6 +37,7 @@ SELECT
     stale_timestamp + INTERVAL '1' DAY * 14 AS culled_timestamp,
     tags,
     system_profile,
+    groups,
     insights_id
 FROM inventory.hosts_v1_1;
 
