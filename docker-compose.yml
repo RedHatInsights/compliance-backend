@@ -100,7 +100,7 @@ services:
     links:
       - kafka
   db:
-    image: docker.io/debezium/postgres:14-alpine
+    image: docker.io/debezium/postgres:15-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD: insights
