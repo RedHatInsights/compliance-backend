@@ -25,7 +25,7 @@ class OsMajorVersion < ApplicationRecord
       Arel::Nodes::NamedFunction.new(
         'REPLACE',
         [
-          Xccdf::Benchmark.arel_table[:ref_id],
+          arel_table[:ref_id],
           Arel::Nodes::Quoted.new("#{Xccdf::Benchmark::REF_PREFIX}-"),
           Arel::Nodes::Quoted.new('')
         ]
@@ -34,7 +34,7 @@ class OsMajorVersion < ApplicationRecord
   ).as('os_major_version')
 
   PROFILE_LAST_ID = Arel.sql("(#{aggregated_cast(Profile.arel_table[:id]).to_sql})[1] as \"id\"")
-  PROFILE_BM_VERSIONS = aggregated_cast(Xccdf::Benchmark.arel_table[:version]).as('bm_versions')
+  PROFILE_BM_VERSIONS = aggregated_cast(arel_table[:version]).as('bm_versions')
 
   default_scope do
     select(OS_MAJOR_VERSION, :ref_id).distinct.order(:os_major_version)
