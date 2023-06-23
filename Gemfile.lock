@@ -440,9 +440,6 @@ GEM
       anyway_config (>= 1.0, < 3)
       concurrent-ruby
       dry-initializer
-    yabeda-graphql (0.2.3)
-      graphql (>= 1.9, < 3)
-      yabeda (~> 0.2)
     yabeda-prometheus-mmap (0.3.0)
       prometheus-client-mmap
       yabeda (~> 0.10)
@@ -534,7 +531,6 @@ DEPENDENCIES
   webrick
   will_paginate
   yabeda
-  yabeda-graphql
   yabeda-prometheus-mmap
   yabeda-puma-plugin
   yabeda-rails
