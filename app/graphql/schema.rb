@@ -8,7 +8,14 @@ require_relative 'types/mutation'
 # GraphQL-ruby documentation to find out what to add or
 # remove here.
 class Schema < GraphQL::Schema
+  # Fragment cache uses a legacy tracer for detecting connection fields and raising an
+  # exceptions if they are not used in conjunction with pagination connections. As we
+  # implemented our own pagination mechanism, this feature is not really necessary for
+  # our case. Furthermore, legacy tracing is more wasteful with memory allocations and
+  # so turning it off actually can make our application more efficient.
   use GraphQL::FragmentCache
+  @own_tracers = @trace_modes = nil
+
   use ComplianceTimeout, max_seconds: 20
   query Types::Query
   mutation Types::Mutation
