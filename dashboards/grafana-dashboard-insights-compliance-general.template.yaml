@@ -1491,22 +1491,22 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "histogram_quantile(0.5, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))/$qe",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",gql_op!=\"\"}[$interval])) by (gql_op,le))/$qe",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
-                "legendFormat": "{{type}}.{{field}}",
+                "legendFormat": "{{gql_op}}",
                 "refId": "Total"
               },
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "histogram_quantile(0.5, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (type,field,le))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.5, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",gql_op!=\"\",qe!=\"1\"}[$interval])) by (gql_op,le))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
-                "legendFormat": "{{type}}.{{field}}",
+                "legendFormat": "{{gql_op}}",
                 "refId": "Excluding QE"
               }
             ],
@@ -1597,22 +1597,22 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "histogram_quantile(0.99, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (type,field,le))/$qe",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",gql_op!=\"\"}[$interval])) by (gql_op,le))/$qe",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
-                "legendFormat": "{{type}}.{{field}}",
+                "legendFormat": "{{gql_op}}",
                 "refId": "Total"
               },
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "histogram_quantile(0.99, sum(rate(graphql_field_resolve_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (type,field,le))/(-($qe - 1))",
+                "expr": "histogram_quantile(0.99, sum(rate(rails_request_duration_seconds_bucket{application=\"compliance\",gql_op!=\"\",qe!=\"1\"}[$interval])) by (gql_op,le))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 10,
-                "legendFormat": "{{type}}.{{field}}",
+                "legendFormat": "{{gql_op}}",
                 "refId": "Excluding QE"
               }
             ],
@@ -4464,7 +4464,7 @@ objects:
         "timezone": "",
         "title": "Compliance",
         "uid": "compliance",
-        "version": 11,
+        "version": 12,
         "weekStart": ""
       }
   kind: ConfigMap
