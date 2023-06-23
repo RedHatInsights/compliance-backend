@@ -198,8 +198,6 @@ objects:
               name: compliance-rails-cache
               key: db.auth_token
               optional: true
-        - name: SETTINGS__YABEDA_GRAPHQL_ENABLE
-          value: ${SETTINGS__YABEDA_GRAPHQL_ENABLE}
         - name: IMAGE_TAG
           value: "${IMAGE}:${IMAGE_TAG}"
         - name: QE_ACCOUNTS
@@ -537,8 +535,6 @@ parameters:
   value: "false"
 - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
   value: "true"
-- name: SETTINGS__YABEDA_GRAPHQL_ENABLE
-  value: "false"
 - name: FLOORIST_SUSPEND
   description: Disable Floorist cronjob execution
   required: true

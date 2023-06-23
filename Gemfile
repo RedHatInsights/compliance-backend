@@ -63,7 +63,6 @@ gem 'yabeda'
 gem 'yabeda-puma-plugin'
 gem 'yabeda-rails'
 gem 'yabeda-sidekiq'
-gem 'yabeda-graphql'
 gem 'yabeda-prometheus-mmap'
 
 # Nokogiri

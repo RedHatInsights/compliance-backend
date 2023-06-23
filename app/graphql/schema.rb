@@ -8,7 +8,6 @@ require_relative 'types/mutation'
 # GraphQL-ruby documentation to find out what to add or
 # remove here.
 class Schema < GraphQL::Schema
-  use Yabeda::GraphQL if Settings.yabeda_graphql_enable
   use GraphQL::FragmentCache
   use ComplianceTimeout, max_seconds: 20
   query Types::Query
