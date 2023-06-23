@@ -1,0 +1,16 @@
+{
+  "roles": [
+    {
+      "name": "Comfortable insights developer",
+      "description": "Perform any available operation against any service.",
+      "system": true,
+      "platform_default": true,
+      "version": 1,
+      "access": [
+        {
+          "permission": "*:*:*"
+        }
+      ]
+    }
+  ]
+}
