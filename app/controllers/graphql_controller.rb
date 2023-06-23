@@ -25,7 +25,7 @@ class GraphqlController < ApplicationController
 
   # Very primitive way to determine the first occurence of an operation name after
   # a query or a mutation. This does not work with multiplex queries, but as long
-  # as we don't use them in our codebase, it is fine.
+  # as the first operation names describe the rest, it should be fine.
   def parse_gql_op
     params[:query]&.match(QUERY_RE).try(:[], 1)
   end
