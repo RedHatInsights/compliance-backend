@@ -230,7 +230,7 @@ objects:
       # TODO: check requirement for RDS CA and Kafka Cert with Clowder
       minReplicas: ${{REPLICAS_CONSUMER}}
       deploymentStrategy:
-        privateStrategy: RollingUpdate
+        privateStrategy: Recreate
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
