@@ -320,7 +320,7 @@ objects:
     - name: sidekiq
       minReplicas: ${{REPLICAS_SIDEKIQ}}
       deploymentStrategy:
-        privateStrategy: RollingUpdate
+        privateStrategy: Recreate
       podSpec:
         image: ${IMAGE}:${IMAGE_TAG}
         initContainers:
