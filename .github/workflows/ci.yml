@@ -137,3 +137,5 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rails db:create db:migrate
+    - name: Check if migrations altered the schema.rb
+      run: "! git diff --unified=0 -- db/schema.rb | grep ^+ActiveRecord"
