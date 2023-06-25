@@ -21,7 +21,7 @@ module Metadata
       {
         meta: {
           total: opts[:total],
-          search: permitted_params[:search],
+          self.class::SEARCH => permitted_params[self.class::SEARCH],
           tags: tags,
           limit: pagination_limit,
           offset: pagination_offset,
@@ -90,7 +90,7 @@ module Metadata
 
     def base_link_params
       {
-        search: permitted_params[:search],
+        self.class::SEARCH => permitted_params[self.class::SEARCH],
         include: permitted_params[:include],
         limit: pagination_limit,
         tags: permitted_params[:tags],

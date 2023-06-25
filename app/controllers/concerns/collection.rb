@@ -21,16 +21,18 @@ module Collection
       data.where('tags @> ?', tags.to_json)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def search(data)
-      return data if permitted_params[:search].blank?
+      return data if permitted_params[self.class::SEARCH].blank?
 
       # Fail if search is not supported for the given model
-      if !data.respond_to?(:search_for) || permitted_params[:search].match(/\x00/)
-        raise ActionController::UnpermittedParameters.new(search: permitted_params[:search])
+      if !data.respond_to?(:search_for) || permitted_params[self.class::SEARCH].match(/\x00/)
+        raise ActionController::UnpermittedParameters.new(self.class::SEARCH => permitted_params[self.class::SEARCH])
       end
 
-      data.search_for(permitted_params[:search])
+      data.search_for(permitted_params[self.class::SEARCH])
     end
+    # rubocop:enable Metrics/AbcSize
 
     def sort(data)
       order_hash, extra_scopes = data.klass.build_order_by(permitted_params[:sort_by])
