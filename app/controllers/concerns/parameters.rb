@@ -25,7 +25,7 @@ module Parameters
   included do
     permitted_params_for_action :index, {
       relationships: ParamType.boolean,
-      search: ParamType.string,
+      self::SEARCH => ParamType.string,
       sort_by: ARRAY_OR_STRING,
       tags: ARRAY_OR_STRING,
       limit: ParamType.integer & ParamType.gt(0) & ParamType.lte(100),

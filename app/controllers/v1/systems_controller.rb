@@ -4,7 +4,7 @@ module V1
   # API for Systems (only Hosts for the moment)
   class SystemsController < ApplicationController
     def index
-      permitted_params[:search] ||= 'has_test_results=true or has_policy=true'
+      permitted_params[self.class::SEARCH] ||= 'has_test_results=true or has_policy=true'
       render_json resolve_collection
     end
     permission_for_action :index, Rbac::SYSTEM_READ
