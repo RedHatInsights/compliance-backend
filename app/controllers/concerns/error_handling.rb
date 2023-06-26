@@ -47,6 +47,7 @@ module ErrorHandling
       ::Exceptions::InvalidSortingDirection,
       ::Exceptions::InvalidSortingColumn,
       ::Exceptions::InvalidTagEncoding,
+      PG::InvalidTextRepresentation,
       RangeError
     ]
 
