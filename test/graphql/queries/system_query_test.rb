@@ -349,6 +349,94 @@ class SystemQueryTest < ActiveSupport::TestCase
       assert_equal result.first, @host_failing_severe_rule.id
     end
 
+    should 'filter hosts except succeeding rules using scoped_search filter' do
+      TestResult.delete_all
+      RuleResult.delete_all
+      @host_succeeding_severe_rule = FactoryBot.create(
+        :host,
+        org_id: @host1.org_id,
+        display_name: 'host_severe_rule.failed',
+        stale_timestamp: 2.days.ago(Time.zone.now)
+      )
+      @policy = FactoryBot.create(
+        :policy,
+        account: @user.account,
+        hosts: [
+          @host_succeeding_severe_rule,
+          @host1
+        ]
+      )
+      @profile_succeeding = FactoryBot.create(
+        :profile,
+        account: @user.account,
+        policy: @policy
+      )
+      @rule_success_severe = FactoryBot.create(
+        :rule,
+        title: 'Severe succeeding rule',
+        severity: 'high',
+        profiles: [@profile_succeeding]
+      )
+      @rule_success_not_severe = FactoryBot.create(
+        :rule,
+        title: 'Low severity succeeding rule',
+        severity: 'low',
+        profiles: [@profile_succeeding]
+      )
+      FactoryBot.create(
+        :rule_result,
+        host: @host_succeeding_severe_rule,
+        rule: @rule_success_severe,
+        test_result: FactoryBot.create(
+          :test_result,
+          host: @host_succeeding_severe_rule,
+          score: 0,
+          profile: @profile_succeeding
+        ),
+        result: 'success'
+      )
+      FactoryBot.create(
+        :rule_result,
+        host: @host1,
+        rule: @rule_success_not_severe,
+        test_result: FactoryBot.create(
+          :test_result,
+          host: @host1,
+          score: 0,
+          profile: @profile_succeeding
+        ),
+        result: 'success'
+      )
+
+      query = <<-GRAPHQL
+        query getSystems($filter: String!) {
+          systems(search: $filter, limit: 50, offset: 1) {
+            edges {
+              node {
+                id
+              }
+            }
+          }
+        }
+      GRAPHQL
+
+      filter = <<-FILTER
+        (policy_id = #{@policy.id}) and
+        (failed_rules_with_severity ^ (high low))
+      FILTER
+
+      result = Schema.execute(
+        query,
+        variables: {
+          policyId: @policy.id,
+          filter: filter
+        },
+        context: { current_user: @user }
+      ).first.second['systems']['edges'].map { |node| node['node']['id'] }
+
+      assert_equal result, []
+    end
+
     should 'filter hosts by failed rules using scoped_search filter' do
       TestResult.delete_all
       RuleResult.delete_all

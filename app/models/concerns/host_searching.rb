@@ -156,11 +156,12 @@ module HostSearching
       raise ScopedSearch::QueryNotSupported if profiles.nil?
 
       hosts = search_in(
-        ::RuleResult.latest(profiles.compact.first.policy_id).joins(:rule).distinct.select(:host_id),
+        ::RuleResult.latest(profiles.compact.first.policy_id)
+                    .joins(:rule).where(rule_results: { result: RuleResult::FAILED })
+                    .distinct.select(:host_id),
         operator,
-        { rule: { severity: value.split(',').map(&:strip) } }
+        { rules: { severity: value.split(',').map(&:strip) } }
       )
-
       { conditions: "hosts.id IN(#{hosts.to_sql})" }
     end
 
