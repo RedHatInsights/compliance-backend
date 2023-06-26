@@ -53,7 +53,7 @@ module Sortable
     end
 
     def assert_sortable_by!(column, direction)
-      unless @sortable_by.key?(column.to_sym)
+      unless @sortable_by.key?(column&.to_sym)
         raise ::Exceptions::InvalidSortingColumn, column
       end
 
