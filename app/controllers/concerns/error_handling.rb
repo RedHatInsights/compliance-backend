@@ -41,6 +41,7 @@ module ErrorHandling
     end
 
     invalid_parameter_exceptions = [
+      ActionDispatch::Http::Parameters::ParseError,
       StrongerParameters::InvalidParameter,
       ActionController::UnpermittedParameters,
       ::Exceptions::InvalidSortingDirection,
