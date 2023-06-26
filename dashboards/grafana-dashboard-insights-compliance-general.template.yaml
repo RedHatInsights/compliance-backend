@@ -26,6 +26,74 @@ objects:
                 "type": "dashboard"
               },
               "type": "dashboard"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P5108662370F9C14C"
+              },
+              "enable": true,
+              "hide": true,
+              "iconColor": "dark-blue",
+              "name": "Successful deployments",
+              "target": {
+                "editorMode": "code",
+                "format": "table",
+                "rawQuery": true,
+                "rawSql": "SELECT deployment_time as \"time\", 'deployed ' || app_name || ' to ' || env_name as \"text\" from deployments WHERE app_name = 'compliance' and env_name = REGEXP_REPLACE(REGEXP_REPLACE('${datasource}', 'crcs.*', 'insights-stage'), 'crcp.*', 'insights-production') and succeeded = true;",
+                "refId": "Anno",
+                "sql": {
+                  "columns": [
+                    {
+                      "parameters": [],
+                      "type": "function"
+                    }
+                  ],
+                  "groupBy": [
+                    {
+                      "property": {
+                        "type": "string"
+                      },
+                      "type": "groupBy"
+                    }
+                  ],
+                  "limit": 50
+                }
+              }
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "P5108662370F9C14C"
+              },
+              "enable": true,
+              "hide": true,
+              "iconColor": "dark-red",
+              "name": "Failed deployments",
+              "target": {
+                "editorMode": "code",
+                "format": "table",
+                "rawQuery": true,
+                "rawSql": "SELECT deployment_time as \"time\", 'deployed ' || app_name || ' to ' || env_name as \"text\" from deployments WHERE app_name = 'compliance' and env_name = REGEXP_REPLACE(REGEXP_REPLACE('${datasource}', 'crcs.*', 'insights-stage'), 'crcp.*', 'insights-production') and succeeded = false;",
+                "refId": "Anno",
+                "sql": {
+                  "columns": [
+                    {
+                      "parameters": [],
+                      "type": "function"
+                    }
+                  ],
+                  "groupBy": [
+                    {
+                      "property": {
+                        "type": "string"
+                      },
+                      "type": "groupBy"
+                    }
+                  ],
+                  "limit": 50
+                }
+              }
             }
           ]
         },
