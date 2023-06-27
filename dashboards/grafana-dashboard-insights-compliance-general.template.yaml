@@ -1529,12 +1529,12 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "value": null,
-                      "color": "green"
+                      "color": "transparent",
+                      "value": null
                     },
                     {
-                      "value": 80,
-                      "color": "red"
+                      "color": "red",
+                      "value": 2
                     }
                   ]
                 },
@@ -1635,12 +1635,12 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "value": null,
-                      "color": "green"
+                      "color": "transparent",
+                      "value": null
                     },
                     {
-                      "value": 80,
-                      "color": "red"
+                      "color": "red",
+                      "value": 2
                     }
                   ]
                 },
