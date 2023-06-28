@@ -495,11 +495,11 @@ parameters:
 - name: CPU_REQUEST_CONSUMER
   value: 50m
 - name: MEMORY_LIMIT_SIDEKIQ
-  value: 800Mi
+  value: 1000Mi
 - name: MEMORY_REQUEST_SIDEKIQ
-  value: 400Mi
+  value: 500Mi
 - name: CPU_LIMIT_SIDEKIQ
-  value: 500m
+  value: 1000m
 - name: CPU_REQUEST_SIDEKIQ
   value: 100m
 - name: MEMORY_LIMIT_IMPORT_SSG
