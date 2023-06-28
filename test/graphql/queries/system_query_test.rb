@@ -887,14 +887,18 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     should 'properly sort by rules failed' do
       host2 = FactoryBot.create(:host, org_id: @user.account.org_id)
+      host3 = FactoryBot.create(:host, org_id: @user.account.org_id)
+      # For testing sorting of nil failed_rules
+      host4 = FactoryBot.create(:host, org_id: @user.account.org_id)
+      [host4, host2, host3].each do |host|
+        host.policies << @profile1.policy
+      end
 
-      # An outdated test result made in the past
-      FactoryBot.create(
+      tr = FactoryBot.create(
         :test_result,
         profile: @profile1,
         host: host2,
-        end_time: 1.minute.ago,
-        score: 100
+        score: 50
       )
 
       FactoryBot.create(
@@ -902,17 +906,35 @@ class SystemQueryTest < ActiveSupport::TestCase
         host: host2,
         rule: @profile1.rules.first,
         result: 'fail',
-        test_result: FactoryBot.create(
-          :test_result,
-          profile: @profile1,
-          host: host2,
-          score: 50
-        )
+        test_result: tr
+      )
+
+      FactoryBot.create(
+        :rule_result,
+        host: host2,
+        rule: @profile2.rules.first,
+        result: 'fail',
+        test_result: tr
+      )
+
+      tr2 = FactoryBot.create(
+        :test_result,
+        profile: @profile1,
+        host: host3,
+        score: 50
+      )
+
+      FactoryBot.create(
+        :rule_result,
+        host: host3,
+        rule: @profile1.rules.first,
+        result: 'fail',
+        test_result: tr2
       )
 
       query = <<-GRAPHQL
-      query getSystems($policyId: ID, $sortBy: [String!]) {
-          systems(limit: 50, offset: 1, sortBy: $sortBy) {
+      query getSystems($policyId: ID, $filter: String, $sortBy: [String!]) {
+          systems(limit: 50, offset: 1, search: $filter, sortBy: $sortBy) {
               edges {
                   node {
                       id
@@ -935,27 +957,35 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       asc_result = Schema.execute(
         query,
-        variables: { policyId: @profile1.id, sortBy: ['rulesFailed'] },
+        variables: {
+          policyId: @profile1.id,
+          sortBy: ['rulesFailed'],
+          filter: "policy_id = #{@profile1.id}"
+        },
         context: { current_user: @user }
-      )['data']['systems']['edges']
+      )['data']['systems']['edges'].map do |row|
+        if row['node']['testResultProfiles'].first
+          row['node']['testResultProfiles'].first['rulesFailed']
+        end
+      end
 
       desc_result = Schema.execute(
         query,
-        variables: { policyId: @profile1.id, sortBy: ['rulesFailed:DESC'] },
+        variables: {
+          policyId: @profile1.id,
+          sortBy: ['rulesFailed:DESC'],
+          filter: "policy_id = #{@profile1.id}"
+        },
         context: { current_user: @user }
-      )['data']['systems']['edges']
+      )['data']['systems']['edges'].map do |row|
+        if row['node']['testResultProfiles'].first
+          row['node']['testResultProfiles'].first['rulesFailed']
+        end
+      end
 
-      returned_profile1 = asc_result.dig(0, 'node', 'testResultProfiles')
-      returned_profile2 = asc_result.dig(1, 'node', 'testResultProfiles')
+      assert_includes([[nil, 0, 1, 2], [0, nil, 1, 2]], asc_result)
 
-      returned_profile3 = desc_result.dig(0, 'node', 'testResultProfiles')
-      returned_profile4 = desc_result.dig(1, 'node', 'testResultProfiles')
-
-      assert_equal 1, returned_profile1.dig(0, 'rulesFailed')
-      assert_equal 0, returned_profile2.dig(0, 'rulesFailed')
-
-      assert_equal 0, returned_profile3.dig(0, 'rulesFailed')
-      assert_equal 1, returned_profile4.dig(0, 'rulesFailed')
+      assert_includes([[2, 1, 0, nil], [2, 1, nil, 0]], desc_result)
     end
   end
 

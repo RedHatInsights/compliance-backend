@@ -88,11 +88,17 @@ class Host < ApplicationRecord
     left_outer_joins(:test_result_profiles)
   }
 
-  scope :with_failed_rules_count, lambda {
-    sq = Host.left_outer_joins(test_result_profiles: :rule_results)
-             .where(rule_results: { result: RuleResult::FAILED })
+  scope :with_failed_rules_count, lambda { |profile = nil|
+    profile ||= RequestStore.store['scoped_search_context_profiles']
+    profile_ids = profile&.pluck(:id) || []
+
+    sq = Host.left_outer_joins(test_results: :rule_results)
+             .merge(TestResult.latest('LEFT OUTER JOIN'))
+             .where(test_results: { profile_id: profile_ids }, rule_results: { result: RuleResult::FAILED })
+             .or(Host.where(test_results: { profile_id: profile_ids }, rule_results: { id: nil }))
              .select(arel_table[:id].as('id'), RuleResult.arel_table[:result].count.as('rules_failed'))
              .group('hosts.id')
+
     joins("INNER JOIN (#{sq.to_sql}) sq ON sq.id = hosts.id")
   }
 
