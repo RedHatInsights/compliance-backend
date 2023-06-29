@@ -121,8 +121,7 @@ class AuthenticationTest < ActionController::TestCase
           'identity': {
             'org_id': '1234',
             'user': {
-              'username': 'username',
-              'is_internal': true
+              'username': 'username'
             }
           },
           'entitlements':
@@ -141,7 +140,6 @@ class AuthenticationTest < ActionController::TestCase
         Account.find_by(org_id: '1234').org_id,
         '1234'
       )
-      assert Account.find_by(org_id: '1234').is_internal
       assert_not User.current, 'current user must be reset after request'
     end
 
@@ -169,35 +167,6 @@ class AuthenticationTest < ActionController::TestCase
         '1234'
       )
       assert_not User.current, 'current user must be reset after request'
-    end
-
-    should 'account found, is_internal unset, updates it' do
-      FactoryBot.create(:account, org_id: '1234')
-      assert_nil Account.find_by(org_id: '1234').is_internal
-
-      encoded_header = Base64.encode64(
-        {
-          'identity':
-          {
-            'org_id': '1234',
-            'user': {
-              'username': 'username',
-              'is_internal': false
-            }
-          },
-          'entitlements':
-          {
-            'insights': {
-              'is_entitled': true
-            }
-          }
-        }.to_json
-      )
-
-      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
-      assert_response :success
-      assert_equal '1234', response.body
-      assert_equal false, Account.find_by(org_id: '1234').is_internal
     end
 
     should 'user not found, creates a new account, username missing' do
