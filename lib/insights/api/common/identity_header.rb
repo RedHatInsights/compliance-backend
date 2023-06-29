@@ -44,12 +44,6 @@ module Insights
           identity&.dig('org_id')
         end
 
-        # rubocop:disable Naming/PredicateName
-        def is_internal
-          identity&.dig('user', 'is_internal')
-        end
-        # rubocop:enable Naming/PredicateName
-
         def entitlements
           content['entitlements']
         end

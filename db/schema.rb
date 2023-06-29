@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_03_194022) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_07_094501) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -18,7 +18,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_03_194022) do
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "account_number"
-    t.boolean "is_internal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "org_id", null: false

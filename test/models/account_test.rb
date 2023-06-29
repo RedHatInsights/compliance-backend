@@ -36,21 +36,6 @@ class AccountTest < ActiveSupport::TestCase
       end
     end
 
-    should 'update the is_internal field if set' do
-      ih = Insights::Api::Common::IdentityHeader.new(Base64.encode64({
-        'identity' => {
-          'org_id' => '123456',
-          'user' => {
-            'is_internal' => true
-          }
-        }
-      }.to_json))
-
-      acc = Account.from_identity_header(ih)
-
-      assert acc.is_internal
-    end
-
     should 'update the org_id field if set' do
       ih = Insights::Api::Common::IdentityHeader.new(Base64.encode64({
         'identity' => {

@@ -24,12 +24,6 @@ class Account < ApplicationRecord
       # Set the identity header for further use
       account.identity_header = identity_header
 
-      # Update the 'is_internal' field if set and differs
-      updates = {
-        is_internal: (identity_header.is_internal unless identity_header.is_internal.nil?)
-      }.compact
-
-      account.update!(updates) if updates.any?
       account
     end
   end
@@ -48,7 +42,6 @@ class Account < ApplicationRecord
           'first_name': 'Compliance',
           'last_name': 'Team',
           'is_active': true,
-          'is_internal': true,
           'is_org_admin': true,
           'locale': 'en_US'
         }
