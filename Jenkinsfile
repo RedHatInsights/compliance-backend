@@ -16,6 +16,7 @@ pipeline {
     agent { label 'rhel8' }
     options {
         timestamps()
+        parallelsAlwaysFailFast()
     }
     environment {
         APP_NAME="compliance"
