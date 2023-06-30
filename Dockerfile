@@ -13,6 +13,7 @@ ARG extras
 ARG prod
 ARG pgRepo
 ARG pgRepoKey
+ARG IMAGE_TAG
 
 USER 0
 
@@ -40,6 +41,8 @@ RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                     
     bundle install --without development test                                           && \
     microdnf clean all -y                                                               && \
     ( [[ $prod != "true" ]] || bundle clean -V )
+
+LABEL BUILD_STAGE_OF=$IMAGE_TAG
 
 ENV prometheus_multiproc_dir=/opt/app-root/src/tmp
 
