@@ -1,11 +1,15 @@
 #!/bin/bash
 
+if [[ -z "$ghprbPullId" ]]; then
+  echo "Not running from a context of a PR"
+  exit 1
+fi
+
 APP_ROOT=${APP_ROOT:-.}
 cd "$APP_ROOT"
 export IMAGE="quay.io/cloudservices/compliance-backend"
-IMAGE_TAG=$(git rev-parse --short=7 HEAD)
+IMAGE_TAG="pr-${ghprbPullId}-$(git rev-parse --short=7 HEAD)"
 export IMAGE_TAG
-
 
 RANDOM_ID=$(md5sum -z <<< "$RANDOM" | cut -c -6)
 DB_CONTAINER_NAME="compliance-db-${RANDOM_ID}"
@@ -16,16 +20,10 @@ DB_CONTAINER_ID=''
 TEST_CONTAINER_ID=''
 
 POSTGRES_IMAGE="quay.io/cloudservices/postgresql-rds:cyndi-12-1"
-IMAGE="quay.io/cloudservices/compliance-backend"
-IMAGE_TAG=$(git rev-parse --short=7 HEAD)
 DATABASE_USER="compliance"
 DATABASE_PASSWORD="changeme"
 DATABASE_NAME="compliance-test"
 
-# if this is a PR, use a different tag, since PR tags expire
-if [[ -n "$ghprbPullId" ]]; then
-  export IMAGE_TAG="pr-${ghprbPullId}-${IMAGE_TAG}"
-fi
 
 function teardown_podman {
   podman rm -f "$DB_CONTAINER_ID" || true
@@ -37,6 +35,14 @@ trap "teardown_podman" EXIT SIGINT SIGTERM
 
 if ! COMPLIANCE_POD_ID=$(podman pod create --name "$POD_NAME"); then
     exit 1
+fi
+
+# Make sure the build stage image is available
+SERVICE_IMAGE=$(podman images --filter "label=BUILD_STAGE_OF=${IMAGE_TAG}" -q | head -1)
+
+if [[ -z "${SERVICE_IMAGE}" ]]; then
+  echo "First stage image is not available"
+  exit 1
 fi
 
 if ! DB_CONTAINER_ID=$(podman run -d \
@@ -72,7 +78,7 @@ if ! TEST_CONTAINER_ID=$(podman run -d \
   -e BUILD_NUMBER="$BUILD_NUMBER" \
   -e ghprbPullId="$ghprbPullId" \
   -e BUILD_URL="$BUILD_URL" \
-  "$IMAGE:$IMAGE_TAG" \
+  "${SERVICE_IMAGE}" \
   /bin/bash -c 'sleep infinity'); then
 
   echo "Failed to start test container"
@@ -88,10 +94,12 @@ echo '===================================='
 echo '=== Installing Gem Dependencies ===='
 echo '===================================='
 set +e
-podman exec -u 0 "$TEST_CONTAINER_ID" /bin/bash -c 'microdnf install -y $DEV_DEPS'
+podman cp ./. "$TEST_CONTAINER_ID":/opt/app-root/src
 podman exec "$TEST_CONTAINER_ID" /bin/bash -c '
   bundle config set --local without development &&
   bundle config set --local with test &&
+  bundle config set --local deployment "true" &&
+  bundle config set --local path "./.bundle" &&
   bundle install'
 TEST_RESULT=$?
 set -e
