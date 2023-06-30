@@ -31,7 +31,7 @@ RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                     
     microdnf module enable postgresql:13                                        && \
     microdnf install --nodocs -y $deps $devDeps $extras                         && \
     chmod +t /tmp                                                               && \
-    gem update --system --install-dir=/usr/share/gems --bindir /usr/bin         && \
+    gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin      && \
     gem install bundler                                                         && \
     ( [[ $prod != "true" ]] || bundle config set --without 'development:test' ) && \
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )    && \
@@ -54,13 +54,13 @@ WORKDIR /opt/app-root/src
 
 USER 0
 
-RUN rpm -e --nodeps tzdata &>/dev/null                                  && \
-    microdnf module enable ruby:3.1                                     && \
-    microdnf install --nodocs -y $deps                                  && \
-    chmod +t /tmp                                                       && \
-    gem update --system --install-dir=/usr/share/gems --bindir /usr/bin && \
-    microdnf clean all -y                                               && \
-    chown 1001:root ./                                                  && \
+RUN rpm -e --nodeps tzdata &>/dev/null                                     && \
+    microdnf module enable ruby:3.1                                        && \
+    microdnf install --nodocs -y $deps                                     && \
+    chmod +t /tmp                                                          && \
+    gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin && \
+    microdnf clean all -y                                                  && \
+    chown 1001:root ./                                                     && \
     install -v -d -m 1777 -o 1001 ./tmp ./log
 
 USER 1001
