@@ -21,7 +21,8 @@ WORKDIR /opt/app-root/src
 COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
 
-RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                        \
+RUN --mount=type=cache,target=/var/cache/yum                                       \
+    FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                        \
     if [ -z "$FULL_RHEL" ] ; then                                                  \
       rpm -Uvh $pgRepo $pgRepoKey                                               && \
       sed -i 's/^\(enabled.*\)/\1\npriority=200/;' /etc/yum.repos.d/CentOS*.repo;  \
@@ -29,7 +30,8 @@ RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                     
     rpm -e --nodeps tzdata &>/dev/null                                          && \
     microdnf module enable ruby:3.1                                             && \
     microdnf module enable postgresql:13                                        && \
-    microdnf install --nodocs -y $deps $devDeps $extras                         && \
+    microdnf install --nodocs --setopt=keepcache=1 $deps                        && \
+    microdnf install --nodocs $deps $devDeps $extras                            && \
     chmod +t /tmp                                                               && \
     gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin      && \
     gem install bundler                                                         && \
@@ -38,7 +40,6 @@ RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                     
     ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )     && \
     bundle config set --local retry '2'                                         && \
     bundle install                                                              && \
-    microdnf clean all -y                                                       && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 
 ENV prometheus_multiproc_dir=/opt/app-root/src/tmp
@@ -54,12 +55,13 @@ WORKDIR /opt/app-root/src
 
 USER 0
 
-RUN rpm -e --nodeps tzdata &>/dev/null                                     && \
+RUN --mount=type=cache,target=/var/cache/yum                                  \
+    rpm -e --nodeps tzdata &>/dev/null                                     && \
     microdnf module enable ruby:3.1                                        && \
-    microdnf install --nodocs -y $deps                                     && \
+    microdnf install --nodocs $deps                                        && \
     chmod +t /tmp                                                          && \
     gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin && \
-    microdnf clean all -y                                                  && \
+    microdnf clean all                                                     && \
     chown 1001:root ./                                                     && \
     install -v -d -m 1777 -o 1001 ./tmp ./log
 
