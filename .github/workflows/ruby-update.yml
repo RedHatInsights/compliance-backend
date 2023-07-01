@@ -36,8 +36,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+          bundler: latest
       - name: Update bundler
-        run: bundle update --bundler
+        run: |
+          bundle config set frozen false
+          cat Gemfile.lock | tail
+          bundle update --bundler
+          cat Gemfile.lock | tail
       - name: Commit if the version changed
         run: |
           git config user.name 'Update-a-Bot'
