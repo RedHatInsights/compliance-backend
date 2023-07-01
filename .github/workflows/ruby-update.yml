@@ -1,5 +1,6 @@
 name: Regular Ruby and Bundler version update check
 on:
+  workflow_dispatch:
   schedule:
     - cron: "5 0 * * *"
 
