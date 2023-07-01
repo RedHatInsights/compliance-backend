@@ -1,10 +1,10 @@
-name: Regular .ruby-version update check
+name: Regular Ruby and Bundler version update check
 on:
   schedule:
     - cron: "5 0 * * *"
 
 jobs:
-  build:
+  update-ruby:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,7 +16,7 @@ jobs:
             microdnf module enable ruby:3.1 > /dev/null;
             microdnf repoquery ruby --info | grep Version | awk '{ print \$3 }' | head -1 > .ruby-version;
             cat .ruby-version" > .ruby-version
-      - name: Do change if the digest changed
+      - name: Commit if the version has changed
         run: |
           git config user.name 'Update-a-Bot'
           git config user.email 'insights@redhat.com'
@@ -26,3 +26,24 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           title: 'chore(devel): update .ruby-version'
+  update-bundler:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Ruby and install gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Update bundler
+        run: bundle update --bundler
+      - name: Commit if the version changed
+        run: |
+          git config user.name 'Update-a-Bot'
+          git config user.email 'insights@redhat.com'
+          git add Gemfile.lock
+          git commit -m "chore(deps): update bundler version" || echo "No new changes"
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: 'chore(deps): update bundler version'
