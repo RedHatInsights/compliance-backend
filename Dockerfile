@@ -68,6 +68,6 @@ USER 1001
 COPY --chown=1001:0 . /opt/app-root/src
 COPY --chown=1001:0 --from=build /opt/app-root/src/.bundle /opt/app-root/src/.bundle
 
-ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true HOME=/opt/app-root/src DEV_DEPS=$devDeps
+ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true HOME=/opt/app-root/src prometheus_multiproc_dir=/opt/app-root/src/tmp
 
 CMD ["/opt/app-root/src/entrypoint.sh"]
