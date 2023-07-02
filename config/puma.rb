@@ -48,6 +48,7 @@ preload_app! if concurrency > 0
 
 # Metrics collection
 #
+ENV['PROMETHEUS_EXPORTER_PORT'] = ClowderCommonRuby::Config.load.metricsPort.to_s
 activate_control_app("unix://#{File.expand_path(File.join(File.dirname(__FILE__), '../tmp/puma.sock'))}")
 plugin :yabeda
 plugin :yabeda_prometheus
