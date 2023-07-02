@@ -94,10 +94,6 @@ gem 'webrick'
 # Allows for tree structures in db
 gem 'ancestry'
 
-group :development, :test do
-  gem 'silent_stream' # drop
-end
-
 group :development do
   gem 'awesome_print', require: false
   gem 'bullet'
