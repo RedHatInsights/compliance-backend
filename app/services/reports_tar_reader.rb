@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'nokogiri'
 require 'rubygems/package'
 require 'zlib'
 
@@ -24,9 +25,9 @@ class ReportsTarReader
       #
       # Inspired by:
       # https://gist.github.com/ForeverZer0/2adbba36fd452738e7cca6a63aee2f30
-      next if long_link?(file)
+      next if long_link?(file) || !match_file?(file)
 
-      file.read if match_file?(file)
+      Nokogiri::XML::Reader(file).filter { |n| n.name == 'TestResult' }.outer_xml
     end.compact
   rescue Zlib::GzipFile::Error
     # Keeps on supporting --payload uploads which only contain one report
