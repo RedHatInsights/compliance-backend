@@ -101,7 +101,7 @@ unless Rails.env.production?
         role_permissions = permissions.map do |permission|
           RBACApiClient::Access.new(
             permission: permission,
-            resource_definitions: nil
+            resource_definitions: []
           )
         end
         role = RBACApiClient::AccessPagination.new(data: role_permissions)

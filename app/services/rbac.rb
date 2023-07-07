@@ -9,10 +9,11 @@ class Rbac
   OPTS = { limit: 1000, auth_names: '' }.freeze
   ANY = '*'
 
+  INVENTORY_UNGROUPED_ENTRIES = [].freeze
+  INVENTORY_HOSTS_READ = 'inventory:hosts:read'
   INVENTORY_VIEWER = 'inventory:*:read'
   COMPLIANCE_VIEWER = 'compliance:policy:read' # universal read permission accross all roles
   COMPLIANCE_ADMIN = 'compliance:*:*'
-
   POLICY_READ = 'compliance:policy:read'
   POLICY_CREATE = 'compliance:policy:create'
   POLICY_DELETE = 'compliance:policy:delete'
