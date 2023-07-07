@@ -32,9 +32,9 @@ describe DeleteHost do
     DeleteHost.perform_async(message)
 
     expect(profile.test_results.count).to eql(1)
-    expect(profile.rule_results.count).to eql(1) # TODO: Deleteted
+    expect(profile.rule_results.count).to eql(1)
 
-    expect(Rails.logger).to receive(:audit_success).with("Deleteted related records for host #{message_id}")
+    expect(Rails.logger).to receive(:audit_success).with("Deleted related records for host #{message_id}")
     DeleteHost.drain
 
     expect(profile.test_results.count).to eql(0)
