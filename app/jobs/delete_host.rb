@@ -67,7 +67,7 @@ class DeleteHost
 
   def audit_success(host_id)
     Rails.logger.audit_success(
-      "Deleteted related records for host #{host_id}"
+      "Deleted related records for host #{host_id}"
     )
   end
 

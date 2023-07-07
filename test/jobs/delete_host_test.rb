@@ -31,7 +31,7 @@ class DeleteHostTest < ActiveSupport::TestCase
     assert_not_equal(@profile.reload.score, 0)
     assert_not_equal(@profile.policy.reload.test_result_host_count, 0)
 
-    assert_audited_success 'Deleteted related records for host', @host.id
+    assert_audited_success 'Deleted related records for host', @host.id
     DeleteHost.perform_async(@message)
     assert_equal 1, DeleteHost.jobs.size
     assert_difference('RuleResult.count' => -1, 'TestResult.count' => -1) do
