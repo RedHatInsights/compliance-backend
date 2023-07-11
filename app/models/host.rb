@@ -53,7 +53,10 @@ class Host < ApplicationRecord
     scope: :with_benchmark
   )
 
-  sortable_by(:rules_failed, 'sq.rules_failed', scope: :with_failed_rules_count)
+  sortable_by :rules_failed, Arel::Nodes::NamedFunction.new(
+    'COALESCE',
+    [Arel::Nodes::SqlLiteral.new('sq.rules_failed'), 0]
+  ), scope: :with_failed_rules_count
 
   self.table_name = 'inventory.hosts'
   self.primary_key = 'id'
@@ -92,14 +95,14 @@ class Host < ApplicationRecord
     profile ||= RequestStore.store['scoped_search_context_profiles']
     profile_ids = profile&.pluck(:id) || []
 
-    sq = Host.left_outer_joins(test_results: :rule_results)
-             .merge(TestResult.latest('LEFT OUTER JOIN'))
+    sq = Host.joins(test_results: :rule_results)
+             .merge(TestResult.latest)
              .where(test_results: { profile_id: profile_ids }, rule_results: { result: RuleResult::FAILED })
              .or(Host.where(test_results: { profile_id: profile_ids }, rule_results: { id: nil }))
              .select(arel_table[:id].as('id'), RuleResult.arel_table[:result].count.as('rules_failed'))
              .group('hosts.id')
 
-    joins("INNER JOIN (#{sq.to_sql}) sq ON sq.id = hosts.id")
+    joins("LEFT OUTER JOIN (#{sq.to_sql}) sq ON sq.id = hosts.id")
   }
 
   def self.os_minor_versions(hosts)
