@@ -886,11 +886,15 @@ class SystemQueryTest < ActiveSupport::TestCase
     end
 
     should 'properly sort by rules failed' do
+      TestResult.delete_all
+      RuleResult.delete_all
+      WHost.delete_all
       host2 = FactoryBot.create(:host, org_id: @user.account.org_id)
       host3 = FactoryBot.create(:host, org_id: @user.account.org_id)
+      host5 = FactoryBot.create(:host, org_id: @user.account.org_id)
       # For testing sorting of nil failed_rules
       host4 = FactoryBot.create(:host, org_id: @user.account.org_id)
-      [host4, host2, host3].each do |host|
+      [host4, host2, host3, host5].each do |host|
         host.policies << @profile1.policy
       end
 
@@ -928,8 +932,23 @@ class SystemQueryTest < ActiveSupport::TestCase
         :rule_result,
         host: host3,
         rule: @profile1.rules.first,
-        result: 'fail',
+        result: 'pass',
         test_result: tr2
+      )
+
+      tr3 = FactoryBot.create(
+        :test_result,
+        profile: @profile1,
+        host: host5,
+        score: 50
+      )
+
+      FactoryBot.create(
+        :rule_result,
+        host: host5,
+        rule: @profile1.rules.first,
+        result: 'fail',
+        test_result: tr3
       )
 
       query = <<-GRAPHQL
