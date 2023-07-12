@@ -66,7 +66,7 @@ describe 'Benchmarks API', swagger_doc: 'v1/openapi.json' do
                  }
                }
 
-        after { |e| autogenerate_examples(e) }
+        after(:each) { |e| autogenerate_examples(e) }
 
         run_test!
       end

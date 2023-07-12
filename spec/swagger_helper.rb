@@ -23,6 +23,9 @@ RSpec.configure do |config|
 end
 
 def autogenerate_examples(example, label = 'Response example', summary = '', description = '')
+  puts '-----------------'
+  puts response.inspect
+  puts '-----------------'
   content = example.metadata[:response][:content] || {}
   body = JSON.parse(response.body, symbolize_names: true)
   example_obj = { "#{label}": { value: body, summary: summary, description: description } }
