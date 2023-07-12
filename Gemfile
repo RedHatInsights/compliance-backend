@@ -94,6 +94,15 @@ gem 'webrick'
 # Allows for tree structures in db
 gem 'ancestry'
 
+group :development, :test do
+  gem 'brakeman'
+  gem 'faker'
+  gem 'factory_bot_rails'
+  gem 'rswag-specs'
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
+end
+
 group :development do
   gem 'awesome_print', require: false
   gem 'bullet'
@@ -110,17 +119,11 @@ group :development do
 end
 
 group :test do
-  gem 'brakeman'
   gem 'dotenv-rails'
-  gem 'factory_bot_rails'
-  gem 'faker'
   gem 'minitest-reporters'
   gem 'minitest-stub-const'
   gem 'mocha'
   gem 'rspec-rails'
-  gem 'rswag-specs'
-  gem 'rubocop', require: false
-  gem 'rubocop-rails', require: false
   gem 'shoulda-context'
   gem 'shoulda-matchers'
   gem 'simplecov'
