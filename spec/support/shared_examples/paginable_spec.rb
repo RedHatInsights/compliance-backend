@@ -26,6 +26,8 @@ RSpec.shared_examples 'paginable' do
         get :index, params: { 'limit' => per_page, 'offset' => page }
 
         expect(response_body_data).to match_array(nth_page)
+        expect(response.parsed_body['meta']['limit']).to eq(per_page)
+        expect(response.parsed_body['meta']['offset']).to eq(page)
       end
     end
   end
