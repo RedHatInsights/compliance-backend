@@ -2,6 +2,7 @@
 
 RSpec.shared_examples 'with metadata' do
   let(:meta_keys) { %w[total limit offset relationships] }
+  let(:item_count) { 10 }
 
   it 'contains total, limit, offset and relationships keys' do
     get :index

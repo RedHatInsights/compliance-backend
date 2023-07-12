@@ -20,6 +20,8 @@
 #     :result: [3, 2, 1]
 # ```
 # `:result` field is an array of indexes into entities array with expected order, nested arrays will be sorted by id
+#  e.g.: expected order is 0, 1, 2, 3, but 2 and 3 need to be sorted by FactoryBot ID (sorted property is same for both)
+#     => written as [0, 1, [2, 3]]
 
 RSpec.shared_examples 'sortable' do
   path = File.join('spec/controllers/v2/sort', "#{described_class.name.demodulize.underscore}.yaml")
