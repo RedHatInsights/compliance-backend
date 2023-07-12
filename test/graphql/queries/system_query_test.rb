@@ -983,6 +983,8 @@ class SystemQueryTest < ActiveSupport::TestCase
         end
       end
 
+      # In PostgreSQL, '0' and 'nil' have the same value, so the sorting
+      # result can end up in two possible forms.
       assert_includes([[nil, 0, 1, 2], [0, nil, 1, 2]], asc_result)
 
       assert_includes([[2, 1, 0, nil], [2, 1, nil, 0]], desc_result)
