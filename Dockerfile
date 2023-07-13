@@ -38,6 +38,7 @@ RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                     
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )            && \
     ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )             && \
     bundle config set --local retry '2'                                                 && \
+    bundle config set --local force_ruby_platform true                                  && \
     ( [[ $prod != "true" ]] || bundle install --without development test )              && \
     ( [[ $prod == "true" ]] || bundle install )                                         && \
     microdnf clean all -y                                                               && \
