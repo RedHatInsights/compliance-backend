@@ -91,32 +91,22 @@ gem 'cgi'
 gem 'rexml'
 gem 'webrick'
 
-# Allows for tree structures in db
+# Allows for tree structures in db 
 gem 'ancestry'
 
-group :development do
+group :development, :test do
   gem 'awesome_print', require: false
-  gem 'bullet'
-  gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'dotenv-rails'
-  gem 'graphiql-rails'
-  gem 'irb', '>= 1.2'
-  gem 'listen', '>= 3.0.5'
-  gem 'pry-byebug'
-  gem 'pry-rails'
-  gem 'pry-remote'
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
-end
-
-group :test do
   gem 'brakeman'
+  gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'irb', '>= 1.2'
   gem 'minitest-reporters'
   gem 'minitest-stub-const'
   gem 'mocha'
+  gem 'pry-byebug'
+  gem 'pry-remote'
   gem 'rspec-rails'
   gem 'rswag-specs'
   gem 'rubocop', require: false
@@ -126,6 +116,15 @@ group :test do
   gem 'simplecov'
   gem 'simplecov-cobertura', require: false
   gem 'webmock'
+end
+
+group :development do
+  gem 'graphiql-rails'
+  gem 'bullet'
+  gem 'listen', '>= 3.0.5'
+  gem 'pry-rails'
+  gem 'spring'
+  gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
