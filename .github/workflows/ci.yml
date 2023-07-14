@@ -124,8 +124,12 @@ jobs:
             exit 1
           fi
         done
+        diff <(echo '[]') <(curl -s 'https://validator.swagger.io/validator/debug' -H 'accept: application/json' -H 'Content-Type: application/json' -d @openapi.old.json | jq '.schemaValidationMessages')
+        if [[ $? != 0 ]]; then
+          rm openapi.old.json
+          exit 1
+        fi
         rm openapi.old.json
-        echo 'Success'
         exit 0
     - name: Run unit tests
       env:
