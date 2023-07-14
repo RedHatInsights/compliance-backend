@@ -7,6 +7,7 @@ class SupportedSsgUpdater
   KEYS_TO_REMOVE = %w[upstream_version brew_url].freeze
 
   def self.run!
+    SsgConfigDownloader.update_ssg_ds # Populate the datastream file if nonexistent
     supported_ssg = YAML.safe_load(File.read(SsgConfigDownloader::DS_FILE_PATH))
 
     remove_keys(supported_ssg)
