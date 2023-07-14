@@ -39,6 +39,15 @@ class HostTest < ActiveSupport::TestCase
     end
   end
 
+  test 'non_edge scope only returns non-edge hosts' do
+    WHost.find(@host2.id).update(system_profile: @host2.system_profile.merge(host_type: 'edge'))
+    FactoryBot.create(:policy, account: @account, hosts: [@host1, @host2])
+
+    assert_includes Host.all, @host2
+    assert_includes Host.non_edge, @host1
+    assert_not_includes Host.non_edge, @host2
+  end
+
   test 'with_policy scope / has_policy filter' do
     assert_equal 0, PolicyHost.count
 
