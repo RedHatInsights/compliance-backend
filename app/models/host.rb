@@ -10,24 +10,34 @@ class Host < ApplicationRecord
     Host.arel_table[:system_profile],
     Arel::Nodes::Quoted.new('operating_system')
   )
+
   OS_MINOR_VERSION = Arel::Nodes::InfixOperation.new(
     '->',
     OS_VERSION,
     Arel::Nodes::Quoted.new('minor')
   )
+
   OS_MAJOR_VERSION = Arel::Nodes::InfixOperation.new(
     '->',
     OS_VERSION,
     Arel::Nodes::Quoted.new('major')
   )
+
   TAGS = Arel::Nodes::NamedFunction.new(
     'jsonb_array_elements',
     [Host.arel_table[:tags]]
   )
+
   JOIN_NO_BENCHMARK = arel_table.join(
     Xccdf::Benchmark.arel_table,
     Arel::Nodes::OuterJoin
   ).on(Arel::Nodes::False.new).join_sources
+
+  HOST_TYPE = Arel::Nodes::InfixOperation.new(
+    '->>',
+    Host.arel_table[:system_profile],
+    Arel::Nodes::Quoted.new('host_type')
+  )
 
   sortable_by :name, :display_name
   sortable_by :score, Arel::Nodes::NamedFunction.new(
@@ -75,6 +85,8 @@ class Host < ApplicationRecord
   has_many :assigned_profiles, through: :policies, source: :profiles
   has_many :assigned_internal_profiles, -> { external(false) },
            through: :policies, source: :profiles
+
+  scope :non_edge, -> { where(HOST_TYPE.eq(nil)) }
 
   scope :with_benchmark, lambda { |profile = nil|
     profile ||= RequestStore.store['scoped_search_context_profiles']

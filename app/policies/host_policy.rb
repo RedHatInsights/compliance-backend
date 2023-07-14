@@ -15,7 +15,7 @@ class HostPolicy < ApplicationPolicy
     def resolve
       return scope.none if user.org_id.blank?
 
-      scope.where(org_id: user.org_id)
+      scope.where(org_id: user.org_id).non_edge
     end
   end
 end
