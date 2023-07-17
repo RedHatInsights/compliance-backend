@@ -43,7 +43,7 @@ class SupportedSsgUpdaterTest < ActiveSupport::TestCase
           fallback = YAML.safe_load(@fallback_file.read)
 
           def sub_keys?(profile)
-            profile&.instance_of(Hash) && profile.keys.any? && profile.keys.exclude?('old_names')
+            profile.instance_of?(Hash) && profile.keys.any? && profile.keys.exclude?('old_names')
           end
 
           SupportedSsgUpdater.search_through(fallback) do |key, value, _current_hash|
