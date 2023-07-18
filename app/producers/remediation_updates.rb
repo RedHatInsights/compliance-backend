@@ -9,7 +9,7 @@ class RemediationUpdates < ApplicationProducer
       host_id: host_id,
       issues: issue_ids || []
     )
-  rescue Kafka::DeliveryFailed => e
+  rescue WaterDrop::BaseError => e
     logger.error("Failed to report updates to Remediation service: #{e}")
   end
 end
