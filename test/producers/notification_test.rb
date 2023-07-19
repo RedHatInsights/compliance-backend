@@ -18,7 +18,7 @@ class NofiticationTest < ActiveSupport::TestCase
   end
 
   test 'handles missing kafka config' do
-    assert_nil MockNotification.deliver(account_number: @acc.account_number, org_id: @acc.org_id)
+    assert_nil MockNotification.deliver(org_id: @acc.org_id)
   end
 
   test 'delivers messages to the notifications topic' do
@@ -26,7 +26,7 @@ class NofiticationTest < ActiveSupport::TestCase
     MockNotification.stubs(:kafka).returns(kafka)
     kafka.expects(:deliver_message)
          .with(anything, topic: 'platform.notifications.ingress')
-    MockNotification.deliver(account_number: @acc.account_number, org_id: @acc.org_id)
+    MockNotification.deliver(org_id: @acc.org_id)
   end
 
   test 'handles delivery issues' do
@@ -38,7 +38,7 @@ class NofiticationTest < ActiveSupport::TestCase
          .raises(Kafka::DeliveryFailed.new(nil, nil))
 
     assert_nothing_raised do
-      MockNotification.deliver(account_number: @acc.account_number, org_id: @acc.org_id)
+      MockNotification.deliver(org_id: @acc.org_id)
     end
   end
 end

@@ -8,7 +8,6 @@ describe 'Systems API', swagger_doc: 'v1/openapi.json' do
     @account = FactoryBot.create(:account)
     @host = FactoryBot.create(
       :host,
-      account: @account.account_number,
       insights_id: '45b7b025-4bf4-48a5-abbd-161c12ece8f4',
       org_id: @account.org_id,
       tags: [{ namespace: 'foo', key: 'bar', value: 'baz' }]

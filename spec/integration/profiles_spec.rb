@@ -20,7 +20,6 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
     @hosts = FactoryBot.create_list(
       :host,
       2,
-      account: @account.account_number,
       display_name: 'not-redhat.com',
       org_id: @account.org_id,
       os_minor_version: 2
@@ -279,7 +278,7 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
         before do
           account = FactoryBot.create(:account)
           @parent.update!(account: account)
-          host = FactoryBot.create(:host, account: account.account_number)
+          host = FactoryBot.create(:host, org_id: account.org_id)
           FactoryBot.create(:test_result, profile: @parent, host: host, score: 0.42)
         end
         let(:'X-RH-IDENTITY') { encoded_header(@account) }

@@ -12,7 +12,7 @@ class AccountTest < ActiveSupport::TestCase
 
   context '.from_identity_header' do
     should 'find an existing account' do
-      acc = FactoryBot.create(:account, account_number: nil)
+      acc = FactoryBot.create(:account)
       ih = Insights::Api::Common::IdentityHeader.new(Base64.encode64({
         'identity' => {
           'org_id' => acc.org_id

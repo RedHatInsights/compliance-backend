@@ -14,7 +14,7 @@ class SystemNonCompliantTest < ActiveSupport::TestCase
     SystemNonCompliant.stubs(:kafka).returns(kafka)
     kafka.expects(:deliver_message)
          .with(anything, topic: 'platform.notifications.ingress')
-    SystemNonCompliant.deliver(account_number: @acc.account_number, org_id: @acc.org_id,
+    SystemNonCompliant.deliver(org_id: @acc.org_id,
                                host: @host, policy: @policy,
                                compliance_score: 90, policy_threshold: 100)
   end
@@ -24,8 +24,7 @@ class SystemNonCompliantTest < ActiveSupport::TestCase
     SystemNonCompliant.stubs(:kafka).returns(kafka)
     kafka.expects(:deliver_message)
          .with(anything, topic: 'platform.notifications.ingress')
-    SystemNonCompliant.deliver(account_number: @acc.account_number,
-                               host: nil, policy: @policy, org_id: @acc.org_id,
+    SystemNonCompliant.deliver(host: nil, policy: @policy, org_id: @acc.org_id,
                                compliance_score: 90, policy_threshold: 100)
   end
 end

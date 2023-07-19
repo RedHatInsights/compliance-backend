@@ -32,7 +32,6 @@ class Account < ApplicationRecord
   def fake_identity_header
     {
       'identity': {
-        'account_number': account_number,
         'org_id': org_id,
         'type': 'User',
         'auth_type': 'basic-auth',
