@@ -55,8 +55,7 @@ module ReportParsing
       # Do not fire a notification for a host that has been deleted
       return unless host
 
-      ReportUploadFailed.deliver(host: host, account_number: account, org_id: org_id,
-                                 request_id: request_id, error: msg_for_notification(exc))
+      ReportUploadFailed.deliver(host: host, org_id: org_id, request_id: request_id, error: msg_for_notification(exc))
     end
 
     # rubocop:disable Metrics/MethodLength

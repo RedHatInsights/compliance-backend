@@ -28,7 +28,6 @@ describe 'Benchmarks API', swagger_doc: 'v1/openapi.json' do
         )
         host = FactoryBot.create(
           :host,
-          account: account.account_number,
           org_id: account.org_id
         )
         FactoryBot.create(:test_result, profile: profile, host: host)
