@@ -236,6 +236,7 @@ build_image() {
     local BUILD_ARGS_CMD=''
     local LABEL_PARAMETER=''
     local DISABLE_CACHE_PARAMETER=''
+    local CACHE='quay.io/cloudservices/build-cache'
 
     if is_pr_or_mr_build; then
         LABEL_PARAMETER=$(get_expiry_label_parameter)
@@ -252,7 +253,7 @@ build_image() {
     fi
 
     #shellcheck disable=SC2086
-    container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD $LABEL_PARAMETER \
+    container_engine_cmd build --cache-from="$CACHE" --cache-to="$CACHE" --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD $LABEL_PARAMETER \
         $DISABLE_CACHE_PARAMETER \
         -t "${IMAGE_NAME}:${IMAGE_TAG}" .
 
