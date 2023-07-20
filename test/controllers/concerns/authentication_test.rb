@@ -264,29 +264,25 @@ class AuthenticationTest < ActionController::TestCase
 
   context 'disable rbac' do
     should 'allow access when RBAC is disabled' do
-      begin
-        encoded_header = Base64.encode64(
+      encoded_header = Base64.encode64(
+        {
+          'identity': {
+            'org_id': '1234',
+            'user': { 'username': 'username' }
+          },
+          'entitlements':
           {
-            'identity': {
-              'org_id': '1234',
-              'user': { 'username': 'username' }
-            },
-            'entitlements':
-            {
-              'insights': {
-                'is_entitled': true
-              }
+            'insights': {
+              'is_entitled': true
             }
-          }.to_json
-        )
-        Settings.disable_rbac = 'true'
-        process_test(headers: { 'X-RH-IDENTITY': encoded_header })
-        assert_response :success
-        assert_equal '1234', response.body
-        assert_not User.current, 'current user must be reset after request'
-      ensure
-        Settings.disable_rbac = 'false'
-      end
+          }
+        }.to_json
+      )
+      Settings.stubs(:disable_rbac).returns(true)
+      process_test(headers: { 'X-RH-IDENTITY': encoded_header })
+      assert_response :success
+      assert_equal '1234', response.body
+      assert_not User.current, 'current user must be reset after request'
     end
   end
 
