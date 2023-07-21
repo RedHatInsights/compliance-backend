@@ -13,6 +13,10 @@ module HostSearching
                   only_explicit: true, operators: ['=', '!=', '^', '!^']
     scoped_search on: :os_minor_version, ext_method: 'filter_os_minor_version',
                   only_explicit: true, operators: ['=', '!=', '^', '!^']
+    scoped_search on: :group_name, ext_method: 'filter_group_name',
+                  only_explicit: true, operators: ['=', '^']
+    scoped_search on: :group_id, ext_method: 'filter_group_id',
+                  only_explicit: true, operators: ['=', '^']
     scoped_search on: :compliant, ext_method: 'filter_by_compliance',
                   only_explicit: true
     scoped_search on: :ssg_version, ext_method: 'filter_by_ssg_version',
@@ -77,6 +81,18 @@ module HostSearching
     def filter_os_minor_version(_filter, operator, value)
       values = value.split(',').map(&:strip)
       hosts = ::Host.os_minor_version(values, ['=', 'IN'].include?(operator))
+      { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
+    end
+
+    def filter_group_name(_filter, _operator, value)
+      values = value.split(',').map(&:strip)
+      hosts = ::Host.with_groups(values, :name)
+      { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
+    end
+
+    def filter_group_id(_filter, _operator, value)
+      values = value.split(',').map(&:strip)
+      hosts = ::Host.with_groups(values, :id)
       { conditions: hosts.arel.where_sql.gsub(/^where /i, '') }
     end
 

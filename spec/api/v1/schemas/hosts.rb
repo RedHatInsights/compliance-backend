@@ -65,6 +65,23 @@ module Api
             insights_id: {
               type: 'string',
               example: '374399b7-e6ba-49b7-a405-9b620a2bd0b3'
+            },
+            groups: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                    format: 'uuid',
+                    example: '6893cf09-058a-4c66-afb2-fc403a4bf914'
+                  },
+                  name: {
+                    type: 'string',
+                    example: 'SCSI'
+                  }
+                }
+              }
             }
           }
         }.freeze

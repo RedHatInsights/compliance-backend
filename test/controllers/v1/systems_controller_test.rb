@@ -246,6 +246,73 @@ module V1
           assert_equal timestamp, Time.parse(timestamp).iso8601
         end
       end
+
+      should 'include inventory groups' do
+        host = FactoryBot.create(:host, groups: [{ id: '1234' }])
+        get system_path(host)
+        assert_response :success
+        assert_equal host.groups, response.parsed_body.dig('data', 'attributes', 'groups')
+      end
+
+      should 'search for exact group name' do
+        hosts = FactoryBot.create_list(:host, 2, groups: [{ name: 'testgroup' }])
+        diff_group_host = FactoryBot.create(:host, groups: [{ name: 'differentGroup' }])
+
+        get v1_systems_url, params: { search: 'group_name = testgroup' }
+        response_host_ids = response.parsed_body['data'].map { |h| h['id'] }
+
+        assert_response :success
+        assert_not_includes response_host_ids, diff_group_host.id
+        hosts.each do |host|
+          assert_includes response_host_ids, host.id
+        end
+      end
+
+      should 'search for group name inclusion' do
+        host1 = FactoryBot.create(:host, groups: [{ name: 'testgroup1' }, { name: 'secondGroup' }])
+        host2 = FactoryBot.create(:host, groups: [{ name: 'testgroup1' }, { name: 'thirdGroup' }])
+        host_ids = [host1.id, host2.id]
+        diff_group_host = FactoryBot.create(:host, groups: [{ name: 'secondGroup' }, { name: 'thirdGroup' }])
+
+        get v1_systems_url, params: { search: 'group_name ^ testgroup1' }
+        response_host_ids = response.parsed_body['data'].map { |h| h['id'] }
+
+        assert_response :success
+        assert_not_includes response_host_ids, diff_group_host.id
+        response_host_ids.each do |response_id|
+          assert_includes host_ids, response_id
+        end
+      end
+
+      should 'search for exact group id' do
+        hosts = FactoryBot.create_list(:host, 2, groups: [{ id: '1234' }])
+        diff_group_host = FactoryBot.create(:host, groups: [{ id: '99999' }])
+
+        get v1_systems_url, params: { search: 'group_id = 1234' }
+        response_host_ids = response.parsed_body['data'].map { |h| h['id'] }
+
+        assert_response :success
+        assert_not_includes response_host_ids, diff_group_host.id
+        hosts.each do |host|
+          assert_includes response_host_ids, host.id
+        end
+      end
+
+      should 'search for group id inclusion' do
+        host1 = FactoryBot.create(:host, groups: [{ id: '1234' }, { id: '9999' }])
+        host2 = FactoryBot.create(:host, groups: [{ id: '1234' }, { id: '8888' }])
+        host_ids = [host1.id, host2.id]
+        diff_group_host = FactoryBot.create(:host, groups: [{ id: '9999' }, { id: '8888' }])
+
+        get v1_systems_url, params: { search: 'group_id ^ 1234' }
+        response_host_ids = response.parsed_body['data'].map { |h| h['id'] }
+
+        assert_response :success
+        assert_not_includes response_host_ids, diff_group_host.id
+        response_host_ids.each do |response_id|
+          assert_includes host_ids, response_id
+        end
+      end
     end
   end
 end
