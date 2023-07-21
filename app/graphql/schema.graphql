@@ -652,6 +652,7 @@ A System registered in Insights Compliance
 """
 type System implements Node {
   culledTimestamp: String!
+  groups: JSON
   hasPolicy: Boolean!
   id: ID!
   insightsId: ID

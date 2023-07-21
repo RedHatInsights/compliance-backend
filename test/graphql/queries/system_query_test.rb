@@ -250,6 +250,146 @@ class SystemQueryTest < ActiveSupport::TestCase
     assert_equal 'Never', result['data']['system']['lastScanned']
   end
 
+  should 'include inventory groups of host' do
+    @host1 = FactoryBot.create(:host, org_id: @user.account.org_id, groups: '1234')
+
+    query = <<-GRAPHQL
+    query getSystem($inventoryId: String!) {
+        system(id: $inventoryId) {
+          groups
+        }
+    }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { inventoryId: @host1.id },
+      context: { current_user: @user }
+    )
+
+    assert_equal @host1.groups, result['data']['system']['groups']
+  end
+
+  should 'search for exact group name' do
+    @host1 = FactoryBot.create(:host, groups: [{ name: 'testgroup' }])
+    @host2 = FactoryBot.create(:host, groups: [{ name: 'testgroup' }])
+    @diff_group_host = FactoryBot.create(:host, groups: [{ name: 'differentGroup' }])
+
+    query = <<-GRAPHQL
+    query getSystems($search: String) {
+        systems(search: $search) {
+            edges {
+              node {
+                groups
+              }
+            }
+        }
+    }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { search: 'group_name = testgroup' },
+      context: { current_user: @user }
+    )
+
+    result['data']['systems']['edges'].each do |edge|
+      assert_equal edge['node']['groups'], @host1.groups
+      assert_not_equal edge['node']['groups'], @diff_group_host.groups
+    end
+  end
+
+  should 'search for group name inclusion' do
+    @host1 = FactoryBot.create(:host, groups: [{ name: 'testgroup1' }, { name: 'testgroup2' }])
+    @host2 = FactoryBot.create(:host, groups: [{ name: 'testgroup1' }, { name: 'differentGroup' }])
+    @diff_group_host = FactoryBot.create(:host, groups: [{ name: 'differentGroup' }, { name: 'testgroup2' }])
+
+    query = <<-GRAPHQL
+    query getSystems($search: String) {
+        systems(search: $search) {
+            edges {
+              node {
+                id
+                groups
+              }
+            }
+        }
+    }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { search: 'group_name ^ testgroup1' },
+      context: { current_user: @user }
+    )
+    ids = [@host1.id, @host2.id]
+
+    result['data']['systems']['edges'].each do |edge|
+      assert_includes ids, edge['node']['id']
+      assert_not_equal @diff_group_host.id, edge['node']['id']
+    end
+  end
+
+  should 'search for exact group id' do
+    @host1 = FactoryBot.create(:host, groups: [{ id: '1234' }])
+    @host2 = FactoryBot.create(:host, groups: [{ id: '1234' }])
+    @diff_group_host = FactoryBot.create(:host, groups: [{ id: '9999' }])
+
+    query = <<-GRAPHQL
+    query getSystems($search: String) {
+        systems(search: $search) {
+            edges {
+              node {
+                groups
+              }
+            }
+        }
+    }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { search: 'group_id = 1234' },
+      context: { current_user: @user }
+    )
+
+    result['data']['systems']['edges'].each do |edge|
+      assert_equal edge['node']['groups'], @host1.groups
+      assert_not_equal edge['node']['groups'], @diff_group_host.groups
+    end
+  end
+
+  should 'search for group id inclusion' do
+    @host1 = FactoryBot.create(:host, groups: [{ id: '1234' }, { id: '9999' }])
+    @host2 = FactoryBot.create(:host, groups: [{ id: '1234' }, { id: '8888' }])
+    @diff_group_host = FactoryBot.create(:host, groups: [{ id: '9999' }, { id: '8888' }])
+
+    query = <<-GRAPHQL
+    query getSystems($search: String) {
+        systems(search: $search) {
+            edges {
+              node {
+                id
+                groups
+              }
+            }
+        }
+    }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { search: 'group_id ^ 1234' },
+      context: { current_user: @user }
+    )
+    ids = [@host1.id, @host2.id]
+
+    result['data']['systems']['edges'].each do |edge|
+      assert_includes ids, edge['node']['id']
+      assert_not_equal @diff_group_host.id, edge['node']['id']
+    end
+  end
+
   context 'policy id querying' do
     setup do
       [@profile1, @profile2].each do |p|

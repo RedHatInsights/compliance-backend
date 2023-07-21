@@ -22,6 +22,7 @@ module Types
     field :stale_timestamp, String, null: false
     field :updated, String, null: false
     field :insights_id, ID, null: true
+    field :groups, GraphQL::Types::JSON, null: true
     field :profiles, [::Types::Profile], null: true do
       argument :policy_id, ID, 'Filter results by policy or profile ID',
                required: false
