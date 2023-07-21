@@ -66,10 +66,7 @@ module Types
       argument :system_id, String,
                'Rules failed for a system and a profile', required: false
     end
-    field :last_scanned, String, null: false do
-      argument :system_id, String,
-               'Last time this profile was scanned for a system', required: false
-    end
+
     field :compliant_host_count, Int, null: false
     field :os_major_version, String, null: false
     field :os_minor_version, String, null: false
@@ -77,16 +74,6 @@ module Types
     field :policy_type, String, null: false
 
     enforce_rbac Rbac::POLICY_READ
-
-    def last_scanned(args = {})
-      latest_test_result_batch(args).then do |latest_test_result|
-        if latest_test_result.blank? || latest_test_result.end_time.blank?
-          'Never'
-        else
-          latest_test_result.end_time.iso8601
-        end
-      end
-    end
 
     def hosts
       ::CollectionLoader.for(policy_or_report.class, :hosts).load(policy_or_report)

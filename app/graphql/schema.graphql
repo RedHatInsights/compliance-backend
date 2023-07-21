@@ -247,12 +247,6 @@ type Profile implements Node & RulesPreload {
   external: Boolean!
   hosts: [System!]
   id: ID!
-  lastScanned(
-    """
-    Last time this profile was scanned for a system
-    """
-    systemId: String
-  ): String!
   name: String!
   osMajorVersion: String!
   osMinorVersion: String!

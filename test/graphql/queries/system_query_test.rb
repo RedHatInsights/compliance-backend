@@ -69,7 +69,6 @@ class SystemQueryTest < ActiveSupport::TestCase
               staleWarningTimestamp
               staleTimestamp
               updated
-              lastScanned
           }
       }
     GRAPHQL
@@ -80,28 +79,10 @@ class SystemQueryTest < ActiveSupport::TestCase
       context: { current_user: @user }
     )
 
-    assert_equal 5, result['data']['system'].count
+    assert_equal 4, result['data']['system'].count
     result['data']['system'].each do |_, timestamp|
       assert_equal timestamp, Time.parse(timestamp).iso8601
     end
-  end
-
-  test "query host lastScanned returns 'Never' if no test results" do
-    query = <<-GRAPHQL
-      query System($inventoryId: String!){
-          system(id: $inventoryId) {
-              lastScanned
-          }
-      }
-    GRAPHQL
-
-    result = Schema.execute(
-      query,
-      variables: { inventoryId: @host1.id },
-      context: { current_user: @user }
-    )
-
-    assert_equal 'Never', result['data']['system']['lastScanned']
   end
 
   context 'policy id querying' do
@@ -160,7 +141,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                           id
                           rulesPassed
                           rulesFailed
-                          lastScanned
                           compliant
                       }
                   }
@@ -203,7 +183,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                           id
                           rulesPassed
                           rulesFailed
-                          lastScanned
                           compliant
                       }
                   }
@@ -222,7 +201,6 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       assert_equal 1, result_profiles.first['rulesPassed']
       assert_equal 0, result_profiles.first['rulesFailed']
-      assert result_profiles.first['lastScanned']
       assert result_profiles.first['compliant']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
@@ -538,7 +516,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                           id
                           rulesPassed
                           rulesFailed
-                          lastScanned
                           compliant
                       }
                   }
@@ -566,7 +543,6 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       assert_equal 1, result_profiles.first['rulesPassed']
       assert_equal 0, result_profiles.first['rulesFailed']
-      assert result_profiles.first['lastScanned']
       assert result_profiles.first['compliant']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
@@ -587,7 +563,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                           id
                           rulesPassed
                           rulesFailed
-                          lastScanned
                           compliant
                       }
                   }
@@ -608,7 +583,6 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       assert_equal 1, result_profiles.first['rulesPassed']
       assert_equal 0, result_profiles.first['rulesFailed']
-      assert result_profiles.first['lastScanned']
       assert result_profiles.first['compliant']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
@@ -629,7 +603,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                           id
                           rulesPassed
                           rulesFailed
-                          lastScanned
                           compliant
                       }
                   }
@@ -672,7 +645,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                         id
                         rulesPassed
                         rulesFailed
-                        lastScanned
                         compliant
                     }
                 }
@@ -714,7 +686,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                           id
                           rulesPassed
                           rulesFailed
-                          lastScanned
                           compliant
                       }
                   }
@@ -735,7 +706,6 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       assert_equal 1, result_profiles.first['rulesPassed']
       assert_equal 0, result_profiles.first['rulesFailed']
-      assert result_profiles.first['lastScanned']
 
       result_profile_ids = result_profiles.map { |p| p['id'] }
       assert_includes result_profile_ids, @profile1.id
@@ -784,7 +754,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                           id
                           rulesPassed
                           rulesFailed
-                          lastScanned
                           compliant
                           score
                           supported
@@ -848,7 +817,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                           id
                           rulesPassed
                           rulesFailed
-                          lastScanned
                           compliant
                           score
                           supported
@@ -962,7 +930,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                           id
                           rulesPassed
                           rulesFailed
-                          lastScanned
                           compliant
                           score
                           supported
@@ -1112,7 +1079,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                         name
                         rulesPassed
                         rulesFailed
-                        lastScanned
                         compliant
                     }
                     testResultProfiles {
@@ -1120,7 +1086,6 @@ class SystemQueryTest < ActiveSupport::TestCase
                         name
                         rulesPassed
                         rulesFailed
-                        lastScanned
                         compliant
                     }
                 }
@@ -1372,7 +1337,6 @@ class SystemQueryTest < ActiveSupport::TestCase
               testResultProfiles(policyId: $policyId) {
                 id
                 name
-                lastScanned
                 compliant
                 score
               }
@@ -1560,7 +1524,6 @@ class SystemQueryTest < ActiveSupport::TestCase
               testResultProfiles(policyId: $policyId) {
                 id
                 name
-                lastScanned
                 compliant
                 score
               }
