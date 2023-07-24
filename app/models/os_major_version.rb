@@ -7,27 +7,27 @@ class OsMajorVersion < ApplicationRecord
   # Helper function that aggregates a column under a grouping and orders them
   # descending based on their benchmark version.
   def self.aggregated_cast(column)
-    Arel::Nodes::NamedFunction.new(
+    AN::NamedFunction.new(
       'array_agg',
-      [Arel::Nodes::InfixOperation.new(
+      [AN::InfixOperation.new(
         'ORDER BY',
         column,
-        Arel::Nodes::Descending.new(
+        AN::Descending.new(
           Xccdf::Benchmark::SORT_BY_VERSION
         )
       )]
     )
   end
 
-  OS_MAJOR_VERSION = Arel::Nodes::NamedFunction.new(
+  OS_MAJOR_VERSION = AN::NamedFunction.new(
     'CAST',
     [
-      Arel::Nodes::NamedFunction.new(
+      AN::NamedFunction.new(
         'REPLACE',
         [
           arel_table[:ref_id],
-          Arel::Nodes::Quoted.new("#{Xccdf::Benchmark::REF_PREFIX}-"),
-          Arel::Nodes::Quoted.new('')
+          AN::Quoted.new("#{Xccdf::Benchmark::REF_PREFIX}-"),
+          AN::Quoted.new('')
         ]
       ).as('int')
     ]

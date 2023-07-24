@@ -49,16 +49,17 @@ module BenchmarkSearching
         .limit(1)
     }
 
+    AN = Arel::Nodes
     scope :order_by_version, lambda {
       order(
-        Arel::Nodes::NamedFunction.new(
+        AN::NamedFunction.new(
           'CAST',
           [
-            Arel::Nodes::NamedFunction.new(
+            AN::NamedFunction.new(
               'string_to_array',
               [
                 Xccdf::Benchmark.arel_table[:version],
-                Arel::Nodes::Quoted.new('.')
+                AN::Quoted.new('.')
               ]
             ).as('int[]')
           ]

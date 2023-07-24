@@ -5,42 +5,42 @@
 # Host representation in insights compliance backend. Most of the times
 # these hosts will also show up in the insights-platform host inventory.
 class Host < ApplicationRecord
-  OS_VERSION = Arel::Nodes::InfixOperation.new(
+  OS_VERSION = AN::InfixOperation.new(
     '->',
     Host.arel_table[:system_profile],
-    Arel::Nodes::Quoted.new('operating_system')
+    AN::Quoted.new('operating_system')
   )
 
-  OS_MINOR_VERSION = Arel::Nodes::InfixOperation.new(
+  OS_MINOR_VERSION = AN::InfixOperation.new(
     '->',
     OS_VERSION,
-    Arel::Nodes::Quoted.new('minor')
+    AN::Quoted.new('minor')
   )
 
-  OS_MAJOR_VERSION = Arel::Nodes::InfixOperation.new(
+  OS_MAJOR_VERSION = AN::InfixOperation.new(
     '->',
     OS_VERSION,
-    Arel::Nodes::Quoted.new('major')
+    AN::Quoted.new('major')
   )
 
-  TAGS = Arel::Nodes::NamedFunction.new(
+  TAGS = AN::NamedFunction.new(
     'jsonb_array_elements',
     [Host.arel_table[:tags]]
   )
 
   JOIN_NO_BENCHMARK = arel_table.join(
     Xccdf::Benchmark.arel_table,
-    Arel::Nodes::OuterJoin
-  ).on(Arel::Nodes::False.new).join_sources
+    AN::OuterJoin
+  ).on(AN::False.new).join_sources
 
-  HOST_TYPE = Arel::Nodes::InfixOperation.new(
+  HOST_TYPE = AN::InfixOperation.new(
     '->>',
     Host.arel_table[:system_profile],
-    Arel::Nodes::Quoted.new('host_type')
+    AN::Quoted.new('host_type')
   )
 
   sortable_by :name, :display_name
-  sortable_by :score, Arel::Nodes::NamedFunction.new(
+  sortable_by :score, AN::NamedFunction.new(
     'COALESCE',
     [TestResult.arel_table[:score]]
   ), scope: :joins_test_result_profiles
@@ -48,14 +48,14 @@ class Host < ApplicationRecord
   sortable_by :os_minor_version, OS_MINOR_VERSION
   sortable_by(
     :ssg_version,
-    Arel::Nodes::NamedFunction.new(
+    AN::NamedFunction.new(
       'CAST',
       [
-        Arel::Nodes::NamedFunction.new(
+        AN::NamedFunction.new(
           'string_to_array',
           [
             Xccdf::Benchmark.arel_table[:version],
-            Arel::Nodes::Quoted.new('.')
+            AN::Quoted.new('.')
           ]
         ).as('int[]')
       ]
@@ -63,9 +63,9 @@ class Host < ApplicationRecord
     scope: :with_benchmark
   )
 
-  sortable_by :rules_failed, Arel::Nodes::NamedFunction.new(
+  sortable_by :rules_failed, AN::NamedFunction.new(
     'COALESCE',
-    [Arel::Nodes::SqlLiteral.new('sq.rules_failed'), 0]
+    [AN::SqlLiteral.new('sq.rules_failed'), 0]
   ), scope: :with_failed_rules_count
 
   self.table_name = 'inventory.hosts'
@@ -138,10 +138,10 @@ class Host < ApplicationRecord
 
     raise ArgumentError unless %i[major minor].include?(path)
 
-    Arel::Nodes::InfixOperation.new(
+    AN::InfixOperation.new(
       '->',
       arel_table[:system_profile],
-      Arel::Nodes::SqlLiteral.new("'operating_system'->'#{path}'")
+      AN::SqlLiteral.new("'operating_system'->'#{path}'")
     ).send(query, values)
   end
 

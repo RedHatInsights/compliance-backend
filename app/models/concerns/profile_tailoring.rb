@@ -2,17 +2,18 @@
 
 # Methods that are related to profile tailoring
 module ProfileTailoring
-  GROUP_ANCESTRY_IDS = Arel::Nodes::NamedFunction.new(
+  AN = Arel::Nodes
+  GROUP_ANCESTRY_IDS = AN::NamedFunction.new(
     'CAST',
     [
-      Arel::Nodes::NamedFunction.new(
+      AN::NamedFunction.new(
         'unnest',
         [
-          Arel::Nodes::NamedFunction.new(
+          AN::NamedFunction.new(
             'string_to_array',
             [
               RuleGroup.arel_table[:ancestry],
-              Arel::Nodes::Quoted.new('/')
+              AN::Quoted.new('/')
             ]
           )
         ]

@@ -6,6 +6,8 @@ class ApplicationRecord < ActiveRecord::Base
 
   include Sortable
 
+  AN = Arel::Nodes
+
   scope :older_than, lambda { |datetime|
     where(arel_table[:created_at].lt(datetime))
   }

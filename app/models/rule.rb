@@ -4,12 +4,12 @@
 # found in, what hosts are associated with it, etceter
 class Rule < ApplicationRecord
   SORTED_SEVERITIES = Arel.sql(
-    Arel::Nodes::Case.new.when(
-      Rule.arel_table[:severity].eq(Arel::Nodes::Quoted.new('high'))
+    AN::Case.new.when(
+      Rule.arel_table[:severity].eq(AN::Quoted.new('high'))
     ).then(3).when(
-      Rule.arel_table[:severity].eq(Arel::Nodes::Quoted.new('medium'))
+      Rule.arel_table[:severity].eq(AN::Quoted.new('medium'))
     ).then(2).when(
-      Rule.arel_table[:severity].eq(Arel::Nodes::Quoted.new('low'))
+      Rule.arel_table[:severity].eq(AN::Quoted.new('low'))
     ).then(1).else(0).to_sql
   )
 
