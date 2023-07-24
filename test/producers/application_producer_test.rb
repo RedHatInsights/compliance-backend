@@ -8,19 +8,23 @@ class ApplicationProducerTest < ActiveSupport::TestCase
   end
 
   test 'handles SSL settings' do
+    Settings.kafka.brokers = 'kafka:29092'
     Settings.kafka.security_protocol = 'ssl'
     Settings.kafka.ssl_ca_location = 'test/fixtures/files/test_ca.crt'
 
     class MockProducer < ApplicationProducer; end
 
     config = {
-      client_id: ApplicationProducer::CLIENT_ID,
-      ssl_ca_cert: "very secure\n"
+      'client.id' => ApplicationProducer::CLIENT_ID,
+      'ssl.ca.location' => 'test/fixtures/files/test_ca.crt',
+      'bootstrap.servers' => 'kafka:29092'
     }
+
     assert_equal config, MockProducer.send(:kafka_config)
   end
 
   test 'handles SASL SSL settings' do
+    Settings.kafka.brokers = 'kafka:29092'
     Settings.kafka.security_protocol = 'sasl_ssl'
     Settings.kafka.ssl_ca_location = 'test/fixtures/files/test_ca.crt'
     Settings.kafka.sasl_username = 'user'
@@ -30,18 +34,20 @@ class ApplicationProducerTest < ActiveSupport::TestCase
     class MockProducer < ApplicationProducer; end
 
     config = {
-      client_id: ApplicationProducer::CLIENT_ID,
-      ssl_ca_cert: "very secure\n",
-      sasl_scram_username: 'user',
-      sasl_scram_password: 'youwish',
-      sasl_scram_mechanism: 'sha512',
-      ssl_ca_certs_from_system: true
+      'bootstrap.servers' => 'kafka:29092',
+      'client.id' => ApplicationProducer::CLIENT_ID,
+      'ssl.ca.location' => 'test/fixtures/files/test_ca.crt',
+      'sasl.username' => 'user',
+      'sasl.password' => 'youwish',
+      'sasl.mechanism' => 'SCRAM-SHA-512',
+      'security.protocol' => 'sasl_ssl'
     }
 
     assert_equal config, MockProducer.send(:kafka_config)
   end
 
   test 'handles PLAIN settings' do
+    Settings.kafka.brokers = 'kafka:29092'
     Settings.kafka.security_protocol = 'sasl_ssl'
     Settings.kafka.ssl_ca_location = 'test/fixtures/files/test_ca.crt'
     Settings.kafka.sasl_username = 'user'
@@ -51,23 +57,27 @@ class ApplicationProducerTest < ActiveSupport::TestCase
     class MockProducer < ApplicationProducer; end
 
     config = {
-      client_id: ApplicationProducer::CLIENT_ID,
-      ssl_ca_cert: "very secure\n",
-      sasl_plain_username: 'user',
-      sasl_plain_password: 'youwish',
-      ssl_ca_certs_from_system: true
+      'bootstrap.servers' => 'kafka:29092',
+      'client.id' => ApplicationProducer::CLIENT_ID,
+      'ssl.ca.location' => 'test/fixtures/files/test_ca.crt',
+      'sasl.username' => 'user',
+      'sasl.password' => 'youwish',
+      'sasl.mechanism' => 'PLAIN',
+      'security.protocol' => 'sasl_ssl'
     }
 
     assert_equal config, MockProducer.send(:kafka_config)
   end
 
   test 'handles plaintext settings' do
+    Settings.kafka.brokers = 'kafka:29092'
     Settings.kafka.security_protocol = 'plaintext'
 
     class MockProducer < ApplicationProducer; end
 
     config = {
-      client_id: ApplicationProducer::CLIENT_ID
+      'client.id' => ApplicationProducer::CLIENT_ID,
+      'bootstrap.servers' => 'kafka:29092'
     }
 
     assert_equal config, MockProducer.send(:kafka_config)

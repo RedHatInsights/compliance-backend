@@ -21,6 +21,9 @@ objects:
     - rbac
     optionalDependencies:
     - crc-pdf-generator
+    - notifications-backend
+    - notifications-gw
+    - notifications-engine
     database:
       name: compliance
       version: 15

@@ -12,8 +12,7 @@ class SystemNonCompliantTest < ActiveSupport::TestCase
   test 'delivers messages to the notifications topic' do
     kafka = mock('kafka')
     SystemNonCompliant.stubs(:kafka).returns(kafka)
-    kafka.expects(:deliver_message)
-         .with(anything, topic: 'platform.notifications.ingress')
+    kafka.expects(:produce).with(anything)
     SystemNonCompliant.deliver(org_id: @acc.org_id,
                                host: @host, policy: @policy,
                                compliance_score: 90, policy_threshold: 100)
@@ -22,8 +21,7 @@ class SystemNonCompliantTest < ActiveSupport::TestCase
   test 'delivers messages to the notifications topic without host' do
     kafka = mock('kafka')
     SystemNonCompliant.stubs(:kafka).returns(kafka)
-    kafka.expects(:deliver_message)
-         .with(anything, topic: 'platform.notifications.ingress')
+    kafka.expects(:produce).with(anything)
     SystemNonCompliant.deliver(host: nil, policy: @policy, org_id: @acc.org_id,
                                compliance_score: 90, policy_threshold: 100)
   end
