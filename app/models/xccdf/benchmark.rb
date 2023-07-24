@@ -9,12 +9,12 @@ module Xccdf
     include RuleTree
 
     REF_PREFIX = 'xccdf_org.ssgproject.content_benchmark_RHEL'
-    SORT_BY_VERSION = Arel::Nodes::NamedFunction.new(
+    SORT_BY_VERSION = AN::NamedFunction.new(
       'CAST',
       [
-        Arel::Nodes::NamedFunction.new(
+        AN::NamedFunction.new(
           'string_to_array',
-          [arel_table[:version], Arel::Nodes::Quoted.new('.')]
+          [arel_table[:version], AN::Quoted.new('.')]
         ).as('int[]')
       ]
     )
