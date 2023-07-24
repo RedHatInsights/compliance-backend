@@ -15,7 +15,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 # Kafka integration
 gem 'racecar', require: false
-gem 'ruby-kafka'
+gem 'rdkafka', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
@@ -94,7 +94,7 @@ gem 'cgi'
 gem 'rexml'
 gem 'webrick'
 
-# Allows for tree structures in db 
+# Allows for tree structures in db
 gem 'ancestry'
 
 group :development, :test do

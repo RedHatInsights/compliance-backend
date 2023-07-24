@@ -31,7 +31,7 @@ namespace :kafka do
   desc 'Check for available kafka connection'
   task status: [:environment] do
     begin
-      ApplicationProducer.send(:kafka).topics
+      ApplicationProducer.ping
     rescue StandardError
       abort('ERROR: Kafka unavailable')
     end
