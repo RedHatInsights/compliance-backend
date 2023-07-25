@@ -8,14 +8,13 @@ class ProfileSerializer < ApplicationSerializer
   belongs_to :parent_profile, record_type: :profile
   has_many :rules
   has_many :hosts do |profile|
-    if profile.policy
-      profile.policy.hosts
-    else
-      # external profile
-      profile.test_result_hosts
-    end
+    # In case of an external profile, the second branch is triggered
+    hosts = profile.policy ? profile.policy.hosts : profile.test_result_hosts
+    Pundit.policy_scope(User.current, ::Host).where(id: hosts.select(:id))
   end
-  has_many :test_results
+  has_many :test_results do |profile|
+    Pundit.policy_scope(User.current, ::TestResult).where(profile_id: profile)
+  end
   attributes :ref_id, :score, :parent_profile_id,
              :external, :compliance_threshold, :os_major_version,
              :os_version, :policy_profile_id

@@ -89,7 +89,11 @@ module Types
     end
 
     def hosts
-      ::CollectionLoader.for(policy_or_report.class, :hosts).load(policy_or_report)
+      ::CollectionLoader.for(
+        policy_or_report.class,
+        :hosts,
+        scope: Pundit.policy_scope(context[:current_user], ::Host)
+      ).load(policy_or_report)
     end
 
     def benchmark

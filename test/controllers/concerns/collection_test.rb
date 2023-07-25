@@ -9,6 +9,7 @@ class ControlleCollectionTest < ActionDispatch::IntegrationTest
                          .at_least_once
                          .yields
     User.current = FactoryBot.create(:user)
+    stub_rbac_permissions(Rbac::INVENTORY_VIEWER)
   end
 
   test 'per page limited to max 100 entities' do
