@@ -46,12 +46,17 @@ class Policy < ApplicationRecord
     self
   end
 
-  def update_hosts(new_host_ids)
+  def update_hosts(new_host_ids, user)
     return unless new_host_ids
 
-    removed = policy_hosts.where.not(host_id: new_host_ids).destroy_all
+    # Remove only those assigned hosts, which are accessible by the user
+    removed = Pundit.policy_scope(user, PolicyHost)
+                    .where.not(host_id: new_host_ids).destroy_all
+
+    # The new hosts are already scoped down for the user
     imported = PolicyHost.import_from_policy!(id, new_host_ids - host_ids)
     update_os_minor_versions
+    # FIXME: this needs to go as each user will have their own counters
     update_counters!
 
     [imported.ids.count, removed.count]
