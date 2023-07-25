@@ -36,6 +36,21 @@ class Rbac
       end
     end
 
+    def load_inventory_groups(permissions)
+      permissions.each_with_object([]) do |permission, ids|
+        next unless verify(permission.permission, INVENTORY_HOSTS_READ)
+        # Empty array on 'resource_definitions' symbolizes a global access to the permitted resource.
+        # In such case, the method returns Rbac::ANY and skips parsing of attributeFilter.
+        return ANY if permission.resource_definitions == []
+
+        permission.resource_definitions.each do |filter|
+          next unless valid_inventory_groups_definition?(filter[:attributeFilter])
+
+          ids.append(*inventory_groups_definition_value(filter[:attributeFilter]))
+        end
+      end
+    end
+
     def verify(permitted, requested)
       permitted_access = structurize(permitted)
       requested_access = structurize(requested)
@@ -56,6 +71,18 @@ class Rbac
     def structurize(access_entry)
       app, resource, action = access_entry.split(':')
       OpenStruct.new(app: app, resource: resource, action: action)
+    end
+
+    def valid_inventory_groups_definition?(definition)
+      definition[:value].instance_of?(Array) &&
+        definition[:operation] == 'in' &&
+        definition[:key] == 'group.id'
+    end
+
+    def inventory_groups_definition_value(definition)
+      # Received '[nil]' symbolizes access to ungrouped entries.
+      # In output represtented with an empty array.
+      definition[:value].map { |dv| dv || [] }
     end
   end
 end
