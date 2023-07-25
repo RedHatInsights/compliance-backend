@@ -33,6 +33,7 @@ services:
       - elasticsearch
       - debezium
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
+                       sleep 10 && \
                        kafka-topics --create --if-not-exists --topic platform.upload.announce --bootstrap-server kafka:29092 && \
                        kafka-topics --create --if-not-exists --topic platform.inventory.events --bootstrap-server kafka:29092 && \
                        /xjoin-config/configure-xjoin.sh'"
