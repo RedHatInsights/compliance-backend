@@ -97,14 +97,17 @@ unless Rails.env.production?
       end
 
       # rubocop:disable Metrics/MethodLength
-      def stub_rbac_permissions(*permissions)
-        role_permissions = permissions.map do |permission|
+      def stub_rbac_permissions(*arr, **hsh)
+        permissions = arr + hsh.to_a
+        role_permissions = permissions.map do |permission, rd = []|
           RBACApiClient::Access.new(
             permission: permission,
-            resource_definitions: []
+            resource_definitions: rd
           )
         end
         role = RBACApiClient::AccessPagination.new(data: role_permissions)
+        # Remove any previous mocks
+        Rbac::API_CLIENT.unstub(:get_principal_access)
         Rbac::API_CLIENT.stubs(:get_principal_access).returns(role)
       end
       # rubocop:enable Metrics/MethodLength
