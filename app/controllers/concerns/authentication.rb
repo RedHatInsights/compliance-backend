@@ -53,17 +53,6 @@ module Authentication
     @user ||= User.new(account: Account.from_identity_header(identity_header))
   end
 
-  def rbac_allowed?
-    return true if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
-    return valid_cert_auth? if identity_header.cert_based?
-
-    @rbac_permissions ||= Rbac.load_user_permissions(raw_identity_header)
-
-    @rbac_permissions.any? do |access|
-      Rbac.verify(access.permission, Rbac::COMPLIANCE_VIEWER)
-    end
-  end
-
   private
 
   def set_authenticated_user
