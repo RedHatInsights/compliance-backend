@@ -37,4 +37,20 @@ class UserTest < ActiveSupport::TestCase
     assert_not current_user.authorized_to?('app:resource1:read')
     assert_not current_user.authorized_to?('app:resource1:*')
   end
+
+  test 'bypasses RBAC when RBAC is disabled' do
+    account = FactoryBot.create(:account)
+    Settings.stubs(:disable_rbac).returns(true)
+    user = FactoryBot.create(:user, account: account)
+
+    assert_equal Rbac::ANY, user.inventory_groups
+  end
+
+  test 'bypasses RBAC when cert authenticated' do
+    account = FactoryBot.create(:account)
+    account.identity_header.content['identity']['auth_type'] = Insights::Api::Common::IdentityHeader::CERT_AUTH
+    user = FactoryBot.create(:user, account: account)
+
+    assert_equal [], user.inventory_groups
+  end
 end

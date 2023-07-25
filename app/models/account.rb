@@ -28,6 +28,10 @@ class Account < ApplicationRecord
     end
   end
 
+  def cert_authenticated?
+    identity_header.cert_based?
+  end
+
   # rubocop:disable Metrics/MethodLength
   def fake_identity_header
     {

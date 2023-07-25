@@ -7,10 +7,10 @@ class User < ApplicationRecord
 
   belongs_to :account
 
-  delegate :org_id, to: :account
+  delegate :org_id, :cert_authenticated?, to: :account
 
   def authorized_to?(access_request)
-    return true if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
+    return true if rbac_disabled?
 
     rbac_permissions.any? do |access|
       Rbac.verify(access.permission, access_request)
@@ -18,6 +18,11 @@ class User < ApplicationRecord
   end
 
   def inventory_groups
+    # No need to fetch inventory groups if the RBAC feature is globally disabled
+    return Rbac::ANY if rbac_disabled?
+    # No groups should be available when using certificate authentication
+    return [] if cert_authenticated?
+
     @inventory_groups ||= Rbac.load_inventory_groups(rbac_permissions)
   end
 
@@ -25,6 +30,10 @@ class User < ApplicationRecord
 
   def rbac_permissions
     @rbac_permissions ||= Rbac.load_user_permissions(account.identity_header.raw)
+  end
+
+  def rbac_disabled?
+    ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
   end
 
   class << self
