@@ -13,9 +13,11 @@ class PolicyTest < ActiveSupport::TestCase
   should belong_to(:account)
 
   setup do
-    @account = FactoryBot.create(:user).account
+    @user = FactoryBot.create(:user)
+    @account = @user.account
     @policy = FactoryBot.create(:policy, account: @account)
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
+    stub_rbac_permissions(Rbac::INVENTORY_VIEWER)
   end
 
   context 'scopes' do
@@ -133,7 +135,7 @@ class PolicyTest < ActiveSupport::TestCase
 
       @policy.expects(:update_os_minor_versions)
 
-      @policy.update_hosts([])
+      @policy.update_hosts([], @user)
     end
 
     should 'add new hosts to an empty host set' do
@@ -143,7 +145,7 @@ class PolicyTest < ActiveSupport::TestCase
 
       assert_empty(@policy.hosts)
       assert_difference(HOST_COUNT_FIELDS, @hosts.count) do
-        changes = @policy.update_hosts(@hosts.pluck(:id))
+        changes = @policy.update_hosts(@hosts.pluck(:id), @user)
         assert_equal [@hosts.count, 0], changes
       end
     end
@@ -157,7 +159,7 @@ class PolicyTest < ActiveSupport::TestCase
 
       assert_not_empty(@policy.hosts)
       assert_difference(HOST_COUNT_FIELDS, 1) do
-        changes = @policy.update_hosts(@hosts.pluck(:id))
+        changes = @policy.update_hosts(@hosts.pluck(:id), @user)
         assert_equal [1, 0], changes
       end
     end
@@ -169,7 +171,7 @@ class PolicyTest < ActiveSupport::TestCase
       assert_equal @hosts.count, @policy.hosts.count
       assert_equal @hosts.count, @policy.total_host_count
       assert_difference(HOST_COUNT_FIELDS, -@hosts.count) do
-        changes = @policy.update_hosts([])
+        changes = @policy.update_hosts([], @user)
         assert_equal [0, @hosts.count], changes
       end
     end
@@ -184,7 +186,7 @@ class PolicyTest < ActiveSupport::TestCase
 
       assert_not_empty(@policy.hosts)
       assert_difference(HOST_COUNT_FIELDS, 0) do
-        changes = @policy.update_hosts([@hosts.last.id])
+        changes = @policy.update_hosts([@hosts.last.id], @user)
         assert_equal [1, 1], changes
       end
     end

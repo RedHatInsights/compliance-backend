@@ -1132,6 +1132,49 @@ module V1
         )
       end
 
+      test 'create allows grouped hosts relationship' do
+        hosts = FactoryBot.create_list(:host, 3, :with_groups, group_count: 1)
+        parent = FactoryBot.create(:canonical_profile, upstream: false)
+
+        allowed_groups = hosts[0..1].map { |h| h.groups.first['id'] }
+        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                                attributeFilter: {
+                                  key: 'group.id',
+                                  operation: 'in',
+                                  value: allowed_groups
+                                }
+                              }])
+
+        stub_supported_ssg(hosts, [parent.benchmark.version])
+
+        assert_empty(parent.hosts)
+        assert_audited_success 'Setting OS minor version'
+        assert_audited_success 'Created policy'
+        assert_audited_success 'Updated systems assignment on policy', '2 added', '0 removed'
+        assert_difference('PolicyHost.count', 2) do
+          post profiles_path, params: params(
+            attributes: {
+              parent_profile_id: parent.id
+            },
+            relationships: {
+              hosts: {
+                data: hosts.map do |host|
+                  { id: host.id, type: 'host' }
+                end
+              }
+            }
+          )
+        end
+        assert_response :created
+        assert_equal User.current.account.id,
+                     parsed_data.dig('relationships', 'account', 'data', 'id')
+        assert_equal(
+          Set.new(hosts[0..1].pluck(:id)),
+          Set.new(parsed_data.dig('relationships', 'hosts', 'data')
+                             .map { |r| r['id'] })
+        )
+      end
+
       test 'create fails with unsupported hosts' do
         hosts = FactoryBot.create_list(:host, 2)
         SupportedSsg.stubs(:by_ssg_version).returns({})
@@ -1335,6 +1378,37 @@ module V1
         assert_response :success
       end
 
+      test 'update to update grouped hosts relationships' do
+        hosts = FactoryBot.create_list(:host, 4, :with_groups, group_count: 1)
+        stub_supported_ssg(hosts, [@profile.benchmark.version])
+        allowed_groups = hosts[0..1].map { |h| h.groups.first['id'] }
+        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                                attributeFilter: {
+                                  key: 'group.id',
+                                  operation: 'in',
+                                  value: allowed_groups
+                                }
+                              }])
+        @profile.policy.update!(hosts: hosts[1..3])
+
+        assert_difference('@profile.policy.reload.hosts.count' => 1) do
+          patch profile_path(@profile.id), params: params(
+            attributes: {},
+            relationships: {
+              hosts: {
+                data: hosts[0..1].map do |host|
+                  { id: host.id, type: 'host' }
+                end
+              }
+            }
+          )
+        end
+
+        assert_response :success
+        # Hosts outside the accessible group do not get touched
+        assert_equal @profile.policy.reload.hosts.count, 4
+      end
+
       test 'update to remove hosts relationships' do
         hosts = FactoryBot.create_list(:host, 2)
 
@@ -1359,6 +1433,38 @@ module V1
           )
         end
         assert_response :success
+      end
+
+      test 'update to remove grouped hosts relationships' do
+        hosts = FactoryBot.create_list(:host, 4, :with_groups, group_count: 1)
+        stub_supported_ssg(hosts, [@profile.benchmark.version])
+        allowed_groups = hosts[0..1].map { |h| h.groups.first['id'] }
+        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                                attributeFilter: {
+                                  key: 'group.id',
+                                  operation: 'in',
+                                  value: allowed_groups
+                                }
+                              }])
+        @profile.policy.update!(hosts: hosts[0..3])
+
+        assert_difference('@profile.policy.reload.hosts.count' => -1) do
+          patch profile_path(@profile.id), params: params(
+            attributes: {},
+            relationships: {
+              hosts: {
+                data: [{ id: hosts[1].id, type: 'host' }]
+              }
+            }
+          )
+        end
+
+        assert_response :success
+        # Hosts outside the accessible group do not get touched
+        assert_equal @profile.policy.reload.hosts.count, 3
+        hosts[1..3].each do |h|
+          assert_includes @profile.policy.hosts.pluck(:id), h.id
+        end
       end
     end
   end

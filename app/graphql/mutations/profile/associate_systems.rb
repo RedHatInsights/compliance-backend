@@ -18,7 +18,7 @@ module Mutations
           hosts = find_hosts(args[:system_ids])
           profile = find_profile(args[:id])
           if profile&.policy
-            profile.policy.update_hosts(hosts.pluck(:id))
+            profile.policy.update_hosts(hosts.pluck(:id), current_user)
             audit_mutation(profile)
           end
           { profile: profile, profiles: profile.policy.profiles }

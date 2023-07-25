@@ -21,8 +21,9 @@ class PolicyHostPolicyTest < ActiveSupport::TestCase
 
     stub_supported_ssg(Host.all.to_a, [policy.profiles.first.benchmark.version])
     stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ)
-    policy.update_hosts(Host.pluck(:id))
+    policy.update_hosts(Host.pluck(:id), user)
     user.instance_variable_set(:@rbac_permissions, nil)
+    user.instance_variable_set(:@inventory_groups, nil)
 
     stub_rbac_permissions(
       Rbac::INVENTORY_HOSTS_READ => [{

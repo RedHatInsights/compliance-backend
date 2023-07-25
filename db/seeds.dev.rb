@@ -54,7 +54,8 @@ def create_policy(account, canonical_profile, hosts)
 
   policy.save!
   profile.update!(policy: policy)
-  policy.update_hosts(hosts.pluck(:id))
+  Settings.disable_rbac = true
+  policy.update_hosts(hosts.pluck(:id), User.new(account: account))
 
   policy
 end

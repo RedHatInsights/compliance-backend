@@ -83,7 +83,7 @@ module V1
 
     def update_relationships
       @hosts_added, @hosts_removed =
-        profile.policy.update_hosts(new_host_ids)
+        profile.policy.update_hosts(new_host_ids, current_user)
       @rules_added, @rules_removed =
         profile.update_rules(ids: new_rule_ids)
     end

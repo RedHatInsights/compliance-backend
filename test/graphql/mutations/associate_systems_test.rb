@@ -82,4 +82,33 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
 
     assert_empty @profile.policy.reload.hosts
   end
+
+  test 'only adds and removes accessible grouped hosts' do
+    hosts = FactoryBot.create_list(:host, 4, :with_groups, org_id: @user.account.org_id, group_count: 1).map do |h|
+      Host.find(h.id)
+    end
+
+    allowed_groups = hosts[0..1].map { |h| h.groups.first['id'] }
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                            attributeFilter: {
+                              key: 'group.id',
+                              operation: 'in',
+                              value: allowed_groups
+                            }
+                          }])
+
+    @profile.policy.hosts = [hosts[0], hosts[2], hosts[3]]
+
+    Schema.execute(
+      QUERY,
+      variables: { input: {
+        id: @profile.id,
+        systemIds: [hosts[1].id]
+      } },
+      context: { current_user: @user }
+    )
+
+    assert_equal Set.new(@profile.policy.reload.hosts),
+                 Set.new(hosts[1..3])
+  end
 end
