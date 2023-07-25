@@ -90,7 +90,7 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
             host: @hosts.second, score: 0.68
           )
         end
-        let(:'X-RH-IDENTITY') { encoded_header }
+        let(:'X-RH-IDENTITY') { encoded_header(@account) }
         let(:include) { '' } # work around buggy rswag
         let(:search) { 'os_major_version = 7' }
         schema type: :object,

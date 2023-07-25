@@ -43,6 +43,7 @@ module Types
       def top_failed_rules(args = {})
         ids = ::RuleResult.latest(args[:policy_id]).failed
                           .joins(:rule).group('rules.ref_id')
+                          .joins(:host).merge(Pundit.policy_scope(context[:current_user], ::Host))
                           .select('rules.ref_id', 'COUNT(result) as cnt', '(ARRAY_AGG(rule_id))[1] as rule_id')
         # The rule_id selection is non-deterministic here, but it's not important which specific rule we select
         # with the grouped ref_id under the given policy. This deduplication effort also ensures that the query

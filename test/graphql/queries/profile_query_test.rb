@@ -140,7 +140,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
     @profile.update!(account: FactoryBot.create(:account))
 
-    assert_raises(ActiveRecord::RecordNotFound) do
+    assert_raises(Pundit::NotAuthorizedError) do
       Schema.execute(
         query,
         variables: { id: @profile.id },
@@ -355,6 +355,56 @@ class ProfileQueryTest < ActiveSupport::TestCase
     end
   end
 
+  should 'query grouped hosts under a profile' do
+    hosts = FactoryBot.create_list(:host, 4, :with_groups, group_count: 1, org_id: @profile.account.org_id)
+    @profile.policy.update(hosts: hosts)
+    Host.all.each do |host|
+      tr = FactoryBot.create(:test_result, host: host, profile: @profile)
+      @profile.rules.each do |rule|
+        FactoryBot.create(:rule_result, host: host, test_result: tr, rule: rule, result: 'fail')
+      end
+    end
+
+    allowed_groups = hosts[0..1].map { |h| h.groups.first['id'] }
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                            attributeFilter: {
+                              key: 'group.id',
+                              operation: 'in',
+                              value: allowed_groups
+                            }
+                          }])
+
+    query = <<-GRAPHQL
+      query Profile($id: String!, $policyId: ID!){
+        profile(id: $id) {
+          id
+          name
+          hosts {
+            id
+          }
+          topFailedRules(policyId: $policyId) {
+            refId
+            failedCount
+          }
+          lastScanned
+        }
+      }
+    GRAPHQL
+
+    result = Schema.execute(
+      query,
+      variables: { id: @profile.id, policyId: @profile.policy_id },
+      context: { current_user: @user }
+    )
+
+    r_hosts = result['data']['profile']['hosts'].map { |h| h['id'] }
+
+    assert_equal Set.new(hosts[0..1].map(&:id)), Set.new(r_hosts)
+    result['data']['profile']['topFailedRules'].each do |fr|
+      assert_equal 2, fr['failedCount']
+    end
+  end
+
   should 'query profile via a policy with failing rule stats' do
     FactoryBot.create_list(:host, 2, org_id: @profile.account.org_id)
     @profile.policy.update!(hosts: Host.all)
@@ -367,10 +417,10 @@ class ProfileQueryTest < ActiveSupport::TestCase
     Host.all.each_with_index do |h, idx|
       tr = FactoryBot.create(:test_result, host: h, profile: @profile)
       rules.each do |r|
-        FactoryBot.create(:rule_result, rule: r, test_result: tr, result: 'fail')
+        FactoryBot.create(:rule_result, host: h, rule: r, test_result: tr, result: 'fail')
       end
       special_rule = [duplicate_rule, cp.rules.first][idx]
-      FactoryBot.create(:rule_result, rule: special_rule, test_result: tr, result: 'fail')
+      FactoryBot.create(:rule_result, host: h, rule: special_rule, test_result: tr, result: 'fail')
     end
 
     query = <<-GRAPHQL
