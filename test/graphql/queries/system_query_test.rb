@@ -59,6 +59,152 @@ class SystemQueryTest < ActiveSupport::TestCase
     end
   end
 
+  test 'query grouped host with group access' do
+    query = <<-GRAPHQL
+      query System($inventoryId: String!){
+          system(id: $inventoryId) {
+              name
+          }
+      }
+    GRAPHQL
+
+    @host1.update(groups: [{ id: 1234 }])
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                            attributeFilter: {
+                              key: 'group.id',
+                              operation: 'in',
+                              value: [1234]
+                            }
+                          }])
+
+    result = Schema.execute(
+      query,
+      variables: { inventoryId: @host1.id },
+      context: { current_user: @user }
+    )
+
+    assert_equal @host1.name, result['data']['system']['name']
+  end
+
+  test 'query grouped host without group access' do
+    query = <<-GRAPHQL
+      query System($inventoryId: String!){
+          system(id: $inventoryId) {
+              name
+          }
+      }
+    GRAPHQL
+
+    @host1.update(groups: [{ id: 1234 }])
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                            attributeFilter: {
+                              key: 'group.id',
+                              operation: 'in',
+                              value: [4321]
+                            }
+                          }])
+
+    assert_raises(Pundit::NotAuthorizedError) do
+      Schema.execute(
+        query,
+        variables: { inventoryId: @host1.id },
+        context: { current_user: @user }
+      )
+    end
+  end
+
+  test 'query ungrouped host with ungrouped access' do
+    query = <<-GRAPHQL
+      query System($inventoryId: String!){
+          system(id: $inventoryId) {
+              name
+          }
+      }
+    GRAPHQL
+
+    @host1.update(groups: [])
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                            attributeFilter: {
+                              key: 'group.id',
+                              operation: 'in',
+                              value: [nil]
+                            }
+                          }])
+
+    result = Schema.execute(
+      query,
+      variables: { inventoryId: @host1.id },
+      context: { current_user: @user }
+    )
+
+    assert_equal @host1.name, result['data']['system']['name']
+  end
+
+  test 'query ungrouped host without ungrouped access' do
+    query = <<-GRAPHQL
+      query System($inventoryId: String!){
+          system(id: $inventoryId) {
+              name
+          }
+      }
+    GRAPHQL
+
+    @host1.update(groups: [])
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                            attributeFilter: {
+                              key: 'group.id',
+                              operation: 'in',
+                              value: [1234]
+                            }
+                          }])
+
+    assert_raises(Pundit::NotAuthorizedError) do
+      Schema.execute(
+        query,
+        variables: { inventoryId: @host1.id },
+        context: { current_user: @user }
+      )
+    end
+  end
+
+  test 'query grouped hosts with group access' do
+    query = <<-GRAPHQL
+      query getSystems {
+          systems {
+              edges {
+                  node {
+                      id
+                  }
+              }
+          }
+      }
+    GRAPHQL
+
+    @host1.update(groups: [])
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                            attributeFilter: {
+                              key: 'group.id',
+                              operation: 'in',
+                              value: [1234, 2345]
+                            }
+                          }])
+
+    host2 = FactoryBot.create(:host, org_id: @user.account.org_id, groups: [{ id: 1234 }])
+    host3 = FactoryBot.create(:host, org_id: @user.account.org_id, groups: [{ id: 2345 }])
+    host4 = FactoryBot.create(:host, org_id: @user.account.org_id, groups: [{ id: 3456 }])
+
+    result = Schema.execute(
+      query,
+      variables: { inventoryId: @host1.id },
+      context: { current_user: @user }
+    )
+
+    result['data']['systems']['edges'].map do |item|
+      assert_includes [host2.id, host3.id], item['node']['id']
+      assert_not_includes [@host1.id, host4.id], item['node']['id']
+    end
+  end
+
   test 'query host returns timestamps in ISO-6801' do
     FactoryBot.create(:test_result, host: @host1, profile: @profile1)
 

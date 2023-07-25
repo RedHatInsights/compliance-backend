@@ -42,6 +42,8 @@ class TestResultPolicyTest < ActiveSupport::TestCase
       rule: @profile2.rules.first,
       test_result: @tr2
     )
+
+    stub_rbac_permissions(Rbac::INVENTORY_VIEWER)
   end
 
   test 'only test results within visible profiles are accessible' do

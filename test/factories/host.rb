@@ -35,13 +35,14 @@ FactoryBot.define do
   sequence(:org_id) { |n| format('%05<num>d', num: n) }
 
   factory :host, class: WHost do
-    id { SecureRandom.uuid }
+    id { Faker::Internet.uuid }
     org_id do
       User.current&.account&.org_id || generate(:org_id)
     end
     display_name { Faker::Internet.domain_name }
     tags { [] }
     stale_timestamp { 10.years.since(Time.zone.now) }
+    groups { [] }
     if Rails.env.test?
       created { Time.zone.now }
       updated { Time.zone.now }
@@ -81,6 +82,18 @@ FactoryBot.define do
       tags do
         tag_count.times.map do
           { namespace: Faker::Hacker.ingverb, key: Faker::Hacker.noun, value: Faker::Hacker.adjective }
+        end
+      end
+    end
+
+    trait :with_groups do
+      transient do
+        group_count { 2 }
+      end
+
+      groups do
+        group_count.times.map do
+          { id: SecureRandom.uuid, name: Faker::Hacker.abbreviation }
         end
       end
     end

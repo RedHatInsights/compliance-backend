@@ -39,6 +39,8 @@ class Host < ApplicationRecord
     AN::Quoted.new('host_type')
   )
 
+  UNGROUPED_HOSTS = arel_table[:groups].eq(AN::Quoted.new('[]'))
+
   sortable_by :name, :display_name
   sortable_by :score, AN::NamedFunction.new(
     'COALESCE',
@@ -117,12 +119,34 @@ class Host < ApplicationRecord
     joins("LEFT OUTER JOIN (#{sq.to_sql}) sq ON sq.id = hosts.id")
   }
 
+  scope :with_groups, lambda { |groups, key = :id|
+    # Skip the [] representing ungrouped hosts from the array when generating the query
+    grouped = arel_inventory_groups(groups.flatten, key)
+    # The OR is inside of Arel in order to prevent pollution of already applied scopes
+    where(groups.include?([]) ? grouped.or(UNGROUPED_HOSTS) : grouped)
+  }
+
   def self.os_minor_versions(hosts)
     distinct.where(id: hosts).pluck(OS_MINOR_VERSION)
   end
 
   def self.available_os_versions
     distinct.pluck(OS_VERSION)
+  end
+
+  def self.arel_inventory_groups(groups, key)
+    jsons = groups.map { |group| [{ key => group }].to_json.dump }
+
+    return Arel.sql('1 = 0') if jsons.empty?
+
+    AN::InfixOperation.new(
+      '@>', arel_table[:groups],
+      AN::NamedFunction.new(
+        'ANY', [
+          AN::NamedFunction.new('CAST', [AN.build_quoted("{#{jsons.join(',')}}").as('jsonb[]')])
+        ]
+      )
+    )
   end
 
   def readonly?
@@ -169,6 +193,10 @@ class Host < ApplicationRecord
     Profile.where(id: assigned_profiles)
            .or(Profile.where(id: test_result_profiles))
            .distinct
+  end
+
+  def group_ids
+    groups.map { |group| group['id'] } || []
   end
 end
 

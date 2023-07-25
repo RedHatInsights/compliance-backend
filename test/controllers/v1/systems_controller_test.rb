@@ -8,6 +8,7 @@ module V1
       PolicyHost.any_instance.stubs(:host_supported?).returns(true)
       SystemsController.any_instance.expects(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
+      stub_rbac_permissions('inventory:hosts:read')
     end
 
     context 'index' do
@@ -21,6 +22,31 @@ module V1
         get v1_systems_url
 
         assert_response :success
+      end
+
+      should 'return hosts from allowed groups' do
+        ungrouped_hosts = Host.all.to_a
+        @host1 = FactoryBot.create(:host, :with_groups, group_count: 1)
+        @host2 = FactoryBot.create(:host, :with_groups, group_count: 1)
+        FactoryBot.create(:policy, hosts: Host.all)
+
+        allowed_groups = [@host1.groups.first['id'], nil]
+
+        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                                attributeFilter: {
+                                  key: 'group.id',
+                                  operation: 'in',
+                                  value: allowed_groups
+                                }
+                              }])
+
+        get v1_systems_url
+
+        hosts = response.parsed_body['data'].map { |h| h['id'] }
+
+        ungrouped_hosts.each { |h| assert_includes hosts, h.id }
+        assert_includes hosts, @host1.id
+        assert_not_includes hosts, @host2.id
       end
 
       should 'accept search' do
