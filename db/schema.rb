@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_19_150933) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_27_092330) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -251,4 +251,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_19_150933) do
   add_foreign_key "rule_references_containers", "rules"
   add_foreign_key "rules", "rule_groups"
   add_foreign_key "value_definitions", "benchmarks"
+
+  create_view "canonical_profiles", sql_definition: <<-SQL
+      SELECT profiles.id,
+      profiles.name,
+      profiles.ref_id,
+      profiles.created_at,
+      profiles.updated_at,
+      profiles.description,
+      profiles.benchmark_id,
+      profiles.upstream,
+      profiles.value_overrides
+     FROM profiles
+    WHERE (profiles.parent_profile_id IS NULL);
+  SQL
 end
