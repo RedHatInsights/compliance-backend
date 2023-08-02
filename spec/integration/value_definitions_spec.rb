@@ -7,7 +7,7 @@ describe 'ValueDefinitions API', swagger_doc: 'v1/openapi.json' do
   before do
     @account = FactoryBot.create(:account)
     FactoryBot.create_list(:value_definition, 2)
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   path '/value_definitions' do

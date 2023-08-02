@@ -8,7 +8,7 @@ require 'securerandom'
 # ActionDispatch::IntegrationTest, it is testing the Profiles controller
 # instead for the time being
 class MetadataTest < ActionDispatch::IntegrationTest
-  setup { stub_rbac_permissions(Rbac::INVENTORY_VIEWER) }
+  setup { stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ) }
   def authenticate
     V1::ProfilesController.any_instance.expects(:authenticate_user).yields
     User.current = FactoryBot.create(:user)

@@ -43,7 +43,7 @@ class TestResultPolicyTest < ActiveSupport::TestCase
       test_result: @tr2
     )
 
-    stub_rbac_permissions(Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ)
   end
 
   test 'only test results within visible profiles are accessible' do

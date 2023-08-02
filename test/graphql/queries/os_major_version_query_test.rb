@@ -4,7 +4,7 @@ require 'test_helper'
 
 class OsMajorVersionQueryTest < ActiveSupport::TestCase
   setup do
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   test 'query for OS major versions and supported profiles' do

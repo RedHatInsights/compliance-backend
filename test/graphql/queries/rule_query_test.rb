@@ -25,7 +25,7 @@ class RuleQueryTest < ActiveSupport::TestCase
     @rr = rule.rule_references_container.rule_references.first
     rule.rule_references_container.update(rule_references: [@rr])
 
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   test 'rules are filtered by system ID' do

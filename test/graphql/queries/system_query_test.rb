@@ -16,7 +16,7 @@ class SystemQueryTest < ActiveSupport::TestCase
       account: @user.account
     )
 
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   TAG = { 'namespace' => 'foo', 'key' => 'bar', 'value' => 'baz' }.freeze

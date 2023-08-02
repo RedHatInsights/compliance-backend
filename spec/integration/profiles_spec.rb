@@ -28,7 +28,7 @@ describe 'Profiles API', swagger_doc: 'v1/openapi.json' do
     allow(PolicyHost).to receive(:os_minors_supported?).and_return(true)
 
     allow(@policy).to receive(:supported_os_minor_versions).and_return([2])
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   path '/profiles' do
