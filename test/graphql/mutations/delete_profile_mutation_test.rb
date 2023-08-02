@@ -6,7 +6,7 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
   setup do
     @user = FactoryBot.create(:user)
     @profile = FactoryBot.create(:profile, account: @user.account)
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   QUERY = <<-GRAPHQL
@@ -80,7 +80,7 @@ class DeleteProfileMutationTest < ActiveSupport::TestCase
 
   context 'unauthorized user' do
     setup do
-      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_VIEWER)
+      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_HOSTS_READ)
     end
 
     should 'have the delete action rejected' do

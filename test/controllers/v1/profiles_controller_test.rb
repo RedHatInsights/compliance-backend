@@ -98,7 +98,7 @@ module V1
       should 'allow access to profiles#tailoring_file with basic auth' do
         account = FactoryBot.create(:account)
         profile = FactoryBot.create(:canonical_profile, account: account)
-        stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_VIEWER)
+        stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_HOSTS_READ)
 
         encoded_header = Base64.encode64(
           {
@@ -174,7 +174,7 @@ module V1
     setup do
       ProfilesController.any_instance.stubs(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
-      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_VIEWER)
+      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_HOSTS_READ)
     end
 
     def params(data)

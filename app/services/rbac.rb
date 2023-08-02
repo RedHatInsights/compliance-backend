@@ -11,7 +11,6 @@ class Rbac
 
   INVENTORY_UNGROUPED_ENTRIES = [].freeze
   INVENTORY_HOSTS_READ = 'inventory:hosts:read'
-  INVENTORY_VIEWER = 'inventory:*:read'
   COMPLIANCE_VIEWER = 'compliance:policy:read' # universal read permission accross all roles
   COMPLIANCE_ADMIN = 'compliance:*:*'
   POLICY_READ = 'compliance:policy:read'

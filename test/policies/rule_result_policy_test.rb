@@ -4,7 +4,7 @@ require 'test_helper'
 
 class RuleResultPolicyTest < ActiveSupport::TestCase
   test 'only rules within visible hosts are accessible' do
-    stub_rbac_permissions(Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ)
     user = FactoryBot.create(:user)
     host1 = Host.find(
       FactoryBot.create(:host, org_id: user.account.org_id).id

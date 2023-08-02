@@ -19,7 +19,7 @@ describe 'RuleResults API', swagger_doc: 'v1/openapi.json' do
       host: host,
       rule: profile.rules.first
     )
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   path '/rule_results' do

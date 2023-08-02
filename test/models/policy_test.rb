@@ -17,7 +17,7 @@ class PolicyTest < ActiveSupport::TestCase
     @account = @user.account
     @policy = FactoryBot.create(:policy, account: @account)
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
-    stub_rbac_permissions(Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ)
   end
 
   context 'scopes' do

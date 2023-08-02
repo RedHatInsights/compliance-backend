@@ -4,7 +4,7 @@ require 'swagger_helper'
 
 describe 'SupportedSsgs API', swagger_doc: 'v1/openapi.json' do
   before do
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   path '/supported_ssgs' do

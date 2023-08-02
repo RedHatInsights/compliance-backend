@@ -15,7 +15,7 @@ describe 'Business Objectives API', swagger_doc: 'v1/openapi.json' do
       profile.policy.update!(business_objective: bo)
       bo
     end
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   path '/business_objectives' do

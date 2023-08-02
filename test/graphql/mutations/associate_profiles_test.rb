@@ -19,7 +19,7 @@ class AssociateProfilesMutationTest < ActiveSupport::TestCase
     @user = FactoryBot.create(:user)
     @profiles = FactoryBot.create_list(:profile, 2, account: @user.account)
     @host = FactoryBot.create(:host, org_id: @user.account.org_id)
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   test 'provide all required arguments' do
