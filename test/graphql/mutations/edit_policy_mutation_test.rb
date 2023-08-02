@@ -11,7 +11,7 @@ class EditPolicyMutationTest < ActiveSupport::TestCase
     PolicyHost.any_instance.stubs(:host_supported?).returns(true)
     @profile.policy.update(hosts: [@host])
     @bo = FactoryBot.create(:business_objective)
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   test 'query host owned by the user' do

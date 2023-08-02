@@ -38,7 +38,7 @@ class GraphqlController < ApplicationController
   end
 
   def rbac_allowed?
-    user.authorized_to?(Rbac::INVENTORY_VIEWER)
+    user.authorized_to?(Rbac::INVENTORY_HOSTS_READ)
   end
 
   def handle_error_in_development(exc)

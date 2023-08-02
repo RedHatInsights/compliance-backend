@@ -8,7 +8,7 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
     @user = FactoryBot.create(:user)
     @profile = FactoryBot.create(:profile, account: @user.account, upstream: false)
     @host = FactoryBot.create(:host, org_id: @user.account.org_id)
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
     stub_supported_ssg([@host], [@profile.benchmark.version])
   end
 

@@ -112,7 +112,7 @@ class AuthenticationTest < ActionController::TestCase
 
   context 'after successful login' do
     setup do
-      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_VIEWER)
+      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_HOSTS_READ)
     end
 
     should 'account org_id not found, creates a new account' do

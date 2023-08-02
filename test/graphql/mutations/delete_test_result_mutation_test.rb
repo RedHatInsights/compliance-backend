@@ -30,7 +30,7 @@ class DeleteTestResultMutationTest < ActiveSupport::TestCase
       host: @host
     )
     @profile.policy.update(hosts: [@host])
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   test 'delete a test result keeps the profile if part of a policy' do

@@ -23,7 +23,7 @@ describe 'Systems API', swagger_doc: 'v1/openapi.json' do
       external: true
     )
     FactoryBot.create(:test_result, profile: profile, host: @host)
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   path '/systems' do

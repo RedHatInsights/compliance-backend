@@ -20,11 +20,11 @@ class GraphqlControllerTest < ActionDispatch::IntegrationTest
     setup do
       account = FactoryBot.create(:account)
       @current_user = FactoryBot.create(:user, account: account)
-      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_VIEWER)
+      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_HOSTS_READ)
     end
 
     should 'be allowed to read inventory' do
-      assert_equal @current_user.authorized_to?(Rbac::INVENTORY_VIEWER), true
+      assert_equal @current_user.authorized_to?(Rbac::INVENTORY_HOSTS_READ), true
     end
   end
 
@@ -67,9 +67,46 @@ class GraphqlControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  context 'user with insufficient permissions to inventory' do
+    setup do
+      @account = FactoryBot.create(:account)
+      @current_user = FactoryBot.create(:user, account: @account)
+      @host1 = FactoryBot.create(:host, org_id: @current_user.account.org_id)
+      stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, 'inventory:groups:read')
+    end
+
+    should 'not be allowed to access hosts' do
+      query = <<-GRAPHQL
+        query System($inventoryId: String!){
+            system(id: $inventoryId) {
+                name
+            }
+        }
+      GRAPHQL
+      variables = {
+        inventoryId: @host1.id
+      }
+      identity = Base64.encode64(
+        {
+          identity: {
+            org_id: @account.org_id
+          },
+          entitlements: {
+            insights: {
+              is_entitled: true
+            }
+          }
+        }.to_json
+      )
+
+      post(graphql_url, params: { variables: variables, query: query }, headers: { 'X-RH-IDENTITY': identity })
+      assert_response :forbidden
+    end
+  end
+
   context 'unauthorized user' do
     setup do
-      stub_rbac_permissions(Rbac::INVENTORY_VIEWER)
+      stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ)
     end
 
     should 'not be allowed to mutate objects' do

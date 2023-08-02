@@ -5,7 +5,7 @@ require 'test_helper'
 class BenchmarkQueryTest < ActiveSupport::TestCase
   setup do
     @user = FactoryBot.create(:user)
-    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_VIEWER)
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
   end
 
   test 'query all benchmarks' do
