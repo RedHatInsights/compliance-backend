@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_27_092330) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_03_083948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -254,7 +254,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_27_092330) do
 
   create_view "canonical_profiles", sql_definition: <<-SQL
       SELECT profiles.id,
-      profiles.name,
+      profiles.name AS title,
       profiles.ref_id,
       profiles.created_at,
       profiles.updated_at,
