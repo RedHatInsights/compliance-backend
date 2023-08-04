@@ -24,7 +24,7 @@
 #     => written as [0, 1, [2, 3]]
 
 RSpec.shared_examples 'sortable' do
-  path = File.join('spec/controllers/v2/sort', "#{described_class.name.demodulize.underscore}.yaml")
+  path = Rails.root.join('spec/fixtures/files/sortable', "#{described_class.name.demodulize.underscore}.yaml")
   tests = YAML.safe_load_file(path, permitted_classes: [Symbol])
 
   let(:items) do
