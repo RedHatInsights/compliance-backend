@@ -87,21 +87,6 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rails zeitwerk:check
-    - name: Run rswag specs
-      env:
-        HOSTNAME: rails
-        RAILS_ENV: test
-        ACG_CONFIG: ./github-ci.json
-        DATABASE_SERVICE_NAME: postgres
-        POSTGRES_SERVICE_HOST: localhost
-        POSTGRESQL_USER: insights
-        POSTGRESQL_PASSWORD: insights
-        POSTGRESQL_TEST_DATABASE: insights
-      run: bin/rake spec
-    - name: Upload code coverage from specs
-      uses: codecov/codecov-action@v2
-    - name: Clean up spec coverage
-      run: rm -rf coverage
     - name: Validate the OpenAPI schema
       env:
         RAILS_ENV: test
@@ -120,6 +105,7 @@ jobs:
         for symbol in "${symbols[@]}"; do
           NEW=$(cat swagger/v1/openapi.json | tr -cd "${symbol}" | wc -c)
           OLD=$(cat openapi.old.json | tr -cd "${symbol}" | wc -c)
+          rm -rf coverage
           if [[ "${OLD}" != "${NEW}" ]]; then
             echo 'OpenAPI Spec needs to be updated:'
             echo '$ bin/rake rswag:specs:swaggerize'
@@ -135,7 +121,20 @@ jobs:
         fi
         rm openapi.old.json
         exit 0
-    - name: Run unit tests
+    - name: Run RSpec tests
+      env:
+        HOSTNAME: rails
+        RAILS_ENV: test
+        ACG_CONFIG: ./github-ci.json
+        DATABASE_SERVICE_NAME: postgres
+        POSTGRES_SERVICE_HOST: localhost
+        POSTGRESQL_USER: insights
+        POSTGRESQL_PASSWORD: insights
+        POSTGRESQL_TEST_DATABASE: insights
+      run: bin/rake spec
+    - name: Upload code coverage from RSpec
+      uses: codecov/codecov-action@v2
+    - name: Run minitest tests
       env:
         HOSTNAME: rails
         RAILS_ENV: test
@@ -146,7 +145,7 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rake test
-    - name: Upload code coverage from tests
+    - name: Upload code coverage from minitest
       uses: codecov/codecov-action@v2
   migration-robustness:
     runs-on: ubuntu-latest
