@@ -25,7 +25,7 @@
 # ```
 
 RSpec.shared_examples 'searchable' do
-  path = File.join('spec/controllers/v2/search', "#{described_class.name.demodulize.underscore}.yaml")
+  path = Rails.root.join('spec/fixtures/files/searchable', "#{described_class.name.demodulize.underscore}.yaml")
 
   searches = YAML.safe_load_file(path, permitted_classes: [Symbol])
   searches.each do |search|
