@@ -21,6 +21,3 @@
 #frontend:
 #- any: ['src/**/*.js']
 #  all: ['!src/main.js']
-
-GraphQL:
-- app/graphql/**/*
