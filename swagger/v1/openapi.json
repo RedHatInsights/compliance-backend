@@ -69,17 +69,26 @@
             "required": false,
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "description": "A string or an array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
-              "type": "string",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
               "items": {
                 "enum": [
                   "title",
@@ -89,8 +98,7 @@
                   "version:asc",
                   "version:desc"
                 ]
-              },
-              "default": ""
+              }
             }
           },
           {
@@ -587,25 +595,33 @@
             "required": false,
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "description": "A string or an array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
-              "type": "string",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
               "items": {
                 "enum": [
                   "title",
                   "title:asc",
                   "title:desc"
                 ]
-              },
-              "default": ""
+              }
             }
           },
           {
@@ -872,17 +888,26 @@
             "required": false,
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "description": "A string or an array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
-              "type": "string",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
               "items": {
                 "enum": [
                   "name",
@@ -895,8 +920,7 @@
                   "score:asc",
                   "score:desc"
                 ]
-              },
-              "default": ""
+              }
             }
           },
           {
@@ -2014,25 +2038,33 @@
             "required": false,
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "description": "A string or an array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
-              "type": "string",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
               "items": {
                 "enum": [
                   "result",
                   "result:asc",
                   "result:desc"
                 ]
-              },
-              "default": ""
+              }
             }
           },
           {
@@ -2173,17 +2205,26 @@
             "required": false,
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "description": "A string or an array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
-              "type": "string",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
               "items": {
                 "enum": [
                   "title",
@@ -2199,8 +2240,7 @@
                   "remediation_available:asc",
                   "remediation_available:desc"
                 ]
-              },
-              "default": ""
+              }
             }
           },
           {
@@ -3331,30 +3371,38 @@
             "required": false,
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {
             "name": "tags",
             "in": "query",
             "required": false,
-            "description": "An array of tags to narrow down the results against. The namespace, key and value are concatenated using `/` and `=` symbols. In case the values contain symbols used for separators, `/` is replaced with `%2F`, `=` is replaced with `%3D`.<br><br>e.g.: `namespace/key=value`, `insights-client/selinux-config=SELINUX%3Denforcing`",
+            "description": "A string or an array of tags to narrow down the results against. The namespace, key and value are concatenated using `/` and `=` symbols. In case the values contain symbols used for separators, `/` is replaced with `%2F`, `=` is replaced with `%3D`.<br><br>e.g.: `namespace/key=value`, `insights-client/selinux-config=SELINUX%3Denforcing`",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "default": ""
+              }
             }
           },
           {
             "name": "sort_by",
             "in": "query",
             "required": false,
-            "description": "An array of fields with an optional direction (:asc or :desc) to sort the results.",
+            "description": "A string or an array of fields with an optional direction (:asc or :desc) to sort the results.",
             "schema": {
-              "type": "string",
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ],
               "items": {
                 "enum": [
                   "name",
@@ -3376,8 +3424,7 @@
                   "rules_failed:asc",
                   "rules_failed:desc"
                 ]
-              },
-              "default": ""
+              }
             }
           },
           {
@@ -3685,8 +3732,7 @@
             "required": false,
             "description": "Query string compliant with scoped_search query language: https://github.com/wvanbergen/scoped_search/wiki/Query-language",
             "schema": {
-              "type": "string",
-              "default": ""
+              "type": "string"
             }
           },
           {

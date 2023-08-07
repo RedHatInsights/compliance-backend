@@ -91,27 +91,26 @@ def search_params
             description: 'Query string compliant with scoped_search '\
             'query language: '\
             'https://github.com/wvanbergen/scoped_search/wiki/Query-language',
-            schema: { type: :string, default: '' }
+            schema: { type: :string }
 end
 
 def tags_params
   parameter name: :tags, in: :query, required: false,
-            description: 'An array of tags to narrow down the results against. ' \
+            description: 'A string or an array of tags to narrow down the results against. ' \
             'The namespace, key and value are concatenated using `/` and `=` symbols. ' \
             'In case the values contain symbols used for separators, `/` is replaced with `%2F`, ' \
             '`=` is replaced with `%3D`.<br><br>' \
             'e.g.: `namespace/key=value`, `insights-client/selinux-config=SELINUX%3Denforcing`',
-            schema: { type: :array, items: { type: 'string' }, default: '' }
+            schema: { type: :array, items: { type: 'string' } }
 end
 
 def sort_params(model = nil)
   parameter name: :sort_by, in: :query, required: false,
-            description: 'An array of fields with an optional direction '\
+            description: 'A string or an array of fields with an optional direction '\
              '(:asc or :desc) to sort the results.',
             schema: {
-              type: :string,
-              items: { enum: sort_combinations(model) },
-              default: ''
+              oneOf: [{ type: :array, items: { type: 'string' } }, { type: :string }],
+              items: { enum: sort_combinations(model) }
             }
 end
 
