@@ -45,7 +45,7 @@ module V2
     sortable_by :os_major_version, SORT_BY_OS_MAJOR_VERSION
 
     def os_major_version
-      ref_id[/(?<=RHEL-)\d/].to_i
+      ref_id[/(?<=RHEL-)\d+/].to_i
     end
 
     def self.os_major_version_search(_filter, operator, value)
