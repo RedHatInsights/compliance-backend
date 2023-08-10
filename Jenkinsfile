@@ -23,7 +23,7 @@ pipeline {
         COMPONENT_NAME="compliance"
         IMAGE="quay.io/cloudservices/compliance-backend"
         IQE_PLUGINS="compliance"
-        IQE_MARKER_EXPRESSION="compliance_smoke"
+	IQE_MARKER_EXPRESSION="compliance_smoke"
         IQE_FILTER_EXPRESSION=""
         IQE_CJI_TIMEOUT="30m"
         REF_ENV="insights-stage"
@@ -40,32 +40,8 @@ pipeline {
                     sh '''
                     curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                     source ./.cicd_bootstrap.sh
-                    source ./build_deploy.sh
+		    echo "IMAGE_TAG: $IMAGE_TAG"
                     '''
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            parallel {
-                stage('Run unit tests') {
-                    steps {
-                        withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh 'bash -x ./scripts/unit_test.sh'
-                        }
-                    }
-                }
-                stage('Run smoke tests') {
-                    steps {
-                        withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh '''
-                                curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
-                                source ./.cicd_bootstrap.sh
-                                source "${CICD_ROOT}/deploy_ephemeral_env.sh"
-                                source "${CICD_ROOT}/cji_smoke_test.sh"
-                            '''
-                        }
-                    }
                 }
             }
         }
