@@ -20,20 +20,21 @@ pipeline {
     }
     environment {
         APP_NAME="compliance"
-        COMPONENT_NAME="compliance"
-        IMAGE="quay.io/cloudservices/compliance-backend"
-        IQE_PLUGINS="compliance"
-        IQE_MARKER_EXPRESSION="compliance_smoke"
-        IQE_FILTER_EXPRESSION=""
-        IQE_CJI_TIMEOUT="30m"
-        REF_ENV="insights-stage"
-        COMPONENTS_W_RESOURCES="compliance"
         ARTIFACTS_DIR=""
-
         CICD_URL="https://raw.githubusercontent.com/RedHatInsights/cicd-tools/main"
+        COMPONENT_NAME="compliance"
+        COMPONENTS_W_RESOURCES="compliance"
+        IMAGE="quay.io/cloudservices/compliance-backend"
+        IQE_CJI_TIMEOUT="30m"
+        IQE_FILTER_EXPRESSION=""
+        IQE_MARKER_EXPRESSION="compliance_smoke"
+        IQE_PLUGINS="compliance"
+        NOTIFICATIONS_CHANNEL="#team-clouddot-compliance-alarms"
+        REF_ENV="insights-stage"
     }
 
     stages {
+
         stage('Build the PR commit image') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
@@ -75,6 +76,12 @@ pipeline {
         always{
             archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true
             junit skipPublishingChecks: true, testResults: 'artifacts/junit-*.xml'
+        }
+        failure {
+            slackSend  channel: NOTIFICATIONS_CHANNEL, color: "danger", message: "Build failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        unstable {
+            slackSend  channel: NOTIFICATIONS_CHANNEL, color: "warning", message: "Build Unstable (Tests may've failed) - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
         }
     }
 }
