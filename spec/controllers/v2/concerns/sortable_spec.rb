@@ -22,14 +22,22 @@
 # `:result` field is an array of indexes into entities array with expected order, nested arrays will be sorted by id
 #  e.g.: expected order is 0, 1, 2, 3, but 2 and 3 need to be sorted by FactoryBot ID (sorted property is same for both)
 #     => written as [0, 1, [2, 3]]
+#
+# parents - array of parental ActiveRecord models
+#         - usage: it_behaves_like 'sortable', Parent1, Parent2
+# extra_params - extra parameters to be passed into request
+#              - usage:
+#                 it_behaves_like 'sortable', parents do
+#                   let(:extra_params) { { *extra parameters* } }
+#                 end
 
-RSpec.shared_examples 'sortable' do
+RSpec.shared_examples 'sortable' do |*parents|
   path = Rails.root.join('spec/fixtures/files/sortable', "#{described_class.name.demodulize.underscore}.yaml")
   tests = YAML.safe_load_file(path, permitted_classes: [Symbol])
 
   let(:items) do
     tests[:entities].map do |entity|
-      entity = entity.dup
+      entity = factory_params(entity, extra_params)
       FactoryBot.create(entity.delete(:factory), **entity)
     end
   end
@@ -44,8 +52,9 @@ RSpec.shared_examples 'sortable' do
         end
       end
 
-      get :index, params: { sort_by: test_case[:sort_by] }
-
+      nested_route(*parents) do |mocked_parents|
+        get :index, params: extra_params.merge(sort_by: test_case[:sort_by], parents: mocked_parents)
+      end
       expect(response_body_data.map { |item| item['id'] }).to eq(result)
     end
   end

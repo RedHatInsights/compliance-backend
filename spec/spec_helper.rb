@@ -52,6 +52,20 @@ ensure # Make sure that the mock is just for the time of the HTTP request
   end
 end
 
+# Assembles object to be passed into factory
+# - adds url params into an object based on yaml entity definition in sorting and searching specs
+
+def factory_params(item, extra_params)
+  item = item.each_with_object({}) do |(key, value), obj|
+    obj[key] = value
+    value.is_a?(String) && value.match(/^\$\{([a-zA-Z_]+)\}$/) do |m|
+      obj[key] = extra_params[m[1].to_sym]
+    end
+  end
+
+  item
+end
+
 def response_body_data
   response.parsed_body['data']
 end
