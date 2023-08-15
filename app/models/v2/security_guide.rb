@@ -29,6 +29,8 @@ module V2
       ]
     )
 
+    has_many :profiles, class_name: 'V2::Profile', dependent: :destroy
+
     scoped_search on: :title, only_explicit: true, operators: %i[like unlike eq ne in notin]
     scoped_search on: %i[version ref_id], only_explicit: true, operators: %i[eq ne in notin]
     scoped_search on: :os_major_version, ext_method: 'os_major_version_search', only_explicit: true,

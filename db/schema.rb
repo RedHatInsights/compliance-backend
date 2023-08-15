@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_03_083948) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_10_085607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -259,7 +259,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_083948) do
       profiles.created_at,
       profiles.updated_at,
       profiles.description,
-      profiles.benchmark_id,
+      profiles.benchmark_id AS security_guide_id,
       profiles.upstream,
       profiles.value_overrides
      FROM profiles
