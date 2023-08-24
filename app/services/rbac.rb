@@ -73,15 +73,15 @@ class Rbac
     end
 
     def valid_inventory_groups_definition?(definition)
-      definition[:value].instance_of?(Array) &&
-        definition[:operation] == 'in' &&
-        definition[:key] == 'group.id'
+      definition.value.instance_of?(Array) &&
+        definition.operation == 'in' &&
+        definition.key == 'group.id'
     end
 
     def inventory_groups_definition_value(definition)
       # Received '[nil]' symbolizes access to ungrouped entries.
       # In output represtented with an empty array.
-      definition[:value].map { |dv| dv || [] }
+      definition.value.map { |dv| dv || [] }
     end
   end
 end
