@@ -1141,7 +1141,7 @@ module V1
                                 attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',
-                                  value: allowed_groups
+                                  value: allowed_groups.to_json
                                 }
                               }])
 
@@ -1386,7 +1386,7 @@ module V1
                                 attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',
-                                  value: allowed_groups
+                                  value: allowed_groups.to_json
                                 }
                               }])
         @profile.policy.update!(hosts: hosts[1..3])
@@ -1443,7 +1443,7 @@ module V1
                                 attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',
-                                  value: allowed_groups
+                                  value: allowed_groups.to_json
                                 }
                               }])
         @profile.policy.update!(hosts: hosts[0..3])

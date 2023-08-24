@@ -36,7 +36,7 @@ module V1
                                 attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',
-                                  value: allowed_groups
+                                  value: allowed_groups.to_json
                                 }
                               }])
 
