@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module V2
-  # Controller for Security Guides
+  # Model for Security Guides
   class SecurityGuide < ApplicationRecord
     self.table_name = 'benchmarks'
 
