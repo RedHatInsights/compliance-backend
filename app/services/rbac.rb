@@ -39,13 +39,13 @@ class Rbac
       permissions.each_with_object([]) do |permission, ids|
         next unless verify(permission.permission, INVENTORY_HOSTS_READ)
         # Empty array on 'resource_definitions' symbolizes a global access to the permitted resource.
-        # In such case, the method returns Rbac::ANY and skips parsing of attributeFilter.
+        # In such case, the method returns Rbac::ANY and skips parsing of attribute_filter.
         return ANY if permission.resource_definitions == []
 
         permission.resource_definitions.each do |filter|
-          next unless valid_inventory_groups_definition?(filter[:attributeFilter])
+          next unless valid_inventory_groups_definition?(filter[:attribute_filter])
 
-          ids.append(*inventory_groups_definition_value(filter[:attributeFilter]))
+          ids.append(*inventory_groups_definition_value(filter[:attribute_filter]))
         end
       end
     end

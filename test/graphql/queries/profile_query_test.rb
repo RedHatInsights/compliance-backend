@@ -367,7 +367,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
 
     allowed_groups = hosts[0..1].map { |h| h.groups.first['id'] }
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
-                            attributeFilter: {
+                            attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
                               value: allowed_groups

@@ -70,7 +70,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     @host1.update(groups: [{ id: 1234 }])
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
-                            attributeFilter: {
+                            attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
                               value: [1234]
@@ -97,7 +97,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     @host1.update(groups: [{ id: 1234 }])
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
-                            attributeFilter: {
+                            attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
                               value: [4321]
@@ -124,7 +124,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     @host1.update(groups: [])
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
-                            attributeFilter: {
+                            attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
                               value: [nil]
@@ -151,7 +151,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     @host1.update(groups: [])
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
-                            attributeFilter: {
+                            attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
                               value: [1234]
@@ -182,7 +182,7 @@ class SystemQueryTest < ActiveSupport::TestCase
 
     @host1.update(groups: [])
     stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
-                            attributeFilter: {
+                            attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
                               value: [1234, 2345]
