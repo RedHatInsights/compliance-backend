@@ -37,7 +37,7 @@ class RbacTest < ActiveSupport::TestCase
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ac
                   79e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ],
+                ].to_json,
                 operation: 'in'
               )
             )
@@ -51,7 +51,7 @@ class RbacTest < ActiveSupport::TestCase
                 key: 'group.id',
                 value: [
                   nil # ungrouped hosts
-                ],
+                ].to_json,
                 operation: 'in'
               )
             )
@@ -66,7 +66,7 @@ class RbacTest < ActiveSupport::TestCase
                 value: %w[
                   77e3dc30-cec3-4b49-be2d-37482c74a9ac
                   77e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ],
+                ].to_json,
                 operation: 'in'
               )
             )
@@ -78,7 +78,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: '80e3dc30-cec3-4b49-be2d-37482c74a9ad',
+                value: '80e3dc30-cec3-4b49-be2d-37482c74a9ad'.to_json,
                 operation: 'equal' # 'equal' is not a supported operation
               )
             )
@@ -90,7 +90,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'foo.id', # entry with unverified key is ignored
-                value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'],
+                value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'].to_json,
                 operation: 'in'
               )
             )
@@ -120,7 +120,7 @@ class RbacTest < ActiveSupport::TestCase
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ac
                   78e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ],
+                ].to_json,
                 operation: 'in'
               )
             )
@@ -141,7 +141,7 @@ class RbacTest < ActiveSupport::TestCase
                 key: 'group.id',
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ],
+                ].to_json,
                 operation: 'in'
               )
             )
@@ -163,7 +163,7 @@ class RbacTest < ActiveSupport::TestCase
                 value: %w[
                   77e3dc30-cec3-4b49-be2d-37482c74a9ac
                   77e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ],
+                ].to_json,
                 operation: 'in'
               )
             )
@@ -175,7 +175,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'foo.id', # entry with unverified key is ignored
-                value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'],
+                value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'].to_json,
                 operation: 'in'
               )
             )
@@ -194,7 +194,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: nil,
+                value: nil.to_json,
                 operation: 'in'
               )
             )
@@ -206,7 +206,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: nil, # nil
+                value: nil.to_json, # nil
                 operation: 'equal'
               )
             )
@@ -218,7 +218,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: nil, # nil
+                value: nil.to_json, # nil
                 operation: 'in'
               )
             )
@@ -230,7 +230,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: [], # []
+                value: [].to_json, # []
                 operation: 'in'
               )
             )
@@ -242,7 +242,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: [nil],
+                value: [nil].to_json,
                 operation: 'equal' # equal
               )
             )
@@ -254,7 +254,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'groups.id', # groups.id
-                value: 'not supported',
+                value: 'not supported'.to_json,
                 operation: 'in'
               )
             )
@@ -266,7 +266,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'groups.id', # groups.id
-                value: 'some-id',
+                value: 'some-id'.to_json,
                 operation: 'equal' # equal
               )
             )
@@ -285,7 +285,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: [nil, '80e3dc30-cec3-4b49-be2d-37482c74a9ad'],
+                value: [nil, '80e3dc30-cec3-4b49-be2d-37482c74a9ad'].to_json,
                 operation: 'in'
               )
             )

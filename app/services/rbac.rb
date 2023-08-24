@@ -73,7 +73,8 @@ class Rbac
     end
 
     def valid_inventory_groups_definition?(definition)
-      definition.value.instance_of?(Array) &&
+      # FIXME: JSON.parse needs to be moved to the RBAC API client
+      JSON.parse(definition.value).instance_of?(Array) &&
         definition.operation == 'in' &&
         definition.key == 'group.id'
     end
@@ -81,7 +82,8 @@ class Rbac
     def inventory_groups_definition_value(definition)
       # Received '[nil]' symbolizes access to ungrouped entries.
       # In output represtented with an empty array.
-      definition.value.map { |dv| dv || [] }
+      # FIXME: JSON.parse needs to be moved to the RBAC API client
+      JSON.parse(definition.value).map { |dv| dv || [] }
     end
   end
 end
