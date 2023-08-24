@@ -32,7 +32,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ac
@@ -47,7 +47,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: [
                   nil # ungrouped hosts
@@ -61,7 +61,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: 'inventory:groups:write', # entry with unverified permission is ignored
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: %w[
                   77e3dc30-cec3-4b49-be2d-37482c74a9ac
@@ -76,7 +76,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: '80e3dc30-cec3-4b49-be2d-37482c74a9ad',
                 operation: 'equal' # 'equal' is not a supported operation
@@ -88,7 +88,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'foo.id', # entry with unverified key is ignored
                 value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'],
                 operation: 'in'
@@ -115,7 +115,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ac
@@ -137,7 +137,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: 'inventory:hosts:*', # inventory:hosts:*
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ad
@@ -158,7 +158,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: 'inventory:groups:write', # entry with unverified permission is ignored
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: %w[
                   77e3dc30-cec3-4b49-be2d-37482c74a9ac
@@ -173,7 +173,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'foo.id', # entry with unverified key is ignored
                 value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'],
                 operation: 'in'
@@ -192,7 +192,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: 'inventory:hosts:*', # inventory:hosts:*
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: nil,
                 operation: 'in'
@@ -204,7 +204,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: nil, # nil
                 operation: 'equal'
@@ -216,7 +216,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: nil, # nil
                 operation: 'in'
@@ -228,7 +228,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: [], # []
                 operation: 'in'
@@ -240,7 +240,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: [nil],
                 operation: 'equal' # equal
@@ -252,7 +252,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: [nil],
                 operation: 'between' # between
@@ -264,7 +264,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'groups.id', # groups.id
                 value: 'not supported',
                 operation: 'in'
@@ -276,7 +276,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'groups.id', # groups.id
                 value: 'some-id',
                 operation: 'equal' # equal
@@ -295,7 +295,7 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             {
-              attributeFilter: {
+              attribute_filter: {
                 key: 'group.id',
                 value: [nil, '80e3dc30-cec3-4b49-be2d-37482c74a9ad'],
                 operation: 'in'

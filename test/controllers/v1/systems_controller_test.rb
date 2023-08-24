@@ -33,7 +33,7 @@ module V1
         allowed_groups = [@host1.groups.first['id'], nil]
 
         stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
-                                attributeFilter: {
+                                attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',
                                   value: allowed_groups
