@@ -25,10 +25,10 @@ end
 # rubocop:disable Metrics/MethodLength
 def stub_rbac_permissions(*arr, **hsh)
   permissions = arr + hsh.to_a
-  role_permissions = permissions.map do |permission, rd = []|
+  role_permissions = permissions.map do |permission, rds = []|
     RBACApiClient::Access.new(
       permission: permission,
-      resource_definitions: rd
+      resource_definitions: rds.map { |rd| RBACApiClient::ResourceDefinition.new(rd) }
     )
   end
   role = RBACApiClient::AccessPagination.new(data: role_permissions)
