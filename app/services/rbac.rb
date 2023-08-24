@@ -43,9 +43,9 @@ class Rbac
         return ANY if permission.resource_definitions == []
 
         permission.resource_definitions.each do |filter|
-          next unless valid_inventory_groups_definition?(filter[:attribute_filter])
+          next unless valid_inventory_groups_definition?(filter.attribute_filter)
 
-          ids.append(*inventory_groups_definition_value(filter[:attribute_filter]))
+          ids.append(*inventory_groups_definition_value(filter.attribute_filter))
         end
       end
     end
