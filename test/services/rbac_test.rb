@@ -32,14 +32,14 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ac
                   79e3dc30-cec3-4b49-be2d-37482c74a9ad
                 ],
                 operation: 'in'
-              }
+              )
             )
           ]
         ),
@@ -47,13 +47,13 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: [
                   nil # ungrouped hosts
                 ],
                 operation: 'in'
-              }
+              )
             )
           ]
         ),
@@ -61,14 +61,14 @@ class RbacTest < ActiveSupport::TestCase
           permission: 'inventory:groups:write', # entry with unverified permission is ignored
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: %w[
                   77e3dc30-cec3-4b49-be2d-37482c74a9ac
                   77e3dc30-cec3-4b49-be2d-37482c74a9ad
                 ],
                 operation: 'in'
-              }
+              )
             )
           ]
         ),
@@ -76,11 +76,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: '80e3dc30-cec3-4b49-be2d-37482c74a9ad',
                 operation: 'equal' # 'equal' is not a supported operation
-              }
+              )
             )
           ]
         ),
@@ -88,11 +88,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'foo.id', # entry with unverified key is ignored
                 value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'],
                 operation: 'in'
-              }
+              )
             )
           ]
         )
@@ -115,14 +115,14 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ac
                   78e3dc30-cec3-4b49-be2d-37482c74a9ad
                 ],
                 operation: 'in'
-              }
+              )
             )
           ]
         )
@@ -137,13 +137,13 @@ class RbacTest < ActiveSupport::TestCase
           permission: 'inventory:hosts:*', # inventory:hosts:*
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ad
                 ],
                 operation: 'in'
-              }
+              )
             )
           ]
         )
@@ -158,14 +158,14 @@ class RbacTest < ActiveSupport::TestCase
           permission: 'inventory:groups:write', # entry with unverified permission is ignored
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: %w[
                   77e3dc30-cec3-4b49-be2d-37482c74a9ac
                   77e3dc30-cec3-4b49-be2d-37482c74a9ad
                 ],
                 operation: 'in'
-              }
+              )
             )
           ]
         ),
@@ -173,11 +173,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'foo.id', # entry with unverified key is ignored
                 value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'],
                 operation: 'in'
-              }
+              )
             )
           ]
         )
@@ -192,11 +192,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: 'inventory:hosts:*', # inventory:hosts:*
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: nil,
                 operation: 'in'
-              }
+              )
             )
           ]
         ),
@@ -204,11 +204,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: nil, # nil
                 operation: 'equal'
-              }
+              )
             )
           ]
         ),
@@ -216,11 +216,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: nil, # nil
                 operation: 'in'
-              }
+              )
             )
           ]
         ),
@@ -228,11 +228,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: [], # []
                 operation: 'in'
-              }
+              )
             )
           ]
         ),
@@ -240,11 +240,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: [nil],
                 operation: 'equal' # equal
-              }
+              )
             )
           ]
         ),
@@ -252,23 +252,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
-                key: 'group.id',
-                value: [nil],
-                operation: 'between' # between
-              }
-            )
-          ]
-        ),
-        RBACApiClient::Access.new(
-          permission: Rbac::INVENTORY_HOSTS_READ,
-          resource_definitions: [
-            RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'groups.id', # groups.id
                 value: 'not supported',
                 operation: 'in'
-              }
+              )
             )
           ]
         ),
@@ -276,11 +264,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'groups.id', # groups.id
                 value: 'some-id',
                 operation: 'equal' # equal
-              }
+              )
             )
           ]
         )
@@ -295,11 +283,11 @@ class RbacTest < ActiveSupport::TestCase
           permission: Rbac::INVENTORY_HOSTS_READ,
           resource_definitions: [
             RBACApiClient::ResourceDefinition.new(
-              attribute_filter: {
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
                 value: [nil, '80e3dc30-cec3-4b49-be2d-37482c74a9ad'],
                 operation: 'in'
-              }
+              )
             )
           ]
         )
