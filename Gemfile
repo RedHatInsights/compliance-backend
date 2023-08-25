@@ -116,7 +116,7 @@ group :development, :test do
   gem 'rubocop-rails', require: false
   gem 'shoulda-context'
   gem 'shoulda-matchers'
-  gem 'simplecov'
+  gem 'simplecov', require: false
   gem 'simplecov-cobertura', require: false
   gem 'webmock'
 end

@@ -2,7 +2,7 @@
 
 require 'rails'
 
-unless Rails.env.production?
+if Rails.env.test?
   require 'simplecov'
 
   if ENV['GITHUB_ACTIONS']
