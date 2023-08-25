@@ -2,7 +2,7 @@
 
 # --- How to use ---
 # Create yaml with name matching tested controller in the following format:
-# `spec/controllers/v2/search/tested_controler.yaml`
+# `spec/fixtures/files/searchable/tested_controler.yaml`
 # ```yaml
 # - :name: 'name of your test'
 #   :entities:
@@ -24,14 +24,21 @@
 #   :query: 'query to search by'
 # ```
 #
-# parents - array of parental ActiveRecord models
-#         - usage: it_behaves_like 'searchable', Parent1, Parent2
-# extra_params - extra parameters to be passed into request
-#              - usage:
-#                 it_behaves_like 'searchable', parents do
-#                   let(:extra_params) { { *extra parameters* } }
-#                 end
-
+# The `parents` parameter is required when testing nested controllers, and it should contain
+# an ordered list of model classes similarly to how they are defined in the routes. It is also
+# required to set the `extra_params` variable in a let block and pass all the parent IDs there
+# as a hash. For example:
+# ```
+# it_behaves_like 'searchable', SecurityGuide, Profile do
+#   let(:extra_params) { { security_guide_id: 123, profile_id: 456 } }
+# end
+# ```
+#
+# In a non-nested case this example can be simply included as:
+# ```
+# it_behaves_like 'searchable'
+# ```
+#
 RSpec.shared_examples 'searchable' do |*parents|
   path = Rails.root.join('spec/fixtures/files/searchable', "#{described_class.name.demodulize.underscore}.yaml")
   searches = YAML.safe_load_file(path, permitted_classes: [Symbol])
