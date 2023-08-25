@@ -29,7 +29,6 @@ pipeline {
         IQE_FILTER_EXPRESSION=""
         IQE_MARKER_EXPRESSION="compliance_smoke"
         IQE_PLUGINS="compliance"
-        NOTIFICATIONS_CHANNEL="#team-clouddot-compliance-alarms"
         REF_ENV="insights-stage"
     }
 
@@ -67,6 +66,14 @@ pipeline {
                             '''
                         }
                     }
+                    post {
+                        failure {
+                            slackSend  channel: '@eshamard', color: "danger", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
+                        }
+                        unstable {
+                            slackSend  channel: '@eshamard', color: "warning", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
+                        }
+                    }
                 }
             }
         }
@@ -76,12 +83,6 @@ pipeline {
         always{
             archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true
             junit skipPublishingChecks: true, testResults: 'artifacts/junit-*.xml'
-        }
-        failure {
-            slackSend  channel: NOTIFICATIONS_CHANNEL, color: "danger", message: "Build failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
-        }
-        unstable {
-            slackSend  channel: NOTIFICATIONS_CHANNEL, color: "warning", message: "Build Unstable (Tests may've failed) - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
         }
     }
 }
