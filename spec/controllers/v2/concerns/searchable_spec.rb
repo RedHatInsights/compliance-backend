@@ -37,7 +37,7 @@ RSpec.shared_examples 'searchable' do
         FactoryBot.create(h.delete(:factory), **h)
       end
 
-      get :index, params: { search: search[:query] }
+      get :index, params: { filter: search[:query] }
 
       expect(response_body_data).to match_array(found.map { |item| hash_including('id' => item.id) })
     end

@@ -81,7 +81,7 @@ module V2
       def permitted_params
         @permitted_params ||= begin
           action_params = self.class.__permitted_params_for_action.try(:[], action_name.to_sym) || {}
-          parent_params = ::ApplicationController.__permitted_params_for_action.try(:[], action_name.to_sym) || {}
+          parent_params = V2::ApplicationController.__permitted_params_for_action.try(:[], action_name.to_sym) || {}
 
           # Merge all permit hashes to a single one using reduce and allow them through
           params.permit([action_params, parent_params, permit_parent_ids, DEFAULT_PERMITTED].reduce(&:merge))
