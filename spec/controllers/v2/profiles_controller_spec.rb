@@ -61,12 +61,15 @@ describe V2::ProfilesController do
         include_examples 'with metadata', V2::SecurityGuide do
           let(:extra_params) { { security_guide_id: security_guide.id } }
         end
+
         it_behaves_like 'paginable', V2::SecurityGuide do
           let(:extra_params) { { security_guide_id: security_guide.id } }
         end
+
         it_behaves_like 'sortable', V2::SecurityGuide do
           let(:extra_params) { { security_guide_id: security_guide.id } }
         end
+
         it_behaves_like 'searchable', V2::SecurityGuide do
           let(:extra_params) { { security_guide_id: security_guide.id } }
         end

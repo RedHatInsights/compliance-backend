@@ -62,6 +62,7 @@ RSpec.shared_examples 'sortable' do |*parents|
       nested_route(*parents) do |mocked_parents|
         get :index, params: extra_params.merge(sort_by: test_case[:sort_by], parents: mocked_parents)
       end
+
       expect(response_body_data.map { |item| item['id'] }).to eq(result)
     end
   end
