@@ -2,7 +2,7 @@
 
 # --- How to use ---
 # Create yaml with name matching tested controller in the following format:
-# `spec/controllers/v2/sort/tested_controler.yaml`
+# `spec/fixtures/files/sortable/tested_controler.yaml`
 # ```yaml
 # :entities:
 #   - :factory: :name_of_your_factory
@@ -23,14 +23,21 @@
 #  e.g.: expected order is 0, 1, 2, 3, but 2 and 3 need to be sorted by FactoryBot ID (sorted property is same for both)
 #     => written as [0, 1, [2, 3]]
 #
-# parents - array of parental ActiveRecord models
-#         - usage: it_behaves_like 'sortable', Parent1, Parent2
-# extra_params - extra parameters to be passed into request
-#              - usage:
-#                 it_behaves_like 'sortable', parents do
-#                   let(:extra_params) { { *extra parameters* } }
-#                 end
-
+# The `parents` parameter is required when testing nested controllers, and it should contain
+# an ordered list of model classes similarly to how they are defined in the routes. It is also
+# required to set the `extra_params` variable in a let block and pass all the parent IDs there
+# as a hash. For example:
+# ```
+# it_behaves_like 'sortable', SecurityGuide, Profile do
+#   let(:extra_params) { { security_guide_id: 123, profile_id: 456 } }
+# end
+# ```
+#
+# In a non-nested case this example can be simply included as:
+# ```
+# it_behaves_like 'sortable'
+# ```
+#
 RSpec.shared_examples 'sortable' do |*parents|
   path = Rails.root.join('spec/fixtures/files/sortable', "#{described_class.name.demodulize.underscore}.yaml")
   tests = YAML.safe_load_file(path, permitted_classes: [Symbol])
