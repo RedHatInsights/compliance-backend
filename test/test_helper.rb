@@ -7,7 +7,7 @@ if Rails.env.test?
 
   if ENV['GITHUB_ACTIONS']
     require 'simplecov-cobertura'
-    SimpleCov.command_name 'spec'
+    SimpleCov.command_name 'test'
     SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
   end
 
