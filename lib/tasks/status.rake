@@ -19,7 +19,7 @@ namespace :redis do
       Redis.new(
         url: Settings.redis.url,
         password: Settings.redis.password.presence,
-        ssl: Settings.redis.ssl
+        ssl: ENV.fetch('SETTINGS__REDIS__SSL', nil) # FIXME: Settings.redis.ssl after clowder provides it
       ).ping
     rescue Redis::BaseError
       abort('ERROR: Redis unavailable')

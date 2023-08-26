@@ -58,7 +58,8 @@ Rails.application.configure do
         redis_password = Settings.redis.cache_password.present? ? Settings.redis.cache_password : nil
       end
 
-      { url: redis_url, password: redis_password, ssl: Settings.redis.ssl}
+      # FIXME: Settings.redis.ssl after clowder provides it
+      { url: redis_url, password: redis_password, ssl: ENV.fetch('SETTINGS__REDIS__SSL', nil)}
     end
 
     # Override is necessary as it gets set during initialization without the proper config available
