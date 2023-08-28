@@ -1,8 +1,9 @@
 sidekiq_config = lambda do |config|
+  # FIXME: Settings.redis.ssl after clowder provides it
   config.redis = {
     url: Settings.redis.url,
     password: Settings.redis.password.presence,
-    ssl: ENV.fetch('SETTINGS__REDIS__SSL', nil), # FIXME: Settings.redis.ssl after clowder provides it
+    ssl: ActiveModel::Type::Boolean.new.cast(ENV.fetch('SETTINGS__REDIS__SSL', nil)),
     network_timeout: 5
   }
   config[:dead_timeout_in_seconds] = 2.weeks.to_i

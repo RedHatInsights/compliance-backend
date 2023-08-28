@@ -22,7 +22,6 @@ pipeline {
         APP_NAME="compliance"
         ARTIFACTS_DIR=""
         CICD_URL="https://raw.githubusercontent.com/RedHatInsights/cicd-tools/main"
-        DEPLOY_TIMEOUT="1800"
         COMPONENT_NAME="compliance"
         COMPONENTS_W_RESOURCES="compliance"
         IMAGE="quay.io/cloudservices/compliance-backend"

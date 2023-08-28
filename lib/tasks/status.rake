@@ -16,10 +16,11 @@ namespace :redis do
   desc 'Check for available redis connection'
   task status: [:environment] do
     begin
+      # FIXME: Settings.redis.ssl after clowder provides it
       Redis.new(
         url: Settings.redis.url,
         password: Settings.redis.password.presence,
-        ssl: ENV.fetch('SETTINGS__REDIS__SSL', nil) # FIXME: Settings.redis.ssl after clowder provides it
+        ssl: ActiveModel::Type::Boolean.new.cast(ENV.fetch('SETTINGS__REDIS__SSL', nil))
       ).ping
     rescue Redis::BaseError
       abort('ERROR: Redis unavailable')
