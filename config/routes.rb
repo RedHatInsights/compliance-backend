@@ -26,6 +26,7 @@ Rails.application.routes.draw do
         scope 'v2', module: 'v2', as: 'v2' do
           resources :security_guides, only: [:index, :show] do
             resources :profiles, only: [:index, :show], parents: [V2::SecurityGuide]
+            resources :value_definitions, only: [:index, :show], parents: [V2::SecurityGuide]
           end
         end
       end
