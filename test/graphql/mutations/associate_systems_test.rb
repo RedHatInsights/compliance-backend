@@ -111,4 +111,25 @@ class AssociateSystemsMutationTest < ActiveSupport::TestCase
     assert_equal Set.new(@profile.policy.reload.hosts),
                  Set.new(hosts[1..3])
   end
+
+  test 'does not interfere with other policies' do
+    host = Host.find(FactoryBot.create(:host, org_id: @user.account.org_id).id)
+    hosts = FactoryBot.create_list(:host, 4, org_id: @user.account.org_id)
+
+    stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ)
+
+    p2 = FactoryBot.create(:profile, account: @user.account, upstream: false)
+    p2.policy.hosts = [host]
+
+    Schema.execute(
+      QUERY,
+      variables: { input: {
+        id: @profile.id,
+        systemIds: hosts.map(&:id)
+      } },
+      context: { current_user: @user }
+    )
+
+    assert_includes p2.policy.hosts.reload, host
+  end
 end
