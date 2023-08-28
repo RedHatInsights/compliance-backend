@@ -51,6 +51,7 @@ class Policy < ApplicationRecord
 
     # Remove only those assigned hosts, which are accessible by the user
     removed = Pundit.policy_scope(user, PolicyHost)
+                    .where(policy: self)
                     .where.not(host_id: new_host_ids).destroy_all
 
     # The new hosts are already scoped down for the user
