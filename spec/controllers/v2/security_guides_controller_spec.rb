@@ -13,87 +13,85 @@ describe V2::SecurityGuidesController do
     }
   end
 
-  context 'With User' do
-    let(:current_user) { FactoryBot.create(:v2_user) }
+  let(:current_user) { FactoryBot.create(:v2_user) }
 
-    before(:each) do
-      request.headers['X-RH-IDENTITY'] = current_user.account.identity_header.raw
-      expect(controller).to receive(:rbac_allowed?).and_return(rbac_allowed?)
+  before do
+    request.headers['X-RH-IDENTITY'] = current_user.account.identity_header.raw
+    expect(controller).to receive(:rbac_allowed?).and_return(rbac_allowed?)
+  end
+
+  describe 'GET index' do
+    let(:item_count) { 2 }
+    let(:items) { FactoryBot.create_list(:v2_security_guide, item_count).sort_by(&:id) }
+
+    context 'Authorized' do
+      let(:rbac_allowed?) { true }
+
+      it 'returns base fields for each result' do
+        collection = items.map do |sg|
+          hash_including(
+            'id' => sg.id,
+            'type' => 'security_guide',
+            'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+              obj[key.to_s] = sg.send(value)
+            end
+          )
+        end
+
+        get :index
+
+        expect(response).to have_http_status :ok
+        expect(response_body_data).to match_array(collection)
+
+        response_body_data.each do |sg|
+          expect(sg['attributes'].keys.count).to eq(attributes.keys.count)
+        end
+      end
+
+      it_behaves_like 'searchable'
+      it_behaves_like 'paginable'
+      it_behaves_like 'sortable'
+      include_examples 'with metadata'
     end
 
-    describe 'GET index' do
-      let(:item_count) { 2 }
-      let(:items) { FactoryBot.create_list(:v2_security_guide, item_count).sort_by(&:id) }
+    context 'Unathorized' do
+      let(:rbac_allowed?) { false }
+      it 'responds with unauthorized status' do
+        get :index
 
-      context 'Authorized' do
-        let(:rbac_allowed?) { true }
-
-        it 'returns base fields for each result' do
-          collection = items.map do |sg|
-            hash_including(
-              'id' => sg.id,
-              'type' => 'security_guide',
-              'attributes' => attributes.each_with_object({}) do |(key, value), obj|
-                obj[key.to_s] = sg.send(value)
-              end
-            )
-          end
-
-          get :index
-
-          expect(response).to have_http_status :ok
-          expect(response_body_data).to match_array(collection)
-
-          response_body_data.each do |sg|
-            expect(sg['attributes'].keys.count).to eq(attributes.keys.count)
-          end
-        end
-
-        it_behaves_like 'searchable'
-        it_behaves_like 'paginable'
-        it_behaves_like 'sortable'
-        include_examples 'with metadata'
+        expect(response).to have_http_status :forbidden
       end
+    end
+  end
 
-      context 'Unathorized' do
-        let(:rbac_allowed?) { false }
-        it 'responds with unauthorized status' do
-          get :index
+  describe 'GET show' do
+    let(:security_guide) { FactoryBot.create(:v2_security_guide) }
 
-          expect(response).to have_http_status :forbidden
-        end
+    context 'Authorized' do
+      let(:rbac_allowed?) { true }
+
+      it 'returns security guide by id' do
+        item = hash_including('data' => {
+                                'id' => security_guide.id,
+                                'type' => 'security_guide',
+                                'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+                                  obj[key.to_s] = security_guide.send(value)
+                                end
+                              })
+
+        get :show, params: { id: security_guide.id }
+
+        expect(response.parsed_body).to match(item)
       end
     end
 
-    describe 'GET show' do
-      let(:security_guide) { FactoryBot.create(:v2_security_guide) }
+    context 'Unathorized' do
+      let(:rbac_allowed?) { false }
 
-      context 'Authorized' do
-        let(:rbac_allowed?) { true }
+      it 'responds with unathorized status' do
+        get :show, params: { id: security_guide.id }
 
-        it 'returns security guide by id' do
-          item = hash_including('data' => {
-                                  'id' => security_guide.id,
-                                  'type' => 'security_guide',
-                                  'attributes' => attributes.each_with_object({}) do |(key, value), obj|
-                                    obj[key.to_s] = security_guide.send(value)
-                                  end
-                                })
-
-          get :show, params: { id: security_guide.id }
-
-          expect(response.parsed_body).to match(item)
-        end
-      end
-
-      context 'Unathorized' do
-        let(:rbac_allowed?) { false }
-
-        it 'responds with unathorized status' do
-          get :show, params: { id: security_guide.id }
-
-          expect(response).to have_http_status :forbidden
-        end
+        expect(response).to have_http_status :forbidden
       end
     end
   end
