@@ -82,12 +82,6 @@ class XccdfReportParser
     # rubocop:enable Style/GuardClause
   end
 
-  def save_missing_supported_benchmark
-    return unless benchmark.os_major_version == '6' && SupportedSsg.versions.include?(benchmark.version)
-
-    Xccdf::Benchmark.transaction { save_all_benchmark_info }
-  end
-
   def check_for_missing_benchmark
     # rubocop:disable Style/GuardClause
     unless benchmark.persisted?
@@ -131,7 +125,6 @@ class XccdfReportParser
     Host.transaction do
       check_os_version
       check_for_external_reports
-      save_missing_supported_benchmark
       check_for_missing_benchmark_info
       save_all_test_result_info
     end

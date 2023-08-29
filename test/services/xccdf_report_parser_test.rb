@@ -55,22 +55,6 @@ class XccdfReportParserTest < ActiveSupport::TestCase
       end
     end
 
-    should 'not save missing benchmarks for RHEL8' do
-      @report_parser.expects(:save_all_benchmark_info).never
-      @report_parser.save_missing_supported_benchmark
-    end
-
-    should 'save an unknown RHEL6 benchmark that is in the support matrix' do
-      @report_parser.op_benchmark.stubs(:id).returns('xccdf_org.ssgproject.content_benchmark_RHEL-6')
-      @report_parser.host.stubs(:os_major_version).returns(6)
-
-      assert_difference('Xccdf::Benchmark.count', 1) do
-        assert_nothing_raised do
-          @report_parser.save_all
-        end
-      end
-    end
-
     should 'find and return an existing benchmark' do
       @report_parser.save_all_benchmark_info
       assert_no_difference('Xccdf::Benchmark.count') do
