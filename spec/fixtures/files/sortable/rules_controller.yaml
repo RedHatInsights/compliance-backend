@@ -1,0 +1,197 @@
+:entities:
+  - :factory: :v2_rule
+    :title: 'abdd'
+    :severity: 'high'
+    :precedence: 1234
+    :security_guide_id: ${security_guide_id}
+
+  - :factory: :v2_rule
+    :title: 'abda'
+    :severity: 'medium'
+    :precedence: 567
+    :security_guide_id: ${security_guide_id}
+
+  - :factory: :v2_rule
+    :title: 'aaaa'
+    :severity: 'low'
+    :precedence: 8765
+    :security_guide_id: ${security_guide_id}
+
+  - :factory: :v2_rule
+    :title: 'adac'
+    :severity: 'high'
+    :precedence: 987
+    :security_guide_id: ${security_guide_id}
+
+  - :factory: :v2_rule
+    :title: 'bbbb'
+    :severity: 'medium'
+    :precedence: 4562
+    :security_guide_id: ${security_guide_id}
+
+  - :factory: :v2_rule
+    :title: 'cccd'
+    :severity: 'low'
+    :precedence: 2341
+    :security_guide_id: ${security_guide_id}
+
+  - :factory: :v2_rule
+    :title: 'aaaa'
+    :severity: 'high'
+    :precedence: 954
+    :security_guide_id: ${security_guide_id}
+
+  - :factory: :v2_rule
+    :title: 'bacc'
+    :severity: 'medium'
+    :precedence: 1854
+    :security_guide_id: ${security_guide_id}
+
+  - :factory: :v2_rule
+    :title: 'zzab'
+    :severity: 'low'
+    :precedence: 5321
+    :security_guide_id: ${security_guide_id}
+
+  - :factory: :v2_rule
+    :title: 'edfa'
+    :severity: 'high'
+    :precedence: 954
+    :security_guide_id: ${security_guide_id}
+
+:queries:
+  - :sort_by:
+      - 'title'
+    :result: [[2, 6], 1, 0, 3, 7, 4, 5, 9, 8]
+  - :sort_by:
+      - 'title:asc'
+    :result: [[2, 6], 1, 0, 3, 7, 4, 5, 9, 8]
+  - :sort_by:
+      - 'title:desc'
+    :result: [8, 9, 5, 4, 7, 3, 0, 1, [2, 6]]
+  - :sort_by:
+      - 'severity'
+    :result: [[2, 5, 8], [1, 4, 7], [0, 3, 6, 9]]
+  - :sort_by:
+      - 'severity:asc'
+    :result: [[2, 5, 8], [1, 4, 7], [0, 3, 6, 9]]
+  - :sort_by:
+      - 'severity:desc'
+    :result: [[0, 3, 6, 9], [1, 4, 7], [2, 5, 8]]
+  - :sort_by:
+      - 'precedence'
+    :result: [1, [6, 9], 3, 0, 7, 5, 4, 8, 2]
+  - :sort_by:
+      - 'precedence:asc'
+    :result: [1, [6, 9], 3, 0, 7, 5, 4, 8, 2]
+  - :sort_by:
+      - 'precedence:desc'
+    :result: [2, 8, 4, 5, 7, 0, 3, [6, 9], 1]
+
+# title & severity
+  - :sort_by:
+      - 'title:asc'
+      - 'severity:asc'
+    :result: [2, 6, 1, 0, 3, 7, 4, 5, 9, 8]
+  - :sort_by:
+      - 'title:asc'
+      - 'severity:desc'
+    :result: [6, 2, 1, 0, 3, 7, 4, 5, 9, 8]
+  - :sort_by:
+      - 'title:desc'
+      - 'severity:asc'
+    :result: [8, 9, 5, 4, 7, 3, 0, 1, 2, 6]
+  - :sort_by:
+      - 'title:desc'
+      - 'severity:desc'
+    :result: [8, 9, 5, 4, 7, 3, 0, 1, 6, 2]
+
+# severity & title
+  - :sort_by:
+      - 'severity:asc'
+      - 'title:asc'
+    :result: [2, 5, 8, 1, 7, 4, 6, 0, 3, 9]
+  - :sort_by:
+      - 'severity:asc'
+      - 'title:desc'
+    :result: [8, 5, 2, 4, 7, 1, 9, 3, 0, 6]
+  - :sort_by:
+      - 'severity:desc'
+      - 'title:asc'
+    :result: [6, 0, 3, 9, 1, 7, 4, 2, 5, 8]
+  - :sort_by:
+      - 'severity:desc'
+      - 'title:desc'
+    :result:  [9, 3, 0, 6, 4, 7, 1, 8, 5, 2]
+
+# title & precedence
+  - :sort_by:
+      - 'title:asc'
+      - 'precedence:asc'
+    :result: [6, 2, 1, 0, 3, 7, 4, 5, 9, 8]
+  - :sort_by:
+      - 'title:asc'
+      - 'precedence:desc'
+    :result: [2, 6, 1, 0, 3, 7, 4, 5, 9, 8]
+  - :sort_by:
+      - 'title:desc'
+      - 'precedence:asc'
+    :result: [8, 9, 5, 4, 7, 3, 0, 1, 6, 2]
+  - :sort_by:
+      - 'title:desc'
+      - 'precedence:desc'
+    :result: [8, 9, 5, 4, 7, 3, 0, 1, 2, 6]
+
+# precedence & title
+  - :sort_by:
+      - 'precedence:asc'
+      - 'title:asc'
+    :result: [1, 6, 9, 3, 0, 7, 5, 4, 8, 2]
+  - :sort_by:
+      - 'precedence:asc'
+      - 'title:desc'
+    :result: [1, 9, 6, 3, 0, 7, 5, 4, 8, 2]
+  - :sort_by:
+      - 'precedence:desc'
+      - 'title:asc'
+    :result: [2, 8, 4, 5, 7, 0, 3, 6, 9, 1]
+  - :sort_by:
+      - 'precedence:desc'
+      - 'title:desc'
+    :result: [2, 8, 4, 5, 7, 0, 3, 9, 6, 1]
+
+# severity & precedence
+  - :sort_by:
+      - 'severity:asc'
+      - 'precedence:asc'
+    :result: [5, 8, 2, 1, 7, 4, [6, 9], 3, 0]
+  - :sort_by:
+      - 'severity:asc'
+      - 'precedence:desc'
+    :result: [2, 8, 5, 4, 7, 1, 0, 3, [6, 9]]
+  - :sort_by:
+      - 'severity:desc'
+      - 'precedence:asc'
+    :result: [[6, 9], 3, 0, 1, 7, 4, 5, 8, 2]
+  - :sort_by:
+      - 'severity:desc'
+      - 'precedence:desc'
+    :result:  [0, 3, [6, 9], 4, 7, 1, 2, 8, 5]
+
+# precedence & severity
+  - :sort_by:
+      - 'precedence:asc'
+      - 'severity:asc'
+    :result: [1, [6, 9], 3, 0, 7, 5, 4, 8, 2]
+  - :sort_by:
+      - 'precedence:asc'
+      - 'severity:desc'
+    :result: [1, [6, 9], 3, 0, 7, 5, 4, 8, 2]
+  - :sort_by:
+      - 'precedence:desc'
+      - 'severity:asc'
+    :result: [2, 8, 4, 5, 7, 0, 3, [6, 9], 1]
+  - :sort_by:
+      - 'precedence:desc'
+      - 'severity:desc'
+    :result: [2, 8, 4, 5, 7, 0, 3, [6, 9], 1]
