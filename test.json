@@ -42,7 +42,8 @@
     },
     "inMemoryDb": {
         "hostname": "redis",
-        "port": "6379"
+        "port": "6379",
+        "sslMode": false
     },
     "database": {
         "name": "compliance-test",
