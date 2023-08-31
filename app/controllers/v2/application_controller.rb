@@ -6,7 +6,7 @@ module V2
     SEARCH = :filter
 
     include ::ActionController::Helpers
-    include ::Pundit
+    include ::Pundit::Authorization
     include ::Authentication
     include ::ExceptionNotifierCustomData
     include ::Metadata
