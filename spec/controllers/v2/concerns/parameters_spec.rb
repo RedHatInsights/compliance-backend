@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-describe V2::Parameters do
+describe V2::ParameterHandling do
   let(:subject) do
     Struct.new(:action_name, :params) do |cls|
       cls::SEARCH = :search # FIXME: delete this after V1 is retired
-      include V2::Parameters
+      include V2::ParameterHandling
     end.new
   end
 

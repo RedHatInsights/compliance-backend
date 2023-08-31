@@ -2,7 +2,7 @@
 
 module V2
   # Reusable parameter checking for all controllers
-  module Parameters
+  module ParameterHandling
     extend ActiveSupport::Concern
 
     # Constraint validating model classes passed via params[:parents]

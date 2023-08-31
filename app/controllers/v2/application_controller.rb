@@ -13,7 +13,7 @@ module V2
     include ::Pagination
     include ::Collection
     include ::Rendering
-    include V2::Parameters
+    include V2::ParameterHandling
     include ::ErrorHandling
 
     before_action :set_csp_hsts
