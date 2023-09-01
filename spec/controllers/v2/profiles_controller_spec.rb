@@ -74,11 +74,11 @@ describe V2::ProfilesController do
         let(:extra_params) { { security_guide_id: security_guide.id } }
       end
 
-      context 'multiple security guides' do
+      context 'under incorrect parent security guide' do
         let(:empty_security_guide) { FactoryBot.create(:v2_security_guide) }
         let(:item) { FactoryBot.create(:v2_profile) }
 
-        it 'returns no data from empty security guide' do
+        it 'returns not_found' do
           nested_route(V2::SecurityGuide) do |parents|
             get :index, params: {
               security_guide_id: empty_security_guide.id,
