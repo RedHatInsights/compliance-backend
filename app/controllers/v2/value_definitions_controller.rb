@@ -20,11 +20,11 @@ module V2
     end
 
     def value_definition
-      @value_definition ||= authorize(resource.find(permitted_params[:id]))
+      @value_definition ||= authorize(expand_resource.find(permitted_params[:id]))
     end
 
     def resource
-      V2::ValueDefinition.where(security_guide_id: params[:security_guide_id])
+      V2::ValueDefinition
     end
 
     def serializer

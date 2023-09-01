@@ -20,11 +20,11 @@ module V2
     end
 
     def profile
-      @profile ||= authorize(resource.find(permitted_params[:id]))
+      @profile ||= authorize(expand_resource.find(permitted_params[:id]))
     end
 
     def resource
-      V2::Profile.where(security_guide_id: params[:security_guide_id])
+      V2::Profile
     end
 
     def serializer
