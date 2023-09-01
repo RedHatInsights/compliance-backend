@@ -17,7 +17,7 @@ describe V2::SecurityGuidesController do
 
   before do
     request.headers['X-RH-IDENTITY'] = current_user.account.identity_header.raw
-    expect(controller).to receive(:rbac_allowed?).and_return(rbac_allowed?)
+    allow(controller).to receive(:rbac_allowed?).and_return(rbac_allowed?)
   end
 
   describe 'GET index' do
