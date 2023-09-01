@@ -5,10 +5,10 @@ module V2
   module ParameterHandling
     extend ActiveSupport::Concern
 
-    # Constraint validating model classes passed via params[:parents]
-    class ModelConstraint < StrongerParameters::Constraint
+    # Constraint validating parent (belongs_to) reflections passed via params[:parents]
+    class SymbolConstraint < StrongerParameters::Constraint
       def value(val)
-        return val if val.is_a?(Class) && val < ::ApplicationRecord
+        return val if val.is_a?(Symbol)
 
         StrongerParameters::InvalidValue.new(val, 'is not permitted')
       end
@@ -29,10 +29,9 @@ module V2
     DEFAULT_PERMITTED = StrongerParameters::ControllerSupport::PermittedParameters::DEFAULT_PERMITTED.merge(
       _json: ParamType.nil,
       # The list of parents should come from the routed resource definition as an
-      # array of ActiveRecord objects. The custom constraint prevents passing this
-      # param as a regular parameter as it is not possible to pass Ruby classes as
-      # HTTP parameters.
-      parents: ParamType.array(ModelConstraint.new)
+      # array of Symbols. The custom constraint prevents passing this param as a
+      # regular parameter as it is not possible to pass Symbols as HTTP params.
+      parents: ParamType.array(SymbolConstraint.new)
     )
 
     class_methods do
@@ -71,10 +70,10 @@ module V2
       # hash containing each ID passed from the parents of a nested resource.
       def permit_parent_ids
         params[:parents]&.each_with_object({}) do |parent, obj|
-          next unless parent.is_a?(Class)
+          reflection = resource.reflect_on_association(parent)
+          next if reflection.nil?
 
-          field = [parent.name.demodulize.underscore, :id].join('_')
-          obj[field] = UUIDConstraint.new
+          obj[reflection.foreign_key] = UUIDConstraint.new
         end || {}
       end
 

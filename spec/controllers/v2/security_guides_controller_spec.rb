@@ -17,6 +17,7 @@ describe V2::SecurityGuidesController do
 
   before do
     request.headers['X-RH-IDENTITY'] = current_user.account.identity_header.raw
+    allow(StrongerParameters::InvalidValue).to receive(:new) { |value, _| value.to_sym }
     allow(controller).to receive(:rbac_allowed?).and_return(rbac_allowed?)
   end
 

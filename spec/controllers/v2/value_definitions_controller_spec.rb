@@ -17,6 +17,7 @@ describe V2::ValueDefinitionsController do
 
   before do
     request.headers['X-RH-IDENTITY'] = current_user.account.identity_header.raw
+    allow(StrongerParameters::InvalidValue).to receive(:new) { |value, _| value.to_sym }
     allow(controller).to receive(:rbac_allowed?).and_return(rbac_allowed?)
   end
 
@@ -45,12 +46,7 @@ describe V2::ValueDefinitionsController do
           )
         end
 
-        nested_route(V2::SecurityGuide) do |parents|
-          get :index, params: {
-            security_guide_id: security_guide.id,
-            parents: parents
-          }
-        end
+        get :index, params: { security_guide_id: security_guide.id, parents: %i[security_guide] }
 
         expect(response).to have_http_status :ok
         expect(response_body_data).to match_array(collection)
@@ -60,19 +56,19 @@ describe V2::ValueDefinitionsController do
         end
       end
 
-      include_examples 'with metadata', V2::SecurityGuide do
+      include_examples 'with metadata', :security_guide do
         let(:extra_params) { { security_guide_id: security_guide.id } }
       end
 
-      it_behaves_like 'paginable', V2::SecurityGuide do
+      it_behaves_like 'paginable', :security_guide do
         let(:extra_params) { { security_guide_id: security_guide.id } }
       end
 
-      it_behaves_like 'sortable', V2::SecurityGuide do
+      it_behaves_like 'sortable', :security_guide do
         let(:extra_params) { { security_guide_id: security_guide.id } }
       end
 
-      it_behaves_like 'searchable', V2::SecurityGuide do
+      it_behaves_like 'searchable', :security_guide do
         let(:extra_params) { { security_guide_id: security_guide.id } }
       end
 
@@ -81,12 +77,8 @@ describe V2::ValueDefinitionsController do
         let(:item) { FactoryBot.create(:v2_value_definition) }
 
         it 'returns no data from empty security guide' do
-          nested_route(V2::SecurityGuide) do |parents|
-            get :index, params: {
-              security_guide_id: empty_security_guide.id,
-              parents: parents
-            }
-          end
+          get :index, params: { security_guide_id: empty_security_guide.id, parents: %i[security_guide] }
+
           expect(response_body_data).to be_empty
         end
       end
@@ -96,12 +88,7 @@ describe V2::ValueDefinitionsController do
       let(:rbac_allowed?) { false }
 
       it 'responds with unauthorized status' do
-        nested_route(V2::SecurityGuide) do |parents|
-          get :index, params: {
-            security_guide_id: security_guide.id,
-            parents: parents
-          }
-        end
+        get :index, params: { security_guide_id: security_guide.id, parents: %i[security_guide] }
 
         expect(response).to have_http_status :forbidden
       end
@@ -124,13 +111,11 @@ describe V2::ValueDefinitionsController do
                                 end
                               })
 
-        nested_route(V2::SecurityGuide) do |parents|
-          get :show, params: {
-            security_guide_id: security_guide.id,
-            id: value_definition.id,
-            parents: parents
-          }
-        end
+        get :show, params: {
+          security_guide_id: security_guide.id,
+          id: value_definition.id,
+          parents: %i[security_guide]
+        }
 
         expect(response.parsed_body).to match(item)
       end
@@ -140,15 +125,13 @@ describe V2::ValueDefinitionsController do
         let(:security_guide) { FactoryBot.create(:v2_security_guide) }
 
         it 'returns not_found' do
-          nested_route(V2::SecurityGuide) do |parents|
-            get :show, params: {
-              security_guide_id: security_guide.id,
-              id: item.id,
-              parents: parents
-            }
+          get :show, params: {
+            security_guide_id: security_guide.id,
+            id: item.id,
+            parents: %i[security_guide]
+          }
 
-            expect(response).to have_http_status :not_found
-          end
+          expect(response).to have_http_status :not_found
         end
       end
     end

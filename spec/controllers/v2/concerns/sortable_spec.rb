@@ -24,11 +24,11 @@
 #     => written as [0, 1, [2, 3]]
 #
 # The `parents` parameter is required when testing nested controllers, and it should contain
-# an ordered list of model classes similarly to how they are defined in the routes. It is also
-# required to set the `extra_params` variable in a let block and pass all the parent IDs there
-# as a hash. For example:
+# an ordered list of reflection symbols similarly to how they are defined in the routes. It is
+# also required to set the `extra_params` variable in a let block and pass all the parent IDs
+# there as a hash. For example:
 # ```
-# it_behaves_like 'sortable', SecurityGuide, Profile do
+# it_behaves_like 'sortable', :security_guide, :profile do
 #   let(:extra_params) { { security_guide_id: 123, profile_id: 456 } }
 # end
 # ```
@@ -59,9 +59,7 @@ RSpec.shared_examples 'sortable' do |*parents|
         end
       end
 
-      nested_route(*parents) do |mocked_parents|
-        get :index, params: extra_params.merge(sort_by: test_case[:sort_by], parents: mocked_parents)
-      end
+      get :index, params: extra_params.merge(sort_by: test_case[:sort_by], parents: parents)
 
       expect(response_body_data.map { |item| item['id'] }).to eq(result)
     end

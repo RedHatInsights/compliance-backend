@@ -41,18 +41,6 @@ if Rails.env.test?
   end
   # rubocop:enable Metrics/MethodLength
 
-  def nested_route(*parents)
-    # Mock the .to_s method on each parent in the array to avoid RSpec converting it
-    parents.each { |parent| allow(parent).to receive(:to_s).and_return(parent) }
-
-    yield(parents)
-  ensure # Make sure that the mock is just for the time of the HTTP request
-    parents.each do |parent|
-      klass = RSpec::Mocks.space.proxy_for(parent)
-      klass.instance_variable_get(:@method_doubles)[:to_s].reset
-    end
-  end
-
   # Assembles object to be passed into factory
   # - adds url params into an object based on yaml entity definition in sorting and searching specs
   def factory_params(item, extra_params)
