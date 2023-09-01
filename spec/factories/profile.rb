@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :v2_profile, class: V2::Profile do
+  factory :v2_profile, class: 'V2::Profile' do
     id { SecureRandom.uuid }
     title { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
