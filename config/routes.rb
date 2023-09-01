@@ -25,9 +25,9 @@ Rails.application.routes.draw do
       unless Rails.env.production?
         scope 'v2', module: 'v2', as: 'v2' do
           resources :security_guides, only: [:index, :show] do
-            resources :profiles, only: [:index, :show], parents: [V2::SecurityGuide]
-            resources :value_definitions, only: [:index, :show], parents: [V2::SecurityGuide]
-            resources :rules, only: [:index, :show], parents: [V2::SecurityGuide]
+            resources :profiles, only: [:index, :show], parents: [:security_guide]
+            resources :value_definitions, only: [:index, :show], parents: [:security_guide]
+            resources :rules, only: [:index, :show], parents: [:security_guide]
           end
         end
       end
