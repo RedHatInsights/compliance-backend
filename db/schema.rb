@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_10_085607) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_01_184939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -264,5 +264,48 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_10_085607) do
       profiles.value_overrides
      FROM profiles
     WHERE (profiles.parent_profile_id IS NULL);
+  SQL
+  create_view "security_guides", sql_definition: <<-SQL
+      SELECT benchmarks.id,
+      benchmarks.ref_id,
+      benchmarks.title,
+      benchmarks.description,
+      benchmarks.version,
+      benchmarks.created_at,
+      benchmarks.updated_at,
+      benchmarks.package_name
+     FROM benchmarks;
+  SQL
+  create_view "v2_value_definitions", sql_definition: <<-SQL
+      SELECT value_definitions.id,
+      value_definitions.ref_id,
+      value_definitions.title,
+      value_definitions.description,
+      value_definitions.value_type,
+      value_definitions.default_value,
+      value_definitions.lower_bound,
+      value_definitions.upper_bound,
+      value_definitions.benchmark_id AS security_guide_id
+     FROM value_definitions;
+  SQL
+  create_view "v2_rules", sql_definition: <<-SQL
+      SELECT rules.id,
+      rules.ref_id,
+      rules.supported,
+      rules.title,
+      rules.severity,
+      rules.description,
+      rules.rationale,
+      rules.created_at,
+      rules.updated_at,
+      rules.slug,
+      rules.remediation_available,
+      rules.benchmark_id AS security_guide_id,
+      rules.upstream,
+      rules.precedence,
+      rules.rule_group_id,
+      rules.value_checks,
+      rules.identifier
+     FROM rules;
   SQL
 end
