@@ -2,21 +2,27 @@
   - :factory: :v2_profile
     :title: 'aba'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_profile
     :title: 'bac'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_profile
     :title: 'aab'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_profile
     :title: 'aaa'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_profile
     :title: 'caa'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_profile
     :title: 'aaa'
     :security_guide_id: ${security_guide_id}
+
 :queries:
   - :sort_by:
       - 'title'
