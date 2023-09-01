@@ -20,11 +20,11 @@ module V2
     end
 
     def rule
-      @rule ||= authorize(resource.find(permitted_params[:id]))
+      @rule ||= authorize(expand_resource.find(permitted_params[:id]))
     end
 
     def resource
-      V2::Rule.where(security_guide_id: params[:security_guide_id])
+      V2::Rule
     end
 
     def serializer

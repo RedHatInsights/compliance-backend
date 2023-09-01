@@ -71,6 +71,7 @@ module V2
       def permit_parent_ids
         params[:parents]&.each_with_object({}) do |parent, obj|
           reflection = resource.reflect_on_association(parent)
+          # Do not allow reflections that aren't defined as a parent
           next if reflection.nil?
 
           obj[reflection.foreign_key] = UUIDConstraint.new

@@ -11,7 +11,7 @@ module V2
     include ::ExceptionNotifierCustomData
     include ::Metadata
     include ::Pagination
-    include ::Collection
+    include V2::Collection
     include ::Rendering
     include V2::ParameterHandling
     include ::ErrorHandling
@@ -59,6 +59,19 @@ module V2
 
       permission = self.class.instance_variable_get(:@action_permissions)[action_name.to_sym]
       user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
+    end
+
+    # Reduce through all the parents of the resource and join+scope them on the resource
+    # or return with the resource untouched if not nested under other resources
+    def expand_resource
+      permitted_params[:parents].to_a.reduce(resource) do |scope, parent|
+        ref = scope.reflect_on_association(parent)
+        klass = ref.klass
+
+        scope.joins(parent)
+             .where(parent => { klass.primary_key => permitted_params[ref.foreign_key] })
+             .merge(Pundit.policy_scope(current_user, klass))
+      end
     end
   end
 end

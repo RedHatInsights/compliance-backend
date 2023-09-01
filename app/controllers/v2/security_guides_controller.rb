@@ -20,7 +20,7 @@ module V2
     end
 
     def security_guide
-      @security_guide ||= authorize(resource.find(permitted_params[:id]))
+      @security_guide ||= authorize(expand_resource.find(permitted_params[:id]))
     end
 
     def scope
