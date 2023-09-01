@@ -2,21 +2,27 @@
   - :factory: :v2_value_definition
     :title: 'aba'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_value_definition
     :title: 'bac'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_value_definition
     :title: 'aab'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_value_definition
     :title: 'aaa'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_value_definition
     :title: 'caa'
     :security_guide_id: ${security_guide_id}
+
   - :factory: :v2_value_definition
     :title: 'aaa'
     :security_guide_id: ${security_guide_id}
+
 :queries:
   - :sort_by:
       - 'title'

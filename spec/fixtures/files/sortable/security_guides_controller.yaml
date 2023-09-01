@@ -3,26 +3,32 @@
     :title: 'aaab'
     :version: '0.1.49'
     :os_major_version: 8
+
   - :factory: :v2_security_guide
     :title: 'aaaa'
     :version: '0.1.43'
     :os_major_version: 7
+
   - :factory: :v2_security_guide
     :title: 'aacb'
     :version: '0.1.47'
     :os_major_version: 8
+
   - :factory: :v2_security_guide
     :title: 'aaaa'
     :version: '0.1.44'
     :os_major_version: 7
+
   - :factory: :v2_security_guide
     :title: 'btfn'
     :version: '0.1.45'
     :os_major_version: 7
+
   - :factory: :v2_security_guide
     :title: 'aaaa'
     :version: '0.1.44'
     :os_major_version: 8
+
 :queries:
   - :sort_by:
       - 'title'
