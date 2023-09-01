@@ -9,8 +9,8 @@ module V2
     include ::Pundit::Authorization
     include ::Authentication
     include ::ExceptionNotifierCustomData
-    include ::Metadata
-    include ::Pagination
+    include V2::Metadata
+    include V2::Pagination
     include V2::Collection
     include ::Rendering
     include V2::ParameterHandling
