@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :v2_value_definition, class: V2::ValueDefinition do
+  factory :v2_value_definition, class: 'V2::ValueDefinition' do
     ref_id { "foo_value_#{SecureRandom.uuid}" }
     title { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
