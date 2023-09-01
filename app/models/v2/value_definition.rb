@@ -4,9 +4,11 @@
 module V2
   # Model for Value Definitions
   class ValueDefinition < ApplicationRecord
-    # FIXME: drop the foreign key and alias after remodel
-    alias_attribute :security_guide_id, :benchmark_id
-    belongs_to :security_guide, class_name: 'V2::SecurityGuide', foreign_key: 'benchmark_id', inverse_of: false
+    # FIXME: clean up after the remodel
+    self.primary_key = :id
+    self.table_name = :v2_value_definitions
+
+    belongs_to :security_guide
 
     sortable_by :title
 

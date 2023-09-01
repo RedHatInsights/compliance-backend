@@ -3,7 +3,8 @@
 module V2
   # Model for Security Guides
   class SecurityGuide < ApplicationRecord
-    self.table_name = 'benchmarks'
+    # FIXME: clean up after the remodel
+    self.primary_key = :id
 
     SORT_BY_VERSION = Arel::Nodes::NamedFunction.new(
       'CAST',

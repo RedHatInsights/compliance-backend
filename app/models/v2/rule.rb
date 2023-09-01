@@ -4,6 +4,10 @@
 module V2
   # Model for Rules
   class Rule < ApplicationRecord
+    # FIXME: clean up after the remodel
+    self.table_name = :v2_rules
+    self.primary_key = :id
+
     SORTED_SEVERITIES = Arel.sql(
       AN::Case.new.when(
         Rule.arel_table[:severity].eq(AN::Quoted.new('high'))
@@ -14,9 +18,7 @@ module V2
       ).then(1).else(0).to_sql
     )
 
-    # FIXME: drop the foreign key and alias after remodel
-    alias_attribute :security_guide_id, :benchmark_id
-    belongs_to :security_guide, class_name: 'V2::SecurityGuide', foreign_key: 'benchmark_id', inverse_of: false
+    belongs_to :security_guide
 
     sortable_by :title
     sortable_by :severity, SORTED_SEVERITIES

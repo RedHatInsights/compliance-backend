@@ -20,10 +20,7 @@ module V2
     end
 
     def profile
-      # FIXME: change after canonical_profiles becomes a table
-      # rubocop:disable Rails/FindById
-      @profile ||= authorize(resource.find_by!(id: permitted_params[:id]))
-      # rubocop:enable Rails/FindById
+      @profile ||= authorize(resource.find(permitted_params[:id]))
     end
 
     def resource
