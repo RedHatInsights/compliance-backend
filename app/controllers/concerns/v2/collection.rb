@@ -12,7 +12,7 @@ module V2
 
       def resolve_collection
         result = filter_by_tags(sort(search(policy_scope(expand_resource))))
-        result.paginate(page: pagination_offset, per_page: pagination_limit)
+        result.limit(pagination_limit).offset(pagination_offset)
       end
 
       # :nocov:

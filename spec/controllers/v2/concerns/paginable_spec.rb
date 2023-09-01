@@ -26,10 +26,9 @@ RSpec.shared_examples 'paginable' do |*parents|
       expect(response_body_data.count).to eq(per_page)
     end
 
-    (1..(20.0 / per_page).ceil).each do |page|
-      it "returns #{per_page} records from the #{page.ordinalize} page" do
-        idx = ((per_page * (page - 1)))
-        nth_page = items[idx..(idx + per_page - 1)].map do |sg|
+    20.times do |offset|
+      it "returns #{per_page} records from the offset #{offset}" do
+        nth_items = items[offset..(offset + per_page - 1)].map do |sg|
           hash_including(
             'id' => sg.id,
             'type' => subject.send(:resource).model_name.element,
@@ -39,13 +38,13 @@ RSpec.shared_examples 'paginable' do |*parents|
 
         get :index, params: extra_params.merge(
           'limit' => per_page,
-          'offset' => page,
+          'offset' => offset,
           parents: parents
         )
 
-        expect(response_body_data).to match_array(nth_page)
+        expect(response_body_data).to match_array(nth_items)
         expect(response.parsed_body['meta']['limit']).to eq(per_page)
-        expect(response.parsed_body['meta']['offset']).to eq(page)
+        expect(response.parsed_body['meta']['offset']).to eq(offset)
       end
     end
   end

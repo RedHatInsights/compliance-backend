@@ -49,7 +49,7 @@ module V2
     included do
       permitted_params_for_action :index, {
         limit: ParamType.integer & ParamType.gt(0) & ParamType.lte(100),
-        offset: ParamType.integer & ParamType.gt(0),
+        offset: ParamType.integer & ParamType.gte(0),
         sort_by: ParamType.array(ParamType.string) | ParamType.string,
         self::SEARCH => ParamType.string
       }
