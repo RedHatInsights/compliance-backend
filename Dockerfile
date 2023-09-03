@@ -46,7 +46,7 @@ RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                     
 
 LABEL BUILD_STAGE_OF=$IMAGE_TAG
 
-ENV prometheus_multiproc_dir=/opt/app-root/src/tmp
+ENV prometheus_multiproc_dir=/opt/app-root/src/tmp prometheus_rust_mmaped_file=false
 
 #############################################################
 
@@ -73,6 +73,6 @@ USER 1001
 COPY --chown=1001:0 . /opt/app-root/src
 COPY --chown=1001:0 --from=build /opt/app-root/src/.bundle /opt/app-root/src/.bundle
 
-ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true HOME=/opt/app-root/src DEV_DEPS=$devDeps prometheus_multiproc_dir=/opt/app-root/src/tmp
+ENV RAILS_ENV=production RAILS_LOG_TO_STDOUT=true HOME=/opt/app-root/src DEV_DEPS=$devDeps prometheus_multiproc_dir=/opt/app-root/src/tmp prometheus_rust_mmaped_file=false
 
 CMD ["/opt/app-root/src/entrypoint.sh"]
