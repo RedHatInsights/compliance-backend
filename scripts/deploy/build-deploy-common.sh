@@ -16,6 +16,8 @@ CONTAINER_ENGINE_CMD=''
 IMAGE_TAG=''
 PREFER_CONTAINER_ENGINE="${PREFER_CONTAINER_ENGINE:-}"
 DISABLE_BUILD_CACHE="${DISABLE_BUILD_CACHE:-}"
+BUILD_DEPLOY_ATTEMPT_NUM=1
+BUILD_DEPLOY_MAX_ATTEMPTS=3
 
 local_build() {
   [ "$LOCAL_BUILD" = true ]
@@ -344,8 +346,7 @@ set_image_tag() {
     fi
 }
 
-build_deploy_main() {
-
+build_deploy_steps(){
     if ! build_deploy_init; then
         echo "build_deploy init phase failed!"
         return 1
@@ -358,4 +359,18 @@ build_deploy_main() {
     if ! is_pr_or_mr_build && additional_tags; then
         add_additional_tags || return 1
     fi
+}
+
+build_deploy_main() {
+
+    while [ "$BUILD_DEPLOY_ATTEMPT_NUM" -le "$BUILD_DEPLOY_MAX_ATTEMPTS" ]; do
+        if build_deploy_steps; then
+            return 0
+        fi
+
+        echo "Attempt number $BUILD_DEPLOY_ATTEMPT_NUM failed. Trying again..."
+        BUILD_DEPLOY_ATTEMPT_NUM=$(( BUILD_DEPLOY_ATTEMPT_NUM + 1 ))
+    done
+
+    return 1
 }
