@@ -59,7 +59,7 @@ Rails.application.configure do
       end
 
       # FIXME: Settings.redis.ssl after clowder provides it
-      { url: redis_url, password: redis_password, ssl: ActiveModel::Type::Boolean.new.cast(ENV.fetch('SETTINGS__REDIS__SSL', nil))}
+      { url: redis_url, password: redis_password, ssl: Settings.redis.ssl}
     end
 
     # Override is necessary as it gets set during initialization without the proper config available
