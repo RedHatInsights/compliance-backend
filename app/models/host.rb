@@ -88,8 +88,6 @@ class Host < ApplicationRecord
   has_many :assigned_internal_profiles, -> { external(false) },
            through: :policies, source: :profiles
 
-  scope :non_edge, -> { where(HOST_TYPE.eq(nil)) }
-
   scope :with_benchmark, lambda { |profile = nil|
     profile ||= RequestStore.store['scoped_search_context_profiles']
 
