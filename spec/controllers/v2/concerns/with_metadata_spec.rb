@@ -16,7 +16,7 @@
 # ```
 #
 RSpec.shared_examples 'with metadata' do |*parents|
-  let(:meta_keys) { %w[total limit offset relationships] }
+  let(:meta_keys) { %w[total limit offset] }
   let(:item_count) { 10 }
   let(:extra_params) { {} }
 
