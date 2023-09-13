@@ -26,8 +26,7 @@ module V2
             tags: tags,
             limit: pagination_limit,
             offset: pagination_offset,
-            sort_by: permitted_params[:sort_by],
-            relationships: relationships_enabled?
+            sort_by: permitted_params[:sort_by]
           }.compact,
           links: links(last_offset(opts[:total]))
         }
