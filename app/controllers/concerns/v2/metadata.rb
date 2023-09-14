@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module V2
-  # Sets up the metadata to be passed fo fast_jsonapi to be
+  # Sets up the metadata to be passed to fast_jsonapi to be
   # added to our API responses
   module Metadata
     extend ActiveSupport::Concern
