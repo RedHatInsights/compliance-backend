@@ -4,12 +4,15 @@ require 'rails_helper'
 require 'webmock/rspec'
 require './spec/api/v1/openapi'
 require './spec/api/v1/schemas/util'
+require './spec/api/v2/openapi'
+# require './spec/api/v2/schemas/util'
 
 include Api::V1::Schemas::Util # rubocop:disable Style/MixinUsage
 
 RSpec.configure do |config|
   config.swagger_root = Rails.root.to_s + '/swagger'
-
+  # FIXME: https://github.com/rswag/rswag/issues/666
+  # config.swagger_strict_schema_validation = true
   config.before(:each) do
     stub_request(:get, /#{Settings.endpoints.rbac_url}/)
       .to_return(status: 200,
@@ -18,8 +21,21 @@ RSpec.configure do |config|
   end
 
   config.swagger_docs = {
-    'v1/openapi.json' => Api::V1::Openapi.doc
+    'v1/openapi.json' => Api::V1::Openapi.doc,
+    'v2/openapi.json' => Api::V2::Openapi.doc
   }
+
+  config.after(:each, operation: true, use_as_request_example: true) do |spec|
+    spec.metadata[:operation][:request_examples] ||= []
+
+    example = {
+      value: JSON.parse(request.body.string, symbolize_names: true),
+      name: spec.metadata[:response][:description].parameterize.underscore,
+      summary: spec.metadata[:response][:description]
+    }
+
+    spec.metadata[:operation][:request_examples] << example
+  end
 end
 
 def autogenerate_examples(example, label = 'Response example', summary = '', description = '')
@@ -86,11 +102,33 @@ def pagination_params
             schema: { type: :integer, minimum: 1, default: 1 }
 end
 
+def pagination_params_v2
+  parameter name: :limit, in: :query, required: false,
+            description: 'Number of items to return per page',
+            schema: { type: :number, maximum: 100, minimum: 1, default: 10 }
+  parameter name: :offset, in: :query, required: false,
+            description: 'Offset of first item of paginated response',
+            schema: { type: :integer, minimum: 0, default: 0 }
+end
+
 def search_params
   parameter name: :search, in: :query, required: false,
             description: 'Query string compliant with scoped_search ' \
             'query language: ' \
             'https://github.com/wvanbergen/scoped_search/wiki/Query-language',
+            schema: { type: :string }
+end
+
+def search_params_v2(model = nil)
+  parameter name: :filter, in: :query, required: false,
+            description: 'Query string to filter items by their attributes. ' \
+              'Compliant with <a href="https://github.com/wvanbergen/scoped_search/wiki/Query-language" ' \
+              'target="_blank" title="github.com/wvanbergen/scoped_search">scoped_search query language</a>. ' \
+              'However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>' \
+              "#{model.name.split('::').second.gsub(/([A-Z])/) { " #{Regexp.last_match(1)}" }.strip.pluralize} " \
+              'are searchable using attributes ' \
+              "#{model.scoped_search.fields.keys.map { |k| "`#{k}`" }.to_sentence}" \
+              '<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)',
             schema: { type: :string }
 end
 
@@ -110,6 +148,18 @@ def sort_params(model = nil)
              '(:asc or :desc) to sort the results.',
             schema: {
               oneOf: [{ type: :array, items: { type: 'string' } }, { type: :string }],
+              items: { enum: sort_combinations(model) }
+            }
+end
+
+def sort_params_v2(model = nil)
+  parameter name: :sort_by, in: :query, required: false,
+            description: 'Attribute and direction to sort the items by. ' \
+              'Represented by an array of fields with an optional direction ' \
+              '(`<key>:asc` or `<key>:desc`).<br><br>' \
+              'If no direction is selected, `<key>:asc` is used by default.',
+            schema: {
+              type: :array,
               items: { enum: sort_combinations(model) }
             }
 end
