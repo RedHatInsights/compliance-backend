@@ -25,9 +25,11 @@ Rails.application.routes.draw do
       if !Rails.env.production? || ENV.fetch('ENABLE_API_V2', false)
         scope 'v2', module: 'v2', as: 'v2' do
           resources :security_guides, only: [:index, :show] do
-            resources :profiles, only: [:index, :show], parents: [:security_guide]
             resources :value_definitions, only: [:index, :show], parents: [:security_guide]
             resources :rules, only: [:index, :show], parents: [:security_guide]
+            resources :profiles, only: [:index, :show], parents: [:security_guide] do
+              resources :rules, only: [:index, :show], parents: [:security_guide, :profiles]
+            end
           end
         end
       end

@@ -19,6 +19,8 @@ module V2
     )
 
     belongs_to :security_guide
+    has_many :profile_rules, dependent: :delete_all
+    has_many :profiles, through: :profile_rules, source: :profile, class_name: 'V2::Profile'
 
     sortable_by :title
     sortable_by :severity, SORTED_SEVERITIES

@@ -13,6 +13,13 @@ FactoryBot.define do
 
     transient do
       os_major_version { 7 }
+      profile_id { nil }
+    end
+
+    after(:create) do |rule, ev|
+      next if ev.profile_id.nil?
+
+      rule.profile_rules << FactoryBot.create(:v2_profile_rule, rule_id: rule.id, profile_id: ev.profile_id)
     end
   end
 end
