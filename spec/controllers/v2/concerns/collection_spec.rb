@@ -41,8 +41,6 @@ RSpec.shared_examples 'collection' do |*parents|
   end
 
   context 'under incorrect parent', if: parents.present? do
-    let(:parent) { FactoryBot.create(:"v2_#{parents.first}") }
-
     it 'returns not_found' do
       get :index, params: extra_params.merge(parents: parents)
 

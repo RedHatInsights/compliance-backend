@@ -4,60 +4,70 @@
     :severity: 'high'
     :precedence: 1234
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
   - :factory: :v2_rule
     :title: 'abda'
     :severity: 'medium'
     :precedence: 567
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
   - :factory: :v2_rule
     :title: 'aaaa'
     :severity: 'low'
     :precedence: 8765
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
   - :factory: :v2_rule
     :title: 'adac'
     :severity: 'high'
     :precedence: 987
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
   - :factory: :v2_rule
     :title: 'bbbb'
     :severity: 'medium'
     :precedence: 4562
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
   - :factory: :v2_rule
     :title: 'cccd'
     :severity: 'low'
     :precedence: 2341
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
   - :factory: :v2_rule
     :title: 'aaaa'
     :severity: 'high'
     :precedence: 954
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
   - :factory: :v2_rule
     :title: 'bacc'
     :severity: 'medium'
     :precedence: 1854
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
   - :factory: :v2_rule
     :title: 'zzab'
     :severity: 'low'
     :precedence: 5321
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
   - :factory: :v2_rule
     :title: 'edfa'
     :severity: 'high'
     :precedence: 954
     :security_guide_id: ${security_guide_id}
+    :profile_id: ${profile_id}
 
 :queries:
   - :sort_by:
