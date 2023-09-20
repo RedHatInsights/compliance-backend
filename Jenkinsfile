@@ -40,7 +40,7 @@ pipeline {
                     sh '''
                     curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                     source ./.cicd_bootstrap.sh
-                    source ./build_deploy.sh
+                    ./build_deploy.sh
                     '''
                 }
             }
