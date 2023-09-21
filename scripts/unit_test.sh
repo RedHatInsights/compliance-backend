@@ -4,6 +4,7 @@
 CICD_TOOLS_REPO_BRANCH='add-build-helper-tools'
 CICD_TOOLS_REPO_ORG='Victoremepunto'
 CICD_TOOLS_URL="https://raw.githubusercontent.com/${CICD_TOOLS_REPO_ORG}/cicd-tools/${CICD_TOOLS_REPO_BRANCH}/src/bootstrap.sh"
+# shellcheck source=/dev/null
 source <(curl -sSL "$CICD_TOOLS_URL") image_builder
 
 if ! cicd_tools::image_builder::is_change_request_context; then
@@ -31,7 +32,7 @@ DATABASE_NAME="compliance-test"
 teardown() {
 
   for id in "$DB_CONTAINER_ID" "$TEST_CONTAINER_ID" "$COMPLIANCE_POD_ID"; do
-    cicd_tools::container::cmd rm -f "$id"
+    cicd_tools::container::cmd rm -f "$id" || echo "couldn't delete container ID: $id"
   done
 }
 
