@@ -99,8 +99,12 @@ class Host < ApplicationRecord
     )
   }
 
-  scope :joins_test_result_profiles, lambda {
-    left_outer_joins(:test_result_profiles)
+  scope :joins_test_result_profiles, lambda { |profiles = nil|
+    profiles ||= RequestStore.store['scoped_search_context_profiles']
+
+    left_outer_joins(:test_result_profiles).where(
+      test_results: { profiles: profiles }
+    )
   }
 
   scope :with_failed_rules_count, lambda { |profile = nil|

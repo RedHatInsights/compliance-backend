@@ -1100,32 +1100,83 @@ class SystemQueryTest < ActiveSupport::TestCase
     end
 
     should 'properly sort by compliance score' do
+      TestResult.delete_all
+      RuleResult.delete_all
+      WHost.delete_all
       host2 = FactoryBot.create(:host, org_id: @user.account.org_id)
+      host3 = FactoryBot.create(:host, org_id: @user.account.org_id)
+      host4 = FactoryBot.create(:host, org_id: @user.account.org_id)
 
-      # An outdated test result made in the past
-      FactoryBot.create(
+      [host2, host3].each do |host|
+        host.policies << @profile1.policy
+        host.policies << @profile2.policy
+      end
+
+      host4.policies << @profile2.policy
+
+      tr = FactoryBot.create(
         :test_result,
         profile: @profile1,
         host: host2,
-        end_time: 1.minute.ago,
-        score: 100
+        score: 50
       )
 
       FactoryBot.create(
         :rule_result,
         host: host2,
         rule: @profile1.rules.first,
-        result: 'pass',
-        test_result: FactoryBot.create(
-          :test_result,
-          profile: @profile1,
-          host: host2,
-          score: 50
-        )
+        result: 'fail',
+        test_result: tr
       )
+
+      tr2 = FactoryBot.create(
+        :test_result,
+        profile: @profile2,
+        host: host2,
+        score: 60
+      )
+
+      FactoryBot.create(
+        :rule_result,
+        host: host2,
+        rule: @profile2.rules.first,
+        result: 'pass',
+        test_result: tr2
+      )
+
+      tr3 = FactoryBot.create(
+        :test_result,
+        profile: @profile1,
+        host: host3,
+        score: 90
+      )
+
+      FactoryBot.create(
+        :rule_result,
+        host: host3,
+        rule: @profile1.rules.first,
+        result: 'fail',
+        test_result: tr3
+      )
+
+      tr4 = FactoryBot.create(
+        :test_result,
+        profile: @profile2,
+        host: host3,
+        score: 90
+      )
+
+      FactoryBot.create(
+        :rule_result,
+        host: host3,
+        rule: @profile2.rules.first,
+        result: 'fail',
+        test_result: tr4
+      )
+
       query = <<-GRAPHQL
-      query getSystems($policyId: ID, $sortBy: [String!]) {
-          systems(limit: 50, offset: 1, sortBy: $sortBy) {
+      query getSystems($policyId: ID, $filter: String, $sortBy: [String!]) {
+          systems(limit: 50, offset: 1, search: $filter, sortBy: $sortBy) {
               edges {
                   node {
                       id
@@ -1148,13 +1199,21 @@ class SystemQueryTest < ActiveSupport::TestCase
 
       asc_result = Schema.execute(
         query,
-        variables: { policyId: @profile1.id, sortBy: ['score'] },
+        variables: {
+          policyId: @profile1.id,
+          sortBy: ['score'],
+          filter: "policy_id = #{@profile1.id}"
+        },
         context: { current_user: @user }
       )['data']['systems']['edges']
 
       desc_result = Schema.execute(
         query,
-        variables: { policyId: @profile1.id, sortBy: ['score:DESC'] },
+        variables: {
+          policyId: @profile1.id,
+          sortBy: ['score:DESC'],
+          filter: "policy_id = #{@profile1.id}"
+        },
         context: { current_user: @user }
       )['data']['systems']['edges']
 
@@ -1164,11 +1223,11 @@ class SystemQueryTest < ActiveSupport::TestCase
       returned_profile3 = desc_result.dig(0, 'node', 'testResultProfiles')
       returned_profile4 = desc_result.dig(1, 'node', 'testResultProfiles')
 
-      assert_equal 98, returned_profile1.dig(0, 'score')
-      assert_equal 50, returned_profile2.dig(0, 'score')
+      assert_equal 50, returned_profile1.dig(0, 'score')
+      assert_equal 90, returned_profile2.dig(0, 'score')
 
-      assert_equal 50, returned_profile3.dig(0, 'score')
-      assert_equal 98, returned_profile4.dig(0, 'score')
+      assert_equal 90, returned_profile3.dig(0, 'score')
+      assert_equal 50, returned_profile4.dig(0, 'score')
     end
 
     should 'properly sort by rules failed' do
