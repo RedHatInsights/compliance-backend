@@ -77,8 +77,7 @@ class Rbac
       JSON.parse(definition.value).instance_of?(Array) &&
         definition.operation == 'in' &&
         definition.key == 'group.id'
-    rescue JSON::ParserError => e
-      Rails.logger.error("Invalid JSON value received: #{e}")
+    rescue JSON::ParserError
       false
     end
 
