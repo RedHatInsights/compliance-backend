@@ -277,6 +277,25 @@ class RbacTest < ActiveSupport::TestCase
       assert_equal [], Rbac.load_inventory_groups(permissions)
     end
 
+    should 'not crash when invalid JSON value is passed as a resource definition' do
+      permissions = [
+        RBACApiClient::Access.new(
+          permission: Rbac::INVENTORY_HOSTS_READ,
+          resource_definitions: [
+            RBACApiClient::ResourceDefinition.new(
+              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
+                key: 'group.id',
+                value: '[nil, "80e3dc30-cec3-4b49-be2d-37482c74a9ad"]',
+                operation: 'in'
+              )
+            )
+          ]
+        )
+      ]
+
+      assert_equal [], Rbac.load_inventory_groups(permissions)
+    end
+
     should 'list ungrouped entries with groups' do
       permissions = [
         RBACApiClient::Access.new(
