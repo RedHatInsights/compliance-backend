@@ -135,7 +135,7 @@ class Host < ApplicationRecord
   def self.arel_inventory_groups(groups, key)
     jsons = groups.map { |group| [{ key => group }].to_json.dump }
 
-    return Arel.sql('1 = 0') if jsons.empty?
+    return AN::InfixOperation.new('=', Arel.sql('1'), Arel.sql('0')) if jsons.empty?
 
     AN::InfixOperation.new(
       '@>', arel_table[:groups],

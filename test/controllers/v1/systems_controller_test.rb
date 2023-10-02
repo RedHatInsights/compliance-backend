@@ -49,6 +49,31 @@ module V1
         assert_not_includes hosts, @host2.id
       end
 
+      should 'return ungrouped hosts' do
+        ungrouped_hosts = Host.all.to_a
+        @host1 = FactoryBot.create(:host, :with_groups, group_count: 1)
+        @host2 = FactoryBot.create(:host, :with_groups, group_count: 1)
+        FactoryBot.create(:policy, hosts: Host.all)
+
+        allowed_groups = [nil]
+
+        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+                                attribute_filter: {
+                                  key: 'group.id',
+                                  operation: 'in',
+                                  value: allowed_groups.to_json
+                                }
+                              }])
+
+        get v1_systems_url
+
+        hosts = response.parsed_body['data'].map { |h| h['id'] }
+
+        ungrouped_hosts.each { |h| assert_includes hosts, h.id }
+        assert_not_includes hosts, @host1.id
+        assert_not_includes hosts, @host2.id
+      end
+
       should 'accept search' do
         SystemsController.any_instance.expects(:policy_scope).with(Host)
                          .returns(Host.all).at_least_once
