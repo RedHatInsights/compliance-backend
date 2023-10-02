@@ -293,7 +293,7 @@ class RbacTest < ActiveSupport::TestCase
         )
       ]
 
-      assert_equal [], Rbac.load_inventory_groups(permissions)
+      assert_equal [[], '80e3dc30-cec3-4b49-be2d-37482c74a9ad'], Rbac.load_inventory_groups(permissions)
     end
 
     should 'list ungrouped entries with groups' do
