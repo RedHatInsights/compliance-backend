@@ -96,32 +96,17 @@ describe V2::ValueDefinitionsController do
   end
 
   describe 'GET show' do
-    let(:value_definition) { FactoryBot.create(:v2_value_definition) }
-    let(:security_guide) { value_definition.security_guide }
+    let(:item) { FactoryBot.create(:v2_value_definition) }
+    let(:security_guide) { item.security_guide }
 
     context 'Authorized' do
       let(:rbac_allowed?) { true }
 
-      it 'returns value_definition by id' do
-        item = hash_including('data' => {
-                                'id' => value_definition.id,
-                                'type' => 'value_definition',
-                                'attributes' => attributes.each_with_object({}) do |(key, value), obj|
-                                  obj[key.to_s] = value_definition.send(value)
-                                end
-                              })
-
-        get :show, params: {
-          security_guide_id: security_guide.id,
-          id: value_definition.id,
-          parents: %i[security_guide]
-        }
-
-        expect(response.parsed_body).to match(item)
+      it_behaves_like 'show', :security_guide do
+        let(:extra_params) { { security_guide_id: security_guide.id, id: item.id } }
       end
 
       context 'under incorrect parent security guide' do
-        let(:item) { FactoryBot.create(:v2_value_definition) }
         let(:security_guide) { FactoryBot.create(:v2_security_guide) }
 
         it 'returns not_found' do
