@@ -33,7 +33,7 @@ describe V2::SecurityGuidesController do
           hash_including(
             'id' => sg.id,
             'type' => 'security_guide',
-            'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+            **attributes.each_with_object({}) do |(key, value), obj|
               obj[key.to_s] = sg.send(value)
             end
           )
@@ -45,7 +45,7 @@ describe V2::SecurityGuidesController do
         expect(response_body_data).to match_array(collection)
 
         response_body_data.each do |sg|
-          expect(sg['attributes'].keys.count).to eq(attributes.keys.count)
+          expect(sg.keys.count).to eq(attributes.keys.count + 2)
         end
       end
 
@@ -75,7 +75,7 @@ describe V2::SecurityGuidesController do
         item = hash_including('data' => {
                                 'id' => security_guide.id,
                                 'type' => 'security_guide',
-                                'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+                                **attributes.each_with_object({}) do |(key, value), obj|
                                   obj[key.to_s] = security_guide.send(value)
                                 end
                               })

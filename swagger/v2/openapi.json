@@ -90,48 +90,40 @@
                     "value": {
                       "data": [
                         {
-                          "id": "0a979101-472b-4bde-8881-ef35d75e2feb",
+                          "id": "9c910e0f-e06d-4d21-bd75-897443ac87a6",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-9",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 9",
+                          "version": "100.0.4",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 9.",
                           "type": "security_guide",
-                          "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
-                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
-                            "version": "100.0.3",
-                            "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
-                            "os_major_version": 8
-                          }
+                          "os_major_version": 9
                         },
                         {
-                          "id": "286405fd-c110-4797-a718-4d6a9a39ffa1",
+                          "id": "9cb749f3-2be1-4693-97b1-65a2a267613e",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-6",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 6",
+                          "version": "100.0.1",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 6.",
                           "type": "security_guide",
-                          "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
-                            "version": "100.0.2",
-                            "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7.",
-                            "os_major_version": 7
-                          }
+                          "os_major_version": 6
                         },
                         {
-                          "id": "47617c93-a55f-46aa-a4c7-07d8b93936dc",
+                          "id": "b592f308-73c4-4ade-88da-7a3e17f3b008",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
+                          "version": "100.0.3",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
                           "type": "security_guide",
-                          "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-6",
-                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 6",
-                            "version": "100.0.1",
-                            "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 6.",
-                            "os_major_version": 6
-                          }
+                          "os_major_version": 8
                         },
                         {
-                          "id": "855340d9-aff7-4265-99ec-058e501d331f",
+                          "id": "c022786a-5e5d-42c3-8747-4013ce3936c1",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
+                          "version": "100.0.2",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7.",
                           "type": "security_guide",
-                          "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-9",
-                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 9",
-                            "version": "100.0.4",
-                            "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 9.",
-                            "os_major_version": 9
-                          }
+                          "os_major_version": 7
                         }
                       ],
                       "meta": {
@@ -151,48 +143,40 @@
                     "value": {
                       "data": [
                         {
-                          "id": "1e089d43-49f2-4686-b139-929b17849bc7",
+                          "id": "c34337ce-0e5f-4ae5-9064-e15661ee2f19",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-6",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 6",
+                          "version": "100.0.5",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 6.",
                           "type": "security_guide",
-                          "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-6",
-                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 6",
-                            "version": "100.0.5",
-                            "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 6.",
-                            "os_major_version": 6
-                          }
+                          "os_major_version": 6
                         },
                         {
-                          "id": "273b5f9a-0dae-4f72-a412-e236b99725b0",
+                          "id": "09144d4f-b98a-4ae3-be0d-00cfa8a77dcb",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
+                          "version": "100.0.6",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7.",
                           "type": "security_guide",
-                          "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
-                            "version": "100.0.6",
-                            "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7.",
-                            "os_major_version": 7
-                          }
+                          "os_major_version": 7
                         },
                         {
-                          "id": "1e140687-3351-4d4f-9e02-566e6c01bd46",
+                          "id": "c10a9171-df42-4cff-9199-739d776e5acb",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
+                          "version": "100.0.7",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
                           "type": "security_guide",
-                          "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
-                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
-                            "version": "100.0.7",
-                            "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
-                            "os_major_version": 8
-                          }
+                          "os_major_version": 8
                         },
                         {
-                          "id": "4a6e6f5e-95b5-465e-85e7-4865be9a8bef",
+                          "id": "047ee2cb-1817-4f03-8aac-0dcf7f836308",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-9",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 9",
+                          "version": "100.0.8",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 9.",
                           "type": "security_guide",
-                          "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-9",
-                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 9",
-                            "version": "100.0.8",
-                            "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 9.",
-                            "os_major_version": 9
-                          }
+                          "os_major_version": 9
                         }
                       ],
                       "meta": {
@@ -213,15 +197,13 @@
                     "value": {
                       "data": [
                         {
-                          "id": "d3f6af3f-3006-4255-8728-2302e108cf46",
+                          "id": "c40d8e49-a2de-4895-a120-aff9b4919068",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
+                          "version": "100.0.11",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
                           "type": "security_guide",
-                          "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
-                            "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
-                            "version": "100.0.11",
-                            "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
-                            "os_major_version": 8
-                          }
+                          "os_major_version": 8
                         }
                       ],
                       "meta": {

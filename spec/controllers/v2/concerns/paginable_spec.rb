@@ -31,8 +31,7 @@ RSpec.shared_examples 'paginable' do |*parents|
         nth_items = items[offset..(offset + per_page - 1)].map do |sg|
           hash_including(
             'id' => sg.id,
-            'type' => subject.send(:resource).model_name.element,
-            'attributes' => a_kind_of(Hash)
+            'type' => subject.send(:resource).model_name.element
           )
         end
 

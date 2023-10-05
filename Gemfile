@@ -31,8 +31,10 @@ gem 'scenic'
 # Config YAML files for all environments
 gem 'config'
 
-# JSON API serializer
+# APIv1 serializer
 gem 'jsonapi-serializer'
+# APIv2 serializer
+gem 'panko_serializer'
 
 # GraphQL support
 gem 'graphql'
