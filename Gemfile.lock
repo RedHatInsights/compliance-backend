@@ -251,6 +251,9 @@ GEM
     oj (3.16.0)
     openscap_parser (1.6.0)
       nokogiri (~> 1.6)
+    panko_serializer (0.8.1)
+      activesupport
+      oj (> 3.11.0, < 4.0.0)
     parallel (1.23.0)
     parser (3.2.2.3)
       ast (~> 2.4.1)
@@ -504,6 +507,7 @@ DEPENDENCIES
   nokogiri
   oj
   openscap_parser (~> 1.6.0)
+  panko_serializer
   pg
   pry-byebug
   pry-rails

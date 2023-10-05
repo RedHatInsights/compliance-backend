@@ -41,7 +41,7 @@ describe V2::RulesController do
           hash_including(
             'id' => rule.id,
             'type' => 'rule',
-            'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+            **attributes.each_with_object({}) do |(key, value), obj|
               obj[key.to_s] = rule.send(value)
             end
           )
@@ -53,7 +53,7 @@ describe V2::RulesController do
         expect(response_body_data).to match_array(collection)
 
         response_body_data.each do |rule|
-          expect(rule['attributes'].keys.count).to eq(attributes.keys.count)
+          expect(rule.keys.count).to eq(attributes.keys.count + 2)
         end
       end
 
@@ -107,7 +107,7 @@ describe V2::RulesController do
         item = hash_including('data' => {
                                 'id' => rule.id,
                                 'type' => 'rule',
-                                'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+                                **attributes.each_with_object({}) do |(key, value), obj|
                                   obj[key.to_s] = rule.send(value)
                                 end
                               })

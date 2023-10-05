@@ -40,7 +40,7 @@ describe V2::ValueDefinitionsController do
           hash_including(
             'id' => vd.id,
             'type' => 'value_definition',
-            'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+            **attributes.each_with_object({}) do |(key, value), obj|
               obj[key.to_s] = vd.send(value)
             end
           )
@@ -52,7 +52,7 @@ describe V2::ValueDefinitionsController do
         expect(response_body_data).to match_array(collection)
 
         response_body_data.each do |vd|
-          expect(vd['attributes'].keys.count).to eq(attributes.keys.count)
+          expect(vd.keys.count).to eq(attributes.keys.count + 2)
         end
       end
 
@@ -106,7 +106,7 @@ describe V2::ValueDefinitionsController do
         item = hash_including('data' => {
                                 'id' => value_definition.id,
                                 'type' => 'value_definition',
-                                'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+                                **attributes.each_with_object({}) do |(key, value), obj|
                                   obj[key.to_s] = value_definition.send(value)
                                 end
                               })

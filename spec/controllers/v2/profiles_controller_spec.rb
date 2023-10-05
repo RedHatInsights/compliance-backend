@@ -38,7 +38,7 @@ describe V2::ProfilesController do
           hash_including(
             'id' => pf.id,
             'type' => 'profile',
-            'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+            **attributes.each_with_object({}) do |(key, value), obj|
               obj[key.to_s] = pf.send(value)
             end
           )
@@ -50,7 +50,7 @@ describe V2::ProfilesController do
         expect(response_body_data).to match_array(collection)
 
         response_body_data.each do |pf|
-          expect(pf['attributes'].keys.count).to eq(attributes.keys.count)
+          expect(pf.keys.count).to eq(attributes.keys.count + 2)
         end
       end
 
@@ -104,7 +104,7 @@ describe V2::ProfilesController do
         item = hash_including('data' => {
                                 'id' => profile.id,
                                 'type' => 'profile',
-                                'attributes' => attributes.each_with_object({}) do |(key, value), obj|
+                                **attributes.each_with_object({}) do |(key, value), obj|
                                   obj[key.to_s] = profile.send(value)
                                 end
                               })

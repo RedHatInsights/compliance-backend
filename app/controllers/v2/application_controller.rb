@@ -12,7 +12,7 @@ module V2
     include V2::Metadata
     include V2::Pagination
     include V2::Collection
-    include ::Rendering
+    include V2::Rendering
     include V2::ParameterHandling
     include ::ErrorHandling
 
