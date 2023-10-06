@@ -9,7 +9,7 @@ gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 6'
 # Use Redis adapter to connect to Sidekiq
-gem 'redis', '~> 5.0'
+gem 'redis', '~> 4.5'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
