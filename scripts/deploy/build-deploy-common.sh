@@ -5,7 +5,6 @@ ADDITIONAL_TAGS="${ADDITIONAL_TAGS:-}"
 REQUIRED_REGISTRIES="${REQUIRED_REGISTRIES:-quay redhat}"
 REQUIRED_REGISTRIES_LOCAL="${REQUIRED_REGISTRIES_LOCAL:-redhat}"
 LOCAL_BUILD="${LOCAL_BUILD:-false}"
-DOCKER_CONF="$BUILD_DEPLOY_WORKDIR/.docker"
 DOCKERFILE=${DOCKERFILE:="${BUILD_DEPLOY_WORKDIR}/Dockerfile"}
 REDHAT_REGISTRY="${REDHAT_REGISTRY:-registry.redhat.io}"
 QUAY_REGISTRY="${QUAY_REGISTRY:-quay.io}"
@@ -16,6 +15,8 @@ CONTAINER_ENGINE_CMD=''
 IMAGE_TAG=''
 PREFER_CONTAINER_ENGINE="${PREFER_CONTAINER_ENGINE:-}"
 DISABLE_BUILD_CACHE="${DISABLE_BUILD_CACHE:-}"
+
+export DOCKER_CONFIG="$BUILD_DEPLOY_WORKDIR/.docker"
 
 local_build() {
   [ "$LOCAL_BUILD" = true ]
@@ -162,7 +163,7 @@ container_engine_cmd() {
     if [ "$(get_container_engine_cmd)" = "podman" ]; then
         podman "$@"
     else
-        docker "--config=${DOCKER_CONF}" "$@"
+        docker "$@"
     fi
 }
 
