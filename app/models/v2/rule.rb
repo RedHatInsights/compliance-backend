@@ -18,6 +18,14 @@ module V2
       ).then(1).else(0).to_sql
     )
 
+    SHORT_REF_ID_RE = /
+      (?<=
+        \Axccdf_org\.ssgproject\.content_profile_|
+        \Axccdf_org\.ssgproject\.content_rule_|
+        \Axccdf_org\.ssgproject\.content_benchmark_
+      ).*\z
+    /x
+
     belongs_to :security_guide
     has_many :profile_rules, dependent: :delete_all
     has_many :profiles, through: :profile_rules, source: :profile, class_name: 'V2::Profile'
@@ -28,5 +36,28 @@ module V2
 
     scoped_search on: :title, only_explicit: true, operators: %i[like unlike eq ne in notin]
     scoped_search on: :severity, only_explicit: true, operators: %i[eq ne in notin]
+
+    # This field should be only available for rules that have a remediation available and it
+    # is bound to a context of a profile and a security guide. A single rule can belong to one
+    # security guide, but it can be assigned to multiple underlying profiles. If the queried
+    # rule has a joined profile and security guide with both of their `ref_id` fields selected
+    # and aliased with a `tablename__` prefix, the method will utilize these attributes when
+    # building the final result. In case these attributes are not available, the method fails.
+    def remediation_issue_id
+      return nil unless remediation_available
+
+      sg_ref = short_ref_id(security_guide__ref_id).sub('-', '')
+      profile_ref = short_ref_id(profiles__ref_id)
+
+      "ssg:#{sg_ref}|#{profile_ref}|#{ref_id}"
+    rescue NameError
+      raise ArgumentError, 'Missing security guide or profile on the ActiveRecord result'
+    end
+
+    private
+
+    def short_ref_id(ref_id)
+      ref_id.downcase[SHORT_REF_ID_RE] || ref_id
+    end
   end
 end

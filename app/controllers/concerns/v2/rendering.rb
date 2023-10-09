@@ -30,7 +30,7 @@ module V2
       def serialize_individual(model, **args)
         Panko::Response.create do |r|
           {
-            data: r.serializer(model, serializer),
+            data: r.serializer(model, serializer, context: serialization_context),
             **args
           }
         end
@@ -38,10 +38,15 @@ module V2
 
       def serialize_collection(model, **args)
         Panko::Response.new(
-          data: Panko::ArraySerializer.new(model, each_serializer: serializer),
+          data: Panko::ArraySerializer.new(model, each_serializer: serializer, context: serialization_context),
           **metadata,
           **args
         )
+      end
+
+      # The serializer expects the list of parents to determine which `derived_attribute` should be skipped
+      def serialization_context
+        { parents: permitted_params[:parents] }
       end
 
       def index?
