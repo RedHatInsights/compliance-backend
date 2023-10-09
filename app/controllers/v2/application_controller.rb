@@ -61,9 +61,16 @@ module V2
       user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
     end
 
+    def expand_resource
+      # Get the list of fields to be selected from the serializer
+      fields = serializer.fields(permitted_params)
+      # Select only the fields that are really necessary
+      join_parents.select(*select_fields(fields))
+    end
+
     # Reduce through all the parents of the resource and join+scope them on the resource
     # or return with the resource untouched if not nested under other resources
-    def expand_resource
+    def join_parents
       permitted_params[:parents].to_a.reduce(resource) do |scope, parent|
         ref = scope.reflect_on_association(parent)
         klass = ref.klass
@@ -71,6 +78,21 @@ module V2
         scope.joins(parent)
              .where(parent => { klass.primary_key => permitted_params[ref.foreign_key] })
              .merge(Pundit.policy_scope(current_user, klass))
+      end
+    end
+
+    # Iterate through the (nested) fields to be selected and set their names accordingly
+    # so it is understood by SQL. Furthermore, alias any field that is coming from a joined
+    # table to avoid any possible hash key collision.
+    def select_fields(fields)
+      fields.flat_map do |(association, columns)|
+        columns.map do |column|
+          if association
+            "#{association}.#{column} AS #{association}__#{column}"
+          else
+            [resource.table_name, column].join('.')
+          end
+        end
       end
     end
   end
