@@ -18,7 +18,6 @@
 RSpec.shared_examples 'with metadata' do |*parents|
   let(:meta_keys) { %w[total limit offset] }
   let(:item_count) { 10 }
-  let(:extra_params) { {} }
 
   it 'contains total, limit, offset and relationships keys' do
     get :index, params: extra_params.merge(parents: parents)
