@@ -34,10 +34,8 @@ RSpec.shared_examples 'resource' do |*parents|
   end
 
   context 'under incorrect parent', if: parents.present? do
-    let(:parent) { FactoryBot.create(:"v2_#{parents.first}") }
-
     it 'returns not_found' do
-      get :show, params: extra_params.merge(parents: parents)
+      get :show, params: notfound_params.merge(parents: parents)
 
       expect(response).to have_http_status :not_found
     end
