@@ -206,6 +206,8 @@ objects:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: ENABLE_API_V2
+          value: "${ENABLE_API_V2}"
         # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
@@ -561,3 +563,5 @@ parameters:
 - name: QE_ACCOUNTS
   description: Pipe-separated list of numerical identifiers
   required: false
+- name: ENABLE_API_V2
+  description: Whether to enable APIv2 or not
