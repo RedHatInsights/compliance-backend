@@ -35,34 +35,9 @@ describe V2::SecurityGuidesController do
   end
 
   describe 'GET show' do
-    let(:security_guide) { FactoryBot.create(:v2_security_guide) }
+    let(:item) { FactoryBot.create(:v2_security_guide) }
+    let(:extra_params) { { id: item.id } }
 
-    context 'Authorized' do
-      let(:rbac_allowed?) { true }
-
-      it 'returns security guide by id' do
-        item = hash_including('data' => {
-                                'id' => security_guide.id,
-                                'type' => 'security_guide',
-                                **attributes.each_with_object({}) do |(key, value), obj|
-                                  obj[key.to_s] = security_guide.send(value)
-                                end
-                              })
-
-        get :show, params: { id: security_guide.id }
-
-        expect(response.parsed_body).to match(item)
-      end
-    end
-
-    context 'Unathorized' do
-      let(:rbac_allowed?) { false }
-
-      it 'responds with unathorized status' do
-        get :show, params: { id: security_guide.id }
-
-        expect(response).to have_http_status :forbidden
-      end
-    end
+    it_behaves_like 'resource'
   end
 end

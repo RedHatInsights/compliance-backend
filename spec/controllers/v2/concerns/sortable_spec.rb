@@ -28,13 +28,16 @@
 # also required to set the `extra_params` variable in a let block and pass all the parent IDs
 # there as a hash. For example:
 # ```
-# it_behaves_like 'sortable', :security_guide, :profile do
-#   let(:extra_params) { { security_guide_id: 123, profile_id: 456 } }
-# end
+# let(:extra_params) { { security_guide_id: 123, profile_id: 456 } }
+#
+# it_behaves_like 'sortable', :security_guide, :profile
 # ```
 #
-# In a non-nested case this example can be simply included as:
+# In a non-nested case the let block should contain an empty hash and the `parents` parameter
+# should be empty, like so:
 # ```
+# let(:extra_params) { {} }
+#
 # it_behaves_like 'sortable'
 # ```
 #

@@ -43,36 +43,10 @@ describe V2::RulesController do
   end
 
   describe 'GET show' do
-    let(:rule) { FactoryBot.create(:v2_rule) }
-    let(:security_guide) { rule.security_guide }
+    let(:item) { FactoryBot.create(:v2_rule) }
+    let(:parent) { item.security_guide }
+    let(:extra_params) { { security_guide_id: parent.id, id: item.id } }
 
-    context 'Authorized' do
-      let(:rbac_allowed?) { true }
-
-      it 'returns rule by id' do
-        item = hash_including('data' => {
-                                'id' => rule.id,
-                                'type' => 'rule',
-                                **attributes.each_with_object({}) do |(key, value), obj|
-                                  obj[key.to_s] = rule.send(value)
-                                end
-                              })
-
-        get :show, params: { security_guide_id: security_guide.id, id: rule.id, parents: %i[security_guide] }
-
-        expect(response.parsed_body).to match(item)
-      end
-
-      context 'under incorrect parent security guide' do
-        let(:item) { FactoryBot.create(:v2_rule) }
-        let(:security_guide) { FactoryBot.create(:v2_security_guide) }
-
-        it 'returns not_found' do
-          get :show, params: { security_guide_id: security_guide.id, id: rule.id, parents: %i[security_guide] }
-
-          expect(response).to have_http_status :not_found
-        end
-      end
-    end
+    it_behaves_like 'resource', :security_guide
   end
 end
