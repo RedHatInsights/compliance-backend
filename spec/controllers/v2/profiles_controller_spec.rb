@@ -40,36 +40,10 @@ describe V2::ProfilesController do
   end
 
   describe 'GET show' do
-    let(:profile) { FactoryBot.create(:v2_profile) }
-    let(:security_guide) { profile.security_guide }
+    let(:item) { FactoryBot.create(:v2_profile) }
+    let(:parent) { item.security_guide }
+    let(:extra_params) { { security_guide_id: parent.id, id: item.id } }
 
-    context 'Authorized' do
-      let(:rbac_allowed?) { true }
-
-      it 'returns profile by id' do
-        item = hash_including('data' => {
-                                'id' => profile.id,
-                                'type' => 'profile',
-                                **attributes.each_with_object({}) do |(key, value), obj|
-                                  obj[key.to_s] = profile.send(value)
-                                end
-                              })
-
-        get :show, params: { security_guide_id: security_guide.id, id: profile.id, parents: %i[security_guide] }
-
-        expect(response.parsed_body).to match(item)
-      end
-
-      context 'under incorrect parent security_guide' do
-        let(:item) { FactoryBot.create(:v2_profile) }
-        let(:security_guide) { FactoryBot.create(:v2_security_guide) }
-
-        it 'returns not_found' do
-          get :show, params: { security_guide_id: security_guide.id, id: profile.id, parents: %i[security_guide] }
-
-          expect(response).to have_http_status :not_found
-        end
-      end
-    end
+    it_behaves_like 'resource', :security_guide
   end
 end
