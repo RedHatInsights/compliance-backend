@@ -193,8 +193,7 @@ GEM
     hashdiff (1.0.1)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
-    insights-rbac-api-client (1.0.1)
-      json (~> 2.1, >= 2.1.0)
+    insights-rbac-api-client (2.0.0)
       typhoeus (~> 1.0, >= 1.0.1)
     io-console (0.6.0)
     irb (1.7.4)
@@ -494,7 +493,7 @@ DEPENDENCIES
   graphql
   graphql-batch
   graphql-fragment_cache
-  insights-rbac-api-client (~> 1.0.1)
+  insights-rbac-api-client (~> 2.0.0)
   irb (>= 1.2)
   jsonapi-serializer
   listen (>= 3.0.5)

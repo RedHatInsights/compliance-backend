@@ -37,7 +37,7 @@ class RbacTest < ActiveSupport::TestCase
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ac
                   79e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ].to_json,
+                ],
                 operation: 'in'
               )
             )
@@ -51,7 +51,7 @@ class RbacTest < ActiveSupport::TestCase
                 key: 'group.id',
                 value: [
                   nil # ungrouped hosts
-                ].to_json,
+                ],
                 operation: 'in'
               )
             )
@@ -66,7 +66,7 @@ class RbacTest < ActiveSupport::TestCase
                 value: %w[
                   77e3dc30-cec3-4b49-be2d-37482c74a9ac
                   77e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ].to_json,
+                ],
                 operation: 'in'
               )
             )
@@ -78,7 +78,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: '80e3dc30-cec3-4b49-be2d-37482c74a9ad'.to_json,
+                value: '80e3dc30-cec3-4b49-be2d-37482c74a9ad',
                 operation: 'equal' # 'equal' is not a supported operation
               )
             )
@@ -90,7 +90,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'foo.id', # entry with unverified key is ignored
-                value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'].to_json,
+                value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'],
                 operation: 'in'
               )
             )
@@ -120,7 +120,7 @@ class RbacTest < ActiveSupport::TestCase
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ac
                   78e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ].to_json,
+                ],
                 operation: 'in'
               )
             )
@@ -141,7 +141,7 @@ class RbacTest < ActiveSupport::TestCase
                 key: 'group.id',
                 value: %w[
                   78e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ].to_json,
+                ],
                 operation: 'in'
               )
             )
@@ -163,7 +163,7 @@ class RbacTest < ActiveSupport::TestCase
                 value: %w[
                   77e3dc30-cec3-4b49-be2d-37482c74a9ac
                   77e3dc30-cec3-4b49-be2d-37482c74a9ad
-                ].to_json,
+                ],
                 operation: 'in'
               )
             )
@@ -175,7 +175,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'foo.id', # entry with unverified key is ignored
-                value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'].to_json,
+                value: ['77e3dc30-cec3-4b49-be2d-37482c74a9ac'],
                 operation: 'in'
               )
             )
@@ -194,7 +194,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: nil.to_json,
+                value: nil,
                 operation: 'in'
               )
             )
@@ -206,7 +206,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: nil.to_json, # nil
+                value: nil, # nil
                 operation: 'equal'
               )
             )
@@ -218,7 +218,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: nil.to_json, # nil
+                value: nil, # nil
                 operation: 'in'
               )
             )
@@ -230,7 +230,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: [].to_json, # []
+                value: [], # []
                 operation: 'in'
               )
             )
@@ -242,7 +242,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: [nil].to_json,
+                value: [nil],
                 operation: 'equal' # equal
               )
             )
@@ -254,7 +254,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'groups.id', # groups.id
-                value: 'not supported'.to_json,
+                value: 'not supported',
                 operation: 'in'
               )
             )
@@ -266,7 +266,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'groups.id', # groups.id
-                value: 'some-id'.to_json,
+                value: 'some-id',
                 operation: 'equal' # equal
               )
             )
@@ -277,25 +277,6 @@ class RbacTest < ActiveSupport::TestCase
       assert_equal [], Rbac.load_inventory_groups(permissions)
     end
 
-    should 'not crash when invalid JSON value is passed as a resource definition' do
-      permissions = [
-        RBACApiClient::Access.new(
-          permission: Rbac::INVENTORY_HOSTS_READ,
-          resource_definitions: [
-            RBACApiClient::ResourceDefinition.new(
-              attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
-                key: 'group.id',
-                value: '[nil, "80e3dc30-cec3-4b49-be2d-37482c74a9ad"]',
-                operation: 'in'
-              )
-            )
-          ]
-        )
-      ]
-
-      assert_equal [[], '80e3dc30-cec3-4b49-be2d-37482c74a9ad'], Rbac.load_inventory_groups(permissions)
-    end
-
     should 'list ungrouped entries with groups' do
       permissions = [
         RBACApiClient::Access.new(
@@ -304,7 +285,7 @@ class RbacTest < ActiveSupport::TestCase
             RBACApiClient::ResourceDefinition.new(
               attribute_filter: RBACApiClient::ResourceDefinitionFilter.new(
                 key: 'group.id',
-                value: [nil, '80e3dc30-cec3-4b49-be2d-37482c74a9ad'].to_json,
+                value: [nil, '80e3dc30-cec3-4b49-be2d-37482c74a9ad'],
                 operation: 'in'
               )
             )
