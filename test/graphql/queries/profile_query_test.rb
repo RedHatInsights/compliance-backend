@@ -358,7 +358,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
   should 'query grouped hosts under a profile' do
     hosts = FactoryBot.create_list(:host, 4, :with_groups, group_count: 1, org_id: @profile.account.org_id)
     @profile.policy.update(hosts: hosts)
-    Host.all.each do |host|
+    Host.find_each do |host|
       tr = FactoryBot.create(:test_result, host: host, profile: @profile)
       @profile.rules.each do |rule|
         FactoryBot.create(:rule_result, host: host, test_result: tr, rule: rule, result: 'fail')

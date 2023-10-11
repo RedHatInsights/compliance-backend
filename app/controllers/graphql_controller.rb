@@ -2,7 +2,7 @@
 
 # Entrypoint for all GraphQL API queries
 class GraphqlController < ApplicationController
-  QUERY_RE = /\s*((query|mutation) ([a-zA-Z0-9]{1,32}))[ (]/m.freeze
+  QUERY_RE = /\s*((query|mutation) ([a-zA-Z0-9]{1,32}))[ (]/m
 
   def query
     result = Schema.execute(

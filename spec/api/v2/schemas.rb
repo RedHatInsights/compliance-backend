@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Dir['./spec/api/v2/schemas/*.rb'].sort.each { |file| require file }
+Dir['./spec/api/v2/schemas/*.rb'].each { |file| require file }
 
 module Api
   module V2

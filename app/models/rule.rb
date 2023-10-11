@@ -77,7 +77,9 @@ class Rule < ApplicationRecord
   end
 
   def canonical?
+    # rubocop:disable Style/ArrayIntersect
     (profiles & Profile.canonical).any?
+    # rubocop:enable Style/ArrayIntersect
   end
 
   # rubocop:disable Metrics/ParameterLists
