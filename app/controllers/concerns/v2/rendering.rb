@@ -7,7 +7,7 @@ module V2
 
     included do
       def render_json(model, **args)
-        render json: index? ? serialize_collection(model, **args) : serialize_single(model, **args)
+        render json: index? ? serialize_collection(model, **args) : serialize_individual(model, **args)
       end
 
       def render_error(messages, status: :not_acceptable, **opts)
@@ -27,7 +27,7 @@ module V2
 
       private
 
-      def serialize_single(model, **args)
+      def serialize_individual(model, **args)
         Panko::Response.create do |r|
           {
             data: r.serializer(model, serializer),

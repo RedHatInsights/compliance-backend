@@ -38,6 +38,6 @@ describe V2::SecurityGuidesController do
     let(:item) { FactoryBot.create(:v2_security_guide) }
     let(:extra_params) { { id: item.id } }
 
-    it_behaves_like 'resource'
+    it_behaves_like 'individual'
   end
 end
