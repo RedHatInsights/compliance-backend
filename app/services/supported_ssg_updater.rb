@@ -8,7 +8,7 @@ class SupportedSsgUpdater
 
   def self.run!
     SsgConfigDownloader.update_ssg_ds # Populate the datastream file if nonexistent
-    supported_ssg = YAML.safe_load(File.read(SsgConfigDownloader::DS_FILE_PATH))
+    supported_ssg = YAML.safe_load_file(SsgConfigDownloader::DS_FILE_PATH)
 
     remove_keys(supported_ssg)
 

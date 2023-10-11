@@ -4,7 +4,7 @@
 module TagFiltering
   extend ActiveSupport::Concern
 
-  TAG_RIGHT_RE = %r{^([^\/]+)\/([^\=]+)(\=(.+))?}.freeze
+  TAG_RIGHT_RE = %r{^([^\/]+)\/([^\=]+)(\=(.+))?}
 
   included do
     def parse_tags(tags = [])

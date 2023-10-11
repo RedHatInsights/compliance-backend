@@ -7,7 +7,7 @@ module ShortRefId
       \Axccdf_org\.ssgproject\.content_profile_|
       \Axccdf_org\.ssgproject\.content_rule_
     ).*\z
-  /x.freeze
+  /x
 
   def short_ref_id
     ref_id.downcase[SHORT_REF_ID_RE] || ref_id
