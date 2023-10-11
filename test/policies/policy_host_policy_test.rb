@@ -30,7 +30,7 @@ class PolicyHostPolicyTest < ActiveSupport::TestCase
         attribute_filter: {
           key: 'group.id',
           operation: 'in',
-          value: [own_host_in_group.groups.first['id'], nil].to_json
+          value: [own_host_in_group.groups.first['id'], nil]
         }
       }]
     )

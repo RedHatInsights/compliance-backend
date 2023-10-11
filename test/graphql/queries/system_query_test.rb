@@ -73,7 +73,7 @@ class SystemQueryTest < ActiveSupport::TestCase
                             attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
-                              value: [1234].to_json
+                              value: [1234]
                             }
                           }])
 
@@ -100,7 +100,7 @@ class SystemQueryTest < ActiveSupport::TestCase
                             attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
-                              value: [4321].to_json
+                              value: [4321]
                             }
                           }])
 
@@ -127,7 +127,7 @@ class SystemQueryTest < ActiveSupport::TestCase
                             attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
-                              value: [nil].to_json
+                              value: [nil]
                             }
                           }])
 
@@ -154,7 +154,7 @@ class SystemQueryTest < ActiveSupport::TestCase
                             attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
-                              value: [1234].to_json
+                              value: [1234]
                             }
                           }])
 
@@ -185,7 +185,7 @@ class SystemQueryTest < ActiveSupport::TestCase
                             attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
-                              value: [1234, 2345].to_json
+                              value: [1234, 2345]
                             }
                           }])
 

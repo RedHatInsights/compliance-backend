@@ -370,7 +370,7 @@ class ProfileQueryTest < ActiveSupport::TestCase
                             attribute_filter: {
                               key: 'group.id',
                               operation: 'in',
-                              value: allowed_groups.to_json
+                              value: allowed_groups
                             }
                           }])
 

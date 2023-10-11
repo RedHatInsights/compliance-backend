@@ -81,7 +81,7 @@ gem 'cloudwatchlogger'
 gem 'openscap_parser', '~> 1.6.0'
 
 # RBAC service API
-gem 'insights-rbac-api-client', '~> 1.0.1'
+gem 'insights-rbac-api-client', '~> 2.0.0'
 
 # REST API parameter type checking
 gem 'stronger_parameters'
