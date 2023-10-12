@@ -99,6 +99,25 @@ module V1
         end)
       end
 
+      should 'systems can be sorted by group name' do
+        FactoryBot.create(:host, groups: [{ name: 'zzz', id: Faker::Internet.uuid }])
+        FactoryBot.create(:host, groups: [{ name: 'aaa', id: Faker::Internet.uuid }])
+
+        policy = FactoryBot.create(:policy, hosts: Host.all)
+
+        get v1_systems_url, params: {
+          sort_by: %w[groups],
+          policy_id: policy.id
+        }
+
+        assert_response :success
+        result = response.parsed_body
+
+        assert_equal([nil, nil, 'aaa', 'zzz'], result['data'].map do |profile|
+          profile['attributes']['groups'].try(:[], 0).try(:[], 'name')
+        end)
+      end
+
       should 'sort systems without SSG version as nil' do
         host_1, host_2 = FactoryBot.create_list(:host, 2, org_id: User.current.account.org_id)
         profile_1 = FactoryBot.create(:profile, name: 'profile 1')

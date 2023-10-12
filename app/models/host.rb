@@ -41,6 +41,21 @@ class Host < ApplicationRecord
 
   UNGROUPED_HOSTS = arel_table[:groups].eq(AN::Quoted.new('[]'))
 
+  FIRST_GROUP_NAME = AN::NamedFunction.new(
+    'COALESCE', [
+      AN::NamedFunction.new(
+        'CAST',
+        [
+          AN::InfixOperation.new(
+            '->>',
+            AN::InfixOperation.new('->', arel_table[:groups], 0),
+            AN::Quoted.new('name')
+          ).as('TEXT')
+        ]
+      ), AN::Quoted.new('')
+    ]
+  )
+
   sortable_by :name, :display_name
   sortable_by :score, AN::NamedFunction.new(
     'COALESCE',
@@ -69,6 +84,8 @@ class Host < ApplicationRecord
     'COALESCE',
     [AN::SqlLiteral.new('sq.rules_failed'), 0]
   ), scope: :with_failed_rules_count
+
+  sortable_by :groups, FIRST_GROUP_NAME
 
   self.table_name = 'inventory.hosts'
   self.primary_key = 'id'
