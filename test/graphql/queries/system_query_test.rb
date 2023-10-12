@@ -1099,6 +1099,50 @@ class SystemQueryTest < ActiveSupport::TestCase
                    returned_profiles.dig(0, 'ssgVersion')
     end
 
+    should 'sort systems by group name' do
+      TestResult.delete_all
+      RuleResult.delete_all
+      WHost.delete_all
+
+      FactoryBot.create(
+        :host,
+        groups: [{ name: 'zzz', id: Faker::Internet.uuid }],
+        org_id: @user.account.org_id
+      )
+      FactoryBot.create(
+        :host,
+        groups: [{ name: 'aaa', id: Faker::Internet.uuid }],
+        org_id: @user.account.org_id
+      )
+      FactoryBot.create(:host, org_id: @user.account.org_id)
+
+      FactoryBot.create(:policy, hosts: Host.all, account: @user.account)
+
+      query = <<-GRAPHQL
+      query getSystems($sortBy: [String!]) {
+          systems(limit: 50, offset: 1, sortBy: $sortBy) {
+              edges {
+                  node {
+                      id
+                      name
+                      groups
+                  }
+              }
+          }
+      }
+      GRAPHQL
+
+      result = Schema.execute(
+        query,
+        variables: {
+          sortBy: ['groups']
+        },
+        context: { current_user: @user }
+      )['data']['systems']['edges'].map { |n| n['node']['groups'][0].try(:[], 'name') }
+
+      assert_equal result, [nil, 'aaa', 'zzz']
+    end
+
     should 'properly sort by compliance score' do
       TestResult.delete_all
       RuleResult.delete_all
