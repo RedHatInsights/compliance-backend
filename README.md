@@ -44,7 +44,7 @@ Before running the project, these services must be running and acessible:
 * [Insights PUPTOO](https://github.com/RedHatInsights/insights-puptoo)
   — Platform Upload Processor
 * [Insights Host Inventory](https://github.com/RedHatInsights/insights-host-inventory) (MQ service and web service)
-* [RBAC](https://github.com/RedHatInsights/insights-rbac) (Role-based access control)
+* [Insights RBAC](https://github.com/RedHatInsights/insights-rbac) (Role-based access control)
 
 
 ## Getting started
@@ -62,7 +62,7 @@ Let's examine how to run the project:
 #### Setup
 
 1. Log in into the ephemeral cluster
-2. Set up bonfire configuration
+2. Set up bonfire configuration (optional)
 
     To use local deployement confguration update the `~/.config/bonfire/config.yaml` as follows:
     ```
@@ -77,144 +77,30 @@ Let's examine how to run the project:
             REDIS_SSL: 'false'
     ```
 
-#### Deploy
-
-Deployment with gateway and routes
+#### Deployment
 
 ```shell
-bonfire deploy --no-remove-resources=all compliance gateway insights-ephemeral
+bonfire deploy compliance --optional-deps-method hybrid --frontends true --source=appsre --ref-env insights-stage --timeout 900 --no-remove-resources=all
 ```
 
-This will set up the environment with all service dependencies, 3scale gateway,
+This will set up the environment with all service dependencies, 3scale gateway, frontend
 and platform [mocks](https://github.com/RedHatInsights/mocks/) (authentication & authorization).
 
-Note, that the deployment only uses local `clowdapp.yaml`.
-A custom image should be pushed to an accessible location for the cluster to pull from.
-By default bonfire will use image tag of current short commit from the local repository.
-To override the behaviour either set `IMAGE_TAG` as parameter (in the bonfire config)
-or the `--set-image-tag` option. For example:
-
-```
---set-image-tag 'quay.io/cloudservices/compliance-backend=latest'
+A custom (local) clowdapp can be used for deployment if the step 2 of the setup has been not skipped. 
+A custom image can be used by overwriting parameters of the clowder template. Note that the container
+image needs to be pushed to an accessible location.
+```shell
+bonfire deploy compliance ... -p compliance/IMAGE=quay.io/me/myimage -p compliance/IMAGE_TAG=mytag
 ```
 
 #### Access
 
-The URL to the platform including frontend and APIs can be retrieved by:
-```
-oc get route front-end-aggregator -o jsonpath='https://{.spec.host}{"\n"}'
-```
-
-Users are being kept within the mocks service and can be managed via:
-```
-oc get route mocks -o jsonpath='https://{.spec.host}/_manager/ui{"\n"}'
-```
-
-### Option 2: Development setup
-
-compliance-backend is a Ruby on Rails application. It should run using
-at least three different processes:
-
-#### Prerequisites
-
-Prerequisites:
-
-* URL to Kafka
-  - environment variable: `SETTINGS__KAFKA__BROKERS` (`SETTINGS__KAFKA__BROKERS=localhost:29092`)
-* URL to PostgreSQL database
-  - environment variables: `POSTGRESQL_DATABASE`, `POSTGRESQL_SERVICE_HOST`, `POSTGRESQL_USER`, `POSTGRESQL_PASSWORD`, `POSTGRESQL_ADMIN_PASSWORD`, `DATABASE_SERVICE_NAME`
-* URL to Redis
-  - `redis_url` and `redis_cache_url` configured in [settings](config/settings/development.yml)
-  - or, environment variables `SETTINGS__REDIS_URL` and `SETTINGS__REDIS_CACHE_URL`
-* URL to [Insights Inventory](https://github.com/RedHatInsights/insights-host-inventory)
-  - or, `host_inventory_url` configured in [settings](config/settings/development.yml)
-* Basic authethication credentials set by
-  [option `platform_basic_auth`](config/settings/development.yml)
-  - or, environment variables `SETTINGS__PLATFORM_BASIC_AUTH_USERNAME` and `SETTINGS__PLATFORM_BASIC_AUTH_PASSWORD`
-* Generated minio credentials (for Ingress)
-  - environment variables: `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`
-
-Note, that the environment variables can be written to `.env` file (see [.env.example](.env.example)).
-They are being read by dotenv.
-
-First, let's install all dependencies and initialize the database.
-
+The frontend route and credentials can be retrieved by calling the following command:
 ```shell
-bundle install
-bundle exec rake db:setup # invoke only on first setup!
-bundle exec rake db:test:prepare # for test DB setup
+bonfire namespace describe <ephemeral-######>
 ```
 
-Once you have database initialized, you might want to import SSG policies:
-
-```shell
-bundle exec rake ssg:import_rhel_supported
-```
-
-#### Project Cyndi
-
-The compliance project integrates with project cyndi. For local development, a database view is created, built from the inventory database which runs alongside the compliance database. The Cyndi hosts view exists within an inventory schema within the compliance database.
-
-```shell
-bundle exec rails db -p < db/cyndi_setup_devel.sql # syndicated (cyndi) hosts from inventory
-RAILS_ENV=test bundle exec rails db -p < db/cyndi_setup_test.sql # cyndi for test DB
-```
-
-You can verify everything worked as expected within psql for compliance_dev and
-compliance_test databases:
-
-```
-compliance_dev=# \dv inventory.
-          List of relations
-  Schema   | Name  | Type |  Owner
------------+-------+------+----------
- inventory | hosts | view | insights
-(1 row)
-```
-
-#### Kafka Consumers (XCCDF report consumers)
-
-At this point you can launch as many ['racecar'](https://github.com/zendesk/racecar)
-processes as you want. These processes will become part of a *consumer group*
-in Kafka, so by default the system is highly available.
-
-To run a Reports consumer:
-
-```shell
-bundle exec racecar InventoryEventsConsumer
-```
-
-#### Web Server
-
-You may simply run:
-
-```shell
-bundle exec rails server
-```
-
-Notice there's no CORS protection by default. If you want your requests to be
-CORS-protected, check out `config/initializers/cors.rb` and change it to only
-allow a certain domain.
-
-After this, make sure you can redirect your requests to your the backend's port 3000
-using [insights-proxy](https://github.com/RedHatInsights/insights-proxy).
-You may run the proxy using the SPANDX config provided here:
-
-```ruby
-SPANDX_CONFIG=$(pwd)/compliance-backend.js ../insights-proxy/scripts/run.sh
-```
-
-#### Job Runner
-
-Asynchonous jobs are run by sidekiq with messages being exchanged through Redis.
-
-To start the runner execute:
-
-```shell
-bundle exec sidekiq
-```
-
-### Option 3: Docker/Podman Compose Development setup
+### Option 2: Docker/Podman Compose Development setup
 
 The first step is to copy over the .env file from .env.example and modify the
 values as needed:
@@ -223,11 +109,9 @@ values as needed:
 cp .env.example .env
 ```
 
-You may also need to set up basic auth in
-[settings](config/settings/development.yml), option `platform_basic_auth`
-(see Development notes).
-
-Either podman-compose or docker-compose should work. podman-compose does not
+Either podman-compose or docker-compose should work. Note that *1.0.6* and newer
+versions of podman-compose [handle multi-level dependencies poorly](https://github.com/containers/podman-compose/issues/683)
+which might cause problems with startup. Furthermore podman-compose does not
 support exec, so podman commands must be run manually against the running
 container, as demonstrated:
 
@@ -249,6 +133,11 @@ Access the rails console:
 
 ```shell
 docker-compose exec rails bundle exec rails console
+```
+
+Attach the container to the current terminal:
+```shell
+docker attach compliance-backend_rails_1
 ```
 
 Debug with pry-remote:
@@ -301,20 +190,6 @@ LOCAL_BUILD=true RH_REGISTRY_USER=guybrush RH_REGISTRY_TOKEN=monkey QUAY_USER=le
 
 ## Development notes
 
-### Running Sonarqube
-
-Follow instructions to set up self-signed certs, as described [here](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/).
-
-In order to get coverage to properly report, you must manually edit the
-coverage/.resultset.json and update the paths to `/usr/src/...` from whatever
-local paths are listed there.
-
-Use the docker image:
-
-```
-podman run -itv $PWD:/usr/src -v $PWD/cacerts:/opt/java/openjdk/lib/security/cacerts --rm --name sonar-scanner-cli -e SONAR_HOST_URL='<sonarqube host>' -e SONAR_LOGIN=<token> sonarsource/sonar-scanner-cli
-```
-
 ### Seeding data
 
 To seed accounts, policies, results and hosts use `dev:db:seed` rake task.
@@ -333,34 +208,19 @@ To create hosts in the inventory the `kafka_producer.py` script can be used from
 docker-compose run -e NUM_HOSTS=1000 -e INVENTORY_HOST_ACCOUNT=00001 inventory-web bash -c 'pipenv install --system --dev; python3 ./utils/kafka_producer.py;'
 ```
 
-### Basic Auth Platform Credentials
-
-Basic authentication ([`platform_basic_auth` option](config/settings/development.yml))
-might be needed for platform services such as inventory and rbac.
-Anything not deployed locally will require basic auth instead of using
-an identity header (i.e. rbac).
-
 ### Tagging
 
 If there is a `tags` column defined in any model, it always should be a `jsonb` column and follow the structured representation of tags described in Insights, i.e. an array of hashes. If this convention is not kept, the controllers might break when a user tries to pass the `tags` attribute to a GET request.
 
-### Non-Clowder Development with docker-compose
-
-Use the alternate docker-compose_nonclowder.yml with:
-
-```sh
-docker-compose -f docker-compose_nonclowder.yml ...
-```
-
 ## API documentation
 
-The API documentation can be found at `Settings.path_prefix/Settings.app_name`. To generate the docs, run `rake rswag:specs:swaggerize`. You may also get the OpenAPI definition at `Settings.path_prefix/Settings.app_name/v1/openapi.json`
-The OpenAPI version 3.0 description can be found at `Settings.path_prefix/Settings.app_name/openapi`. You can build this API by converting the JSON representation (OpenAPI 2.x) using [swagger2openapi](https://github.com/Mermade/oas-kit/blob/master/packages/swagger2openapi).
-
-## Database migration notes
-
-Database migrations need to be run prior to intialization of backend containers,
-to proprely initialize model attributes on all instances.
+The API documentation can be found at `/api/compliance` and you may access the raw OpenAPI
+definition [here](https://github.com/RedHatInsights/compliance-backend/blob/master/swagger/v1/openapi.json).
+Docs can be updated by running:
+```shell
+rake rswag:specs:swaggerize
+```
+You can build this API by converting the JSON representation (OpenAPI 2.x) using [swagger2openapi](https://github.com/Mermade/oas-kit/blob/master/packages/swagger2openapi).
 
 ## Contributing
 
