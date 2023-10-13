@@ -84,7 +84,7 @@ module V2
         # by default is the primary key of the table, however, in certain cases using a different
         # indexed column might produce faster results without even accessing the table.
         # Pagination is disabled when counting collection so that all returned entities are counted.
-        resolve_collection.except(:select, :limit, :offset).select(resolve_collection.base_class.count_by).count
+        resolve_collection.except(:select, :limit, :offset).select(resource.base_class.count_by).count
       end
 
       def base_link_url
