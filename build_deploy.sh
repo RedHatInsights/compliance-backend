@@ -4,7 +4,7 @@ set -exv
 
 export CICD_BOOTSTRAP_REPO_BRANCH='refactor-variable-names'
 export CICD_BOOTSTRAP_REPO_ORG='Victoremepunto'
-CICD_TOOLS_URL="https://raw.githubusercontent.com/${CICD_TOOLS_REPO_ORG}/cicd-tools/${CICD_TOOLS_REPO_BRANCH}/src/bootstrap.sh"
+CICD_TOOLS_URL="https://raw.githubusercontent.com/${CICD_BOOTSTRAP_REPO_ORG}/cicd-tools/${CICD_BOOTSTRAP_REPO_BRANCH}/src/bootstrap.sh"
 # shellcheck source=/dev/null
 source <(curl -sSL "$CICD_TOOLS_URL") image_builder
 
