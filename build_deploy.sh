@@ -24,4 +24,4 @@ fi
 export ADDITIONAL_TAGS
 
 
-cicd_tools::image_builder::build_and_push
+cicd::image_builder::build_and_push
