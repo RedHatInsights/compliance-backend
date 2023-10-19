@@ -1,20 +1,19 @@
 #!/bin/bash
 
-
-CICD_TOOLS_REPO_BRANCH='add-build-helper-tools'
-CICD_TOOLS_REPO_ORG='Victoremepunto'
-CICD_TOOLS_URL="https://raw.githubusercontent.com/${CICD_TOOLS_REPO_ORG}/cicd-tools/${CICD_TOOLS_REPO_BRANCH}/src/bootstrap.sh"
+CICD_BOOTSTRAP_REPO_BRANCH='refactor-variable-names'
+CICD_BOOTSTRAP_REPO_ORG='Victoremepunto'
+CICD_TOOLS_URL="https://raw.githubusercontent.com/${CICD_BOOTSTRAP_REPO_ORG}/cicd-tools/${CICD_BOOTSTRAP_REPO_BRANCH}/src/bootstrap.sh"
 # shellcheck source=/dev/null
 source <(curl -sSL "$CICD_TOOLS_URL") image_builder
 
-if ! cicd_tools::image_builder::is_change_request_context; then
+if ! cicd::image_builder::is_change_request_context; then
   echo "Not running from a context of a PR"
   exit 1
 fi
 
 APP_ROOT=${APP_ROOT:-.}
 cd "$APP_ROOT"
-export IMAGE_NAME="quay.io/cloudservices/compliance-backend"
+export CICD_IMAGE_BUILDER_IMAGE_NAME="quay.io/cloudservices/compliance-backend"
 
 RANDOM_ID=$(md5sum -z <<< "$RANDOM" | cut -c -6)
 DB_CONTAINER_NAME="compliance-db-${RANDOM_ID}"
@@ -31,27 +30,29 @@ DATABASE_NAME="compliance-test"
 
 teardown() {
 
-  for id in "$DB_CONTAINER_ID" "$TEST_CONTAINER_ID" "$COMPLIANCE_POD_ID"; do
-    cicd_tools::container::cmd rm -f "$id" || echo "couldn't delete container ID: $id"
+  for id in "$DB_CONTAINER_ID" "$TEST_CONTAINER_ID"; do
+    cicd::container::cmd rm -f "$id" || echo "couldn't delete container ID: $id"
   done
+
+  cicd::container::cmd pod rm -f "$COMPLIANCE_POD_ID" || echo "couldn't delete pod ID: $COMPLIANCE_POD_ID"
 }
 
 trap "teardown" EXIT SIGINT SIGTERM
 
-if ! COMPLIANCE_POD_ID=$(cicd_tools::container::cmd pod create --name "$POD_NAME"); then
+if ! COMPLIANCE_POD_ID=$(cicd::container::cmd pod create --name "$POD_NAME"); then
     exit 1
 fi
 
 # Make sure the build stage image is available
-IMAGE_TAG=$(cicd_tools::image_builder::get_image_tag)
-SERVICE_IMAGE=$(cicd_tools::container::cmd images --filter "label=BUILD_STAGE_OF=${IMAGE_TAG}" -q | head -1)
+IMAGE_TAG=$(cicd::image_builder::get_image_tag)
+SERVICE_IMAGE=$(cicd::container::cmd images --filter "label=BUILD_STAGE_OF=${IMAGE_TAG}" -q | head -1)
 
 if [[ -z "${SERVICE_IMAGE}" ]]; then
   echo "First stage image is not available"
   exit 1
 fi
 
-if ! DB_CONTAINER_ID=$(cicd_tools::container::cmd run -d \
+if ! DB_CONTAINER_ID=$(cicd::container::cmd run -d \
   --pod "${COMPLIANCE_POD_ID}" \
   --rm \
   --name "${DB_CONTAINER_NAME}" \
@@ -65,7 +66,7 @@ if ! DB_CONTAINER_ID=$(cicd_tools::container::cmd run -d \
 fi
 
 # Do tests
-if ! TEST_CONTAINER_ID=$(cicd_tools::container::cmd run -d \
+if ! TEST_CONTAINER_ID=$(cicd::container::cmd run -d \
   --pod "${COMPLIANCE_POD_ID}" \
   --rm \
   -e HOSTNAME="$TEST_CONTAINER_NAME" \
@@ -100,8 +101,8 @@ echo '===================================='
 echo '=== Installing Gem Dependencies ===='
 echo '===================================='
 set +e
-cicd_tools::container::cmd cp ./. "$TEST_CONTAINER_ID":/opt/app-root/src
-cicd_tools::container::cmd exec "$TEST_CONTAINER_ID" /bin/bash -c '
+cicd::container::cmd cp ./. "$TEST_CONTAINER_ID":/opt/app-root/src
+cicd::container::cmd exec "$TEST_CONTAINER_ID" /bin/bash -c '
   bundle config set --local without development &&
   bundle config set --local with test &&
   bundle config set --local deployment "true" &&
@@ -121,7 +122,7 @@ echo '===================================='
 echo '===     Setting Up Database     ===='
 echo '===================================='
 set +e
-cicd_tools::container::cmd exec "$TEST_CONTAINER_ID" /bin/bash -c 'ACG_CONFIG=/opt/app-root/src/test.json bundle exec rake db:test:prepare'
+cicd::container::cmd exec "$TEST_CONTAINER_ID" /bin/bash -c 'ACG_CONFIG=/opt/app-root/src/test.json bundle exec rake db:test:prepare'
 TEST_RESULT=$?
 set -e
 if [[ $TEST_RESULT -ne 0 ]]; then
@@ -136,10 +137,10 @@ echo '===================================='
 echo '===       Setting Up Cyndi      ===='
 echo '===================================='
 set +e
-cicd_tools::container::cmd cp "$TEST_CONTAINER_ID":/opt/app-root/src/db/cyndi_setup_test.sql "$WORKSPACE/"
-cicd_tools::container::cmd cp "$WORKSPACE/cyndi_setup_test.sql" "$DB_CONTAINER_ID":/var/lib/pgsql/
+cicd::container::cmd cp "$TEST_CONTAINER_ID":/opt/app-root/src/db/cyndi_setup_test.sql "$WORKSPACE/"
+cicd::container::cmd cp "$WORKSPACE/cyndi_setup_test.sql" "$DB_CONTAINER_ID":/var/lib/pgsql/
 rm "$WORKSPACE/cyndi_setup_test.sql"
-cicd_tools::container::cmd exec "$DB_CONTAINER_ID" /bin/bash -c 'psql -d $POSTGRESQL_DATABASE < cyndi_setup_test.sql'
+cicd::container::cmd exec "$DB_CONTAINER_ID" /bin/bash -c 'psql -d $POSTGRESQL_DATABASE < cyndi_setup_test.sql'
 TEST_RESULT=$?
 set -e
 if [[ $TEST_RESULT -ne 0 ]]; then
@@ -154,11 +155,11 @@ echo '===================================='
 echo '===     Running Unit Tests      ===='
 echo '===================================='
 set +e
-cicd_tools::container::cmd exec "$TEST_CONTAINER_ID" /bin/bash -c 'ACG_CONFIG=/opt/app-root/src/test.json bundle exec rake test:validate'
+cicd::container::cmd exec "$TEST_CONTAINER_ID" /bin/bash -c 'ACG_CONFIG=/opt/app-root/src/test.json bundle exec rake test:validate'
 TEST_RESULT=$?
 set -e
 # Copy test reports
-cicd_tools::container::cmd cp "$TEST_CONTAINER_ID":/opt/app-root/src/test/reports/. "$WORKSPACE"/artifacts
+cicd::container::cmd cp "$TEST_CONTAINER_ID":/opt/app-root/src/test/reports/. "$WORKSPACE"/artifacts
 # Prefix name of reports with 'junit-' so jenkins analysis picks them up
 cd "$WORKSPACE/artifacts"
 for FILENAME in TEST-*.xml; do mv "$FILENAME" "junit-$FILENAME"; done
