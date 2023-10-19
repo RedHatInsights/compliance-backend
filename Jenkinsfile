@@ -37,11 +37,7 @@ pipeline {
         stage('Build the PR commit image') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh '''
-                    curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
-                    source ./.cicd_bootstrap.sh
-                    ./build_deploy.sh
-                    '''
+                    sh 'bash -x build_deploy.sh'
                 }
             }
         }
