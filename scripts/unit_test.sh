@@ -83,7 +83,7 @@ if ! TEST_CONTAINER_ID=$(cicd::container::cmd run -d \
   -e ghprbActualCommit="${ghprbActualCommit:?}" \
   -e GIT_COMMIT="$GIT_COMMIT" \
   -e BUILD_NUMBER="$BUILD_NUMBER" \
-  -e ghprbPullId="$ghprbPullId" \
+  -e ghprbPullId="${ghprbPullId:?}" \
   -e BUILD_URL="$BUILD_URL" \
   "${SERVICE_IMAGE}" \
   /bin/bash -c 'sleep infinity'); then
@@ -140,6 +140,8 @@ set +e
 cicd::container::cmd cp "$TEST_CONTAINER_ID":/opt/app-root/src/db/cyndi_setup_test.sql "$WORKSPACE/"
 cicd::container::cmd cp "$WORKSPACE/cyndi_setup_test.sql" "$DB_CONTAINER_ID":/var/lib/pgsql/
 rm "$WORKSPACE/cyndi_setup_test.sql"
+# We want to expand $POSTGRESQL_DATABASE within the container's session
+# shellcheck disable=SC2016
 cicd::container::cmd exec "$DB_CONTAINER_ID" /bin/bash -c 'psql -d $POSTGRESQL_DATABASE < cyndi_setup_test.sql'
 TEST_RESULT=$?
 set -e
