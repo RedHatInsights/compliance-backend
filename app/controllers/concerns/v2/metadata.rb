@@ -70,6 +70,8 @@ module V2
       end
 
       def last_offset(total)
+        return 0 if total.zero?
+
         ((last_page(total) - 1) * pagination_limit) + pagination_offset
       end
 

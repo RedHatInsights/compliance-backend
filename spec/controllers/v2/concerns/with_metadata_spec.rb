@@ -19,13 +19,12 @@
 # ```
 #
 RSpec.shared_examples 'with metadata' do |*parents|
-  let(:meta_keys) { %w[total limit offset] }
   let(:item_count) { 10 }
 
   it 'contains total, limit, offset and relationships keys' do
     get :index, params: extra_params.merge(parents: parents)
 
-    expect(response.parsed_body['meta'].keys).to contain_exactly(*meta_keys)
+    expect(response.parsed_body['meta'].keys).to contain_exactly(*%w[total limit offset])
   end
 
   it 'has correct total in metadata' do
@@ -34,5 +33,69 @@ RSpec.shared_examples 'with metadata' do |*parents|
     get :index, params: extra_params.merge(parents: parents)
 
     expect(response.parsed_body['meta']['total']).to eq(item_count)
+  end
+
+  context 'offset is zero' do
+    it 'has no previous link' do
+      items
+
+      get :index, params: extra_params.merge(
+        limit: 2,
+        offset: 0,
+        parents: parents
+      )
+
+      expect(response.parsed_body['links'].keys).to contain_exactly(*%w[first last next])
+    end
+  end
+
+  context 'offset between zero and number of entities' do
+    it 'has all four links' do
+      items
+
+      get :index, params: extra_params.merge(
+        limit: 2,
+        offset: 2,
+        parents: parents
+      )
+
+      expect(response.parsed_body['links'].keys).to contain_exactly(*%w[first last next previous])
+    end
+  end
+
+  context 'offset equals the number of entities' do
+    it 'has no next link' do
+      items
+
+      get :index, params: extra_params.merge(
+        limit: 10,
+        offset: 9,
+        parents: parents
+      )
+
+      expect(response.parsed_body['links'].keys).to contain_exactly(*%w[first last previous])
+    end
+  end
+
+  context 'offset is above the number of entities' do
+    it 'has no next link' do
+      items
+
+      get :index, params: extra_params.merge(
+        limit: 2,
+        offset: 11,
+        parents: parents
+      )
+
+      expect(response.parsed_body['links'].keys).to contain_exactly(*%w[first last previous])
+    end
+  end
+
+  # When the list of results is empty, the last link's offset should equal 0.
+  it 'has correct last offset when returning not_found' do
+    get :index, params: extra_params.merge(parents: parents)
+
+    expect(response_body_data).to be_empty
+    expect(response.parsed_body['links']['last'][-1]).to eq('0')
   end
 end
