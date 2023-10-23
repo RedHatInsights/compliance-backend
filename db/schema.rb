@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_23_161508) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_24_113017) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -310,5 +310,31 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_23_161508) do
       rules.value_checks,
       rules.identifier
      FROM rules;
+  SQL
+  create_view "tailorings", sql_definition: <<-SQL
+      SELECT profiles.id,
+      profiles.policy_id,
+      profiles.parent_profile_id AS profile_id,
+      profiles.value_overrides,
+      profiles.created_at,
+      profiles.updated_at
+     FROM profiles
+    WHERE (profiles.parent_profile_id IS NOT NULL);
+  SQL
+  create_view "v2_policies", sql_definition: <<-SQL
+      SELECT policies.id,
+      policies.name AS title,
+      policies.description,
+      policies.compliance_threshold,
+      business_objectives.title AS business_objective,
+      COALESCE(sq.host_count, (0)::bigint) AS host_count,
+      policies.profile_id,
+      policies.account_id
+     FROM ((policies
+       LEFT JOIN business_objectives ON ((business_objectives.id = policies.business_objective_id)))
+       LEFT JOIN ( SELECT count(policy_hosts.host_id) AS host_count,
+              policy_hosts.policy_id
+             FROM policy_hosts
+            GROUP BY policy_hosts.policy_id) sq ON ((sq.policy_id = policies.id)));
   SQL
 end
