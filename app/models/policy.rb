@@ -42,6 +42,7 @@ class Policy < ApplicationRecord
   def fill_from(profile:)
     self.name ||= profile.name
     self.description ||= profile.description
+    self.profile_id ||= profile.id
 
     self
   end
