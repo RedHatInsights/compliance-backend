@@ -50,8 +50,9 @@ describe DeleteHost do
       test_result.destroy
       rule_result.destroy
 
-      FactoryBot.create_list(:host, 3, org_id: user.account.org_id) do |host|
-        test_result = FactoryBot.create(:test_result, profile: profile, host: host)
+      [13, 19, 29].each do |n|
+        host = FactoryBot.create(:host, org_id: user.account.org_id)
+        test_result = FactoryBot.create(:test_result, profile: profile, host: host, score: n)
         FactoryBot.create(:rule_result, rule: profile.rules.sample, test_result: test_result, host: host)
       end
 
@@ -59,6 +60,7 @@ describe DeleteHost do
       expect(profile.policy.test_result_host_count).to eql(3)
 
       old_score = profile.score
+
       DeleteHost.perform_async(message)
       DeleteHost.drain
 
