@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_01_184939) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_23_161508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -63,8 +63,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_01_184939) do
     t.integer "test_result_host_count", default: 0, null: false
     t.integer "compliant_host_count", default: 0, null: false
     t.integer "unsupported_host_count", default: 0, null: false
+    t.uuid "profile_id"
     t.index ["account_id"], name: "index_policies_on_account_id"
     t.index ["business_objective_id"], name: "index_policies_on_business_objective_id"
+    t.index ["profile_id"], name: "index_policies_on_profile_id"
   end
 
   create_table "policy_hosts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -243,6 +245,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_01_184939) do
 
   add_foreign_key "policies", "accounts"
   add_foreign_key "policies", "business_objectives"
+  add_foreign_key "policies", "profiles"
   add_foreign_key "policy_hosts", "policies"
   add_foreign_key "profiles", "policies"
   add_foreign_key "profiles", "profiles", column: "parent_profile_id"
