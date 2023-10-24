@@ -39,7 +39,7 @@ module V2
       def serialize_collection(model, **args)
         Panko::Response.new(
           data: Panko::ArraySerializer.new(model, each_serializer: serializer, context: serialization_context),
-          **metadata,
+          **metadata(model),
           **args
         )
       end

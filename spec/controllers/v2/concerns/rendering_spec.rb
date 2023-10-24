@@ -41,10 +41,16 @@ RSpec.shared_examples 'collection' do |*parents|
   end
 
   context 'under incorrect parent', if: parents.present? do
-    it 'returns not_found' do
-      get :index, params: extra_params.merge(parents: parents)
+    parents.each do |parent|
+      context "#{parent} is incorrect" do
+        it 'returns not_found' do
+          reflection = subject.send(:resource).reflect_on_association(parent)
 
-      expect(response_body_data).to be_empty
+          get :index, params: extra_params.merge(reflection.foreign_key => Faker::Internet.uuid, parents: parents)
+
+          expect(response).to have_http_status :not_found
+        end
+      end
     end
   end
 
