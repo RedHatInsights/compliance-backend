@@ -11,8 +11,27 @@ module V2
       private
 
       def resolve_collection
-        result = filter_by_tags(sort(search(policy_scope(expand_resource))))
+        scope = search(policy_scope(expand_resource))
+        count = count_collection(scope)
+        # If the count of records equals zero, make sure that the parents exist.
+        if count.zero? && permitted_params[:parents]&.any?
+          permitted_params[:parents].each do |parent|
+            reflection = resource.reflect_on_association(parent)
+            reflection.klass.find(permitted_params[reflection.foreign_key])
+          end
+        end
+
+        result = filter_by_tags(sort(scope))
         result.limit(pagination_limit).offset(pagination_offset)
+      end
+
+      def count_collection(scope)
+        # Count the whole collection using a single column and not the whole table. This column
+        # by default is the primary key of the table, however, in certain cases using a different
+        # indexed column might produce faster results without even accessing the table.
+        # Pagination is disabled when counting collection so that all returned entities are counted.
+        @count_collection ||= scope.except(:select, :limit, :offset)
+                                   .select(resource.base_class.count_by).count
       end
 
       # :nocov:

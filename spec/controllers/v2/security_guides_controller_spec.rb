@@ -25,6 +25,7 @@ describe V2::SecurityGuidesController do
   describe 'GET index' do
     let(:extra_params) { {} }
     let(:item_count) { 2 }
+    let(:parents) { nil }
     let(:items) { FactoryBot.create_list(:v2_security_guide, item_count).sort_by(&:id) }
 
     it_behaves_like 'collection'

@@ -16,19 +16,19 @@ module V2
       # This is part of a JSON schema, no need for strict metrics
       # rubocop:disable Metrics/MethodLength
       # rubocop:disable Metrics/AbcSize
-      def metadata(opts = {})
-        opts[:total] ||= count_collection
+      def metadata(model)
+        total ||= count_collection(model)
 
         {
           meta: {
-            total: opts[:total],
+            total: total,
             self.class::SEARCH => permitted_params[self.class::SEARCH],
             tags: tags,
             limit: pagination_limit,
             offset: pagination_offset,
             sort_by: permitted_params[:sort_by]
           }.compact,
-          links: links(last_offset(opts[:total]))
+          links: links(last_offset(total))
         }
       end
       # rubocop:enable Metrics/AbcSize
@@ -80,14 +80,6 @@ module V2
       end
 
       private
-
-      def count_collection
-        # Count the whole collection using a single column and not the whole table. This column
-        # by default is the primary key of the table, however, in certain cases using a different
-        # indexed column might produce faster results without even accessing the table.
-        # Pagination is disabled when counting collection so that all returned entities are counted.
-        resolve_collection.except(:select, :limit, :offset).select(resource.base_class.count_by).count
-      end
 
       def base_link_url
         api_version = request.fullpath.delete_prefix("#{path_prefix}/#{Settings.app_name}")
