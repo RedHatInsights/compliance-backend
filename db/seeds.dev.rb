@@ -50,6 +50,7 @@ def create_policy(account, canonical_profile, hosts)
 
   policy = Policy.new(
     profile.slice(:name, :description, :compliance_threshold, :account)
+           .merge(profile_id: canonical_profile.id)
   )
 
   policy.save!
