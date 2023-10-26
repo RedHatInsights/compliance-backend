@@ -30,10 +30,9 @@ module V2
       end
 
       def validate_parents!
-        permitted_params[:parents].each do |parent|
-          reflection = resource.reflect_on_association(parent)
-          reflection.klass.find(permitted_params[reflection.foreign_key])
-        end
+        *parents, current = permitted_params[:parents]
+        reflection = resource.reflect_on_association(current)
+        join_parents(reflection.klass, parents).find(permitted_params[reflection.foreign_key])
       end
 
       # :nocov:

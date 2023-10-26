@@ -78,6 +78,10 @@ describe V2::RulesController do
           profile_id: parent.id
         ).sort_by(&:id)
       end
+      let(:invalid_params) do
+        parent = FactoryBot.create(:v2_profile)
+        { security_guide_id: parent.security_guide.id, profile_id: parent.id }
+      end
 
       it_behaves_like 'collection', :security_guide, :profiles
       include_examples 'with metadata', :security_guide, :profiles
