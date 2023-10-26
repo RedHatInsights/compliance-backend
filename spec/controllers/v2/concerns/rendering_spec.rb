@@ -40,7 +40,7 @@ RSpec.shared_examples 'collection' do |*parents|
     end
   end
 
-  context 'under incorrect parent', if: parents.present? do
+  context 'under a single incorrect parent', if: parents.present? do
     parents.each do |parent|
       context "#{parent} is incorrect" do
         it 'returns not_found' do
@@ -49,6 +49,26 @@ RSpec.shared_examples 'collection' do |*parents|
           get :index, params: extra_params.merge(reflection.foreign_key => Faker::Internet.uuid, parents: parents)
 
           expect(response).to have_http_status :not_found
+        end
+      end
+    end
+  end
+
+  context 'under invalid parent hierarchy', if: parents.count > 1 do
+    (1..parents.length - 1).each do |count|
+      parents.combination(count).each do |invalid_parents|
+        context "#{invalid_parents.join(',')} are invalid" do
+          it 'returns not_found' do
+            params = invalid_parents.each_with_object(parents: parents) do |parent, obj|
+              reflection = subject.send(:resource).reflect_on_association(parent)
+              reflection_key = reflection.foreign_key.to_sym
+              obj[reflection_key] = invalid_params[reflection_key]
+            end
+
+            get :index, params: extra_params.merge(params)
+
+            expect(response).to have_http_status :not_found
+          end
         end
       end
     end
