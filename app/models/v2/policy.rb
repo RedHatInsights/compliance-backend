@@ -5,6 +5,7 @@ module V2
   class Policy < ApplicationRecord
     # FIXME: clean up after the remodel
     self.table_name = :v2_policies
+    self.primary_key = :id
 
     belongs_to :profile, class_name: 'V2::Profile'
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'

@@ -5,6 +5,7 @@ module V2
   class Tailoring < ApplicationRecord
     # FIXME: clean up after the remodel
     self.table_name = :tailorings
+    self.primary_key = :id
 
     belongs_to :policy, class_name: 'V2::Policy'
     belongs_to :profile, class_name: 'V2::Profile'
