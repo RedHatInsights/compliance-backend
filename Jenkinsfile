@@ -44,7 +44,7 @@ pipeline {
             sh 'ls -lrt'
             script {
                 NAMESPACE = readFile('.foobar')
-                print(NAMESPACE)
+                print("NAMESPACE:"+NAMESPACE)
             }
           }
         }
