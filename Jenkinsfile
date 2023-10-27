@@ -45,6 +45,7 @@ pipeline {
             script {
                 NAMESPACE = readFile('.foobar')
                 print("NAMESPACE:"+NAMESPACE)
+                NAMESPACE2 = readFile('.foobar2')
             }
           }
         }
