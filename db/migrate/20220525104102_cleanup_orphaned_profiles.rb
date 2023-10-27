@@ -1,6 +1,6 @@
 class CleanupOrphanedProfiles < ActiveRecord::Migration[7.0]
   def up
-    OrphanedProfilesCleaner.run!
+    # nop
   end
 
   def down

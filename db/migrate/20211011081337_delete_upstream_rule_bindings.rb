@@ -1,6 +1,6 @@
 class DeleteUpstreamRuleBindings < ActiveRecord::Migration[5.2]
   def up
-    UpstreamRuleBindingsRemover.run!
+    # nop
   end
 
   def down

@@ -1,5 +1,5 @@
 class ValueOverridesToNonCanonicalProfiles < ActiveRecord::Migration[7.0]
   def up
-    CopyValueOverridesToNonCanonical.run!
+    # nop
   end
 end
