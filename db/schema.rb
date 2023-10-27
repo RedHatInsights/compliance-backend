@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_24_145940) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_26_194802) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -336,5 +336,136 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_145940) do
               policy_hosts.policy_id
              FROM policy_hosts
             GROUP BY policy_hosts.policy_id) sq ON ((sq.policy_id = policies.id)));
+  SQL
+  create_function :tailorings_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.tailorings_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+
+      INSERT INTO "profiles" (
+        "policy_id",
+        "account_id",
+        "parent_profile_id",
+        "benchmark_id",
+        "value_overrides",
+        "created_at",
+        "updated_at"
+      ) SELECT
+        NEW."policy_id",
+        "policies"."account_id",
+        NEW."profile_id",
+        "canonical_profiles"."security_guide_id",
+        NEW."value_overrides",
+        NEW."created_at",
+        NEW."updated_at"
+      FROM "policies"
+      INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "policies"."profile_id"
+      WHERE "policies"."id" = NEW."policy_id" RETURNING "id" INTO "result_id";
+
+      NEW."id" := "result_id";
+      RETURN NEW;
+
+      END
+      $function$
+  SQL
+  create_function :v2_policies_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_policies_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE bo_id uuid;
+      DECLARE result_id uuid;
+      BEGIN
+          INSERT INTO "business_objectives" ("title", "created_at", "updated_at")
+          SELECT NEW."business_objective", NOW(), NOW()
+          WHERE NEW."business_objective" IS NOT NULL RETURNING "id" INTO "bo_id";
+
+          INSERT INTO "policies" (
+            "name",
+            "description",
+            "compliance_threshold",
+            "business_objective_id",
+            "profile_id",
+            "account_id"
+          ) VALUES (
+            NEW."title",
+            NEW."description",
+            NEW."compliance_threshold",
+            "bo_id",
+            NEW."profile_id",
+            NEW."account_id"
+          ) RETURNING "id" INTO "result_id";
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
+  create_function :v2_policies_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_policies_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE bo_id uuid;
+      BEGIN
+        SELECT "business_objective_id" INTO "bo_id" FROM "policies" WHERE "id" = OLD."id";
+        DELETE FROM "policies" WHERE "id" = OLD."id";
+        DELETE FROM "business_objectives" WHERE "id" = bo_id;
+        RETURN OLD;
+      END
+      $function$
+  SQL
+  create_function :v2_policies_update, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_policies_update()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE "bo_id" uuid;
+      BEGIN
+          INSERT INTO "business_objectives" ("title", "created_at", "updated_at")
+          SELECT NEW."business_objective", NOW(), NOW() FROM "policies" WHERE
+            NEW."business_objective" IS NOT NULL AND
+            "policies"."business_objective_id" IS NULL AND
+            "policies"."id" = OLD."id"
+          RETURNING "id" INTO "bo_id";
+
+          IF "bo_id" IS NULL THEN
+            UPDATE "business_objectives" SET "title" = NEW."business_objective", "updated_at" = NOW()
+            FROM "policies" WHERE
+              "policies"."business_objective_id" = "business_objectives"."id" AND
+              "policies"."id" = OLD."id"
+            RETURNING "business_objectives"."id" INTO "bo_id";
+          END IF;
+
+          UPDATE "policies" SET
+            "name" = NEW."title",
+            "description" = NEW."description",
+            "compliance_threshold" = NEW."compliance_threshold",
+            "business_objective_id" = CASE WHEN NEW."business_objective" IS NULL THEN NULL ELSE "bo_id" END
+          WHERE "id" = OLD."id";
+
+          DELETE FROM "business_objectives" USING "policies"
+          WHERE NEW."business_objective" IS NULL AND "business_objectives"."id" = "bo_id";
+
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+
+  create_trigger :tailorings_insert, sql_definition: <<-SQL
+      CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
+  SQL
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
+  SQL
+  create_trigger :v2_policies_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
+  SQL
+  create_trigger :v2_policies_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
   SQL
 end

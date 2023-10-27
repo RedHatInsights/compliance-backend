@@ -25,8 +25,9 @@ gem 'rack', '>= 2.1.4'
 gem 'rswag-api'
 gem 'rswag-ui'
 
-# Database view management
+# Database view, function and trigger management
 gem 'scenic'
+gem 'fx'
 
 # Config YAML files for all environments
 gem 'config'
