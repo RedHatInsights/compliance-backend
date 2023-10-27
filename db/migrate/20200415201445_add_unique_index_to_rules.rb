@@ -1,7 +1,5 @@
 class AddUniqueIndexToRules < ActiveRecord::Migration[5.2]
   def up
-    DuplicateRuleResolver.run!
-
     add_index(:rules, %i[ref_id benchmark_id], unique: true)
   end
 

@@ -1,7 +1,5 @@
 class AddUniqueIndexToRuleResults < ActiveRecord::Migration[5.2]
   def up
-    DuplicateRuleResultResolver.run!
-
     add_index(:rule_results, %i[host_id rule_id test_result_id], unique: true)
   end
 
