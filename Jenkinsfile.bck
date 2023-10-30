@@ -1,0 +1,62 @@
+def secrets = [
+    [path: params.VAULT_PATH_SVC_ACCOUNT_EPHEMERAL, engineVersion: 1, secretValues: [
+        [envVar: 'OC_LOGIN_TOKEN', vaultKey: 'oc-login-token'],
+        [envVar: 'OC_LOGIN_SERVER', vaultKey: 'oc-login-server']]],
+    [path: params.VAULT_PATH_QUAY_PUSH, engineVersion: 1, secretValues: [
+        [envVar: 'QUAY_USER', vaultKey: 'user'],
+        [envVar: 'QUAY_TOKEN', vaultKey: 'token']]],
+    [path: params.VAULT_PATH_RHR_PULL, engineVersion: 1, secretValues: [
+        [envVar: 'RH_REGISTRY_USER', vaultKey: 'user'],
+        [envVar: 'RH_REGISTRY_TOKEN', vaultKey: 'token']]]
+]
+
+def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID, engineVersion: 1]
+
+pipeline {
+    agent { label 'rhel8' }
+    options {
+        timestamps()
+        parallelsAlwaysFailFast()
+    }
+    environment {
+        APP_NAME="compliance"
+        COMPONENT_NAME="compliance"
+        IMAGE="quay.io/cloudservices/compliance-backend"
+        IQE_PLUGINS="compliance"
+        IQE_MARKER_EXPRESSION="compliance_smoke"
+        IQE_FILTER_EXPRESSION=""
+        IQE_CJI_TIMEOUT="30m"
+        REF_ENV="insights-stage"
+        COMPONENTS_W_RESOURCES="compliance"
+        ARTIFACTS_DIR=""
+
+        CICD_URL="https://raw.githubusercontent.com/RedHatInsights/cicd-tools/main"
+    }
+
+    stages {
+        stage('Dummy stage') {
+            steps {
+                echo "ok"
+                // fake status
+                script {
+                    currentBuild.result = 'UNSTABLE'
+                }
+            }
+        }
+    }
+
+    post {
+        always{
+            slackSend  channel: "#team-consoledot-devprod", message: "THIS IS A TEST! - Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        failure {
+            slackSend  channel: "#team-consoledot-devprod", color: "danger", message: "THIS IS A TEST! - BUILD FAILED - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        success {
+            slackSend  channel: "#team-consoledot-devprod", color: "good", message: "THIS IS A TEST! - BUILD SUCCEEDED - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        unstable {
+            slackSend  channel: "#team-consoledot-devprod", color: "warning", message: "THIS IS A TEST! - BUILD UNSTABLE (TESTS MAY HAVE FAILED)- ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+    }
+}

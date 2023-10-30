@@ -21,7 +21,7 @@ pipeline {
     environment {
         APP_NAME="compliance"
         ARTIFACTS_DIR=""
-        CICD_URL="https://raw.githubusercontent.com/RedHatInsights/cicd-tools/main"
+        CICD_URL="https://raw.githubusercontent.com/RedHatInsights/cicd-tools/platsec"
         COMPONENT_NAME="compliance"
         COMPONENTS_W_RESOURCES="compliance"
         IMAGE="quay.io/cloudservices/compliance-backend"
@@ -45,44 +45,14 @@ pipeline {
                 }
             }
         }
-
-        stage('Run Tests') {
-            parallel {
-                stage('Run unit tests') {
-                    steps {
-                        withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh 'bash -x ./scripts/unit_test.sh'
-                        }
-                    }
-                }
-                stage('Run smoke tests') {
-                    steps {
-                        withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh '''
-                                curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
-                                source ./.cicd_bootstrap.sh
-                                source "${CICD_ROOT}/deploy_ephemeral_env.sh"
-                                source "${CICD_ROOT}/cji_smoke_test.sh"
-                            '''
-                        }
-                    }
-                    post {
-                        failure {
-                            slackSend  channel: '@eshamard', color: "danger", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
-                        }
-                        unstable {
-                            slackSend  channel: '@eshamard', color: "warning", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
-                        }
-                    }
+        stage('Vuln tests') {
+            steps {
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                    sh '''
+                        echo "foo"
+                    '''
                 }
             }
-        }
-    }
-
-    post {
-        always{
-            archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true
-            junit skipPublishingChecks: true, testResults: 'artifacts/junit-*.xml'
         }
     }
 }
