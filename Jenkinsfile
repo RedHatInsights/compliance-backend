@@ -49,10 +49,8 @@ pipeline {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh '''
-                    curl -sSL https://raw.githubusercontent.com/RedHatInsights/cicd-tools/platsec/platsec.sh > platsec.sh
-                    cat platsec.sh
-                    bash -x -c "./platsec.sh $IMAGE $ARTIFACTS_DIR"
-                    #source ./platsec.sh $IMAGE $ARTIFACTS_DIR
+                    #!/usr/bin/env bash
+                    bash <(curl -sSL https://raw.githubusercontent.com/RedHatInsights/cicd-tools/platsec/platsec.sh) "$IMAGE" "$ARTIFACTS_DIR"
                     '''
                 }
             }
