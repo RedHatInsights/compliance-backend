@@ -2,9 +2,7 @@
 
 set -exv
 
-export CICD_BOOTSTRAP_REPO_BRANCH='refactor-variable-names'
-export CICD_BOOTSTRAP_REPO_ORG='Victoremepunto'
-CICD_TOOLS_URL="https://raw.githubusercontent.com/${CICD_BOOTSTRAP_REPO_ORG}/cicd-tools/${CICD_BOOTSTRAP_REPO_BRANCH}/src/bootstrap.sh"
+CICD_TOOLS_URL="https://raw.githubusercontent.com/RedHatInsights/cicd-tools/main/src/bootstrap.sh"
 # shellcheck source=/dev/null
 source <(curl -sSL "$CICD_TOOLS_URL") image_builder
 
@@ -16,12 +14,10 @@ if [[ "$GIT_BRANCH" == "origin/security-compliance" ]]; then
     SECURITY_COMPLIANCE_TAG="sc-$(date +%Y%m%d)-$(git rev-parse --short=7 HEAD)"
     
     # Set ADDITIONAL_TAGS to the generated security compliance tag.
-    CICD_IMAGE_BUILDER_ADDITIONAL_TAGS=("$SECURITY_COMPLIANCE_TAG")
+    export CICD_IMAGE_BUILDER_ADDITIONAL_TAGS=("$SECURITY_COMPLIANCE_TAG")
 else
     # If the current Git branch is not 'origin/security-compliance':
-    CICD_IMAGE_BUILDER_ADDITIONAL_TAGS=("latest")
+    export CICD_IMAGE_BUILDER_ADDITIONAL_TAGS=("latest")
 fi
-export CICD_IMAGE_BUILDER_ADDITIONAL_TAGS
-
 
 cicd::image_builder::build_and_push
