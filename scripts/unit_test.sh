@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CICD_BOOTSTRAP_REPO_BRANCH='refactor-variable-names'
-CICD_BOOTSTRAP_REPO_ORG='Victoremepunto'
+CICD_BOOTSTRAP_REPO_BRANCH='main'
+CICD_BOOTSTRAP_REPO_ORG='RedHatInsights'
 CICD_TOOLS_URL="https://raw.githubusercontent.com/${CICD_BOOTSTRAP_REPO_ORG}/cicd-tools/${CICD_BOOTSTRAP_REPO_BRANCH}/src/bootstrap.sh"
 # shellcheck source=/dev/null
 source <(curl -sSL "$CICD_TOOLS_URL") image_builder
