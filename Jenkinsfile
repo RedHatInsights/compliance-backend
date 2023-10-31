@@ -34,6 +34,7 @@ pipeline {
 
     stages {
 
+/*
         stage('Build the PR commit image') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
@@ -45,11 +46,12 @@ pipeline {
                 }
             }
         }
+        */
         stage('Vuln tests') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh '''
-                    #!/usr/bin/env bash
+                    #!/bin/bash
                     bash <(curl -sSL https://raw.githubusercontent.com/RedHatInsights/cicd-tools/platsec/platsec.sh) "$IMAGE" "$ARTIFACTS_DIR"
                     '''
                 }
