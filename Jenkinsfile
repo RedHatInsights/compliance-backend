@@ -60,7 +60,6 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: '${ARTIFACTS_DIR}/*.txt'
-            }
         }
     }
 }
