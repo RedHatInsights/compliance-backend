@@ -40,6 +40,7 @@ teardown() {
 trap "teardown" EXIT SIGINT SIGTERM
 
 if ! COMPLIANCE_POD_ID=$(cicd::container::cmd pod create --name "$POD_NAME"); then
+    echo "Failed creating pod image"
     exit 1
 fi
 
