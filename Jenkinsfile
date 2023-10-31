@@ -20,7 +20,7 @@ pipeline {
     }
     environment {
         APP_NAME="compliance"
-        ARTIFACTS_DIR=""
+        ARTIFACTS_DIR="vuln-artifacts"
         CICD_URL="https://raw.githubusercontent.com/RedHatInsights/cicd-tools/platsec"
         COMPONENT_NAME="compliance"
         COMPONENTS_W_RESOURCES="compliance"
@@ -34,7 +34,6 @@ pipeline {
 
     stages {
 
-/*
         stage('Build the PR commit image') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
@@ -46,7 +45,6 @@ pipeline {
                 }
             }
         }
-        */
         stage('Vuln tests') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
@@ -56,6 +54,12 @@ pipeline {
                     bash -x ./platsec.sh "$IMAGE" "$ARTIFACTS_DIR"
                     '''
                 }
+            }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: '${ARTIFACTS_DIR}/*.txt'
             }
         }
     }
