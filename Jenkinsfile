@@ -59,7 +59,8 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts artifacts: '${ARTIFACTS_DIR}/*.txt'
+            //archiveArtifacts artifacts: '$ARTIFACTS_DIR/*.txt'
+            archiveArtifacts artifacts: 'vuln-artifacts/*.txt'
         }
     }
 }
