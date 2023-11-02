@@ -63,9 +63,13 @@ module V2
 
     def expand_resource
       # Get the list of fields to be selected from the serializer
-      fields = serializer.fields(permitted_params)
-      # Select only the fields that are really necessary
-      join_parents(resource, permitted_params[:parents]).select(*select_fields(fields))
+      fields = serializer.fields(permitted_params[:parents], resource.one_to_one)
+
+      # Join with the parents assumed from the route
+      scope = join_parents(resource, permitted_params[:parents])
+      # Join with the additional 1:1 relationships required by the serializer,
+      # select only the fields that are really necessary for the rendering.
+      join_one_to_ones(scope, fields).select(*select_fields(fields))
     end
 
     # Reduce through all the parents of the resource and join+scope them on the resource
@@ -79,6 +83,14 @@ module V2
              .where(parent => { klass.primary_key => permitted_params[ref.foreign_key] })
              .merge(Pundit.policy_scope(current_user, klass))
       end
+    end
+
+    # Select the 1:1 associations that can be satisfied without any additional WHERE clause,
+    # then join them to the scope.
+    def join_one_to_ones(scope, fields)
+      # Do not join with the already joined parents assumed from the (nested) route
+      associations = fields.keys.excluding(*permitted_params[:parents]).compact
+      scope.where.associated(*associations)
     end
 
     # Iterate through the (nested) fields to be selected and set their names accordingly

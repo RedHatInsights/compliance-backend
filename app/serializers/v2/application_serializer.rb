@@ -18,8 +18,8 @@ module V2
       #   **method_fields[except nil]
       # }
       #
-      def fields(context)
-        data = method_fields(context[:parents])
+      def fields(parents, one_to_one)
+        data = method_fields((parents.to_a + one_to_one).uniq)
         data[nil] = (_descriptor.attributes.map(&:name).map(&:to_sym) + data[nil].to_a).compact
         data
       end
