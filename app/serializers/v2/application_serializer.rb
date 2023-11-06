@@ -85,8 +85,16 @@ module V2
 
         reduce_method_fields({}) do |obj, field|
           if @derived_attributes.key?(field) && meets_dependency?(@derived_attributes[field].keys, parents)
-            obj.merge(@derived_attributes[field])
+            merge_dependencies(obj, @derived_attributes[field])
           end
+        end
+      end
+
+      # Helper method for deep merging a hash of arrays
+      def merge_dependencies(left, right)
+        right.each_with_object(left) do |(k, v), obj|
+          obj[k] ||= []
+          obj[k] += v
         end
       end
     end
