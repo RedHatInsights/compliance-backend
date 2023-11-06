@@ -46,7 +46,7 @@ module V2
 
       # The serializer expects the list of parents to determine which `derived_attribute` should be skipped
       def serialization_context
-        { parents: permitted_params[:parents] }
+        { parents: (permitted_params[:parents].to_a + resource.one_to_one).uniq }
       end
 
       def index?
