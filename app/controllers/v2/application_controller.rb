@@ -60,6 +60,8 @@ module V2
     def expand_resource
       # Get the list of fields to be selected from the serializer
       fields = serializer.fields(permitted_params[:parents], resource.one_to_one)
+      # Append a list of additional fields required to render the response, usually RBAC related
+      fields[nil] += extra_fields
 
       # Join with the parents assumed from the route
       scope = join_parents(pundit_scope, permitted_params[:parents])
@@ -106,6 +108,11 @@ module V2
           end
         end
       end
+    end
+
+    # Default list of additional fields to be passed to the list of selected fields
+    def extra_fields
+      []
     end
   end
 end
