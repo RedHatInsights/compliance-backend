@@ -23,7 +23,7 @@ RSpec.shared_examples 'collection' do |*parents|
     collection = items.map do |item|
       hash_including(
         'id' => item.id,
-        'type' => described_class.controller_name.chop,
+        'type' => described_class.controller_name.singularize,
         **attributes.each_with_object({}) do |(key, value), obj|
           obj[key.to_s] = item.send(value)
         end
@@ -107,7 +107,7 @@ RSpec.shared_examples 'individual' do |*parents|
   it 'returns item by id' do
     expected = hash_including('data' => {
                                 'id' => item.id,
-                                'type' => described_class.controller_name.chop,
+                                'type' => described_class.controller_name.singularize,
                                 **attributes.each_with_object({}) do |(key, value), obj|
                                   obj[key.to_s] = item.send(value)
                                 end
