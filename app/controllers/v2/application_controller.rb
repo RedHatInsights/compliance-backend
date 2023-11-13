@@ -25,10 +25,6 @@ module V2
       end
     end
 
-    def pundit_scope
-      Pundit.policy_scope(current_user, resource)
-    end
-
     # This method is being called before any before_action callbacks and it can set
     # payload information for the metrics collector. As the User.current is not yet
     # available at this moment, a short path to the org_id is being used to pass it
@@ -66,10 +62,14 @@ module V2
       fields = serializer.fields(permitted_params[:parents], resource.one_to_one)
 
       # Join with the parents assumed from the route
-      scope = join_parents(resource, permitted_params[:parents])
+      scope = join_parents(pundit_scope, permitted_params[:parents])
       # Join with the additional 1:1 relationships required by the serializer,
       # select only the fields that are really necessary for the rendering.
       join_one_to_ones(scope, fields).select(*select_fields(fields))
+    end
+
+    def pundit_scope
+      Pundit.policy_scope(current_user, resource)
     end
 
     # Reduce through all the parents of the resource and join+scope them on the resource
