@@ -2,7 +2,7 @@
 
 module V2
   # Policies for accessing Rules
-  class RulePolicy < ApplicationPolicy
+  class RulePolicy < V2::ApplicationPolicy
     def index?
       true
     end
@@ -13,9 +13,6 @@ module V2
 
     # All users should see all rules currently
     class Scope < ::ApplicationPolicy::Scope
-      def resolve
-        scope.all
-      end
     end
   end
 end

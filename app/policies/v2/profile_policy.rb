@@ -2,7 +2,7 @@
 
 module V2
   # Policies for accessing Profiles
-  class ProfilePolicy < ApplicationPolicy
+  class ProfilePolicy < V2::ApplicationPolicy
     def index?
       true
     end
@@ -12,10 +12,7 @@ module V2
     end
 
     # All users should see all Profiles currently
-    class Scope < ::ApplicationPolicy::Scope
-      def resolve
-        scope.all
-      end
+    class Scope < V2::ApplicationPolicy::Scope
     end
   end
 end
