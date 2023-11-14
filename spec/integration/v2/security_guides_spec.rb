@@ -12,6 +12,19 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
       raw: nil
     )
   end
+  let!(:security_guides) do
+    SupportedSsg.all.map(&:os_major_version).uniq.map do |os_version|
+      FactoryBot.create(
+        :v2_security_guide,
+        title: 'Guide to the Secure Configuration of Red Hat Enterprise ' \
+               "Linux #{os_version}",
+        description: 'This guide presents a catalog of security-relevant ' \
+                     "configuration settings for Red Hat Enterprise Linux #{os_version}.",
+        os_major_version: os_version
+      )
+    end
+  end
+  let(:sg_id) { security_guides.first.id }
 
   before do
     allow(Insights::Api::Common::IdentityHeader).to receive(:new).and_return(identity_header)
@@ -20,19 +33,6 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
 
   path '/security_guides' do
     get 'List all Security Guides' do
-      before do
-        SupportedSsg.all.map(&:os_major_version).uniq.each do |os_version|
-          FactoryBot.create(
-            :v2_security_guide,
-            title: 'Guide to the Secure Configuration of Red Hat Enterprise ' \
-                   "Linux #{os_version}",
-            description: 'This guide presents a catalog of security-relevant ' \
-                         "configuration settings for Red Hat Enterprise Linux #{os_version}.",
-            os_major_version: os_version
-          )
-        end
-      end
-
       tags 'security_guide'
       description 'Lists all Security guides'
       operationId 'ListSecurityGuides'
@@ -151,6 +151,44 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
                }
 
         after { |e| autogenerate_examples(e, 'Description of an error when requesting higher limit than supported') }
+
+        run_test!
+      end
+    end
+  end
+
+  path '/security_guides/{sg_id}' do
+    get 'Returns requested Security Guide' do
+      tags 'security_guide'
+      description 'Returns requested Security Guide'
+      operationId 'ShowSecurityGuide'
+      content_types
+      parameter name: :sg_id, in: :path, type: :string, required: true
+
+      response '200', 'Returns requested Security Guide' do
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: ref_schema('id'),
+                     attributes: ref_schema('security_guide')
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Security Guide') }
+
+        run_test!
+      end
+
+      response '404', 'Security Guide not found' do
+        let(:sg_id) { Faker::Internet.uuid }
+
+        after do |e|
+          autogenerate_examples(e, 'Description of an error when the requested Security Guide is not found')
+        end
 
         run_test!
       end
