@@ -18,7 +18,20 @@
 # it_behaves_like 'collection'
 # ```
 #
+# In some cases, however, additional ActiveRecord objects are required for invoking a factory.
+# Therefore, if you don't want these objects to be passed to the `params` of the request, you
+# can specify them in the `extra_params` as objects (i.e. without the `_id` suffix):
+# ```
+# let(:extra_params) { { account: FactoryBot.create(:account) } }
+#
+# it_behaves_like 'collection'
+# ```
+#
 RSpec.shared_examples 'collection' do |*parents|
+  let(:passable_params) do
+    extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) }
+  end
+
   it 'returns base fields for each result' do
     collection = items.map do |item|
       hash_including(
@@ -30,7 +43,7 @@ RSpec.shared_examples 'collection' do |*parents|
       )
     end
 
-    get :index, params: extra_params.merge(parents: parents)
+    get :index, params: passable_params.merge(parents: parents)
 
     expect(response).to have_http_status :ok
     expect(response_body_data).to match_array(collection)
@@ -46,7 +59,7 @@ RSpec.shared_examples 'collection' do |*parents|
         it 'returns not_found' do
           reflection = subject.send(:resource).reflect_on_association(parent)
 
-          get :index, params: extra_params.merge(reflection.foreign_key => Faker::Internet.uuid, parents: parents)
+          get :index, params: passable_params.merge(reflection.foreign_key => Faker::Internet.uuid, parents: parents)
 
           expect(response).to have_http_status :not_found
         end
@@ -65,7 +78,7 @@ RSpec.shared_examples 'collection' do |*parents|
               obj[reflection_key] = invalid_params[reflection_key]
             end
 
-            get :index, params: extra_params.merge(params)
+            get :index, params: passable_params.merge(params)
 
             expect(response).to have_http_status :not_found
           end
@@ -78,7 +91,7 @@ RSpec.shared_examples 'collection' do |*parents|
     let(:rbac_allowed?) { false }
 
     it 'responds with unauthorized status' do
-      get :index, params: extra_params.merge(parents: parents)
+      get :index, params: passable_params.merge(parents: parents)
 
       expect(response).to have_http_status :forbidden
     end
@@ -104,6 +117,10 @@ end
 # ```
 #
 RSpec.shared_examples 'individual' do |*parents|
+  let(:passable_params) do
+    extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) }
+  end
+
   it 'returns item by id' do
     expected = hash_including('data' => {
                                 'id' => item.id,
@@ -113,7 +130,7 @@ RSpec.shared_examples 'individual' do |*parents|
                                 end
                               })
 
-    get :show, params: extra_params.merge(parents: parents)
+    get :show, params: passable_params.merge(parents: parents)
 
     expect(response.parsed_body).to match(expected)
   end

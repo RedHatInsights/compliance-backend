@@ -41,7 +41,20 @@
 # it_behaves_like 'sortable'
 # ```
 #
+# In some cases, however, additional ActiveRecord objects are required for invoking a factory.
+# Therefore, if you don't want these objects to be passed to the `params` of the request, you
+# can specify them in the `extra_params` as objects (i.e. without the `_id` suffix):
+# ```
+# let(:extra_params) { { account: FactoryBot.create(:account) } }
+#
+# it_behaves_like 'sortable'
+# ```
+#
 RSpec.shared_examples 'sortable' do |*parents|
+  let(:passable_params) do
+    extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) }
+  end
+
   path = Rails.root.join('spec/fixtures/files/sortable', "#{described_class.name.demodulize.underscore}.yaml")
   tests = YAML.safe_load_file(path, permitted_classes: [Symbol])
 
@@ -62,7 +75,7 @@ RSpec.shared_examples 'sortable' do |*parents|
         end
       end
 
-      get :index, params: extra_params.merge(sort_by: test_case[:sort_by], parents: parents)
+      get :index, params: passable_params.merge(sort_by: test_case[:sort_by], parents: parents)
 
       expect(response_body_data.map { |item| item['id'] }).to eq(result)
     end

@@ -18,13 +18,26 @@
 # it_behaves_like 'paginable'
 # ```
 #
+# In some cases, however, additional ActiveRecord objects are required for invoking a factory.
+# Therefore, if you don't want these objects to be passed to the `params` of the request, you
+# can specify them in the `extra_params` as objects (i.e. without the `_id` suffix):
+# ```
+# let(:extra_params) { { account: FactoryBot.create(:account) } }
+#
+# it_behaves_like 'paginable'
+# ```
+#
 RSpec.shared_examples 'paginable' do |*parents|
   let(:item_count) { 20 } # We need more items to be created to test pagination properly
+
+  let(:passable_params) do
+    extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) }
+  end
 
   [2, 5, 10, 15, 20].each do |per_page|
     it "returns with the requested #{per_page} records per page" do
       items # force creation
-      get :index, params: extra_params.merge('limit' => per_page, parents: parents)
+      get :index, params: passable_params.merge('limit' => per_page, parents: parents)
 
       expect(response_body_data.count).to eq(per_page)
     end
@@ -38,7 +51,7 @@ RSpec.shared_examples 'paginable' do |*parents|
           )
         end
 
-        get :index, params: extra_params.merge(
+        get :index, params: passable_params.merge(
           'limit' => per_page,
           'offset' => offset,
           parents: parents
