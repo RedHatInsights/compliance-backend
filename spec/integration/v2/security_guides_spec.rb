@@ -194,4 +194,205 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
       end
     end
   end
+
+  let!(:profiles) do
+    FactoryBot.create_list(
+      :v2_profile,
+      4,
+      security_guide: security_guides.first
+    )
+  end
+  # Need to differenciate between the profile_id that's used in factories and the one that's in the path,
+  # so the factory does not throw an error when requesting invalid ID's.
+  let(:valid_prof_id) { profiles.first.id }
+  let(:prof_id) { valid_prof_id }
+
+  path '/security_guides/{sg_id}/profiles' do
+    get 'List all Profiles' do
+      tags 'security_guide'
+      description 'Lists all Profiles nested under a parent Security Guide'
+      operationId 'ListProfiles'
+      content_types
+      parameter name: :sg_id, in: :path, type: :string, required: true
+      pagination_params_v2
+      sort_params_v2(V2::Profile)
+      search_params_v2(V2::Profile)
+
+      response '200', 'Lists all requested Profiles under a Security Guide' do
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('profiles')
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'List of Profiles under a Security Guide') }
+
+        run_test!
+      end
+
+      response '200', 'Lists all requested Profiles under a Security Guide' do
+        let(:sort_by) { ['title'] }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('profiles')
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'List of Profiles under a Security Guide sorted by "title:asc"') }
+
+        run_test!
+      end
+
+      response '200', 'Lists all requested Profiles under a Security Guide' do
+        let(:filter) { '(ref_id=xccdf_org.ssgproject.content_profile_rht-ccp)' }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('profiles')
+                     }
+                   }
+                 }
+               }
+
+        after do |e|
+          autogenerate_examples(e, 'List of Profiles under a Security Guide filtered by ' \
+                                  '"(ref_id=xccdf_org.ssgproject.content_profile_rht-ccp)"')
+        end
+
+        run_test!
+      end
+
+      response '422', 'Returns error if wrong parameters are used' do
+        let(:sort_by) { ['description'] }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('profiles')
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Description of an error when sorting by incorrect parameter') }
+
+        run_test!
+      end
+
+      response '422', 'Returns error if wrong parameters are used' do
+        let(:limit) { 103 }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('profiles')
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Description of an error when requesting higher limit than supported') }
+
+        run_test!
+      end
+
+      response '404', 'Profile not found' do
+        let(:sg_id) { Faker::Internet.uuid }
+
+        after do |e|
+          autogenerate_examples(e, 'Description of an error when the requested Profiles are ' \
+                                    'under a different or nonexistent Security Guide')
+        end
+
+        run_test!
+      end
+    end
+  end
+
+  path '/security_guides/{sg_id}/profiles/{prof_id}' do
+    get 'Returns requested Profile' do
+      tags 'security_guide'
+      description 'Returns requested Profile nested under a parent Security Guide'
+      operationId 'ShowProfile'
+      content_types
+      parameter name: :sg_id, in: :path, type: :string, required: true
+      parameter name: :prof_id, in: :path, type: :string, required: true
+
+      response '200', 'Returns requested Profile' do
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: ref_schema('id'),
+                     attributes: ref_schema('profile')
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Profile') }
+
+        run_test!
+      end
+
+      response '404', 'Profile not found' do
+        let(:sg_id) { Faker::Internet.uuid }
+
+        after do |e|
+          autogenerate_examples(e, 'Description of an error when the requested Profile is ' \
+                                    'under a different or nonexistent Security Guide')
+        end
+
+        run_test!
+      end
+
+      response '404', 'Profile not found' do
+        let(:prof_id) { Faker::Internet.uuid }
+
+        after { |e| autogenerate_examples(e, 'Description of an error when the requested Profile is not found') }
+
+        run_test!
+      end
+    end
+  end
 end
