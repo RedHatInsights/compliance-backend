@@ -42,7 +42,20 @@
 # it_behaves_like 'searchable'
 # ```
 #
+# In some cases, however, additional ActiveRecord objects are required for invoking a factory.
+# Therefore, if you don't want these objects to be passed to the `params` of the request, you
+# can specify them in the `extra_params` as objects (i.e. without the `_id` suffix):
+# ```
+# let(:extra_params) { { account: FactoryBot.create(:account) } }
+#
+# it_behaves_like 'searchable'
+# ```
+#
 RSpec.shared_examples 'searchable' do |*parents|
+  let(:passable_params) do
+    extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) }
+  end
+
   path = Rails.root.join('spec/fixtures/files/searchable', "#{described_class.name.demodulize.underscore}.yaml")
   searches = YAML.safe_load_file(path, permitted_classes: [Symbol])
 
@@ -57,7 +70,7 @@ RSpec.shared_examples 'searchable' do |*parents|
         FactoryBot.create(entity.delete(:factory), **entity)
       end
 
-      get :index, params: extra_params.merge(filter: search[:query], parents: parents)
+      get :index, params: passable_params.merge(filter: search[:query], parents: parents)
 
       expect(response_body_data).to match_array(found.map { |item| hash_including('id' => item.id) })
     end

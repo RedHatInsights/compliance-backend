@@ -18,11 +18,24 @@
 # include_examples 'with_metadata'
 # ```
 #
+# In some cases, however, additional ActiveRecord objects are required for invoking a factory.
+# Therefore, if you don't want these objects to be passed to the `params` of the request, you
+# can specify them in the `extra_params` as objects (i.e. without the `_id` suffix):
+# ```
+# let(:extra_params) { { account: FactoryBot.create(:account) } }
+#
+# it_behaves_like 'with_metadata'
+# ```
+#
 RSpec.shared_examples 'with metadata' do |*parents|
+  let(:passable_params) do
+    extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) }
+  end
+
   let(:item_count) { 10 }
 
   it 'contains total, limit, offset and relationships keys' do
-    get :index, params: extra_params.merge(parents: parents)
+    get :index, params: passable_params.merge(parents: parents)
 
     expect(response.parsed_body['meta'].keys).to contain_exactly(*%w[total limit offset])
   end
@@ -30,7 +43,7 @@ RSpec.shared_examples 'with metadata' do |*parents|
   it 'has correct total in metadata' do
     items
 
-    get :index, params: extra_params.merge(parents: parents)
+    get :index, params: passable_params.merge(parents: parents)
 
     expect(response.parsed_body['meta']['total']).to eq(item_count)
   end
@@ -39,7 +52,7 @@ RSpec.shared_examples 'with metadata' do |*parents|
     it 'has no previous link' do
       items
 
-      get :index, params: extra_params.merge(
+      get :index, params: passable_params.merge(
         limit: 2,
         offset: 0,
         parents: parents
@@ -53,7 +66,7 @@ RSpec.shared_examples 'with metadata' do |*parents|
     it 'has all four links' do
       items
 
-      get :index, params: extra_params.merge(
+      get :index, params: passable_params.merge(
         limit: 2,
         offset: 2,
         parents: parents
@@ -67,7 +80,7 @@ RSpec.shared_examples 'with metadata' do |*parents|
     it 'has no next link' do
       items
 
-      get :index, params: extra_params.merge(
+      get :index, params: passable_params.merge(
         limit: 10,
         offset: 9,
         parents: parents
@@ -81,7 +94,7 @@ RSpec.shared_examples 'with metadata' do |*parents|
     it 'has no next link' do
       items
 
-      get :index, params: extra_params.merge(
+      get :index, params: passable_params.merge(
         limit: 2,
         offset: 11,
         parents: parents
@@ -93,7 +106,7 @@ RSpec.shared_examples 'with metadata' do |*parents|
 
   # When the list of results is empty, the last link's offset should equal 0.
   it 'has correct last offset when returning not_found' do
-    get :index, params: extra_params.merge(parents: parents)
+    get :index, params: passable_params.merge(parents: parents)
 
     expect(response_body_data).to be_empty
     expect(response.parsed_body['links']['last'][-1]).to eq('0')
