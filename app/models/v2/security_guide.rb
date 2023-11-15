@@ -6,6 +6,8 @@ module V2
     # FIXME: clean up after the remodel
     self.primary_key = :id
 
+    OS_MAJOR_RE = /(?<=RHEL-)\d+/
+
     SORT_BY_VERSION = Arel::Nodes::NamedFunction.new(
       'CAST',
       [
@@ -48,7 +50,7 @@ module V2
     sortable_by :os_major_version, SORT_BY_OS_MAJOR_VERSION
 
     def os_major_version
-      ref_id[/(?<=RHEL-)\d+/].to_i
+      ref_id[OS_MAJOR_RE].to_i
     end
 
     def self.os_major_version_search(_filter, operator, value)

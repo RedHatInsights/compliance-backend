@@ -24,6 +24,7 @@ module V2
     end
 
     ParamType = ActionController::Parameters # shorthand
+    ID_TYPE = ParamType.integer | ParamType.string
     ParamType.action_on_unpermitted_parameters = :raise # fail on unpermitted params
 
     DEFAULT_PERMITTED = StrongerParameters::ControllerSupport::PermittedParameters::DEFAULT_PERMITTED.merge(

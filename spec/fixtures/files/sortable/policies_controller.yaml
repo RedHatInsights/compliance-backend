@@ -1,0 +1,65 @@
+:entities:
+  - :factory: :v2_policy
+    :title: 'aba'
+    :business_objective: 'aba'
+    :compliance_threshold: 90
+    :account: ${account}
+
+  - :factory: :v2_policy
+    :title: 'bac'
+    :business_objective: 'bac'
+    :compliance_threshold: 85
+    :account: ${account}
+
+  - :factory: :v2_policy
+    :title: 'aab'
+    :business_objective: 'aab'
+    :compliance_threshold: 90
+    :account: ${account}
+
+  - :factory: :v2_policy
+    :title: 'aaa'
+    :business_objective: 'aaa'
+    :compliance_threshold: 85
+    :account: ${account}
+
+  - :factory: :v2_policy
+    :title: 'caa'
+    :business_objective: 'caa'
+    :compliance_threshold: 100
+    :account: ${account}
+
+  - :factory: :v2_policy
+    :title: 'aaa'
+    :business_objective: 'aaa'
+    :compliance_threshold: 80
+    :account: ${account}
+
+:queries:
+  - :sort_by:
+      - 'title'
+    :result: [[3, 5], 2, 0, 1, 4]
+  - :sort_by:
+      - 'title:asc'
+    :result: [[3, 5], 2, 0, 1, 4]
+  - :sort_by:
+      - 'title:desc'
+    :result: [4, 1, 0, 2, [3, 5]]
+  - :sort_by:
+      - 'business_objective'
+    :result: [[3, 5], 2, 0, 1, 4]
+  - :sort_by:
+      - 'business_objective:asc'
+    :result: [[3, 5], 2, 0, 1, 4]
+  - :sort_by:
+      - 'business_objective:desc'
+    :result: [4, 1, 0, 2, [3, 5]]
+  - :sort_by:
+      - 'compliance_threshold'
+    :result: [5, [3, 1], [0, 2], 4]
+  - :sort_by:
+      - 'compliance_threshold:asc'
+    :result: [5, [3, 1], [0, 2], 4]
+  - :sort_by:
+      - 'compliance_threshold:desc'
+    :result: [4, [0, 2], [3, 1], 5]
