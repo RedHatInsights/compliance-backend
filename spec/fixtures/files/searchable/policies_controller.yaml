@@ -1,0 +1,68 @@
+---
+
+- :name: "equality search by title"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: searched title
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: not this title
+        :account: ${account}
+  :query: (title = "searched title")
+- :name: "non-equality search by title"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: not this title
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: searched title
+        :account: ${account}
+  :query: (title != "searched title")
+- :name: "in search by title"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: searched title
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: not this title
+        :account: ${account}
+  :query: (title ^ "searched title")
+- :name: "not-in search by title"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: not this title
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: searched title
+        :account: ${account}
+  :query: (title !^ "searched title")
+- :name: "like search by title"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: searched title
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: not this title
+        :account: ${account}
+  :query: (title ~ "searched title")
+- :name: "unlike search by title"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: not this title
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: searched title
+        :account: ${account}
+  :query: (title !~ "searched title")

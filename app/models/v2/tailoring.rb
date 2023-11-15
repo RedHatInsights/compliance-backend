@@ -10,5 +10,10 @@ module V2
     belongs_to :policy, class_name: 'V2::Policy'
     belongs_to :profile, class_name: 'V2::Profile'
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
+    has_one :account, through: :policy, class_name: 'V2::Account'
+
+    validates :policy, presence: true
+    validates :profile, presence: true
+    validates :os_minor_version, numericality: { greater_than_or_equal_to: 0 }
   end
 end

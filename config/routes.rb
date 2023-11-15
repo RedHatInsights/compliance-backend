@@ -31,6 +31,8 @@ Rails.application.routes.draw do
               resources :rules, only: [:index, :show], parents: [:security_guide, :profiles]
             end
           end
+
+          resources :policies, except: [:new, :edit]
         end
       end
 
