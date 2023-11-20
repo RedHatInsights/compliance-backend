@@ -4,8 +4,6 @@ require 'exceptions'
 
 # General controller to include all-encompassing behavior
 class ApplicationController < ActionController::API
-  SEARCH = :search
-
   include ActionController::Helpers
   include Pundit::Authorization
   include Authentication

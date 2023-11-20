@@ -9,7 +9,7 @@ module V1
     before_action(only: %i[show update]) { authorize profile }
 
     def index
-      permitted_params[self.class::SEARCH] ||= 'external=false and canonical=false'
+      permitted_params[:search] ||= 'external=false and canonical=false'
       permitted_params[:sort_by] ||= 'score'
       render_json resolve_collection
     end
