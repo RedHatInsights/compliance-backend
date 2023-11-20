@@ -22,7 +22,7 @@ module V2
         {
           meta: {
             total: total,
-            self.class::SEARCH => permitted_params[self.class::SEARCH],
+            filter: permitted_params[:filter],
             tags: tags,
             limit: pagination_limit,
             offset: pagination_offset,
@@ -89,7 +89,7 @@ module V2
 
       def base_link_params
         {
-          self.class::SEARCH => permitted_params[self.class::SEARCH],
+          filter: permitted_params[:filter],
           include: permitted_params[:include],
           limit: pagination_limit,
           tags: permitted_params[:tags],
