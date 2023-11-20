@@ -52,7 +52,7 @@ module V2
         limit: ParamType.integer & ParamType.gt(0) & ParamType.lte(100),
         offset: ParamType.integer & ParamType.gte(0),
         sort_by: ParamType.array(ParamType.string) | ParamType.string,
-        self::SEARCH => ParamType.string
+        filter: ParamType.string
       }
 
       permitted_params_for_action :show, id: ParamType.string

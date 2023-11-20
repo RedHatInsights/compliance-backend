@@ -4,8 +4,7 @@ require 'rails_helper'
 
 describe V2::ParameterHandling do
   let(:subject) do
-    Struct.new(:action_name, :params, :resource) do |cls|
-      cls::SEARCH = :filter # FIXME: delete this after V1 is retired
+    Struct.new(:action_name, :params, :resource) do
       include V2::ParameterHandling
     end.new
   end

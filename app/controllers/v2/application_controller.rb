@@ -3,8 +3,6 @@
 module V2
   # General controller to include all-encompassing behavior
   class ApplicationController < ::ActionController::API
-    SEARCH = :filter
-
     include ::ActionController::Helpers
     include ::Pundit::Authorization
     include ::Authentication

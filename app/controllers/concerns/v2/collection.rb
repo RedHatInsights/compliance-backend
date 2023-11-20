@@ -49,14 +49,14 @@ module V2
       # rubocop:disable Metrics/AbcSize
       # :nocov:
       def search(data)
-        return data if permitted_params[self.class::SEARCH].blank?
+        return data if permitted_params[:filter].blank?
 
         # Fail if search is not supported for the given model
-        if !data.respond_to?(:search_for) || permitted_params[self.class::SEARCH].match(/\x00/)
-          raise ActionController::UnpermittedParameters.new(self.class::SEARCH => permitted_params[self.class::SEARCH])
+        if !data.respond_to?(:search_for) || permitted_params[:filter].match(/\x00/)
+          raise ActionController::UnpermittedParameters.new(filter: permitted_params[:filter])
         end
 
-        data.search_for(permitted_params[self.class::SEARCH])
+        data.search_for(permitted_params[:filter])
       end
       # :nocov:
       # rubocop:enable Metrics/AbcSize
