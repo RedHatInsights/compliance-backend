@@ -5,7 +5,7 @@ FactoryBot.define do
     id { SecureRandom.uuid }
     title { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
-    ref_id { "xccdf_org.ssgproject.content_profile_#{SecureRandom.uuid}" }
+    ref_id { "xccdf_org.ssgproject.content_profile_#{SecureRandom.hex}" }
     security_guide { association :v2_security_guide, os_major_version: os_major_version }
 
     transient do
