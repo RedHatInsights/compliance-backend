@@ -3,6 +3,8 @@
 module V2
   # API for Profiles under Security Guides
   class ProfilesController < ApplicationController
+    include IndexableByRefId
+
     def index
       render_json profiles
     end
@@ -20,7 +22,7 @@ module V2
     end
 
     def profile
-      @profile ||= authorize(expand_resource.find(permitted_params[:id]))
+      @profile ||= authorize(ref_id_lookup(expand_resource, permitted_params[:id]))
     end
 
     def resource
