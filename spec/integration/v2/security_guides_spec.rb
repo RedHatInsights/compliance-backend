@@ -395,4 +395,300 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
       end
     end
   end
+
+  let!(:rules) do
+    FactoryBot.create_list(
+      :v2_rule,
+      3,
+      security_guide: security_guides.first,
+      profile_id: valid_prof_id
+    )
+  end
+  let(:rule_id) { rules.first.id }
+
+  path '/security_guides/{sg_id}/profiles/{prof_id}/rules' do
+    get 'List all Rules' do
+      tags 'security_guide'
+      description 'Lists all Rules nested under a parent Profile of a Security Guide'
+      operationId 'ListRules'
+      content_types
+      parameter name: :sg_id, in: :path, type: :string, required: true
+      parameter name: :prof_id, in: :path, type: :string, required: true
+      pagination_params_v2
+      sort_params_v2(V2::Rule)
+      search_params_v2(V2::Rule)
+
+      response '200', 'Lists all requested Rules under a Profile of a Security Guide' do
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('rules')
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'List of Rules under a Profile of a Security Guide') }
+
+        run_test!
+      end
+
+      response '200', 'Lists all requested Rules under a Profile of a Security Guide' do
+        let(:sort_by) { ['severity'] }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('rules')
+                     }
+                   }
+                 }
+               }
+
+        after do |e|
+          autogenerate_examples(e, 'List of Rules under a Profile of a Security Guide sorted by "title:asc"')
+        end
+
+        run_test!
+      end
+
+      response '200', 'Lists all requested Rules under a Profile of a Security Guide' do
+        let(:filter) { '(severity=high)' }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('rules')
+                     }
+                   }
+                 }
+               }
+
+        after do |e|
+          autogenerate_examples(e, 'List of Rules under a Profile of a Security Guide filtered by ' \
+                                  '"(severity=high)"')
+        end
+
+        run_test!
+      end
+
+      response '422', 'Returns error if wrong parameters are used' do
+        let(:sort_by) { ['rationale'] }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('rules')
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Description of an error when sorting by incorrect parameter') }
+
+        run_test!
+      end
+
+      response '422', 'Returns error if wrong parameters are used' do
+        let(:limit) { 103 }
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('rules')
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Description of an error when requesting higher limit than supported') }
+
+        run_test!
+      end
+
+      response '404', 'Rules not found' do
+        let(:sg_id) { Faker::Internet.uuid }
+
+        after do |e|
+          autogenerate_examples(e, 'Description of an error when the requested Rules of a Profile are ' \
+                                    'under a different or nonexistent Security Guide')
+        end
+
+        run_test!
+      end
+
+      response '404', 'Rules not found' do
+        let(:prof_id) { Faker::Internet.uuid }
+
+        after do |e|
+          autogenerate_examples(e, 'Description of an error when the requested Rules are ' \
+                                    'under a different or nonexistent Profile')
+        end
+
+        run_test!
+      end
+    end
+  end
+
+  path '/security_guides/{sg_id}/profiles/{prof_id}/rules/{rule_id}' do
+    get 'Returns requested Rule' do
+      tags 'security_guide'
+      description 'Returns requested Rule nested under a parent Profile of a Security Guide'
+      operationId 'ShowRule'
+      content_types
+      parameter name: :sg_id, in: :path, type: :string, required: true
+      parameter name: :prof_id, in: :path, type: :string, required: true
+      parameter name: :rule_id, in: :path, type: :string, required: true
+
+      response '200', 'Returns requested Rule' do
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: ref_schema('id'),
+                     attributes: ref_schema('rules')
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Rule') }
+
+        run_test!
+      end
+
+      response '404', 'Rule not found' do
+        let(:sg_id) { Faker::Internet.uuid }
+
+        after do |e|
+          autogenerate_examples(e, 'Description of an error when the requested Rule is ' \
+                                    'under a different or nonexistent Security Guide')
+        end
+
+        run_test!
+      end
+
+      response '404', 'Rule not found' do
+        let(:prof_id) { Faker::Internet.uuid }
+
+        after do |e|
+          autogenerate_examples(e, 'Description of an error when the requested Rule is ' \
+                                    'under a different or nonexistent Profile')
+        end
+
+        run_test!
+      end
+
+      response '404', 'Rule not found' do
+        let(:rule_id) { Faker::Internet.uuid }
+
+        after { |e| autogenerate_examples(e, 'Description of an error when the requested Rule is not found') }
+
+        run_test!
+      end
+    end
+  end
+
+  path '/security_guides/{sg_id}/profiles/{prof_id}/rules/{slug}' do
+    get 'Returns requested Rule' do
+      let(:slug) { rules.first.ref_id.gsub('.', '-') }
+      tags 'security_guide'
+      description 'Returns requested Rule nested under a parent Profile of a Security Guide by utilizing the slug ' \
+                  'format of the ref_id attribute'
+      operationId 'ShowRuleBySlug'
+      content_types
+      parameter name: :sg_id, in: :path, type: :string, required: true
+      parameter name: :prof_id, in: :path, type: :string, required: true
+      parameter name: :slug, in: :path, type: :string, required: true, description: 'This parameter can be generated ' \
+      'from the given rule\'s ref_id attribute by replacing all dots \'.\' with dashes \'-\'.'
+
+      response '200', 'Returns requested Rule' do
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :object,
+                   properties: {
+                     type: { type: :string },
+                     id: ref_schema('id'),
+                     attributes: ref_schema('rules')
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Rule') }
+
+        run_test!
+      end
+
+      response '404', 'Rule not found' do
+        let(:sg_id) { Faker::Internet.uuid }
+
+        after do |e|
+          autogenerate_examples(e, 'Description of an error when the requested Rule is ' \
+  'under a different or nonexistent Security Guide')
+        end
+
+        run_test!
+      end
+
+      response '404', 'Rule not found' do
+        let(:prof_id) { Faker::Internet.uuid }
+
+        after do |e|
+          autogenerate_examples(e, 'Description of an error when the requested Rule is ' \
+                                    'under a different or nonexistent Profile')
+        end
+
+        run_test!
+      end
+
+      response '404', 'Rule not found' do
+        let(:slug) { 'xccdf_org-ssgproject-fake_slug' }
+
+        after { |e| autogenerate_examples(e, 'Description of an error when the requested Rule is not found') }
+
+        run_test!
+      end
+
+      response '404', 'Rule not found' do
+        let(:slug) { 'xccdf_org-ssgproject-content_rule_file_groupowner_etc_passwd' }
+
+        after { |e| autogenerate_examples(e, 'Description of an error when the slug is in a wrong format') }
+
+        run_test!
+      end
+    end
+  end
 end
