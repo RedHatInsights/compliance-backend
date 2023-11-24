@@ -135,6 +135,14 @@ RSpec.shared_examples 'individual' do |*parents|
     expect(response.parsed_body).to match(expected)
   end
 
+  context 'with nonexistent id' do
+    it 'returns not_found' do
+      get :show, params: passable_params.merge(parents: parents, id: 'incorrect')
+
+      expect(response).to have_http_status :not_found
+    end
+  end
+
   context 'under incorrect parent', if: parents.present? do
     it 'returns not_found' do
       get :show, params: notfound_params.merge(parents: parents)
