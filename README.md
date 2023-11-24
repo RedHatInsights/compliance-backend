@@ -155,6 +155,9 @@ docker-compose exec rails bundle exec rake test:validate
 # run a single test file
 docker-compose exec -e TEST=$TEST rails bundle exec rake test TEST=test/consumers/inventory_events_consumer_test.rb
 
+# run a specific Rspec test
+podman-compose exec -e SPEC_OPTS="-e 'V2::ProfilesController GET show'" rails bundle exec rake spec
+
 # run a single test case
 docker-compose exec rails bundle exec rake test TEST=test/path/to_test.rb TESTOPTS="-n '/matching test description/'"
 ```
