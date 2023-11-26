@@ -108,42 +108,42 @@
   :entities:
     :found:
       - :factory: :v2_security_guide
-        :ref_id: searched ref_id
+        :ref_id: searched ref_id RHEL-8
     :not_found:
       - :factory: :v2_security_guide
-        :ref_id: not this ref_id
-  :query: (ref_id = "searched ref_id")
+        :ref_id: not this ref_id RHEL-8
+  :query: (ref_id = "searched ref_id RHEL-8")
 - :name: "non-equality search by ref_id"
   :entities:
     :found:
       - :factory: :v2_security_guide
-        :ref_id: not this ref_id
+        :ref_id: not this ref_id RHEL-8
     :not_found:
       - :factory: :v2_security_guide
-        :ref_id: searched ref_id
-  :query: (ref_id != "searched ref_id")
+        :ref_id: searched ref_id RHEL-8
+  :query: (ref_id != "searched ref_id RHEL-8")
 - :name: "in search by ref_id"
   :entities:
     :found:
       - :factory: :v2_security_guide
-        :ref_id: first
+        :ref_id: first-RHEL-8
       - :factory: :v2_security_guide
-        :ref_id: second
+        :ref_id: second-RHEL-8
     :not_found:
       - :factory: :v2_security_guide
-        :ref_id: not found
-  :query: (ref_id ^ (first second))
+        :ref_id: not found RHEL-8
+  :query: (ref_id ^ (first-RHEL-8 second-RHEL-8))
 - :name: "not-in search by ref_id"
   :entities:
     :found:
       - :factory: :v2_security_guide
-        :ref_id: not found
+        :ref_id: not found RHEL-8
     :not_found:
       - :factory: :v2_security_guide
-        :ref_id: first
+        :ref_id: first-RHEL-8
       - :factory: :v2_security_guide
-        :ref_id: second
-  :query: (ref_id !^ (first second))
+        :ref_id: second-RHEL-8
+  :query: (ref_id !^ (first-RHEL-8 second-RHEL-8))
 
 - :name: "equality search by os_major_version"
   :entities:

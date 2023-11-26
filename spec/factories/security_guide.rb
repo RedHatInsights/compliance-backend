@@ -10,5 +10,7 @@ FactoryBot.define do
     transient do
       os_major_version { 7 }
     end
+
+    after(:create, &:reload) # FIXME: remove this after the full remodel
   end
 end
