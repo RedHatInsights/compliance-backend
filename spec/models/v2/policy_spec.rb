@@ -24,7 +24,7 @@ describe V2::Policy do
       subject do
         V2::Policy.where.associated(:security_guide).select(
           described_class.arel_table[Arel.star],
-          'security_guide.ref_id AS security_guide__ref_id'
+          'security_guide.os_major_version AS security_guide__os_major_version'
         ).find(policy.id)
       end
 

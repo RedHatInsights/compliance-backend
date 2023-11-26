@@ -28,7 +28,7 @@ module V2
     scoped_search on: :title, only_explicit: true, operators: %i[like unlike eq ne in notin]
 
     def os_major_version
-      attributes['security_guide__ref_id'].try(:[], SecurityGuide::OS_MAJOR_RE)&.to_i || security_guide.os_major_version
+      attributes['security_guide__os_major_version'] || security_guide.os_major_version
     end
 
     def profile_title
