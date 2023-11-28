@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_26_165548) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_28_065238) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -77,6 +77,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_26_165548) do
     t.index ["host_id"], name: "index_policy_hosts_on_host_id"
     t.index ["policy_id", "host_id"], name: "index_policy_hosts_on_policy_id_and_host_id", unique: true
     t.index ["policy_id"], name: "index_policy_hosts_on_policy_id"
+  end
+
+  create_table "profile_os_minor_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "profile_id"
+    t.integer "os_minor_version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_profile_os_minor_versions_on_profile_id"
   end
 
   create_table "profile_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
