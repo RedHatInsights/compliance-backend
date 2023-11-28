@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_05_155203) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "org_id", null: false
     t.index ["org_id"], name: "index_accounts_on_org_id", unique: true
   end
@@ -28,16 +28,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
     t.string "title", null: false
     t.text "description", null: false
     t.string "version", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "package_name"
     t.index ["ref_id", "version"], name: "index_benchmarks_on_ref_id_and_version", unique: true
   end
 
   create_table "business_objectives", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["title"], name: "index_business_objectives_on_title"
   end
 
@@ -46,7 +46,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
     t.integer "sluggable_id", null: false
     t.string "sluggable_type", limit: 50
     t.string "scope"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
@@ -72,8 +72,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
   create_table "policy_hosts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "policy_id", null: false
     t.uuid "host_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["host_id"], name: "index_policy_hosts_on_host_id"
     t.index ["policy_id", "host_id"], name: "index_policy_hosts_on_policy_id_and_host_id", unique: true
     t.index ["policy_id"], name: "index_policy_hosts_on_policy_id"
@@ -90,8 +90,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
   create_table "profile_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "profile_id", null: false
     t.uuid "rule_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["profile_id", "rule_id"], name: "index_profile_rules_on_profile_id_and_rule_id", unique: true
     t.index ["profile_id"], name: "index_profile_rules_on_profile_id"
     t.index ["rule_id"], name: "index_profile_rules_on_rule_id"
@@ -100,8 +100,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
   create_table "profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "ref_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "description"
     t.uuid "account_id"
     t.uuid "benchmark_id", null: false
@@ -126,8 +126,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
   create_table "revisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "revision", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["name"], name: "index_revisions_on_name", unique: true
   end
 
@@ -171,8 +171,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
     t.uuid "host_id"
     t.uuid "rule_id"
     t.string "result"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.uuid "test_result_id"
     t.index ["host_id", "rule_id", "test_result_id"], name: "index_rule_results_on_host_id_and_rule_id_and_test_result_id", unique: true
     t.index ["host_id"], name: "index_rule_results_on_host_id"
@@ -187,8 +187,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
     t.string "severity"
     t.text "description"
     t.text "rationale"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "slug"
     t.boolean "remediation_available", default: false, null: false
     t.uuid "benchmark_id", null: false
@@ -206,13 +206,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
   end
 
   create_table "test_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "start_time"
-    t.datetime "end_time"
+    t.datetime "start_time", precision: nil
+    t.datetime "end_time", precision: nil
     t.decimal "score"
     t.uuid "profile_id"
     t.uuid "host_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "supported", default: true
     t.index ["host_id", "profile_id", "end_time"], name: "index_test_results_on_host_id_and_profile_id_and_end_time", unique: true
     t.index ["host_id"], name: "index_test_results_on_host_id"
@@ -233,8 +233,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
     t.boolean "active"
     t.boolean "org_admin"
     t.uuid "account_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_users_on_account_id"
   end
 
@@ -347,6 +347,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
       benchmarks.package_name
      FROM benchmarks;
   SQL
+  create_view "supported_profiles", sql_definition: <<-SQL
+      SELECT (array_agg(canonical_profiles.id ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS id,
+      (array_agg(canonical_profiles.title ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS title,
+      canonical_profiles.ref_id,
+      (array_agg(security_guides.version ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_version,
+      security_guides.os_major_version,
+      array_agg(DISTINCT profile_os_minor_versions.os_minor_version ORDER BY profile_os_minor_versions.os_minor_version DESC) AS os_minor_versions
+     FROM ((canonical_profiles
+       JOIN security_guides ON ((security_guides.id = canonical_profiles.security_guide_id)))
+       JOIN profile_os_minor_versions ON ((profile_os_minor_versions.profile_id = canonical_profiles.id)))
+    GROUP BY canonical_profiles.ref_id, security_guides.os_major_version;
+  SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
        RETURNS trigger
@@ -355,6 +367,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
       DECLARE bo_id uuid;
       DECLARE result_id uuid;
       BEGIN
+          -- Insert a new business objective record if the business_objective field is
+          -- set to a value and return with its ID.
           INSERT INTO "business_objectives" ("title", "created_at", "updated_at")
           SELECT NEW."business_objective", NOW(), NOW()
           WHERE NEW."business_objective" IS NOT NULL RETURNING "id" INTO "bo_id";
@@ -387,10 +401,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
       AS $function$
       DECLARE bo_id uuid;
       BEGIN
-        SELECT "business_objective_id" INTO "bo_id" FROM "policies" WHERE "id" = OLD."id";
-        DELETE FROM "policies" WHERE "id" = OLD."id";
-        DELETE FROM "business_objectives" WHERE "id" = bo_id;
-        RETURN OLD;
+        DELETE FROM "policies" WHERE "id" = OLD."id" RETURNING "business_objective_id" INTO "bo_id";
+        -- Delete any remaining business objectives associated with the policy of no other policies use it
+        DELETE FROM "business_objectives" WHERE "id" = "bo_id" AND (SELECT COUNT("id") FROM "policies" WHERE "business_objectives"."id" = "bo_id") = 0;
+      RETURN OLD;
       END
       $function$
   SQL
@@ -401,6 +415,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
       AS $function$
       DECLARE "bo_id" uuid;
       BEGIN
+          -- Create a new business objective record if the apropriate field is set and there is no
+          -- existing business objective already assigned to the policy and return with its ID.
           INSERT INTO "business_objectives" ("title", "created_at", "updated_at")
           SELECT NEW."business_objective", NOW(), NOW() FROM "policies" WHERE
             NEW."business_objective" IS NOT NULL AND
@@ -408,6 +424,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
             "policies"."id" = OLD."id"
           RETURNING "id" INTO "bo_id";
 
+          -- If the previous insertion was successful, there is nothing to update, otherwise try to
+          -- update any existing business objective assigned to the policy and return with its ID.
           IF "bo_id" IS NULL THEN
             UPDATE "business_objectives" SET "title" = NEW."business_objective", "updated_at" = NOW()
             FROM "policies" WHERE
@@ -416,6 +434,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
             RETURNING "business_objectives"."id" INTO "bo_id";
           END IF;
 
+          -- Update the policy itself, use the ID of the business objective from the previous two queries,
+          -- if the business_objective field is set to NULL, remove the link between the two tables.
           UPDATE "policies" SET
             "name" = NEW."title",
             "description" = NEW."description",
@@ -423,6 +443,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
             "business_objective_id" = CASE WHEN NEW."business_objective" IS NULL THEN NULL ELSE "bo_id" END
           WHERE "id" = OLD."id";
 
+          -- If the business_objective field is set to NULL, delete its record in the business objectives
+          -- table using the ID retrieved during the second query.
           DELETE FROM "business_objectives" USING "policies"
           WHERE NEW."business_objective" IS NULL AND "business_objectives"."id" = "bo_id";
 

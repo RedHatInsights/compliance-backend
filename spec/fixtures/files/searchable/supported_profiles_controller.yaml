@@ -1,0 +1,28 @@
+---
+
+- :name: "equality search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :v2_profile
+        :os_major_version: 7
+        :supports_minors:
+          - 0
+    :not_found:
+      - :factory: :v2_profile
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+  :query: (os_major_version = 7)
+- :name: "non-equality search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :v2_profile
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+    :not_found:
+      - :factory: :v2_profile
+        :os_major_version: 7
+        :supports_minors:
+          - 0
+  :query: (os_major_version != 7)
