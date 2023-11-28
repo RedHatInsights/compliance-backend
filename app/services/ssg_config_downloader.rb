@@ -25,7 +25,7 @@ class SsgConfigDownloader
     end
 
     def update_ssg_ds
-      ssg_content = download(ssg_datastream_config_url)&.read
+      ssg_content = load_ssg_content
       ssg_content && File.open(DS_FILE_PATH, 'w') do |f|
         f.write(ssg_content)
       end
@@ -50,6 +50,10 @@ class SsgConfigDownloader
         Settings.private_endpoints.compliance_ssg.url,
         Settings.supported_ssg_ansible_tasks_config
       ].join('/')
+    end
+
+    def load_ssg_content
+      download(ssg_datastream_config_url)&.read
     end
 
     private
