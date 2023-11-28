@@ -13,6 +13,6 @@ module V2
     scoped_search on: :ref_id, only_explicit: true, operators: %i[eq ne in notin]
 
     belongs_to :security_guide
-    has_many :profile_os_minor_versions, class_name: 'V2::ProfileOsMinorVersion', dependent: :destroy
+    has_many :os_minor_versions, class_name: 'V2::ProfileOsMinorVersion', dependent: :destroy
   end
 end
