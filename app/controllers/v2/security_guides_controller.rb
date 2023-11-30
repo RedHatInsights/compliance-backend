@@ -23,10 +23,6 @@ module V2
       @security_guide ||= authorize(expand_resource.find(permitted_params[:id]))
     end
 
-    def scope
-      policy_scope(resource)
-    end
-
     def resource
       V2::SecurityGuide
     end
