@@ -34,7 +34,9 @@ Rails.application.routes.draw do
             end
           end
 
-          resources :policies, except: [:new, :edit]
+          resources :policies, except: [:new, :edit] do
+            resources :tailorings, only: [:index, :show], parents: [:policy]
+          end
         end
       end
 

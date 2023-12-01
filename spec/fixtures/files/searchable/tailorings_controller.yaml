@@ -1,0 +1,24 @@
+---
+
+- :name: "equality search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :v2_tailoring
+        :os_minor_version: 9
+        :policy_id: ${policy_id}
+    :not_found:
+      - :factory: :v2_tailoring
+        :os_minor_version: 8
+        :policy_id: ${policy_id}
+  :query: (os_minor_version = 9)
+- :name: "non-equality search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :v2_tailoring
+        :os_minor_version: 8
+        :policy_id: ${policy_id}
+    :not_found:
+      - :factory: :v2_tailoring
+        :os_minor_version: 1
+        :policy_id: ${policy_id}
+  :query: (os_minor_version != 1)

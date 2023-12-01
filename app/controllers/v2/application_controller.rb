@@ -79,9 +79,12 @@ module V2
         ref = scope.reflect_on_association(parent)
         klass = ref.klass
 
+        # rubocop:disable Layout/CommentIndentation
         scope.joins(parent)
              .where(parent => { klass.primary_key => permitted_params[ref.foreign_key] })
-             .merge(Pundit.policy_scope(current_user, klass))
+             # FIXME: `merge` misgenerates alias for query for joined tables
+             # .merge(Pundit.policy_scope(current_user, klass))
+        # rubocop:enable Layout/CommentIndentation
       end
     end
 

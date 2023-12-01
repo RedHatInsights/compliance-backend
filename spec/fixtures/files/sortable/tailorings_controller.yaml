@@ -1,0 +1,21 @@
+:entities:
+  - :factory: :v2_tailoring
+    :os_minor_version: 1
+    :policy_id: ${policy_id}
+
+  - :factory: :v2_tailoring
+    :os_minor_version: 9
+    :policy_id: ${policy_id}
+
+  - :factory: :v2_tailoring
+    :os_minor_version: 8
+    :policy_id: ${policy_id}
+
+:queries:
+  - :sort_by:
+      - 'os_minor_version:asc'
+    :result: [0, 2, 1]
+
+  - :sort_by:
+      - 'os_minor_version:desc'
+    :result: [1, 2, 0]
