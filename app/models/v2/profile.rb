@@ -13,6 +13,8 @@ module V2
     searchable_by :ref_id, %i[eq ne in notin]
 
     belongs_to :security_guide
+    has_many :profile_rules, class_name: 'V2::ProfileRule', dependent: :destroy
+    has_many :rules, through: :profile_rules, class_name: 'V2::Rule'
     has_many :os_minor_versions, class_name: 'V2::ProfileOsMinorVersion', dependent: :destroy
   end
 end
