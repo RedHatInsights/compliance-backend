@@ -24,6 +24,21 @@ FactoryBot.define do
       end
     end
 
+    trait :with_rules do
+      transient do
+        rule_count { 3 }
+      end
+
+      after(:create) do |security_guide, evaluator|
+        create_list(
+          :v2_rule,
+          evaluator.rule_count,
+          :with_group_hierarchy,
+          security_guide: security_guide
+        )
+      end
+    end
+
     after(:create, &:reload) # FIXME: remove this after the full remodel
   end
 end

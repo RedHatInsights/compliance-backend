@@ -27,6 +27,7 @@ module V2
     /x
 
     belongs_to :security_guide
+    belongs_to :rule_group, class_name: 'V2::RuleGroup'
     has_many :profile_rules, dependent: :destroy
     has_many :profiles, through: :profile_rules, source: :profile, class_name: 'V2::Profile'
 

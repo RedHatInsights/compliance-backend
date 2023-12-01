@@ -20,5 +20,21 @@ FactoryBot.define do
         association(:profile_os_minor_version, os_minor_version: os_minor_version)
       end
     end
+
+    trait :with_rules do
+      transient do
+        rule_count { 5 }
+      end
+
+      after(:create) do |profile, evaluator|
+        create_list(
+          :v2_rule,
+          evaluator.rule_count,
+          :with_group_hierarchy,
+          profiles: [profile],
+          security_guide: profile.security_guide
+        )
+      end
+    end
   end
 end
