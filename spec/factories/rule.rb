@@ -10,10 +10,12 @@ FactoryBot.define do
     precedence { Faker::Number.between(from: 1, to: 9999) }
 
     security_guide { association :v2_security_guide, os_major_version: os_major_version }
+    rule_group { association :v2_rule_group, parent_count: parent_count, security_guide: security_guide }
 
     transient do
       os_major_version { 7 }
       profile_id { nil }
+      parent_count { (1..5).to_a.sample }
     end
 
     after(:create) do |rule, ev|

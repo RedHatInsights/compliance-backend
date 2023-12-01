@@ -24,6 +24,16 @@ FactoryBot.define do
       end
     end
 
+    trait :with_rules do
+      after(:create) do |security_guide, _|
+        create_list(
+          :v2_rule,
+          3,
+          security_guide: security_guide
+        )
+      end
+    end
+
     after(:create, &:reload) # FIXME: remove this after the full remodel
   end
 end

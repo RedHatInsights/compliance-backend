@@ -43,11 +43,14 @@ if Rails.env.test?
 
   # Assembles object to be passed into factory
   # - adds url params into an object based on yaml entity definition in sorting and searching specs
+  # - if object with method call is passed, it parses object and method into m[1] and m[3] and executes
   def factory_params(item, extra_params)
     item = item.each_with_object({}) do |(key, value), obj|
       obj[key] = value
-      value.is_a?(String) && value.match(/^\$\{([a-zA-Z_]+)\}$/) do |m|
-        obj[key] = extra_params[m[1].to_sym]
+      value.is_a?(String) && value.match(/^\$\{([a-zA-Z_]+)(\.([a-zA-Z_]+))?\}$/) do |m|
+        obj_or_attr = extra_params[m[1].to_sym]
+        method = m[3].to_sym if m[3]
+        obj[key] = method ? obj_or_attr.send(method) : obj_or_attr
       end
     end
 

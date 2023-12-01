@@ -13,11 +13,36 @@ FactoryBot.define do
       os_major_version { 7 }
       ref_id_suffix { SecureRandom.hex }
       supports_minors { [] }
+      value_count { 0 }
     end
 
     os_minor_versions do
       supports_minors&.map do |os_minor_version|
         association(:profile_os_minor_version, os_minor_version: os_minor_version)
+      end
+    end
+
+    trait :with_rules do
+      after(:create) do |profile, _|
+        create_list(
+          :v2_rule,
+          5,
+          profiles: [profile],
+          security_guide: profile.security_guide
+        )
+      end
+    end
+
+    value_overrides do
+      if value_count > 0
+        create_list(
+          :v2_value_definition,
+          value_count,
+          security_guide: security_guide
+        )
+        security_guide.value_definitions.sample(value_count / 2).each_with_object({}) do |value, object|
+          object[value.ref_id] = SecureRandom.random_number(10)
+        end
       end
     end
   end
