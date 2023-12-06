@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_28_065238) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_06_095417) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -347,40 +347,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_28_065238) do
       benchmarks.package_name
      FROM benchmarks;
   SQL
-  create_function :tailorings_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.tailorings_insert()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE result_id uuid;
-      BEGIN
-
-      INSERT INTO "profiles" (
-        "policy_id",
-        "account_id",
-        "parent_profile_id",
-        "benchmark_id",
-        "value_overrides",
-        "created_at",
-        "updated_at"
-      ) SELECT
-        NEW."policy_id",
-        "policies"."account_id",
-        NEW."profile_id",
-        "canonical_profiles"."security_guide_id",
-        NEW."value_overrides",
-        NEW."created_at",
-        NEW."updated_at"
-      FROM "policies"
-      INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "policies"."profile_id"
-      WHERE "policies"."id" = NEW."policy_id" RETURNING "id" INTO "result_id";
-
-      NEW."id" := "result_id";
-      RETURN NEW;
-
-      END
-      $function$
-  SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
        RETURNS trigger
@@ -464,6 +430,42 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_28_065238) do
       END
       $function$
   SQL
+  create_function :tailorings_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.tailorings_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+
+      INSERT INTO "profiles" (
+        "policy_id",
+        "account_id",
+        "parent_profile_id",
+        "benchmark_id",
+        "os_minor_version",
+        "value_overrides",
+        "created_at",
+        "updated_at"
+      ) SELECT
+        NEW."policy_id",
+        "policies"."account_id",
+        NEW."profile_id",
+        "canonical_profiles"."security_guide_id",
+        NEW."os_minor_version",
+        NEW."value_overrides",
+        NEW."created_at",
+        NEW."updated_at"
+      FROM "policies"
+      INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "policies"."profile_id"
+      WHERE "policies"."id" = NEW."policy_id" RETURNING "id" INTO "result_id";
+
+      NEW."id" := "result_id";
+      RETURN NEW;
+
+      END
+      $function$
+  SQL
 
 
   create_trigger :v2_policies_insert, sql_definition: <<-SQL
@@ -474,5 +476,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_28_065238) do
   SQL
   create_trigger :v2_policies_update, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
+  SQL
+  create_trigger :tailorings_insert, sql_definition: <<-SQL
+      CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
 end
