@@ -54,7 +54,7 @@ pipeline {
                 //     }
                 // }
 
-                stage('Deploy Ephemeral Environment') {
+                stage('Deploy Ephemeral Environment & Components') {
                     environment {
                         RELEASE_NAMESPACE="false"
                     }
@@ -64,6 +64,21 @@ pipeline {
                                 curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                                 source ./.cicd_bootstrap.sh
                                 source "${CICD_ROOT}/deploy_ephemeral_env.sh"
+
+
+                                bonfire deploy \
+                                    ${APP_NAME} \
+                                    --source=appsre \
+                                    --ref-env ${REF_ENV} \
+                                    --set-image-tag ${IMAGE}=${IMAGE_TAG} \
+                                    --namespace ${NAMESPACE} \
+                                    --timeout ${DEPLOY_TIMEOUT} \
+                                    --optional-deps-method ${OPTIONAL_DEPS_METHOD} \
+                                    --frontends ${DEPLOY_FRONTENDS} \
+                                    ${TEMPLATE_REF_ARG} \
+                                    ${COMPONENTS_ARG} \
+                                    ${COMPONENTS_RESOURCES_ARG} \
+                                    ${EXTRA_DEPLOY_ARGS}
 
                                 > variables
                                 echo "NAMESPACE:$NAMESPACE" >> variables
@@ -101,7 +116,6 @@ pipeline {
                         source ./.cicd_bootstrap.sh
                         
                         IMAGE="quay.io/cloudservices/compliance-backend"
-                        IMAGE_TAG="pr-1877-latest"
 
                         source "${CICD_ROOT}/_common_deploy_logic.sh"
 
