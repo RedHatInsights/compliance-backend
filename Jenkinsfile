@@ -41,7 +41,11 @@ pipeline {
                 stage('Build the PR commit image') {
                     steps {
                         withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh 'bash -x build_deploy.sh'
+                            sh '''
+                            env
+
+                            bash -x build_deploy.sh
+                            '''
                         }
                     }
                 }
