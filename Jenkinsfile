@@ -67,24 +67,9 @@ pipeline {
                             sh '''
                                 curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                                 source ./.cicd_bootstrap.sh
-                                source "${CICD_ROOT}/deploy_ephemeral_env.sh"
-
 
                                 IMAGE_TAG=$(git rev-parse HEAD^)
-
-                                bonfire deploy \
-                                    ${APP_NAME} \
-                                    --source=appsre \
-                                    --ref-env ${REF_ENV} \
-                                    --set-image-tag ${IMAGE}=${IMAGE_TAG} \
-                                    --namespace ${NAMESPACE} \
-                                    --timeout ${DEPLOY_TIMEOUT} \
-                                    --optional-deps-method ${OPTIONAL_DEPS_METHOD} \
-                                    --frontends ${DEPLOY_FRONTENDS} \
-                                    ${TEMPLATE_REF_ARG} \
-                                    ${COMPONENTS_ARG} \
-                                    ${COMPONENTS_RESOURCES_ARG} \
-                                    ${EXTRA_DEPLOY_ARGS}
+                                source "${CICD_ROOT}/deploy_ephemeral_env.sh"
 
                                 > reserved_namespace
                                 echo "$NAMESPACE" >> reserved_namespace
