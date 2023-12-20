@@ -70,6 +70,8 @@ pipeline {
                                 source "${CICD_ROOT}/deploy_ephemeral_env.sh"
 
 
+                                IMAGE_TAG=$(git rev-parse HEAD^)
+
                                 bonfire deploy \
                                     ${APP_NAME} \
                                     --source=appsre \
@@ -84,27 +86,13 @@ pipeline {
                                     ${COMPONENTS_RESOURCES_ARG} \
                                     ${EXTRA_DEPLOY_ARGS}
 
-                                > variables
-                                echo "NAMESPACE:$NAMESPACE" >> variables
-                                echo "IMAGE_TAG:$IMAGE_TAG" >> variables
+                                > reserved_namespace
+                                echo "$NAMESPACE" >> reserved_namespace
                             '''
                         }
 
                         script {
-                            FILE_CONTENTS = readFile('variables')
-                            flags_map = [:]
-                            flags = FILE_CONTENTS.split("\n")
-                            for (i in flags) {
-                                s=i.split(':')
-                                if (s.length == 2) {
-                                    flags_map[s[0]] = "${s[1]}"
-                                } else {
-                                    flags_map[s[0]] = ""
-                                }
-                            }
-
-                            env.NAMESPACE = flags_map['NAMESPACE']
-                            env.IMAGE_TAG = flags_map['IMAGE_TAG']
+                            env.NAMESPACE = readFile('reserved_namespace')
                         }
                     }
                 }
