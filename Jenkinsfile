@@ -68,7 +68,8 @@ pipeline {
                                 curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                                 source ./.cicd_bootstrap.sh
 
-                                IMAGE_TAG="pr-${ghprbPullId}-$(git rev-parse HEAD^)"
+                                PREVIOUS_COMMIT_HASH=$(git rev-parse HEAD^)
+                                IMAGE_TAG="pr-${ghprbPullId}-${PREVIOUS_COMMIT_HASH:0:7}"
                                 source "${CICD_ROOT}/deploy_ephemeral_env.sh"
 
                                 > reserved_namespace
