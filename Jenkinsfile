@@ -10,6 +10,7 @@ def secrets = [
         [envVar: 'RH_REGISTRY_TOKEN', vaultKey: 'token']]]
 ]
 
+
 def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID, engineVersion: 1]
 
 pipeline {
