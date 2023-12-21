@@ -68,9 +68,9 @@ pipeline {
                                 curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                                 source ./.cicd_bootstrap.sh
 
-                                PREVIOUS_COMMIT_HASH=$(git rev-parse HEAD^)
+                                PREVIOUS_COMMIT_HASH=$(git rev-parse --short=7 HEAD^)
                                 GIT_COMMIT=$PREVIOUS_COMMIT_HASH
-                                IMAGE_TAG="pr-${ghprbPullId}-${PREVIOUS_COMMIT_HASH:0:7}"
+                                IMAGE_TAG="pr-${ghprbPullId}-${PREVIOUS_COMMIT_HASH}"
 
                                 source "${CICD_ROOT}/deploy_ephemeral_env.sh"
 
