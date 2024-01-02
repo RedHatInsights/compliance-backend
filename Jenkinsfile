@@ -40,7 +40,7 @@ pipeline {
             parallel {
                 stage('Build the PR commit image') {
                     environment {
-                        IMAGE_TAG=$(git rev-parse --short=7 HEAD)
+                        IMAGE_TAG=$("git rev-parse --short=7 HEAD")
                     }
                     steps {
                         withVault([configuration: configuration, vaultSecrets: secrets]) {
