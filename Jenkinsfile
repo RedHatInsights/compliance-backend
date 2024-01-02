@@ -12,7 +12,6 @@ def secrets = [
 
 def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID, engineVersion: 1]
 
-
 pipeline {
 
     agent { label 'rhel8' }
