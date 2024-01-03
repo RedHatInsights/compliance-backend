@@ -118,6 +118,15 @@ pipeline {
                     '''
                 }
             }
+
+            post {
+                failure {
+                    slackSend  channel: '@eshamard', color: "danger", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
+                }
+                unstable {
+                    slackSend  channel: '@eshamard', color: "warning", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
+                }
+            }
         }
     }
 
