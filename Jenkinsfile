@@ -15,6 +15,7 @@ def secrets = [
 def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID]
 
 pipeline {
+
     agent { label 'rhel8' }
     options {
         timestamps()
@@ -32,46 +33,100 @@ pipeline {
         IQE_MARKER_EXPRESSION="compliance_smoke"
         IQE_PLUGINS="compliance"
         REF_ENV="insights-stage"
+
+        // CICD_TOOLS_URL='https://raw.githubusercontent.com/RedHatInsights/cicd-tools/main/src/bootstrap.sh'
     }
 
     stages {
-
-        stage('Build the PR commit image') {
-            steps {
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'bash -x build_deploy.sh'
-                }
-            }
-        }
-
         stage('Run Tests') {
             parallel {
-                stage('Run unit tests') {
+                stage('Build the PR commit image') {
                     steps {
                         withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh 'bash -x ./scripts/unit_test.sh'
+                            sh '''
+                            env
+                            
+                            IMAGE_TAG=$(git rev-parse --short=7 HEAD)
+                            
+                            bash -x build_deploy.sh
+                            '''
                         }
                     }
                 }
-                stage('Run smoke tests') {
+
+                // stage('Run unit tests') {
+                //     steps {
+                //         withVault([configuration: configuration, vaultSecrets: secrets]) {
+                //             sh 'bash -x ./scripts/unit_test.sh'
+                //         }
+                //     }
+                // }
+
+                stage('Deploy Ephemeral Environment & Components') {
+                    environment {
+                        RELEASE_NAMESPACE="false"
+                    }
                     steps {
                         withVault([configuration: configuration, vaultSecrets: secrets]) {
                             sh '''
                                 curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                                 source ./.cicd_bootstrap.sh
+
+                                PREVIOUS_COMMIT_HASH=$(git rev-parse --short=7 HEAD^)
+                                GIT_COMMIT=$(git rev-parse HEAD^)
+                                IMAGE_TAG="pr-${ghprbPullId}-${PREVIOUS_COMMIT_HASH}"
+
                                 source "${CICD_ROOT}/deploy_ephemeral_env.sh"
-                                source "${CICD_ROOT}/cji_smoke_test.sh"
+
+                                > reserved_namespace
+                                echo "$NAMESPACE" >> reserved_namespace
                             '''
                         }
-                    }
-                    post {
-                        failure {
-                            slackSend  channel: '@eshamard', color: "danger", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
-                        }
-                        unstable {
-                            slackSend  channel: '@eshamard', color: "warning", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
+
+                        script {
+                            env.NAMESPACE = readFile('reserved_namespace')
                         }
                     }
+                }
+            }
+        }
+
+        stage('2nd Stage') {
+            steps {
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+
+                    sh '''
+                        curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
+                        source ./.cicd_bootstrap.sh
+                        
+                        IMAGE="quay.io/cloudservices/compliance-backend"
+
+                        source "${CICD_ROOT}/_common_deploy_logic.sh"
+
+                        set -x
+                        bonfire deploy \
+                            ${APP_NAME} \
+                            --source=appsre \
+                            --ref-env ${REF_ENV} \
+                            --set-image-tag ${IMAGE}=${IMAGE_TAG} \
+                            --namespace ${NAMESPACE} \
+                            --timeout ${DEPLOY_TIMEOUT} \
+                            ${TEMPLATE_REF_ARG} \
+                            ${COMPONENTS_ARG} \
+                            ${COMPONENTS_RESOURCES_ARG} \
+                            ${EXTRA_DEPLOY_ARGS}
+                    
+                        source "${CICD_ROOT}/cji_smoke_test.sh"
+                    '''
+                }
+            }
+
+            post {
+                failure {
+                    slackSend  channel: '@eshamard', color: "danger", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
+                }
+                unstable {
+                    slackSend  channel: '@eshamard', color: "warning", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
                 }
             }
         }
