@@ -1,5 +1,7 @@
 def secrets = [
     [path: params.VAULT_PATH_SVC_ACCOUNT_EPHEMERAL, engineVersion: 1, secretValues: [
+        [envVar: 'OC_LOGIN_TOKEN_DEV', vaultKey: 'oc-login-token-dev'],
+        [envVar: 'OC_LOGIN_SERVER_DEV', vaultKey: 'oc-login-server-dev'],
         [envVar: 'OC_LOGIN_TOKEN', vaultKey: 'oc-login-token'],
         [envVar: 'OC_LOGIN_SERVER', vaultKey: 'oc-login-server']]],
     [path: params.VAULT_PATH_QUAY_PUSH, engineVersion: 1, secretValues: [
@@ -38,6 +40,8 @@ pipeline {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                 sh '''
                     env
+                    whoami
+                    ls -lrt $KUBE_
                     curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                     source ./.cicd_bootstrap.sh
                     # source "${CICD_ROOT}/deploy_ephemeral_env.sh"
