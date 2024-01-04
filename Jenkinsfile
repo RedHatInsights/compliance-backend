@@ -37,6 +37,7 @@ pipeline {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                 sh '''
+                    env
                     curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                     source ./.cicd_bootstrap.sh
                     # source "${CICD_ROOT}/deploy_ephemeral_env.sh"
