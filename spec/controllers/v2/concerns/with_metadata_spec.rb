@@ -81,8 +81,8 @@ RSpec.shared_examples 'with metadata' do |*parents|
       items
 
       get :index, params: passable_params.merge(
-        limit: 10,
-        offset: 9,
+        limit: item_count,
+        offset: item_count - 1,
         parents: parents
       )
 
@@ -96,7 +96,7 @@ RSpec.shared_examples 'with metadata' do |*parents|
 
       get :index, params: passable_params.merge(
         limit: 2,
-        offset: 11,
+        offset: item_count + 1,
         parents: parents
       )
 
