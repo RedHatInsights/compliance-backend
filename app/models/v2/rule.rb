@@ -34,8 +34,8 @@ module V2
     sortable_by :severity, SORTED_SEVERITIES
     sortable_by :precedence
 
-    scoped_search on: :title, only_explicit: true, operators: %i[like unlike eq ne in notin]
-    scoped_search on: :severity, only_explicit: true, operators: %i[eq ne in notin]
+    searchable_by :title, %i[like unlike eq ne in notin]
+    searchable_by :severity, %i[eq ne in notin]
 
     # This field should be only available for rules that have a remediation available and it
     # is bound to a context of a profile and a security guide. A single rule can belong to one
