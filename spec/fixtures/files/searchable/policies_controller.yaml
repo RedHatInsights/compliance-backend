@@ -66,3 +66,63 @@
         :title: searched title
         :account: ${account}
   :query: (title !~ "searched title")
+- :name: "equality search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: searched title
+        :os_major_version: 7
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: not this title
+        os_major_version: 8
+        :account: ${account}
+  :query: (os_major_version = 7)
+- :name: "non-equality search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: not this title
+        os_major_version: 8
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: searched title
+        os_major_version: 7
+        :account: ${account}
+  :query: (os_major_version != 7)
+- :name: "in search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: searched title
+        :os_major_version: 7
+        :account: ${account}
+      - :factory: :v2_policy
+        :title: searched title
+        :os_major_version: 9
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: not this title
+        os_major_version: 8
+        :account: ${account}
+  :query: (os_major_version ^ "7 9")
+- :name: "not-in search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: not this title
+        os_major_version: 8
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_policy
+        :title: searched title
+        :os_major_version: 7
+        :account: ${account}
+      - :factory: :v2_policy
+        :title: searched title
+        :os_major_version: 9
+        :account: ${account}
+  :query: (os_major_version !^ "7 9")
