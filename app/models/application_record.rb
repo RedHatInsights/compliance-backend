@@ -27,11 +27,4 @@ class ApplicationRecord < ActiveRecord::Base
   def self.count_by
     primary_key.to_sym
   end
-
-  # Returns with a list of symbols describing one-to-one relationships
-  def self.one_to_one
-    reflections.each_with_object([]) do |(key, reflection), obj|
-      obj << key.to_sym if reflection.has_one? || reflection.belongs_to?
-    end
-  end
 end

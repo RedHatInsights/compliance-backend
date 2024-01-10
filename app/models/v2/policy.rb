@@ -25,7 +25,7 @@ module V2
     sortable_by :business_objective
     sortable_by :compliance_threshold
 
-    scoped_search on: :title, only_explicit: true, operators: %i[like unlike eq ne in notin]
+    searchable_by :title, %i[like unlike eq ne in notin]
 
     def os_major_version
       attributes['security_guide__os_major_version'] || security_guide.os_major_version

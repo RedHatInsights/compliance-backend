@@ -7,7 +7,7 @@ module V2
     self.table_name = :supported_profiles
     self.primary_key = :id
 
-    scoped_search on: :os_major_version, only_explicit: true, operators: %i[eq ne]
+    searchable_by :os_major_version, %i[eq ne]
 
     sortable_by :title
     sortable_by :os_major_version

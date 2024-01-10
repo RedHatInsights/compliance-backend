@@ -46,7 +46,6 @@ module V2
       end
       # :nocov:
 
-      # rubocop:disable Metrics/AbcSize
       # :nocov:
       def search(data)
         return data if permitted_params[:filter].blank?
@@ -59,17 +58,11 @@ module V2
         data.search_for(permitted_params[:filter])
       end
       # :nocov:
-      # rubocop:enable Metrics/AbcSize
 
-      # :nocov:
       def sort(data)
-        order_hash, extra_scopes = data.klass.build_order_by(permitted_params[:sort_by])
-
-        extra_scopes.inject(data.order(order_hash)) do |result, scope|
-          result.send(scope)
-        end
+        order_hash = data.klass.build_order_by(permitted_params[:sort_by])
+        data.order(order_hash)
       end
-      # :nocov:
     end
   end
 end

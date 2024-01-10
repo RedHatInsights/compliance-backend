@@ -20,9 +20,10 @@ module V2
     has_many :value_definitions, class_name: 'V2::ValueDefinitions', dependent: :destroy
     has_many :rules, class_name: 'V2::Rule', dependent: :destroy
 
-    scoped_search on: :title, only_explicit: true, operators: %i[like unlike eq ne in notin]
-    scoped_search on: %i[version ref_id], only_explicit: true, operators: %i[eq ne in notin]
-    scoped_search on: :os_major_version, only_explicit: true, operators: %i[eq ne]
+    searchable_by :title, %i[like unlike eq ne in notin]
+    searchable_by :version, %i[eq ne in notin]
+    searchable_by :ref_id, %i[eq ne in notin]
+    searchable_by :os_major_version, %i[eq ne]
 
     scope :os_major_version, lambda { |major, equals = true|
       where(os_major_version_query(major, equals))

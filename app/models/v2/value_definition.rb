@@ -12,6 +12,6 @@ module V2
 
     sortable_by :title
 
-    scoped_search on: :title, only_explicit: true, operators: %i[like unlike eq ne in notin]
+    searchable_by :title, %i[like unlike eq ne in notin]
   end
 end
