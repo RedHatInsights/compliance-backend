@@ -20,12 +20,20 @@ module V2
     }
 
     sortable_by :title
-    # sortable_by :os_major_version # TODO: this needs to be made compatible with `expand_resource`
+    sortable_by :os_major_version, 'security_guide.os_major_version'
     # sortable_by :host_count # TODO: this can be turned on after we have ways to assign hosts
     sortable_by :business_objective
     sortable_by :compliance_threshold
 
     searchable_by :title, %i[like unlike eq ne in notin]
+    searchable_by :os_major_version, %i[eq ne in notin] do |_key, op, val|
+      bind = ['IN', 'NOT IN'].include?(op) ? '(?)' : '?'
+
+      {
+        conditions: "security_guide.os_major_version #{op} #{bind}",
+        parameter: [val.split.map(&:to_i)]
+      }
+    end
 
     def os_major_version
       attributes['security_guide__os_major_version'] || security_guide.os_major_version
