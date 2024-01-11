@@ -16,6 +16,488 @@
     }
   ],
   "paths": {
+    "/policies": {
+      "get": {
+        "summary": "List all Policies",
+        "tags": [
+          "policy"
+        ],
+        "description": "Lists all Policies",
+        "operationId": "ListPolicies",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to return per page",
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Offset of first item of paginated response",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "description": "Attribute and direction to sort the items by. Represented by an array of fields with an optional direction (`<key>:asc` or `<key>:desc`).<br><br>If no direction is selected, `<key>:asc` is used by default.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "title",
+                  "business_objective",
+                  "compliance_threshold",
+                  "title:asc",
+                  "title:desc",
+                  "business_objective:asc",
+                  "business_objective:desc",
+                  "compliance_threshold:asc",
+                  "compliance_threshold:desc"
+                ]
+              }
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Policies are searchable using attributes `title`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "lists all Policies requested",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "List of Policies": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "08215221-2e1f-47b3-9f1f-1f49ff73f06f",
+                          "title": "Placeat facere et quos.",
+                          "description": "Sit incidunt rerum. Sit doloribus sed. Eos dignissimos totam.",
+                          "business_objective": null,
+                          "compliance_threshold": 1.0,
+                          "host_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Laboriosam nesciunt iusto nam.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_5c8b71bde2b8e935236ed9a1797ca07b"
+                        },
+                        {
+                          "id": "29c2ffd2-1983-41c6-b183-55e9a9295ccd",
+                          "title": "Rem sunt pariatur quo.",
+                          "description": "Quae laborum occaecati. Ipsum in est. Tenetur cupiditate explicabo.",
+                          "business_objective": null,
+                          "compliance_threshold": 3.0,
+                          "host_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Facere optio aut consequatur.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_00648d539157d3434be4d27733be0d6f"
+                        },
+                        {
+                          "id": "889eac53-9f56-464e-b9fd-4ba287acfd9e",
+                          "title": "Sit temporibus aut corrupti.",
+                          "description": "Et voluptatem deleniti. Corrupti eos nulla. Voluptatem reiciendis illo.",
+                          "business_objective": null,
+                          "compliance_threshold": 27.0,
+                          "host_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Nihil sit beatae id.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_2c9f20bb193e92ecdbe2bb7f8d3650e9"
+                        },
+                        {
+                          "id": "a02d676f-a06e-467f-889a-23614beb5a7c",
+                          "title": "Tempora optio eius quia.",
+                          "description": "Et optio non. Sit nemo ea. Et ut distinctio.",
+                          "business_objective": null,
+                          "compliance_threshold": 82.0,
+                          "host_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Ratione exercitationem suscipit accusantium.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_ca1eb8ce81f08710047f9f8394539c80"
+                        }
+                      ],
+                      "meta": {
+                        "total": 4,
+                        "limit": 10,
+                        "offset": 0
+                      },
+                      "links": {
+                        "first": "/api/compliance/v2/policies?limit=10&offset=0",
+                        "last": "/api/compliance/v2/policies?limit=10&offset=0"
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/links"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/id"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/policy"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "returns error if wrong parameters are used",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Description of an error when sorting by incorrect parameter": {
+                    "value": {
+                      "errors": [
+                        "Result cannot be sorted by the 'description' column."
+                      ]
+                    },
+                    "summary": "",
+                    "description": ""
+                  },
+                  "Description of an error when requesting higher limit than supported": {
+                    "value": {
+                      "errors": [
+                        "Invalid parameter: limit must be less than or equal to 100"
+                      ]
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/links"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/id"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/policies"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/policies/{policy_id}": {
+      "get": {
+        "summary": "Retrieve a Policy",
+        "tags": [
+          "policy"
+        ],
+        "description": "Retrieves requested Policy",
+        "operationId": "ShowPolicy",
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "retrieves a Policy",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Policy": {
+                    "value": {
+                      "data": {
+                        "id": "52273491-54d8-4498-a980-151d4200b84e",
+                        "title": "Eligendi ipsam a eveniet.",
+                        "description": "Placeat dolore quis. Voluptatem quidem in. Ut voluptatem sed.",
+                        "business_objective": null,
+                        "compliance_threshold": 93.0,
+                        "host_count": 0,
+                        "type": "policy",
+                        "os_major_version": 7,
+                        "profile_title": "Asperiores velit expedita dolor.",
+                        "ref_id": "xccdf_org.ssgproject.content_profile_3bec5f2aaf1f6a4d1ca203ee549dbfa6"
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "$ref": "#/components/schemas/id"
+                        },
+                        "attributes": {
+                          "$ref": "#/components/schemas/policy"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Policy not found",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Description of an error when the requested Policy is not found": {
+                    "value": {
+                      "errors": [
+                        "V2::Policy not found with ID 7cc3de60-1a5d-4c6d-a67b-076009072131"
+                      ]
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/policies/{policy_id}/tailorings": {
+      "get": {
+        "summary": "List all Tailorings under Policy",
+        "tags": [
+          "policy"
+        ],
+        "description": "Lists all Tailorings under Policy",
+        "operationId": "ListTailorings",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to return per page",
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Offset of first item of paginated response",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "description": "Attribute and direction to sort the items by. Represented by an array of fields with an optional direction (`<key>:asc` or `<key>:desc`).<br><br>If no direction is selected, `<key>:asc` is used by default.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "os_minor_version",
+                  "os_minor_version:asc",
+                  "os_minor_version:desc"
+                ]
+              }
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Tailorings are searchable using attributes `os_minor_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "lists all Tailorings under Policy",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "List of Tailorings under Policy": {
+                    "value": {
+                      "data": [],
+                      "meta": {
+                        "total": 0,
+                        "limit": 10,
+                        "offset": 0
+                      },
+                      "links": {
+                        "first": "/api/compliance/v2/policies/cfdb283b-4646-41d9-ae9d-68b27a2a9731/tailorings?limit=10&offset=0",
+                        "last": "/api/compliance/v2/policies/cfdb283b-4646-41d9-ae9d-68b27a2a9731/tailorings?limit=10&offset=0"
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/links"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "$ref": "#/components/schemas/id"
+                          },
+                          "attributes": {
+                            "$ref": "#/components/schemas/tailoring"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/policies/{policy_id}/tailorings/{tailoring_id}": {
+      "get": {
+        "summary": "Retrieve Tailoring under Policy",
+        "tags": [
+          "policy"
+        ],
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tailoring_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "retrieves a Tailoring under a Policy",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Tailoring under Policy": {
+                    "value": {
+                      "data": {
+                        "id": "c8c554d9-b039-460d-be98-b8bdc4d491f7",
+                        "profile_id": "3ae2d220-91a4-4f28-96a2-1d99ee61f111",
+                        "os_minor_version": "68",
+                        "type": "tailoring",
+                        "os_major_version": 7,
+                        "value_overrides": {}
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/security_guides": {
       "get": {
         "summary": "List all Security Guides",
@@ -90,40 +572,40 @@
                     "value": {
                       "data": [
                         {
-                          "id": "9c910e0f-e06d-4d21-bd75-897443ac87a6",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-9",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 9",
-                          "version": "100.0.4",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 9.",
-                          "type": "security_guide",
-                          "os_major_version": 9
-                        },
-                        {
-                          "id": "9cb749f3-2be1-4693-97b1-65a2a267613e",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-6",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 6",
-                          "version": "100.0.1",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 6.",
-                          "type": "security_guide",
-                          "os_major_version": 6
-                        },
-                        {
-                          "id": "b592f308-73c4-4ade-88da-7a3e17f3b008",
+                          "id": "0e72bd48-8887-4339-b244-78110912f9ce",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
                           "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
-                          "version": "100.0.3",
+                          "version": "100.0.32",
                           "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
-                          "type": "security_guide",
-                          "os_major_version": 8
+                          "os_major_version": 8,
+                          "type": "security_guide"
                         },
                         {
-                          "id": "c022786a-5e5d-42c3-8747-4013ce3936c1",
+                          "id": "1ee35109-2d41-44a5-842a-05cdb44fe8d5",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
                           "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
-                          "version": "100.0.2",
+                          "version": "100.0.31",
                           "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7.",
-                          "type": "security_guide",
-                          "os_major_version": 7
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "9a59e53a-0972-4262-abaf-9c17c63542a4",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-6",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 6",
+                          "version": "100.0.30",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 6.",
+                          "os_major_version": 6,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "f61d39c2-0143-4b5f-ba1d-6ccf098de2f8",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-9",
+                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 9",
+                          "version": "100.0.33",
+                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 9.",
+                          "os_major_version": 9,
+                          "type": "security_guide"
                         }
                       ],
                       "meta": {
@@ -143,40 +625,40 @@
                     "value": {
                       "data": [
                         {
-                          "id": "c34337ce-0e5f-4ae5-9064-e15661ee2f19",
+                          "id": "ca63f900-6bec-447f-9e3b-f061d60468a2",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-6",
                           "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 6",
-                          "version": "100.0.5",
+                          "version": "100.0.34",
                           "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 6.",
-                          "type": "security_guide",
-                          "os_major_version": 6
+                          "os_major_version": 6,
+                          "type": "security_guide"
                         },
                         {
-                          "id": "09144d4f-b98a-4ae3-be0d-00cfa8a77dcb",
+                          "id": "6e119535-936b-4540-b51e-da9e5083642f",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
                           "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
-                          "version": "100.0.6",
+                          "version": "100.0.35",
                           "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7.",
-                          "type": "security_guide",
-                          "os_major_version": 7
+                          "os_major_version": 7,
+                          "type": "security_guide"
                         },
                         {
-                          "id": "c10a9171-df42-4cff-9199-739d776e5acb",
+                          "id": "0c19f819-800a-4021-afba-8558cf34135a",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
                           "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
-                          "version": "100.0.7",
+                          "version": "100.0.36",
                           "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
-                          "type": "security_guide",
-                          "os_major_version": 8
+                          "os_major_version": 8,
+                          "type": "security_guide"
                         },
                         {
-                          "id": "047ee2cb-1817-4f03-8aac-0dcf7f836308",
+                          "id": "e60859b5-94ed-4d5c-b225-ef4ab8e5fe65",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-9",
                           "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 9",
-                          "version": "100.0.8",
+                          "version": "100.0.37",
                           "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 9.",
-                          "type": "security_guide",
-                          "os_major_version": 9
+                          "os_major_version": 9,
+                          "type": "security_guide"
                         }
                       ],
                       "meta": {
@@ -197,13 +679,13 @@
                     "value": {
                       "data": [
                         {
-                          "id": "c40d8e49-a2de-4895-a120-aff9b4919068",
+                          "id": "e2ca104b-da89-4f08-99ca-58d9dd5963c2",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
                           "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
-                          "version": "100.0.11",
+                          "version": "100.0.40",
                           "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
-                          "type": "security_guide",
-                          "os_major_version": 8
+                          "os_major_version": 8,
+                          "type": "security_guide"
                         }
                       ],
                       "meta": {
@@ -390,6 +872,53 @@
           }
         }
       },
+      "policies": {
+        "type": "object",
+        "required": [
+          "title",
+          "ref_id",
+          "os_major_version"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "examples": [],
+            "description": ""
+          },
+          "description": {
+            "type": "string",
+            "examples": [],
+            "decription": ""
+          },
+          "business_objective": {},
+          "os_major_version": {
+            "type": "number",
+            "minimum": 6,
+            "examples": [
+              7
+            ],
+            "description": "Major version of OS that the Policy is applied to"
+          },
+          "compliance_treshold": {},
+          "policy_type": {
+            "type": "string",
+            "examples": [],
+            "description": ""
+          },
+          "ref_id": {
+            "type": "string",
+            "examples": [],
+            "description": ""
+          },
+          "host_count": {
+            "type": "number",
+            "examples": [
+              300,
+              42
+            ]
+          }
+        }
+      },
       "security_guides": {
         "type": "object",
         "required": [
@@ -436,6 +965,12 @@
             "description": "Major version of OS that the Security Guide covers"
           }
         }
+      },
+      "tailoring": {
+        "profile_id": {},
+        "value_overrides": {},
+        "os_minor_version": {},
+        "os_major_version": {}
       }
     }
   }
