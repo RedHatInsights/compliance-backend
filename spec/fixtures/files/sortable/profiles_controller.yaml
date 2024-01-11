@@ -27,9 +27,3 @@
   - :sort_by:
       - 'title'
     :result: [[3, 5], 2, 0, 1, 4]
-  - :sort_by:
-      - 'title:asc'
-    :result: [[3, 5], 2, 0, 1, 4]
-  - :sort_by:
-      - 'title:desc'
-    :result: [4, 1, 0, 2, [3, 5]]

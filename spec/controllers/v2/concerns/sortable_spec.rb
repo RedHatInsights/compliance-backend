@@ -66,18 +66,52 @@ RSpec.shared_examples 'sortable' do |*parents|
   end
 
   tests[:queries].each do |test_case|
-    it "sorts by #{test_case[:sort_by].join(', ')}" do
-      result = test_case[:result].flat_map do |item|
-        if item.is_a?(Array)
-          item.map { |index| items[index].id }.sort
-        else
-          items[item].id
+    {
+      # Default behavior
+      test_case[:sort_by] => test_case[:result],
+
+      # Explicitly specified directions
+      test_case[:sort_by].map do |sort|
+        field, direction = sort.split(':')
+        direction ||= 'asc'
+        [field, direction].join(':')
+      end => test_case[:result],
+
+      # Reverse behavior
+      test_case[:sort_by].map do |sort|
+        field, direction = sort.split(':')
+        direction = direction == 'desc' ? nil : 'desc'
+        [field, direction].compact.join(':')
+      end => test_case[:result].reverse,
+
+      # Explicitly specified directions but reversed
+      test_case[:sort_by].map do |sort|
+        field, direction = sort.split(':')
+        direction = direction == 'desc' ? 'asc' : 'desc'
+        [field, direction].join(':')
+      end => test_case[:result].reverse
+
+    }.each do |sort_by, ordered|
+      it "sorts by #{sort_by.join(', ')}" do
+        result = ordered.flat_map do |item|
+          if item.is_a?(Array)
+            item.map { |index| items[index].id }.sort
+          else
+            items[item].id
+          end
         end
+
+        get :index, params: passable_params.merge(sort_by: sort_by, parents: parents)
+
+        # Only run the normalized expectation if the sorting did not match
+        if response_body_data.map { |item| item['id'] } != result
+          expect(
+            response_body_data.map { |item| items.index { |record| record.id == item['id'] } }
+          ).to eq(ordered)
+        end
+
+        expect(response_body_data.map { |item| item['id'] }).to eq(result)
       end
-
-      get :index, params: passable_params.merge(sort_by: test_case[:sort_by], parents: parents)
-
-      expect(response_body_data.map { |item| item['id'] }).to eq(result)
     end
   end
 end
