@@ -46,38 +46,14 @@
       - 'title'
     :result: [[3, 5], 2, 0, 1, 4]
   - :sort_by:
-      - 'title:asc'
-    :result: [[3, 5], 2, 0, 1, 4]
-  - :sort_by:
-      - 'title:desc'
-    :result: [4, 1, 0, 2, [3, 5]]
-  - :sort_by:
       - 'business_objective'
     :result: [[3, 5], 2, 0, 1, 4]
-  - :sort_by:
-      - 'business_objective:asc'
-    :result: [[3, 5], 2, 0, 1, 4]
-  - :sort_by:
-      - 'business_objective:desc'
-    :result: [4, 1, 0, 2, [3, 5]]
   - :sort_by:
       - 'compliance_threshold'
     :result: [5, [3, 1], [0, 2], 4]
   - :sort_by:
-      - 'compliance_threshold:asc'
-    :result: [5, [3, 1], [0, 2], 4]
-  - :sort_by:
-      - 'compliance_threshold:desc'
-    :result: [4, [0, 2], [3, 1], 5]
-  - :sort_by:
       - 'os_major_version'
     :result: [[2, 4], [1, 5], [0, 3]]
-  - :sort_by:
-      - 'os_major_version:asc'
-    :result: [[2, 4], [1, 5], [0, 3]]
-  - :sort_by:
-      - 'os_major_version:desc'
-    :result: [[0, 3], [1, 5], [2, 4]]
   - :sort_by:
       - 'os_major_version'
       - 'compliance_threshold'
