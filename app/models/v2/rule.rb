@@ -27,7 +27,7 @@ module V2
     /x
 
     belongs_to :security_guide
-    has_many :profile_rules, dependent: :delete_all
+    has_many :profile_rules, dependent: :destroy
     has_many :profiles, through: :profile_rules, source: :profile, class_name: 'V2::Profile'
 
     sortable_by :title
