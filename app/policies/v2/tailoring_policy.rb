@@ -10,6 +10,10 @@ module V2
     def show?
       true
     end
+
+    def tailoring_file?
+      true # TODO: cert_auth
+    end
   end
 
   # Only show tailoring in our user account

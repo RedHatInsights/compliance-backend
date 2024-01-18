@@ -13,7 +13,11 @@ module V2
     belongs_to :profile, class_name: 'V2::Profile'
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
     has_one :account, through: :policy, class_name: 'V2::Account'
-    has_many :tailoring_rules, class_name: 'V2::TailoringRule', dependent: :destroy
+    has_many :tailoring_rules,
+             class_name: 'V2::TailoringRule',
+             dependent: :destroy,
+             foreign_key: :profile_id,
+             inverse_of: :v2_profile
     has_many :rules, class_name: 'V2::Rule', through: :tailoring_rules
 
     scoped_search on: :os_minor_version, only_explicit: true, operators: %i[eq ne]

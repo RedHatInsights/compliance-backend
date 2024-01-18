@@ -74,4 +74,43 @@ describe V2::TailoringsController do
 
     it_behaves_like 'individual', :policy
   end
+
+  describe 'GET tailoring_file' do
+    let(:parent) do
+      canonical_profiles = [6, 7, 8].map do |version|
+        FactoryBot.create(
+          :v2_profile,
+          :with_rules,
+          os_major_version: 8,
+          ref_id_suffix: 'foo',
+          supports_minors: [version]
+        )
+      end
+
+      FactoryBot.create(
+        :v2_policy,
+        account: current_user.account,
+        profile: canonical_profiles.last
+      )
+    end
+
+    let(:item) do
+      FactoryBot.create(
+        :v2_tailoring,
+        policy: parent,
+        os_minor_version: 8
+      )
+    end
+
+    let(:extra_params) { { policy_id: parent.id, id: item.id } }
+
+    it 'returns XCCDF tailoring file' do
+      get :tailoring_file,
+          params: extra_params.reject do |_, ep|
+            ep.is_a?(ActiveRecord::Base)
+          end.merge(parents: [:policy])
+      expect(response).to have_http_status :ok
+      expect(response.headers['Content-Type']).to eq('application/xml')
+    end
+  end
 end

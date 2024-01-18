@@ -35,7 +35,9 @@ Rails.application.routes.draw do
           end
 
           resources :policies, except: [:new, :edit] do
-            resources :tailorings, only: [:index, :show], parents: [:policy]
+            resources :tailorings, only: [:index, :show], parents: [:policy] do
+              get 'tailoring_file', on: :member
+            end
           end
         end
       end

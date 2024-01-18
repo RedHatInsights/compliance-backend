@@ -2,15 +2,21 @@
 
 FactoryBot.define do
   factory :v2_tailoring, class: 'V2::Tailoring' do
-    profile { association :v2_profile, os_major_version: os_major_version }
-    policy { association :v2_policy }
-    os_minor_version { Faker::Number.between(from: 0, to: 100) }
+    profile do
+      V2::Profile
+        .joins(:os_minor_versions)
+        .find_by(
+          ref_id: ref_id,
+          profile_os_minor_versions: {
+            os_minor_version: os_minor_version
+          }
+        )
+    end
 
     transient do
+      ref_id { policy.profile.ref_id }
       value_overrides { {} }
       os_major_version { 7 }
     end
-
-    after(:create, &:reload) # FIXME: remove this after the full remodel
   end
 end

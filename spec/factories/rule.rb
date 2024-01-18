@@ -16,6 +16,16 @@ FactoryBot.define do
       profile_id { nil }
     end
 
+    trait :with_group do
+      rule_group { association :v2_rule_group, security_guide: security_guide }
+    end
+
+    trait :with_group_hierarchy do
+      rule_group do
+        association :v2_rule_group, parent_count: (1..5).to_a.sample, security_guide: security_guide
+      end
+    end
+
     after(:create) do |rule, ev|
       next if ev.profile_id.nil?
 

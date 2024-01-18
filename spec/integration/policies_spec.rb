@@ -244,4 +244,17 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       end
     end
   end
+
+  path '/policies/{policy_id}/tailorings/{tailoring_id}/tailoring_file' do
+    get 'Retrieve XCCDF file of Tailoring under Policy' do
+      parameter name: :policy_id, in: :path, type: :string, required: true
+      parameter name: :tailoring_id, in: :path, type: :string, required: true
+
+      response '200', 'generates XCCDF file of Tailoring under Policy' do
+        after { |e| autogenerate_examples(e, 'XCCDF file of Tailoring under Policy') }
+
+        run_test!
+      end
+    end
+  end
 end
