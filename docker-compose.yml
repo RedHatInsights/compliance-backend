@@ -239,7 +239,7 @@ services:
       - bootstrap.memory_lock=true
       - cluster.routing.allocation.disk.threshold_enabled=false
   xjoin:
-    image: quay.io/cloudservices/xjoin-search:3c3f8b0
+    image: quay.io/cloudservices/xjoin-search:latest
     restart: always
     environment:
       - LOG_LEVEL=debug
