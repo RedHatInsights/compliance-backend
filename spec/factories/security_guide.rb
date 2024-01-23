@@ -11,7 +11,7 @@ FactoryBot.define do
       os_major_version { 7 }
     end
 
-    factory :v2_security_guide_with_profiles do
+    trait :with_profiles do
       transient do
         profile_count { 3 }
         profile_refs { profile_count.times.map { SecureRandom.hex } }
