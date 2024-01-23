@@ -28,7 +28,8 @@ describe V2::SupportedProfilesController do
     let(:parents) { nil }
     let(:v1_profiles) do
       FactoryBot.create(
-        :v2_security_guide_with_profiles,
+        :v2_security_guide,
+        :with_profiles,
         os_major_version: 7,
         version: '1.0.0',
         profile_refs: {
@@ -42,7 +43,8 @@ describe V2::SupportedProfilesController do
     end
     let(:v2_profiles) do
       FactoryBot.create(
-        :v2_security_guide_with_profiles,
+        :v2_security_guide,
+        :with_profiles,
         os_major_version: 7,
         version: '2.0.0',
         profile_refs: {
@@ -54,7 +56,8 @@ describe V2::SupportedProfilesController do
     end
     let(:rhel8_profiles) do
       FactoryBot.create(
-        :v2_security_guide_with_profiles,
+        :v2_security_guide,
+        :with_profiles,
         os_major_version: 8,
         version: '1.0.0',
         profile_refs: %w[
