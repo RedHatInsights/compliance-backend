@@ -17,7 +17,7 @@ module V2
     )
 
     has_many :profiles, class_name: 'V2::Profile', dependent: :destroy
-    has_many :value_definitions, class_name: 'V2::ValueDefinitions', dependent: :destroy
+    has_many :value_definitions, class_name: 'V2::ValueDefinition', dependent: :destroy
     has_many :rules, class_name: 'V2::Rule', dependent: :destroy
 
     searchable_by :title, %i[like unlike eq ne in notin]
