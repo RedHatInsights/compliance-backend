@@ -10,16 +10,11 @@ FactoryBot.define do
     precedence { Faker::Number.between(from: 1, to: 9999) }
 
     security_guide { association :v2_security_guide, os_major_version: os_major_version }
+    profile_rules { [association(:v2_profile_rule, profile_id: profile_id)] unless profile_id.nil? }
 
     transient do
       os_major_version { 7 }
       profile_id { nil }
-    end
-
-    after(:create) do |rule, ev|
-      next if ev.profile_id.nil?
-
-      rule.profile_rules << FactoryBot.create(:v2_profile_rule, rule_id: rule.id, profile_id: ev.profile_id)
     end
   end
 end
