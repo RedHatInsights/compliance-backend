@@ -28,19 +28,19 @@ module V2
 
     def benchmark_builder(xml)
       xml[XCCDF].benchmark(
-        id: @tailoring.benchmark.ref_id,
-        version: @tailoring.benchmark.version,
-        href: "ssg-rhel#{@tailoring.benchmark.inferred_os_major_version}-ds.xml"
+        id: @tailoring.security_guide.ref_id,
+        version: @tailoring.security_guide.version,
+        href: "ssg-rhel#{@tailoring.security_guide.os_major_version}-ds.xml"
       )
     end
 
     def profile_builder(xml)
-      xml[XCCDF].Profile(id: @tailoring.ref_id,
-                         extends: @tailoring.parent_profile.ref_id) do
-        xml[XCCDF].title(@tailoring.name,
+      xml[XCCDF].Profile(id: @tailoring.policy.ref_id, # FIXME: probably @tailoring.policy.ref_id
+                         extends: @tailoring.profile.ref_id) do
+        xml[XCCDF].title(@tailoring.profile.title,
                          'xmlns:xhtml' => 'http://www.w3.org/1999/xhtml',
                          'xml:lang' => 'en-US', override: true)
-        xml[XCCDF].description(@tailoring.description,
+        xml[XCCDF].description(@tailoring.profile.description,
                                'xmlns:xhtml' => 'http://www.w3.org/1999/xhtml',
                                'xml:lang' => 'en-US', override: true)
         tailoring_builder(xml)
@@ -89,11 +89,9 @@ module V2
     end
 
     def handle_missing_rules
-      missing_rules = @rule_ref_ids.keys -
-                      @tailoring.benchmark.rules
-                                .where(ref_id: @rule_ref_ids.keys).pluck(:ref_id)
-
-      e = ArgumentError.new("Benchmark(id=#{@tailoring.benchmark.id}) does not " \
+      missing_rules = @rule_ref_ids - @tailoring.profile.rules.map(&:ref_id)
+      #                          .where(ref_id: @rule_ref_ids).pluck(:ref_id)
+      e = ArgumentError.new("SecurityGuide(id=#{@tailoring.security_guide.id}) does not " \
                             "contain selected rules: #{missing_rules.join(', ')}")
       raise e if missing_rules.any?
     end

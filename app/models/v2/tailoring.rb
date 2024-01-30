@@ -17,7 +17,7 @@ module V2
              class_name: 'V2::TailoringRule',
              dependent: :destroy,
              foreign_key: :profile_id,
-             inverse_of: :v2_profile
+             inverse_of: :tailoring
     has_many :rules, class_name: 'V2::Rule', through: :tailoring_rules
 
     scoped_search on: :os_minor_version, only_explicit: true, operators: %i[eq ne]

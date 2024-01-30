@@ -105,10 +105,8 @@ describe V2::TailoringsController do
     let(:extra_params) { { policy_id: parent.id, id: item.id } }
 
     it 'returns XCCDF tailoring file' do
-      get :tailoring_file,
-          params: extra_params.reject do |_, ep|
-            ep.is_a?(ActiveRecord::Base)
-          end.merge(parents: [:policy])
+      get :tailoring_file, params: extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) }
+                                               .merge(parents: [:policy])
       expect(response).to have_http_status :ok
       expect(response.headers['Content-Type']).to eq('application/xml')
     end

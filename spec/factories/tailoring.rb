@@ -18,5 +18,15 @@ FactoryBot.define do
       value_overrides { {} }
       os_major_version { 7 }
     end
+
+    after(:create) do |tailoring, _|
+      tailoring.profile.rules.each do |rule|
+        FactoryBot.create(
+          :v2_tailoring_rule,
+          rule: rule,
+          tailoring: tailoring
+        )
+      end
+    end
   end
 end

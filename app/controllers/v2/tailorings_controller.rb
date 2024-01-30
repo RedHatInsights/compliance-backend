@@ -37,8 +37,6 @@ module V2
         filename: xccdf_tailoring_filename,
         type: Mime[:xml]
       )
-
-      audit_tailoring_file
     end
     permission_for_action :tailoring_file, Rbac::POLICY_READ
     permitted_params_for_action :tailoring_file, id: ID_TYPE.required

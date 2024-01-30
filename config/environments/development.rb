@@ -62,6 +62,7 @@ Rails.application.configure do
   else # Impose a 64MB limit for the logfile
     config.logger = Insights::Api::Common::LoggerWithAudit.new(config.paths['log'].first, 1, 64.megabytes)
   end
+  ActiveRecord::Base.logger = Logger.new STDOUT
 
   config.logger = ActiveSupport::TaggedLogging.new(config.logger)
 
