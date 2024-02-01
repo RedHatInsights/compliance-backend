@@ -10,6 +10,7 @@ module Api
       include Profiles
       include Rules
       include Policies
+      include Tailorings
 
       SCHEMAS = {
         id: UUID,
@@ -18,7 +19,8 @@ module Api
         security_guides: SECURITY_GUIDE,
         profiles: PROFILE,
         rules: RULE,
-        policies: POLICY
+        policies: POLICY,
+        tailorings: TAILORING
       }.freeze
     end
   end

@@ -192,4 +192,56 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       end
     end
   end
+
+  let(:tailoring) { FactoryBot.create(:v2_tailoring, policy_id: policy_id) }
+  let(:tailoring_id) { tailoring.id }
+
+  path '/policies/{policy_id}/tailorings' do
+    get 'List all Tailorings under Policy' do
+      tags 'policy'
+      description 'Lists all Tailorings under Policy'
+      operationId 'ListTailorings'
+      content_types
+      pagination_params_v2
+      sort_params_v2(V2::Tailoring)
+      search_params_v2(V2::Tailoring)
+      parameter name: :policy_id, in: :path, type: :string, required: true
+
+      response '200', 'lists all Tailorings under Policy' do
+        schema type: :object,
+               properties: {
+                 meta: ref_schema('metadata'),
+                 links: ref_schema('links'),
+                 data: {
+                   type: :array,
+                   items: {
+                     properties: {
+                       type: { type: :string },
+                       id: ref_schema('id'),
+                       attributes: ref_schema('tailoring')
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'List of Tailorings under Policy') }
+
+        run_test!
+      end
+    end
+  end
+
+  path '/policies/{policy_id}/tailorings/{tailoring_id}' do
+    get 'Retrieve Tailoring under Policy' do
+      tags 'policy'
+      parameter name: :policy_id, in: :path, type: :string, required: true
+      parameter name: :tailoring_id, in: :path, type: :string, required: true
+
+      response '200', 'retrieves a Tailoring under a Policy' do
+        after { |e| autogenerate_examples(e, 'Tailoring under Policy') }
+
+        run_test!
+      end
+    end
+  end
 end
