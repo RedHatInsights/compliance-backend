@@ -9,7 +9,7 @@ describe V2::PoliciesController do
       description: :description,
       business_objective: :business_objective,
       compliance_threshold: :compliance_threshold,
-      host_count: :host_count,
+      system_count: :system_count,
       ref_id: :ref_id,
       profile_title: :profile_title,
       os_major_version: :os_major_version
