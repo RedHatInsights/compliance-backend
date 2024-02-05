@@ -6,7 +6,7 @@ FactoryBot.define do
     description { Faker::Lorem.paragraph }
     profile { association :v2_profile, os_major_version: os_major_version }
     compliance_threshold { SecureRandom.random_number(100) }
-    host_count { 0 }
+    system_count { 0 }
 
     transient do
       os_major_version { 7 }

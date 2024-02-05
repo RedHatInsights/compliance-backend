@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_26_103711) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_06_160452) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -308,22 +308,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_26_103711) do
       rules.identifier
      FROM rules;
   SQL
-  create_view "v2_policies", sql_definition: <<-SQL
-      SELECT policies.id,
-      policies.name AS title,
-      policies.description,
-      policies.compliance_threshold,
-      business_objectives.title AS business_objective,
-      COALESCE(sq.host_count, (0)::bigint) AS host_count,
-      policies.profile_id,
-      policies.account_id
-     FROM ((policies
-       LEFT JOIN business_objectives ON ((business_objectives.id = policies.business_objective_id)))
-       LEFT JOIN ( SELECT count(policy_hosts.host_id) AS host_count,
-              policy_hosts.policy_id
-             FROM policy_hosts
-            GROUP BY policy_hosts.policy_id) sq ON ((sq.policy_id = policies.id)));
-  SQL
   create_view "tailorings", sql_definition: <<-SQL
       SELECT profiles.id,
       profiles.policy_id,
@@ -370,6 +354,22 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_26_103711) do
       rule_groups.rule_id,
       rule_groups.precedence
      FROM rule_groups;
+  SQL
+  create_view "v2_policies", sql_definition: <<-SQL
+      SELECT policies.id,
+      policies.name AS title,
+      policies.description,
+      policies.compliance_threshold,
+      business_objectives.title AS business_objective,
+      COALESCE(sq.system_count, (0)::bigint) AS system_count,
+      policies.profile_id,
+      policies.account_id
+     FROM ((policies
+       LEFT JOIN business_objectives ON ((business_objectives.id = policies.business_objective_id)))
+       LEFT JOIN ( SELECT count(policy_hosts.host_id) AS system_count,
+              policy_hosts.policy_id
+             FROM policy_hosts
+            GROUP BY policy_hosts.policy_id) sq ON ((sq.policy_id = policies.id)));
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
@@ -502,16 +502,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_26_103711) do
   SQL
 
 
-  create_trigger :v2_policies_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
-  SQL
-  create_trigger :v2_policies_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
+  create_trigger :tailorings_insert, sql_definition: <<-SQL
+      CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
   create_trigger :v2_policies_insert, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
   SQL
-  create_trigger :tailorings_insert, sql_definition: <<-SQL
-      CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
+  create_trigger :v2_policies_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
+  SQL
+  create_trigger :v2_policies_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
   SQL
 end
