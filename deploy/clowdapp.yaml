@@ -498,7 +498,7 @@ parameters:
 - name: MEMORY_REQUEST_SERVICE
   value: 600Mi
 - name: CPU_LIMIT_SERVICE
-  value: 700m
+  value: 1200m
 - name: CPU_REQUEST_SERVICE
   value: 200m
 - name: MEMORY_LIMIT_CONSUMER
