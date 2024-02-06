@@ -143,7 +143,7 @@ cicd::container::cmd cp "$WORKSPACE/cyndi_setup_test.sql" "$DB_CONTAINER_ID":/va
 rm "$WORKSPACE/cyndi_setup_test.sql"
 # We want to expand $POSTGRESQL_DATABASE within the container's session
 # shellcheck disable=SC2016
-cicd::container::cmd exec "$DB_CONTAINER_ID" /bin/bash -c 'psql -d $POSTGRESQL_DATABASE < cyndi_setup_test.sql'
+cicd::container::cmd exec "$DB_CONTAINER_ID" /bin/bash -c 'psql -d $POSTGRESQL_DATABASE < /var/lib/pgsql/cyndi_setup_test.sql'
 TEST_RESULT=$?
 set -e
 if [[ $TEST_RESULT -ne 0 ]]; then
