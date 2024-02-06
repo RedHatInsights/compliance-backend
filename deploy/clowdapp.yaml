@@ -226,13 +226,13 @@ objects:
           httpGet:
             path: /api/compliance/v1/openapi.json
             port: web
-          initialDelaySeconds: 60
+          initialDelaySeconds: 120
           periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /api/compliance/v1/status
             port: web
-          initialDelaySeconds: 30
+          initialDelaySeconds: 90
           periodSeconds: 30
         resources:
           limits:
