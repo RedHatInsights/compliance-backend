@@ -232,7 +232,7 @@ objects:
           httpGet:
             path: /api/compliance/v1/status
             port: web
-          initialDelaySeconds: 90
+          initialDelaySeconds: 120
           periodSeconds: 30
         resources:
           limits:
@@ -498,7 +498,7 @@ parameters:
 - name: MEMORY_REQUEST_SERVICE
   value: 600Mi
 - name: CPU_LIMIT_SERVICE
-  value: 1200m
+  value: 800m
 - name: CPU_REQUEST_SERVICE
   value: 200m
 - name: MEMORY_LIMIT_CONSUMER
