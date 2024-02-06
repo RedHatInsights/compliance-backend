@@ -225,7 +225,7 @@ GEM
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.4)
+    mini_portile2 (2.8.5)
     minitest (5.20.0)
     minitest-reporters (1.6.1)
       ansi
@@ -247,7 +247,7 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.7.0)
-    nokogiri (1.15.4)
+    nokogiri (1.16.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oj (3.16.0)
@@ -280,7 +280,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.3.1)
       activesupport (>= 3.0.0)
-    racc (1.7.1)
+    racc (1.7.3)
     racecar (2.8.2)
       king_konf (~> 1.0.0)
       rdkafka (~> 0.12.0)
