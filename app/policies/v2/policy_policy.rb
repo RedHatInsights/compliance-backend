@@ -19,7 +19,7 @@ module V2
       match_account?
     end
 
-    # Only show hosts in our user account
+    # Only show policies in our user account
     class Scope < V2::ApplicationPolicy::Scope
       def resolve
         return scope.where('1=0') if user&.account_id.blank?
