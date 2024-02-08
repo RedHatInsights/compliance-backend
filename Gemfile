@@ -96,6 +96,7 @@ gem 'request_store'
 # Ruby 3 dependencies
 gem 'cgi'
 gem 'rexml'
+gem 'time'
 gem 'webrick'
 
 # Allows for tree structures in db
