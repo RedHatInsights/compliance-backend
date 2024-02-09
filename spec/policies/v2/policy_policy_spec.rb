@@ -6,7 +6,7 @@ describe V2::PolicyPolicy do
   let(:user) { FactoryBot.create(:user) }
   let!(:items) { FactoryBot.create_list(:v2_policy, 20, account: user.account) }
 
-  before { FactoryBot.create_list(:v2_policy, 10, account: FactoryBot.create(:account)) }
+  before { FactoryBot.create_list(:v2_policy, 10, account: FactoryBot.create(:v2_account)) }
 
   it 'allows displaying entities related to current user' do
     expect(Pundit.policy_scope(user, V2::Policy).to_set).to eq(items.to_set)

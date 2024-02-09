@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe V2::Policy do
-  let(:account) { FactoryBot.create(:account) }
+  let(:account) { FactoryBot.create(:v2_account) }
 
   describe '#os_major_version' do
     let(:policy) { FactoryBot.create(:v2_policy, os_major_version: os_major_version, account: account) }
