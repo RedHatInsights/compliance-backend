@@ -186,7 +186,7 @@ describe V2::PoliciesController do
     end
 
     context 'policy under different account' do
-      let(:item) { FactoryBot.create(:v2_policy, account: FactoryBot.create(:account)) }
+      let(:item) { FactoryBot.create(:v2_policy, account: FactoryBot.create(:v2_account)) }
 
       it 'does not remove the policy' do
         delete :destroy, params: { id: item.id }

@@ -46,7 +46,7 @@
 # Therefore, if you don't want these objects to be passed to the `params` of the request, you
 # can specify them in the `extra_params` as objects (i.e. without the `_id` suffix):
 # ```
-# let(:extra_params) { { account: FactoryBot.create(:account) } }
+# let(:extra_params) { { account: FactoryBot.create(:v2_account) } }
 #
 # it_behaves_like 'searchable'
 # ```

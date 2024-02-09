@@ -6,7 +6,7 @@ module V2
     self.table_name = 'inventory.hosts'
     self.primary_key = 'id'
 
-    belongs_to :account, class_name: 'V2::Account', foreign_key: :org_id, inverse_of: :systems
+    belongs_to :account, class_name: 'Account', foreign_key: :org_id, inverse_of: :systems
     has_many :policy_systems, class_name: 'V2::PolicySystem', dependent: nil
     has_many :policies, through: :policy_systems
 

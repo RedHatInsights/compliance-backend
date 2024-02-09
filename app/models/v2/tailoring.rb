@@ -10,7 +10,7 @@ module V2
     belongs_to :policy, class_name: 'V2::Policy'
     belongs_to :profile, class_name: 'V2::Profile'
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
-    has_one :account, through: :policy, class_name: 'V2::Account'
+    has_one :account, through: :policy, class_name: 'Account'
     has_many :tailoring_rules, class_name: 'V2::TailoringRule', dependent: :destroy
     has_many :rules, class_name: 'V2::Rule', through: :tailoring_rules
 

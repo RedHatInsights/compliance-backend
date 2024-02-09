@@ -10,7 +10,7 @@ module V2
     belongs_to :profile, class_name: 'V2::Profile'
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
     has_many :tailorings, class_name: 'V2::Tailoring', dependent: :destroy
-    belongs_to :account
+    belongs_to :account, class_name: 'Account'
 
     validates :account, presence: true
     validates :profile, presence: true
