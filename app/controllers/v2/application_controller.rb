@@ -102,7 +102,8 @@ module V2
           if association
             "#{association}.#{column} AS #{association}__#{column}"
           else
-            [resource.table_name, column].join('.')
+            # FIXME: this is just temporary until we figure out aggregations as they will be also arel-based
+            column.is_a?(ApplicationRecord::AN::Node) ? column.to_sql : [resource.table_name, column].join('.')
           end
         end
       end

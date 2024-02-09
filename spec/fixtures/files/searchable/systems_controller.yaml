@@ -1,0 +1,190 @@
+---
+
+- :name: "equality search by display_name"
+  :entities:
+    :found:
+      - :factory: :system
+        :display_name: searched name
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :display_name: not this name
+        :account: ${account}
+  :query: (display_name = "searched name")
+- :name: "non-equality search by display_name"
+  :entities:
+    :found:
+      - :factory: :system
+        :display_name: not this name
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :display_name: searched name
+        :account: ${account}
+  :query: (display_name != "searched name")
+- :name: "like search by display_name"
+  :entities:
+    :found:
+      - :factory: :system
+        :display_name: searched display_name
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :display_name: not this display_name
+        :account: ${account}
+  :query: (display_name ~ "searched display_name")
+- :name: "unlike search by display_name"
+  :entities:
+    :found:
+      - :factory: :system
+        :display_name: not this display_name
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :display_name: searched display_name
+        :account: ${account}
+  :query: (display_name !~ "searched display_name")
+- :name: "equality search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :system
+        :os_major_version: 7
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        os_major_version: 8
+        :account: ${account}
+  :query: (os_major_version = 7)
+- :name: "non-equality search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :system
+        os_major_version: 8
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        os_major_version: 7
+        :account: ${account}
+  :query: (os_major_version != 7)
+- :name: "in search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :system
+        :os_major_version: 7
+        :account: ${account}
+      - :factory: :system
+        :os_major_version: 9
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :display_name: not this display_name
+        os_major_version: 8
+        :account: ${account}
+  :query: (os_major_version ^ "7 9")
+- :name: "not-in search by os_major_version"
+  :entities:
+    :found:
+      - :factory: :system
+        os_major_version: 8
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :os_major_version: 7
+        :account: ${account}
+      - :factory: :system
+        :os_major_version: 9
+        :account: ${account}
+  :query: (os_major_version !^ "7 9")
+- :name: "equality search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :system
+        :os_minor_version: 0
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        os_minor_version: 1
+        :account: ${account}
+  :query: (os_minor_version = 0)
+- :name: "non-equality search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :system
+        os_minor_version: 1
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        os_minor_version: 0
+        :account: ${account}
+  :query: (os_minor_version != 0)
+- :name: "in search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :system
+        :os_minor_version: 0
+        :account: ${account}
+      - :factory: :system
+        :os_minor_version: 2
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :display_name: not this display_name
+        os_minor_version: 1
+        :account: ${account}
+  :query: (os_minor_version ^ "0 2")
+- :name: "not-in search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :system
+        os_minor_version: 1
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :os_minor_version: 0
+        :account: ${account}
+      - :factory: :system
+        :os_minor_version: 2
+        :account: ${account}
+  :query: (os_minor_version !^ "0 2")
+- :name: "combined equality search by os_major_version and os_minor_version"
+  :entities:
+    :found:
+      - :factory: :system
+        :os_major_version: 7
+        :os_minor_version: 1
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :os_major_version: 7
+        :os_minor_version: 2
+        :account: ${account}
+      - :factory: :system
+        :os_minor_version: 8
+        :os_minor_version: 1
+        :account: ${account}
+  :query: (os_minor_version = 1) and (os_major_version = 7)
+- :name: "combined equality-in search by os_major_version and os_minor_version"
+  :entities:
+    :found:
+      - :factory: :system
+        :os_major_version: 7
+        :os_minor_version: 1
+        :account: ${account}
+      - :factory: :system
+        :os_major_version: 7
+        :os_minor_version: 2
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :os_minor_version: 7
+        :os_minor_version: 0
+        :account: ${account}
+      - :factory: :system
+        :os_minor_version: 8
+        :os_minor_version: 1
+        :account: ${account}
+      - :factory: :system
+        :os_minor_version: 8
+        :os_minor_version: 2
+        :account: ${account}
+  :query: (os_major_version = 7) and (os_minor_version ^ "1 2")
