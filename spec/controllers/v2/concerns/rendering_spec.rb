@@ -38,7 +38,8 @@ RSpec.shared_examples 'collection' do |*parents|
         'id' => item.id,
         'type' => described_class.controller_name.singularize,
         **attributes.each_with_object({}) do |(key, value), obj|
-          obj[key.to_s] = item.send(value)
+          # If it is a lambda, execute it on the instance, otherwise call the method by name
+          obj[key.to_s] = value.is_a?(Proc) ? item.instance_exec(&value) : item.send(value)
         end
       )
     end
@@ -126,7 +127,8 @@ RSpec.shared_examples 'individual' do |*parents|
                                 'id' => item.id,
                                 'type' => described_class.controller_name.singularize,
                                 **attributes.each_with_object({}) do |(key, value), obj|
-                                  obj[key.to_s] = item.send(value)
+                                  # If it is a lambda, execute it on the instance, otherwise call the method by name
+                                  obj[key.to_s] = value.is_a?(Proc) ? item.instance_exec(&value) : item.send(value)
                                 end
                               })
 

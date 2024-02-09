@@ -35,6 +35,8 @@ Rails.application.routes.draw do
           end
 
           resources :policies, except: [:new, :edit]
+
+          resources :systems, only: [:index, :show]
         end
       end
 

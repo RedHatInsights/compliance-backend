@@ -7,6 +7,6 @@ module V2
     self.table_name = :policy_hosts
 
     belongs_to :policy, class_name: 'V2::Policy'
-    belongs_to :system, class_name: 'V2::System'
+    belongs_to :system, class_name: 'V2::System', foreign_key: :host_id, inverse_of: :policy_systems
   end
 end
