@@ -15,18 +15,6 @@ FactoryBot.define do
 
   # A writable version of the Host model for the factory only
   class WHost < Host
-    if Rails.env.test?
-      self.table_name = 'inventory.hosts_v1_1'
-    elsif Rails.env.development?
-      self.table_name = 'hosts'
-
-      establish_connection(
-        Rails.configuration.database_configuration[Rails.env].merge(
-          'database' => 'insights'
-        )
-      )
-    end
-
     def readonly?
       false
     end

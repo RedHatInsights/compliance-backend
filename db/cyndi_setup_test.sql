@@ -7,9 +7,9 @@
 CREATE SCHEMA IF NOT EXISTS inventory;
 
 -- This table should never be queried direcly
-DROP TABLE IF EXISTS inventory.hosts_v1_1 CASCADE;
+DROP TABLE IF EXISTS inventory.hosts CASCADE;
 
-CREATE TABLE inventory.hosts_v1_1 (
+CREATE TABLE inventory.hosts (
     id uuid PRIMARY KEY,
     account character varying(10),
     org_id character varying(10) NOT NULL,
@@ -39,9 +39,9 @@ SELECT
     system_profile,
     groups,
     insights_id
-FROM inventory.hosts_v1_1;
+FROM inventory.hosts;
 
 --
 -- Clear any existing host seeds
 --
-TRUNCATE inventory.hosts_v1_1;
+TRUNCATE inventory.hosts;
