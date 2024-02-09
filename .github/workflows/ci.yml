@@ -147,6 +147,8 @@ jobs:
       run: bin/rake test
     - name: Upload code coverage from minitest
       uses: codecov/codecov-action@v2
+    - name: Check codecov.io status
+      uses: coactions/codecov-status@main
   migration-robustness:
     runs-on: ubuntu-latest
     services:
