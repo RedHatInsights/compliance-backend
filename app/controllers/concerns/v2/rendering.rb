@@ -44,9 +44,9 @@ module V2
         )
       end
 
-      # The serializer expects the list of parents to determine which `derived_attribute` should be skipped
+      # The serializer expects the list of relations to determine which `derived_attribute` should be skipped
       def serialization_context
-        { parents: (permitted_params[:parents].to_a + resource.one_to_one).uniq }
+        { joined: (permitted_params[:parents].to_a + resource.one_to_one).uniq }
       end
 
       def index?
