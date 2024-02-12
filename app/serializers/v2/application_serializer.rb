@@ -26,7 +26,7 @@ module V2
 
       # Panko's default way of skipping certain attributes is to construct a hash that contains a list of fields
       # that should be omitted. This method automatically receives a context and a scope argument, where we use
-      # the context to pass the `params[:parents]` that are necessary to determine if the required tables are joined.
+      # the context to pass the `params[:joined]` that are necessary to determine if the required tables are joined.
       #
       # https://panko.dev/docs/attributes#filters-for
       def filters_for(context, _scope)
@@ -36,7 +36,7 @@ module V2
         # the dependencies are not met. This builds a context-based list of attributes that should not be displayed.
         {
           except: reduce_method_fields([]) do |arr, field|
-            if @derived_attributes.key?(field) && !meets_dependency?(@derived_attributes[field].keys, context[:parents])
+            if @derived_attributes.key?(field) && !meets_dependency?(@derived_attributes[field].keys, context[:joined])
               arr.push(field)
             end
           end
@@ -66,9 +66,9 @@ module V2
         end
       end
 
-      def meets_dependency?(dependencies, parents)
-        parents ||= {}
-        dependencies.all? { |key| key.nil? || parents.include?(key) }
+      def meets_dependency?(dependencies, joined)
+        joined ||= {}
+        dependencies.all? { |key| key.nil? || joined.include?(key) }
       end
 
       # Returns a hash of DB fields that are further evaluated by model methods, own fields are grouped
@@ -80,11 +80,11 @@ module V2
       #   another_table1 => [another_table_field1, another_table_field2, ...],
       #   another_table2 => [another_table_field1, another_table_field2, ...]
       # }
-      def method_fields(parents)
+      def method_fields(joined)
         @derived_attributes ||= {}
 
         reduce_method_fields({}) do |obj, field|
-          if @derived_attributes.key?(field) && meets_dependency?(@derived_attributes[field].keys, parents)
+          if @derived_attributes.key?(field) && meets_dependency?(@derived_attributes[field].keys, joined)
             merge_dependencies(obj, @derived_attributes[field])
           end
         end
