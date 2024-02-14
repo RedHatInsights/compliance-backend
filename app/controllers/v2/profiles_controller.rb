@@ -18,7 +18,7 @@ module V2
     private
 
     def profiles
-      @profiles ||= authorize(resolve_collection)
+      @profiles ||= authorize(fetch_collection)
     end
 
     def profile

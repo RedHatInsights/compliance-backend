@@ -16,7 +16,7 @@ module V2
     private
 
     def value_definitions
-      @value_definitions ||= authorize(resolve_collection)
+      @value_definitions ||= authorize(fetch_collection)
     end
 
     def value_definition

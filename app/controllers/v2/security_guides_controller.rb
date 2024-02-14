@@ -16,7 +16,7 @@ module V2
     private
 
     def security_guides
-      @security_guides ||= authorize(resolve_collection)
+      @security_guides ||= authorize(fetch_collection)
     end
 
     def security_guide

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module V2
-  # Generic methods to be used when calling resolve_collection on our models
+  # Generic methods to be used when calling fetch_collection on our models
   module Collection
     extend ActiveSupport::Concern
 
@@ -10,7 +10,7 @@ module V2
     included do
       private
 
-      def resolve_collection
+      def fetch_collection
         scope = filter_by_tags(search(expand_resource))
         count = count_collection(scope)
         # If the count of records equals zero, make sure that the parents exist.

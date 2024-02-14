@@ -16,7 +16,7 @@ module V2
     private
 
     def systems
-      @systems ||= authorize(resolve_collection)
+      @systems ||= authorize(fetch_collection)
     end
 
     def system

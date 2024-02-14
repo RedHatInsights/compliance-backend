@@ -57,7 +57,7 @@ module V2
     private
 
     def compliance_policies
-      @compliance_policies ||= authorize(resolve_collection)
+      @compliance_policies ||= authorize(fetch_collection)
     end
 
     def compliance_policy
