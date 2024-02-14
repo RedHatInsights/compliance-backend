@@ -11,13 +11,12 @@ module V2
       private
 
       def resolve_collection
-        scope = search(policy_scope(expand_resource))
+        scope = filter_by_tags(search(expand_resource))
         count = count_collection(scope)
         # If the count of records equals zero, make sure that the parents exist.
         validate_parents! if count.zero? && permitted_params[:parents]&.any?
 
-        result = filter_by_tags(sort(scope))
-        result.limit(pagination_limit).offset(pagination_offset)
+        sort(scope).limit(pagination_limit).offset(pagination_offset)
       end
 
       def count_collection(scope)
