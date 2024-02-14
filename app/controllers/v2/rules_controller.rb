@@ -18,7 +18,7 @@ module V2
     private
 
     def rules
-      @rules ||= authorize(resolve_collection)
+      @rules ||= authorize(fetch_collection)
     end
 
     def rule
