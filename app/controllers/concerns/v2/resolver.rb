@@ -18,10 +18,10 @@ module V2
       join_one_to_ones(scope, fields).select(*select_fields(fields))
     end
 
-    # Reduce through all the parents of the resource and join+scope them on the resource
-    # or return with the resource untouched if not nested under other resources
-    def join_parents(resource, parents)
-      parents.to_a.reduce(resource) do |scope, parent|
+    # Reduce through all the parents of the `relation` and join+scope them or return the
+    # `relation˙ untouched if it does not have any parents.
+    def join_parents(relation, parents)
+      parents.to_a.reduce(relation) do |scope, parent|
         ref = scope.reflect_on_association(parent)
         klass = ref.klass
 
