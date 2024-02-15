@@ -10,18 +10,28 @@ module V2
     end
 
     class << self
-      # Return the hash of fields to be selected from the database to be able to feed the serializer
-      # with the required data. Merges the `method_fields` with the declared model attributes.
+      # Return the hash of depenencies to be selected from the database to be able to feed the serializer
+      # with the required data. Merges the `@derived_attributes` with the declared model attributes.
       #
+      # ```
       # {
-      #   nil => method_fields[nil] + attributes from serializer deduplicated,
-      #   **method_fields[except nil]
+      #   nil => derived_dependencies[nil] + attributes from serializer deduplicated,
+      #   **derived_dependencies[except nil]
       # }
+      # ```
       #
-      def fields(parents, one_to_one)
-        data = method_fields((parents.to_a + one_to_one).uniq)
+      def dependencies(parents, to_one)
+        data = filter_from(@derived_attributes, (parents.to_a + to_one).uniq)
         data[nil] = (_descriptor.attributes.map(&:name).map(&:to_sym) + data[nil].to_a).compact
         data
+      end
+
+      # Match any declared `aggregate_field` against the available relationships, return with a hash of
+      # aggregations in a `{ name => field }` format.
+      def aggregations(to_many)
+        filter_from(@aggregated_attributes, to_many).each_with_object({}) do |(k, (v)), obj|
+          obj[k] = v
+        end
       end
 
       # Panko's default way of skipping certain attributes is to construct a hash that contains a list of fields
@@ -32,7 +42,7 @@ module V2
       def filters_for(context, _scope)
         @derived_attributes ||= {}
 
-        # Iterate through all the `method_fields` and if any of them show up in the `@derived_attributes`, check if
+        # Iterate through all the "method fields" and if any of them show up in the `@derived_attributes`, check if
         # the dependencies are not met. This builds a context-based list of attributes that should not be displayed.
         {
           except: reduce_method_fields([]) do |arr, field|
@@ -56,9 +66,22 @@ module V2
         @derived_attributes[name] = hsh.merge(nil => arr)
       end
 
+      # This method allows the definition attributes that are aggregated from any left-outer-joined has_many
+      # `association`. The attribute is forwarded to an `aggregate_#{name}` method in the model that should
+      # exist when calling the serializer. The aggregation `function` is automatically aliased with this
+      # name.
+      def aggregated_attribute(name, association, function)
+        target = "aggregate_#{name}"
+        attributes name
+        define_method(name) { @object.send(target.to_sym) }
+
+        @aggregated_attributes ||= {}
+        @aggregated_attributes[name] = { association => [function.as(target)] }
+      end
+
       protected
 
-      # Reduces the `method_fields` of the serializer to an array using a passed block
+      # Reduces the "method fields" of the serializer to an array using a passed block
       def reduce_method_fields(initial, &block)
         _descriptor.method_fields.reduce(initial) do |arr, item|
           field = item.name.to_sym
@@ -75,17 +98,19 @@ module V2
       # under the `nil` key of the hash, fields from other joined associations are keyed under the name
       # of the given association.
       #
+      # ```
       # {
       #   nil => [own_field1, own_field2, ...],
       #   another_table1 => [another_table_field1, another_table_field2, ...],
       #   another_table2 => [another_table_field1, another_table_field2, ...]
       # }
-      def method_fields(joined)
-        @derived_attributes ||= {}
+      # ```
+      def filter_from(attributes, joined)
+        attributes ||= {}
 
         reduce_method_fields({}) do |obj, field|
-          if @derived_attributes.key?(field) && meets_dependency?(@derived_attributes[field].keys, joined)
-            merge_dependencies(obj, @derived_attributes[field])
+          if attributes.key?(field) && meets_dependency?(attributes[field].keys, joined)
+            merge_dependencies(obj, attributes[field])
           end
         end
       end
