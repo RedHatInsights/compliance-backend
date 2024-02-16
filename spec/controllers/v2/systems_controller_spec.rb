@@ -15,6 +15,7 @@ describe V2::SystemsController do
       updated: -> { updated.as_json },
       insights_id: :insights_id,
       tags: :tags,
+      policies: -> { policies.map { |policy| { id: policy.id, name: policy.name } } },
       os_major_version: -> { system_profile&.dig('operating_system', 'major') },
       os_minor_version: -> { system_profile&.dig('operating_system', 'minor') }
     }

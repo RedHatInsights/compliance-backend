@@ -46,6 +46,21 @@ module V2
       ]
     )
 
+    POLICIES = AN::NamedFunction.new(
+      'COALESCE', [
+        AN::NamedFunction.new(
+          'JSON_AGG', [
+            AN::NamedFunction.new(
+              'JSON_BUILD_OBJECT', [
+                AN::Quoted.new('id'), Policy.arel_table[:id], AN::Quoted.new('title'), Policy.arel_table[:title]
+              ]
+            )
+          ]
+        ).filter(Policy.arel_table[:id].not_eq(nil)),
+        AN::Quoted.new('[]')
+      ]
+    )
+
     sortable_by :display_name
     sortable_by :os_major_version
     sortable_by :os_minor_version
