@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_06_160452) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_19_092555) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -505,13 +505,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_06_160452) do
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
-  create_trigger :v2_policies_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
   SQL
   create_trigger :v2_policies_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
   SQL
-  create_trigger :v2_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
+  create_trigger :v2_policies_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
   SQL
 end
