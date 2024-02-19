@@ -7,6 +7,9 @@ def secrets = [
     [path: params.VAULT_PATH_QUAY_PUSH, secretValues: [
         [envVar: 'QUAY_USER', vaultKey: 'user'],
         [envVar: 'QUAY_TOKEN', vaultKey: 'token']]],
+    [path: params.VAULT_PATH_INSIGHTSDROID_GITHUB, secretValues: [
+        [envVar: 'GITHUB_TOKEN', vaultKey: 'token'],
+        [envVar: 'GITHUB_API_URL', vaultKey: 'mirror_url']]],
     [path: params.VAULT_PATH_RHR_PULL, secretValues: [
         [envVar: 'RH_REGISTRY_USER', vaultKey: 'user'],
         [envVar: 'RH_REGISTRY_TOKEN', vaultKey: 'token']]]
