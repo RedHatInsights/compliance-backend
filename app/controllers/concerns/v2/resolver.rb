@@ -25,7 +25,7 @@ module V2
 
         scope.joins(association)
              .where(association => { klass.primary_key => permitted_params[ref.foreign_key] })
-             .merge(Pundit.policy_scope(current_user, klass))
+             .where(pundit_subquery(association))
       end
     end
 
@@ -94,6 +94,13 @@ module V2
     # Retrieve the list of aggregations on any one-to-many associations specified by the serializer
     def aggregations
       @aggregations ||= serializer.aggregations(resource.one_to_many)
+    end
+
+    def pundit_subquery(association)
+      ref = resource.reflect_on_association(association)
+      klass = ref.klass
+
+      { association => { klass.primary_key => Pundit.policy_scope(current_user, klass) } }
     end
   end
 end
