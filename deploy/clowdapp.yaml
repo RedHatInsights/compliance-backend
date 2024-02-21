@@ -144,7 +144,7 @@ objects:
             valueFrom:
               secretKeyRef:
                 name: pulp
-                key: baseurl
+                key: bas_eurl
           - name: PULP_USERNAME
             valueFrom:
               secretKeyRef:
