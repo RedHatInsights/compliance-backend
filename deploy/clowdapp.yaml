@@ -180,6 +180,10 @@ objects:
               secretKeyRef:
                 name: compliance-pulp-cache-stage
                 key: aws_secret_access_key
+          - name: XDG_CONFIG_HOME
+            value: "/tmp"
+          - name: XDG_CACHE_HOME
+            value: "/tmp"
         image: quay.io/cloudservices/pulp-ubi:latest
     deployments:
     - name: service
@@ -514,7 +518,7 @@ objects:
 - apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdJobInvocation
   metadata:
-    name: compliance-pulp-setup-stage-for-real
+    name: compliance-pulp-setup-stage-finally
   spec:
     appName: "${APP_NAME}"
     jobs:
