@@ -136,7 +136,7 @@ objects:
         args:
           - "-c"
           - |
-            pulp config create --base-url "http://${PULP_BASEURL}" --api-root /api/pulp/ --username "${PULP_USERNAME}" --password "${PULP_PASSWORD}" --domain default
+            pulp config create --base-url "${PULP_BASEURL}" --api-root /api/pulp/ --username "${PULP_USERNAME}" --password "${PULP_PASSWORD}" --domain default
             pulp domain create --name compliance --storage-class storages.backends.s3boto3.S3Boto3Storage \
                                --storage-settings "{\"access_key\": \"${BUCKET_ACCESS_KEY_ID}\", \"secret_key\": \"${BUCKET_SECRET_ACCESS_KEY}\", \"bucket_name\": \"${BUCKET_NAME}\", \"region_name\": \"${BUCKET_REGION}\", \"default_acl\": \"private\"}"
         env:
@@ -518,7 +518,7 @@ objects:
 - apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdJobInvocation
   metadata:
-    name: compliance-pulp-setup-stage-finally
+    name: compliance-pulp-setup-aargh
   spec:
     appName: "${APP_NAME}"
     jobs:
