@@ -129,62 +129,6 @@ objects:
         livenessProbe:
           exec:
             command: ["pgrep" ,"-f", "rake"]
-    - name: pulp-setup
-      podSpec:
-        name: pulp-setup
-        command: [ '/bin/sh' ]
-        args:
-          - "-c"
-          - |
-            pulp config create --base-url "${PULP_BASEURL}" --api-root /api/pulp/ --username "${PULP_USERNAME}" --password "${PULP_PASSWORD}" --domain default
-            pulp domain create --name compliance --storage-class storages.backends.s3boto3.S3Boto3Storage \
-                               --storage-settings "{\"access_key\": \"${BUCKET_ACCESS_KEY_ID}\", \"secret_key\": \"${BUCKET_SECRET_ACCESS_KEY}\", \"bucket_name\": \"${BUCKET_NAME}\", \"region_name\": \"${BUCKET_REGION}\", \"default_acl\": \"private\"}"
-        env:
-          - name: PULP_BASEURL
-            valueFrom:
-              secretKeyRef:
-                name: pulp
-                key: base_url
-          - name: PULP_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: pulp
-                key: username
-          - name: PULP_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: pulp
-                key: password
-          - name: BUCKET_NAME
-            valueFrom:
-              secretKeyRef:
-                name: compliance-pulp-cache-stage
-                key: bucket
-          - name: BUCKET_REGION
-            valueFrom:
-              secretKeyRef:
-                name: compliance-pulp-cache-stage
-                key: aws_region
-          - name: BUCKET_ENDPOINT
-            valueFrom:
-              secretKeyRef:
-                name: compliance-pulp-cache-stage
-                key: endpoint
-          - name: BUCKET_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: compliance-pulp-cache-stage
-                key: aws_access_key_id
-          - name: BUCKET_SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: compliance-pulp-cache-stage
-                key: aws_secret_access_key
-          - name: XDG_CONFIG_HOME
-            value: "/tmp"
-          - name: XDG_CACHE_HOME
-            value: "/tmp"
-        image: quay.io/cloudservices/pulp-ubi:latest
     deployments:
     - name: service
       minReplicas: ${{REPLICAS_BACKEND}}
@@ -514,15 +458,6 @@ objects:
     # This secret is only mounted in ephemeral environments, for any other deployment it is already
     # mounted and available. Its value is just a placeholder and does contain anything sensitive.
     secret_key_base: 'VGhpcyBpcyBhIHBsYWNlaG9sZGVyIHZhbHVlCg=='
-
-- apiVersion: cloud.redhat.com/v1alpha1
-  kind: ClowdJobInvocation
-  metadata:
-    name: compliance-pulp-setup-aargh
-  spec:
-    appName: "${APP_NAME}"
-    jobs:
-      - pulp-setup
 
 parameters:
 - name: IMAGE_TAG
