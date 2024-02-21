@@ -144,7 +144,7 @@ objects:
             valueFrom:
               secretKeyRef:
                 name: pulp
-                key: bas_eurl
+                key: base_url
           - name: PULP_USERNAME
             valueFrom:
               secretKeyRef:
@@ -514,7 +514,7 @@ objects:
 - apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdJobInvocation
   metadata:
-    name: compliance-pulp-setup-stage
+    name: compliance-pulp-setup-stage-again-please-work-now
   spec:
     appName: "${APP_NAME}"
     jobs:
