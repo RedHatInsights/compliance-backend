@@ -511,6 +511,15 @@ objects:
     # mounted and available. Its value is just a placeholder and does contain anything sensitive.
     secret_key_base: 'VGhpcyBpcyBhIHBsYWNlaG9sZGVyIHZhbHVlCg=='
 
+- apiVersion: cloud.redhat.com/v1alpha1
+  kind: ClowdJobInvocation
+  metadata:
+    name: compliance-pulp-setup-stage
+  spec:
+    appName: "${APP_NAME}"
+    jobs:
+      - pulp-setup
+
 parameters:
 - name: IMAGE_TAG
   description: Image tag
