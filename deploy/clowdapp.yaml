@@ -173,7 +173,7 @@ objects:
           - name: BUCKET_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
-                name: ompliance-pulp-cache-stage
+                name: compliance-pulp-cache-stage
                 key: aws_access_key_id
           - name: BUCKET_SECRET_ACCESS_KEY
             valueFrom:
@@ -514,7 +514,7 @@ objects:
 - apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdJobInvocation
   metadata:
-    name: compliance-pulp-setup-stage-again-please-work-now
+    name: compliance-pulp-setup-stage-for-real
   spec:
     appName: "${APP_NAME}"
     jobs:
