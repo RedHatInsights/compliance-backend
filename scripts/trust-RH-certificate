@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+CACERT_URL="https://certs.corp.redhat.com/certs/2015-IT-Root-CA.pem"
+curl -s "$CACERT_URL" > /etc/pki/ca-trust/source/anchors/rh_ca.pem
+update-ca-trust
+set +e

@@ -1,5 +1,5 @@
 GEM
-  remote: https://rubygems.org/
+  remote: https://repository.engineering.redhat.com/nexus/repository/rubygems.org/
   specs:
     actioncable (7.0.7.2)
       actionpack (= 7.0.7.2)

@@ -21,6 +21,10 @@ WORKDIR /opt/app-root/src
 
 COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
+COPY ./scripts/trust-RH-certificate /tmp/trust-RH-certificate
+
+RUN /tmp/trust-RH-certificate && rm /tmp/trust-RH-certificate
+ENV NEXUS_URL="https://repository.engineering.redhat.com/nexus/repository/rubygems.org/"
 
 RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                                \
     if [ -z "$FULL_RHEL" ] ; then                                                          \
@@ -32,6 +36,8 @@ RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                     
     microdnf module enable postgresql:13                                                && \
     microdnf install --nodocs -y $deps $devDeps $extras                                 && \
     chmod +t /tmp                                                                       && \
+    gem sources --remove https://rubygems.org/                                          && \
+    gem sources --add "$NEXUS_URL"                                                      && \
     gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin              && \
     gem install bundler                                                                 && \
     ( [[ $prod != "true" ]] || bundle config set --local --without 'development:test' ) && \
