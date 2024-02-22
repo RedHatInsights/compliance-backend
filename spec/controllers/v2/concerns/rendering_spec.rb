@@ -50,7 +50,7 @@ RSpec.shared_examples 'collection' do |*parents|
     expect(response_body_data).to match_array(collection)
 
     response_body_data.each do |item|
-      expect(item.keys.count).to eq(attributes.keys.count + 2)
+      expect(item.keys.count).to eq((attributes.keys + %i[id type]).count)
     end
   end
 
