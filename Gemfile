@@ -94,9 +94,10 @@ gem 'clowder-common-ruby'
 gem 'request_store'
 
 # Ruby 3 dependencies
-gem 'cgi'
+gem 'cgi', '>= 0.3.5'
+gem 'uri', '>= 0.11.1'
 gem 'rexml'
-gem 'time'
+gem 'time', '>= 0.2.2'
 gem 'webrick'
 
 # Allows for tree structures in db
