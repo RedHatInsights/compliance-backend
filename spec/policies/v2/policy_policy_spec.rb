@@ -12,7 +12,7 @@ describe V2::PolicyPolicy do
     expect(Pundit.policy_scope(user, V2::Policy).to_set).to eq(items.to_set)
   end
 
-  it 'authorizes the index and show actions' do
+  it 'authorizes the show, update and destroy actions' do
     items.each do |item|
       expect(Pundit.authorize(user, item, :show?)).to be_truthy
       expect(Pundit.authorize(user, item, :update?)).to be_truthy
