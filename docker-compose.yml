@@ -124,6 +124,7 @@ services:
       - API_PATH_PREFIX=/api/rbac
       - DEVELOPMENT=False
       - BYPASS_BOP_VERIFICATION=True
+      - IT_BYPASS_TOKEN_VALIDATION=True
     depends_on:
       - build-rbac-db
       - db
