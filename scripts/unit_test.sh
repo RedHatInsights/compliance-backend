@@ -97,6 +97,7 @@ WORKSPACE=${WORKSPACE:-./}
 ARTIFACTS_DIR="$WORKSPACE/artifacts"
 mkdir -p "$ARTIFACTS_DIR"
 
+
 # gem install
 echo '===================================='
 echo '=== Installing Gem Dependencies ===='
