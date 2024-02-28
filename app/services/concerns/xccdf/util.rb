@@ -30,7 +30,7 @@ module Xccdf
         save_rules
         save_rule_group_relationships
         save_profile_rules
-        save_profile_os_minor_versions
+        # save_profile_os_minor_versions
         save_rule_references_containers
       end
       # rubocop:enable Metrics/MethodLength
