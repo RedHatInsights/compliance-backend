@@ -28,8 +28,8 @@ module V2
 
       # Match any declared `aggregate_field` against the available relationships, return with a hash of
       # aggregations in a `{ name => field }` format.
-      def aggregations(to_many)
-        filter_from(@aggregated_attributes, to_many).each_with_object({}) do |(k, (v)), obj|
+      def aggregations(parents, to_many)
+        filter_from(@aggregated_attributes, to_many - parents.to_a).each_with_object({}) do |(k, (v)), obj|
           obj[k] = v
         end
       end
@@ -40,15 +40,11 @@ module V2
       #
       # https://panko.dev/docs/attributes#filters-for
       def filters_for(context, _scope)
-        @derived_attributes ||= {}
-
         # Iterate through all the "method fields" and if any of them show up in the `@derived_attributes`, check if
         # the dependencies are not met. This builds a context-based list of attributes that should not be displayed.
         {
           except: reduce_method_fields([]) do |arr, field|
-            if @derived_attributes.key?(field) && !meets_dependency?(@derived_attributes[field].keys, context[:joined])
-              arr.push(field)
-            end
+            arr.push(field) if to_be_excluded?(field, context)
           end
         }
       end
@@ -80,6 +76,19 @@ module V2
       end
 
       protected
+
+      # Derived attributes should be excluded if the required associations are not joined with the current scope,
+      # i.e. there are no joined parents available. Aggregated attributes should be skipped when its dependencies
+      # have been already joined to the current scope, i.e. there is an overlap with parents.
+      def to_be_excluded?(field, context)
+        @derived_attributes ||= {}
+        @aggregated_attributes ||= {}
+
+        [
+          @derived_attributes.key?(field) && !meets_dependency?(@derived_attributes[field].keys, context[:joined]),
+          @aggregated_attributes.key?(field) && meets_dependency?(@aggregated_attributes[field].keys, context[:joined])
+        ].any?
+      end
 
       # Reduces the "method fields" of the serializer to an array using a passed block
       def reduce_method_fields(initial, &block)

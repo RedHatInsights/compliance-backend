@@ -93,7 +93,7 @@ module V2
 
     # Retrieve the list of aggregations on any one-to-many associations specified by the serializer
     def aggregations
-      @aggregations ||= serializer.aggregations(resource.one_to_many)
+      @aggregations ||= serializer.aggregations(permitted_params[:parents], resource.one_to_many)
     end
 
     def pundit_subquery(association)
