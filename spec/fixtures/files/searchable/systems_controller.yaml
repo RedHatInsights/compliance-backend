@@ -61,7 +61,7 @@
         :policy_id: ${policy_id}
     :not_found:
       - :factory: :system
-        os_major_version: 8
+        :os_major_version: 8
         :account: ${account}
         :policy_id: ${policy_id}
   :query: (os_major_version = 7)
@@ -69,12 +69,12 @@
   :entities:
     :found:
       - :factory: :system
-        os_major_version: 8
+        :os_major_version: 8
         :account: ${account}
         :policy_id: ${policy_id}
     :not_found:
       - :factory: :system
-        os_major_version: 7
+        :os_major_version: 7
         :account: ${account}
         :policy_id: ${policy_id}
   :query: (os_major_version != 7)
@@ -92,7 +92,7 @@
     :not_found:
       - :factory: :system
         :display_name: not this display_name
-        os_major_version: 8
+        :os_major_version: 8
         :account: ${account}
         :policy_id: ${policy_id}
   :query: (os_major_version ^ "7 9")
@@ -100,7 +100,7 @@
   :entities:
     :found:
       - :factory: :system
-        os_major_version: 8
+        :os_major_version: 8
         :account: ${account}
         :policy_id: ${policy_id}
     :not_found:
