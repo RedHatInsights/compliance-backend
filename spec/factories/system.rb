@@ -31,6 +31,13 @@ FactoryBot.define do
       os_major_version { 8 }
       os_minor_version { 0 }
       group_count { 0 }
+      policy_id { nil }
+    end
+
+    after(:create) do |sys, ev|
+      next if ev.policy_id.nil?
+
+      sys.policy_systems << FactoryBot.create(:v2_policy_system, system_id: sys.id, policy_id: ev.policy_id)
     end
   end
 end

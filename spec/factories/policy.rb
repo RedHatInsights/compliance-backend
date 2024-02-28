@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :v2_policy, class: 'V2::Policy' do
+    # account { association(:v2_account) }
     title { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
     profile { association :v2_profile, os_major_version: os_major_version }
