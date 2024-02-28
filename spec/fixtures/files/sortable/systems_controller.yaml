@@ -7,6 +7,7 @@
       - id: 5
         name: 'aba'
     :account: ${account}
+    :policy_id: ${policy_id}
 
   - :factory: :system
     :display_name: 'bac'
@@ -16,6 +17,7 @@
       - id: 4
         name: 'bac'
     :account: ${account}
+    :policy_id: ${policy_id}
 
   - :factory: :system
     :display_name: 'aab'
@@ -25,6 +27,7 @@
       - id: 3
         name: 'aab'
     :account: ${account}
+    :policy_id: ${policy_id}
 
   - :factory: :system
     :display_name: 'aaa'
@@ -34,6 +37,7 @@
       - id: 1
         name: 'aaa'
     :account: ${account}
+    :policy_id: ${policy_id}
 
   - :factory: :system
     :display_name: 'caa'
@@ -43,6 +47,7 @@
       - id: 2
         name: 'caa'
     :account: ${account}
+    :policy_id: ${policy_id}
 
   - :factory: :system
     :display_name: 'aaa'
@@ -52,6 +57,7 @@
       - id: 1
         name: 'aaa'
     :account: ${account}
+    :policy_id: ${policy_id}
 
 :queries:
   - :sort_by:
