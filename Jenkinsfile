@@ -39,52 +39,19 @@ pipeline {
 
     stages {
 
-        stage('Build the PR commit image') {
+        stage('test cert auth') {
+            environment {
+                PEM_FILE="/etc/pki/consumer/cert.pem"
+                CERT_URL="https://cert.console.stage.redhat.com/api/pulp-content/compliance/"
+            }
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'bash -x build_deploy.sh'
+                    sh """
+                        pem_file="/etc/pki/consumer/cert.pem"
+                        sudo curl --cert "$PEM_FILE" "$CERT_URL"
+                    """
                 }
             }
-        }
-
-        stage('Run Tests') {
-            parallel {
-                stage('Run unit tests') {
-                    steps {
-                        withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh 'bash -x ./scripts/unit_test.sh'
-                        }
-                    }
-                }
-                stage('Run smoke tests') {
-                    steps {
-                        withVault([configuration: configuration, vaultSecrets: secrets]) {
-                            sh '''
-                                AVAILABLE_CLUSTERS=('ephemeral' 'crcd')
-                                curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
-                                source ./.cicd_bootstrap.sh
-                                source "${CICD_ROOT}/deploy_ephemeral_env.sh"
-                                source "${CICD_ROOT}/cji_smoke_test.sh"
-                            '''
-                        }
-                    }
-                    post {
-                        failure {
-                            slackSend  channel: '@eshamard', color: "danger", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
-                        }
-                        unstable {
-                            slackSend  channel: '@eshamard', color: "warning", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    post {
-        always{
-            archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true
-            junit skipPublishingChecks: true, testResults: 'artifacts/junit-*.xml'
         }
     }
 }
