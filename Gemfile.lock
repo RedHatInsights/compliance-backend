@@ -284,7 +284,7 @@ GEM
     racecar (2.8.2)
       king_konf (~> 1.0.0)
       rdkafka (~> 0.12.0)
-    rack (2.2.8)
+    rack (2.2.8.1)
     rack-cors (2.0.1)
       rack (>= 2.0.0)
     rack-test (2.1.0)
