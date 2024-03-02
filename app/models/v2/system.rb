@@ -12,6 +12,7 @@ module V2
     # rubocop:enable Rails/InverseOf
     has_many :policy_systems, class_name: 'V2::PolicySystem', foreign_key: :host_id, inverse_of: :system, dependent: nil
     has_many :policies, through: :policy_systems
+    has_many :reports, class_name: 'V2::Report', dependent: nil
 
     OS_VERSION = AN::InfixOperation.new(
       '->',

@@ -37,6 +37,7 @@ module V2
              foreign_key: :profile_id,
              inverse_of: :tailoring
     has_many :rules, class_name: 'V2::Rule', through: :tailoring_rules
+    has_many :reports, class_name: 'V2::Report', dependent: nil
 
     searchable_by :os_minor_version, %i[eq ne]
 
