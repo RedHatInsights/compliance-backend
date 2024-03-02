@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_19_092555) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_02_162345) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -371,6 +371,20 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_19_092555) do
              FROM policy_hosts
             GROUP BY policy_hosts.policy_id) sq ON ((sq.policy_id = policies.id)));
   SQL
+  create_view "reports", sql_definition: <<-SQL
+      SELECT v2_policies.id,
+      v2_policies.title,
+      v2_policies.description,
+      v2_policies.compliance_threshold,
+      v2_policies.business_objective,
+      v2_policies.system_count,
+      v2_policies.profile_id,
+      v2_policies.account_id
+     FROM ((v2_policies
+       JOIN tailorings ON ((tailorings.policy_id = v2_policies.id)))
+       JOIN test_results ON ((test_results.profile_id = tailorings.id)))
+    GROUP BY v2_policies.id, v2_policies.title, v2_policies.description, v2_policies.compliance_threshold, v2_policies.business_objective, v2_policies.system_count, v2_policies.profile_id, v2_policies.account_id;
+  SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
        RETURNS trigger
@@ -505,13 +519,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_19_092555) do
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
-  create_trigger :v2_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
+  create_trigger :v2_policies_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
   SQL
   create_trigger :v2_policies_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
   SQL
-  create_trigger :v2_policies_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
   SQL
 end
