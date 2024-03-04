@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_02_162345) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_04_140834) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -384,6 +384,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_02_162345) do
        JOIN tailorings ON ((tailorings.policy_id = v2_policies.id)))
        JOIN test_results ON ((test_results.profile_id = tailorings.id)))
     GROUP BY v2_policies.id, v2_policies.title, v2_policies.description, v2_policies.compliance_threshold, v2_policies.business_objective, v2_policies.system_count, v2_policies.profile_id, v2_policies.account_id;
+  SQL
+  create_view "policy_systems", sql_definition: <<-SQL
+      SELECT policy_hosts.id,
+      policy_hosts.policy_id,
+      policy_hosts.host_id AS system_id
+     FROM policy_hosts;
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()

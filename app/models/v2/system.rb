@@ -10,7 +10,7 @@ module V2
     # FIXME: after the full remodel and V1 cleanup, inverse_of can be specified
     belongs_to :account, class_name: 'Account', primary_key: :org_id, foreign_key: :org_id
     # rubocop:enable Rails/InverseOf
-    has_many :policy_systems, class_name: 'V2::PolicySystem', foreign_key: :host_id, inverse_of: :system, dependent: nil
+    has_many :policy_systems, class_name: 'V2::PolicySystem', dependent: nil
     has_many :policies, through: :policy_systems
     has_many :reports, class_name: 'V2::Report', dependent: nil
 
