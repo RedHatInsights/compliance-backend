@@ -11,6 +11,13 @@ FactoryBot.define do
 
     transient do
       os_major_version { 7 }
+      system_id { nil }
+    end
+
+    after(:create) do |policy, ev|
+      next if ev.system_id.nil?
+
+      policy.policy_systems << FactoryBot.create(:v2_policy_system, system_id: ev.system_id, policy_id: policy.id)
     end
   end
 end
