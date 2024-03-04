@@ -5,6 +5,7 @@
     :compliance_threshold: 90
     :os_major_version: 9
     :account: ${account}
+    :system_id: ${system_id}
 
   - :factory: :v2_policy
     :title: 'bac'
@@ -12,6 +13,7 @@
     :compliance_threshold: 85
     :os_major_version: 8
     :account: ${account}
+    :system_id: ${system_id}
 
   - :factory: :v2_policy
     :title: 'aab'
@@ -19,6 +21,7 @@
     :compliance_threshold: 90
     :os_major_version: 7
     :account: ${account}
+    :system_id: ${system_id}
 
   - :factory: :v2_policy
     :title: 'aaa'
@@ -26,6 +29,7 @@
     :compliance_threshold: 85
     :os_major_version: 9
     :account: ${account}
+    :system_id: ${system_id}
 
   - :factory: :v2_policy
     :title: 'caa'
@@ -33,6 +37,7 @@
     :compliance_threshold: 100
     :os_major_version: 7
     :account: ${account}
+    :system_id: ${system_id}
 
   - :factory: :v2_policy
     :title: 'aaa'
@@ -40,6 +45,7 @@
     :compliance_threshold: 80
     :os_major_version: 8
     :account: ${account}
+    :system_id: ${system_id}
 
 :queries:
   - :sort_by:

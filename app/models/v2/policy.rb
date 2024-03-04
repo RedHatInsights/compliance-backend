@@ -11,6 +11,8 @@ module V2
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
     has_many :tailorings, class_name: 'V2::Tailoring', dependent: :destroy
     belongs_to :account, class_name: 'Account'
+    has_many :policy_systems, class_name: 'V2::PolicySystem', dependent: :destroy
+    has_many :systems, through: :policy_systems, class_name: 'V2::System'
 
     validates :account, presence: true
     validates :profile, presence: true
