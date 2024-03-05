@@ -30,13 +30,21 @@ FactoryBot.define do
 
     trait :with_mixed_rules do
       rules do
-        # sample of rules under profile
-        profile_rules = profile.rules.sample(profile.rules.count / 2)
-        # sample of rules under security guide, outside of the profile
-        sec_guide_rules_avail = security_guide.rules.reject { |rule| profile_rules.include?(rule) }
-        sec_guide_rules = sec_guide_rules_avail.sample(sec_guide_rules_avail.count / 2)
+        result = []
 
-        sec_guide_rules + profile_rules
+        loop do
+          # sample of rules under profile
+          profile_rules = profile.rules.sample(profile.rules.count / 2)
+          # sample of rules under security guide, outside of the profile
+          sec_guide_rules_avail = security_guide.rules.reject { |rule| profile_rules.include?(rule) }
+          sec_guide_rules = sec_guide_rules_avail.sample(sec_guide_rules_avail.count / 2)
+
+          result = sec_guide_rules + profile_rules
+          # Make sure that the randomized result doesn't match the profile tailoring
+          break if result.to_set(&:id) != profile.rules.to_set(&:id)
+        end
+
+        result
       end
     end
 
