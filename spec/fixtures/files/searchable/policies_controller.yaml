@@ -5,78 +5,114 @@
     :found:
       - :factory: :v2_policy
         :title: searched title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
     :not_found:
       - :factory: :v2_policy
         :title: not this title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
   :query: (title = "searched title")
 - :name: "non-equality search by title"
   :entities:
     :found:
       - :factory: :v2_policy
         :title: not this title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
     :not_found:
       - :factory: :v2_policy
         :title: searched title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
   :query: (title != "searched title")
 - :name: "in search by title"
   :entities:
     :found:
       - :factory: :v2_policy
         :title: searched title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
     :not_found:
       - :factory: :v2_policy
         :title: not this title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
   :query: (title ^ "searched title")
 - :name: "not-in search by title"
   :entities:
     :found:
       - :factory: :v2_policy
         :title: not this title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
     :not_found:
       - :factory: :v2_policy
         :title: searched title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
   :query: (title !^ "searched title")
 - :name: "like search by title"
   :entities:
     :found:
       - :factory: :v2_policy
         :title: searched title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
     :not_found:
       - :factory: :v2_policy
         :title: not this title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
   :query: (title ~ "searched title")
 - :name: "unlike search by title"
   :entities:
     :found:
       - :factory: :v2_policy
         :title: not this title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
     :not_found:
       - :factory: :v2_policy
         :title: searched title
-        :account: ${account}
         :system_id: ${system_id}
+        :os_major_version: 8
+        :supports_minors:
+          - 0
+        :account: ${account}
   :query: (title !~ "searched title")
 - :name: "equality search by os_major_version"
   :entities:
@@ -92,6 +128,8 @@
         os_major_version: 8
         :account: ${account}
         :system_id: ${system_id}
+  :except_parents:
+    - :systems
   :query: (os_major_version = 7)
 - :name: "non-equality search by os_major_version"
   :entities:
@@ -108,6 +146,8 @@
         :account: ${account}
         :system_id: ${system_id}
   :query: (os_major_version != 7)
+  :except_parents:
+    - :systems
 - :name: "in search by os_major_version"
   :entities:
     :found:
@@ -127,6 +167,8 @@
         os_major_version: 8
         :account: ${account}
         :system_id: ${system_id}
+  :except_parents:
+    - :systems
   :query: (os_major_version ^ "7 9")
 - :name: "not-in search by os_major_version"
   :entities:
@@ -148,3 +190,5 @@
         :account: ${account}
         :system_id: ${system_id}
   :query: (os_major_version !^ "7 9")
+  :except_parents:
+    - :systems

@@ -5,13 +5,14 @@ FactoryBot.define do
     # account { association(:v2_account) }
     title { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
-    profile { association :v2_profile, os_major_version: os_major_version }
+    profile { association :v2_profile, os_major_version: os_major_version, supports_minors: supports_minors }
     compliance_threshold { SecureRandom.random_number(100) }
     system_count { 0 }
 
     transient do
       os_major_version { 7 }
       system_id { nil }
+      supports_minors { [] }
     end
 
     after(:create) do |policy, ev|

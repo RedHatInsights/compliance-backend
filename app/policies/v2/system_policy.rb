@@ -11,6 +11,14 @@ module V2
       match_account? && match_group?
     end
 
+    def update?
+      match_account? && match_group?
+    end
+
+    def destroy?
+      match_account? && match_group?
+    end
+
     private
 
     def match_account?

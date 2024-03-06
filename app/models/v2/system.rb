@@ -105,6 +105,14 @@ module V2
       groups.map { |group| group['id'] } || []
     end
 
+    def os_major_version
+      attributes['os_major_version'] || system_profile&.dig('operating_system', 'major')
+    end
+
+    def os_minor_version
+      attributes['os_minor_version'] || system_profile&.dig('operating_system', 'minor')
+    end
+
     def self.arel_inventory_groups(groups, key)
       jsons = groups.map { |group| [{ key => group }].to_json.dump }
 

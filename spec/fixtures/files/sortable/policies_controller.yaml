@@ -3,7 +3,9 @@
     :title: 'aba'
     :business_objective: 'aba'
     :compliance_threshold: 90
-    :os_major_version: 9
+    :os_major_version: ${system_9.os_major_version}
+    :supports_minors:
+      - 0
     :account: ${account}
     :system_id: ${system_id}
 
@@ -11,7 +13,9 @@
     :title: 'bac'
     :business_objective: 'bac'
     :compliance_threshold: 85
-    :os_major_version: 8
+    :os_major_version: ${system_8.os_major_version}
+    :supports_minors:
+      - 0
     :account: ${account}
     :system_id: ${system_id}
 
@@ -19,7 +23,9 @@
     :title: 'aab'
     :business_objective: 'aab'
     :compliance_threshold: 90
-    :os_major_version: 7
+    :os_major_version: ${system_7.os_major_version}
+    :supports_minors:
+      - 0
     :account: ${account}
     :system_id: ${system_id}
 
@@ -27,7 +33,9 @@
     :title: 'aaa'
     :business_objective: 'aaa'
     :compliance_threshold: 85
-    :os_major_version: 9
+    :os_major_version: ${system_9.os_major_version}
+    :supports_minors:
+      - 0
     :account: ${account}
     :system_id: ${system_id}
 
@@ -35,7 +43,9 @@
     :title: 'caa'
     :business_objective: 'caa'
     :compliance_threshold: 100
-    :os_major_version: 7
+    :os_major_version: ${system_7.os_major_version}
+    :supports_minors:
+      - 0
     :account: ${account}
     :system_id: ${system_id}
 
@@ -43,7 +53,9 @@
     :title: 'aaa'
     :business_objective: 'aaa'
     :compliance_threshold: 80
-    :os_major_version: 8
+    :os_major_version: ${system_8.os_major_version}
+    :supports_minors:
+      - 0
     :account: ${account}
     :system_id: ${system_id}
 
@@ -60,7 +72,11 @@
   - :sort_by:
       - 'os_major_version'
     :result: [[2, 4], [1, 5], [0, 3]]
+    :except_parents:
+      - :systems
   - :sort_by:
       - 'os_major_version'
       - 'compliance_threshold'
     :result: [2, 4, 5, 1, 3, 0]
+    :except_parents:
+      - :systems
