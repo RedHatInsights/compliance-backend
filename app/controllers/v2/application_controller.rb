@@ -56,8 +56,8 @@ module V2
       user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
     end
 
-    def pundit_scope
-      Pundit.policy_scope(current_user, resource)
+    def pundit_scope(res = resource)
+      Pundit.policy_scope(current_user, res)
     end
 
     # Default list of additional fields to be passed to the list of selected fields
