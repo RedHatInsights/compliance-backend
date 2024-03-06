@@ -1,63 +1,57 @@
 :entities:
   - :factory: :system
     :display_name: 'aba'
-    :os_major_version: 9
     :os_minor_version: 2
     :groups:
       - id: 5
         name: 'aba'
     :account: ${account}
-    :policy_id: ${policy_id}
+    :policy_id: ${policy_9.id}
 
   - :factory: :system
     :display_name: 'bac'
-    :os_major_version: 8
     :os_minor_version: 8
     :groups:
       - id: 4
         name: 'bac'
     :account: ${account}
-    :policy_id: ${policy_id}
+    :policy_id: ${policy_8.id}
 
   - :factory: :system
     :display_name: 'aab'
-    :os_major_version: 7
     :os_minor_version: 1
     :groups:
       - id: 3
         name: 'aab'
     :account: ${account}
-    :policy_id: ${policy_id}
+    :policy_id: ${policy_7.id}
 
   - :factory: :system
     :display_name: 'aaa'
-    :os_major_version: 9
     :os_minor_version: 1
     :groups:
       - id: 1
         name: 'aaa'
     :account: ${account}
-    :policy_id: ${policy_id}
+    :policy_id: ${policy_9.id}
 
   - :factory: :system
     :display_name: 'caa'
-    :os_major_version: 7
     :os_minor_version: 2
     :groups:
       - id: 2
         name: 'caa'
     :account: ${account}
-    :policy_id: ${policy_id}
+    :policy_id: ${policy_7.id}
 
   - :factory: :system
     :display_name: 'aaa'
-    :os_major_version: 8
     :os_minor_version: 1
     :groups:
       - id: 1
         name: 'aaa'
     :account: ${account}
-    :policy_id: ${policy_id}
+    :policy_id: ${policy_8.id}
 
 :queries:
   - :sort_by:
@@ -66,10 +60,14 @@
   - :sort_by:
       - 'os_major_version'
     :result: [[4, 2], [5, 1], [0, 3]]
+    :except_parents:
+      - :policies
   - :sort_by:
       - 'os_major_version'
       - 'os_minor_version'
     :result: [2, 4, 5, 1, 3, 0]
+    :except_parents:
+      - :policies
   - :sort_by:
       - 'groups'
     :result: [[3, 5], 2, 0, 1, 4]

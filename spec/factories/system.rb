@@ -28,7 +28,7 @@ FactoryBot.define do
     end
 
     transient do
-      os_major_version { 8 }
+      os_major_version { policy_id ? V2::Policy.find(policy_id).os_major_version : 8 }
       os_minor_version { 0 }
       group_count { 0 }
       policy_id { nil }

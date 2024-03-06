@@ -56,89 +56,97 @@
   :entities:
     :found:
       - :factory: :system
-        :os_major_version: 7
+        :policy_id: ${policy_7.id}
+        :os_minor_version: 1
         :account: ${account}
-        :policy_id: ${policy_id}
     :not_found:
       - :factory: :system
-        :os_major_version: 8
+        :policy_id: ${policy_8.id}
+        :os_minor_version: 1
         :account: ${account}
-        :policy_id: ${policy_id}
   :query: (os_major_version = 7)
+  :except_parents:
+    - :policies
 - :name: "non-equality search by os_major_version"
   :entities:
     :found:
       - :factory: :system
-        :os_major_version: 8
+        :os_minor_version: 1
+        :policy_id: ${policy_8.id}
         :account: ${account}
-        :policy_id: ${policy_id}
     :not_found:
       - :factory: :system
-        :os_major_version: 7
+        :os_minor_version: 1
+        :policy_id: ${policy_7.id}
         :account: ${account}
-        :policy_id: ${policy_id}
   :query: (os_major_version != 7)
+  :except_parents:
+    - :policies
 - :name: "in search by os_major_version"
   :entities:
     :found:
       - :factory: :system
-        :os_major_version: 7
+        :os_minor_version: 1
+        :policy_id: ${policy_7.id}
         :account: ${account}
-        :policy_id: ${policy_id}
       - :factory: :system
-        :os_major_version: 9
+        :os_minor_version: 1
+        :policy_id: ${policy_9.id}
         :account: ${account}
-        :policy_id: ${policy_id}
     :not_found:
       - :factory: :system
         :display_name: not this display_name
-        :os_major_version: 8
+        :os_minor_version: 1
+        :policy_id: ${policy_8.id}
         :account: ${account}
-        :policy_id: ${policy_id}
   :query: (os_major_version ^ "7 9")
+  :except_parents:
+    - :policies
 - :name: "not-in search by os_major_version"
   :entities:
     :found:
       - :factory: :system
-        :os_major_version: 8
+        :os_minor_version: 1
+        :policy_id: ${policy_8.id}
         :account: ${account}
-        :policy_id: ${policy_id}
     :not_found:
       - :factory: :system
-        :os_major_version: 7
+        :os_minor_version: 1
+        :policy_id: ${policy_7.id}
         :account: ${account}
-        :policy_id: ${policy_id}
       - :factory: :system
-        :os_major_version: 9
+        :os_minor_version: 1
+        :policy_id: ${policy_9.id}
         :account: ${account}
-        :policy_id: ${policy_id}
   :query: (os_major_version !^ "7 9")
+  :except_parents:
+    - :policies
 - :name: "equality search by os_minor_version"
   :entities:
     :found:
       - :factory: :system
-        :os_minor_version: 0
-        :account: ${account}
+        :os_minor_version: 1
         :policy_id: ${policy_id}
+        :account: ${account}
     :not_found:
       - :factory: :system
-        os_minor_version: 1
-        :account: ${account}
+        :os_minor_version: 2
         :policy_id: ${policy_id}
-  :query: (os_minor_version = 0)
+        :account: ${account}
+  :query: (os_minor_version = 1)
 - :name: "non-equality search by os_minor_version"
   :entities:
     :found:
       - :factory: :system
-        os_minor_version: 1
-        :account: ${account}
+        :os_minor_version: 1
         :policy_id: ${policy_id}
+        :account: ${account}
     :not_found:
       - :factory: :system
-        os_minor_version: 0
-        :account: ${account}
+        :os_minor_version: 2
         :policy_id: ${policy_id}
-  :query: (os_minor_version != 0)
+        :account: ${account}
+  :query: (os_minor_version != 2)
 - :name: "in search by os_minor_version"
   :entities:
     :found:
@@ -153,17 +161,17 @@
     :not_found:
       - :factory: :system
         :display_name: not this display_name
-        os_minor_version: 1
-        :account: ${account}
+        :os_minor_version: 1
         :policy_id: ${policy_id}
+        :account: ${account}
   :query: (os_minor_version ^ "0 2")
 - :name: "not-in search by os_minor_version"
   :entities:
     :found:
       - :factory: :system
-        os_minor_version: 1
-        :account: ${account}
+        :os_minor_version: 1
         :policy_id: ${policy_id}
+        :account: ${account}
     :not_found:
       - :factory: :system
         :os_minor_version: 0
@@ -178,49 +186,45 @@
   :entities:
     :found:
       - :factory: :system
-        :os_major_version: 7
         :os_minor_version: 1
+        :policy_id: ${policy_7.id}
         :account: ${account}
-        :policy_id: ${policy_id}
     :not_found:
       - :factory: :system
-        :os_major_version: 7
         :os_minor_version: 2
+        :policy_id: ${policy_7.id}
         :account: ${account}
-        :policy_id: ${policy_id}
       - :factory: :system
-        :os_minor_version: 8
         :os_minor_version: 1
+        :policy_id: ${policy_8.id}
         :account: ${account}
-        :policy_id: ${policy_id}
   :query: (os_minor_version = 1) and (os_major_version = 7)
+  :except_parents:
+    - :policies
 - :name: "combined equality-in search by os_major_version and os_minor_version"
   :entities:
     :found:
       - :factory: :system
-        :os_major_version: 7
         :os_minor_version: 1
+        :policy_id: ${policy_7.id}
         :account: ${account}
-        :policy_id: ${policy_id}
       - :factory: :system
-        :os_major_version: 7
         :os_minor_version: 2
+        :policy_id: ${policy_7.id}
         :account: ${account}
-        :policy_id: ${policy_id}
     :not_found:
       - :factory: :system
-        :os_minor_version: 7
-        :os_minor_version: 0
-        :account: ${account}
-        :policy_id: ${policy_id}
-      - :factory: :system
         :os_minor_version: 8
+        :policy_id: ${policy_7.id}
+        :account: ${account}
+      - :factory: :system
         :os_minor_version: 1
+        :policy_id: ${policy_8.id}
         :account: ${account}
-        :policy_id: ${policy_id}
       - :factory: :system
-        :os_minor_version: 8
         :os_minor_version: 2
+        :policy_id: ${policy_8.id}
         :account: ${account}
-        :policy_id: ${policy_id}
   :query: (os_major_version = 7) and (os_minor_version ^ "1 2")
+  :except_parents:
+    - :policies

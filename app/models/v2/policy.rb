@@ -10,9 +10,9 @@ module V2
     belongs_to :profile, class_name: 'V2::Profile'
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
     has_many :tailorings, class_name: 'V2::Tailoring', dependent: :destroy
-    belongs_to :account, class_name: 'Account'
     has_many :policy_systems, class_name: 'V2::PolicySystem', dependent: :destroy
     has_many :systems, through: :policy_systems, class_name: 'V2::System'
+    belongs_to :account, class_name: 'Account'
 
     validates :account, presence: true
     validates :profile, presence: true
@@ -47,6 +47,10 @@ module V2
 
     def ref_id
       attributes['profile__ref_id'] || profile.ref_id
+    end
+
+    def os_minor_versions
+      V2::SupportedProfile.find_by!(ref_id: ref_id, os_major_version: os_major_version).os_minor_versions
     end
   end
 end
