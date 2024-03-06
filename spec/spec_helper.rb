@@ -47,7 +47,7 @@ if Rails.env.test?
   def factory_params(item, extra_params)
     item = item.each_with_object({}) do |(key, value), obj|
       obj[key] = value
-      value.is_a?(String) && value.match(/^\$\{([a-zA-Z_]+)(\.([a-zA-Z_]+))?\}$/) do |m|
+      value.is_a?(String) && value.match(/^\$\{([a-zA-Z_]+[a-zA-Z_0-9]*)(\.([a-zA-Z_]+))?\}$/) do |m|
         obj_or_attr = extra_params[m[1].to_sym]
         method = m[3].to_sym if m[3]
         obj[key] = method ? obj_or_attr.send(method) : obj_or_attr
