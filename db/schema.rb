@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_04_140834) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_06_151739) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -355,18 +355,24 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_140834) do
       rule_groups.precedence
      FROM rule_groups;
   SQL
+  create_view "policy_systems", sql_definition: <<-SQL
+      SELECT policy_hosts.id,
+      policy_hosts.policy_id,
+      policy_hosts.host_id AS system_id
+     FROM policy_hosts;
+  SQL
   create_view "v2_policies", sql_definition: <<-SQL
       SELECT policies.id,
       policies.name AS title,
       policies.description,
       policies.compliance_threshold,
       business_objectives.title AS business_objective,
-      COALESCE(sq.system_count, (0)::bigint) AS system_count,
+      COALESCE(sq.total_system_count, (0)::bigint) AS total_system_count,
       policies.profile_id,
       policies.account_id
      FROM ((policies
        LEFT JOIN business_objectives ON ((business_objectives.id = policies.business_objective_id)))
-       LEFT JOIN ( SELECT count(policy_hosts.host_id) AS system_count,
+       LEFT JOIN ( SELECT count(policy_hosts.host_id) AS total_system_count,
               policy_hosts.policy_id
              FROM policy_hosts
             GROUP BY policy_hosts.policy_id) sq ON ((sq.policy_id = policies.id)));
@@ -377,19 +383,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_140834) do
       v2_policies.description,
       v2_policies.compliance_threshold,
       v2_policies.business_objective,
-      v2_policies.system_count,
+      v2_policies.total_system_count,
       v2_policies.profile_id,
       v2_policies.account_id
      FROM ((v2_policies
        JOIN tailorings ON ((tailorings.policy_id = v2_policies.id)))
        JOIN test_results ON ((test_results.profile_id = tailorings.id)))
-    GROUP BY v2_policies.id, v2_policies.title, v2_policies.description, v2_policies.compliance_threshold, v2_policies.business_objective, v2_policies.system_count, v2_policies.profile_id, v2_policies.account_id;
-  SQL
-  create_view "policy_systems", sql_definition: <<-SQL
-      SELECT policy_hosts.id,
-      policy_hosts.policy_id,
-      policy_hosts.host_id AS system_id
-     FROM policy_hosts;
+    GROUP BY v2_policies.id, v2_policies.title, v2_policies.description, v2_policies.compliance_threshold, v2_policies.business_objective, v2_policies.total_system_count, v2_policies.profile_id, v2_policies.account_id;
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
@@ -525,13 +525,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_140834) do
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
-  create_trigger :v2_policies_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
   SQL
   create_trigger :v2_policies_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
   SQL
-  create_trigger :v2_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
+  create_trigger :v2_policies_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
   SQL
 end
