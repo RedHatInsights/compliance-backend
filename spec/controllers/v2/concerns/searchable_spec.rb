@@ -22,6 +22,7 @@
 #       - :factory: :name_of_your_factory
 #         # fields passed to the factory
 #   :query: 'query to search by'
+#   :except_parents: [:parent] # skip the test if specified parents are present
 # ```
 #
 # The `parents` parameter is required when testing nested controllers, and it should contain
@@ -60,6 +61,8 @@ RSpec.shared_examples 'searchable' do |*parents|
   searches = YAML.safe_load_file(path, permitted_classes: [Symbol])
 
   searches.each do |search|
+    next if parents.to_a.intersect?(search[:except_parents].to_a)
+
     it search[:name] do
       found = search[:entities][:found].map do |h|
         entity = factory_params(h, extra_params)
