@@ -42,7 +42,7 @@ describe V2::PoliciesController do
           :v2_policy,
           item_count,
           account: current_user.account
-        ).sort_by(&:id)
+        ).map(&:reload).sort_by(&:id)
       end
 
       it_behaves_like 'collection'
@@ -53,7 +53,7 @@ describe V2::PoliciesController do
     end
 
     describe 'GET show' do
-      let(:item) { FactoryBot.create(:v2_policy, account: current_user.account) }
+      let(:item) { FactoryBot.create(:v2_policy, account: current_user.account).reload }
       let(:extra_params) { { id: item.id } }
 
       it_behaves_like 'individual'

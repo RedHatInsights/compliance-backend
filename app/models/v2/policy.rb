@@ -23,7 +23,7 @@ module V2
 
     sortable_by :title
     sortable_by :os_major_version, 'security_guide.os_major_version'
-    # sortable_by :system_count # TODO: this can be turned on after we have ways to assign systems
+    sortable_by :total_system_count # TODO: figure out how to test this
     sortable_by :business_objective
     sortable_by :compliance_threshold
 
