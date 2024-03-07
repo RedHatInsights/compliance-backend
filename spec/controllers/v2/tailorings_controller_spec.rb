@@ -37,8 +37,7 @@ describe V2::TailoringsController do
           profile: canonical_profiles.last
         )
       end
-      # passing policy explicitly, to have it's ref_id accessible in in YAML fixture
-      let(:extra_params) { { policy: parent, policy_id: parent.id } }
+      let(:extra_params) { { ref_id: pw(parent.ref_id), policy_id: parent.id } }
       let(:item_count) { 3 }
       let(:items) do
         item_count.times.map do |version|

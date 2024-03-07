@@ -7,7 +7,7 @@
 # ```
 # let(:extra_params) { { security_guide_id: 123, profile_id: 456, id: 789 } }
 #
-# it_behaves_like 'individual', :security_guide, :profile
+# it_behaves_like 'indexable by ref_id', :security_guide, :profile
 # ```
 #
 # In a non-nested case the let block should the ID to search for and the `parents` parameter
@@ -15,13 +15,21 @@
 # ```
 # let(:extra_params) { { id: 789 } }
 #
-# it_behaves_like 'individual'
+# it_behaves_like 'indexable by ref_id'
+# ```
+# In some cases, however, additional ActiveRecord objects and scalar values are required for
+# invoking a factory. Therefore, if you don't want these objects to be passed to the `params`
+# of the request, you can safely specify ActiveRecord objects in the `extra_params`. For scalar
+# values you can use the `pw()` wrapper method that makes sure that the value is only passed to
+# the factory and not to the URL params.
+# ```
+# let(:extra_params) { { account: FactoryBot.create(:v2_account), system_count: pw(10) } }
+#
+# it_behaves_like 'indexable by ref_id'
 # ```
 #
 RSpec.shared_examples 'indexable by ref_id' do |*parents|
-  let(:passable_params) do
-    extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) }
-  end
+  let(:passable_params) { reject_nonscalar(extra_params) }
 
   it 'returns item by ref_id' do
     expected = hash_including('data' => {
