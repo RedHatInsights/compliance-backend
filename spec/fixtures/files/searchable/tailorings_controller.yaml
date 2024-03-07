@@ -6,16 +6,16 @@
       - :factory: :v2_tailoring
         :os_minor_version: 2
         :policy_id: ${policy_id}
-        :ref_id: ${policy.ref_id}
+        :ref_id: ${ref_id}
     :not_found:
       - :factory: :v2_tailoring
         :os_minor_version: 1
         :policy_id: ${policy_id}
-        :ref_id: ${policy.ref_id}
+        :ref_id: ${ref_id}
       - :factory: :v2_tailoring
         :os_minor_version: 0
         :policy_id: ${policy_id}
-        :ref_id: ${policy.ref_id}
+        :ref_id: ${ref_id}
   :query: (os_minor_version = 2)
 - :name: "non-equality search by os_minor_version"
   :entities:
@@ -23,14 +23,14 @@
       - :factory: :v2_tailoring
         :os_minor_version: 2
         :policy_id: ${policy_id}
-        :ref_id: ${policy.ref_id}
+        :ref_id: ${ref_id}
       - :factory: :v2_tailoring
         :os_minor_version: 1
         :policy_id: ${policy_id}
-        :ref_id: ${policy.ref_id}
+        :ref_id: ${ref_id}
     :not_found:
       - :factory: :v2_tailoring
         :os_minor_version: 0
         :policy_id: ${policy_id}
-        :ref_id: ${policy.ref_id}
+        :ref_id: ${ref_id}
   :query: (os_minor_version != 0)

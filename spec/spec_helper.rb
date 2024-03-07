@@ -41,20 +41,32 @@ if Rails.env.test?
   end
   # rubocop:enable Metrics/MethodLength
 
+  # Wrapper for scalar values in `extra_params` that need to be omitted from `passable_params`
+  def pw(item)
+    Struct.new(:item) do
+      def value
+        item
+      end
+    end.new(item)
+  end
+
+  # Do not pass instances of `ActiveRecord` or scalar values wrapped with `pw()` to the URL parameters
+  def reject_nonscalar(extra_params)
+    extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) || ep.is_a?(Struct) }
+  end
+
   # Assembles object to be passed into factory
   # - adds url params into an object based on yaml entity definition in sorting and searching specs
   # - if object with method call is passed, it parses object and method into m[1] and m[3] and executes
   def factory_params(item, extra_params)
-    item = item.each_with_object({}) do |(key, value), obj|
+    item.each_with_object({}) do |(key, value), obj|
       obj[key] = value
       value.is_a?(String) && value.match(/^\$\{([a-zA-Z_]+[a-zA-Z_0-9]*)(\.([a-zA-Z_]+))?\}$/) do |m|
         obj_or_attr = extra_params[m[1].to_sym]
-        method = m[3].to_sym if m[3]
-        obj[key] = method ? obj_or_attr.send(method) : obj_or_attr
+        obj_or_attr = obj_or_attr.value if obj_or_attr.is_a?(Struct)
+        obj[key] = m[3] ? obj_or_attr.send(m[3].to_sym) : obj_or_attr
       end
     end
-
-    item
   end
 
   def response_body_data

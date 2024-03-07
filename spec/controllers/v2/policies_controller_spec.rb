@@ -25,15 +25,14 @@ describe V2::PoliciesController do
   end
 
   context '/policies' do
-    let(:systems) do
-      # We are not using these systems, but we need their OS major versions to be passed into factories in sortable
+    let(:rhels) do
       [7, 8, 9].each_with_object({}) do |i, obj|
-        obj["system_#{i}".to_sym] = FactoryBot.create(:system, account: current_user.account, os_major_version: i)
+        obj["rhel_#{i}".to_sym] = pw(i)
       end
     end
 
     describe 'GET index' do
-      let(:extra_params) { { account: current_user.account, **systems } }
+      let(:extra_params) { { account: current_user.account, **rhels } }
       let(:parents) { nil }
       let(:item_count) { 2 }
 
@@ -214,7 +213,9 @@ describe V2::PoliciesController do
 
     describe 'GET index' do
       let(:extra_params) do
-        { account: current_user.account, system_id: parent.id, system_7: parent, system_8: parent, system_9: parent }
+        ver = pw(parent.os_major_version)
+        # Pass the same RHEL version under each `rhel_#` parameter as we are under a policy
+        { account: current_user.account, system_id: parent.id, rhel_7: ver, rhel_8: ver, rhel_9: ver }
       end
       let(:parent) { FactoryBot.create(:system, account: current_user.account) }
       let(:item_count) { 2 }

@@ -18,11 +18,13 @@
 # it_behaves_like 'paginable'
 # ```
 #
-# In some cases, however, additional ActiveRecord objects are required for invoking a factory.
-# Therefore, if you don't want these objects to be passed to the `params` of the request, you
-# can specify them in the `extra_params` as objects (i.e. without the `_id` suffix):
+# In some cases, however, additional ActiveRecord objects and scalar values are required for
+# invoking a factory. Therefore, if you don't want these objects to be passed to the `params`
+# of the request, you can safely specify ActiveRecord objects in the `extra_params`. For scalar
+# values you can use the `pw()` wrapper method that makes sure that the value is only passed to
+# the factory and not to the URL params.
 # ```
-# let(:extra_params) { { account: FactoryBot.create(:v2_account) } }
+# let(:extra_params) { { account: FactoryBot.create(:v2_account), system_count: pw(10) } }
 #
 # it_behaves_like 'paginable'
 # ```
@@ -30,9 +32,8 @@
 RSpec.shared_examples 'paginable' do |*parents|
   let(:item_count) { 20 } # We need more items to be created to test pagination properly
 
-  let(:passable_params) do
-    extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) }
-  end
+  # Do not pass instances of `ActiveRecord` or scalar values wrapped with `pw()` to the URL parameters
+  let(:passable_params) { reject_nonscalar(extra_params) }
 
   [2, 5, 10, 15, 20].each do |per_page|
     it "returns with the requested #{per_page} records per page" do
