@@ -25,6 +25,8 @@ module V2
     self.table_name = :tailorings
     self.primary_key = :id
 
+    indexable_by :os_minor_version, &->(scope, value) { scope.find_by!(os_minor_version: value) }
+
     sortable_by :os_minor_version
 
     belongs_to :policy, class_name: 'V2::Policy'

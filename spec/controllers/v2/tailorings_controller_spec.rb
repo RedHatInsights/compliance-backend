@@ -88,6 +88,7 @@ describe V2::TailoringsController do
       end
 
       it_behaves_like 'individual', :policy
+      it_behaves_like 'indexable', :os_minor_version, :policy
     end
   end
 
