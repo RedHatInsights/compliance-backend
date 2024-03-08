@@ -7,9 +7,9 @@ module V2
 
     XCCDF = 'xccdf'
 
-    def initialize(profile:, rule_ref_ids: {}, set_values: {}, rule_group_ref_ids: [])
+    def initialize(profile:, rules: {}, set_values: {}, rule_group_ref_ids: [])
       @tailoring = profile
-      @rule_ref_ids = rule_ref_ids
+      @rules = rules
       @rule_group_ref_ids = rule_group_ref_ids
       @set_values = set_values
     end
@@ -47,15 +47,11 @@ module V2
     end
 
     def rule_selections_builder(xml)
-      @rule_ref_ids.each do |rule_ref_id, selected|
-        xml[XCCDF].select(idref: rule_ref_id, selected: selected)
-      end
+      @rules.each { |rule| xml[XCCDF].select(idref: rule.ref_id, selected: rule.selected) }
     end
 
     def rule_group_selections_builder(xml)
-      @rule_group_ref_ids.each do |rule_group_ref_id|
-        xml[XCCDF].select(idref: rule_group_ref_id, selected: true)
-      end
+      @rule_group_ref_ids.each { |ref_id| xml[XCCDF].select(idref: ref_id, selected: true) }
     end
 
     def value_builder(xml)
@@ -89,7 +85,7 @@ module V2
     end
 
     def handle_missing_rules
-      missing_rules = @rule_ref_ids -
+      missing_rules = @rules.select(&:selected).map(&:ref_id) -
                       @tailoring.profile.rules.map(&:ref_id) -
                       @tailoring.security_guide.rules.map(&:ref_id)
       e = ArgumentError.new("SecurityGuide(id=#{@tailoring.security_guide.id}) does not " \
