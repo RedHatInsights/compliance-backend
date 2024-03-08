@@ -11,10 +11,6 @@ module V2
 
     AN = Arel::Nodes
 
-    def self.taggable?
-      false
-    end
-
     def self.count_by
       primary_key.to_sym
     end
