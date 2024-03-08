@@ -132,7 +132,7 @@ describe V2::TailoringsController do
       end
 
       it 'returns XCCDF tailoring file with unselected rules' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy])
+        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
         tailoring_file = Nokogiri::XML(response.body).remove_namespaces!
         deselected, selected = tailoring_file.xpath('//Profile/select')
@@ -167,7 +167,7 @@ describe V2::TailoringsController do
       end
 
       it 'returns empty response' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy])
+        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
         expect(response).to have_http_status :no_content
       end
@@ -196,7 +196,7 @@ describe V2::TailoringsController do
       end
 
       it 'returns tailored values and default set of rules, but unselected' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy])
+        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
         tailoring_file = Nokogiri::XML(response.body).remove_namespaces!
         selected, deselected = tailoring_file.xpath('//Profile/select')
@@ -235,7 +235,7 @@ describe V2::TailoringsController do
       end
 
       it 'returns XCCDF tailoring file' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy])
+        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
         tailoring_values = V2::Tailoring.find(extra_params[:id]).value_overrides.keys
         tailoring_file = Nokogiri::XML(response.body).remove_namespaces!
@@ -274,7 +274,7 @@ describe V2::TailoringsController do
       end
 
       it 'results in 404 error' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy])
+        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
         expect(response).to have_http_status :not_found
       end
@@ -292,7 +292,7 @@ describe V2::TailoringsController do
       end
 
       it 'results in 404 error' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy])
+        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
         expect(response).to have_http_status :not_found
       end

@@ -14,7 +14,9 @@ module V2
       @set_values = set_values
     end
 
-    def_delegator :builder, :to_xml
+    def output
+      builder.to_xml
+    end
 
     private
 
