@@ -23,6 +23,7 @@ describe V2::SystemsController do
 
   let(:current_user) { FactoryBot.create(:v2_user) }
   let(:rbac_allowed?) { true }
+  let(:meta_keys) { %w[total limit offset tags] }
 
   before do
     request.headers['X-RH-IDENTITY'] = current_user.account.identity_header.raw
@@ -60,6 +61,7 @@ describe V2::SystemsController do
       it_behaves_like 'paginable'
       it_behaves_like 'sortable'
       it_behaves_like 'searchable'
+      it_behaves_like 'taggable'
     end
 
     describe 'GET show' do
@@ -108,6 +110,7 @@ describe V2::SystemsController do
       it_behaves_like 'paginable', :policies
       it_behaves_like 'sortable', :policies
       it_behaves_like 'searchable', :policies
+      it_behaves_like 'taggable', :policies
     end
 
     describe 'PATCH update' do

@@ -8,7 +8,12 @@ FactoryBot.define do
     stale_timestamp { 10.years.since(Time.zone.now) }
     updated { Time.zone.now }
     created { Time.zone.now }
-    tags { [] }
+
+    tags do
+      tag_count.times.map do
+        { namespace: Faker::Hacker.ingverb, key: Faker::Hacker.noun, value: Faker::Hacker.adjective }
+      end
+    end
 
     groups do
       group_count.times.map do
@@ -31,6 +36,7 @@ FactoryBot.define do
       os_major_version { policy_id ? V2::Policy.find(policy_id).os_major_version : 8 }
       os_minor_version { 0 }
       group_count { 0 }
+      tag_count { 5 }
       policy_id { nil }
     end
 

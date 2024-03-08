@@ -37,7 +37,8 @@ RSpec.shared_examples 'with metadata' do |*parents|
   it 'contains total, limit, offset and relationships keys' do
     get :index, params: passable_params.merge(parents: parents)
 
-    expect(response.parsed_body['meta'].keys).to contain_exactly(*%w[total limit offset])
+    keys = defined?(meta_keys) ? meta_keys : %w[total limit offset]
+    expect(response.parsed_body['meta'].keys).to contain_exactly(*keys)
   end
 
   it 'has correct total in metadata' do
