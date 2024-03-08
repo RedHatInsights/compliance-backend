@@ -7,7 +7,7 @@
 # ```
 # let(:extra_params) { { security_guide_id: 123, profile_id: 456, id: 789 } }
 #
-# it_behaves_like 'indexable by ref_id', :security_guide, :profile
+# it_behaves_like 'indexable', :ref_id, :security_guide, :profile
 # ```
 #
 # In a non-nested case the let block should the ID to search for and the `parents` parameter
@@ -15,7 +15,7 @@
 # ```
 # let(:extra_params) { { id: 789 } }
 #
-# it_behaves_like 'indexable by ref_id'
+# it_behaves_like 'indexable', :ref_id
 # ```
 # In some cases, however, additional ActiveRecord objects and scalar values are required for
 # invoking a factory. Therefore, if you don't want these objects to be passed to the `params`
@@ -25,13 +25,13 @@
 # ```
 # let(:extra_params) { { account: FactoryBot.create(:v2_account), system_count: pw(10) } }
 #
-# it_behaves_like 'indexable by ref_id'
+# it_behaves_like 'indexable', :ref_id
 # ```
 #
-RSpec.shared_examples 'indexable by ref_id' do |*parents|
+RSpec.shared_examples 'indexable' do |field, *parents|
   let(:passable_params) { reject_nonscalar(extra_params) }
 
-  it 'returns item by ref_id' do
+  it "returns item by #{field}" do
     expected = hash_including('data' => {
                                 'id' => item.id,
                                 'type' => described_class.controller_name.singularize,
@@ -40,16 +40,8 @@ RSpec.shared_examples 'indexable by ref_id' do |*parents|
                                 end
                               })
 
-    get :show, params: passable_params.merge(parents: parents, id: item.ref_id.parameterize)
+    get :show, params: passable_params.merge(parents: parents, id: item.send(field).parameterize)
 
     expect(response.parsed_body).to match(expected)
-  end
-
-  context 'with nonexistent ref_id' do
-    it 'returns not_found' do
-      get :show, params: passable_params.merge(parents: parents, id: 'incorrect')
-
-      expect(response).to have_http_status :not_found
-    end
   end
 end

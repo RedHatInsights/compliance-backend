@@ -46,6 +46,6 @@ describe V2::ProfilesController do
     let(:notfound_params) { extra_params.merge(security_guide_id: FactoryBot.create(:v2_security_guide).id) }
 
     it_behaves_like 'individual', :security_guide
-    it_behaves_like 'indexable by ref_id', :security_guide
+    it_behaves_like 'indexable', :ref_id, :security_guide
   end
 end
