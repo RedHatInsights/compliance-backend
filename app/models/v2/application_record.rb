@@ -7,6 +7,7 @@ module V2
 
     include V2::Sortable
     include V2::Searchable
+    include V2::Indexable
 
     AN = Arel::Nodes
 

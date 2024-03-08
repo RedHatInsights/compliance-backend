@@ -3,8 +3,6 @@
 module V2
   # API for Rules under Security Guides
   class RulesController < ApplicationController
-    include IndexableByRefId
-
     def index
       render_json rules
     end
@@ -22,7 +20,7 @@ module V2
     end
 
     def rule
-      @rule ||= authorize(ref_id_lookup(expand_resource, permitted_params[:id]))
+      @rule ||= authorize(expand_resource.find(permitted_params[:id]))
     end
 
     def resource

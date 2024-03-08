@@ -8,6 +8,8 @@ module V2
     self.table_name = :v2_rules
     self.primary_key = :id
 
+    indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.gsub('-', '.')) }
+
     SORTED_SEVERITIES = Arel.sql(
       AN::Case.new.when(
         Rule.arel_table[:severity].eq(AN::Quoted.new('high'))
