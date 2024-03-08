@@ -48,12 +48,8 @@ FactoryBot.define do
       end
     end
 
-    trait :with_no_rules do
-      rules { [] }
-    end
-
-    after(:create) do |tailoring, _|
-      if tailoring.rules.empty?
+    trait :with_default_rules do
+      after(:create) do |tailoring, _|
         tailoring.profile.rules.each do |rule|
           FactoryBot.create(
             :v2_tailoring_rule,

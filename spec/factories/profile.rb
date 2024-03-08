@@ -43,6 +43,8 @@ FactoryBot.define do
         security_guide.value_definitions.sample(value_count / 2).each_with_object({}) do |value, object|
           object[value.ref_id] = SecureRandom.random_number(10)
         end
+      else
+        {}
       end
     end
   end

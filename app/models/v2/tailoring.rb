@@ -52,10 +52,23 @@ module V2
     end
 
     def rule_group_ref_ids
-      base = V2::RuleGroup.where(id: rules.select(:rule_group_id))
+      base = V2::RuleGroup.where(id: rules_added.except(:select).select(:rule_group_id))
       base.or(V2::RuleGroup.where(id: base.select(GROUP_ANCESTRY_IDS)))
-          .order(:precedence)
           .pluck(:ref_id)
+    end
+
+    def tailored?
+      (rules_added.except(:select).count + rules_removed.except(:select).count).positive? ||
+        value_overrides != profile.value_overrides
+    end
+
+    def rules_added
+      rules.where.not(id: profile.rules)
+           .select(rules.arel_table[Arel.star], AN::True.new.as('selected'))
+    end
+
+    def rules_removed
+      profile.rules.where.not(id: rules).select(rules.arel_table[Arel.star], AN::False.new.as('selected'))
     end
   end
 end

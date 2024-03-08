@@ -14,7 +14,7 @@ module V2
     permission_for_action :show, Rbac::POLICY_READ
 
     def tailoring_file
-      return unless tailored?
+      return unless tailoring.tailored?
 
       send_data(
         xccdf_tailoring_file,
@@ -35,17 +35,10 @@ module V2
       @tailoring ||= authorize(expand_resource.find(permitted_params[:id]))
     end
 
-    def tailored?
-      # TODO: performance might need to be improved on this solution
-      added_rules = tailoring.rules.order(:precedence) - tailoring.profile.rules
-      removed_rules = tailoring.profile.rules - tailoring.rules.order(:precedence)
-      (added_rules + removed_rules).any?
-    end
-
     def xccdf_tailoring_file
       XccdfTailoringFile.new(
         profile: tailoring,
-        rule_ref_ids: tailoring.rules.map(&:ref_id),
+        rules: tailoring.rules_added + tailoring.rules_removed,
         rule_group_ref_ids: tailoring.rule_group_ref_ids,
         set_values: tailoring.value_overrides
       ).to_xml
