@@ -173,7 +173,7 @@ objects:
         - name: OLD_PATH_PREFIX
           value: "${OLD_PATH_PREFIX}"
         - name: RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR
-          value: '0.9'
+          value: '1.2'
         - name: SECRET_KEY_BASE
           valueFrom:
             secretKeyRef:
@@ -226,13 +226,13 @@ objects:
           httpGet:
             path: /api/compliance/v1/openapi.json
             port: web
-          initialDelaySeconds: 120
+          initialDelaySeconds: 10
           periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /api/compliance/v1/status
             port: web
-          initialDelaySeconds: 120
+          initialDelaySeconds: 10
           periodSeconds: 30
         resources:
           limits:
