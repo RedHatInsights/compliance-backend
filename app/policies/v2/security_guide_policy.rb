@@ -11,6 +11,10 @@ module V2
       true
     end
 
+    def rule_tree?
+      true
+    end
+
     # All users should see all security guides currently
     class Scope < V2::ApplicationPolicy::Scope
     end

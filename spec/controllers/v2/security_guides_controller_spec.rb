@@ -41,4 +41,15 @@ describe V2::SecurityGuidesController do
 
     it_behaves_like 'individual'
   end
+
+  describe 'GET rule_tree' do
+    let(:item) { FactoryBot.create(:v2_security_guide, rule_count: 5) }
+
+    it 'calls the rule tree on the model' do
+      get :rule_tree, params: { id: item.id }
+
+      expect(response).to have_http_status :ok
+      expect(response.parsed_body).not_to be_empty
+    end
+  end
 end
