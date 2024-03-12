@@ -13,6 +13,12 @@ module V2
     end
     permission_for_action :show, Rbac::COMPLIANCE_VIEWER
 
+    def rule_tree
+      render json: security_guide.rule_tree
+    end
+    permission_for_action :rule_tree, Rbac::COMPLIANCE_VIEWER
+    permitted_params_for_action :rule_tree, id: ID_TYPE.required
+
     private
 
     def security_guides

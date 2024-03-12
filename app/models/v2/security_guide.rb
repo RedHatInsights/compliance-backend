@@ -19,6 +19,7 @@ module V2
     has_many :profiles, class_name: 'V2::Profile', dependent: :destroy
     has_many :value_definitions, class_name: 'V2::ValueDefinition', dependent: :destroy
     has_many :rules, class_name: 'V2::Rule', dependent: :destroy
+    has_many :rule_groups, class_name: 'V2::RuleGroup', dependent: :destroy
 
     searchable_by :title, %i[like unlike eq ne in notin]
     searchable_by :version, %i[eq ne in notin]
@@ -32,5 +33,20 @@ module V2
     sortable_by :title
     sortable_by :version, SORT_BY_VERSION
     sortable_by :os_major_version
+
+    # Builds the hierarchical structure of groups and rules
+    def rule_tree
+      cached_rules = rules.select(:id, :rule_group_id).group_by(&:rule_group_id)
+
+      rule_groups.select(:id, :ancestry).arrange_serializable do |group, children|
+        {
+          id: group.id,
+          type: :rule_group,
+          children: children + (cached_rules[group.id]&.map do |rule|
+            { id: rule.id, type: :rule }
+          end || [])
+        }
+      end
+    end
   end
 end
