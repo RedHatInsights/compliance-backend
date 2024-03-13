@@ -112,9 +112,9 @@ describe V2::TailoringsController do
       let(:canonical_profile) do
         FactoryBot.create(
           :v2_profile,
-          :with_rules,
+          rule_count: 5,
           value_count: 5,
-          security_guide: FactoryBot.create(:v2_security_guide, :with_rules, os_major_version: 9),
+          security_guide: FactoryBot.create(:v2_security_guide, rule_count: 3, os_major_version: 9),
           os_major_version: 9,
           ref_id_suffix: 'bar',
           supports_minors: [8]
@@ -148,9 +148,9 @@ describe V2::TailoringsController do
       let(:canonical_profile) do
         FactoryBot.create(
           :v2_profile,
-          :with_rules,
+          rule_count: 5,
           value_count: 5,
-          security_guide: FactoryBot.create(:v2_security_guide, :with_rules, os_major_version: 9),
+          security_guide: FactoryBot.create(:v2_security_guide, rule_count: 3, os_major_version: 9),
           os_major_version: 9,
           ref_id_suffix: 'bar',
           supports_minors: [8]
@@ -177,9 +177,9 @@ describe V2::TailoringsController do
       let(:canonical_profile) do
         FactoryBot.create(
           :v2_profile,
-          :with_rules,
+          rule_count: 5,
           value_count: 5,
-          security_guide: FactoryBot.create(:v2_security_guide, :with_rules, os_major_version: 9),
+          security_guide: FactoryBot.create(:v2_security_guide, rule_count: 3, os_major_version: 9),
           os_major_version: 9,
           ref_id_suffix: 'bar',
           supports_minors: [8]
@@ -215,9 +215,9 @@ describe V2::TailoringsController do
       let(:canonical_profile) do
         FactoryBot.create(
           :v2_profile,
-          :with_rules,
+          rule_count: 5,
           value_count: 5,
-          security_guide: FactoryBot.create(:v2_security_guide, :with_rules, os_major_version: 9),
+          security_guide: FactoryBot.create(:v2_security_guide, rule_count: 3, os_major_version: 9),
           os_major_version: 9,
           ref_id_suffix: 'bar',
           supports_minors: [8]
