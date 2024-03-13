@@ -38,5 +38,18 @@ module V2
                          .ast.cores.first.source.right.first
     end
     # rubocop:enable Metrics/AbcSize
+
+    # Splits up a version and converts it to an array of integers for better sorting
+    def self.version_to_array(column)
+      Arel::Nodes::NamedFunction.new(
+        'CAST',
+        [
+          Arel::Nodes::NamedFunction.new(
+            'string_to_array',
+            [column, Arel::Nodes::Quoted.new('.')]
+          ).as('int[]')
+        ]
+      )
+    end
   end
 end

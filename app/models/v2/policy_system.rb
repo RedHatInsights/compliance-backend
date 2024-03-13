@@ -14,6 +14,16 @@ module V2
     validates :system_id, presence: true, uniqueness: { scope: :policy_id }
     validate :system_supported?, on: :create
 
+    after_create do
+      Tailoring.find_or_create_by!(policy_id: policy_id, os_minor_version: system.os_minor_version) do |tailoring|
+        # Look up the latest Profile supporting the given OS minor version
+        tailoring.profile = policy.profile.variant_for_minor(system.os_minor_version)
+
+        tailoring.rules = policy.profile.rules
+        tailoring.value_overrides = policy.profile.value_overrides
+      end
+    end
+
     def system_supported?
       if policy.os_major_version != system.os_major_version
         errors.add(:system, 'Unsupported OS major version')

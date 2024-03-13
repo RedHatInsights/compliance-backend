@@ -18,5 +18,14 @@ module V2
     has_many :profile_rules, class_name: 'V2::ProfileRule', dependent: :destroy
     has_many :rules, through: :profile_rules, class_name: 'V2::Rule'
     has_many :os_minor_versions, class_name: 'V2::ProfileOsMinorVersion', dependent: :destroy
+
+    def variant_for_minor(version)
+      self.class.joins(:security_guide, :os_minor_versions)
+          .order(self.class.version_to_array(V2::SecurityGuide.arel_table.alias('security_guide')[:version]).desc)
+          .find_by!(
+            ref_id: ref_id, security_guide: { os_major_version: security_guide.os_major_version },
+            os_minor_versions: { os_minor_version: version }
+          )
+    end
   end
 end

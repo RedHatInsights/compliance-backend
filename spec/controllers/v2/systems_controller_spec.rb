@@ -88,7 +88,9 @@ describe V2::SystemsController do
       }
     end
 
-    let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, supports_minors: [0, 1, 2, 8]) }
+    let(:parent) do
+      FactoryBot.create(:v2_policy, :for_tailoring, account: current_user.account, supports_minors: [0, 1, 2, 8])
+    end
 
     describe 'GET index' do
       let(:extra_params) do
@@ -125,12 +127,76 @@ describe V2::SystemsController do
 
       let(:os_major_version) { parent.os_major_version }
       let(:os_minor_version) { parent.os_minor_versions.sample }
+      let(:first_tailoring) { parent.tailorings.first }
 
       it 'creates the link between a policy and a system' do
         patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
         expect(response).to have_http_status :accepted
         expect(item.policies).to include(parent)
+      end
+
+      it 'creates a tailoring with default rules and values' do
+        patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+        expect(response).to have_http_status :accepted
+        expect(parent.tailorings).to contain_exactly(
+          an_object_having_attributes(os_minor_version: os_minor_version.to_s)
+        )
+
+        expect(first_tailoring.rules).to eq(first_tailoring.profile.rules)
+        expect(first_tailoring.value_overrides).to eq(first_tailoring.profile.value_overrides)
+      end
+
+      context 'tailoring already exists' do
+        before do
+          FactoryBot.create(
+            :system,
+            account: current_user.account,
+            policy_id: parent.id,
+            os_minor_version: os_minor_version,
+            os_major_version: os_major_version
+          )
+          first_tailoring.rules -= [first_tailoring.rules.sample]
+          first_tailoring.value_overrides['foo'] = 'bar'
+        end
+
+        it 'does not create a new tailoring' do
+          patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.tailorings).to contain_exactly(
+            an_object_having_attributes(os_minor_version: os_minor_version.to_s)
+          )
+          expect(first_tailoring.rules).not_to eq(first_tailoring.profile.rules)
+          expect(first_tailoring.value_overrides).not_to eq(first_tailoring.profile.value_overrides)
+        end
+
+        context 'with newer profile variant becoming available' do
+          before do
+            FactoryBot.create(
+              :v2_profile,
+              ref_id: first_tailoring.profile.ref_id,
+              security_guide: FactoryBot.create(
+                :v2_security_guide,
+                os_major_version: first_tailoring.profile.security_guide.os_major_version,
+                version: first_tailoring.profile.security_guide.version.split('.').tap do |arr|
+                  arr.map! { |i| i.to_i + 1 } # Increment all digits in the version number by 1
+                end.join('.')
+              ),
+              supports_minors: [os_minor_version]
+            )
+          end
+
+          it 'does not create a new tailoring' do
+            patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+            expect(response).to have_http_status :accepted
+            expect(parent.tailorings).to contain_exactly(
+              an_object_having_attributes(os_minor_version: os_minor_version.to_s)
+            )
+          end
+        end
       end
 
       context 'policy already linked to the system' do
