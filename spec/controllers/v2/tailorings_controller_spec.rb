@@ -70,179 +70,153 @@ describe V2::TailoringsController do
   end
 
   context '/policies/:id/tailorings/:id/tailoring_file' do
-    before do
-      header = JSON.parse(Base64.decode64(current_user.account.identity_header.raw))
-      header['identity']['auth_type'] = Insights::Api::Common::IdentityHeader::CERT_AUTH
-      request.headers['X-RH-IDENTITY'] = Base64.encode64(header.to_json)
-    end
-
-    let(:parent) do
-      FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile)
-    end
-
-    let(:extra_params) { { policy_id: parent.id, id: item.id } }
-
-    context 'with no rules and no values' do
-      let(:canonical_profile) do
+    RSpec.shared_examples 'tailoring_file' do
+      let(:parent) do
         FactoryBot.create(
-          :v2_profile,
-          rule_count: 5,
-          value_count: 5,
-          security_guide: FactoryBot.create(:v2_security_guide, rule_count: 3, os_major_version: 9),
-          os_major_version: 9,
-          ref_id_suffix: 'bar',
+          :v2_policy,
+          :for_tailoring,
+          account: current_user.account,
           supports_minors: [8]
         )
       end
 
-      let(:item) do
-        FactoryBot.create(:v2_tailoring, rules: [], value_overrides: [], policy: parent, os_minor_version: 8)
+      let(:extra_params) { { policy_id: parent.id, id: item.id } }
+
+      context 'with no tailored rules and no values' do
+        let(:item) do
+          FactoryBot.create(
+            :v2_tailoring,
+            rules: [], # no tailored rules
+            value_overrides: [], # no tailored values
+            policy: parent,
+            os_minor_version: 8
+          )
+        end
+
+        it 'returns XCCDF tailoring file with unselected rules' do
+          get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
+
+          tailoring_file = Nokogiri::XML(response.body).remove_namespaces!
+          deselected, selected = tailoring_file.xpath('//Profile/select')
+                                               .partition { |sel| sel.attributes['selected'].value == 'false' }
+
+          expect(response).to have_http_status :ok
+          expect(deselected.map { |r| r.attributes['idref'].value }).to match_array(item.profile.rules.map(&:ref_id))
+          expect(selected).to match_array(item.rules.map(&:ref_id))
+        end
       end
 
-      it 'returns XCCDF tailoring file with unselected rules' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
+      context 'with default rules and values' do
+        let(:item) do
+          FactoryBot.create(
+            :v2_tailoring,
+            :with_default_rules, # no tailored rules
+            policy: parent,
+            os_minor_version: 8
+          )
+        end
 
-        tailoring_file = Nokogiri::XML(response.body).remove_namespaces!
-        deselected, selected = tailoring_file.xpath('//Profile/select')
-                                             .partition { |sel| sel.attributes['selected'].value == 'false' }
+        it 'returns empty response' do
+          get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
-        expect(response).to have_http_status :ok
-        expect(deselected.map { |r| r.attributes['idref'].value }).to match_array(item.profile.rules.map(&:ref_id))
-        expect(selected).to match_array(item.rules.map(&:ref_id))
-      end
-    end
-
-    context 'with default rules and values' do
-      let(:canonical_profile) do
-        FactoryBot.create(
-          :v2_profile,
-          rule_count: 5,
-          value_count: 5,
-          security_guide: FactoryBot.create(:v2_security_guide, rule_count: 3, os_major_version: 9),
-          os_major_version: 9,
-          ref_id_suffix: 'bar',
-          supports_minors: [8]
-        )
+          expect(response).to have_http_status :no_content
+        end
       end
 
-      let(:item) { FactoryBot.create(:v2_tailoring, :with_default_rules, policy: parent, os_minor_version: 8) }
+      context 'with no tailored rules, but tailored values' do
+        let(:item) { FactoryBot.create(:v2_tailoring, :with_tailored_values, policy: parent, os_minor_version: 8) }
 
-      it 'returns empty response' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
+        it 'returns tailored values and default set of rules, but unselected' do
+          get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
-        expect(response).to have_http_status :no_content
-      end
-    end
+          tailoring_file = Nokogiri::XML(response.body).remove_namespaces!
+          selected, deselected = tailoring_file.xpath('//Profile/select')
+                                               .partition { |sel| sel.attributes['selected'].value == 'true' }
+          values = tailoring_file.xpath('//Profile/set-value/@idref')
 
-    context 'with no tailored rules, but tailored values' do
-      let(:canonical_profile) do
-        FactoryBot.create(
-          :v2_profile,
-          rule_count: 5,
-          value_count: 5,
-          security_guide: FactoryBot.create(:v2_security_guide, rule_count: 3, os_major_version: 9),
-          os_major_version: 9,
-          ref_id_suffix: 'bar',
-          supports_minors: [8]
-        )
+          expect(response).to have_http_status :ok
+          expect(selected).to be_empty
+          expect(deselected).not_to be_empty
+          expect(deselected.map { |r| r.attributes['selected'].value }.uniq).to eq(['false'])
+          expect(values).not_to be_empty
+        end
       end
 
-      let(:item) { FactoryBot.create(:v2_tailoring, :with_tailored_values, policy: parent, os_minor_version: 8) }
+      context 'with randomly distributed rules' do
+        let(:item) do
+          FactoryBot.create(
+            :v2_tailoring,
+            :with_mixed_rules, # tailor random rules
+            :with_tailored_values, # tailor random values
+            policy: parent,
+            os_minor_version: 8
+          )
+        end
 
-      it 'returns tailored values and default set of rules, but unselected' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
+        it 'returns XCCDF tailoring file' do
+          get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
-        tailoring_file = Nokogiri::XML(response.body).remove_namespaces!
-        selected, deselected = tailoring_file.xpath('//Profile/select')
-                                             .partition { |sel| sel.attributes['selected'].value == 'true' }
-        values = tailoring_file.xpath('//Profile/set-value/@idref')
+          tailoring_values = V2::Tailoring.find(extra_params[:id]).value_overrides.keys
+          tailoring_file = Nokogiri::XML(response.body).remove_namespaces!
+          tailored_values = tailoring_file.xpath('//Profile/set-value/@idref')
+          selected, = tailoring_file.xpath('//Profile/select')
+                                    .partition { |sel| sel.attributes['selected'].value == 'true' }
+          rules_and_groups = selected.map { |r| r.attributes['idref'].value }
+          rules_only = rules_and_groups.select { |r| r.exclude?('content_rule_group') }
 
-        expect(response).to have_http_status :ok
-        expect(selected).to be_empty
-        expect(deselected).not_to be_empty
-        expect(deselected.map { |r| r.attributes['selected'].value }.uniq).to eq(['false'])
-        expect(values).not_to be_empty
-      end
-    end
-
-    context 'with randomly distributed rules' do
-      let(:canonical_profile) do
-        FactoryBot.create(
-          :v2_profile,
-          rule_count: 5,
-          value_count: 5,
-          security_guide: FactoryBot.create(:v2_security_guide, rule_count: 3, os_major_version: 9),
-          os_major_version: 9,
-          ref_id_suffix: 'bar',
-          supports_minors: [8]
-        )
-      end
-
-      let(:item) do
-        FactoryBot.create(
-          :v2_tailoring,
-          :with_mixed_rules,
-          :with_tailored_values,
-          policy: parent,
-          os_minor_version: 8
-        )
+          expect(response).to have_http_status :ok
+          expect(response.headers['Content-Type']).to eq('application/xml')
+          expect(tailoring_values).to eq(tailored_values.map(&:value))
+          expect(rules_only).to match_array(item.rules_added.map(&:ref_id))
+          expect(rules_and_groups - rules_only).to match_array(item.rule_group_ref_ids)
+        end
       end
 
-      it 'returns XCCDF tailoring file' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
+      context 'with unauthorized policy' do
+        let(:extra_params) do
+          {
+            # policy of a foreign account
+            policy_id: FactoryBot.create(:v2_policy, account: FactoryBot.create(:v2_account)),
+            id: item.id
+          }
+        end
 
-        tailoring_values = V2::Tailoring.find(extra_params[:id]).value_overrides.keys
-        tailoring_file = Nokogiri::XML(response.body).remove_namespaces!
-        tailored_values = tailoring_file.xpath('//Profile/set-value/@idref')
-        selected, = tailoring_file.xpath('//Profile/select')
-                                  .partition { |sel| sel.attributes['selected'].value == 'true' }
-        rules_and_groups = selected.map { |r| r.attributes['idref'].value }
-        rules_only = rules_and_groups.select { |r| r.exclude?('content_rule_group') }
+        let(:item) { FactoryBot.create(:v2_tailoring, policy: parent, os_minor_version: 8) }
 
-        expect(response).to have_http_status :ok
-        expect(response.headers['Content-Type']).to eq('application/xml')
-        expect(tailoring_values).to eq(tailored_values.map(&:value))
-        expect(rules_only).to match_array(item.rules_added.map(&:ref_id))
-        expect(rules_and_groups - rules_only).to match_array(item.rule_group_ref_ids)
-      end
-    end
+        it 'results in 404 error' do
+          get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
-    context 'with unauthorized policy' do
-      let(:canonical_profile) { FactoryBot.create(:v2_profile) }
-
-      let(:extra_params) do
-        {
-          id: item.id,
-          policy_id: FactoryBot.create(:v2_policy, account: FactoryBot.create(:v2_account))
-        }
+          expect(response).to have_http_status :not_found
+        end
       end
 
-      let(:item) do
-        FactoryBot.create(:v2_tailoring, policy: parent, profile: canonical_profile, os_minor_version: 8)
-      end
+      context 'with mismatching set of IDs' do
+        let(:extra_params) do
+          {
+            policy_id: FactoryBot.create(:v2_policy, account: FactoryBot.create(:v2_account)),
+            id: Faker::Internet.uuid
+          }
+        end
 
-      it 'results in 404 error' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
+        it 'results in 404 error' do
+          get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
 
-        expect(response).to have_http_status :not_found
+          expect(response).to have_http_status :not_found
+        end
       end
     end
 
-    context 'with mismatching set of IDs' do
-      let(:canonical_profile) { FactoryBot.create(:v2_profile) }
-
-      let(:extra_params) do
-        {
-          id: Faker::Internet.uuid,
-          policy_id: FactoryBot.create(:v2_policy, account: current_user.account)
-        }
+    context 'authorized via cert_auth' do
+      before do
+        allow(controller).to receive(:rbac_allowed?).and_call_original
+        allow(controller).to receive(:any_inventory_hosts?).and_return(true)
       end
 
-      it 'results in 404 error' do
-        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
+      let(:current_user) { FactoryBot.create(:v2_user, account: FactoryBot.create(:v2_account, :cert_authorized)) }
 
-        expect(response).to have_http_status :not_found
-      end
+      include_examples 'tailoring_file'
     end
+
+    include_examples 'tailoring_file'
   end
 end

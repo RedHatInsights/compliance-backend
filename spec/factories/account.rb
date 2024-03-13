@@ -7,8 +7,9 @@ FactoryBot.define do
       Insights::Api::Common::IdentityHeader.new(
         Base64.encode64({
           identity: {
-            org_id: org_id
-          },
+            org_id: org_id,
+            auth_type: auth_type
+          }.compact,
           entitlements: {
             insights: {
               is_entitled: true
@@ -16,6 +17,12 @@ FactoryBot.define do
           }
         }.to_json)
       )
+    end
+
+    transient { auth_type { nil } }
+
+    trait :cert_authorized do
+      transient { auth_type { Insights::Api::Common::IdentityHeader::CERT_AUTH } }
     end
   end
 end
