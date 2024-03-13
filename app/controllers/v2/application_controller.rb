@@ -5,7 +5,7 @@ module V2
   class ApplicationController < ::ActionController::API
     include ::ActionController::Helpers
     include ::Pundit::Authorization
-    include ::Authentication
+    include V2::Authentication
     include ::ExceptionNotifierCustomData
     include V2::Metadata
     include V2::Pagination
