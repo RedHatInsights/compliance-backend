@@ -1,0 +1,18 @@
+:entities:
+  - :factory: :v2_rule_group
+    :precedence: 2
+    :security_guide_id: ${security_guide_id}
+  - :factory: :v2_rule_group
+    :precedence: 1
+    :security_guide_id: ${security_guide_id}
+  - :factory: :v2_rule_group
+    :precedence: 4
+    :security_guide_id: ${security_guide_id}
+  - :factory: :v2_rule_group
+    :precedence: 3
+    :security_guide_id: ${security_guide_id}
+
+:queries:
+  - :sort_by:
+      - 'precedence'
+    :result: [1, 0, 3, 2]

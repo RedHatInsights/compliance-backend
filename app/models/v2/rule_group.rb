@@ -11,5 +11,7 @@ module V2
 
     has_ancestry primary_key_format: %r{\A[\w\-]+(\/[\w\-]+)*\z}
     has_many :rules, class_name: 'V2::Rule', dependent: :destroy
+
+    sortable_by :precedence
   end
 end
