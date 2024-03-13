@@ -29,6 +29,7 @@ Rails.application.routes.draw do
 
             resources :value_definitions, only: [:index, :show], parents: [:security_guide]
             resources :rules, only: [:index, :show], parents: [:security_guide]
+            resources :rule_groups, only: [:index, :show], parents: [:security_guide]
             resources :profiles, only: [:index, :show], parents: [:security_guide] do
               resources :rules, only: [:index, :show], parents: [:security_guide, :profiles]
             end
