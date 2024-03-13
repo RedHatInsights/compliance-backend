@@ -14,6 +14,7 @@ FactoryBot.define do
       ref_id_suffix { SecureRandom.hex }
       supports_minors { [] }
       value_count { 0 }
+      rule_count { 0 }
     end
 
     os_minor_versions do
@@ -22,30 +23,17 @@ FactoryBot.define do
       end
     end
 
-    trait :with_rules do
-      after(:create) do |profile, _|
-        create_list(
-          :v2_rule,
-          5,
-          profiles: [profile],
-          security_guide: profile.security_guide
-        )
+    value_overrides do
+      create_list(:v2_value_definition, value_count, security_guide: security_guide) if value_count.positive?
+      security_guide.value_definitions.each_with_object({}) do |value, object|
+        object[value.ref_id] = SecureRandom.random_number(10)
       end
     end
 
-    value_overrides do
-      if value_count > 0
-        create_list(
-          :v2_value_definition,
-          value_count,
-          security_guide: security_guide
-        )
-        security_guide.value_definitions.sample(value_count / 2).each_with_object({}) do |value, object|
-          object[value.ref_id] = SecureRandom.random_number(10)
-        end
-      else
-        {}
-      end
+    after(:create) do |profile, ev|
+      next if ev.rule_count.zero?
+
+      create_list(:v2_rule, ev.rule_count, profiles: [profile], security_guide: profile.security_guide)
     end
   end
 end

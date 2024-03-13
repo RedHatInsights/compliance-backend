@@ -29,7 +29,7 @@ describe V2::SupportedProfilesController do
     let(:v1_profiles) do
       FactoryBot.create(
         :v2_security_guide,
-        :with_profiles,
+        profile_count: 3,
         os_major_version: 7,
         version: '1.0.0',
         profile_refs: {
@@ -44,7 +44,7 @@ describe V2::SupportedProfilesController do
     let(:v2_profiles) do
       FactoryBot.create(
         :v2_security_guide,
-        :with_profiles,
+        profile_count: 3,
         os_major_version: 7,
         version: '2.0.0',
         profile_refs: {
@@ -57,7 +57,7 @@ describe V2::SupportedProfilesController do
     let(:rhel8_profiles) do
       FactoryBot.create(
         :v2_security_guide,
-        :with_profiles,
+        profile_count: 3,
         os_major_version: 8,
         version: '1.0.0',
         profile_refs: %w[
