@@ -17,13 +17,10 @@ module V2
         }, status: status }.merge(opts))
       end
 
-      # FIXME: coverage mask should be removed after the policies endpoint is done
-      # :nocov:
       def render_model_errors(models, status: :not_acceptable, **opts)
         messages = model_errors(models)
         render_error(messages, status: status, **opts)
       end
-      # :nocov:
 
       private
 
@@ -53,8 +50,6 @@ module V2
         ['index'].include?(action_name)
       end
 
-      # FIXME: coverage mask should be removed after the policies endpoint is done
-      # :nocov:
       def model_errors(models = [])
         models = [models].flatten
         models.flat_map do |model|
@@ -64,7 +59,6 @@ module V2
           end
         end
       end
-      # :nocov:
 
       # :nocov:
       def serializer

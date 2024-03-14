@@ -22,11 +22,9 @@ module V2
 
       # Declares the field to be used for the basis of deterministic sorting
       # when retrieving records.
-      # :nocov:
       def default_sort(column)
         @default_sort = column
       end
-      # :nocov:
 
       def sortable_by(column, statement = column)
         @sortable_by ||= {}
@@ -51,7 +49,6 @@ module V2
         end
       end
 
-      # :nocov:
       def assert_sortable_by!(column, direction)
         unless @sortable_by.key?(column&.to_sym)
           raise ::Exceptions::InvalidSortingColumn, column
@@ -61,7 +58,6 @@ module V2
 
         raise ::Exceptions::InvalidSortingDirection, direction
       end
-      # :nocov:
 
       def fetch_rule_by_column(column)
         rule = @sortable_by[column]

@@ -95,11 +95,9 @@ module V2
       where(groups.include?([]) ? grouped.or(ungrouped) : grouped)
     }
 
-    # :nocov:
     def readonly?
       Rails.env.production?
     end
-    # :nocov:
 
     def group_ids
       groups.map { |group| group['id'] } || []

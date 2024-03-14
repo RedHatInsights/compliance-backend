@@ -58,16 +58,6 @@ module V2
 
       permitted_params_for_action :show, id: ParamType.string
 
-      # FIXME: compatibility with the V1 logic from the common concerns
-      def relationships_enabled?
-        false
-      end
-
-      # FIXME: compatibility with the V1 logic from the common concerns
-      def include_params
-        false
-      end
-
       # Use the params[:parents] configured by the route to construct a permit
       # hash containing each ID passed from the parents of a nested resource.
       def permit_parent_ids

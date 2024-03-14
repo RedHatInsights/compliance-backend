@@ -74,7 +74,6 @@ module V2
           if association
             "#{association}.#{field} AS #{association}__#{field}"
           else
-            # FIXME: this is just temporary until we figure out aggregations as they will be also arel-based
             field.is_a?(ApplicationRecord::AN::Node) ? field.to_sql : [resource.table_name, field].join('.')
           end
         end
