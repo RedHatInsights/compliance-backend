@@ -16,27 +16,19 @@ module V2
     def index?
       false
     end
-    # :nocov:
 
-    # :nocov:
     def show?
       false
     end
-    # :nocov:
 
-    # :nocov:
     def create?
       false
     end
-    # :nocov:
 
-    # :nocov:
     def update?
       false
     end
-    # :nocov:
 
-    # :nocov:
     def destroy?
       false
     end
@@ -47,11 +39,9 @@ module V2
 
     private
 
-    # :nocov:
     def match_account?
       record.account_id == user.account_id
     end
-    # :nocov:
 
     # Generic scope for all models - just matching the account ID.
     # To be overridden on individual model policies if needed.

@@ -34,7 +34,6 @@ module V2
         join_parents(reflection.klass, parents).find(permitted_params[reflection.foreign_key])
       end
 
-      # :nocov:
       def filter_by_tags(data)
         unless TagFiltering.tags_supported?(resource) && permitted_params[:tags]&.any?
           return data
@@ -43,9 +42,7 @@ module V2
         tags = parse_tags(permitted_params[:tags])
         data.where('tags @> ?', tags.to_json)
       end
-      # :nocov:
 
-      # :nocov:
       def search(data)
         return data if permitted_params[:filter].blank?
 
@@ -56,7 +53,6 @@ module V2
 
         data.search_for(permitted_params[:filter])
       end
-      # :nocov:
 
       def sort(data)
         order_hash = data.klass.build_order_by(permitted_params[:sort_by])
