@@ -90,6 +90,13 @@ describe V2::TailoringsController do
       it_behaves_like 'individual', :policy
       it_behaves_like 'indexable', :os_minor_version, :policy
     end
+
+    context 'relations' do
+      let(:old_link_count) { 2 }
+      let(:new_link_count) { 3 }
+
+      it_behaves_like 'bulk assignable', V2::PolicySystem, :v2_policy, :system, :with_systems, :system_count
+    end
   end
 
   context '/policies/:id/tailorings/:id/tailoring_file' do
