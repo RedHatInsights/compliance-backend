@@ -10,7 +10,9 @@ module V2
       compliance_threshold: ParamType.integer | ParamType.float,
       profile_id: ID_TYPE
     }.freeze
-    UPDATE_ATTRIBUTES = CREATE_ATTRIBUTES.except(:title, :profile_id).freeze
+    UPDATE_ATTRIBUTES = CREATE_ATTRIBUTES.except(:title, :profile_id)
+                                         .merge({ systems: ParamType.array(ID_TYPE) })
+                                         .freeze
 
     def index
       render_json compliance_policies
@@ -36,7 +38,8 @@ module V2
     permitted_params_for_action :create, CREATE_ATTRIBUTES
 
     def update
-      if compliance_policy.update(permitted_params.to_h.slice(*UPDATE_ATTRIBUTES.keys))
+      if compliance_policy.update_and_bulk_assign(permitted_params.to_h.slice(*UPDATE_ATTRIBUTES.keys),
+                                                  V2::PolicySystem)
         render_json compliance_policy
         audit_success("Updated policy #{compliance_policy.id}")
       else
@@ -53,6 +56,22 @@ module V2
     end
     permission_for_action :destroy, Rbac::POLICY_DELETE
     permitted_params_for_action :destroy, { id: ID_TYPE }
+
+    # TODO: old controller method, moved to `update`
+    # def systems
+    #   systems_added, systems_removed = compliance_policy.bulk_assign(
+    #     V2::PolicySystem, V2::System.find(*permitted_params[:systems])
+    #   )
+
+    # audit_success(
+    #   "Updated systems assignment on policy #{compliance_policy.id}, " \
+    #   "#{systems_added} added, #{systems_removed} removed"
+    # )
+
+    #   render_json compliance_policy
+    # end
+    # permission_for_action :systems, Rbac::POLICY_WRITE
+    # permitted_params_for_action :systems, { id: ID_TYPE, systems: ParamType.array(ID_TYPE) }
 
     private
 

@@ -180,6 +180,13 @@ describe V2::PoliciesController do
           expect(response).to have_http_status :not_acceptable
         end
       end
+
+      context 'relations' do
+        let(:old_link_count) { 1 }
+        let(:new_link_count) { 3 }
+
+        it_behaves_like 'bulk assignable', V2::PolicySystem, :v2_policy, :system
+      end
     end
 
     describe 'DELETE destroy' do

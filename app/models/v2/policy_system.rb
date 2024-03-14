@@ -11,7 +11,7 @@ module V2
     belongs_to :system, class_name: 'V2::System'
 
     validates :policy_id, presence: true
-    validates :system_id, presence: true, uniqueness: { scope: :policy_id }
+    validates :system_id, presence: true, uniqueness: { scope: :policy }
     validate :system_supported?, on: :create
 
     def system_supported?
