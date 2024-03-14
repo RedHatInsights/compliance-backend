@@ -19,6 +19,10 @@ module V2
       match_account?
     end
 
+    def systems?
+      match_account? # TODO: inventory groups
+    end
+
     # Only show policies in our user account
     class Scope < V2::ApplicationPolicy::Scope
       def resolve

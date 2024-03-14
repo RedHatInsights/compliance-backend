@@ -3,6 +3,8 @@
 module V2
   # Model for SCAP policies
   class Policy < ApplicationRecord
+    include BulkAssignable
+
     # FIXME: clean up after the remodel
     self.table_name = :v2_policies
     self.primary_key = :id
