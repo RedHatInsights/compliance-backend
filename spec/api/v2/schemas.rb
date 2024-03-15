@@ -8,14 +8,16 @@ module Api
     module Schemas
       include Errors
       include Metadata
+      include Profile
       include SecurityGuide
 
       SCHEMAS = {
+        errors: ERRORS,
         id: UUID,
         links: LINKS,
         metadata: METADATA,
-        security_guide: SECURITY_GUIDE,
-        errors: ERRORS
+        profile: PROFILE,
+        security_guide: SECURITY_GUIDE
       }.freeze
     end
   end
