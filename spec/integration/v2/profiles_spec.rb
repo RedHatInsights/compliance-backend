@@ -19,8 +19,8 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
       operationId 'Profiles'
       content_types
       pagination_params_v2
-      sort_params_v2(V2::SecurityGuide)
-      search_params_v2(V2::SecurityGuide)
+      sort_params_v2(V2::Profile)
+      search_params_v2(V2::Profile)
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
 
@@ -36,16 +36,16 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
         let(:sort_by) { ['title'] }
         v2_collection_schema 'profile'
 
-        after { |e| autogenerate_examples(e, 'List of Profiles sorted by "profile:asc"') }
+        after { |e| autogenerate_examples(e, 'List of Profiles sorted by "title:asc"') }
 
         run_test!
       end
 
       response '200', 'Lists Profiles' do
-        let(:filter) { "(ref_id=#{V2::Profile.first.ref_id})" }
+        let(:filter) { "(title=#{V2::Profile.first.title})" }
         v2_collection_schema 'profile'
 
-        after { |e| autogenerate_examples(e, "List of Profiles filtered by '(#{V2::Profile.first.ref_id})'") }
+        after { |e| autogenerate_examples(e, "List of Profiles filtered by '(title=#{V2::Profile.first.title})'") }
 
         run_test!
       end

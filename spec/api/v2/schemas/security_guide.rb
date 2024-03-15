@@ -21,23 +21,23 @@ module Api
             ref_id: {
               type: :string,
               examples: ['xccdf_org.ssgproject.content_benchmark_RHEL-7'],
-              description: 'Identificator for Security Guide'
+              description: 'Identificator of the Security Guide'
             },
             title: {
               type: :string,
               examples: ['Guide to the Secure Configuration of Red Hat Enterprise Linux 7'],
-              description: 'Brief description of the Security Guide content'
+              description: 'Short title of the Security Guide'
             },
             version: {
               type: :string,
               examples: ['0.1.46'],
-              description: 'Version of Security Guide'
+              description: 'Version of the Security Guide'
             },
             description: {
               type: :string,
               examples: ['This guide presents a catalog of security-relevant ' \
                          'configuration settings for Red Hat Enterprise Linux 7.'],
-              description: 'Longer description of the Security Guide content'
+              description: 'Longer description of the Security Guide'
             },
             os_major_version: {
               type: :number,
