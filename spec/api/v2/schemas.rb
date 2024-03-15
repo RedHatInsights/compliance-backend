@@ -11,6 +11,7 @@ module Api
       include Profile
       include RuleGroup
       include SecurityGuide
+      include SupportedProfile
       include ValueDefinition
 
       SCHEMAS = {
@@ -21,6 +22,7 @@ module Api
         profile: PROFILE,
         rule_group: RULE_GROUP,
         security_guide: SECURITY_GUIDE,
+        supported_profile: SUPPORTED_PROFILE,
         value_definition: VALUE_DEFINITION
       }.freeze
     end
