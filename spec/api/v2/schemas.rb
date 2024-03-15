@@ -9,6 +9,7 @@ module Api
       include Errors
       include Metadata
       include Profile
+      include RuleGroup
       include SecurityGuide
       include ValueDefinition
 
@@ -18,6 +19,7 @@ module Api
         links: LINKS,
         metadata: METADATA,
         profile: PROFILE,
+        rule_group: RULE_GROUP,
         security_guide: SECURITY_GUIDE,
         value_definition: VALUE_DEFINITION
       }.freeze
