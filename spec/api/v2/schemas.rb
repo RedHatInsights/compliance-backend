@@ -10,6 +10,7 @@ module Api
       include Metadata
       include Profile
       include SecurityGuide
+      include ValueDefinition
 
       SCHEMAS = {
         errors: ERRORS,
@@ -17,7 +18,8 @@ module Api
         links: LINKS,
         metadata: METADATA,
         profile: PROFILE,
-        security_guide: SECURITY_GUIDE
+        security_guide: SECURITY_GUIDE,
+        value_definition: VALUE_DEFINITION
       }.freeze
     end
   end
