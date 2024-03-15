@@ -5,13 +5,19 @@ require './spec/api/v2/schemas/util'
 module Api
   module V2
     module Schemas
-      module SecurityGuides
+      # :nodoc:
+      module SecurityGuide
         extend Api::V2::Schemas::Util
 
         SECURITY_GUIDE = {
           type: :object,
-          required: %w[ref_id title version os_major_version],
+          required: %w[id type ref_id title version os_major_version],
           properties: {
+            id: ref_schema('id'),
+            type: {
+              type: :string,
+              value: 'security_guide'
+            },
             ref_id: {
               type: :string,
               examples: ['xccdf_org.ssgproject.content_benchmark_RHEL-7'],
@@ -19,8 +25,7 @@ module Api
             },
             title: {
               type: :string,
-              examples: ['Guide to the Secure Configuration of Red Hat ' \
-              'Enterprise Linux 7'],
+              examples: ['Guide to the Secure Configuration of Red Hat Enterprise Linux 7'],
               description: 'Brief description of the Security Guide content'
             },
             version: {
@@ -36,9 +41,9 @@ module Api
             },
             os_major_version: {
               type: :number,
-              minimum: SupportedSsg.by_os_major.map(&:first).min.to_i,
+              minimum: 6,
               examples: [7],
-              description: 'Major version of OS that the Security Guide covers'
+              description: 'Major version of the Operating System that the Security Guide covers'
             }
           }
         }.freeze

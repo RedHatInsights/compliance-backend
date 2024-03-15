@@ -18,13 +18,16 @@
   "paths": {
     "/security_guides": {
       "get": {
-        "summary": "List all Security Guides",
-        "tags": [
-          "security_guide"
-        ],
-        "description": "Lists all Security guides",
-        "operationId": "ListSecurityGuides",
+        "summary": "Request Security Guides",
         "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "description": "For internal use only"
+            }
+          },
           {
             "name": "limit",
             "in": "query",
@@ -80,9 +83,14 @@
             }
           }
         ],
+        "tags": [
+          "security_guide"
+        ],
+        "description": "Lists Security Guides",
+        "operationId": "SecurityGuides",
         "responses": {
           "200": {
-            "description": "Lists all Security Guides requested",
+            "description": "Lists Security Guides",
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -90,50 +98,105 @@
                     "value": {
                       "data": [
                         {
-                          "id": "9c910e0f-e06d-4d21-bd75-897443ac87a6",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-9",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 9",
-                          "version": "100.0.4",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 9.",
-                          "type": "security_guide",
-                          "os_major_version": 9
-                        },
-                        {
-                          "id": "9cb749f3-2be1-4693-97b1-65a2a267613e",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-6",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 6",
-                          "version": "100.0.1",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 6.",
-                          "type": "security_guide",
-                          "os_major_version": 6
-                        },
-                        {
-                          "id": "b592f308-73c4-4ade-88da-7a3e17f3b008",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
-                          "version": "100.0.3",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
-                          "type": "security_guide",
-                          "os_major_version": 8
-                        },
-                        {
-                          "id": "c022786a-5e5d-42c3-8747-4013ce3936c1",
+                          "id": "034ade91-ccd8-45ce-a7a5-c2d39ab994a4",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
-                          "version": "100.0.2",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7.",
-                          "type": "security_guide",
-                          "os_major_version": 7
+                          "title": "Quaerat et voluptatem et.",
+                          "version": "100.0.3",
+                          "description": "Odio consequatur omnis. Ducimus a omnis. Quia et aspernatur.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "0f4f9576-21a7-4ed5-9685-c400aa606d2d",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Nemo sunt id libero.",
+                          "version": "100.0.13",
+                          "description": "Adipisci itaque vitae. Iusto possimus sed. Qui magni non.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "147b8713-30c9-423d-8031-8c521d2c10d1",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Ut aut animi dolores.",
+                          "version": "100.0.25",
+                          "description": "Autem expedita aliquam. Quisquam ut non. Quo sequi omnis.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "24fbc39f-c410-4b25-8d18-098db17ee6e6",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Non repellendus commodi in.",
+                          "version": "100.0.16",
+                          "description": "Ut ut ducimus. Incidunt officia quo. Enim sint non.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "2581ee8b-4e46-485d-b161-0fb32b329b8e",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Omnis recusandae libero ea.",
+                          "version": "100.0.10",
+                          "description": "Odit nobis dolor. Dolor molestias rerum. Enim aut dolor.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "32366171-781f-421f-a2c8-98997dbbf407",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Sunt explicabo a libero.",
+                          "version": "100.0.22",
+                          "description": "Eaque dolores et. Tempore eum natus. Explicabo saepe aspernatur.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "38f6b69f-d406-4025-8ec0-d2185f3d9474",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Ratione est vero excepturi.",
+                          "version": "100.0.17",
+                          "description": "Laudantium placeat perspiciatis. Accusamus odit ipsum. Iste totam nobis.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "3cb0b26c-b3a8-4202-8163-4a3dd9224237",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Et sit id deserunt.",
+                          "version": "100.0.7",
+                          "description": "Modi debitis delectus. Saepe ea dolore. Est iusto aut.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "4ac342cd-0367-4145-aa8d-5a063c40372b",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Aut quis quae est.",
+                          "version": "100.0.1",
+                          "description": "Rerum numquam molestiae. Necessitatibus et quisquam. Deleniti officia laboriosam.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "500d595a-078b-4acf-8586-626d99cf7d7c",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Nam nesciunt voluptatem fuga.",
+                          "version": "100.0.5",
+                          "description": "Totam exercitationem ipsa. Eius modi quod. Qui quisquam vitae.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
                         }
                       ],
                       "meta": {
-                        "total": 4,
+                        "total": 25,
                         "limit": 10,
                         "offset": 0
                       },
                       "links": {
                         "first": "/api/compliance/v2/security_guides?limit=10&offset=0",
-                        "last": "/api/compliance/v2/security_guides?limit=10&offset=0"
+                        "last": "/api/compliance/v2/security_guides?limit=10&offset=20",
+                        "next": "/api/compliance/v2/security_guides?limit=10&offset=10"
                       }
                     },
                     "summary": "",
@@ -143,51 +206,106 @@
                     "value": {
                       "data": [
                         {
-                          "id": "c34337ce-0e5f-4ae5-9064-e15661ee2f19",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-6",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 6",
-                          "version": "100.0.5",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 6.",
-                          "type": "security_guide",
-                          "os_major_version": 6
-                        },
-                        {
-                          "id": "09144d4f-b98a-4ae3-be0d-00cfa8a77dcb",
+                          "id": "014cbee2-4470-42c9-91c4-b3e3aceb47a9",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 7",
-                          "version": "100.0.6",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 7.",
-                          "type": "security_guide",
-                          "os_major_version": 7
+                          "title": "Culpa consequatur asperiores architecto.",
+                          "version": "100.0.38",
+                          "description": "Occaecati deleniti consectetur. Quia animi nisi. Nesciunt soluta repellat.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
                         },
                         {
-                          "id": "c10a9171-df42-4cff-9199-739d776e5acb",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
-                          "version": "100.0.7",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
-                          "type": "security_guide",
-                          "os_major_version": 8
+                          "id": "04bdfde7-4fef-4e0e-908b-e1d82347d822",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Sunt alias magni delectus.",
+                          "version": "100.1.0",
+                          "description": "Ducimus explicabo ad. Dolores rerum ea. Sed nostrum aliquam.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
                         },
                         {
-                          "id": "047ee2cb-1817-4f03-8aac-0dcf7f836308",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-9",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 9",
-                          "version": "100.0.8",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 9.",
-                          "type": "security_guide",
-                          "os_major_version": 9
+                          "id": "08dac552-f434-4be8-8fe2-cf570fee5c31",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Et earum tenetur hic.",
+                          "version": "100.0.40",
+                          "description": "Ipsam sunt qui. Harum et voluptas. Modi voluptatem mollitia.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "0cd5ca0e-949c-40f0-9383-aac9a6877739",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Aliquam vero et eaque.",
+                          "version": "100.0.47",
+                          "description": "Consequatur illo qui. Itaque facere saepe. Incidunt quo voluptatum.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "0d9add62-df82-4ee4-ac6c-fa105213e2c4",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Asperiores corrupti ut qui.",
+                          "version": "100.0.41",
+                          "description": "Mollitia laudantium quia. Nesciunt minima quasi. Impedit quas et.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "2258202a-4803-4e85-8c95-6f19ee0a84a4",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Possimus aut consequatur praesentium.",
+                          "version": "100.0.26",
+                          "description": "Similique occaecati ratione. Qui nisi sequi. Excepturi eius repudiandae.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "314bda30-7194-4bc9-a4d7-248a2366f234",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Alias dolorem et sed.",
+                          "version": "100.0.39",
+                          "description": "Ex iusto in. Sunt consequuntur qui. Voluptate corporis nihil.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "3c0a8bf7-5d30-4eb0-bd67-f00b476e285a",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Sed voluptatem officia quibusdam.",
+                          "version": "100.0.29",
+                          "description": "Et et in. Et mollitia suscipit. Facilis quam quibusdam.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "47a35d95-e2d2-4bb4-8ec5-32ec854e5d55",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Voluptas voluptates sit architecto.",
+                          "version": "100.0.28",
+                          "description": "Rem aut iste. Numquam reiciendis repellat. Quibusdam numquam at.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "493f48d2-f738-4f0b-b0c6-052256bc6aa4",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Sint aspernatur sit consequatur.",
+                          "version": "100.0.35",
+                          "description": "Consequatur aut quos. Tempore voluptatibus laudantium. Qui labore est.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
                         }
                       ],
                       "meta": {
-                        "total": 4,
+                        "total": 25,
                         "limit": 10,
                         "offset": 0,
                         "sort_by": "os_major_version"
                       },
                       "links": {
                         "first": "/api/compliance/v2/security_guides?limit=10&offset=0&sort_by=os_major_version",
-                        "last": "/api/compliance/v2/security_guides?limit=10&offset=0&sort_by=os_major_version"
+                        "last": "/api/compliance/v2/security_guides?limit=10&offset=20&sort_by=os_major_version",
+                        "next": "/api/compliance/v2/security_guides?limit=10&offset=10&sort_by=os_major_version"
                       }
                     },
                     "summary": "",
@@ -195,19 +313,9 @@
                   },
                   "List of Security Guides filtered by \"(os_major_version=8)\"": {
                     "value": {
-                      "data": [
-                        {
-                          "id": "c40d8e49-a2de-4895-a120-aff9b4919068",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-8",
-                          "title": "Guide to the Secure Configuration of Red Hat Enterprise Linux 8",
-                          "version": "100.0.11",
-                          "description": "This guide presents a catalog of security-relevant configuration settings for Red Hat Enterprise Linux 8.",
-                          "type": "security_guide",
-                          "os_major_version": 8
-                        }
-                      ],
+                      "data": [],
                       "meta": {
-                        "total": 1,
+                        "total": 0,
                         "filter": "(os_major_version=8)",
                         "limit": 10,
                         "offset": 0
@@ -234,14 +342,8 @@
                       "type": "array",
                       "items": {
                         "properties": {
-                          "type": {
-                            "type": "string"
-                          },
-                          "id": {
-                            "$ref": "#/components/schemas/id"
-                          },
-                          "attributes": {
-                            "$ref": "#/components/schemas/security_guides"
+                          "schema": {
+                            "$ref": "#/components/schemas/security_guide"
                           }
                         }
                       }
@@ -252,7 +354,7 @@
             }
           },
           "422": {
-            "description": "Returns error if wrong parameters are used",
+            "description": "Returns with Unprocessable Content",
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -276,31 +378,95 @@
                   }
                 },
                 "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/security_guides/{id}": {
+      "get": {
+        "summary": "Request Security Guide",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "description": "For internal use only"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "security_guide"
+        ],
+        "description": "Returns a Security Guide",
+        "operationId": "SecurityGuide",
+        "responses": {
+          "200": {
+            "description": "Returns Security Guide",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Returns a Security Guide": {
+                    "value": {
+                      "data": {
+                        "id": "7c4ae4d0-344b-4326-b81c-6771cbde305a",
+                        "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                        "title": "Ipsum exercitationem nihil consequuntur.",
+                        "version": "100.2.26",
+                        "description": "Adipisci numquam alias. Aut voluptatibus aut. Tenetur consequuntur soluta.",
+                        "os_major_version": 7,
+                        "type": "security_guide"
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
                   "type": "object",
                   "properties": {
-                    "meta": {
-                      "$ref": "#/components/schemas/metadata"
-                    },
-                    "links": {
-                      "$ref": "#/components/schemas/links"
-                    },
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "properties": {
-                          "type": {
-                            "type": "string"
-                          },
-                          "id": {
-                            "$ref": "#/components/schemas/id"
-                          },
-                          "attributes": {
-                            "$ref": "#/components/schemas/security_guides"
-                          }
+                      "type": "object",
+                      "properties": {
+                        "schema": {
+                          "$ref": "#/components/schemas/security_guide"
                         }
                       }
                     }
                   }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returns with Not Found",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Returns a Security Guide": {
+                    "value": {
+                      "errors": [
+                        "V2::SecurityGuide not found with ID 1877a9f9-c3de-45ad-970f-868f177d5725"
+                      ]
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
                 }
               }
             }
@@ -390,15 +556,24 @@
           }
         }
       },
-      "security_guides": {
+      "security_guide": {
         "type": "object",
         "required": [
+          "id",
+          "type",
           "ref_id",
           "title",
           "version",
           "os_major_version"
         ],
         "properties": {
+          "id": {
+            "$ref": "#/components/schemas/id"
+          },
+          "type": {
+            "type": "string",
+            "value": "security_guide"
+          },
           "ref_id": {
             "type": "string",
             "examples": [
@@ -433,7 +608,24 @@
             "examples": [
               7
             ],
-            "description": "Major version of OS that the Security Guide covers"
+            "description": "Major version of the Operating System that the Security Guide covers"
+          }
+        }
+      },
+      "errors": {
+        "type": "object",
+        "required": [
+          "errors"
+        ],
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "examples": [
+                "V2::SecurityGuide not found with ID a4708198-9d00-4035-bf57-1e7aaad217c5"
+              ]
+            }
           }
         }
       }

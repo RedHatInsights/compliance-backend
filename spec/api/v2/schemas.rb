@@ -4,15 +4,18 @@ Dir['./spec/api/v2/schemas/*.rb'].each { |file| require file }
 
 module Api
   module V2
+    # :nodoc:
     module Schemas
+      include Errors
       include Metadata
-      include SecurityGuides
+      include SecurityGuide
 
       SCHEMAS = {
         id: UUID,
         links: LINKS,
         metadata: METADATA,
-        security_guides: SECURITY_GUIDE
+        security_guide: SECURITY_GUIDE,
+        errors: ERRORS
       }.freeze
     end
   end

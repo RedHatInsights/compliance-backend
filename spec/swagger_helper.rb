@@ -173,6 +173,30 @@ def sort_combinations(model)
   end
 end
 
+def v2_collection_schema(label)
+  schema(type: :object,
+         properties: {
+           meta: ref_schema('metadata'),
+           links: ref_schema('links'),
+           data: {
+             type: :array,
+             items: { properties: { schema: ref_schema(label) } }
+           }
+         })
+end
+
+def v2_item_schema(label)
+  schema(type: :object,
+         properties: {
+           data: {
+             type: :object,
+             properties: {
+               schema: ref_schema(label)
+             }
+           }
+         })
+end
+
 def content_types
   # HACK: the argument is passed as a symbol to avoid being duplicated.
   # Possibly an rswag issue.
@@ -183,4 +207,8 @@ end
 
 def auth_header
   parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }
+end
+
+def v2_auth_header
+  parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string, description: 'For internal use only' }
 end
