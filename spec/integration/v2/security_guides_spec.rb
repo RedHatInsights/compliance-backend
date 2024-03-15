@@ -12,7 +12,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
 
     get 'Request Security Guides' do
       v2_auth_header
-      tags 'security_guide'
+      tags 'security_guides'
       description 'Lists Security Guides'
       operationId 'SecurityGuides'
       content_types
@@ -69,16 +69,16 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
   path '/security_guides/{id}' do
     let(:item) { FactoryBot.create(:v2_security_guide) }
 
-    get 'Request Security Guide' do
+    get 'Request a Security Guide' do
       v2_auth_header
-      tags 'security_guide'
+      tags 'security_guides'
       description 'Returns a Security Guide'
       operationId 'SecurityGuide'
       content_types
 
       parameter name: :id, in: :path, type: :string, required: true
 
-      response '200', 'Returns Security Guide' do
+      response '200', 'Returns a Security Guide' do
         let(:id) { item.id }
         v2_item_schema('security_guide')
 
@@ -91,7 +91,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
         let(:id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
-        after { |e| autogenerate_examples(e, 'Returns a Security Guide') }
+        after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing Security Guide') }
 
         run_test!
       end
