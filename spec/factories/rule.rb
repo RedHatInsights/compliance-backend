@@ -9,7 +9,14 @@ FactoryBot.define do
     severity { %w[low medium high].sample }
     precedence { Faker::Number.between(from: 1, to: 9999) }
 
-    security_guide { association :v2_security_guide, os_major_version: os_major_version }
+    security_guide do
+      if profile_id
+        V2::Profile.find(profile_id).security_guide
+      else
+        association :v2_security_guide, os_major_version: os_major_version
+      end
+    end
+
     rule_group { association :v2_rule_group, parent_count: parent_count, security_guide: security_guide }
 
     transient do
