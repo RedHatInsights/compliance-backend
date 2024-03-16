@@ -4,14 +4,13 @@ module Api
   module V2
     module Schemas
       module Metadata
-        UUID = { type: :string, format: :uuid }.freeze
-
         METADATA = {
           type: :object,
           properties: {
             total: {
               type: :number,
               examples: [1, 42, 770],
+              readOnly: true,
               description: 'Total number of items'
 
             },
@@ -21,6 +20,7 @@ module Api
               minimum: 1,
               default: 10,
               examples: [10, 100],
+              readOnly: true,
               description: 'Number of items returned per page'
             },
             offset: {
@@ -28,6 +28,7 @@ module Api
               minimum: 0,
               default: 0,
               examples: [15, 90],
+              readOnly: true,
               description: 'Offset of the first item of paginated response'
             },
             sort_by: {
@@ -50,21 +51,25 @@ module Api
             first: {
               type: :string,
               format: :uri,
+              readOnly: true,
               description: 'Link to first page'
             },
             last: {
               type: :string,
               format: :uri,
+              readOnly: true,
               description: 'Link to last page'
             },
             previous: {
               type: :string,
               format: :uri,
+              readOnly: true,
               description: 'Link to previous page'
             },
             next: {
               type: :string,
               format: :uri,
+              readOnly: true,
               description: 'Link to next page'
             }
           }

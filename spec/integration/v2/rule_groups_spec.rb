@@ -14,7 +14,7 @@ describe 'Rule Groups', swagger_doc: 'v2/openapi.json' do
 
     get 'Request Rule Groups' do
       v2_auth_header
-      tags 'rule_groups'
+      tags 'Content'
       description 'Lists Rule Groups'
       operationId 'Rule Groups'
       content_types
@@ -66,7 +66,7 @@ describe 'Rule Groups', swagger_doc: 'v2/openapi.json' do
 
     get 'Request a Rule Group' do
       v2_auth_header
-      tags 'rule_groups'
+      tags 'Content'
       description 'Returns a Rule Group'
       operationId 'Rule Group'
       content_types
