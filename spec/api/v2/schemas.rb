@@ -13,6 +13,8 @@ module Api
       include RuleGroup
       include SecurityGuide
       include SupportedProfile
+      include Tailoring
+      include TailoringFile
       include Types
       include ValueDefinition
 
@@ -27,6 +29,8 @@ module Api
         rule_group: RULE_GROUP,
         security_guide: SECURITY_GUIDE,
         supported_profile: SUPPORTED_PROFILE,
+        tailoring: TAILORING,
+        tailoring_file: TAILORING_FILE,
         value_definition: VALUE_DEFINITION
       }.freeze
     end

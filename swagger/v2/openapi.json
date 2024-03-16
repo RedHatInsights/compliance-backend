@@ -104,124 +104,124 @@
                     "value": {
                       "data": [
                         {
-                          "id": "03b222e2-d026-4994-b510-c8db1f67bec4",
-                          "title": "Voluptatem nemo nisi esse.",
-                          "description": "Consequatur voluptatem adipisci. Voluptate officiis harum. Ipsum placeat accusamus.",
+                          "id": "02b2cb7a-7647-4af1-a290-983a58921cde",
+                          "title": "Repudiandae aut molestias labore.",
+                          "description": "Omnis reprehenderit quia. Quia omnis sed. Deserunt accusantium molestiae.",
                           "business_objective": null,
-                          "compliance_threshold": 0.0,
+                          "compliance_threshold": 64.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Temporibus est dolorem perspiciatis.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_957e2300eb7f0150d8bcf5fa2c33e79f"
+                          "profile_title": "Molestiae est et fugit.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_0705bb9fc4f9ab06382b4625c41c1198"
                         },
                         {
-                          "id": "1239cd2b-8cdd-422e-8efc-eedbdb988f9f",
-                          "title": "Maxime enim est delectus.",
-                          "description": "Perspiciatis dolorem dolorem. Rerum occaecati delectus. Nisi et dolorum.",
-                          "business_objective": null,
-                          "compliance_threshold": 15.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Eum ipsam sint est.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_00d8e9c3caae6768daecf5695b5cda05"
-                        },
-                        {
-                          "id": "17a926e1-3cda-4390-8bfd-e301a331efb5",
-                          "title": "Inventore eos perferendis impedit.",
-                          "description": "Amet ex enim. Quaerat quod aut. Deleniti totam perspiciatis.",
-                          "business_objective": null,
-                          "compliance_threshold": 86.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Molestiae officia beatae ipsam.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_9f3ddf507b4e7fc1c76abbe67281b879"
-                        },
-                        {
-                          "id": "1ea6105b-8459-45f6-ae25-44ebb5bc93f3",
-                          "title": "Et minus sit et.",
-                          "description": "Soluta nemo sit. Laudantium dolorum et. Et iusto quos.",
+                          "id": "02d7f532-0413-44d6-8751-aa114540d262",
+                          "title": "Ut nihil repudiandae repellat.",
+                          "description": "Et fugit magni. Quia fuga consectetur. Ut quidem velit.",
                           "business_objective": null,
                           "compliance_threshold": 57.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Error impedit suscipit numquam.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_ad374a94909416101757c6d74100c34f"
+                          "profile_title": "Ea perferendis laborum ducimus.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_41b9e89689535f097499a385eb5390a0"
                         },
                         {
-                          "id": "20fdb7b9-613c-4188-a20e-6efa3e81184e",
-                          "title": "Maxime neque voluptatem eius.",
-                          "description": "Officiis ullam impedit. Dolor laudantium quod. Aut et a.",
+                          "id": "03ab7489-db66-4c1e-a33f-e31027d5bf51",
+                          "title": "Error quas libero facere.",
+                          "description": "Blanditiis nam laborum. Dolore eius est. Pariatur sed sunt.",
+                          "business_objective": null,
+                          "compliance_threshold": 18.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Necessitatibus minus ipsa et.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_a4cbb64f2a2f4c26efc871a035fad300"
+                        },
+                        {
+                          "id": "39ba33dc-e708-469c-9fce-2db6867c76a8",
+                          "title": "Fugit nostrum officia vel.",
+                          "description": "Quasi qui quia. Explicabo possimus similique. Non facere est.",
+                          "business_objective": null,
+                          "compliance_threshold": 10.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Aliquid laudantium ad commodi.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_869131b1550221d83389dcd503f4a6cf"
+                        },
+                        {
+                          "id": "48e29259-de10-437f-aca0-0575e7661dbf",
+                          "title": "Quo esse debitis sapiente.",
+                          "description": "Quia sit voluptates. Voluptatem sunt quibusdam. Voluptatem consequuntur architecto.",
+                          "business_objective": null,
+                          "compliance_threshold": 52.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Sint voluptatum dignissimos laboriosam.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_01bd49cae6a736b97082d420fccd7d94"
+                        },
+                        {
+                          "id": "4b539f19-f24d-424d-887f-1be5a90f8b11",
+                          "title": "Distinctio velit qui alias.",
+                          "description": "Reprehenderit ullam quasi. Hic non ut. Et corrupti amet.",
                           "business_objective": null,
                           "compliance_threshold": 62.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Reiciendis saepe enim accusantium.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_55dcf10f3a141f421e655cb9e491c536"
+                          "profile_title": "Autem sequi iure dolores.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_9362a8c32783ab8949aa173e4488e3da"
                         },
                         {
-                          "id": "5746ab70-3f9c-4c6f-a660-a2a3c4109158",
-                          "title": "Beatae sit voluptatem cum.",
-                          "description": "Dolore rem dolorum. Et excepturi et. Placeat occaecati qui.",
-                          "business_objective": null,
-                          "compliance_threshold": 31.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Ad molestias ut ratione.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_cf081a63b9332f79a402b5c9526a700c"
-                        },
-                        {
-                          "id": "5f509e11-acb9-46be-a0f1-2db14c3c6a60",
-                          "title": "Et repudiandae unde cum.",
-                          "description": "Nihil et cum. Non architecto mollitia. Nihil neque harum.",
-                          "business_objective": null,
-                          "compliance_threshold": 62.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Omnis voluptate est odio.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_63f319963cb5a0e4b5364e2f36cee95d"
-                        },
-                        {
-                          "id": "6b864d31-ccec-4b28-9c86-2c6458619ced",
-                          "title": "Et molestias atque ut.",
-                          "description": "Illum recusandae in. Quae sit officiis. Non sint hic.",
-                          "business_objective": null,
-                          "compliance_threshold": 46.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Voluptatem quis possimus ea.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_a4a2e09d7f7209b8c39d2e5718989fe8"
-                        },
-                        {
-                          "id": "6d836ce0-acb4-4551-9981-311dc0d5ed6d",
-                          "title": "Veniam quidem hic est.",
-                          "description": "Ipsa perferendis optio. Voluptate aliquid quo. Velit beatae cupiditate.",
-                          "business_objective": null,
-                          "compliance_threshold": 44.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Hic sunt velit labore.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_efeb938ac9462a7575126f4e02155398"
-                        },
-                        {
-                          "id": "766b6e96-2daf-4610-9c77-c29734c26e6b",
-                          "title": "Ut est pariatur laudantium.",
-                          "description": "Nesciunt velit ipsa. Enim in quidem. Quo et error.",
+                          "id": "56092c3b-994f-4c8f-ad0a-2542deb606f8",
+                          "title": "Similique aspernatur iste eum.",
+                          "description": "Laudantium tempora vitae. Ut minima corrupti. Qui ut maiores.",
                           "business_objective": null,
                           "compliance_threshold": 79.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Unde qui voluptatibus tenetur.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_82d871f8da761d464c7bdfbf1fce5ecf"
+                          "profile_title": "Autem quia consequatur natus.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_9a129bf68c81ae8c7f8408832f20ebb3"
+                        },
+                        {
+                          "id": "56918d6a-b5d4-4e97-bd84-71a19ec943b9",
+                          "title": "Non iusto nostrum iste.",
+                          "description": "Quos ea aut. Excepturi accusamus dicta. Autem qui nobis.",
+                          "business_objective": null,
+                          "compliance_threshold": 54.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Hic maiores ut nobis.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_a5522bc276025e86d2afb01584420829"
+                        },
+                        {
+                          "id": "729b6f91-fd8e-435b-8431-3367c0c9b377",
+                          "title": "Nam voluptatum voluptatem qui.",
+                          "description": "Non quibusdam pariatur. Voluptatem impedit quos. Aut et et.",
+                          "business_objective": null,
+                          "compliance_threshold": 75.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Nesciunt nulla facilis ut.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_cd6128c198c072e659bd9fa84ddc4521"
+                        },
+                        {
+                          "id": "87718e22-326e-415d-b1d6-3b8cc038cf5f",
+                          "title": "Ad ratione dolor similique.",
+                          "description": "Id aliquam itaque. Facilis excepturi ut. Nobis quaerat voluptatum.",
+                          "business_objective": null,
+                          "compliance_threshold": 38.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Voluptatibus occaecati hic et.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_8b596eae9f52e820f5f3e354e856ab61"
                         }
                       ],
                       "meta": {
@@ -242,124 +242,124 @@
                     "value": {
                       "data": [
                         {
-                          "id": "0bded608-1221-4efd-ac97-75e6c258a677",
-                          "title": "Autem cumque distinctio doloremque.",
-                          "description": "In ullam fuga. Quia sed quaerat. Neque rem facere.",
+                          "id": "068ba8b0-b7d4-4c3b-a53d-1442ae6f111b",
+                          "title": "Veritatis blanditiis voluptatem corporis.",
+                          "description": "Eum iusto nulla. Laboriosam sit quos. Deleniti blanditiis ut.",
                           "business_objective": null,
-                          "compliance_threshold": 71.0,
+                          "compliance_threshold": 57.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Itaque quia asperiores sit.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_bab51fb7cae551898392a7caf6dfa4a3"
+                          "profile_title": "Quidem aut adipisci ut.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_736d08b4157b91e102e90557b9cb09c3"
                         },
                         {
-                          "id": "0c7020ca-5be6-4bbf-b7da-740ce84a192e",
-                          "title": "Eum sed neque dignissimos.",
-                          "description": "Accusamus in at. Suscipit vel ullam. Aut beatae ab.",
+                          "id": "0da19aea-15d6-4af6-b941-bdb44f6ae0e7",
+                          "title": "Doloribus quibusdam voluptatem molestiae.",
+                          "description": "Quo dolorem quis. Rerum asperiores perferendis. Corrupti omnis aut.",
                           "business_objective": null,
-                          "compliance_threshold": 0.0,
+                          "compliance_threshold": 26.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Nihil maiores ea quis.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_ffcb32a5e8f4005888ca7c869f6079ac"
+                          "profile_title": "Quia velit molestiae impedit.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_b0955e358e315757710875c6c48c18b9"
                         },
                         {
-                          "id": "195ffe95-580c-4501-99c3-449ab70ec1c8",
-                          "title": "Alias nam magnam unde.",
-                          "description": "Aspernatur consequuntur dolor. Earum sint labore. Quibusdam voluptatem et.",
-                          "business_objective": null,
-                          "compliance_threshold": 60.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Et quidem aut fugiat.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_2ec2fbd190d2402b27ba773623f9fd7b"
-                        },
-                        {
-                          "id": "19ed72bb-de78-4e66-be5f-cb11c3110686",
-                          "title": "Ut qui ipsum quibusdam.",
-                          "description": "Omnis ut sequi. Repudiandae quisquam hic. Commodi saepe dolores.",
-                          "business_objective": null,
-                          "compliance_threshold": 5.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Nam voluptatem explicabo beatae.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_1b51552c6fae8a98ca1fa89d0044d619"
-                        },
-                        {
-                          "id": "1d1fd617-42a6-45cb-9b07-340ecc060add",
-                          "title": "Placeat maxime sit earum.",
-                          "description": "Voluptates harum vitae. Laudantium voluptatum facere. Voluptas et deleniti.",
-                          "business_objective": null,
-                          "compliance_threshold": 32.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Vel laudantium magni nihil.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_119d0bfe3cb3da84a6315a082e089e53"
-                        },
-                        {
-                          "id": "25fadd3e-d93b-4a23-ba8a-ebbcc8bf48ee",
-                          "title": "Ullam ipsa aspernatur mollitia.",
-                          "description": "Iusto aut qui. Sit amet ut. Consectetur dolores molestiae.",
-                          "business_objective": null,
-                          "compliance_threshold": 83.0,
-                          "total_system_count": 0,
-                          "type": "policy",
-                          "os_major_version": 7,
-                          "profile_title": "Sunt nihil at pariatur.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_46e8b131cb24f9b0c1100d7d5d898993"
-                        },
-                        {
-                          "id": "2f734b5a-b82f-48e9-b390-5642d49f7c80",
-                          "title": "Dolore consequatur incidunt et.",
-                          "description": "Aut facere facilis. Ab error eius. Voluptatem enim sed.",
+                          "id": "0fb23f41-80f9-4217-a546-eefa4cbc883e",
+                          "title": "Qui ut doloribus ducimus.",
+                          "description": "Et provident non. Qui aut quidem. Aspernatur est voluptas.",
                           "business_objective": null,
                           "compliance_threshold": 46.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Ut quaerat necessitatibus laudantium.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_e505017f403f9a9a2ff78c43c57bc06d"
+                          "profile_title": "Alias tempora est distinctio.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_d9fb0791f47ca0c6be3cc335cf44ec63"
                         },
                         {
-                          "id": "3490f5f9-5beb-4f62-81dc-9f30ef17544e",
-                          "title": "Eum autem aut id.",
-                          "description": "Molestiae eos ad. Et praesentium provident. Modi ipsam inventore.",
+                          "id": "1a4ca798-75bf-45e4-8360-928828c3f6bb",
+                          "title": "Delectus rerum aut nulla.",
+                          "description": "Porro rerum eius. Quaerat ratione asperiores. Sint ab amet.",
                           "business_objective": null,
-                          "compliance_threshold": 33.0,
+                          "compliance_threshold": 34.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Ipsum voluptas in dignissimos.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_44e992ca77c83aa17e3f1cb5f983441f"
+                          "profile_title": "Fugit laborum dicta commodi.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_01b53510d5751e54a9b3c499fc065227"
                         },
                         {
-                          "id": "3612afc7-15ce-4fd7-aed1-387112a3d8d3",
-                          "title": "Quisquam molestias at sint.",
-                          "description": "Assumenda ea distinctio. Quae doloribus officiis. Adipisci ea nisi.",
+                          "id": "2d7de0b7-5c23-44b4-bfed-b5b758fcde05",
+                          "title": "Itaque ut quisquam repellat.",
+                          "description": "Blanditiis aut iure. Eligendi dolorem est. Esse perspiciatis quia.",
                           "business_objective": null,
-                          "compliance_threshold": 11.0,
+                          "compliance_threshold": 47.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Fugiat consectetur debitis distinctio.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_d66552382e3479bab80f643fba17eace"
+                          "profile_title": "Occaecati id veniam ut.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_8147f9b049e455c0f5b99101dcd57fdc"
                         },
                         {
-                          "id": "37f78b6e-6036-4ea8-82e6-61079515b925",
-                          "title": "Cupiditate nihil et et.",
-                          "description": "Vel accusamus in. Est quos cupiditate. Consectetur voluptas totam.",
+                          "id": "40d8eaf7-580c-4bac-ae33-7d2dc9e02fe7",
+                          "title": "Sed repellat accusamus repudiandae.",
+                          "description": "Numquam aliquid itaque. Eligendi laborum harum. Provident tempore dolorem.",
                           "business_objective": null,
-                          "compliance_threshold": 99.0,
+                          "compliance_threshold": 22.0,
                           "total_system_count": 0,
                           "type": "policy",
                           "os_major_version": 7,
-                          "profile_title": "Voluptatem nemo minus qui.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_330b593d4ef15308b2d1f43521262b85"
+                          "profile_title": "Assumenda est eum ut.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_20ef5c89558e8b95622186ec61d1112f"
+                        },
+                        {
+                          "id": "42859eab-fd08-4923-862b-5db77c596598",
+                          "title": "Aut est dolores deserunt.",
+                          "description": "Fuga cumque est. Voluptas aperiam velit. Saepe placeat ea.",
+                          "business_objective": null,
+                          "compliance_threshold": 40.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Voluptatem quas voluptatum deleniti.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_cf71f052b5cb7f8187c0f4b6c72f57d1"
+                        },
+                        {
+                          "id": "4d6851c6-c836-44fc-958b-dfe3d7a638ce",
+                          "title": "Nobis dolorem corrupti quos.",
+                          "description": "Nihil corrupti voluptas. Unde consequatur velit. Tempora fugit et.",
+                          "business_objective": null,
+                          "compliance_threshold": 14.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Qui dolores cum laborum.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_f3815522d49153a08e25275d4bad437e"
+                        },
+                        {
+                          "id": "4f9b8d6c-6b07-4198-8e11-e8ec551c9d86",
+                          "title": "Nihil fuga unde dolor.",
+                          "description": "Voluptas quis perspiciatis. Id assumenda error. Incidunt voluptas omnis.",
+                          "business_objective": null,
+                          "compliance_threshold": 56.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Neque culpa inventore ut.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_7c0250da4e5fe9fa6550a68845a30173"
+                        },
+                        {
+                          "id": "532a5c40-ce67-4a91-818a-f932dc29ec6d",
+                          "title": "Expedita autem fuga dicta.",
+                          "description": "Dolores perferendis dolorem. Aut et asperiores. Omnis id ex.",
+                          "business_objective": null,
+                          "compliance_threshold": 43.0,
+                          "total_system_count": 0,
+                          "type": "policy",
+                          "os_major_version": 7,
+                          "profile_title": "Voluptas molestias laudantium numquam.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_40131dbe8e1c9e597de145c860b32ba8"
                         }
                       ],
                       "meta": {
@@ -477,7 +477,7 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "3bd79b34-d65c-4e2e-8752-6016a9ccfc5f",
+                        "id": "5874a842-44a5-4bd6-9800-eaa61a06cdcc",
                         "title": "Foo",
                         "description": "Hello World",
                         "business_objective": "Serious Business Objective",
@@ -485,8 +485,8 @@
                         "total_system_count": null,
                         "type": "policy",
                         "os_major_version": 7,
-                        "profile_title": "Sunt rerum necessitatibus explicabo.",
-                        "ref_id": "xccdf_org.ssgproject.content_profile_3e49f51cfc05a2c28d770057529aa229"
+                        "profile_title": "Quae iusto quis quisquam.",
+                        "ref_id": "xccdf_org.ssgproject.content_profile_b86146fee26083cede1f1a2ad53f3279"
                       }
                     },
                     "summary": "",
@@ -556,16 +556,16 @@
                   "Returns a Policy": {
                     "value": {
                       "data": {
-                        "id": "25019e52-807a-483d-a093-12c54b760fe2",
-                        "title": "Dolores autem consequuntur sint.",
-                        "description": "Nihil pariatur est. Iusto dolorum odio. Error sed et.",
+                        "id": "5ad6ca85-80dd-4551-8067-dcaa58b22125",
+                        "title": "Unde animi et porro.",
+                        "description": "Est in ut. Aut vel fuga. Ducimus sint error.",
                         "business_objective": null,
-                        "compliance_threshold": 50.0,
+                        "compliance_threshold": 79.0,
                         "total_system_count": 0,
                         "type": "policy",
                         "os_major_version": 7,
-                        "profile_title": "Labore est minima maiores.",
-                        "ref_id": "xccdf_org.ssgproject.content_profile_940d5fe9ee7d76995435cc2fac1313b1"
+                        "profile_title": "Quas labore illo quos.",
+                        "ref_id": "xccdf_org.ssgproject.content_profile_b21746a6dfa5b8106661bd70226df1f2"
                       }
                     },
                     "summary": "",
@@ -596,7 +596,7 @@
                   "Description of an error when requesting a non-existing Policy": {
                     "value": {
                       "errors": [
-                        "V2::Policy not found with ID 1efc979c-6339-422e-83a8-41e4a32eb3ad"
+                        "V2::Policy not found with ID ad8f3c47-f788-44a4-baac-baac00ed44fc"
                       ]
                     },
                     "summary": "",
@@ -645,16 +645,16 @@
                   "Returns the updated Policy": {
                     "value": {
                       "data": {
-                        "id": "a1d26925-70d8-4e11-959f-3d992b8e6477",
-                        "title": "Nihil nisi fuga corrupti.",
-                        "description": "Eos quia illum. Dolorem dignissimos illum. Consequatur ut velit.",
+                        "id": "6eeb1f64-16ab-46ca-a3b7-c0f0df00e094",
+                        "title": "Ea velit quas maxime.",
+                        "description": "Reiciendis consequuntur hic. Maiores aut sunt. Quaerat qui fugiat.",
                         "business_objective": null,
                         "compliance_threshold": 100.0,
                         "total_system_count": 0,
                         "type": "policy",
                         "os_major_version": 7,
-                        "profile_title": "Modi qui ut itaque.",
-                        "ref_id": "xccdf_org.ssgproject.content_profile_d29d3e3212c158fcc08661889647a400"
+                        "profile_title": "Omnis hic exercitationem qui.",
+                        "ref_id": "xccdf_org.ssgproject.content_profile_2c6829bfe2bbffa68d652ceb19caa198"
                       }
                     },
                     "summary": "",
@@ -722,16 +722,16 @@
                   "Deletes a Policy": {
                     "value": {
                       "data": {
-                        "id": "7ae1c7ba-e224-420f-8add-dabce3fe95ae",
-                        "title": "Voluptatem omnis distinctio sequi.",
-                        "description": "Dolorum et temporibus. Autem ut corrupti. Aut veniam rerum.",
+                        "id": "4e98a71a-abdf-4e0f-bce0-883e5edfead2",
+                        "title": "Voluptatem animi eveniet quia.",
+                        "description": "Labore eum ea. Consequatur nulla enim. Corrupti minima autem.",
                         "business_objective": null,
-                        "compliance_threshold": 65.0,
+                        "compliance_threshold": 9.0,
                         "total_system_count": 0,
                         "type": "policy",
                         "os_major_version": 7,
-                        "profile_title": "Recusandae blanditiis totam maxime.",
-                        "ref_id": "xccdf_org.ssgproject.content_profile_12d2647bf65a467c748513f3ae9e5128"
+                        "profile_title": "Sit quasi omnis natus.",
+                        "ref_id": "xccdf_org.ssgproject.content_profile_f1647376d92ae9a15068695609fd17b0"
                       }
                     },
                     "summary": "",
@@ -841,73 +841,73 @@
                     "value": {
                       "data": [
                         {
-                          "id": "1124611d-cd2d-4218-aaf6-a006b40467f8",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_654f989d99379d959c2f98785be88ddb",
-                          "title": "Amet assumenda ullam voluptas.",
-                          "description": "Dignissimos ut sint. Quia numquam quis. Culpa accusamus et.",
+                          "id": "0184a1ff-e167-470c-aecd-c01205f1f3cc",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_ff768f1cbbca8c8d86a8fdde5cff537d",
+                          "title": "Itaque temporibus nulla excepturi.",
+                          "description": "A ut facere. Fugiat earum culpa. Iste illo beatae.",
                           "type": "profile"
                         },
                         {
-                          "id": "1614cd4b-c07b-4f87-95c1-c01b438f943c",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_034546c3014da44b49ba59ba2da4b19f",
-                          "title": "Dicta ut dolor totam.",
-                          "description": "Nobis rerum odit. Vel provident laudantium. Facere officia voluptas.",
+                          "id": "0dd4dc66-c008-4994-ad9e-d1aaaefdb45d",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_8be418bf0af7d7fa319b98b37209719a",
+                          "title": "Esse debitis aperiam molestiae.",
+                          "description": "Vel incidunt sequi. Delectus minima maiores. Incidunt temporibus eos.",
                           "type": "profile"
                         },
                         {
-                          "id": "31b414cf-c475-4763-ac49-65db4d8f2de7",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_887300ecb065bb2e03d858183880a235",
-                          "title": "Enim impedit ratione ipsum.",
-                          "description": "Eos quis autem. Repellat aut et. Quod doloremque dolor.",
+                          "id": "10781a41-273f-4566-9a12-10aa8d9c394f",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_77122df75622cffebe41f8ecf2012692",
+                          "title": "Delectus tenetur veniam nesciunt.",
+                          "description": "Accusantium ut voluptate. Vel odit eligendi. Sunt fuga maxime.",
                           "type": "profile"
                         },
                         {
-                          "id": "39caf745-3e01-4e48-a882-b03fd02fb676",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_cec7837f5109cdfeb8eac4146374dbab",
-                          "title": "Et deserunt consequatur repudiandae.",
-                          "description": "Voluptatem veritatis non. Ea in autem. Ipsa illum soluta.",
+                          "id": "16bacaee-8caa-4630-97d9-ad8fe76c7f4d",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_ac82d8c429724e291e6c45ad756a428a",
+                          "title": "Eligendi qui est impedit.",
+                          "description": "Eligendi cumque nulla. Officia optio dicta. Rerum reprehenderit autem.",
                           "type": "profile"
                         },
                         {
-                          "id": "4ae77ee2-8fe4-4b0b-8155-6dc2206dedb5",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_92db44dc656acc4101d61e08bf089e07",
-                          "title": "Aut id totam natus.",
-                          "description": "Debitis commodi modi. Quo rerum vitae. Et quod aut.",
+                          "id": "4f5d3925-25ea-40b1-a2ef-04c6cb3d45d5",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_d3f0f156660b0af70314fe417551868e",
+                          "title": "Quae esse quia mollitia.",
+                          "description": "Ut at eius. Cum placeat sed. Architecto reprehenderit nisi.",
                           "type": "profile"
                         },
                         {
-                          "id": "4c6db76b-a561-4f45-b848-05ba6c0daab5",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_ad3e47cb1cba5e37c8cf4fdd1d737ede",
-                          "title": "Delectus laborum dolorem cum.",
-                          "description": "Quisquam cumque minus. Sed cupiditate libero. Fugit et sit.",
+                          "id": "4f95339a-80b9-4c2e-9f0d-13dc6a4dbed9",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_37e10acd7ba7c265f869d57d3a5e9244",
+                          "title": "Nesciunt dolorum perferendis sed.",
+                          "description": "Non incidunt soluta. Ratione et voluptatem. Magni ducimus nostrum.",
                           "type": "profile"
                         },
                         {
-                          "id": "5210cd1f-b9be-47e9-aed3-657a1acb48ee",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_3dabd0defb1cbd1d34501dc90249f8d1",
-                          "title": "Saepe mollitia at distinctio.",
-                          "description": "Natus sit quidem. Quibusdam architecto repellat. Soluta ut corrupti.",
+                          "id": "52da60d3-b108-4fbb-a354-f652397f65dd",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_a54d2e6aaaf0fca1712e84583ebfb2a6",
+                          "title": "Ullam molestias eaque ex.",
+                          "description": "Error fuga rerum. Error aut magnam. Voluptate veritatis quisquam.",
                           "type": "profile"
                         },
                         {
-                          "id": "52d48fd5-13de-43a1-817a-ca2fa1a77100",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_a8c74fcdd9c5854429d3ffb55c5075cf",
-                          "title": "Et sed eum deleniti.",
-                          "description": "Ipsam rerum adipisci. Reprehenderit beatae ullam. Fugit et ut.",
+                          "id": "5ee9fb08-4a8b-464c-8592-a7971290ab53",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_2ecb78d41a27f143917ee74f32a228da",
+                          "title": "Laboriosam qui veniam quia.",
+                          "description": "Natus qui iusto. Doloremque ullam quo. Laborum quasi nostrum.",
                           "type": "profile"
                         },
                         {
-                          "id": "5ff32866-6707-499b-bc26-4e56e789c7f3",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_556ebe938c1546786bdcf7ddb25b319e",
-                          "title": "Quis facilis consequatur ea.",
-                          "description": "Voluptas adipisci consequatur. Quia minus reiciendis. Ullam quos non.",
+                          "id": "5f1a00eb-1bb2-4703-a90b-4050c82b4a93",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_0448052a8ad2de8593adf24cfc044735",
+                          "title": "Consequatur asperiores dolorem veniam.",
+                          "description": "Excepturi aliquid quia. Vero nam quam. Dolores et exercitationem.",
                           "type": "profile"
                         },
                         {
-                          "id": "70796a34-8208-4f8a-be71-a88323a7740d",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_ec6f23f1cfe84a22a12f189cadfee9ca",
-                          "title": "Eveniet nisi aut aperiam.",
-                          "description": "Atque et soluta. Beatae et incidunt. Iste dolore sapiente.",
+                          "id": "62490237-8d4c-413c-a2e1-5182bfed7d62",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_d474eb8ef656f8c3a754a033db17ea79",
+                          "title": "Sapiente sunt cum ut.",
+                          "description": "Aspernatur unde et. At dolor accusantium. Eligendi perspiciatis libero.",
                           "type": "profile"
                         }
                       ],
@@ -917,9 +917,9 @@
                         "offset": 0
                       },
                       "links": {
-                        "first": "/api/compliance/v2/security_guides/bc32f334-ead6-47c5-98d8-b918d81e293d/profiles?limit=10&offset=0",
-                        "last": "/api/compliance/v2/security_guides/bc32f334-ead6-47c5-98d8-b918d81e293d/profiles?limit=10&offset=20",
-                        "next": "/api/compliance/v2/security_guides/bc32f334-ead6-47c5-98d8-b918d81e293d/profiles?limit=10&offset=10"
+                        "first": "/api/compliance/v2/security_guides/9111e3df-8e8a-49d9-a480-9d3e7d2c2c48/profiles?limit=10&offset=0",
+                        "last": "/api/compliance/v2/security_guides/9111e3df-8e8a-49d9-a480-9d3e7d2c2c48/profiles?limit=10&offset=20",
+                        "next": "/api/compliance/v2/security_guides/9111e3df-8e8a-49d9-a480-9d3e7d2c2c48/profiles?limit=10&offset=10"
                       }
                     },
                     "summary": "",
@@ -929,73 +929,73 @@
                     "value": {
                       "data": [
                         {
-                          "id": "0ddfd5c2-795f-4e9f-93c5-2026bf4f2a2b",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_255c770f956a179baefda1912804978e",
-                          "title": "Amet aut id architecto.",
-                          "description": "Molestiae inventore rerum. Numquam et et. Reprehenderit excepturi aut.",
+                          "id": "1408f654-be56-4c70-a58a-6fdf064b3f29",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_8614b5c942baf20d95f84af18ba64469",
+                          "title": "Asperiores sint rerum accusamus.",
+                          "description": "Et autem recusandae. Hic ipsa suscipit. Ut sint quisquam.",
                           "type": "profile"
                         },
                         {
-                          "id": "fd2e39c4-a219-42f7-aebc-5a5b802b48a8",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_8ecf54c8cf67b5d8bc6c3468bb219815",
-                          "title": "Aut ducimus beatae impedit.",
-                          "description": "Atque non unde. Aspernatur eveniet labore. Deserunt a fugit.",
+                          "id": "884e78c1-dfd9-463c-b089-4941a6529e8d",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_d5f90ffe2a70ddb89d376ba5a2413310",
+                          "title": "Aut voluptate ea libero.",
+                          "description": "Rerum id ipsam. Est nesciunt doloribus. Voluptas alias rerum.",
                           "type": "profile"
                         },
                         {
-                          "id": "ebb4f85d-358f-4a9b-823f-b5bd29d74242",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_61534748837675411fb2623fb5fcca45",
-                          "title": "Aut maiores voluptatibus dolore.",
-                          "description": "Aut quam qui. Beatae iste quos. Dolorem hic repellendus.",
+                          "id": "f3b6753d-e68e-40cf-98aa-347b6d835291",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_48ea254c30415e72086a080fa43ec88f",
+                          "title": "Consequatur sit modi dicta.",
+                          "description": "Voluptas et corrupti. Ut iure quos. Aut saepe quia.",
                           "type": "profile"
                         },
                         {
-                          "id": "41cb597f-7fc5-4fcb-8fe0-8fb86627fd12",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_afd4c6d91edc14ec64fac491ef41912b",
-                          "title": "Aut ut omnis dolorum.",
-                          "description": "Excepturi at nihil. Sint dolor magnam. Animi quis sint.",
+                          "id": "b2d09848-94ae-4384-9f8c-a5ae3aab48cd",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_b4478d2d3dd5d9cfc453bd825a95ecb3",
+                          "title": "Consequuntur dolorem expedita ut.",
+                          "description": "Consequatur consequuntur veritatis. Labore asperiores eius. Perferendis aut sit.",
                           "type": "profile"
                         },
                         {
-                          "id": "8681830a-610a-4719-b26f-faa29a5cb6d6",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_9e43fcd9551a3cf2e09418b106177662",
-                          "title": "Eos fugiat perspiciatis accusamus.",
-                          "description": "Labore non harum. Voluptatum architecto magni. Rerum qui ea.",
+                          "id": "7893a500-0600-4162-8a39-ce8a6ac7eb15",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_e332a1f8c4da1537cbad6e12f9d63ade",
+                          "title": "Debitis officiis reiciendis ea.",
+                          "description": "Aliquid maiores repellat. Iste enim eum. Molestiae reprehenderit ducimus.",
                           "type": "profile"
                         },
                         {
-                          "id": "fcc91b49-282f-432c-8a45-a508ab810e82",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_58db3a4f97b20f34a4b5767498cb32b0",
-                          "title": "Est explicabo aliquam harum.",
-                          "description": "Molestias in iure. Similique itaque sunt. Eius exercitationem facere.",
+                          "id": "586b7dad-daa3-4b63-8d82-25ebf1422d92",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_5ecbf38539eb324587aeea60a079fb34",
+                          "title": "Delectus quia hic non.",
+                          "description": "Enim dolor dolor. Quis enim reiciendis. Laudantium ut quasi.",
                           "type": "profile"
                         },
                         {
-                          "id": "a240ae16-87fa-4b2f-90b0-1d931ed8009f",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_2e81e5dfb9b0d27b2c3cea495d852673",
-                          "title": "Et voluptate rerum perspiciatis.",
-                          "description": "Corrupti et fuga. Ea qui optio. Et quis amet.",
+                          "id": "8bafee41-763f-42ab-af95-b3fc9c7505d3",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_e5b921327e2dbe18f5339ad3be8fdb13",
+                          "title": "Doloribus perferendis earum asperiores.",
+                          "description": "Non voluptas cupiditate. Ut dolorem consequuntur. Sint hic similique.",
                           "type": "profile"
                         },
                         {
-                          "id": "ff654177-a0c5-480e-868f-68f48a7e93f7",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_0249220641fa16c2da656ffc37c86fce",
-                          "title": "Fuga cupiditate dolorem dicta.",
-                          "description": "Aut omnis nemo. Et minus quibusdam. Corporis alias fuga.",
+                          "id": "b0ffc785-872c-408b-a127-0c1c75fa158e",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_de0c501b4c6a142a6d2caa9b3513cbd7",
+                          "title": "Ea maiores ex officiis.",
+                          "description": "Nemo odio excepturi. Enim et et. Molestias qui sit.",
                           "type": "profile"
                         },
                         {
-                          "id": "94c64acd-9235-4bf1-aa2d-4e731d1f9378",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_84b575bbe4004c004e4c7f6ff1a431ef",
-                          "title": "Minima dolorem voluptate corporis.",
-                          "description": "Molestiae maxime culpa. Voluptatibus aut nihil. Quasi blanditiis incidunt.",
+                          "id": "b595943d-5049-40e3-b710-10d99aaa408e",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_248b274f87331510b652ae48ae4525d1",
+                          "title": "Eius consectetur rerum sit.",
+                          "description": "Facere quis sed. Et totam dolores. Doloremque nihil molestias.",
                           "type": "profile"
                         },
                         {
-                          "id": "072e9ef1-2141-4542-b893-8c77169cca7e",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_af8f85a2745d0c0ff22b9f460b622226",
-                          "title": "Nobis praesentium et dolor.",
-                          "description": "Debitis sit libero. Esse ratione omnis. Aut cum dolorem.",
+                          "id": "f4ec7c28-affc-4e0f-830a-44ffdaf11a05",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_44d1d0aed5438fb34096ea12a4823ef7",
+                          "title": "Error voluptatum mollitia maxime.",
+                          "description": "Qui inventore necessitatibus. Et asperiores nihil. Nulla et ex.",
                           "type": "profile"
                         }
                       ],
@@ -1006,26 +1006,26 @@
                         "sort_by": "title"
                       },
                       "links": {
-                        "first": "/api/compliance/v2/security_guides/701a01ea-373b-4680-96cb-97925794400f/profiles?limit=10&offset=0&sort_by=title",
-                        "last": "/api/compliance/v2/security_guides/701a01ea-373b-4680-96cb-97925794400f/profiles?limit=10&offset=20&sort_by=title",
-                        "next": "/api/compliance/v2/security_guides/701a01ea-373b-4680-96cb-97925794400f/profiles?limit=10&offset=10&sort_by=title"
+                        "first": "/api/compliance/v2/security_guides/f8d82bfd-8fc6-4f1f-8d77-a39a5ae5f60e/profiles?limit=10&offset=0&sort_by=title",
+                        "last": "/api/compliance/v2/security_guides/f8d82bfd-8fc6-4f1f-8d77-a39a5ae5f60e/profiles?limit=10&offset=20&sort_by=title",
+                        "next": "/api/compliance/v2/security_guides/f8d82bfd-8fc6-4f1f-8d77-a39a5ae5f60e/profiles?limit=10&offset=10&sort_by=title"
                       }
                     },
                     "summary": "",
                     "description": ""
                   },
-                  "List of Profiles filtered by '(title=Debitis sapiente perferendis fuga.)'": {
+                  "List of Profiles filtered by '(title=Vitae aut in praesentium.)'": {
                     "value": {
                       "data": [],
                       "meta": {
                         "total": 0,
-                        "filter": "(title=Debitis sapiente perferendis fuga.)",
+                        "filter": "(title=Vitae aut in praesentium.)",
                         "limit": 10,
                         "offset": 0
                       },
                       "links": {
-                        "first": "/api/compliance/v2/security_guides/5d50fde9-4685-4623-852f-3b34657d0300/profiles?filter=%28title%3DDebitis+sapiente+perferendis+fuga.%29&limit=10&offset=0",
-                        "last": "/api/compliance/v2/security_guides/5d50fde9-4685-4623-852f-3b34657d0300/profiles?filter=%28title%3DDebitis+sapiente+perferendis+fuga.%29&limit=10&offset=0"
+                        "first": "/api/compliance/v2/security_guides/03d0327a-0aec-4a26-ae15-bb728ed2f301/profiles?filter=%28title%3DVitae+aut+in+praesentium.%29&limit=10&offset=0",
+                        "last": "/api/compliance/v2/security_guides/03d0327a-0aec-4a26-ae15-bb728ed2f301/profiles?filter=%28title%3DVitae+aut+in+praesentium.%29&limit=10&offset=0"
                       }
                     },
                     "summary": "",
@@ -1132,10 +1132,10 @@
                   "Returns a Profile": {
                     "value": {
                       "data": {
-                        "id": "aaa96a65-20d2-4ba4-a29d-c4560b8d20ec",
-                        "ref_id": "xccdf_org.ssgproject.content_profile_2d9d8795eb6bb9658dd38be6d7bc8711",
-                        "title": "Incidunt qui voluptas voluptates.",
-                        "description": "Ea facere quam. Soluta qui sed. Et est saepe.",
+                        "id": "328b3a21-fcac-423b-9fbf-0b0b2898bd82",
+                        "ref_id": "xccdf_org.ssgproject.content_profile_4cdb4c2fb8c87c34385d65a0a5d4ac3f",
+                        "title": "Iusto assumenda in maxime.",
+                        "description": "Cum animi quia. Veniam voluptate possimus. Et id provident.",
                         "type": "profile"
                       }
                     },
@@ -1167,7 +1167,7 @@
                   "Description of an error when requesting a non-existing Profile": {
                     "value": {
                       "errors": [
-                        "V2::Profile not found with ID 56b8cab6-f2b4-441c-935e-8554d92ce043"
+                        "V2::Profile not found with ID d183e64b-4c3d-4a4e-885b-d0c7bc13e077"
                       ]
                     },
                     "summary": "",
@@ -1267,92 +1267,92 @@
                     "value": {
                       "data": [
                         {
-                          "id": "0d1bd57e-4210-444b-afe2-4ce69f149b07",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_87bbf32aa0af8d82ed2f70f7d8934336",
-                          "title": "Eveniet accusantium quae temporibus.",
-                          "rationale": "Laboriosam ut ut. Perspiciatis voluptatem vel. Ducimus non ut.",
-                          "description": "Voluptatem aut et. Quidem quibusdam fuga. Et debitis fugit.",
+                          "id": "0d8cc0fa-ebee-4d53-b679-9ea29615d04b",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_3b1211939c38efe586fc4643db689fb8",
+                          "title": "Fugiat alias est perferendis.",
+                          "rationale": "Aspernatur accusantium necessitatibus. Amet nam optio. Architecto facere molestiae.",
+                          "description": "Quia voluptates voluptatum. Ea alias blanditiis. Officiis et quisquam.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "281469a9-ded5-4eb7-90ea-b9a778e9f961",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_84a322719abfe840a6c50f595dc52ab5",
-                          "title": "Aperiam et ut suscipit.",
-                          "rationale": "Voluptatibus nihil at. Iusto possimus voluptatem. Nihil sunt sint.",
-                          "description": "Voluptates iste consequatur. Nemo quas vitae. Asperiores voluptas quia.",
+                          "id": "10ca7adc-0240-4703-bb1c-f7aae2909547",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_b3be83eb0e7f4caa578f13dae4872bde",
+                          "title": "Voluptas sit exercitationem est.",
+                          "rationale": "Exercitationem laudantium est. Dolor enim ut. Harum consequuntur molestias.",
+                          "description": "Qui dolorem et. A provident quia. Nesciunt pariatur dolores.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "29bc2d40-b5d6-4d42-830c-0bad401efc51",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_061f17f4e64d55656a6f8e85daa34616",
-                          "title": "Ut eos aliquid aperiam.",
-                          "rationale": "Aut dolor nobis. Fuga rerum et. Sapiente eum quibusdam.",
-                          "description": "Sint necessitatibus sint. Ratione architecto ut. Consectetur assumenda voluptatem.",
+                          "id": "2157d31a-de63-4169-838b-744588dee827",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_85677ec7bee78df2da557708b33b678a",
+                          "title": "Non quidem adipisci consequatur.",
+                          "rationale": "Nihil minus esse. Ducimus tempora ratione. Amet ducimus ipsum.",
+                          "description": "Ratione nemo asperiores. Soluta impedit a. Quasi expedita aut.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "2ada688a-d027-4939-bf20-f93688215c08",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_6ca85ce946063c36c665cc056816f749",
-                          "title": "Consectetur voluptatum similique necessitatibus.",
-                          "rationale": "Nesciunt qui adipisci. Neque reiciendis laudantium. In animi sunt.",
-                          "description": "Laudantium inventore et. Rerum officia accusamus. Eum laudantium molestiae.",
+                          "id": "2d657bb0-624b-439a-90e3-09928dbb89a8",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_7d5f0e9a73d33995a35273aa3e6e802e",
+                          "title": "Adipisci quo eos id.",
+                          "rationale": "Voluptatibus reprehenderit cumque. Molestias in earum. Fugit ut nesciunt.",
+                          "description": "Magni facilis autem. Voluptate ipsa doloremque. Cupiditate blanditiis earum.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "4dac6d33-9dc4-412a-b172-d6faa461320a",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_714e8df6fcff0358830ff636f2311b91",
-                          "title": "Ex qui quasi animi.",
-                          "rationale": "Praesentium est sed. Est minima quo. Ducimus eaque qui.",
-                          "description": "Amet voluptatem eaque. Impedit vel similique. Exercitationem qui dolorum.",
+                          "id": "2eafdda7-8672-454f-bf89-5337319b7846",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_3f3ad8f223de541ef3467a5bc8e0756f",
+                          "title": "Dolores aut quis reiciendis.",
+                          "rationale": "Consequatur id est. Dolor hic quod. Tempora est voluptatem.",
+                          "description": "Laboriosam labore est. Voluptas explicabo veritatis. Molestias esse fuga.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "5ec49405-4af6-4633-abe6-41703eba0f37",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_291fad2bc9ec75e50e2f5ebd8373f2fc",
-                          "title": "Quasi sequi ex possimus.",
-                          "rationale": "Ratione mollitia earum. Dolore iusto occaecati. Molestias dicta omnis.",
-                          "description": "Id dignissimos esse. Qui iste possimus. Accusantium fugit illum.",
+                          "id": "3005a226-5149-4711-9c8b-2e18f26a769a",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_6529074a39e1f61248d1de2eeb1e1de2",
+                          "title": "Reprehenderit qui optio porro.",
+                          "rationale": "Omnis commodi occaecati. Corrupti aut aut. Quo blanditiis sunt.",
+                          "description": "Porro delectus dolor. Odit asperiores nobis. Qui doloribus facilis.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "6b7563c9-6e1a-4c28-92f6-77012a3e0a23",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_49c7a3f6e78f9a623b54682feacf58a0",
-                          "title": "Tempore eligendi amet aspernatur.",
-                          "rationale": "Ducimus voluptatum est. Architecto ratione sint. Perferendis quisquam sed.",
-                          "description": "Voluptatem nihil minus. Iure consequatur quasi. Cumque nemo et.",
+                          "id": "388a78b4-7a58-4626-b8ec-3d7013de84bc",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_7d64f9e9654a263e5ab5d7fb4bcc1ff0",
+                          "title": "Modi beatae eum in.",
+                          "rationale": "Vitae quis saepe. Suscipit id excepturi. Enim non voluptates.",
+                          "description": "Quisquam eum dolores. Omnis illum distinctio. Eum voluptate quis.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "79f99a73-136a-43c1-b1bf-b417b3af122e",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_3312c97b95bad153732c800ae51156a0",
-                          "title": "Culpa deleniti omnis ex.",
-                          "rationale": "Est architecto quo. Qui molestiae repellendus. Expedita eligendi necessitatibus.",
-                          "description": "Voluptatem non maiores. Voluptatem quas rerum. Beatae illo minima.",
+                          "id": "50bfcab4-a981-4aba-ac3a-679d12db112b",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_ec8d86106f75d8dcab0e6b687e46ed50",
+                          "title": "Ad iure est sed.",
+                          "rationale": "Perferendis mollitia natus. Non debitis blanditiis. Ea voluptas dolore.",
+                          "description": "Doloremque et molestias. Quia nihil explicabo. Dolorem facere eaque.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "7e29d7bd-72fe-401f-8d4b-8efe37cdb117",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_7c779108b4e96ca17e0afac080d95f2e",
-                          "title": "Sequi autem eaque cum.",
-                          "rationale": "Iusto modi et. Veritatis id velit. Nihil praesentium vel.",
-                          "description": "Et velit ullam. Voluptatem suscipit aliquid. Quos ea suscipit.",
+                          "id": "5afbb62e-5e46-4503-8afe-3eff89ab85fd",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_336826287f034dc4fec2db2e1bf8fb35",
+                          "title": "Enim dolore sit non.",
+                          "rationale": "Repellendus accusamus sit. Ut aut vel. Nihil sequi non.",
+                          "description": "Officia quos repellendus. Et autem sit. Magni dignissimos sapiente.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "81178b1e-8aef-49bd-b8d5-c1ecacfc13eb",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_e3564b5c019331764fb18d25a72d4a3b",
-                          "title": "Ut tempora sequi quo.",
-                          "rationale": "Sed pariatur autem. Quae odit praesentium. Saepe aut harum.",
-                          "description": "Soluta fugiat dicta. Dolores eaque consectetur. Incidunt rem voluptas.",
+                          "id": "6342213f-4ca7-4271-865a-41975aff0dfe",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_9fc05ae2c5623992af6254a8c4b233ea",
+                          "title": "Temporibus voluptatum aut sit.",
+                          "rationale": "Iure aliquid numquam. Omnis et quam. Repudiandae totam cum.",
+                          "description": "Tempore perspiciatis voluptas. Nemo deleniti nobis. Cumque magnam iusto.",
                           "precedence": null,
                           "type": "rule_group"
                         }
@@ -1363,9 +1363,9 @@
                         "offset": 0
                       },
                       "links": {
-                        "first": "/api/compliance/v2/security_guides/f0ef2892-8508-4862-8529-eb7447cb9da9/rule_groups?limit=10&offset=0",
-                        "last": "/api/compliance/v2/security_guides/f0ef2892-8508-4862-8529-eb7447cb9da9/rule_groups?limit=10&offset=20",
-                        "next": "/api/compliance/v2/security_guides/f0ef2892-8508-4862-8529-eb7447cb9da9/rule_groups?limit=10&offset=10"
+                        "first": "/api/compliance/v2/security_guides/e974b031-3d67-4e67-81a8-91725bba9959/rule_groups?limit=10&offset=0",
+                        "last": "/api/compliance/v2/security_guides/e974b031-3d67-4e67-81a8-91725bba9959/rule_groups?limit=10&offset=20",
+                        "next": "/api/compliance/v2/security_guides/e974b031-3d67-4e67-81a8-91725bba9959/rule_groups?limit=10&offset=10"
                       }
                     },
                     "summary": "",
@@ -1375,92 +1375,92 @@
                     "value": {
                       "data": [
                         {
-                          "id": "0744bb2d-60b1-4ebb-b642-3d1b236d208e",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_3a59dfe6ffd98cb346d1b4a316978f1e",
-                          "title": "Quibusdam voluptatem inventore animi.",
-                          "rationale": "Reiciendis excepturi ipsum. Sed labore velit. Voluptatem voluptatem veniam.",
-                          "description": "Veritatis repellendus quis. Quam voluptatem omnis. Labore quod impedit.",
+                          "id": "161bb128-2c58-4cdd-957e-6f378acc2e99",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_333bce9b76ddbaaec94389edafc50ff7",
+                          "title": "Sapiente aut tempore dolorum.",
+                          "rationale": "Sed rerum deleniti. Ut accusantium dolorum. Quod velit repellendus.",
+                          "description": "Quas reprehenderit dolorum. Rerum qui soluta. Non qui voluptatem.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "0c9eb991-54e3-4535-8b7a-e5d7fecb4e91",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_a515a18c622c712146d581a527cd4823",
-                          "title": "Repellat excepturi in unde.",
-                          "rationale": "Doloremque aut at. Id asperiores ut. Nulla eum similique.",
-                          "description": "Iste nulla et. Sed nobis nam. Eveniet magni debitis.",
+                          "id": "1bee72b0-d82f-47bf-9ac6-0aa3b10fdb65",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_ebdb8e2f2511c79e56cda534c992f50c",
+                          "title": "Ipsum hic assumenda ad.",
+                          "rationale": "Dolore perferendis quia. Alias at omnis. Sit sequi numquam.",
+                          "description": "Mollitia perspiciatis et. Voluptas ex omnis. Eum corporis magnam.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "0f5fad23-5476-4de3-a165-0a89deaa2457",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_a84e3572b6eaa4f918b9e08dc9275a1c",
-                          "title": "Tempore non ullam explicabo.",
-                          "rationale": "Dolor pariatur sequi. Itaque neque quo. Consequuntur explicabo expedita.",
-                          "description": "Recusandae eius nam. Dicta impedit vel. Aut doloribus dolor.",
+                          "id": "22fa446b-b6ae-4de8-832e-96609ddfb6bc",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_bffbfa90d12270ee9a780c4dccdfcc4a",
+                          "title": "Qui aperiam enim quis.",
+                          "rationale": "Iste et nesciunt. Quaerat consectetur architecto. Qui quis voluptatem.",
+                          "description": "Ullam vel unde. Odio repellendus repudiandae. Nostrum pariatur consequatur.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "18061417-5daa-493b-9a9f-b0cd0e910f97",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_9a2267db1beac97c22cbb1c037b3eebc",
-                          "title": "Voluptatem ut maxime dicta.",
-                          "rationale": "Eum iusto explicabo. Quia sapiente natus. Aut minus consequatur.",
-                          "description": "Quis minus excepturi. Consequatur architecto et. Delectus quia consequuntur.",
+                          "id": "2652ba7e-168a-452f-8d0b-4c3ec2425817",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_8fed70f38a5c1b338bea0524dabcd784",
+                          "title": "Et quas fugiat quia.",
+                          "rationale": "Sit esse eos. Veritatis ad numquam. Delectus eos necessitatibus.",
+                          "description": "Numquam id odio. Ipsa et eos. Ipsa assumenda molestiae.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "1afb4354-4b2d-4983-bcc4-05ff8b022a47",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_fb9433c4ff3bb3c06fe76bfc24dd0358",
-                          "title": "In provident saepe est.",
-                          "rationale": "Beatae non dolores. Quasi mollitia est. Id magni pariatur.",
-                          "description": "Eaque consequatur id. Quam odio illum. Dolorum sapiente enim.",
+                          "id": "3af7a428-1cdb-4d58-8c4b-1deab2846773",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_58047f2dce8483c6b454bec5a5f3f216",
+                          "title": "Ea dolorum animi recusandae.",
+                          "rationale": "Quia voluptate consequatur. Aliquam fugit minus. Sed amet porro.",
+                          "description": "Et beatae provident. Accusantium similique neque. Enim possimus ducimus.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "2c47ad9f-f074-4f17-b7f1-07338aab1fa5",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_781a40c363bb1bbcbf36c74003a7f318",
-                          "title": "Quia dolorum magnam totam.",
-                          "rationale": "Quam rem nulla. Distinctio quis nemo. Doloremque qui ut.",
-                          "description": "Alias similique est. Exercitationem dolores non. Tenetur omnis dolorem.",
+                          "id": "41181385-529b-4bd1-943e-9fc20757dab2",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_ba8310d67022f17f1fa0978f23a82736",
+                          "title": "Repellendus et dignissimos culpa.",
+                          "rationale": "Libero illum itaque. Qui amet architecto. In quod nihil.",
+                          "description": "Aut eaque quia. Omnis fugit quidem. Sunt tempore sequi.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "2d3df419-fa19-4871-89b4-1c5d6ceb63fe",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_749227475fcca1aa6a326c936742109b",
-                          "title": "Iusto enim labore itaque.",
-                          "rationale": "Illo aut ut. Vel iste fugit. Consequatur rerum alias.",
-                          "description": "Molestiae a ut. Blanditiis et suscipit. Sequi necessitatibus ut.",
+                          "id": "41aef09d-59b1-4582-9566-0e9fc1a4546b",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_ae5b8b65fe33f0a7f92675c7dd3b738c",
+                          "title": "Eos accusantium optio quia.",
+                          "rationale": "Fugiat minus ea. Quia cum consectetur. Veniam commodi quia.",
+                          "description": "Eveniet ipsa est. Ut autem reiciendis. A debitis mollitia.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "35b2a120-4fd1-4999-8a3c-7cd7ccade635",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_75a81e58004eb6a01d3367edb896151d",
-                          "title": "Deleniti inventore sint libero.",
-                          "rationale": "Et molestiae laborum. Sed eveniet sunt. Et deleniti dignissimos.",
-                          "description": "Quia perspiciatis beatae. Deleniti velit ducimus. Optio omnis occaecati.",
+                          "id": "68d3637b-9fa4-4e90-bbff-509f3bc1e6b0",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_84d355677fb96bfb87ea04b12540f1d2",
+                          "title": "Vero temporibus fugit blanditiis.",
+                          "rationale": "Quae quisquam beatae. Ipsa ea aliquid. Sit aut illum.",
+                          "description": "Dolorum est ut. Est necessitatibus laboriosam. Voluptatum nemo neque.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "3d957221-eee2-4f44-a23e-18ef6727c9a3",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_aeb9f558e3bd0fbb897e56247ed0a10c",
-                          "title": "Consequatur modi quas tenetur.",
-                          "rationale": "Nam veniam adipisci. Nulla dolorum perspiciatis. Voluptatem voluptatum aut.",
-                          "description": "Velit et voluptas. Animi itaque mollitia. Natus et veritatis.",
+                          "id": "71b52af4-a43d-45bc-809f-016b9ab2442b",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_b43c7a1e876f4454a8d9e70dd4300b26",
+                          "title": "Quos velit et ratione.",
+                          "rationale": "Voluptatem quas pariatur. Quos expedita officia. Repudiandae et occaecati.",
+                          "description": "Ipsum molestias ea. Alias animi dignissimos. Quia id eligendi.",
                           "precedence": null,
                           "type": "rule_group"
                         },
                         {
-                          "id": "3e21fe1c-106a-4a20-8848-b13c9971d4fb",
-                          "ref_id": "xccdf_org.ssgproject.content_rule_group_6d965b4a7f542c9ded1f7d4f8f7fffed",
-                          "title": "Accusantium rerum ad qui.",
-                          "rationale": "Expedita autem sed. Possimus beatae earum. Dolores vel est.",
-                          "description": "Asperiores veniam numquam. Eveniet debitis maxime. Neque ut nihil.",
+                          "id": "880342db-5a37-4355-9d59-0ff15459bdeb",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_group_1d5bf0482e10980313f3c87585d75921",
+                          "title": "Et sapiente sequi placeat.",
+                          "rationale": "Dolor laudantium ea. Deleniti unde tempora. Provident esse in.",
+                          "description": "Sed tempora aut. Et voluptatem id. Et incidunt voluptas.",
                           "precedence": null,
                           "type": "rule_group"
                         }
@@ -1472,9 +1472,9 @@
                         "sort_by": "precedence"
                       },
                       "links": {
-                        "first": "/api/compliance/v2/security_guides/d9293e6d-bfa2-4841-b04a-d766d4d48ba9/rule_groups?limit=10&offset=0&sort_by=precedence",
-                        "last": "/api/compliance/v2/security_guides/d9293e6d-bfa2-4841-b04a-d766d4d48ba9/rule_groups?limit=10&offset=20&sort_by=precedence",
-                        "next": "/api/compliance/v2/security_guides/d9293e6d-bfa2-4841-b04a-d766d4d48ba9/rule_groups?limit=10&offset=10&sort_by=precedence"
+                        "first": "/api/compliance/v2/security_guides/92dc5c15-3010-4973-8cef-4e154901ed94/rule_groups?limit=10&offset=0&sort_by=precedence",
+                        "last": "/api/compliance/v2/security_guides/92dc5c15-3010-4973-8cef-4e154901ed94/rule_groups?limit=10&offset=20&sort_by=precedence",
+                        "next": "/api/compliance/v2/security_guides/92dc5c15-3010-4973-8cef-4e154901ed94/rule_groups?limit=10&offset=10&sort_by=precedence"
                       }
                     },
                     "summary": "",
@@ -1581,11 +1581,11 @@
                   "Returns a Rule Group": {
                     "value": {
                       "data": {
-                        "id": "e2d0025e-192b-4930-a709-4eac71e172d9",
-                        "ref_id": "xccdf_org.ssgproject.content_rule_group_31b65eac18ef19586717d5b97ef57537",
-                        "title": "Voluptatem eos sit dolore.",
-                        "rationale": "Velit officia voluptatem. Alias culpa dolor. Qui aut reiciendis.",
-                        "description": "Inventore quo incidunt. Sunt necessitatibus odio. Est facilis aut.",
+                        "id": "e9b0cfca-5418-4b2f-afbd-ddfc68bd0f78",
+                        "ref_id": "xccdf_org.ssgproject.content_rule_group_5595f9b2a515cbc1a3fe350d6e70b6bb",
+                        "title": "Ea velit praesentium voluptatem.",
+                        "rationale": "Sequi est maxime. Ratione reprehenderit eum. Inventore quod qui.",
+                        "description": "Distinctio sit mollitia. Sit quaerat vel. Omnis recusandae eaque.",
                         "precedence": null,
                         "type": "rule_group"
                       }
@@ -1618,7 +1618,7 @@
                   "Description of an error when requesting a non-existing Rule Group": {
                     "value": {
                       "errors": [
-                        "V2::RuleGroup not found with ID 61c3ae1e-269a-478d-9b7a-5a3dfffd0b52"
+                        "V2::RuleGroup not found with ID fac80ef0-e33b-43dc-bf30-35f221219b5f"
                       ]
                     },
                     "summary": "",
@@ -1716,92 +1716,92 @@
                     "value": {
                       "data": [
                         {
-                          "id": "0f7054cf-c488-47bb-82e3-20bc5a5d3a21",
+                          "id": "045cb535-35dd-4b96-99b1-4131c633c1d8",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Accusamus laboriosam placeat deserunt.",
-                          "version": "100.6.12",
-                          "description": "Rerum hic optio. Eligendi id debitis. Nihil et voluptas.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "111d6f70-8409-44ff-ba20-28d412c82adc",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Dolores aut aperiam saepe.",
-                          "version": "100.5.46",
-                          "description": "Culpa voluptates cumque. Eaque ea debitis. Dolor dignissimos occaecati.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "1127f030-2a94-479e-80a9-7cb74d488946",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Labore hic blanditiis delectus.",
-                          "version": "100.6.14",
-                          "description": "Quo nobis tenetur. Consectetur maxime qui. Dolorem et dolorum.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "1f0dbe13-c8bf-4bb3-9b0c-a1566d640ce0",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Aliquam qui modi dolor.",
-                          "version": "100.6.9",
-                          "description": "Earum natus nulla. Nobis excepturi voluptas. Qui quos dolorem.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "3d1e8e99-4c21-4edc-a37d-a5377a371030",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Occaecati totam eaque dolorem.",
-                          "version": "100.6.10",
-                          "description": "Placeat eaque quae. Nulla iste voluptate. Natus dolor repellendus.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "479c9958-2afd-4004-8546-b509ad799f02",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Facilis dignissimos omnis ipsam.",
+                          "title": "Et corporis occaecati soluta.",
                           "version": "100.5.48",
-                          "description": "Earum nemo optio. Sequi quaerat quisquam. Vitae voluptatibus voluptatem.",
+                          "description": "Sunt repellat velit. Ab commodi rerum. Architecto veritatis facilis.",
                           "os_major_version": 7,
                           "type": "security_guide"
                         },
                         {
-                          "id": "4b43a55d-f491-431a-83f6-0c9ab3ddc295",
+                          "id": "0743824f-063d-4043-9430-ed4269cd1fef",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Harum alias debitis vel.",
-                          "version": "100.6.15",
-                          "description": "Ut et quaerat. Sit sapiente molestias. Esse sint nihil.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "4fabfe76-9512-4e4e-a323-e421ec29e21d",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Et dolor architecto et.",
-                          "version": "100.5.42",
-                          "description": "Quia ea aut. Est doloribus in. Quaerat odio hic.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "5429a942-155b-4d86-bcd9-79ccfa8c0555",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Amet laboriosam similique voluptate.",
-                          "version": "100.6.7",
-                          "description": "Rerum nihil adipisci. Nostrum architecto sed. Placeat optio ab.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "5d6b04d6-132f-400f-8032-406bddd08115",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Laborum praesentium est qui.",
+                          "title": "Exercitationem tenetur sint soluta.",
                           "version": "100.6.3",
-                          "description": "Qui ut quae. Quos sed facilis. Dolorum est unde.",
+                          "description": "Harum consequatur a. Cum quisquam sit. Sed sed et.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "1b1b0dec-bf2f-42e5-9e17-250a34593d5e",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Est quam ratione fugit.",
+                          "version": "100.6.10",
+                          "description": "Eligendi ducimus expedita. Quaerat dolorem repellendus. Voluptatem cupiditate id.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "246a1ce4-af84-4616-aa00-e3821dce7623",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "At tempore velit quo.",
+                          "version": "100.6.0",
+                          "description": "Libero autem nam. Omnis quasi sed. Laborum et sed.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "25d804c4-0ca3-41f7-885f-9c4028e6b6b7",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Sed enim provident sint.",
+                          "version": "100.6.5",
+                          "description": "Sed et expedita. Similique aut eligendi. Magni sit ipsa.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "422abb63-8cf8-4eef-86d6-c1f7ff925c1b",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Reiciendis voluptas ea eum.",
+                          "version": "100.5.45",
+                          "description": "Consectetur porro libero. Recusandae aliquam non. Ea et rerum.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "4666d3ef-242c-469b-8906-f4ac8ff9c63b",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Voluptas enim qui ex.",
+                          "version": "100.6.7",
+                          "description": "Optio a nulla. Ad ut ullam. Impedit esse quo.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "52dfc6ca-7789-4954-97a6-aed6f1f63588",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Sunt veritatis voluptates et.",
+                          "version": "100.5.42",
+                          "description": "Voluptatum omnis sed. Minus et velit. Aut corrupti asperiores.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "59de28cf-34f7-4568-bf30-30c4c9b0fe50",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Consectetur consequatur velit vero.",
+                          "version": "100.6.6",
+                          "description": "Voluptatem debitis sapiente. Dolores quos voluptates. Esse voluptas eos.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "5a122fe9-3352-40e2-b9de-ff880cd73391",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Est porro quia amet.",
+                          "version": "100.6.8",
+                          "description": "Debitis assumenda reiciendis. Voluptatem laborum quasi. Expedita quia non.",
                           "os_major_version": 7,
                           "type": "security_guide"
                         }
@@ -1824,92 +1824,92 @@
                     "value": {
                       "data": [
                         {
-                          "id": "000cf54f-f5c3-4656-afea-3a2bc14737fa",
+                          "id": "05d09c62-d87a-4a14-be6f-32f4c65aac6b",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Quas et ut rerum.",
-                          "version": "100.6.18",
-                          "description": "Consequuntur aliquid sunt. Animi et perspiciatis. Necessitatibus animi tenetur.",
+                          "title": "Alias facere dolorum esse.",
+                          "version": "100.6.20",
+                          "description": "Voluptates quam sed. Atque voluptatem et. Quasi assumenda aspernatur.",
                           "os_major_version": 7,
                           "type": "security_guide"
                         },
                         {
-                          "id": "13ae0a69-7d6b-4685-b0fb-cd10746fa6fd",
+                          "id": "0858591a-b900-46de-9351-92fa3d27c73a",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "In similique quo eius.",
-                          "version": "100.6.29",
-                          "description": "Velit tempora perferendis. Iure cumque et. Laudantium similique omnis.",
+                          "title": "Exercitationem autem iure sint.",
+                          "version": "100.6.26",
+                          "description": "Eius molestiae consectetur. Placeat aut accusamus. Voluptas placeat corrupti.",
                           "os_major_version": 7,
                           "type": "security_guide"
                         },
                         {
-                          "id": "2544f86a-3588-4fac-b6c5-4148727d4fe0",
+                          "id": "0a43f444-d53f-4eee-ad72-42571d7ed52f",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Nostrum est temporibus quod.",
+                          "title": "Temporibus rerum accusantium architecto.",
                           "version": "100.6.32",
-                          "description": "Sit dolor enim. Saepe corrupti exercitationem. Quos ad aspernatur.",
+                          "description": "Amet repellendus rerum. Nihil incidunt ut. Occaecati esse hic.",
                           "os_major_version": 7,
                           "type": "security_guide"
                         },
                         {
-                          "id": "36eaf587-0ad6-4f44-8638-2bf9995225be",
+                          "id": "0f0c328a-e03f-43a8-be31-8c3ad481dd24",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Sunt et quaerat voluptas.",
-                          "version": "100.6.37",
-                          "description": "Sunt et maxime. Aspernatur ut sint. Maiores culpa voluptatem.",
+                          "title": "Eligendi rerum optio quo.",
+                          "version": "100.6.39",
+                          "description": "Explicabo quo enim. Quaerat magni commodi. Eveniet laudantium minus.",
                           "os_major_version": 7,
                           "type": "security_guide"
                         },
                         {
-                          "id": "3f946cd5-9044-435a-a1fb-25a93038346f",
+                          "id": "168b7db8-bf33-42de-b53c-98b385761dfd",
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Aut eaque rerum repellat.",
+                          "title": "Quia debitis eveniet recusandae.",
+                          "version": "100.6.24",
+                          "description": "Earum animi quas. Sit unde adipisci. Aperiam libero voluptas.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "255c59dd-8693-442a-ad61-f3e919414512",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Nesciunt quis expedita architecto.",
+                          "version": "100.6.34",
+                          "description": "Ipsa at quae. Non eum reprehenderit. Quisquam sed excepturi.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "3269703d-f588-41f1-9efc-f05e26a6e51c",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "In ut assumenda eius.",
+                          "version": "100.6.23",
+                          "description": "Accusamus eius error. Qui cumque nisi. Sint vero eum.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "4163a5af-f7e1-4ef3-878c-3885d059ece2",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Ea ab veniam consequuntur.",
+                          "version": "100.6.27",
+                          "description": "Sed dignissimos voluptas. Voluptatem magni voluptatibus. Libero neque minus.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "48ca5190-e6c9-48c1-a661-18877270e9aa",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Dolores quam molestias natus.",
+                          "version": "100.6.22",
+                          "description": "Placeat modi ducimus. Eos dolore temporibus. Consequatur voluptatem rerum.",
+                          "os_major_version": 7,
+                          "type": "security_guide"
+                        },
+                        {
+                          "id": "4adf2dfe-0a78-4d2b-84f7-aeb55da30ea8",
+                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
+                          "title": "Et eos qui est.",
                           "version": "100.6.17",
-                          "description": "Est ex quaerat. Consectetur non quo. Fugiat sed et.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "42574009-4b6a-42e5-8219-160f45bc9973",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Harum explicabo porro totam.",
-                          "version": "100.6.21",
-                          "description": "Amet eos necessitatibus. Placeat vel libero. Hic reiciendis adipisci.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "58e4e0bb-7448-46d2-aa52-2ab13494ca18",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Aut eius beatae quasi.",
-                          "version": "100.6.33",
-                          "description": "Accusamus eligendi a. Facilis quaerat quam. Molestiae est animi.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "5beb090f-49a2-48d6-a3ff-664588997bc6",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Qui sint et quisquam.",
-                          "version": "100.6.19",
-                          "description": "Voluptas accusamus saepe. Veritatis eos autem. Aut aut ab.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "63208de2-dde3-4ce9-97bc-dd764a66b319",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Ducimus cumque aspernatur est.",
-                          "version": "100.6.28",
-                          "description": "Minima necessitatibus dolorem. Ducimus ipsam provident. Error ea est.",
-                          "os_major_version": 7,
-                          "type": "security_guide"
-                        },
-                        {
-                          "id": "6ae9ba24-cb76-4847-8fa9-1746225ed651",
-                          "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Illo ut expedita dolorum.",
-                          "version": "100.6.38",
-                          "description": "Voluptatibus dolore atque. A et fuga. Ducimus nam aut.",
+                          "description": "Et tempora laborum. Quidem ea nulla. In beatae consequatur.",
                           "os_major_version": 7,
                           "type": "security_guide"
                         }
@@ -2039,11 +2039,11 @@
                   "Returns a Security Guide": {
                     "value": {
                       "data": {
-                        "id": "70b9a119-c953-49a6-9a91-8b557c111bbf",
+                        "id": "c0074eb6-3b73-4776-b3b6-76cd9899cbc0",
                         "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                        "title": "Molestiae mollitia necessitatibus nemo.",
+                        "title": "Magni minus aliquid ipsa.",
                         "version": "100.8.16",
-                        "description": "Cupiditate alias tempora. Fugit repellat est. Natus delectus ut.",
+                        "description": "Voluptatem dolore enim. Sed voluptatem est. Magnam voluptas itaque.",
                         "os_major_version": 7,
                         "type": "security_guide"
                       }
@@ -2076,7 +2076,7 @@
                   "Description of an error when requesting a non-existing Security Guide": {
                     "value": {
                       "errors": [
-                        "V2::SecurityGuide not found with ID 9dbf9d78-040b-4068-a950-376251698044"
+                        "V2::SecurityGuide not found with ID 120c0505-9700-4b23-9750-5ad346a4506d"
                       ]
                     },
                     "summary": "",
@@ -2174,9 +2174,9 @@
                     "value": {
                       "data": [
                         {
-                          "id": "562fa769-5fcf-4c3f-a347-8a41bf5c4308",
-                          "title": "Perspiciatis eum qui id.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_033f23818b0cec5824f7b67ef048ca96",
+                          "id": "99111f54-d418-4508-9f06-1f34a3224403",
+                          "title": "Quia dolorem optio deserunt.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_8afebff6ec3bf95b544285c6903dc895",
                           "security_guide_version": "100.8.17",
                           "os_major_version": 7,
                           "os_minor_versions": [
@@ -2204,9 +2204,9 @@
                     "value": {
                       "data": [
                         {
-                          "id": "9364e366-120b-44e0-bffd-0f4413f4bb46",
-                          "title": "Itaque nostrum porro exercitationem.",
-                          "ref_id": "xccdf_org.ssgproject.content_profile_ed67c85e348e67190539be34e4309538",
+                          "id": "5fed6598-b950-4143-9e34-ae8d8b6947f8",
+                          "title": "Minima vitae eaque sequi.",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_e4c32724f1b358bad0250e8ba598f30b",
                           "security_guide_version": "100.8.21",
                           "os_major_version": 7,
                           "os_minor_versions": [
@@ -2306,6 +2306,541 @@
         }
       }
     },
+    "/policies/{policy_id}/tailorings": {
+      "get": {
+        "summary": "Request Tailorings",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "description": "For internal use only"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to return per page",
+            "schema": {
+              "type": "number",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Offset of first item of paginated response",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "description": "Attribute and direction to sort the items by. Represented by an array of fields with an optional direction (`<key>:asc` or `<key>:desc`).<br><br>If no direction is selected, `<key>:asc` is used by default.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "os_minor_version",
+                  "os_minor_version:asc",
+                  "os_minor_version:desc"
+                ]
+              }
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Tailorings are searchable using attributes `os_minor_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Policies"
+        ],
+        "description": "Lists Tailorings",
+        "operationId": "Tailorings",
+        "responses": {
+          "200": {
+            "description": "Lists Tailorings",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "List of Tailorings": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "22cd6b88-de9e-429e-88b1-f531955afce0",
+                          "profile_id": "ed79f761-6772-4ec3-804e-3af56c8e3a7d",
+                          "os_minor_version": "14",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "29e1e941-41e3-4b04-a187-6e0be793329c",
+                          "profile_id": "a6174a8a-643a-45cb-841f-d6b7d41de09a",
+                          "os_minor_version": "1",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "2be1144d-34ac-40db-9016-8252fb09b575",
+                          "profile_id": "8cfb04b5-09ed-4662-8cbe-72a9f8b1a498",
+                          "os_minor_version": "16",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "2db255fb-b798-4401-8c98-d752a4ef2998",
+                          "profile_id": "7baae06d-2d28-4e1f-bb91-fd97a247fe39",
+                          "os_minor_version": "11",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "4433a6ef-8c21-4cbd-95da-07a16b240dcf",
+                          "profile_id": "1da83111-6a2c-4aff-9832-7a2ef67d43c9",
+                          "os_minor_version": "9",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "48235232-be3d-4695-b5e7-b40ca4564520",
+                          "profile_id": "ea1ce3ac-1bdb-4bb1-845b-46954ffb4404",
+                          "os_minor_version": "7",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "4857582a-9878-4c6a-b928-7f6d5e031136",
+                          "profile_id": "7d01ad0a-8087-445b-8f90-9b1413426795",
+                          "os_minor_version": "17",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "56beb3be-fce5-47e8-afff-f7ef7513db56",
+                          "profile_id": "0b297a3e-bab4-4021-ba2c-673e099d2f0d",
+                          "os_minor_version": "8",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "5cfe5670-e0ac-4437-b6a2-15c5b992a9f7",
+                          "profile_id": "29369af9-9bbb-41f6-a9a7-0a7f7d99cb53",
+                          "os_minor_version": "2",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "5cfe6966-1923-4256-8a58-b786886e5893",
+                          "profile_id": "a4b4d055-d5c4-4bbf-baa7-9154ff1569ab",
+                          "os_minor_version": "22",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        }
+                      ],
+                      "meta": {
+                        "total": 25,
+                        "limit": 10,
+                        "offset": 0
+                      },
+                      "links": {
+                        "first": "/api/compliance/v2/policies/a9ea6998-1560-446b-9675-42b4ba0d5ef1/tailorings?limit=10&offset=0",
+                        "last": "/api/compliance/v2/policies/a9ea6998-1560-446b-9675-42b4ba0d5ef1/tailorings?limit=10&offset=20",
+                        "next": "/api/compliance/v2/policies/a9ea6998-1560-446b-9675-42b4ba0d5ef1/tailorings?limit=10&offset=10"
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  },
+                  "List of Tailorings sorted by \"os_minor_version:asc\"": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "3c4a7f48-2be5-44ff-9105-1ec825f3793d",
+                          "profile_id": "18402616-9dfa-49bc-85a3-ca40a122693c",
+                          "os_minor_version": "0",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "9b4ad585-c37f-4a8a-9044-25a544940c73",
+                          "profile_id": "2c63239c-534a-49d9-8f48-00e481d15c2f",
+                          "os_minor_version": "1",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "2cf48fae-6eb3-42a0-a1dc-42e39d67677e",
+                          "profile_id": "c0f0f332-874b-4a3b-a7af-980bdec0218d",
+                          "os_minor_version": "10",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "e57861ec-d7ff-419e-9751-f1a035a3bc52",
+                          "profile_id": "9dd6ad50-3af5-45eb-857e-0cf3671f0ddd",
+                          "os_minor_version": "11",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "be4ddd32-e28a-41e4-b568-4e7ba4797b77",
+                          "profile_id": "ebeb31aa-c448-4ca7-8e31-b84e4aa7476b",
+                          "os_minor_version": "12",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "6342576c-becd-4c09-b37e-c7eec2343d0c",
+                          "profile_id": "4961d638-8294-4fd7-a9e3-5d53641a2f46",
+                          "os_minor_version": "13",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "3d296b78-3b63-4a5c-9542-a76c42dfc13c",
+                          "profile_id": "1cc56036-f16a-44e4-8fbe-59eb2ecf4cdb",
+                          "os_minor_version": "14",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "daafbe0d-3afa-42ee-a9ab-deee4654ca12",
+                          "profile_id": "43f17d4c-de5a-47b1-a5a1-ccdd26991827",
+                          "os_minor_version": "15",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "6e63784c-37af-4d7a-ae2d-64e13ffa5676",
+                          "profile_id": "c61a110a-9caf-4fae-81c2-5d529dcae5f7",
+                          "os_minor_version": "16",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        },
+                        {
+                          "id": "e0749a6f-99bd-444e-82a8-639c8f47195d",
+                          "profile_id": "0d839107-a1d2-4a5d-8a7f-5e6774b3d170",
+                          "os_minor_version": "17",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        }
+                      ],
+                      "meta": {
+                        "total": 25,
+                        "limit": 10,
+                        "offset": 0,
+                        "sort_by": "os_minor_version"
+                      },
+                      "links": {
+                        "first": "/api/compliance/v2/policies/769ea7ee-f70d-4240-bd26-53b59c064b5e/tailorings?limit=10&offset=0&sort_by=os_minor_version",
+                        "last": "/api/compliance/v2/policies/769ea7ee-f70d-4240-bd26-53b59c064b5e/tailorings?limit=10&offset=20&sort_by=os_minor_version",
+                        "next": "/api/compliance/v2/policies/769ea7ee-f70d-4240-bd26-53b59c064b5e/tailorings?limit=10&offset=10&sort_by=os_minor_version"
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  },
+                  "List of Tailorings filtered by '(os_minor_version=12)'": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "16126250-e6c8-4a27-a06b-13fd50e450b3",
+                          "profile_id": "1e4b1dba-29f8-4807-87c2-27ab5f892d66",
+                          "os_minor_version": "12",
+                          "value_overrides": {},
+                          "type": "tailoring",
+                          "os_major_version": 7
+                        }
+                      ],
+                      "meta": {
+                        "total": 1,
+                        "filter": "(os_minor_version=12)",
+                        "limit": 10,
+                        "offset": 0
+                      },
+                      "links": {
+                        "first": "/api/compliance/v2/policies/5b7b5a87-7f62-4f46-928b-7dc7c9e0d767/tailorings?filter=%28os_minor_version%3D12%29&limit=10&offset=0",
+                        "last": "/api/compliance/v2/policies/5b7b5a87-7f62-4f46-928b-7dc7c9e0d767/tailorings?filter=%28os_minor_version%3D12%29&limit=10&offset=0"
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "$ref": "#/components/schemas/metadata"
+                    },
+                    "links": {
+                      "$ref": "#/components/schemas/links"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "schema": {
+                            "$ref": "#/components/schemas/tailoring"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Returns with Unprocessable Content",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Description of an error when sorting by incorrect parameter": {
+                    "value": {
+                      "errors": [
+                        "Result cannot be sorted by the 'description' column."
+                      ]
+                    },
+                    "summary": "",
+                    "description": ""
+                  },
+                  "Description of an error when requesting higher limit than supported": {
+                    "value": {
+                      "errors": [
+                        "Invalid parameter: limit must be less than or equal to 100"
+                      ]
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/policies/{policy_id}/tailorings/{id}": {
+      "get": {
+        "summary": "Request a Tailoring",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "description": "For internal use only"
+            }
+          },
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Policies"
+        ],
+        "description": "Returns a Tailoring",
+        "operationId": "Tailoring",
+        "responses": {
+          "200": {
+            "description": "Returns a Tailoring",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Returns a Tailoring": {
+                    "value": {
+                      "data": {
+                        "id": "1c36a7d1-7da7-4541-b002-e84c5809cdb0",
+                        "profile_id": "9ae0eb0c-2fee-4f3b-bff6-dd48ad1e8fed",
+                        "os_minor_version": "1",
+                        "value_overrides": {},
+                        "type": "tailoring",
+                        "os_major_version": 7
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "schema": {
+                          "$ref": "#/components/schemas/tailoring"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returns with Not Found",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Description of an error when requesting a non-existing Tailoring": {
+                    "value": {
+                      "errors": [
+                        "V2::Tailoring not found with ID a8f33ea6-09ec-4ca2-ab02-067cca82075d"
+                      ]
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/policies/{policy_id}/tailorings/{id}/tailoring_file.json": {
+      "get": {
+        "summary": "Request a Tailoring file",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "description": "For internal use only"
+            }
+          },
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Policies"
+        ],
+        "description": "Returns a Tailoring File",
+        "operationId": "TailoringFile",
+        "responses": {
+          "200": {
+            "description": "Returns a Tailoring File",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Returns a Tailoring File": {
+                    "value": {
+                      "profiles": [
+                        {
+                          "id": "xccdf_org.ssgproject.content_profile_1101a0be85c3d94fc23753416daae21e",
+                          "title": "Id voluptatem accusantium amet.",
+                          "groups": {},
+                          "rules": {
+                            "xccdf_org.ssgproject.content_rule_69cc974c890d2f994e80fb757472c9e8": {
+                              "evaluate": false
+                            },
+                            "xccdf_org.ssgproject.content_rule_6022bf84c9d51d1c39172a0dc821c214": {
+                              "evaluate": false
+                            }
+                          },
+                          "variables": {
+                            "foo_value_8066b5fd-9e9f-47aa-bc71-988399e2a1a8": {
+                              "value": 3
+                            },
+                            "foo_value_c592caf8-3d95-47ff-bdd9-c4838ea2d414": {
+                              "value": 3
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/tailoring_file"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/security_guides/{security_guide_id}/value_definitions": {
       "get": {
         "summary": "Request Value Definitions",
@@ -2390,93 +2925,93 @@
                     "value": {
                       "data": [
                         {
-                          "id": "0752beaa-e07d-444d-825d-73a77de3ffc7",
-                          "ref_id": "foo_value_b81d0e7d-0393-4c0b-9f39-fa680b6a5c1f",
-                          "title": "Iure ratione nemo ut.",
-                          "description": "Recusandae explicabo eligendi. Voluptatem ut iusto. In sit consequuntur.",
+                          "id": "025cd80b-f94b-472d-ac4b-a9bc05351a9f",
+                          "ref_id": "foo_value_d13b5993-589d-4e9c-8252-825150e82619",
+                          "title": "Eos et est similique.",
+                          "description": "Assumenda quas beatae. Non illum voluptatem. Non cupiditate iusto.",
                           "value_type": "boolean",
                           "default_value": "true",
                           "type": "value_definition"
                         },
                         {
-                          "id": "10a32691-7b5c-4dd8-9817-5cdd61e28a98",
-                          "ref_id": "foo_value_f80d2b28-986a-47ad-8712-daab0c5af254",
-                          "title": "Laboriosam excepturi labore laudantium.",
-                          "description": "Impedit repudiandae et. Ducimus voluptatem sit. Dolorem maiores consequatur.",
-                          "value_type": "boolean",
-                          "default_value": "false",
-                          "type": "value_definition"
-                        },
-                        {
-                          "id": "122cfa47-121e-49bb-aea8-5d1c7eaba3e3",
-                          "ref_id": "foo_value_04800be7-21b4-4041-9b75-63d85253ad95",
-                          "title": "Minus iure veniam molestiae.",
-                          "description": "Qui eius commodi. Sed non sunt. Voluptas et dolorem.",
+                          "id": "05558ab2-1e08-4968-b282-dc212e045acf",
+                          "ref_id": "foo_value_c4bcf284-21bd-4c3c-8065-1105e134fc25",
+                          "title": "Aut modi voluptas vel.",
+                          "description": "Recusandae praesentium odio. Vero laborum et. At in consequatur.",
                           "value_type": "boolean",
                           "default_value": "true",
                           "type": "value_definition"
                         },
                         {
-                          "id": "18d67902-fe10-4063-b3e1-9344d5161d81",
-                          "ref_id": "foo_value_3e6f961a-7d27-40eb-98fc-2998993ed544",
-                          "title": "Repudiandae voluptate illum omnis.",
-                          "description": "Sit sequi doloremque. Sit nihil error. Nesciunt quasi iste.",
+                          "id": "1c4014df-572c-4174-9ea2-31ae4bb1853a",
+                          "ref_id": "foo_value_8a299866-bc83-42b1-a0f8-9a6689090189",
+                          "title": "Eius expedita sit autem.",
+                          "description": "Alias debitis autem. Eos voluptas aut. Velit perspiciatis aut.",
                           "value_type": "boolean",
                           "default_value": "true",
                           "type": "value_definition"
                         },
                         {
-                          "id": "19dda459-c2b1-4bae-a791-e660c62c3a67",
-                          "ref_id": "foo_value_9c578742-d823-45ab-a22a-f243fc0b8d8a",
-                          "title": "Esse consequuntur a fuga.",
-                          "description": "Ab iste rerum. Aut et laborum. Eaque enim qui.",
+                          "id": "2e6847ca-ca40-4caa-b78e-9c577ea3fbed",
+                          "ref_id": "foo_value_e802fdc2-c039-4b1f-a184-16fa2cde9b49",
+                          "title": "Ipsa excepturi aut velit.",
+                          "description": "Nihil praesentium itaque. Laborum eum perspiciatis. Id deserunt aspernatur.",
                           "value_type": "boolean",
                           "default_value": "false",
                           "type": "value_definition"
                         },
                         {
-                          "id": "24a29371-263b-4c29-8b3a-39e3b2182be1",
-                          "ref_id": "foo_value_b044d6e6-2c56-45ba-a88c-7d8944eddcc6",
-                          "title": "Placeat sunt non animi.",
-                          "description": "Maxime ipsam laudantium. Facere aliquid vel. Vitae nisi id.",
-                          "value_type": "boolean",
-                          "default_value": "false",
-                          "type": "value_definition"
-                        },
-                        {
-                          "id": "2f5218c4-9acd-4694-a36f-0b96a6a9aac8",
-                          "ref_id": "foo_value_c4242392-6ddb-41f3-bc48-f013e4a8ce81",
-                          "title": "Voluptatem error sed aut.",
-                          "description": "Repellat voluptatibus aut. Consequatur provident saepe. Sunt in quibusdam.",
-                          "value_type": "boolean",
-                          "default_value": "false",
-                          "type": "value_definition"
-                        },
-                        {
-                          "id": "3cd5488b-a9a2-4719-be35-488ace5eb185",
-                          "ref_id": "foo_value_c30bb20b-8632-40c6-89fd-38075ecb9e5f",
-                          "title": "Nihil eum nam laudantium.",
-                          "description": "Voluptatibus sed inventore. Corrupti nostrum sint. Incidunt saepe iste.",
-                          "value_type": "boolean",
-                          "default_value": "false",
-                          "type": "value_definition"
-                        },
-                        {
-                          "id": "4527d0c2-7a5b-4a6a-8191-a118648dea0a",
-                          "ref_id": "foo_value_994b4cb1-84ac-4a47-b54c-629867ae3a6e",
-                          "title": "Natus nam autem itaque.",
-                          "description": "Et in quos. Architecto maiores aliquid. Laboriosam provident harum.",
-                          "value_type": "boolean",
-                          "default_value": "false",
-                          "type": "value_definition"
-                        },
-                        {
-                          "id": "4e15ca24-64d0-498e-bb3f-a91baf0c0719",
-                          "ref_id": "foo_value_444ccd74-6c5c-4b85-885b-5da512d4ad75",
-                          "title": "Tempora omnis voluptate blanditiis.",
-                          "description": "Aspernatur sapiente aut. In dicta aut. Labore dolor id.",
+                          "id": "2fa6e545-e473-48f6-9e24-7a3ca78ce5d0",
+                          "ref_id": "foo_value_c19b7190-7ac5-4297-8236-93cef000f040",
+                          "title": "Distinctio provident commodi officia.",
+                          "description": "Quae qui magni. Consectetur nam id. Alias provident ab.",
                           "value_type": "boolean",
                           "default_value": "true",
+                          "type": "value_definition"
+                        },
+                        {
+                          "id": "358d9d14-2ee7-4576-87db-23a4f2a208f5",
+                          "ref_id": "foo_value_dfed5d1f-da0b-4a58-b258-99502d9523d2",
+                          "title": "Sunt occaecati esse magnam.",
+                          "description": "Quidem laudantium ut. Iusto dolores quidem. Sunt et et.",
+                          "value_type": "boolean",
+                          "default_value": "true",
+                          "type": "value_definition"
+                        },
+                        {
+                          "id": "36d188c3-012f-4c1c-aaa6-b4af88f75cae",
+                          "ref_id": "foo_value_eb726044-4c9a-4e06-b880-91e6d91ff830",
+                          "title": "Iste pariatur ut corporis.",
+                          "description": "A voluptate ipsam. Distinctio sit laborum. Nesciunt delectus in.",
+                          "value_type": "boolean",
+                          "default_value": "true",
+                          "type": "value_definition"
+                        },
+                        {
+                          "id": "39eec768-25fc-4aa7-8522-7e39253ce0d5",
+                          "ref_id": "foo_value_54eaf66e-7fe1-4ad9-86b5-5389f0a2d022",
+                          "title": "Molestias magni quae rerum.",
+                          "description": "Molestiae eos minus. Quas veniam est. Quis vel est.",
+                          "value_type": "boolean",
+                          "default_value": "false",
+                          "type": "value_definition"
+                        },
+                        {
+                          "id": "45db1a02-ac6e-46b0-939a-758a3a6ce1f8",
+                          "ref_id": "foo_value_86e9e82c-e16b-42d6-8a4e-5377423e17a4",
+                          "title": "Architecto molestiae quidem at.",
+                          "description": "Id laborum animi. Libero quaerat doloribus. Nihil ut ipsam.",
+                          "value_type": "boolean",
+                          "default_value": "false",
+                          "type": "value_definition"
+                        },
+                        {
+                          "id": "4d1ad38e-dccf-42d8-aadb-c6ebf9e65485",
+                          "ref_id": "foo_value_e84f0055-58c5-4d67-bd4a-9723a2d68fb5",
+                          "title": "Sequi esse voluptatibus quo.",
+                          "description": "Perspiciatis voluptatibus doloribus. Qui maiores quos. Autem nulla maiores.",
+                          "value_type": "boolean",
+                          "default_value": "false",
                           "type": "value_definition"
                         }
                       ],
@@ -2486,9 +3021,9 @@
                         "offset": 0
                       },
                       "links": {
-                        "first": "/api/compliance/v2/security_guides/406d946f-ce94-43af-bddb-c0a38bf217a9/value_definitions?limit=10&offset=0",
-                        "last": "/api/compliance/v2/security_guides/406d946f-ce94-43af-bddb-c0a38bf217a9/value_definitions?limit=10&offset=20",
-                        "next": "/api/compliance/v2/security_guides/406d946f-ce94-43af-bddb-c0a38bf217a9/value_definitions?limit=10&offset=10"
+                        "first": "/api/compliance/v2/security_guides/9c0ad62e-1faf-476b-adb4-9dbc994255a0/value_definitions?limit=10&offset=0",
+                        "last": "/api/compliance/v2/security_guides/9c0ad62e-1faf-476b-adb4-9dbc994255a0/value_definitions?limit=10&offset=20",
+                        "next": "/api/compliance/v2/security_guides/9c0ad62e-1faf-476b-adb4-9dbc994255a0/value_definitions?limit=10&offset=10"
                       }
                     },
                     "summary": "",
@@ -2498,93 +3033,93 @@
                     "value": {
                       "data": [
                         {
-                          "id": "ca3f6dda-8333-46f6-8ffb-bb0c98c577c8",
-                          "ref_id": "foo_value_c97f526b-0604-49e9-a613-32c6b32fd676",
-                          "title": "Aspernatur quia consequatur molestiae.",
-                          "description": "In nobis ea. Ex dolorem minus. Maxime ipsam consequatur.",
+                          "id": "bf0dac4a-9341-46b1-81bd-af8628e90e91",
+                          "ref_id": "foo_value_994da95f-34a6-4f8d-806c-174b66bd35c2",
+                          "title": "Aut iste temporibus eligendi.",
+                          "description": "Odit soluta quam. Voluptatem est dolorem. Dolorem architecto expedita.",
                           "value_type": "boolean",
                           "default_value": "true",
                           "type": "value_definition"
                         },
                         {
-                          "id": "c81acddb-05e1-4a25-b464-528a99cf1d85",
-                          "ref_id": "foo_value_2334fb78-2eb2-4105-9723-da7bf17fa84e",
-                          "title": "Aspernatur quia odio eos.",
-                          "description": "Laborum aperiam maxime. Vel odit vero. Quam cupiditate voluptas.",
+                          "id": "9bf13b98-9d85-4b68-ae61-44e848e025de",
+                          "ref_id": "foo_value_c939df9c-98bc-4b74-a1bf-8a6512d99ec0",
+                          "title": "Autem sed nihil voluptatum.",
+                          "description": "Et sunt qui. Exercitationem ullam iste. Veritatis voluptatem voluptatem.",
                           "value_type": "boolean",
                           "default_value": "true",
                           "type": "value_definition"
                         },
                         {
-                          "id": "d51d4eab-e7a2-42a4-8a25-aa321ff77585",
-                          "ref_id": "foo_value_27d2e6ed-efbe-4eac-acc5-0474975d7aa0",
-                          "title": "Consequatur at enim et.",
-                          "description": "Repudiandae iure culpa. Non eos sint. Quia omnis amet.",
+                          "id": "317e8b2d-7e6f-482a-885a-5081d96092d2",
+                          "ref_id": "foo_value_9c2f0443-3e9d-456a-a51e-55a52e4363f0",
+                          "title": "Deleniti corporis non et.",
+                          "description": "Vel omnis et. Fugit porro magni. Porro aperiam maxime.",
                           "value_type": "boolean",
                           "default_value": "false",
                           "type": "value_definition"
                         },
                         {
-                          "id": "f5568d87-6e72-4d5e-95a6-f6d73fbb83e2",
-                          "ref_id": "foo_value_5c68c169-01bc-4bc1-93c0-f98f03d8ab9c",
-                          "title": "Cupiditate impedit nobis modi.",
-                          "description": "Qui omnis saepe. Voluptatem velit laudantium. Natus qui ut.",
+                          "id": "e0dde249-4b20-4e46-8ae2-a55182562e98",
+                          "ref_id": "foo_value_83a8aadb-fea6-481c-a651-f1c293fe37b1",
+                          "title": "Dolorem ipsam omnis error.",
+                          "description": "Rem quis tempora. Maxime et dolor. Facilis pariatur ut.",
                           "value_type": "boolean",
                           "default_value": "true",
                           "type": "value_definition"
                         },
                         {
-                          "id": "d098e9b7-05de-421f-9101-eac5353cb1aa",
-                          "ref_id": "foo_value_6b524692-1ddc-4373-a56e-2ce5f05afebe",
-                          "title": "Dolor et molestiae est.",
-                          "description": "Voluptas suscipit est. Dolorem error dolorum. Et quo molestias.",
-                          "value_type": "boolean",
-                          "default_value": "true",
-                          "type": "value_definition"
-                        },
-                        {
-                          "id": "bb599a1c-49f2-4249-b378-3ffc6cdf452e",
-                          "ref_id": "foo_value_723f7090-dc21-4d97-9cbe-fcbb2952b071",
-                          "title": "Earum et dolores voluptatibus.",
-                          "description": "Voluptatem autem est. Quia eos id. Ut quae non.",
-                          "value_type": "boolean",
-                          "default_value": "true",
-                          "type": "value_definition"
-                        },
-                        {
-                          "id": "0c7da58d-1a06-4648-b51c-2feb7b23f452",
-                          "ref_id": "foo_value_0e0c45fc-6a15-4a5c-a09b-d47c9af4c4d7",
-                          "title": "Eligendi id qui quia.",
-                          "description": "Perspiciatis consequatur et. Eum rerum neque. Iure mollitia ipsam.",
-                          "value_type": "boolean",
-                          "default_value": "true",
-                          "type": "value_definition"
-                        },
-                        {
-                          "id": "b06457f8-2aba-41a9-9b17-e454a01fb6b0",
-                          "ref_id": "foo_value_ebf58204-c278-4136-88d4-0b7b2c5c8e77",
-                          "title": "Eos fugiat accusantium aperiam.",
-                          "description": "In quia sit. Accusantium autem incidunt. Et fuga cupiditate.",
+                          "id": "f9a5a135-143e-46b5-98b7-29383bfacca5",
+                          "ref_id": "foo_value_fadb8eeb-b832-4737-bc86-fa4b071cbe96",
+                          "title": "Doloribus at debitis quaerat.",
+                          "description": "Ex qui hic. Non hic libero. Sunt quibusdam rem.",
                           "value_type": "boolean",
                           "default_value": "false",
                           "type": "value_definition"
                         },
                         {
-                          "id": "5484b6ac-a2b3-40ba-a0c3-4832c385e972",
-                          "ref_id": "foo_value_17cac3e3-0c15-4e9b-a9dd-5954cd0f90ef",
-                          "title": "Est voluptas odio qui.",
-                          "description": "Temporibus dolores sequi. In fugit neque. Quia enim asperiores.",
+                          "id": "cb514ac4-45ce-4c9a-ba70-b50fc3b391a3",
+                          "ref_id": "foo_value_e89be35d-2b1d-4185-a74e-b597e1cdc2b2",
+                          "title": "Et officia enim itaque.",
+                          "description": "Esse cumque et. Aliquam architecto vero. Commodi similique aut.",
+                          "value_type": "boolean",
+                          "default_value": "false",
+                          "type": "value_definition"
+                        },
+                        {
+                          "id": "8f1f8a6f-f2c5-4d39-9157-34f6374c736f",
+                          "ref_id": "foo_value_5adf384f-2573-439e-84aa-497dc51ca836",
+                          "title": "Illo quia aliquid sunt.",
+                          "description": "Velit ut temporibus. Nobis dolorum nostrum. Magnam et maiores.",
+                          "value_type": "boolean",
+                          "default_value": "false",
+                          "type": "value_definition"
+                        },
+                        {
+                          "id": "f554bc8c-74ae-4c7e-ae62-ea424ef8441e",
+                          "ref_id": "foo_value_c79881bb-568a-402d-8268-557081cb2a83",
+                          "title": "Libero quod nulla iusto.",
+                          "description": "Et qui molestiae. Omnis qui vel. Aut voluptatem aut.",
                           "value_type": "boolean",
                           "default_value": "true",
                           "type": "value_definition"
                         },
                         {
-                          "id": "38be5652-d703-45c0-bb14-029875cff9c5",
-                          "ref_id": "foo_value_553222a4-d916-477e-a10d-bb288a5a2610",
-                          "title": "Incidunt aut aut assumenda.",
-                          "description": "Qui similique a. Qui saepe officiis. Aspernatur autem possimus.",
+                          "id": "888a4088-028d-4451-99f8-050ba7125195",
+                          "ref_id": "foo_value_e275f629-160b-4d04-91db-3c5a2b13b946",
+                          "title": "Magnam aut tempore dolor.",
+                          "description": "Earum delectus at. Voluptatum doloribus ea. Ut consectetur ipsum.",
                           "value_type": "boolean",
                           "default_value": "true",
+                          "type": "value_definition"
+                        },
+                        {
+                          "id": "fc103d42-cd19-47ec-bbc5-31e2b7d23773",
+                          "ref_id": "foo_value_694ee2f6-f087-4401-809f-aaef69a3da14",
+                          "title": "Minus voluptatem aspernatur accusantium.",
+                          "description": "Ad ab animi. Hic et culpa. Autem aspernatur ad.",
+                          "value_type": "boolean",
+                          "default_value": "false",
                           "type": "value_definition"
                         }
                       ],
@@ -2595,26 +3130,26 @@
                         "sort_by": "title"
                       },
                       "links": {
-                        "first": "/api/compliance/v2/security_guides/203790a3-d68d-4d10-9e65-75ac865465c5/value_definitions?limit=10&offset=0&sort_by=title",
-                        "last": "/api/compliance/v2/security_guides/203790a3-d68d-4d10-9e65-75ac865465c5/value_definitions?limit=10&offset=20&sort_by=title",
-                        "next": "/api/compliance/v2/security_guides/203790a3-d68d-4d10-9e65-75ac865465c5/value_definitions?limit=10&offset=10&sort_by=title"
+                        "first": "/api/compliance/v2/security_guides/7ae2dabb-a104-444c-9729-f5388b76d336/value_definitions?limit=10&offset=0&sort_by=title",
+                        "last": "/api/compliance/v2/security_guides/7ae2dabb-a104-444c-9729-f5388b76d336/value_definitions?limit=10&offset=20&sort_by=title",
+                        "next": "/api/compliance/v2/security_guides/7ae2dabb-a104-444c-9729-f5388b76d336/value_definitions?limit=10&offset=10&sort_by=title"
                       }
                     },
                     "summary": "",
                     "description": ""
                   },
-                  "List of Value Definitions filtered by '(title=Aperiam ut voluptate et.)'": {
+                  "List of Value Definitions filtered by '(title=Atque earum quae ipsa.)'": {
                     "value": {
                       "data": [],
                       "meta": {
                         "total": 0,
-                        "filter": "(title=Aperiam ut voluptate et.)",
+                        "filter": "(title=Atque earum quae ipsa.)",
                         "limit": 10,
                         "offset": 0
                       },
                       "links": {
-                        "first": "/api/compliance/v2/security_guides/05711a76-02f7-43d2-9cc6-0a12321ba5e1/value_definitions?filter=%28title%3DAperiam+ut+voluptate+et.%29&limit=10&offset=0",
-                        "last": "/api/compliance/v2/security_guides/05711a76-02f7-43d2-9cc6-0a12321ba5e1/value_definitions?filter=%28title%3DAperiam+ut+voluptate+et.%29&limit=10&offset=0"
+                        "first": "/api/compliance/v2/security_guides/d5c8897a-64a5-4fe4-ab98-1366290d52b1/value_definitions?filter=%28title%3DAtque+earum+quae+ipsa.%29&limit=10&offset=0",
+                        "last": "/api/compliance/v2/security_guides/d5c8897a-64a5-4fe4-ab98-1366290d52b1/value_definitions?filter=%28title%3DAtque+earum+quae+ipsa.%29&limit=10&offset=0"
                       }
                     },
                     "summary": "",
@@ -2721,12 +3256,12 @@
                   "Returns a Value Definition": {
                     "value": {
                       "data": {
-                        "id": "9484dbd8-7e8a-4f0c-af8f-6967148eb5df",
-                        "ref_id": "foo_value_96e7264f-4174-49b5-b35b-6c9445466ca8",
-                        "title": "Laboriosam voluptatem eos quis.",
-                        "description": "Non cumque ipsum. Et consequuntur maxime. Sed quia aut.",
+                        "id": "9496fdd6-207b-43ab-9a90-753c32c72507",
+                        "ref_id": "foo_value_9f9ca000-211a-40e8-bf7c-975fa9175346",
+                        "title": "Quo consectetur dolores eos.",
+                        "description": "Rem nisi quae. Minima dignissimos non. Beatae dolor ratione.",
                         "value_type": "boolean",
-                        "default_value": "false",
+                        "default_value": "true",
                         "type": "value_definition"
                       }
                     },
@@ -2758,7 +3293,7 @@
                   "Description of an error when requesting a non-existing Value Definition": {
                     "value": {
                       "errors": [
-                        "V2::ValueDefinition not found with ID 90e0c193-01c3-432d-bff7-40315d8b12b6"
+                        "V2::ValueDefinition not found with ID bed8c610-71de-4ba1-9aae-e70a523a29cb"
                       ]
                     },
                     "summary": "",
@@ -3230,6 +3765,205 @@
             },
             "readOnly": true,
             "description": "List of the supported Operating System minor versions that the Profile covers"
+          }
+        }
+      },
+      "tailoring": {
+        "type": "object",
+        "required": [
+          "profile_id",
+          "os_minor_version"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/id"
+          },
+          "type": {
+            "type": "string",
+            "readOnly": true,
+            "enum": [
+              "tailoring"
+            ]
+          },
+          "profile_id": {
+            "type": "string",
+            "examples": [
+              "cde8be06-74bc-4a2d-9e7f-11d30c5ea588"
+            ],
+            "readOnly": true,
+            "description": "Identificator of the Profile from which the Tailoring was cloned"
+          },
+          "os_major_version": {
+            "type": "number",
+            "examples": [
+              7
+            ],
+            "readOnly": true,
+            "description": "Major version of the Operating System that the Tailoring covers"
+          },
+          "os_minor_version": {
+            "type": "number",
+            "examples": [
+              1
+            ],
+            "readOnly": true,
+            "description": "List of the supported Operating System minor versions that the Tailoring covers"
+          },
+          "value_overrides": {
+            "type": "object",
+            "readOnly": true,
+            "description": "Pair of keys and values for Value Definition customizations"
+          }
+        }
+      },
+      "tailoring_file": {
+        "title": "Tailoring",
+        "description": "Defines customizations of rules and variables for a set of profiles",
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "profiles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "title": "Profile",
+              "description": "A new tailored profile with modifications",
+              "additionalProperties": true,
+              "anyOf": [
+                {
+                  "required": [
+                    "id",
+                    "base_profile_id"
+                  ]
+                },
+                {
+                  "required": [
+                    "id",
+                    "title"
+                  ]
+                }
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "New profile identifier, can be same as 'base_profile_id', to 'shadow' the origin"
+                },
+                "base_profile_id": {
+                  "type": "string",
+                  "description": "Original profile identifier, the base for modifications"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title for the new profile, inherited from base profile if not given, required if there is no base profile"
+                },
+                "groups": {
+                  "type": "object",
+                  "description": "Group modifications, keys are identifiers",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "anyOf": [
+                      {
+                        "required": [
+                          "evaluate"
+                        ]
+                      }
+                    ],
+                    "properties": {
+                      "evaluate": {
+                        "type": "boolean",
+                        "description": "Includes or excludes a group of rules from evaluation"
+                      }
+                    }
+                  }
+                },
+                "rules": {
+                  "type": "object",
+                  "description": "Rule modifications, keys are identifiers",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "anyOf": [
+                      {
+                        "required": [
+                          "evaluate"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "severity"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "role"
+                        ]
+                      }
+                    ],
+                    "properties": {
+                      "evaluate": {
+                        "type": "boolean",
+                        "description": "Includes or excludes a rule from evaluation"
+                      },
+                      "severity": {
+                        "type": "string",
+                        "enum": [
+                          "unknown",
+                          "info",
+                          "low",
+                          "medium",
+                          "high"
+                        ],
+                        "description": "Overrides severity level of the rule"
+                      },
+                      "role": {
+                        "type": "string",
+                        "enum": [
+                          "full",
+                          "unscored",
+                          "unchecked"
+                        ],
+                        "description": "Overrides role of the rule"
+                      }
+                    }
+                  }
+                },
+                "variables": {
+                  "type": "object",
+                  "description": "Variables modifications, keys are identifiers",
+                  "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "oneOf": [
+                      {
+                        "required": [
+                          "value"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "option_id"
+                        ]
+                      }
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": [
+                          "string",
+                          "integer",
+                          "boolean"
+                        ],
+                        "description": "Directly overrides variable's value with a given value"
+                      },
+                      "option_id": {
+                        "type": "string",
+                        "description": "Overrides variable's value with a predefined value identified by 'option_id'"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
