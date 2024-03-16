@@ -23,30 +23,19 @@ describe V2::TailoringsController do
 
   context '/policies/:id/tailorings' do
     describe 'GET index' do
-      # Build a set of canonical profiles for various OS minor versions across Security Guides (Benchmarks).
       let(:canonical_profiles) do
         item_count.times.map do |version|
           FactoryBot.create(:v2_profile, ref_id_suffix: 'foo', supports_minors: [version])
         end
       end
 
-      let(:parent) do
-        FactoryBot.create(
-          :v2_policy,
-          account: current_user.account,
-          profile: canonical_profiles.last
-        )
-      end
+      let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profiles.last) }
       let(:extra_params) { { ref_id: pw(parent.ref_id), policy_id: parent.id } }
       let(:item_count) { 3 }
+
       let(:items) do
         item_count.times.map do |version|
-          FactoryBot.create(
-            :v2_tailoring,
-            policy: parent,
-            profile: canonical_profiles.last,
-            os_minor_version: version
-          )
+          FactoryBot.create(:v2_tailoring, policy: parent, os_minor_version: version)
         end.sort_by(&:id)
       end
 
@@ -59,26 +48,14 @@ describe V2::TailoringsController do
 
     describe 'GET show' do
       let(:os_minor_version) { SecureRandom.random_number(10) }
+      let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile) }
+      let(:item) { FactoryBot.create(:v2_tailoring, policy: parent, os_minor_version: os_minor_version) }
+      let(:extra_params) { { policy_id: parent.id, id: item.id } }
+
       let(:canonical_profile) do
         FactoryBot.create(:v2_profile, ref_id_suffix: 'foo', supports_minors: [os_minor_version])
       end
-      let(:parent) do
-        FactoryBot.create(
-          :v2_policy,
-          account: current_user.account,
-          profile: canonical_profile
-        )
-      end
-      let(:item) do
-        FactoryBot.create(
-          :v2_tailoring,
-          policy: parent,
-          profile: canonical_profile,
-          os_minor_version: os_minor_version
-        )
-      end
 
-      let(:extra_params) { { policy_id: parent.id, id: item.id } }
       let(:notfound_params) do
         extra_params.merge(policy_id: FactoryBot.create(
           :v2_policy,
@@ -100,12 +77,9 @@ describe V2::TailoringsController do
     end
 
     let(:parent) do
-      FactoryBot.create(
-        :v2_policy,
-        account: current_user.account,
-        profile: canonical_profile
-      )
+      FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile)
     end
+
     let(:extra_params) { { policy_id: parent.id, id: item.id } }
 
     context 'with no rules and no values' do
@@ -120,15 +94,9 @@ describe V2::TailoringsController do
           supports_minors: [8]
         )
       end
+
       let(:item) do
-        FactoryBot.create(
-          :v2_tailoring,
-          rules: [],
-          value_overrides: [],
-          policy: parent,
-          profile: canonical_profile,
-          os_minor_version: 8
-        )
+        FactoryBot.create(:v2_tailoring, rules: [], value_overrides: [], policy: parent, os_minor_version: 8)
       end
 
       it 'returns XCCDF tailoring file with unselected rules' do
@@ -156,15 +124,8 @@ describe V2::TailoringsController do
           supports_minors: [8]
         )
       end
-      let(:item) do
-        FactoryBot.create(
-          :v2_tailoring,
-          :with_default_rules,
-          policy: parent,
-          profile: canonical_profile,
-          os_minor_version: 8
-        )
-      end
+
+      let(:item) { FactoryBot.create(:v2_tailoring, :with_default_rules, policy: parent, os_minor_version: 8) }
 
       it 'returns empty response' do
         get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
@@ -185,15 +146,8 @@ describe V2::TailoringsController do
           supports_minors: [8]
         )
       end
-      let(:item) do
-        FactoryBot.create(
-          :v2_tailoring,
-          :with_tailored_values,
-          policy: parent,
-          profile: canonical_profile,
-          os_minor_version: 8
-        )
-      end
+
+      let(:item) { FactoryBot.create(:v2_tailoring, :with_tailored_values, policy: parent, os_minor_version: 8) }
 
       it 'returns tailored values and default set of rules, but unselected' do
         get :tailoring_file, params: extra_params.merge(parents: [:policy], format: :xml)
@@ -223,13 +177,13 @@ describe V2::TailoringsController do
           supports_minors: [8]
         )
       end
+
       let(:item) do
         FactoryBot.create(
           :v2_tailoring,
           :with_mixed_rules,
           :with_tailored_values,
           policy: parent,
-          profile: canonical_profile,
           os_minor_version: 8
         )
       end
@@ -254,23 +208,17 @@ describe V2::TailoringsController do
     end
 
     context 'with unauthorized policy' do
-      let(:canonical_profile) do
-        FactoryBot.create(:v2_profile)
-      end
+      let(:canonical_profile) { FactoryBot.create(:v2_profile) }
+
       let(:extra_params) do
         {
-          # policy of a foreign account
-          policy_id: FactoryBot.create(:v2_policy, account: FactoryBot.create(:v2_account)),
-          id: item.id
+          id: item.id,
+          policy_id: FactoryBot.create(:v2_policy, account: FactoryBot.create(:v2_account))
         }
       end
+
       let(:item) do
-        FactoryBot.create(
-          :v2_tailoring,
-          policy: parent,
-          profile: canonical_profile,
-          os_minor_version: 8
-        )
+        FactoryBot.create(:v2_tailoring, policy: parent, profile: canonical_profile, os_minor_version: 8)
       end
 
       it 'results in 404 error' do
@@ -281,13 +229,12 @@ describe V2::TailoringsController do
     end
 
     context 'with mismatching set of IDs' do
-      let(:canonical_profile) do
-        FactoryBot.create(:v2_profile)
-      end
+      let(:canonical_profile) { FactoryBot.create(:v2_profile) }
+
       let(:extra_params) do
         {
-          policy_id: FactoryBot.create(:v2_policy, account: FactoryBot.create(:v2_account)),
-          id: Faker::Internet.uuid
+          id: Faker::Internet.uuid,
+          policy_id: FactoryBot.create(:v2_policy, account: current_user.account)
         }
       end
 
