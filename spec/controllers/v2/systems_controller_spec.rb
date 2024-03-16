@@ -129,7 +129,7 @@ describe V2::SystemsController do
       it 'creates the link between a policy and a system' do
         patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
-        expect(response).to have_http_status :ok
+        expect(response).to have_http_status :accepted
         expect(item.policies).to include(parent)
       end
 

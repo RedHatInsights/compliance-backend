@@ -15,7 +15,7 @@ module V2
 
     def update
       if new_policy_system.save
-        render_json system, status: :created
+        render_json system, status: :accepted
         audit_success("Assigned system #{system.id} to policy #{new_policy_system.policy_id}")
       else
         render_model_errors new_policy_system

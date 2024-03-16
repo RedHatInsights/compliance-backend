@@ -37,7 +37,7 @@ module V2
 
     def update
       if compliance_policy.update(permitted_params.to_h.slice(*UPDATE_ATTRIBUTES.keys))
-        render_json compliance_policy
+        render_json compliance_policy, status: :accepted
         audit_success("Updated policy #{compliance_policy.id}")
       else
         render_model_errors compliance_policy
