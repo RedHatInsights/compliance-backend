@@ -113,7 +113,24 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       content_types
 
       parameter name: :policy_id, in: :path, type: :string, required: true
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter(
+        name: :id,
+        in: :path,
+        schema: {
+          oneOf: [
+            {
+              type: 'integer',
+              minimum: 6,
+              description: 'OS major version'
+            },
+            {
+              type: 'string',
+              format: 'uuid'
+            }
+          ]
+        },
+        required: true
+      )
 
       response '200', 'Returns a Tailoring' do
         let(:id) { item.id }
@@ -161,7 +178,24 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       content_types
 
       parameter name: :policy_id, in: :path, type: :string, required: true
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter(
+        name: :id,
+        in: :path,
+        schema: {
+          oneOf: [
+            {
+              type: 'integer',
+              minimum: 6,
+              description: 'OS major version'
+            },
+            {
+              type: 'string',
+              format: 'uuid'
+            }
+          ]
+        },
+        required: true
+      )
 
       response '200', 'Returns a Tailoring File' do
         let(:id) { item.id }
