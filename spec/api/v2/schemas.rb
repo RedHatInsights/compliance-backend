@@ -10,6 +10,7 @@ module Api
       include Metadata
       include Policy
       include Profile
+      include Rule
       include RuleGroup
       include SecurityGuide
       include SupportedProfile
@@ -26,6 +27,7 @@ module Api
         policy: POLICY,
         policy_update: POLICY_UPDATE,
         profile: PROFILE,
+        rule: RULE,
         rule_group: RULE_GROUP,
         security_guide: SECURITY_GUIDE,
         supported_profile: SUPPORTED_PROFILE,

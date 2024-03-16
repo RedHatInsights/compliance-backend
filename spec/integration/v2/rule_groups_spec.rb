@@ -68,7 +68,7 @@ describe 'Rule Groups', swagger_doc: 'v2/openapi.json' do
       v2_auth_header
       tags 'Content'
       description 'Returns a Rule Group'
-      operationId 'Rule Group'
+      operationId 'RuleGroup'
       content_types
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
