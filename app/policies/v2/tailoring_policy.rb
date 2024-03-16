@@ -12,7 +12,7 @@ module V2
     end
 
     def tailoring_file?
-      user.cert_authenticated?
+      match_account?
     end
 
     # Only show tailoring in our user account

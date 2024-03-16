@@ -15,6 +15,18 @@ FactoryBot.define do
       system_count { 0 }
     end
 
+    trait :for_tailoring do
+      profile do
+        association(
+          :v2_profile,
+          os_major_version: os_major_version,
+          supports_minors: supports_minors,
+          value_count: 5,
+          rule_count: 5
+        )
+      end
+    end
+
     after(:create) do |policy, ev|
       if ev.system_id # If system_id is specified, do not generate any assigned systems
         policy.policy_systems << FactoryBot.create(:v2_policy_system, system_id: ev.system_id, policy_id: policy.id)
