@@ -6,7 +6,7 @@ module Api
       module Types
         extend Util
 
-        UUID = { type: :string, format: :uuid }.freeze
+        UUID = { type: :string, format: :uuid, readOnly: true }.freeze
       end
     end
   end

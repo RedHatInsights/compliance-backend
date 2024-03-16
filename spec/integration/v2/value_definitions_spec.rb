@@ -14,7 +14,7 @@ describe 'Value Definitions', swagger_doc: 'v2/openapi.json' do
 
     get 'Request Value Definitions' do
       v2_auth_header
-      tags 'value_definitions'
+      tags 'Content'
       description 'Lists Value Definitions'
       operationId 'Value Definitions'
       content_types
@@ -77,7 +77,7 @@ describe 'Value Definitions', swagger_doc: 'v2/openapi.json' do
 
     get 'Request a Value Definition' do
       v2_auth_header
-      tags 'value_definitions'
+      tags 'Content'
       description 'Returns a Value Definition'
       operationId 'Value Definition'
       content_types

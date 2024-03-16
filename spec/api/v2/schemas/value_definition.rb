@@ -16,31 +16,36 @@ module Api
             id: ref_schema('id'),
             type: {
               type: :string,
-              value: 'value_definition'
+              enum: ['value_definition']
             },
             ref_id: {
               type: :string,
               examples: ['xccdf_org.ssgproject.content_value_var_rekey_limit_size'],
+              readOnly: true,
               description: 'Identificator of the Value Definition'
             },
             title: {
               type: :string,
               examples: ['SSH RekeyLimit - size'],
+              readOnly: true,
               description: 'Short title of the Value Definition'
             },
             value_type: {
               type: :string,
               examples: ['string'],
+              readOnly: true,
               description: 'Type of the Value Definition'
             },
             description: {
               type: :string,
               examples: ['Specify the size component of the rekey limit.'],
+              readOnly: true,
               description: 'Longer description of the Value Definition'
             },
             default_value: {
               type: :string,
               examples: ['512M'],
+              readOnly: true,
               description: 'Default value of the Value Definition'
             }
           }

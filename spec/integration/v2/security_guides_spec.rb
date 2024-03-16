@@ -12,7 +12,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
 
     get 'Request Security Guides' do
       v2_auth_header
-      tags 'security_guides'
+      tags 'Content'
       description 'Lists Security Guides'
       operationId 'SecurityGuides'
       content_types
@@ -71,7 +71,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
 
     get 'Request a Security Guide' do
       v2_auth_header
-      tags 'security_guides'
+      tags 'Content'
       description 'Returns a Security Guide'
       operationId 'SecurityGuide'
       content_types

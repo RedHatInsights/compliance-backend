@@ -197,6 +197,12 @@ def v2_item_schema(label)
          })
 end
 
+def v2_param(schema, field, **args)
+  parameter(name: field, in: :body,
+            schema: Api::V2::Schemas::SCHEMAS[schema][:properties][field],
+            **args)
+end
+
 def content_types
   # HACK: the argument is passed as a symbol to avoid being duplicated.
   # Possibly an rswag issue.

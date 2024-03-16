@@ -11,21 +11,24 @@ module Api
 
         RULE_GROUP = {
           type: :object,
-          required: %w[id type ref_id title precedence],
+          required: %w[ref_id title precedence],
           properties: {
             id: ref_schema('id'),
             type: {
               type: :string,
-              value: 'rule_group'
+              readOnly: true,
+              enum: ['rule_group']
             },
             ref_id: {
               type: :string,
               examples: ['xccdf_org.ssgproject.content_group_locking_out_password_attempts'],
+              readOnly: true,
               description: 'Identificator of the Rule Group'
             },
             title: {
               type: :string,
               examples: ['Set Lockouts for Failed Password Attempt'],
+              readOnly: true,
               description: 'Short title of the Rule Group'
             },
             rationale: {
@@ -34,6 +37,7 @@ module Api
                          'unauthorized system access via user password guessing, otherwise ' \
                          'known as brute-forcing, is reduced. Limits are imposed by locking ' \
                          'the account.'],
+              readOnly: true,
               description: 'Rationale of the Rule Group'
             },
             description: {
@@ -41,11 +45,13 @@ module Api
               examples: ['The pam_faillock PAM module provides the capability to lock out user ' \
                          'accounts after a number of failed login attempts. Its documentation ' \
                          'is available in /usr/share/doc/pam-VERSION/txts/README.pam_faillock.'],
+              readOnly: true,
               description: 'Longer description of the Rule Group'
             },
             precedence: {
               type: 'integer',
               examples: [3],
+              readOnly: true,
               description: 'The original sorting precedence of the Rule Group in the Security Guide'
             }
           }

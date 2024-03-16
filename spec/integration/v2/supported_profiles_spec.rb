@@ -12,7 +12,7 @@ describe 'Supported Profiles', swagger_doc: 'v2/openapi.json' do
 
     get 'Request Supported Profiles' do
       v2_auth_header
-      tags 'profiles'
+      tags 'Content'
       description 'Lists Supported Profiles'
       operationId 'SupportedProfiles'
       content_types

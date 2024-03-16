@@ -14,7 +14,7 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
 
     get 'Request Profiles' do
       v2_auth_header
-      tags 'profiles'
+      tags 'Content'
       description 'Lists Profiles'
       operationId 'Profiles'
       content_types
@@ -75,7 +75,7 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
 
     get 'Request a Profile' do
       v2_auth_header
-      tags 'profiles'
+      tags 'Content'
       description 'Returns a Profile'
       operationId 'Profile'
       content_types
