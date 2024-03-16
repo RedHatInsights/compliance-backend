@@ -81,7 +81,7 @@ describe V2::PoliciesController do
       it 'creates a new policy' do
         post :create, params: params
 
-        expect(response).to have_http_status :ok
+        expect(response).to have_http_status :created
         expect(subject).not_to be_nil
       end
 
@@ -162,7 +162,7 @@ describe V2::PoliciesController do
             it 'updates the record' do
               patch :update, params: params.slice(*arr).merge(id: item.id)
 
-              expect(response).to have_http_status :ok
+              expect(response).to have_http_status :accepted
               params.slice(*arr).each do |(key, value)|
                 expect(item.reload.send(key)).to eq(value)
               end
@@ -188,7 +188,7 @@ describe V2::PoliciesController do
       it 'removes the policy' do
         delete :destroy, params: { id: item.id }
 
-        expect(response).to have_http_status :ok
+        expect(response).to have_http_status :accepted
         expect { item.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
 

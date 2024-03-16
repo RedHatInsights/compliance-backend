@@ -7,7 +7,7 @@ module V2
 
     included do
       def render_json(model, **args)
-        render json: index? ? serialize_collection(model, **args) : serialize_individual(model, **args)
+        render json: (index? ? serialize_collection(model) : serialize_individual(model)), **args
       end
 
       def render_error(messages, status: :not_acceptable, **opts)
@@ -24,20 +24,16 @@ module V2
 
       private
 
-      def serialize_individual(model, **args)
+      def serialize_individual(model)
         Panko::Response.create do |r|
-          {
-            data: r.serializer(model, serializer, context: serialization_context),
-            **args
-          }
+          { data: r.serializer(model, serializer, context: serialization_context) }
         end
       end
 
-      def serialize_collection(model, **args)
+      def serialize_collection(model)
         Panko::Response.new(
           data: Panko::ArraySerializer.new(model, each_serializer: serializer, context: serialization_context),
-          **metadata(model),
-          **args
+          **metadata(model)
         )
       end
 
