@@ -11,7 +11,6 @@ module Api
 
         RULE_GROUP = {
           type: :object,
-          required: %w[ref_id title precedence],
           properties: {
             id: ref_schema('id'),
             type: {

@@ -14,6 +14,7 @@ module Api
       include RuleGroup
       include SecurityGuide
       include SupportedProfile
+      include System
       include Tailoring
       include TailoringFile
       include Types
@@ -31,6 +32,7 @@ module Api
         rule_group: RULE_GROUP,
         security_guide: SECURITY_GUIDE,
         supported_profile: SUPPORTED_PROFILE,
+        system: SYSTEM,
         tailoring: TAILORING,
         tailoring_file: TAILORING_FILE,
         value_definition: VALUE_DEFINITION

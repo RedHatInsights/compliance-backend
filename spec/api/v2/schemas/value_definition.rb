@@ -11,7 +11,6 @@ module Api
 
         VALUE_DEFINITION = {
           type: :object,
-          required: %w[id type ref_id title value_type default_value],
           properties: {
             id: ref_schema('id'),
             type: {

@@ -27,6 +27,10 @@ Metrics/ClassLength:
     - 'test/**/*'
     - 'spec/**/*'
 
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*'
+
 Metrics/BlockLength:
   AllowedMethods: ['included', 'class_methods', 'GraphQL::ObjectType.define']
   Exclude:

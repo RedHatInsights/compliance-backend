@@ -11,7 +11,6 @@ module Api
 
         RULE = {
           type: :object,
-          required: %w[ref_id title precedence severity],
           properties: {
             id: ref_schema('id'),
             type: {
