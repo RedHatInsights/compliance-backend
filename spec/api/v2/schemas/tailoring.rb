@@ -11,7 +11,6 @@ module Api
 
         TAILORING = {
           type: :object,
-          required: %w[profile_id os_minor_version],
           properties: {
             id: ref_schema('id'),
             type: {
@@ -35,8 +34,7 @@ module Api
               type: :number,
               examples: [1],
               readOnly: true,
-              description: 'List of the supported Operating System minor versions that ' \
-                           'the Tailoring covers'
+              description: 'Minor version of the Operating System that the Tailoring covers'
             },
             value_overrides: {
               type: :object,

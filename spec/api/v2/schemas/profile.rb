@@ -11,7 +11,6 @@ module Api
 
         PROFILE = {
           type: :object,
-          required: %w[ref_id title],
           properties: {
             id: ref_schema('id'),
             type: {

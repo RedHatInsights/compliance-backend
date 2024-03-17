@@ -11,7 +11,6 @@ module Api
 
         SECURITY_GUIDE = {
           type: :object,
-          required: %w[ref_id title version os_major_version],
           properties: {
             id: ref_schema('id'),
             type: {

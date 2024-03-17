@@ -11,7 +11,7 @@ module Api
 
         POLICY = {
           type: :object,
-          required: %w[compliance_threshold policy_id],
+          required: %w[compliance_threshold profile_id],
           properties: {
             id: ref_schema('id'),
             type: {
@@ -42,7 +42,7 @@ module Api
               minimum: 0,
               description: 'The percentage above which the Policy meets compliance requirements'
             },
-            policy_id: {
+            profile_id: {
               type: :string,
               format: :uuid,
               writeOnly: true,

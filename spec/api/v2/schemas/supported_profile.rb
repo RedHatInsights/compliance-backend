@@ -11,7 +11,6 @@ module Api
 
         SUPPORTED_PROFILE = {
           type: :object,
-          required: %w[id type ref_id title security_guide_version os_major_version os_minor_versions],
           properties: {
             id: ref_schema('id'),
             type: {
