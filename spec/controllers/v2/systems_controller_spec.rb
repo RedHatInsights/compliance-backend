@@ -211,7 +211,7 @@ describe V2::SystemsController do
       it 'removes the link between a policy and a system' do
         delete :destroy, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
-        expect(response).to have_http_status :ok
+        expect(response).to have_http_status :accepted
         expect(item.policies).not_to include(parent)
         expect(parent.systems).not_to include(item)
       end
@@ -240,7 +240,7 @@ describe V2::SystemsController do
         it 'does not touch the link of the second policy' do
           delete :destroy, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
-          expect(response).to have_http_status :ok
+          expect(response).to have_http_status :accepted
           expect(item.policies).to include(policy)
         end
       end
@@ -251,7 +251,7 @@ describe V2::SystemsController do
         it 'does not touch the link of the second system' do
           delete :destroy, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
-          expect(response).to have_http_status :ok
+          expect(response).to have_http_status :accepted
           expect(parent.systems).to include(system)
         end
       end

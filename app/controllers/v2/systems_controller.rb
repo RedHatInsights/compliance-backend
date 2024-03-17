@@ -21,6 +21,7 @@ module V2
         render_model_errors new_policy_system
       end
     end
+    permission_for_action :update, Rbac::COMPLIANCE_ADMIN
     permitted_params_for_action :update, { id: ID_TYPE }
 
     def destroy
@@ -28,8 +29,9 @@ module V2
 
       policy_system.destroy
       audit_success("Unassigned system #{system.id} from policy #{policy_system.policy_id}")
-      render_json system
+      render_json system, status: :accepted
     end
+    permission_for_action :destroy, Rbac::COMPLIANCE_ADMIN
     permitted_params_for_action :destroy, { id: ID_TYPE }
 
     private
