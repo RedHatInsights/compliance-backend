@@ -97,6 +97,7 @@ jobs:
         POSTGRESQL_USER: insights
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
+        SPEC_OPTS: "--color --tty --format documentation"
       run: |
         bundle exec rails db -p < db/cyndi_setup_test.sql;
         cp swagger/v1/openapi.json openapi.old.json
@@ -131,6 +132,7 @@ jobs:
         POSTGRESQL_USER: insights
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
+        SPEC_OPTS: "--color --tty --format documentation"
       run: bin/rake spec
     - name: Upload code coverage from RSpec
       uses: codecov/codecov-action@v2
