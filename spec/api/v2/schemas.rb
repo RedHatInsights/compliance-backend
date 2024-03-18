@@ -12,6 +12,7 @@ module Api
       include Profile
       include Rule
       include RuleGroup
+      include RuleTree
       include SecurityGuide
       include SupportedProfile
       include System
@@ -30,6 +31,7 @@ module Api
         profile: PROFILE,
         rule: RULE,
         rule_group: RULE_GROUP,
+        rule_tree: RULE_TREE,
         security_guide: SECURITY_GUIDE,
         supported_profile: SUPPORTED_PROFILE,
         system: SYSTEM,
