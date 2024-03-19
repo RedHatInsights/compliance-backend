@@ -167,4 +167,40 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       end
     end
   end
+
+  path '/systems/{system_id}/policies' do
+    let(:system_id) { FactoryBot.create(:system, account: user.account, os_major_version: 7, os_minor_version: 1).id }
+
+    before do
+      FactoryBot.create_list(
+        :v2_policy,
+        25,
+        account: user.account,
+        system_id: system_id,
+        os_major_version: 7,
+        supports_minors: [1]
+      )
+    end
+
+    get 'Request Policies assigned to a System' do
+      v2_auth_header
+      tags 'Systems'
+      description 'Lists Policies under a System'
+      operationId 'SystemsPolicies'
+      content_types
+      pagination_params_v2
+      sort_params_v2(V2::Policy)
+      search_params_v2(V2::Policy)
+
+      parameter name: :system_id, in: :path, type: :string, required: true
+
+      response '200', 'Lists Policies' do
+        v2_collection_schema 'policy'
+
+        after { |e| autogenerate_examples(e, 'List of Policies under a System') }
+
+        run_test!
+      end
+    end
+  end
 end
