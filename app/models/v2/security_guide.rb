@@ -36,9 +36,9 @@ module V2
 
     # Builds the hierarchical structure of groups and rules
     def rule_tree
-      cached_rules = rules.select(:id, :rule_group_id).group_by(&:rule_group_id)
+      cached_rules = rules.order(:precedence).select(:id, :rule_group_id).group_by(&:rule_group_id)
 
-      rule_groups.select(:id, :ancestry).arrange_serializable do |group, children|
+      rule_groups.order(:precedence).select(:id, :ancestry).arrange_serializable do |group, children|
         {
           id: group.id,
           type: :rule_group,
