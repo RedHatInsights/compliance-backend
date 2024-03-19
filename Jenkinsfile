@@ -38,6 +38,22 @@ pipeline {
 
     stages {
 
+        stage('Test cert') {
+            steps {
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                    sh '''
+                        echo -n "$PULP_CLIENT_CERT" > pulp_client.crt
+                        ls -l pulp_client.crt
+                        export HTTPS_PROXY=http://squid.corp.redhat.com:3128
+
+                        curl --cert "pulp_client.crt" \
+                            https://mtls.internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/
+                        exit 99
+                    '''
+                }
+            }
+        }
+
         stage('Build the PR commit image') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
