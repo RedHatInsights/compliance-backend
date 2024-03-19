@@ -10,7 +10,7 @@ def secrets = [
     [path: params.VAULT_PATH_INSIGHTSDROID_GITHUB, secretValues: [
         [envVar: 'GITHUB_TOKEN', vaultKey: 'token'],
         [envVar: 'GITHUB_API_URL', vaultKey: 'mirror_url']]],
-    [path: params.VAULT_PATH_COMPLIANCE_PULP_CLIENT_CERT, secretValues: [
+    [path: 'app-interface/pulp/stage/foo', secretValues: [
         [envVar: 'PULP_CLIENT_CERT', vaultKey: 'data']]]
 ]
 
