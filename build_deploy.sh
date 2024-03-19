@@ -21,7 +21,5 @@ else
 fi
 
 echo -n "$PULP_CLIENT_CERT" > "${WORKSPACE}/pulp_client.crt"
-# Try using the cert
-HTTPS_PROXY=http://squid.corp.redhat.com:3128 curl --cert "${WORKSPACE}/pulp_client.crt"  https://mtls.internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/
 
 cicd::image_builder::build_and_push

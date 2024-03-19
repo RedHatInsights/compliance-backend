@@ -23,9 +23,10 @@ COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
 COPY ./pulp_client.crt /tmp/pulp_client.crt
 
-ENV BUNDLE_SSL_CLIENT_CERT="/tmp/pulp_client.crt"
-ENV NEXUS_URL="https://mtls.internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/"
+# ENV BUNDLE_SSL_CLIENT_CERT="/tmp/pulp_client.crt"
 ENV HTTPS_PROXY="http://squid.corp.redhat.com:3128"
+
+RUN bundle config set --global mirror.https://rubygems.org https://mtls.internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/
 
 RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                                \
     if [ -z "$FULL_RHEL" ] ; then                                                          \
