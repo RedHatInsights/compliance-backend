@@ -23,7 +23,7 @@ COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
 COPY ./pulp_client.crt /tmp/pulp_client.crt
 
-# ENV BUNDLE_SSL_CLIENT_CERT="/tmp/pulp_client.crt"
+ENV BUNDLE_SSL_CLIENT_CERT="/tmp/pulp_client.crt"
 ENV HTTPS_PROXY="http://squid.corp.redhat.com:3128"
 
 RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                                \
