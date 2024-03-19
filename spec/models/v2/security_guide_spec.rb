@@ -26,15 +26,31 @@ describe V2::SecurityGuide do
   describe 'rule_tree' do
     let(:os_version) { 8 }
 
-    let(:g1) { FactoryBot.create(:v2_rule_group, security_guide: subject) }
-    let(:g2) { FactoryBot.create(:v2_rule_group, security_guide: subject, ancestry: g1.id) }
-    let(:g3) { FactoryBot.create(:v2_rule_group, security_guide: subject, ancestry: [g2.ancestry, g2.id].join('/')) }
-    let(:g4) { FactoryBot.create(:v2_rule_group, security_guide: subject, ancestry: [g2.ancestry, g2.id].join('/')) }
+    let(:g1) { FactoryBot.create(:v2_rule_group, security_guide: subject, precedence: 1) }
+    let(:g2) { FactoryBot.create(:v2_rule_group, security_guide: subject, ancestry: g1.id, precedence: 2) }
 
-    let(:r1) { FactoryBot.create(:v2_rule, rule_group: g1, security_guide: subject) }
-    let(:r2) { FactoryBot.create(:v2_rule, rule_group: g1, security_guide: subject) }
-    let(:r3) { FactoryBot.create(:v2_rule, rule_group: g2, security_guide: subject) }
-    let(:r4) { FactoryBot.create(:v2_rule, rule_group: g3, security_guide: subject) }
+    let(:g3) do
+      FactoryBot.create(
+        :v2_rule_group,
+        security_guide: subject,
+        ancestry: [g2.ancestry, g2.id].join('/'),
+        precedence: 3
+      )
+    end
+
+    let(:g4) do
+      FactoryBot.create(
+        :v2_rule_group,
+        security_guide: subject,
+        ancestry: [g2.ancestry, g2.id].join('/'),
+        precedence: 4
+      )
+    end
+
+    let(:r1) { FactoryBot.create(:v2_rule, rule_group: g1, security_guide: subject, precedence: 1) }
+    let(:r2) { FactoryBot.create(:v2_rule, rule_group: g1, security_guide: subject, precedence: 2) }
+    let(:r3) { FactoryBot.create(:v2_rule, rule_group: g2, security_guide: subject, precedence: 3) }
+    let(:r4) { FactoryBot.create(:v2_rule, rule_group: g3, security_guide: subject, precedence: 4) }
 
     it 'returns with a hierarhical structure' do
       g3.id
