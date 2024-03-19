@@ -26,8 +26,6 @@ COPY ./pulp_client.crt /tmp/pulp_client.crt
 # ENV BUNDLE_SSL_CLIENT_CERT="/tmp/pulp_client.crt"
 ENV HTTPS_PROXY="http://squid.corp.redhat.com:3128"
 
-RUN bundle config set --global mirror.https://rubygems.org https://mtls.internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/
-
 RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                                \
     if [ -z "$FULL_RHEL" ] ; then                                                          \
       rpm -Uvh $pgRepo $pgRepoKey                                                       && \
@@ -43,6 +41,7 @@ RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                     
     ( [[ $prod != "true" ]] || bundle config set --local --without 'development:test' ) && \
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )            && \
     ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )             && \
+    bundle config set --global mirror.https://rubygems.org https://mtls.internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/ && \
     bundle config set --local retry '2'                                                 && \
     bundle config set --local force_ruby_platform true                                  && \
     ( [[ $prod != "true" ]] || bundle install --without development test )              && \
