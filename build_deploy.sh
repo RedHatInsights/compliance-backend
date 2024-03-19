@@ -20,7 +20,5 @@ else
     export CICD_IMAGE_BUILDER_ADDITIONAL_TAGS=("latest")
 fi
 
-# Write out the Pulp client certificate to disk
-echo $PULP_CLIENT_CERT > "$WORKSPACE"/pulp_client.crt
-
+echo -n "$PULP_CLIENT_CERT" > "${WORKSPACE}/pulp_client.crt"
 cicd::image_builder::build_and_push
