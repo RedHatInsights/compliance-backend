@@ -12,7 +12,9 @@ def secrets = [
         [envVar: 'GITHUB_API_URL', vaultKey: 'mirror_url']]],
     [path: params.VAULT_PATH_RHR_PULL, secretValues: [
         [envVar: 'RH_REGISTRY_USER', vaultKey: 'user'],
-        [envVar: 'RH_REGISTRY_TOKEN', vaultKey: 'token']]]
+        [envVar: 'RH_REGISTRY_TOKEN', vaultKey: 'token']]],
+    [path: params.VAULT_PATH_COMPLIANCE_PULP_CLIENT_CERT, secretValues: [
+        [envVar: 'PULP_CLIENT_CERT', vaultKey: 'data']]]
 ]
 
 def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID]
