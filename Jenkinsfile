@@ -33,31 +33,22 @@ pipeline {
         IQE_FILTER_EXPRESSION=""
         IQE_MARKER_EXPRESSION="compliance_smoke"
         IQE_PLUGINS="compliance"
-        REF_ENV="insights-stage"
+        REF_ENV="insights-stage",
+        BUNDLE_SOURCE="https://mtls.internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/"
+        HTTPS_PROXY="http://squid.corp.redhat.com:3128"
     }
 
     stages {
 
-        stage('Test cert') {
-            steps {
-                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh '''
-                        echo -n "$PULP_CLIENT_CERT" > pulp_client.crt
-                        ls -l pulp_client.crt
-                        export HTTPS_PROXY=http://squid.corp.redhat.com:3128
-
-                        curl --cert "pulp_client.crt" \
-                            https://mtls.internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/
-                        exit 99
-                    '''
-                }
-            }
-        }
-
         stage('Build the PR commit image') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'bash -x build_deploy.sh'
+                    sh '''
+                        export BUNDLE_CERT=$(mktemp)
+                        echo -n "$PULP_CLIENT_CERT" > $BUNDLE_CERT
+                        echo -n "$PULP_CLIENT_CERT" | openssl enc -d -base64 -in - -out $BUNDLE_CERT
+                        bash -x build_deploy.sh
+                    '''
                 }
             }
         }
