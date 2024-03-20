@@ -13,6 +13,27 @@ module V2
     end
     permission_for_action :show, Rbac::COMPLIANCE_VIEWER
 
+    def update
+      if new_tailoring_rule.save
+        render_json rule, status: :accepted
+        audit_success("Assigned rule #{rule.id} to tailoring #{new_tailoring_rule.tailoring_id}")
+      else
+        render_model_errors new_tailoring_rule
+      end
+    end
+    permission_for_action :update, Rbac::POLICY_WRITE
+    permitted_params_for_action :update, { id: ID_TYPE, policy_id: ID_TYPE, tailoring_id: ID_TYPE }
+
+    def destroy
+      tailoring_rule = rule.tailoring_rules.find_by!(tailoring_id: permitted_params[:tailoring_id])
+
+      tailoring_rule.destroy
+      audit_success("Unassigned rule #{rule.id} from tailoring #{tailoring_rule.tailoring_id}")
+      render_json rule, status: :accepted
+    end
+    permission_for_action :destroy, Rbac::POLICY_DELETE
+    permitted_params_for_action :destroy, { id: ID_TYPE, policy_id: ID_TYPE, tailoring_id: ID_TYPE }
+
     private
 
     def rules
@@ -21,6 +42,16 @@ module V2
 
     def rule
       @rule ||= authorize(expand_resource.find(permitted_params[:id]))
+    end
+
+    def new_tailoring_rule
+      @new_tailoring_rule ||= begin
+        right = pundit_scope.find(permitted_params[:id])
+        left = pundit_scope(V2::Tailoring).where.not(id: right.tailorings.select(:id))
+                                          .find(permitted_params[:tailoring_id])
+
+        V2::TailoringRule.new(tailoring: left, rule: right)
+      end
     end
 
     def resource

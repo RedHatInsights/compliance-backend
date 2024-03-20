@@ -11,6 +11,14 @@ module V2
       true
     end
 
+    def update?
+      true
+    end
+
+    def destroy?
+      true
+    end
+
     # All users should see all rules currently
     class Scope < ::ApplicationPolicy::Scope
     end

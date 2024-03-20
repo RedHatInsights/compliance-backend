@@ -36,7 +36,6 @@ module V2
     has_many :tailoring_rules,
              class_name: 'V2::TailoringRule',
              dependent: :destroy,
-             foreign_key: :profile_id,
              inverse_of: :tailoring
     has_many :rules, class_name: 'V2::Rule', through: :tailoring_rules
     has_many :reports, class_name: 'V2::Report', dependent: nil

@@ -32,6 +32,9 @@ module V2
     belongs_to :rule_group, class_name: 'V2::RuleGroup', optional: true
     has_many :profile_rules, dependent: :destroy
     has_many :profiles, through: :profile_rules, source: :profile, class_name: 'V2::Profile'
+    has_many :tailoring_rules, class_name: 'V2::TailoringRule', dependent: :destroy
+    has_many :tailorings, through: :tailoring_rules, class_name: 'V2::Tailoring'
+    has_many :policies, class_name: 'V2::Policy', through: :tailorings
 
     sortable_by :title
     sortable_by :severity, SORTED_SEVERITIES

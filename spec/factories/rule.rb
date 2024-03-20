@@ -23,12 +23,17 @@ FactoryBot.define do
       os_major_version { 7 }
       profile_id { nil }
       parent_count { (1..5).to_a.sample }
+      tailoring_id { nil }
     end
 
     after(:create) do |rule, ev|
-      next if ev.profile_id.nil?
+      if ev.tailoring_id.present?
+        rule.tailoring_rules << FactoryBot.create(:v2_tailoring_rule, rule: rule, tailoring_id: ev.tailoring_id)
+      end
 
-      rule.profile_rules << FactoryBot.create(:v2_profile_rule, rule_id: rule.id, profile_id: ev.profile_id)
+      if ev.profile_id.present?
+        rule.profile_rules << FactoryBot.create(:v2_profile_rule, rule_id: rule.id, profile_id: ev.profile_id)
+      end
     end
   end
 end
