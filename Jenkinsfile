@@ -42,7 +42,7 @@ pipeline {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh '''
-                        echo -n "$PULP_CLIENT_CERT" > pulp_client.crt
+                        echo -n "$COMPLIANCE_PULP_CERTIFICATE" > pulp_client.crt
                         ls -l pulp_client.crt
                         export HTTPS_PROXY=http://squid.corp.redhat.com:3128
 
