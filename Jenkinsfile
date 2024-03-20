@@ -11,7 +11,7 @@ def secrets = [
         [envVar: 'GITHUB_TOKEN', vaultKey: 'token'],
         [envVar: 'GITHUB_API_URL', vaultKey: 'mirror_url']]],
     [path: params.VAULT_PATH_COMPLIANCE_PULP_CLIENT_CERT, secretValues: [
-        [envVar: 'PULP_CLIENT_CERT', vaultKey: 'data']]]
+        [envVar: 'PULP_CLIENT_CERT', vaultKey: 'pulp-cert']]]
 ]
 
 def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID]
