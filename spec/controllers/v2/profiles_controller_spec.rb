@@ -7,7 +7,8 @@ describe V2::ProfilesController do
     {
       ref_id: :ref_id,
       title: :title,
-      description: :description
+      description: :description,
+      value_overrides: :value_overrides
     }
   end
 
@@ -28,6 +29,7 @@ describe V2::ProfilesController do
       FactoryBot.create_list(
         :v2_profile,
         item_count,
+        value_count: 10,
         security_guide: parent
       ).sort_by(&:id)
     end
