@@ -36,6 +36,11 @@ module Api
               'Red Hat Enterprise Linux 7 Benchmark™, v2.2.0, released 12-27-2017.'],
               readOnly: true,
               description: 'Longer description of the Profile'
+            },
+            value_overrides: {
+              type: :object,
+              readOnly: true,
+              description: 'Pair of keys and values for Value Definition customizations'
             }
           }
         }.freeze
