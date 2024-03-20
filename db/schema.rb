@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_06_151739) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_22_093524) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -392,6 +392,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_151739) do
        JOIN tailorings ON ((tailorings.policy_id = v2_policies.id)))
        JOIN test_results ON ((test_results.profile_id = tailorings.id)))
     GROUP BY v2_policies.id, v2_policies.title, v2_policies.description, v2_policies.compliance_threshold, v2_policies.business_objective, v2_policies.total_system_count, v2_policies.profile_id, v2_policies.account_id;
+  SQL
+  create_view "tailoring_rules", sql_definition: <<-SQL
+      SELECT profile_rules.id,
+      profile_rules.profile_id AS tailoring_id,
+      profile_rules.rule_id
+     FROM profile_rules;
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()

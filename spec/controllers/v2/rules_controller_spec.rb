@@ -158,4 +158,136 @@ describe V2::RulesController do
       end
     end
   end
+
+  context '/policies/:id/tailorings/:id/rules' do
+    let(:canonical_profile) do
+      FactoryBot.create(
+        :v2_profile,
+        rule_count: 0,
+        os_major_version: 8,
+        supports_minors: [9]
+      )
+    end
+
+    let(:policy) do
+      FactoryBot.create(
+        :v2_policy,
+        profile: canonical_profile,
+        account: current_user.account,
+        supports_minors: [9]
+      )
+    end
+
+    let(:parent) do
+      FactoryBot.create(
+        :v2_tailoring,
+        profile: canonical_profile,
+        policy: policy,
+        os_minor_version: 9
+      )
+    end
+
+    let(:extra_params) { { tailoring_id: parent.id, policy_id: parent.policy.id, id: item.id } }
+
+    describe 'PATCH update' do
+      let(:item) do
+        FactoryBot.create(:v2_rule, security_guide: canonical_profile.security_guide)
+      end
+
+      it 'creates the link between tailoring and rule' do
+        patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+
+        expect(response).to have_http_status :accepted
+        expect(item.tailorings).to include(parent)
+      end
+
+      context 'mismatching security guide' do
+        let(:item) { FactoryBot.create(:v2_rule) }
+
+        it 'renders model error' do
+          patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+
+          expect(response).to have_http_status :not_acceptable
+        end
+      end
+
+      context 'rule already linked to the tailoring' do
+        let(:item) do
+          FactoryBot.create(
+            :v2_rule,
+            security_guide: canonical_profile.security_guide,
+            tailoring_id: parent.id # already linked tailoring
+          )
+        end
+
+        let(:parent) do
+          FactoryBot.create(
+            :v2_tailoring,
+            profile: canonical_profile,
+            policy: policy,
+            os_minor_version: 9
+          )
+        end
+
+        it 'returns not found' do
+          patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+
+          expect(response).to have_http_status :not_found
+        end
+      end
+
+      context 'tailoring belongs to another account' do
+        let(:policy) do
+          FactoryBot.create(
+            :v2_policy,
+            :for_tailoring,
+            account: FactoryBot.create(:v2_account),
+            supports_minors: [9]
+          )
+        end
+
+        let(:parent) do
+          FactoryBot.create(
+            :v2_tailoring,
+            profile: FactoryBot.create(
+              :v2_profile,
+              ref_id_suffix: 'baz',
+              os_major_version: 8,
+              supports_minors: [9]
+            ),
+            policy: policy,
+            os_minor_version: 9
+          )
+        end
+
+        it 'returns not found' do
+          patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+
+          expect(response).to have_http_status :not_found
+        end
+      end
+    end
+
+    describe 'DELETE destroy' do
+      let(:item) do
+        FactoryBot.create(:v2_rule, security_guide: canonical_profile.security_guide, tailorings: [parent])
+      end
+
+      it 'removes the link between a tailoring and a rule' do
+        delete :destroy, params: extra_params.merge(parents: %i[policies tailorings])
+
+        expect(response).to have_http_status :accepted
+        expect(item.reload.tailorings).not_to include(parent)
+        expect(parent.rules).not_to include(item)
+      end
+
+      context 'rule not linked to the system' do
+        it 'returns not found' do
+          patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+
+          expect(response).to have_http_status :not_found
+        end
+      end
+    end
+  end
 end
