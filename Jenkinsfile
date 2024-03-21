@@ -35,7 +35,7 @@ pipeline {
         IQE_PLUGINS="compliance"
         REF_ENV="insights-stage",
         BUNDLE_SOURCE="https://mtls.internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/"
-        HTTPS_PROXY="http://squid.corp.redhat.com:3128"
+        HTTP_PROXY="http://squid.corp.redhat.com:3128"
     }
 
     stages {
@@ -46,7 +46,6 @@ pipeline {
                     sh '''
                         export BUNDLE_CERT=$(mktemp)
                         echo -n "$PULP_CLIENT_CERT" > $BUNDLE_CERT
-                        echo -n "$PULP_CLIENT_CERT" | openssl enc -d -base64 -in - -out $BUNDLE_CERT
                         bash -x build_deploy.sh
                     '''
                 }

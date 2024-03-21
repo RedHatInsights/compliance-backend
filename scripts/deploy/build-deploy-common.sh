@@ -255,8 +255,8 @@ build_image() {
     #shellcheck disable=SC2086
     container_engine_cmd build --pull -f "$DOCKERFILE" $BUILD_ARGS_CMD $LABEL_PARAMETER \
         $DISABLE_CACHE_PARAMETER \
-        --build-arg bundleCert=$BUNDLE_CERT --build-arg bundleSource=$BUNDLE_SOURCE \
-        --build-arg httpsProxy=$HTTPS_PROXY
+        --build-arg bundleCert=$BUNDLE_CERT --build-arg gemMirror=$GEM_MIRROR \
+        --build-arg httpProxy=$HTTP_PROXY
         -t "${IMAGE_NAME}:${IMAGE_TAG}" .
 
     #shellcheck disable=SC2181
