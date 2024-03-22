@@ -21,7 +21,7 @@ FactoryBot.define do
 
     transient { auth_type { nil } }
 
-    trait :cert_authorized do
+    trait :with_cert_auth do
       transient { auth_type { Insights::Api::Common::IdentityHeader::CERT_AUTH } }
     end
   end
