@@ -246,7 +246,7 @@ describe V2::TailoringsController do
           allow(controller).to receive(:any_inventory_hosts?).and_return(true)
         end
 
-        let(:current_user) { FactoryBot.create(:v2_user, account: FactoryBot.create(:v2_account, :cert_authorized)) }
+        let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth) }
 
         include_examples 'tailoring_file'
       end
@@ -268,7 +268,7 @@ describe V2::TailoringsController do
           allow(controller).to receive(:any_inventory_hosts?).and_return(true)
         end
 
-        let(:current_user) { FactoryBot.create(:v2_user, account: FactoryBot.create(:v2_account, :cert_authorized)) }
+        let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth) }
 
         include_examples 'tailoring_file'
       end
