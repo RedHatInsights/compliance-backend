@@ -6,8 +6,8 @@ module V2
     extend ActiveSupport::Concern
 
     ALLOWED_CERT_BASED_RBAC_ACTIONS = [
-      { controller: 'policies', action: 'index' },
-      { controller: 'tailorings', action: 'tailoring_file' }
+      { controller: 'policies', action: 'index', parents: %i[systems] },
+      { controller: 'tailorings', action: 'tailoring_file', parents: %i[policy] }
     ].freeze
 
     included do
@@ -65,7 +65,7 @@ module V2
 
     def valid_cert_endpoint?
       ALLOWED_CERT_BASED_RBAC_ACTIONS.include?(
-        controller: controller_name, action: action_name
+        controller: controller_name, action: action_name, parents: params[:parents].map(&:to_sym)
       )
     end
 
