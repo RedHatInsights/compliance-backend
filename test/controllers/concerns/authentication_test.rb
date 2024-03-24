@@ -24,7 +24,7 @@ class AuthenticationTest < ActionController::TestCase
 
   MockedRoutes = ActionDispatch::Routing::RouteSet.new
   MockedRoutes.draw do
-    ActiveSupport::Deprecation.silence do
+    Rails.application.deprecators.silence do
       get ':controller(/:action)'
     end
   end

@@ -120,7 +120,7 @@ class Host < ApplicationRecord
     profiles ||= RequestStore.store['scoped_search_context_profiles']
 
     left_outer_joins(:test_result_profiles).where(
-      test_results: { profiles: profiles }
+      test_results: { profile: profiles }
     )
   }
 

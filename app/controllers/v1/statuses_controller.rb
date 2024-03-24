@@ -31,7 +31,7 @@ module V1
     end
 
     def ensure_db_connection
-      ARB.establish_connection unless ARB.connection.active?
+      ARB.connection.connect! unless ARB.connection.active?
     end
   end
 end
