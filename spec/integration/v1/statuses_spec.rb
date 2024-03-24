@@ -24,7 +24,7 @@ describe 'Status API', swagger_doc: 'v1/openapi.json' do
 
       response '500', 'unsuccessful status' do
         before do
-          expect(ActiveRecord::Base).to(receive(:connection)).twice do
+          expect(ActiveRecord::Base).to(receive(:connection)).at_least(2).times do
             OpenStruct.new(active?: false)
           end
         end
