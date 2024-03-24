@@ -71,6 +71,7 @@ gem 'yabeda-puma-plugin'
 gem 'yabeda-rails'
 gem 'yabeda-sidekiq'
 gem 'yabeda-prometheus-mmap'
+gem 'prometheus-client-mmap', '<= 0.28.1'
 
 # Nokogiri
 gem 'nokogiri', force_ruby_platform: true

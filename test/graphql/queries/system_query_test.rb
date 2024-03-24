@@ -227,7 +227,7 @@ class SystemQueryTest < ActiveSupport::TestCase
     )
 
     assert_equal 5, result['data']['system'].count
-    result['data']['system'].each do |_, timestamp|
+    result['data']['system'].each_value do |timestamp|
       assert_equal timestamp, Time.parse(timestamp).iso8601
     end
   end
