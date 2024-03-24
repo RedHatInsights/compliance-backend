@@ -48,7 +48,7 @@ class SupportedSsgUpdaterTest < ActiveSupport::TestCase
 
           SupportedSsgUpdater.search_through(fallback) do |key, value, _current_hash|
             if key == 'profiles'
-              value.each do |_key, profile|
+              value.each_value do |profile|
                 assert_not sub_keys?(profile)
               end
             end

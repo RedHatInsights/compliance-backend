@@ -10,7 +10,7 @@ require './spec/api/v2/openapi'
 include Api::V1::Schemas::Util # rubocop:disable Style/MixinUsage
 
 RSpec.configure do |config|
-  config.swagger_root = Rails.root.to_s + '/swagger'
+  config.openapi_root = Rails.root.to_s + '/swagger'
   # FIXME: https://github.com/rswag/rswag/issues/666
   # config.swagger_strict_schema_validation = true
   config.before(:each) do
@@ -20,7 +20,7 @@ RSpec.configure do |config|
     stub_request(:get, /#{Settings.private_endpoints.compliance_ssg.url}/).to_return(status: 404)
   end
 
-  config.swagger_docs = {
+  config.openapi_specs = {
     'v1/openapi.json' => Api::V1::Openapi.doc,
     'v2/openapi.json' => Api::V2::Openapi.doc
   }
