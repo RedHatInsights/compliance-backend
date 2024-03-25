@@ -247,6 +247,21 @@ describe V2::PoliciesController do
       it_behaves_like 'paginable', :systems
       it_behaves_like 'sortable', :systems
       it_behaves_like 'searchable', :systems
+
+      context 'via CERT_AUTH' do
+        before do
+          allow(controller).to receive(:rbac_allowed?).and_call_original
+          allow(controller).to receive(:any_inventory_hosts?).and_return(true)
+        end
+
+        let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth) }
+
+        it_behaves_like 'collection', :systems
+        include_examples 'with metadata', :systems
+        it_behaves_like 'paginable', :systems
+        it_behaves_like 'sortable', :systems
+        it_behaves_like 'searchable', :systems
+      end
     end
   end
 end
