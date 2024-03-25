@@ -9,8 +9,6 @@ module V1
 
     def show
       render json: { data: all_statuses }, status: status_return_code
-    rescue => ex
-      Rails.logger.error(ex.backtrace)
     end
 
     private
