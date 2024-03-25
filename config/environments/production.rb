@@ -79,7 +79,7 @@ Rails.application.configure do
         Insights::Api::Common::LoggerWithAudit.new($cloudwatch_client)
       )
       cloudwatch_logger.formatter = $cloudwatch_client.formatter(:json)
-      config.logger.extend(ActiveSupport::Logger.broadcast(cloudwatch_logger))
+      config.logger.broadcast_to(cloudwatch_logger)
       cloudwatch_logger.level = Logger::WARN # Different logging level for CloudWatch
     end
   end
@@ -120,7 +120,7 @@ Rails.application.configure do
   else
     config.logger = Insights::Api::Common::LoggerWithAudit(config.paths['log'].first)
   end
-  config.logger = ActiveSupport::TaggedLogging.new(config.logger)
+  config.logger = ActiveSupport::BroadcastLogger.new(ActiveSupport::TaggedLogging.new(config.logger))
 
   # Temporarily allow any origins
   config.hosts.clear
