@@ -75,9 +75,7 @@ Rails.application.configure do
         Settings.logging.log_stream,
         region: Settings.logging.region
       )
-      cloudwatch_logger = ActiveSupport::TaggedLogging.new(
-        Insights::Api::Common::LoggerWithAudit.new($cloudwatch_client)
-      )
+      cloudwatch_logger = Insights::Api::Common::LoggerWithAudit.new($cloudwatch_client)
       cloudwatch_logger.formatter = $cloudwatch_client.formatter(:json)
       config.logger.broadcast_to(cloudwatch_logger)
       cloudwatch_logger.level = Logger::WARN # Different logging level for CloudWatch
