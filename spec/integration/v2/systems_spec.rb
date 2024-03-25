@@ -254,7 +254,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
         let(:id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
-        after { |e| autogenerate_examples(e, 'Description of an error when assigning to a non-existing System') }
+        after { |e| autogenerate_examples(e, 'Description of an error when unassigning a non-existing System') }
 
         run_test!
       end
