@@ -144,7 +144,7 @@ describe V2::SystemsController do
           an_object_having_attributes(os_minor_version: os_minor_version.to_s)
         )
 
-        expect(first_tailoring.rules).to eq(first_tailoring.profile.rules)
+        expect(first_tailoring.rules.to_set(&:id)).to eq(first_tailoring.profile.rules.to_set(&:id))
         expect(first_tailoring.value_overrides).to eq(first_tailoring.profile.value_overrides)
       end
 
