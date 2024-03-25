@@ -240,7 +240,7 @@ describe V2::TailoringsController do
         end
       end
 
-      context 'authorized via cert_auth' do
+      context 'via CERT_AUTH' do
         before do
           allow(controller).to receive(:rbac_allowed?).and_call_original
           allow(controller).to receive(:any_inventory_hosts?).and_return(true)
@@ -262,7 +262,7 @@ describe V2::TailoringsController do
       let(:deselected_rules) { tailoring_file['profiles'].first['rules'].select { |_, v| v['evaluate'] == false }.keys }
       let(:values) { tailoring_file['profiles'].first['variables'].transform_values { |value| value['value'] } }
 
-      context 'authorized via cert_auth' do
+      context 'via CERT_AUTH' do
         before do
           allow(controller).to receive(:rbac_allowed?).and_call_original
           allow(controller).to receive(:any_inventory_hosts?).and_return(true)
