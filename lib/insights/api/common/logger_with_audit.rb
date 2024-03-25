@@ -19,11 +19,11 @@ module Insights
 
         # Mask tagged logging for CloudWatchLogger as it is not supported there
         # :nocov:
-        unless defined?(tagged)
-          define_method(:tagged) do |_prefix, &block|
-            block.call(self)
-          end
-        end
+        # unless defined?(tagged)
+        #   define_method(:tagged) do |_prefix, &block|
+        #     block.call(self)
+        #   end
+        # end
         # :nocov:
       end
     end
