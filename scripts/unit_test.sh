@@ -23,7 +23,7 @@ COMPLIANCE_POD_ID=''
 DB_CONTAINER_ID=''
 TEST_CONTAINER_ID=''
 
-POSTGRES_IMAGE="quay.io/cloudservices/postgresql-rds:cyndi-12-1"
+POSTGRES_IMAGE="quay.io/cloudservices/postgresql-rds:cyndi-12"
 DATABASE_USER="compliance"
 DATABASE_PASSWORD="changeme"
 DATABASE_NAME="compliance-test"
