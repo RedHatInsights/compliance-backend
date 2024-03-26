@@ -20,6 +20,4 @@ else
     export CICD_IMAGE_BUILDER_ADDITIONAL_TAGS=("latest")
 fi
 
-echo -n "$PULP_CLIENT_CERT" > "${WORKSPACE}/pulp_client.crt"
-
 cicd::image_builder::build_and_push
