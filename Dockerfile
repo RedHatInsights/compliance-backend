@@ -4,6 +4,8 @@ ARG extras=""
 ARG prod="true"
 ARG pgRepo="http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-8-4.el8.noarch.rpm"
 ARG pgRepoKey="http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-4.el8.noarch.rpm"
+ARG gemMirror=""
+ARG httpProxy=""
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal AS build
 
@@ -14,6 +16,8 @@ ARG prod
 ARG pgRepo
 ARG pgRepoKey
 ARG IMAGE_TAG
+ARG gemMirror
+ARG httpProxy
 
 USER 0
 
@@ -22,26 +26,29 @@ WORKDIR /opt/app-root/src
 COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
 
-RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                                \
-    if [ -z "$FULL_RHEL" ] ; then                                                          \
-      rpm -Uvh $pgRepo $pgRepoKey                                                       && \
-      sed -i 's/^\(enabled.*\)/\1\npriority=200/;' /etc/yum.repos.d/CentOS*.repo;          \
-    fi;                                                                                    \
-    rpm -e --nodeps tzdata &>/dev/null                                                  && \
-    microdnf module enable ruby:3.1                                                     && \
-    microdnf module enable postgresql:13                                                && \
-    microdnf install --nodocs -y $deps $devDeps $extras                                 && \
-    chmod +t /tmp                                                                       && \
-    gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin              && \
-    gem install bundler                                                                 && \
-    ( [[ $prod != "true" ]] || bundle config set --local --without 'development:test' ) && \
-    ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )            && \
-    ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )             && \
-    bundle config set --local retry '2'                                                 && \
-    bundle config set --local force_ruby_platform true                                  && \
-    ( [[ $prod != "true" ]] || bundle install --without development test )              && \
-    ( [[ $prod == "true" ]] || bundle install )                                         && \
-    microdnf clean all -y                                                               && \
+ENV http_proxy="$httpProxy"
+
+RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                                 \
+    if [ -z "$FULL_RHEL" ] ; then                                                           \
+      rpm -Uvh $pgRepo $pgRepoKey                                                        && \
+      sed -i 's/^\(enabled.*\)/\1\npriority=200/;' /etc/yum.repos.d/CentOS*.repo;           \
+    fi;                                                                                     \
+    rpm -e --nodeps tzdata &>/dev/null                                                   && \
+    microdnf module enable ruby:3.1                                                      && \
+    microdnf module enable postgresql:13                                                 && \
+    microdnf install --nodocs -y $deps $devDeps $extras                                  && \
+    chmod +t /tmp                                                                        && \
+    ( [[ $prod != "true" ]] || sed -i "s,https://rubygems.org/,$gemMirror," /etc/gemrc ) && \
+    gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin               && \
+    gem install bundler                                                                  && \
+    ( [[ $prod != "true" ]] || bundle config set --local --without 'development:test' )  && \
+    ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )             && \
+    ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )              && \
+    bundle config set --local retry '2'                                                  && \
+    bundle config set --local force_ruby_platform true                                   && \
+    ( [[ $prod != "true" ]] || bundle install --without development test )               && \
+    ( [[ $prod == "true" ]] || bundle install )                                          && \
+    microdnf clean all -y                                                                && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 
 LABEL BUILD_STAGE_OF=$IMAGE_TAG

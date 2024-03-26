@@ -9,10 +9,7 @@ def secrets = [
         [envVar: 'QUAY_TOKEN', vaultKey: 'token']]],
     [path: params.VAULT_PATH_INSIGHTSDROID_GITHUB, secretValues: [
         [envVar: 'GITHUB_TOKEN', vaultKey: 'token'],
-        [envVar: 'GITHUB_API_URL', vaultKey: 'mirror_url']]],
-    [path: params.VAULT_PATH_RHR_PULL, secretValues: [
-        [envVar: 'RH_REGISTRY_USER', vaultKey: 'user'],
-        [envVar: 'RH_REGISTRY_TOKEN', vaultKey: 'token']]]
+        [envVar: 'GITHUB_API_URL', vaultKey: 'mirror_url']]]
 ]
 
 def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID]
@@ -35,6 +32,8 @@ pipeline {
         IQE_MARKER_EXPRESSION="compliance_smoke"
         IQE_PLUGINS="compliance"
         REF_ENV="insights-stage"
+        GEM_MIRROR="https://internal.console.stage.redhat.com/api/pulp-content/compliance/rubygems/"
+        HTTP_PROXY="http://squid.corp.redhat.com:3128"
     }
 
     stages {
@@ -42,7 +41,9 @@ pipeline {
         stage('Build the PR commit image') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
-                    sh 'bash -x build_deploy.sh'
+                    sh '''
+                        bash -x build_deploy.sh
+                    '''
                 }
             }
         }
