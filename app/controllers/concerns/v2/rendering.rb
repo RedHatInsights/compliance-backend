@@ -7,7 +7,7 @@ module V2
 
     included do
       def render_json(model, **args)
-        render json: (index? ? serialize_collection(model) : serialize_individual(model)), **args
+        render json: (collection?(model) ? serialize_collection(model) : serialize_individual(model)), **args
       end
 
       def render_error(messages, status: :not_acceptable, **opts)
@@ -42,8 +42,8 @@ module V2
         { joined: (permitted_params[:parents].to_a + resource.one_to_one).uniq }
       end
 
-      def index?
-        ['index'].include?(action_name)
+      def collection?(model)
+        !model.is_a?(V2::ApplicationRecord)
       end
 
       def model_errors(models = [])

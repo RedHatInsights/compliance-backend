@@ -192,6 +192,66 @@ describe V2::RulesController do
       it_behaves_like 'sortable', :policies, :tailorings
     end
 
+    describe 'POST create' do
+      before do
+        FactoryBot.create_list(
+          :v2_rule, 4,
+          tailoring_id: parent.id,
+          security_guide: parent.security_guide
+        )
+      end
+
+      let(:ids) { items.map(&:id) }
+      let(:items) { FactoryBot.create_list(:v2_rule, 4, security_guide: parent.security_guide) }
+      let(:params) { { policy_id: parent.policy_id, tailoring_id: parent.id, parents: %i[policies tailorings] } }
+
+      %i[id ref_id].each do |key|
+        context "access via #{key}" do
+          let(:ids) { items.map(&key) }
+
+          it 'assigns/removes multiple rules to/from a tailoring' do
+            post :create, params: { ids: ids, **params }
+
+            expect(response).to have_http_status :accepted
+            expect(parent.rules.to_set(&key)).to eq(ids.to_set)
+          end
+
+          context 'already assigned rule' do
+            let(:item) { FactoryBot.create(:v2_rule, security_guide: parent.security_guide, tailoring_id: parent.id) }
+
+            it 'does not modify the assignment of the rule' do
+              post :create, params: { ids: ids + [item.send(key)], **params }
+
+              expect(response).to have_http_status :accepted
+              expect(parent.rules.map(&key)).to include(item.send(key))
+            end
+          end
+
+          context 'empty list of rule IDs' do
+            let(:items) { [] }
+
+            it 'unassigns every already assigned rule' do
+              post :create, params: { ids: ids, **params }
+
+              expect(response).to have_http_status :accepted
+              expect(parent.rules.map(&key)).to be_empty
+            end
+          end
+
+          context 'rule from a different security guide' do
+            let(:item) { FactoryBot.create(:v2_rule) }
+
+            it 'does not assign the foreign rule' do
+              post :create, params: { ids: ids + [item.send(key)], **params }
+
+              expect(response).to have_http_status :accepted
+              expect(parent.rules.map(&key)).not_to include(item.send(key))
+            end
+          end
+        end
+      end
+    end
+
     describe 'PATCH update' do
       let(:item) do
         FactoryBot.create(:v2_rule, security_guide: parent.profile.security_guide)

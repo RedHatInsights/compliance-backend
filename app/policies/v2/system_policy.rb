@@ -11,6 +11,10 @@ module V2
       match_account? && match_group?
     end
 
+    def create?
+      true
+    end
+
     def update?
       match_account? && match_group?
     end
