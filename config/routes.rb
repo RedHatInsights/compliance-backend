@@ -38,7 +38,7 @@ Rails.application.routes.draw do
 
           resources :policies, except: [:new, :edit] do
             resources :tailorings, only: [:index, :show], parents: [:policy] do
-              resources :rules, only: [:update, :destroy], parents: [:policies, :tailorings]
+              resources :rules, only: [:index, :update, :destroy], parents: [:policies, :tailorings]
               get :tailoring_file, on: :member, :defaults => { :format => 'xml' }, :constraints => { :format => /json|xml/ }
             end
             resources :systems, only: [:index, :update, :destroy], parents: [:policies]

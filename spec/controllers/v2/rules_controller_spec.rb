@@ -71,6 +71,7 @@ describe V2::RulesController do
       let(:parent) { FactoryBot.create(:v2_profile) }
       let(:extra_params) { { security_guide_id: parent.security_guide.id, profile_id: parent.id } }
       let(:item_count) { 2 }
+
       let(:items) do
         FactoryBot.create_list(
           :v2_rule,
@@ -78,10 +79,6 @@ describe V2::RulesController do
           security_guide: parent.security_guide,
           profile_id: parent.id
         ).sort_by(&:id)
-      end
-      let(:invalid_params) do
-        parent = FactoryBot.create(:v2_profile)
-        { security_guide_id: parent.security_guide.id, profile_id: parent.id }
       end
 
       it_behaves_like 'collection', :security_guide, :profiles
@@ -160,42 +157,57 @@ describe V2::RulesController do
   end
 
   context '/policies/:id/tailorings/:id/rules' do
-    let(:canonical_profile) do
-      FactoryBot.create(
-        :v2_profile,
-        rule_count: 0,
-        os_major_version: 8,
-        supports_minors: [9]
-      )
-    end
-
-    let(:policy) do
-      FactoryBot.create(
-        :v2_policy,
-        profile: canonical_profile,
-        account: current_user.account,
-        supports_minors: [9]
-      )
-    end
-
     let(:parent) do
       FactoryBot.create(
         :v2_tailoring,
-        profile: canonical_profile,
-        policy: policy,
+        policy: FactoryBot.create(:v2_policy, account: current_user.account, supports_minors: [9]),
         os_minor_version: 9
       )
     end
 
-    let(:extra_params) { { tailoring_id: parent.id, policy_id: parent.policy.id, id: item.id } }
+    describe 'GET index' do
+      let(:extra_params) do
+        {
+          policy_id: parent.policy.id,
+          tailoring_id: parent.id,
+          security_guide_id: pw(parent.profile.security_guide_id)
+        }
+      end
+
+      let(:item_count) { 2 }
+
+      let(:items) do
+        FactoryBot.create_list(
+          :v2_rule,
+          item_count,
+          security_guide_id: parent.profile.security_guide_id,
+          tailoring_id: parent.id
+        ).sort_by(&:id)
+      end
+
+      it_behaves_like 'collection', :policies, :tailorings
+      include_examples 'with metadata', :policies, :tailorings
+      it_behaves_like 'paginable', :policies, :tailorings
+      it_behaves_like 'searchable', :policies, :tailorings
+      it_behaves_like 'sortable', :policies, :tailorings
+    end
 
     describe 'PATCH update' do
       let(:item) do
-        FactoryBot.create(:v2_rule, security_guide: canonical_profile.security_guide)
+        FactoryBot.create(:v2_rule, security_guide: parent.profile.security_guide)
+      end
+
+      let(:params) do
+        {
+          id: item.id,
+          policy_id: parent.policy_id,
+          tailoring_id: parent.id,
+          parents: %i[policies tailorings]
+        }
       end
 
       it 'creates the link between tailoring and rule' do
-        patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+        patch :update, params: params
 
         expect(response).to have_http_status :accepted
         expect(item.tailorings).to include(parent)
@@ -205,7 +217,7 @@ describe V2::RulesController do
         let(:item) { FactoryBot.create(:v2_rule) }
 
         it 'renders model error' do
-          patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+          patch :update, params: params
 
           expect(response).to have_http_status :not_acceptable
         end
@@ -213,55 +225,27 @@ describe V2::RulesController do
 
       context 'rule already linked to the tailoring' do
         let(:item) do
-          FactoryBot.create(
-            :v2_rule,
-            security_guide: canonical_profile.security_guide,
-            tailoring_id: parent.id # already linked tailoring
-          )
-        end
-
-        let(:parent) do
-          FactoryBot.create(
-            :v2_tailoring,
-            profile: canonical_profile,
-            policy: policy,
-            os_minor_version: 9
-          )
+          FactoryBot.create(:v2_rule, security_guide: parent.profile.security_guide, tailoring_id: parent.id)
         end
 
         it 'returns not found' do
-          patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+          patch :update, params: params
 
           expect(response).to have_http_status :not_found
         end
       end
 
       context 'tailoring belongs to another account' do
-        let(:policy) do
-          FactoryBot.create(
-            :v2_policy,
-            :for_tailoring,
-            account: FactoryBot.create(:v2_account),
-            supports_minors: [9]
-          )
-        end
-
         let(:parent) do
           FactoryBot.create(
             :v2_tailoring,
-            profile: FactoryBot.create(
-              :v2_profile,
-              ref_id_suffix: 'baz',
-              os_major_version: 8,
-              supports_minors: [9]
-            ),
-            policy: policy,
+            policy: FactoryBot.create(:v2_policy, supports_minors: [9]),
             os_minor_version: 9
           )
         end
 
         it 'returns not found' do
-          patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+          patch :update, params: params
 
           expect(response).to have_http_status :not_found
         end
@@ -270,11 +254,20 @@ describe V2::RulesController do
 
     describe 'DELETE destroy' do
       let(:item) do
-        FactoryBot.create(:v2_rule, security_guide: canonical_profile.security_guide, tailorings: [parent])
+        FactoryBot.create(:v2_rule, security_guide: parent.profile.security_guide, tailoring_id: parent.id)
+      end
+
+      let(:params) do
+        {
+          id: item.id,
+          policy_id: parent.policy_id,
+          tailoring_id: parent.id,
+          parents: %i[policies tailorings]
+        }
       end
 
       it 'removes the link between a tailoring and a rule' do
-        delete :destroy, params: extra_params.merge(parents: %i[policies tailorings])
+        delete :destroy, params: params
 
         expect(response).to have_http_status :accepted
         expect(item.reload.tailorings).not_to include(parent)
@@ -283,7 +276,7 @@ describe V2::RulesController do
 
       context 'rule not linked to the system' do
         it 'returns not found' do
-          patch :update, params: extra_params.merge(parents: %i[policies tailorings])
+          patch :update, params: params
 
           expect(response).to have_http_status :not_found
         end
