@@ -29,9 +29,14 @@ module V2
       end
 
       def validate_parents!
-        *parents, current = permitted_params[:parents]
+        current = permitted_params[:parents].last
+        parents = parent_route[:parents]
         reflection = resource.reflect_on_association(current)
         join_parents(reflection.klass, parents).find(permitted_params[reflection.foreign_key])
+      end
+
+      def parent_route
+        Rails.application.routes.recognize_path request.path.split('/')[..-2].join('/')
       end
 
       def filter_by_tags(data)
