@@ -5,6 +5,7 @@
     :precedence: 1234
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
   - :factory: :v2_rule
     :title: 'abda'
@@ -12,6 +13,7 @@
     :precedence: 567
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
   - :factory: :v2_rule
     :title: 'aaaa'
@@ -19,6 +21,7 @@
     :precedence: 8765
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
   - :factory: :v2_rule
     :title: 'adac'
@@ -26,6 +29,7 @@
     :precedence: 987
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
   - :factory: :v2_rule
     :title: 'bbbb'
@@ -33,6 +37,7 @@
     :precedence: 4562
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
   - :factory: :v2_rule
     :title: 'cccd'
@@ -40,6 +45,7 @@
     :precedence: 2341
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
   - :factory: :v2_rule
     :title: 'aaaa'
@@ -47,6 +53,7 @@
     :precedence: 954
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
   - :factory: :v2_rule
     :title: 'bacc'
@@ -54,6 +61,7 @@
     :precedence: 1854
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
   - :factory: :v2_rule
     :title: 'zzab'
@@ -61,6 +69,7 @@
     :precedence: 5321
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
   - :factory: :v2_rule
     :title: 'edfa'
@@ -68,6 +77,7 @@
     :precedence: 954
     :security_guide_id: ${security_guide_id}
     :profile_id: ${profile_id}
+    :tailoring_id: ${tailoring_id}
 
 :queries:
   - :sort_by:
