@@ -66,5 +66,16 @@ module V2
         auto_populated_columns.empty? ? Array(primary_key) : auto_populated_columns
       end
     end
+
+    def self.bulk_assign(add, del)
+      insert = delete = 0
+
+      transaction do
+        insert = import(add, on_duplicate_key_ignore: true, validate: false)
+        delete = del.delete_all
+      end
+
+      [insert.ids.count, delete]
+    end
   end
 end

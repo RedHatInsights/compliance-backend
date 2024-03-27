@@ -11,6 +11,10 @@ module V2
       true
     end
 
+    def create?
+      true
+    end
+
     def update?
       true
     end

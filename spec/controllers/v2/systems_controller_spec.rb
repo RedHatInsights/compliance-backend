@@ -115,6 +115,187 @@ describe V2::SystemsController do
       it_behaves_like 'taggable', :policies
     end
 
+    describe 'POST create' do
+      before do
+        FactoryBot.create_list(
+          :system, 4,
+          account: current_user.account,
+          os_major_version: parent.os_major_version,
+          os_minor_version: 8,
+          policy_id: parent.id
+        )
+      end
+
+      let(:items) do
+        [0, 1, 2].flat_map do |version|
+          FactoryBot.create_list(
+            :system, 4,
+            account: current_user.account,
+            os_major_version: parent.os_major_version,
+            os_minor_version: version
+          )
+        end
+      end
+
+      let(:ids) { items.map(&:id) }
+
+      it 'assigns/removes multiple systems to/from a policy' do
+        post :create, params: { ids: ids, policy_id: parent.id, parents: [:policies] }
+
+        expect(response).to have_http_status :accepted
+        expect(parent.systems.to_set(&:id)).to eq(ids.to_set)
+      end
+
+      it 'creates tailoring for each new unique version' do
+        expect(parent.tailorings.count).to eq(1)
+
+        post :create, params: { ids: ids, policy_id: parent.id, parents: [:policies] }
+
+        expect(response).to have_http_status :accepted
+        expect(parent.tailorings.count).to eq(4)
+      end
+
+      context 'already assigned system' do
+        let(:item) do
+          FactoryBot.create(
+            :system,
+            os_major_version: parent.os_major_version,
+            os_minor_version: parent.os_minor_versions.sample,
+            policy_id: parent.id
+          )
+        end
+
+        it 'does not modify the assignment of the system' do
+          post :create, params: { ids: ids + [item.id], policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.systems.map(&:id)).to include(item.id)
+        end
+      end
+
+      context 'system with unsupported OS major version' do
+        let(:item) do
+          FactoryBot.create(:system, account: current_user.account, os_major_version: 10, os_minor_version: 1)
+        end
+
+        it 'does not assign the unsupported system' do
+          post :create, params: { ids: ids + [item.id], policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.systems.map(&:id)).not_to include(item.id)
+        end
+      end
+
+      context 'system with unsupported OS minor version' do
+        let(:item) do
+          FactoryBot.create(
+            :system,
+            account: current_user.account,
+            os_major_version: parent.os_major_version,
+            os_minor_version: 10
+          )
+        end
+
+        it 'does not assign the unsupported system' do
+          post :create, params: { ids: ids + [item.id], policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.systems.map(&:id)).not_to include(item.id)
+        end
+      end
+
+      context 'empty list of system IDs' do
+        let(:items) { [] }
+
+        it 'unassigns every already assigned system' do
+          post :create, params: { ids: ids, policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.systems.map(&:id)).to be_empty
+        end
+      end
+
+      context 'system from another account' do
+        let(:item) do
+          FactoryBot.create(
+            :system,
+            os_major_version: parent.os_major_version,
+            os_minor_version: parent.os_minor_versions.sample
+          )
+        end
+
+        it 'does not assign the foreign system' do
+          post :create, params: { ids: ids + [item.id], policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.systems.map(&:id)).not_to include(item.id)
+        end
+      end
+
+      context 'system from an inaccessible inventory group' do
+        before do
+          stub_rbac_permissions(
+            Rbac::INVENTORY_HOSTS_READ => [{
+              attribute_filter: {
+                key: 'group.id',
+                operation: 'in',
+                value: [nil]
+              }
+            }]
+          )
+        end
+
+        let(:item) do
+          FactoryBot.create(
+            :system,
+            os_major_version:
+            parent.os_major_version,
+            os_minor_version: parent.os_minor_versions.sample,
+            groups: [{ id: 'a_group' }]
+          )
+        end
+
+        it 'does not assign the inaccessible system' do
+          post :create, params: { ids: ids + [item.id], policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.systems.map(&:id)).not_to include(item.id)
+        end
+      end
+
+      context 'already assigned system in an inaccessible inventory group' do
+        before do
+          stub_rbac_permissions(
+            Rbac::INVENTORY_HOSTS_READ => [{
+              attribute_filter: {
+                key: 'group.id',
+                operation: 'in',
+                value: [nil]
+              }
+            }]
+          )
+        end
+
+        let!(:item) do
+          FactoryBot.create(
+            :system,
+            account: current_user.account,
+            os_major_version: parent.os_major_version,
+            os_minor_version: parent.os_minor_versions.sample,
+            policy_id: parent.id,
+            groups: [{ id: 'a_group' }]
+          )
+        end
+
+        it 'does not touch the assigned host' do
+          post :create, params: { ids: ids, policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.systems.to_set(&:id)).to eq((ids + [item.id]).to_set)
+        end
+      end
+    end
+
     describe 'PATCH update' do
       let(:item) do
         FactoryBot.create(

@@ -264,6 +264,35 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
         run_test!
       end
     end
+
+    post 'Bulk assign Rules to a Tailoring' do
+      let(:items) do
+        FactoryBot.create_list(:v2_rule, 25, security_guide: V2::Tailoring.find(tailoring_id).security_guide)
+      end
+
+      let(:data) { { ids: items.map(&:id) } }
+
+      v2_auth_header
+      tags 'Policies'
+      description 'This feature is exclusively used by the frontend'
+      deprecated true
+      operationId 'AssignRules'
+      content_types
+
+      parameter name: :policy_id, in: :path, type: :string, required: true
+      parameter name: :tailoring_id, in: :path, type: :string, required: true
+      parameter name: :data, in: :body, schema: {
+        type: :object, properties: { ids: { type: :array, items: { type: :string } } }
+      }
+
+      response '202', 'Assigns all specified rules and unassigns the rest' do
+        v2_collection_schema 'rule'
+
+        after { |e| autogenerate_examples(e, 'List of assigned Rules') }
+
+        run_test!
+      end
+    end
   end
 
   path '/policies/{policy_id}/tailorings/{tailoring_id}/rules/{id}' do
