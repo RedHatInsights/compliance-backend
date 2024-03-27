@@ -7,11 +7,13 @@
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (title = "searched title")
 - :name: "non-equality search by title"
   :entities:
@@ -20,11 +22,13 @@
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (title != "searched title")
 - :name: "in search by title"
   :entities:
@@ -33,11 +37,13 @@
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (title ^ "searched title")
 - :name: "not-in search by title"
   :entities:
@@ -46,11 +52,13 @@
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (title !^ "searched title")
 - :name: "like search by title"
   :entities:
@@ -59,11 +67,13 @@
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (title ~ "searched title")
 - :name: "unlike search by title"
   :entities:
@@ -72,11 +82,13 @@
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (title !~ "searched title")
 
 - :name: "equality search by severity"
@@ -87,12 +99,14 @@
         :severity: searched severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: not this title
         :severity: not this severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (severity = "searched severity")
 - :name: "non-equality search by severity"
   :entities:
@@ -102,12 +116,14 @@
         :severity: not this severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: searched title
         :severity: searched severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (severity != "searched severity")
 - :name: "in search by severity"
   :entities:
@@ -117,12 +133,14 @@
         :severity: searched severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: not this title
         :severity: not this severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (severity ^ "searched severity")
 - :name: "not-in search by severity"
   :entities:
@@ -132,10 +150,12 @@
         :severity: not this severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
         :title: searched title
         :severity: searched severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
   :query: (severity !^ "searched severity")
