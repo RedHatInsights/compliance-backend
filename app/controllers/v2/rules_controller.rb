@@ -13,6 +13,18 @@ module V2
     end
     permission_for_action :show, Rbac::COMPLIANCE_VIEWER
 
+    def create
+      inserts, deletes = V2::TailoringRule.bulk_assign(
+        new_tailoring_rules,
+        tailoring.rules.where.not(lookup_key => permitted_params[:ids])
+      )
+
+      audit_success("Assigned #{inserts} and unassigned #{deletes} Rules to/from Tailoring #{tailoring.id}")
+      render_json rules, status: :accepted
+    end
+    permission_for_action :create, Rbac::POLICY_WRITE
+    permitted_params_for_action :create, { ids: ParamType.array(ID_TYPE), policy_id: ID_TYPE, tailoring_id: ID_TYPE }
+
     def update
       if new_tailoring_rule.save
         render_json rule, status: :accepted
@@ -52,6 +64,22 @@ module V2
 
         V2::TailoringRule.new(tailoring: left, rule: right)
       end
+    end
+
+    def new_tailoring_rules
+      @new_tailoring_rules ||= begin
+        items = tailoring.security_guide.rules.where(lookup_key => permitted_params[:ids])
+
+        items.map { |item| V2::TailoringRule.new(tailoring: tailoring, rule: item) }
+      end
+    end
+
+    def tailoring
+      @tailoring ||= pundit_scope(V2::Tailoring).find(permitted_params[:tailoring_id])
+    end
+
+    def lookup_key
+      UUID.validate(permitted_params[:ids]&.first) ? :id : :ref_id
     end
 
     def resource
