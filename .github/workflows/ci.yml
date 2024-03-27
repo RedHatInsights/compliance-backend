@@ -87,7 +87,7 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rails zeitwerk:check
-    - name: Validate the OpenAPI schema
+    - name: Validate the OpenAPIv2 schema
       env:
         RAILS_ENV: test
         SWAGGER_DRY_RUN: false
@@ -100,22 +100,23 @@ jobs:
         SPEC_OPTS: "--color --tty --format documentation"
       run: |
         bundle exec rails db -p < db/cyndi_setup_test.sql;
-        cp swagger/v1/openapi.json openapi.old.json
+        cp swagger/v2/openapi.json openapi.old.json
         bin/rake rswag:specs:swaggerize
         symbols=( '"' '[' '{' )
         for symbol in "${symbols[@]}"; do
-          NEW=$(cat swagger/v1/openapi.json | tr -cd "${symbol}" | wc -c)
+          NEW=$(cat swagger/v2/openapi.json | tr -cd "${symbol}" | wc -c)
           OLD=$(cat openapi.old.json | tr -cd "${symbol}" | wc -c)
           rm -rf coverage
           if [[ "${OLD}" != "${NEW}" ]]; then
             echo 'OpenAPI Spec needs to be updated:'
             echo '$ bin/rake rswag:specs:swaggerize'
-            diff -s -u --minimal openapi.old.json swagger/v1/openapi.json
+            diff -s -u --minimal openapi.old.json swagger/v2/openapi.json
             rm openapi.old.json
             exit 1
           fi
         done
-        diff <(echo '[]') <(curl -s 'https://validator.swagger.io/validator/debug' -H 'accept: application/json' -H 'Content-Type: application/json' -d @openapi.old.json | jq '.schemaValidationMessages')
+
+        diff <(echo 'null') <(curl -s 'https://validator.swagger.io/validator/debug' -H 'accept: application/json' -H 'Content-Type: application/json' -d @openapi.old.json | jq '.schemaValidationMessages')
         if [[ $? != 0 ]]; then
           rm openapi.old.json
           exit 1
