@@ -25,7 +25,7 @@ module V2
 
         scope.joins(association)
              .where(association => { klass.primary_key => permitted_params[ref.foreign_key] })
-             .where(pundit_subquery(association))
+             .where(pundit_subquery(relation, association))
       end
     end
 
@@ -95,8 +95,8 @@ module V2
       @aggregations ||= serializer.aggregations(permitted_params[:parents], resource.one_to_many)
     end
 
-    def pundit_subquery(association)
-      ref = resource.reflect_on_association(association)
+    def pundit_subquery(relation, association)
+      ref = relation.reflect_on_association(association)
       klass = ref.klass
 
       { association => { klass.primary_key => Pundit.policy_scope(current_user, klass) } }

@@ -176,6 +176,40 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
         run_test!
       end
     end
+
+    post 'Bulk assign Systems to a Policy' do
+      let(:items) do
+        FactoryBot.create_list(
+          :system,
+          25,
+          os_major_version: 8,
+          os_minor_version: 0,
+          account: user.account
+        )
+      end
+
+      let(:data) { { ids: items.map(&:id) } }
+
+      v2_auth_header
+      tags 'Policies'
+      description 'This feature is exclusively used by the frontend'
+      deprecated true
+      operationId 'AssignSystems'
+      content_types
+
+      parameter name: :policy_id, in: :path, type: :string, required: true
+      parameter name: :data, in: :body, schema: {
+        type: :object, properties: { ids: { type: :array, items: { type: :string, examples: [Faker::Internet.uuid] } } }
+      }
+
+      response '202', 'Assigns all specified systems and unassigns the rest' do
+        v2_collection_schema 'system'
+
+        after { |e| autogenerate_examples(e, 'List of assigned Systems') }
+
+        run_test!
+      end
+    end
   end
 
   path '/policies/{policy_id}/systems/{id}' do

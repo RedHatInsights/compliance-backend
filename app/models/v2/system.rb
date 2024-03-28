@@ -14,23 +14,9 @@ module V2
     has_many :policies, through: :policy_systems
     has_many :reports, class_name: 'V2::Report', dependent: nil
 
-    OS_VERSION = AN::InfixOperation.new(
-      '->',
-      Host.arel_table[:system_profile],
-      AN::Quoted.new('operating_system')
-    )
-
-    OS_MINOR_VERSION = AN::InfixOperation.new(
-      '->',
-      OS_VERSION,
-      AN::Quoted.new('minor')
-    ).as('os_minor_version')
-
-    OS_MAJOR_VERSION = AN::InfixOperation.new(
-      '->',
-      OS_VERSION,
-      AN::Quoted.new('major')
-    ).as('os_major_version')
+    OS_VERSION = AN::InfixOperation.new('->', Host.arel_table[:system_profile], AN::Quoted.new('operating_system'))
+    OS_MINOR_VERSION = AN::InfixOperation.new('->', OS_VERSION, AN::Quoted.new('minor')).as('os_minor_version')
+    OS_MAJOR_VERSION = AN::InfixOperation.new('->', OS_VERSION, AN::Quoted.new('major')).as('os_major_version')
 
     FIRST_GROUP_NAME = AN::NamedFunction.new(
       'COALESCE', [
@@ -69,21 +55,13 @@ module V2
 
     searchable_by :display_name, %i[eq neq like unlike]
     searchable_by :os_major_version, %i[eq neq in notin] do |_key, op, val|
-      query = ['IN', '='].include?(op) ? :in : :not_in
-
       {
-        conditions: AN::NamedFunction.new(
-          'CAST', [OS_MAJOR_VERSION.left.as('int')]
-        ).send(query, val.split.map(&:to_i)).to_sql
+        conditions: os_major_versions(val.split.map(&:to_i), %w[IN =].include?(op)).arel.where_sql.sub(/^where /i, '')
       }
     end
     searchable_by :os_minor_version, %i[eq neq in notin] do |_key, op, val|
-      query = ['IN', '='].include?(op) ? :in : :not_in
-
       {
-        conditions: AN::NamedFunction.new(
-          'CAST', [OS_MINOR_VERSION.left.as('int')]
-        ).send(query, val.split.map(&:to_i)).to_sql
+        conditions: os_minor_versions(val.split.map(&:to_i), %w[IN =].include?(op)).arel.where_sql.sub(/^where /i, '')
       }
     end
 
@@ -93,6 +71,14 @@ module V2
       ungrouped = arel_table[:groups].eq(AN::Quoted.new('[]'))
       # The OR is inside of Arel in order to prevent pollution of already applied scopes
       where(groups.include?([]) ? grouped.or(ungrouped) : grouped)
+    }
+
+    scope :os_major_versions, lambda { |version, q = true|
+      where(AN::NamedFunction.new('CAST', [OS_MAJOR_VERSION.left.as('int')]).send(q ? :in : :not_in, version))
+    }
+
+    scope :os_minor_versions, lambda { |version, q = true|
+      where(AN::NamedFunction.new('CAST', [OS_MINOR_VERSION.left.as('int')]).send(q ? :in : :not_in, version))
     }
 
     def readonly?
