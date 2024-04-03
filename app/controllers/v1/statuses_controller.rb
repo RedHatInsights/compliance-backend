@@ -8,6 +8,8 @@ module V1
     ARB = ActiveRecord::Base
 
     def show
+      Rails.logger.info(all_statuses.inspect)
+      Rails.logger.info(status_return_code.inspect)
       render json: { data: all_statuses }, status: status_return_code
     end
 
