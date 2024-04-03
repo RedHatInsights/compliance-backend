@@ -241,10 +241,7 @@ describe V2::TailoringsController do
       end
 
       context 'via CERT_AUTH' do
-        before do
-          allow(controller).to receive(:rbac_allowed?).and_call_original
-          allow(controller).to receive(:any_inventory_hosts?).and_return(true)
-        end
+        before { allow(controller).to receive(:any_inventory_hosts?).and_return(true) }
 
         let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth) }
 
@@ -263,10 +260,7 @@ describe V2::TailoringsController do
       let(:values) { tailoring_file['profiles'].first['variables'].transform_values { |value| value['value'] } }
 
       context 'via CERT_AUTH' do
-        before do
-          allow(controller).to receive(:rbac_allowed?).and_call_original
-          allow(controller).to receive(:any_inventory_hosts?).and_return(true)
-        end
+        before { allow(controller).to receive(:any_inventory_hosts?).and_return(true) }
 
         let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth) }
 

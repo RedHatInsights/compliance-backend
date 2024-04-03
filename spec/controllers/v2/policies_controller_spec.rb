@@ -249,10 +249,7 @@ describe V2::PoliciesController do
       it_behaves_like 'searchable', :systems
 
       context 'via CERT_AUTH' do
-        before do
-          allow(controller).to receive(:rbac_allowed?).and_call_original
-          allow(controller).to receive(:any_inventory_hosts?).and_return(true)
-        end
+        before { allow(controller).to receive(:any_inventory_hosts?).and_return(true) }
 
         let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth) }
 
@@ -261,6 +258,17 @@ describe V2::PoliciesController do
         it_behaves_like 'paginable', :systems
         it_behaves_like 'sortable', :systems
         it_behaves_like 'searchable', :systems
+
+        context 'system owner_id mismatch' do
+          let(:parent) { FactoryBot.create(:system, account: current_user.account) }
+
+          it 'returns empty array' do
+            get :index, params: { parents: %i[systems], system_id: parent.id }
+
+            expect(response).to have_http_status :ok
+            expect(response_body_data).to be_empty
+          end
+        end
       end
     end
   end

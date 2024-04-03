@@ -296,20 +296,7 @@ describe V2::SystemsController do
       end
     end
 
-    describe 'PATCH update' do
-      let(:item) do
-        FactoryBot.create(
-          :system,
-          account: current_user.account,
-          os_major_version: os_major_version,
-          os_minor_version: os_minor_version
-        )
-      end
-
-      let(:os_major_version) { parent.os_major_version }
-      let(:os_minor_version) { parent.os_minor_versions.sample }
-      let(:first_tailoring) { parent.tailorings.first }
-
+    RSpec.shared_examples 'assign to policy' do
       it 'creates the link between a policy and a system' do
         patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
@@ -406,28 +393,6 @@ describe V2::SystemsController do
         end
       end
 
-      context 'system in an inaccessible inventory group' do
-        before do
-          stub_rbac_permissions(
-            Rbac::INVENTORY_HOSTS_READ => [{
-              attribute_filter: {
-                key: 'group.id',
-                operation: 'in',
-                value: ['not_this_group']
-              }
-            }]
-          )
-        end
-
-        let(:item) { FactoryBot.create(:system, account: current_user.account, group_count: 1) }
-
-        it 'returns not found' do
-          patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
-
-          expect(response).to have_http_status :not_found
-        end
-      end
-
       context 'OS major version mismatch' do
         let(:os_major_version) { 6 }
 
@@ -451,10 +416,7 @@ describe V2::SystemsController do
       end
     end
 
-    # TODO: tailoring deletion if no other systems are assigned
-    describe 'DELETE destroy' do
-      let(:item) { FactoryBot.create(:system, account: current_user.account, policy_id: parent.id) }
-
+    RSpec.shared_examples 'unassign from policy' do
       it 'removes the link between a policy and a system' do
         delete :destroy, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
@@ -502,6 +464,74 @@ describe V2::SystemsController do
           expect(parent.systems).to include(system)
         end
       end
+    end
+
+    describe 'PATCH update' do
+      let(:item) do
+        FactoryBot.create(
+          :system,
+          account: current_user.account,
+          os_major_version: os_major_version,
+          os_minor_version: os_minor_version,
+          owner_id: owner_id
+        )
+      end
+
+      let(:os_major_version) { parent.os_major_version }
+      let(:os_minor_version) { parent.os_minor_versions.sample }
+      let(:owner_id) { nil }
+      let(:first_tailoring) { parent.tailorings.first }
+
+      include_examples 'assign to policy'
+
+      context 'system in an inaccessible inventory group' do
+        before do
+          stub_rbac_permissions(
+            Rbac::INVENTORY_HOSTS_READ => [{
+              attribute_filter: {
+                key: 'group.id',
+                operation: 'in',
+                value: ['not_this_group']
+              }
+            }]
+          )
+        end
+
+        let(:item) { FactoryBot.create(:system, account: current_user.account, group_count: 1) }
+
+        it 'returns not found' do
+          patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :not_found
+        end
+      end
+
+      context 'via CERT_AUTH' do
+        before { allow(controller).to receive(:any_inventory_hosts?).and_return(true) }
+
+        let(:owner_id) { Faker::Internet.uuid }
+        let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth, system_owner_id: owner_id) }
+
+        include_examples 'assign to policy'
+
+        context 'system owner_id mismatch' do
+          let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth, system_owner_id: Faker::Internet.uuid) }
+
+          it 'returns not found' do
+            patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+            expect(response).to have_http_status :not_found
+          end
+        end
+      end
+    end
+
+    # TODO: tailoring deletion if no other systems are assigned
+    describe 'DELETE destroy' do
+      let(:item) { FactoryBot.create(:system, account: current_user.account, policy_id: parent.id, owner_id: owner_id) }
+      let(:owner_id) { nil }
+
+      include_examples 'unassign from policy'
 
       context 'system in an inaccessible inventory group' do
         before do
@@ -522,6 +552,25 @@ describe V2::SystemsController do
           delete :destroy, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
           expect(response).to have_http_status :not_found
+        end
+      end
+
+      context 'via CERT_AUTH' do
+        before { allow(controller).to receive(:any_inventory_hosts?).and_return(true) }
+
+        let(:owner_id) { Faker::Internet.uuid }
+        let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth, system_owner_id: owner_id) }
+
+        include_examples 'unassign from policy'
+
+        context 'system owner_id mismatch' do
+          let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth, system_owner_id: Faker::Internet.uuid) }
+
+          it 'returns not found' do
+            delete :destroy, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+            expect(response).to have_http_status :not_found
+          end
         end
       end
     end

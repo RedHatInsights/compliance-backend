@@ -7,6 +7,8 @@ module V2
 
     ALLOWED_CERT_BASED_RBAC_ACTIONS = [
       { controller: 'policies', action: 'index', parents: %i[systems] },
+      { controller: 'systems', action: 'update', parents: %i[policies] },
+      { controller: 'systems', action: 'destroy', parents: %i[policies] },
       { controller: 'tailorings', action: 'tailoring_file', parents: %i[policy] }
     ].freeze
 
