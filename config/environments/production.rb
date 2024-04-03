@@ -68,20 +68,18 @@ Rails.application.configure do
 
     # Set up cloudwatch logging if available
     # FIXME: change this to Settings.logging.type == "cloudwatch"
-    if Settings.logging&.credentials&.access_key_id.present?
-      cloudwatch_client ||= CloudWatchLogger::Client.new(
-        Settings.logging.credentials,
-        Settings.logging.log_group,
-        Settings.logging.log_stream,
-        region: Settings.logging.region
-      )
-      cl = Insights::Api::Common::LoggerWithAudit.new(cloudwatch_client)
-      cl.formatter = cloudwatch_client.formatter(:json)
-      cl.level = Logger::WARN # Different logging level for CloudWatch
-      tcl = ActiveSupport::TaggedLogging.new(cl)
-      config.logger.broadcast_to(tcl)
-      tcl.level = Logger::WARN
-    end
+    # if Settings.logging&.credentials&.access_key_id.present?
+    #   $cloudwatch_client ||= CloudWatchLogger::Client.new(
+    #     Settings.logging.credentials,
+    #     Settings.logging.log_group,
+    #     Settings.logging.log_stream,
+    #     region: Settings.logging.region
+    #   )
+    #   cloudwatch_logger = Insights::Api::Common::LoggerWithAudit.new($cloudwatch_client)
+    #   cloudwatch_logger.formatter = $cloudwatch_client.formatter(:json)
+    #   config.logger.broadcast_to(cloudwatch_logger)
+    #   cloudwatch_logger.level = Logger::WARN # Different logging level for CloudWatch
+    # end
   end
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
