@@ -49,6 +49,18 @@ describe V2::PoliciesController do
       it_behaves_like 'paginable'
       it_behaves_like 'sortable'
       it_behaves_like 'searchable'
+
+      context 'via CERT_AUTH' do
+        before { allow(controller).to receive(:any_inventory_hosts?).and_return(true) }
+
+        let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth) }
+
+        it_behaves_like 'collection'
+        include_examples 'with metadata'
+        it_behaves_like 'paginable'
+        it_behaves_like 'sortable'
+        it_behaves_like 'searchable'
+      end
     end
 
     describe 'GET show' do
@@ -228,7 +240,8 @@ describe V2::PoliciesController do
         # Pass the same RHEL version under each `rhel_#` parameter as we are under a policy
         { account: current_user.account, system_id: parent.id, rhel_7: ver, rhel_8: ver, rhel_9: ver }
       end
-      let(:parent) { FactoryBot.create(:system, account: current_user.account) }
+      let(:owner_id) { nil }
+      let(:parent) { FactoryBot.create(:system, account: current_user.account, owner_id: owner_id) }
       let(:item_count) { 2 }
 
       let(:items) do
@@ -251,7 +264,8 @@ describe V2::PoliciesController do
       context 'via CERT_AUTH' do
         before { allow(controller).to receive(:any_inventory_hosts?).and_return(true) }
 
-        let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth) }
+        let(:owner_id) { Faker::Internet.uuid }
+        let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth, system_owner_id: owner_id) }
 
         it_behaves_like 'collection', :systems
         include_examples 'with metadata', :systems
