@@ -44,6 +44,15 @@ pipeline {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'env'
                     sh 'echo "$WORKSPACE"'
+                    sh '''
+                    CICD_URL=https://raw.githubusercontent.com/RedHatInsights/bonfire/master/cicd
+                    curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source ./.cicd_bootstrap.sh
+                    '''
+                    sh '''
+                    ls -ltra
+
+                    cat .docker/*
+                    '''
                 }
             }
         }
