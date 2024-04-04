@@ -38,6 +38,26 @@ module V2
         parameter: [val.split.map(&:to_i)]
       }
     end
+    searchable_by :os_minor_version, %i[eq] do |_key, _op, val|
+      # Rails doesn't support composed foreign keys yet, so we have to manually join with `SupportedProfile` using
+      # `Profile#ref_id` and `SecurityGuide#os_major_version`.
+      supported_profiles = arel_join_fragment(
+        arel_table.join(V2::SupportedProfile.arel_table).on(
+          V2::SupportedProfile.arel_table[:ref_id].eq(V2::Profile.arel_table.alias(:profile)[:ref_id]).and(
+            V2::SupportedProfile.arel_table[:os_major_version].eq(
+              V2::SecurityGuide.arel_table.alias(:security_guide)[:os_major_version]
+            )
+          )
+        )
+      )
+
+      match_os_minors = Arel::Nodes::NamedFunction.new('ANY', [V2::SupportedProfile.arel_table[:os_minor_versions]])
+      ids = V2::Policy.joins(profile: :security_guide).joins(supported_profiles)
+                      .where(Arel::Nodes.build_quoted(val).eq(match_os_minors))
+                      .except(:select).select(arel_table[:id])
+
+      { conditions: "v2_policies.id IN (#{ids.to_sql})" }
+    end
 
     before_validation :ensure_default_values
 

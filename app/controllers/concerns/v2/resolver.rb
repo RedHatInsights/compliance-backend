@@ -62,7 +62,7 @@ module V2
       sq = resource.left_outer_joins(association)
                    .group(resource.primary_key)
                    .select(resource.primary_key, aggregation)
-      resource.arel_join_fragment(sq.arel.as(association.to_s))
+      resource.arel_self_join(sq.arel.as(association.to_s))
     end
 
     # Iterate through the (nested) fields to be selected and set their names accordingly
