@@ -29,15 +29,16 @@ module V2
       end
     end
 
+    # Does a self-join with the subquery using an arel fragment
+    def self.arel_self_join(subquery)
+      arel_join_fragment(select(primary_key).arel.join(subquery).on(subquery[primary_key].eq(arel_table[primary_key])))
+    end
+
     # Creates an Arel-fragment from a self-joined subquery that can be passed as an argument
     # to the `ActiveRecord::Base.joins` method.
-    # rubocop:disable Metrics/AbcSize
-    def self.arel_join_fragment(subquery)
-      select(primary_key).arel.join(subquery)
-                         .on(subquery[primary_key].eq(arel_table[primary_key]))
-                         .ast.cores.first.source.right.first
+    def self.arel_join_fragment(scope)
+      scope.ast.cores.first.source.right.first
     end
-    # rubocop:enable Metrics/AbcSize
 
     # Splits up a version and converts it to an array of integers for better sorting
     def self.version_to_array(column)

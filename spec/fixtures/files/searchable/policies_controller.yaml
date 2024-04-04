@@ -192,3 +192,53 @@
   :query: (os_major_version !^ "7 9")
   :except_parents:
     - :systems
+- :name: "equality search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: searched title
+        :os_major_version: 7
+        :account: ${account}
+        :supports_minors: [1, 2]
+        :system_id: ${system_id}
+      - :factory: :v2_policy
+        :title: searched title
+        :os_major_version: 9
+        :account: ${account}
+        :supports_minors: [2, 3]
+        :system_id: ${system_id}
+    :not_found:
+      - :factory: :v2_policy
+        :title: not this title
+        os_major_version: 8
+        :account: ${account}
+        :system_id: ${system_id}
+        :supports_minors: [1, 3]
+  :except_parents:
+    - :systems
+  :query: (os_minor_version = 2)
+- :name: "equality search by os_major and os_minor_version"
+  :entities:
+    :found:
+      - :factory: :v2_policy
+        :title: searched title
+        :os_major_version: 7
+        :account: ${account}
+        :supports_minors: [1, 2]
+        :system_id: ${system_id}
+    :not_found:
+      - :factory: :v2_policy
+        :title: not this title
+        os_major_version: 7
+        :account: ${account}
+        :system_id: ${system_id}
+        :supports_minors: [1, 3]
+      - :factory: :v2_policy
+        :title: searched title
+        :os_major_version: 9
+        :account: ${account}
+        :supports_minors: [2, 3]
+        :system_id: ${system_id}
+  :except_parents:
+    - :systems
+  :query: (os_major_version = 7 and os_minor_version = 2)
