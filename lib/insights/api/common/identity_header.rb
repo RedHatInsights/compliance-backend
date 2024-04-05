@@ -36,6 +36,10 @@ module Insights
           content['identity']
         end
 
+        def owner_id
+          identity['system']['cn']
+        end
+
         def raw
           @b64_identity
         end
