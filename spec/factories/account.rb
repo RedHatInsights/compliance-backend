@@ -8,7 +8,8 @@ FactoryBot.define do
         Base64.encode64({
           identity: {
             org_id: org_id,
-            auth_type: auth_type
+            auth_type: auth_type,
+            system: system_owner_id ? { cn: system_owner_id } : nil
           }.compact,
           entitlements: {
             insights: {
@@ -19,10 +20,16 @@ FactoryBot.define do
       )
     end
 
-    transient { auth_type { nil } }
+    transient do
+      auth_type { nil }
+      system_owner_id { nil }
+    end
 
     trait :with_cert_auth do
-      transient { auth_type { Insights::Api::Common::IdentityHeader::CERT_AUTH } }
+      transient do
+        auth_type { Insights::Api::Common::IdentityHeader::CERT_AUTH }
+        system_owner_id { Faker::Internet.uuid }
+      end
     end
   end
 end

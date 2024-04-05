@@ -38,18 +38,27 @@ module V2
     # Only show systems in our user account
     class Scope < V2::ApplicationPolicy::Scope
       def resolve
+        user.cert_authenticated? ? resolve_cert_auth : resolve_regular
+      end
+
+      private
+
+      def resolve_regular
         groups = user.inventory_groups
 
         # No access to systems if there is no org_id or any RBAC (group) rule available
         return scope.none if user.org_id.blank? || groups.blank?
 
-        user_scope = scope.where(org_id: user.org_id)
+        # Apply inventory group rules on the query if needed
+        groups == Rbac::ANY ? base_scope : base_scope.with_groups(groups)
+      end
 
-        # All systems are available if there is global access
-        return user_scope if groups == Rbac::ANY
+      def resolve_cert_auth
+        base_scope.where(V2::System::OWNER_ID.eq(user.system_owner_id))
+      end
 
-        # Apply inventory group rules on the query
-        user_scope.with_groups(groups)
+      def base_scope
+        scope.where(org_id: user.org_id)
       end
     end
   end

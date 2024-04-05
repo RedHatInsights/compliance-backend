@@ -51,6 +51,6 @@ class UserTest < ActiveSupport::TestCase
     account.identity_header.content['identity']['auth_type'] = Insights::Api::Common::IdentityHeader::CERT_AUTH
     user = FactoryBot.create(:user, account: account)
 
-    assert_equal [], user.inventory_groups
+    assert_equal Rbac::ANY, user.inventory_groups
   end
 end

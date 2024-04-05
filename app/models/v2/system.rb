@@ -17,6 +17,7 @@ module V2
     OS_VERSION = AN::InfixOperation.new('->', Host.arel_table[:system_profile], AN::Quoted.new('operating_system'))
     OS_MINOR_VERSION = AN::InfixOperation.new('->', OS_VERSION, AN::Quoted.new('minor')).as('os_minor_version')
     OS_MAJOR_VERSION = AN::InfixOperation.new('->', OS_VERSION, AN::Quoted.new('major')).as('os_major_version')
+    OWNER_ID = AN::InfixOperation.new('->>', arel_table[:system_profile], AN::Quoted.new('owner_id'))
 
     FIRST_GROUP_NAME = AN::NamedFunction.new(
       'COALESCE', [

@@ -92,4 +92,25 @@ describe V2::SystemPolicy do
       end
     end
   end
+
+  context 'cert_auth' do
+    let(:owner_id) { Faker::Internet.uuid }
+    let(:user) { FactoryBot.create(:v2_user, :with_cert_auth, system_owner_id: owner_id) }
+    let(:items) { FactoryBot.create_list(:system, 1, account: user.account, owner_id: owner_id) }
+
+    context 'with matching owner_id' do
+      it 'allows access to the system' do
+        expect(Pundit.policy_scope(user, V2::System).to_set).to eq(items.to_set)
+      end
+    end
+
+    context 'with mismatching owner_id' do
+      let(:user) { FactoryBot.create(:v2_user, :with_cert_auth, system_owner_id: owner_id) }
+      let(:items) { FactoryBot.create_list(:system, 1, account: user.account) }
+
+      it 'restricts access to the system' do
+        expect(Pundit.policy_scope(user, V2::System).to_set).to be_empty
+      end
+    end
+  end
 end

@@ -28,7 +28,8 @@ FactoryBot.define do
           'name' => 'RHEL',
           'major' => os_major_version,
           'minor' => os_minor_version
-        }
+        },
+        'owner_id' => owner_id
       }
     end
 
@@ -38,6 +39,7 @@ FactoryBot.define do
       group_count { 0 }
       tag_count { 5 }
       policy_id { nil }
+      owner_id { Faker::Internet.uuid }
     end
 
     after(:create) do |sys, ev|

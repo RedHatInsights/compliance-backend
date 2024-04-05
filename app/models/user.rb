@@ -7,7 +7,7 @@ class User < ApplicationRecord
 
   belongs_to :account
 
-  delegate :org_id, :cert_authenticated?, to: :account
+  delegate :org_id, :system_owner_id, :cert_authenticated?, to: :account
 
   def authorized_to?(access_request)
     return true if rbac_disabled?
@@ -18,10 +18,8 @@ class User < ApplicationRecord
   end
 
   def inventory_groups
-    # No need to fetch inventory groups if the RBAC feature is globally disabled
-    return Rbac::ANY if rbac_disabled?
-    # No groups should be available when using certificate authentication
-    return [] if cert_authenticated?
+    # No need to fetch inventory groups if the RBAC feature is globally disabled or using CERT_AUTH
+    return Rbac::ANY if rbac_disabled? || cert_authenticated?
 
     @inventory_groups ||= Rbac.load_inventory_groups(rbac_permissions)
   end
