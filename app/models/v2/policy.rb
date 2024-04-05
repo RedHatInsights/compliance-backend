@@ -39,6 +39,8 @@ module V2
       }
     end
 
+    before_validation :ensure_default_values
+
     def os_major_version
       attributes['security_guide__os_major_version'] || security_guide.os_major_version
     end
@@ -53,6 +55,14 @@ module V2
 
     def os_minor_versions
       V2::SupportedProfile.find_by!(ref_id: ref_id, os_major_version: os_major_version).os_minor_versions
+    end
+
+    private
+
+    def ensure_default_values
+      self.title ||= profile.title
+      self.description ||= profile.description
+      self.compliance_threshold ||= 100.0
     end
   end
 end

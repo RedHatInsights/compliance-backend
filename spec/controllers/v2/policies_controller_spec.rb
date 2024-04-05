@@ -110,22 +110,33 @@ describe V2::PoliciesController do
       context 'unset title' do
         let(:title) { nil }
 
-        it 'returns with an error' do
+        it 'copies the title of the profile' do
           post :create, params: params
 
-          expect(response).to have_http_status :not_acceptable
-          expect(response.parsed_body['errors']).to include(match(/title can't be blank/))
+          expect(response).to have_http_status :created
+          expect(subject.title).to eq(subject.profile.title)
+        end
+      end
+
+      context 'unset description' do
+        let(:description) { nil }
+
+        it 'copies the description of the profile' do
+          post :create, params: params
+
+          expect(response).to have_http_status :created
+          expect(subject.description).to eq(subject.profile.description)
         end
       end
 
       context 'unset threshold' do
         let(:threshold) { nil }
 
-        it 'returns with an error' do
+        it 'sets the default threshold to 100' do
           post :create, params: params
 
-          expect(response).to have_http_status :not_acceptable
-          expect(response.parsed_body['errors']).to include(match(/compliance threshold is not a number/))
+          expect(response).to have_http_status :created
+          expect(subject.compliance_threshold).to eq(100.0)
         end
       end
 
