@@ -13,9 +13,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   def process(message)
     super
 
-    Rails.logger.tagged(org_id) do
-      dispatch
-    end
+    dispatch
   rescue Redis::CannotConnectError
     handle_redis_error
   rescue PG::Error, ActiveRecord::StatementInvalid
@@ -44,25 +42,25 @@ class InventoryEventsConsumer < ApplicationConsumer
     DeleteHost.perform_async(@msg_value)
   rescue StandardError => e
     logger.audit_fail(
-      "Failed to enqueue DeleteHost job for host #{@msg_value['id']}: #{e}"
+      "[#{org_id}] Failed to enqueue DeleteHost job for host #{@msg_value['id']}: #{e}"
     )
     raise
   else
     logger.audit_success(
-      "Enqueued DeleteHost job for host #{@msg_value['id']}"
+      "[#{org_id}] Enqueued DeleteHost job for host #{@msg_value['id']}"
     )
   end
 
   def handle_db_error
     logger.error(
-      'Database error, clearing active connection for further reconnect'
+      "[#{org_id}] Database error, clearing active connection for further reconnect"
     )
     ActiveRecord::Base.clear_active_connections!
     raise
   end
 
   def handle_redis_error
-    logger.error('Failed to connect to elasticache/redis')
+    logger.error("[#{org_id}] Failed to connect to elasticache/redis")
     raise
   end
 
