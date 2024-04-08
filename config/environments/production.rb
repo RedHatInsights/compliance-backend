@@ -44,7 +44,7 @@ Rails.application.configure do
   config.log_level = ENV.fetch('RAILS_LOGLEVEL', :info).to_sym
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  # config.log_tags = [ :request_id ]
 
   # Cache configuration might be coming from Clowder that is only available after initialization
   config.after_initialize do
@@ -68,18 +68,18 @@ Rails.application.configure do
 
     # Set up cloudwatch logging if available
     # FIXME: change this to Settings.logging.type == "cloudwatch"
-    # if Settings.logging&.credentials&.access_key_id.present?
-    #   $cloudwatch_client ||= CloudWatchLogger::Client.new(
-    #     Settings.logging.credentials,
-    #     Settings.logging.log_group,
-    #     Settings.logging.log_stream,
-    #     region: Settings.logging.region
-    #   )
-    #   cloudwatch_logger = Insights::Api::Common::LoggerWithAudit.new($cloudwatch_client)
-    #   cloudwatch_logger.formatter = $cloudwatch_client.formatter(:json)
-    #   config.logger.broadcast_to(cloudwatch_logger)
-    #   cloudwatch_logger.level = Logger::WARN # Different logging level for CloudWatch
-    # end
+    if Settings.logging&.credentials&.access_key_id.present?
+      $cloudwatch_client ||= CloudWatchLogger::Client.new(
+        Settings.logging.credentials,
+        Settings.logging.log_group,
+        Settings.logging.log_stream,
+        region: Settings.logging.region
+      )
+      cloudwatch_logger = Insights::Api::Common::LoggerWithAudit.new($cloudwatch_client)
+      cloudwatch_logger.formatter = $cloudwatch_client.formatter(:json)
+      config.logger.broadcast_to(cloudwatch_logger)
+      cloudwatch_logger.level = Logger::WARN # Different logging level for CloudWatch
+    end
   end
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
@@ -118,7 +118,7 @@ Rails.application.configure do
   else
     config.logger = Insights::Api::Common::LoggerWithAudit(config.paths['log'].first)
   end
-  config.logger = ActiveSupport::BroadcastLogger.new(ActiveSupport::TaggedLogging.new(config.logger))
+  config.logger = ActiveSupport::BroadcastLogger.new(config.logger)
 
   # Temporarily allow any origins
   config.hosts.clear
