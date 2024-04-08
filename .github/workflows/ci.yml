@@ -136,7 +136,9 @@ jobs:
         SPEC_OPTS: "--color --tty --format documentation"
       run: bin/rake spec
     - name: Upload code coverage from RSpec
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
+      with:
+        fail_ci_if_error: true
     - name: Run minitest tests
       env:
         HOSTNAME: rails
@@ -149,7 +151,9 @@ jobs:
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rake test
     - name: Upload code coverage from minitest
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
+      with:
+        fail_ci_if_error: true
   migration-robustness:
     runs-on: ubuntu-latest
     services:
