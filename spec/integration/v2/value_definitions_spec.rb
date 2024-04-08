@@ -42,7 +42,7 @@ describe 'Value Definitions', swagger_doc: 'v2/openapi.json' do
       end
 
       response '200', 'Lists Value Definitions' do
-        let(:filter) { "(title=#{V2::ValueDefinition.first.title})" }
+        let(:filter) { "(title='#{V2::ValueDefinition.first.title}')" }
         v2_collection_schema 'value_definition'
 
         after do |e|

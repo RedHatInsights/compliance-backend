@@ -42,7 +42,7 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
       end
 
       response '200', 'Lists Profiles' do
-        let(:filter) { "(title=#{V2::Profile.first.title})" }
+        let(:filter) { "(title='#{V2::Profile.first.title}')" }
         v2_collection_schema 'profile'
 
         after { |e| autogenerate_examples(e, "List of Profiles filtered by '(title=#{V2::Profile.first.title})'") }
