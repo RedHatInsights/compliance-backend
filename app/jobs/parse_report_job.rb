@@ -23,9 +23,7 @@ class ParseReportJob
 
     @file = retrieve_file(idx)
 
-    Rails.logger.tagged(@msg_value['org_id']) do
-      parse_and_save_report
-    end
+    parse_and_save_report
   end
 
   def cancelled?
@@ -69,7 +67,7 @@ class ParseReportJob
                                request_id: @msg_value['request_id'], error: notification_message(exc),
                                org_id: @msg_value['org_id'])
     Sidekiq.logger.error(msg_with_values)
-    Rails.logger.audit_fail(msg)
+    Rails.logger.audit_fail("[#{@msg_value['org_id']}] #{msg}")
   end
 
   def error_message(exc)
@@ -114,7 +112,7 @@ class ParseReportJob
 
   def audit_success
     Rails.logger.audit_success(
-      "Successful report of #{report_profile_id} " \
+      "[#{@msg_value['org_id']}] Successful report of #{report_profile_id} " \
       "policy #{parser.host_profile.policy_id} " \
       "from host #{@msg_value['id']}"
     )

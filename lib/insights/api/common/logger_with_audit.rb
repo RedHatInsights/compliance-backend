@@ -6,25 +6,12 @@ module Insights
       # Additional helper methods for audit logging
       class LoggerWithAudit < ActiveSupport::Logger
         def audit_success(message)
-          tagged('AUDIT - SUCCESS') do |logger|
-            logger.info(message)
-          end
+          info("[AUDIT - SUCCESS] #{message}")
         end
 
         def audit_fail(message)
-          tagged('AUDIT - FAIL') do |logger|
-            logger.info(message)
-          end
+          info("[AUDIT - FAIL] #{message}")
         end
-
-        # Mask tagged logging for CloudWatchLogger as it is not supported there
-        # :nocov:
-        # unless defined?(tagged)
-        #   define_method(:tagged) do |_prefix, &block|
-        #     block.call(self)
-        #   end
-        # end
-        # :nocov:
       end
     end
   end

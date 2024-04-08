@@ -12,16 +12,14 @@ class DeleteHost
   end
 
   def perform(message)
-    Rails.logger.tagged(message['org_id']) do
-      host_id = message['id']
-      begin
-        num_removed = remove_related(host_id)
-      rescue StandardError => e
-        audit_fail(host_id, e)
-        raise
-      end
-      audit_success(host_id) if num_removed.positive?
+    host_id = message['id']
+    begin
+      num_removed = remove_related(host_id)
+    rescue StandardError => e
+      audit_fail(host_id, e)
+      raise
     end
+    audit_success(host_id) if num_removed.positive?
   end
 
   private
