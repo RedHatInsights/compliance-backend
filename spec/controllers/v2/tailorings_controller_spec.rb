@@ -86,8 +86,8 @@ describe V2::TailoringsController do
         let(:item) do
           FactoryBot.create(
             :v2_tailoring,
-            rules: [], # no tailored, but deselected rules
-            value_overrides: [], # no tailored values
+            rules: [], # all rules deselected
+            value_overrides: {}, # no tailored values
             policy: parent,
             os_minor_version: 8
           )
@@ -163,7 +163,7 @@ describe V2::TailoringsController do
 
           expect(response).to have_http_status :ok
           expect(response.headers['Content-Type']).to eq(Mime[format].to_s)
-          expect(values).to match_array(item.value_overrides)
+          expect(values).to match_array(item.value_overrides_by_ref_id)
           expect(selected_rules).not_to be_empty
           expect(selected_rules).to match_array(item.rules_added.map(&:ref_id))
           expect(groups).to match_array(item.rule_group_ref_ids)

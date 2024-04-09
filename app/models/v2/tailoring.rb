@@ -69,5 +69,11 @@ module V2
     def rules_removed
       profile.rules.where.not(id: rules).select(rules.arel_table[Arel.star], AN::False.new.as('selected'))
     end
+
+    def value_overrides_by_ref_id
+      ValueDefinition.where(id: value_overrides.keys).each_with_object({}) do |value_definition, obj|
+        obj[value_definition.ref_id] = value_overrides[value_definition.id]
+      end
+    end
   end
 end

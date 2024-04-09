@@ -21,9 +21,8 @@ FactoryBot.define do
 
     trait :with_tailored_values do
       value_overrides do
-        profile.value_overrides.to_a.sample(profile.value_overrides.count / 2).to_h.each do |k, v|
-          # overriding (tailoring) default values
-          profile.value_overrides[k] = v + SecureRandom.random_number(100)
+        profile.value_overrides.to_a.sample(profile.value_overrides.count / 2).to_h.transform_values do |value|
+          value + SecureRandom.random_number(100)
         end
       end
     end
