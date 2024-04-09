@@ -39,7 +39,7 @@ module V2
         profile: tailoring,
         rules: tailoring.rules_added + tailoring.rules_removed,
         rule_group_ref_ids: tailoring.rule_group_ref_ids,
-        set_values: tailoring.value_overrides
+        set_values: tailoring.value_overrides_by_ref_id
       ).output
     end
 
