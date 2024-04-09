@@ -65,6 +65,13 @@ module V2
         conditions: os_minor_versions(val.split.map(&:to_i), %w[IN =].include?(op)).arel.where_sql.sub(/^where /i, '')
       }
     end
+    searchable_by :assigned_or_scanned, %i[eq] do |_key, _op, _val|
+      ids = V2::System.where(id: V2::PolicySystem.select(:system_id)).or(
+        V2::System.where(id: V2::TestResult.select(:system_id))
+      ).reselect(:id)
+
+      { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
+    end
 
     scope :with_groups, lambda { |groups, key = :id|
       # Skip the [] representing ungrouped hosts from the array when generating the query
