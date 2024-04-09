@@ -228,3 +228,26 @@
   :query: (os_major_version = 7) and (os_minor_version ^ "1 2")
   :except_parents:
     - :policies
+- :name: "search by being assigned to a policy or having test results"
+  :entities:
+    :found:
+      - :factory: :system
+        :policy_id: ${policy_7.id}
+        :os_minor_version: 1
+        :account: ${account}
+      - :factory: :system
+        :policy_id: ${policy_8.id}
+        :os_minor_version: 1
+        :account: ${account}
+      - :factory: :system
+        :policy_id: ${policy_9.id}
+        :os_minor_version: 1
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :account: ${account}
+      - :factory: :system
+        :account: ${account}
+      - :factory: :system
+        :account: ${account}
+  :query: (assigned_or_scanned = true)
