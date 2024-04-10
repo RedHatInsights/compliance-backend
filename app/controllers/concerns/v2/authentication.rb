@@ -68,7 +68,7 @@ module V2
 
     def valid_cert_endpoint?
       ALLOWED_CERT_BASED_RBAC_ACTIONS.include?(
-        controller: controller_name, action: action_name, parents: params[:parents].map(&:to_sym)
+        { controller: controller_name, action: action_name, parents: params[:parents]&.map(&:to_sym) }.compact
       )
     end
 
