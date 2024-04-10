@@ -6,7 +6,7 @@ module V2
     extend ActiveSupport::Concern
 
     ALLOWED_CERT_BASED_RBAC_ACTIONS = [
-      { controller: 'policies', action: 'index', parents: [] },
+      { controller: 'policies', action: 'index' },
       { controller: 'policies', action: 'index', parents: %i[systems] },
       { controller: 'systems', action: 'update', parents: %i[policies] },
       { controller: 'systems', action: 'destroy', parents: %i[policies] },
