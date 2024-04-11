@@ -9,6 +9,6 @@ module V2
     derived_attribute :os_major_version, V2::System::OS_MAJOR_VERSION
     derived_attribute :os_minor_version, V2::System::OS_MINOR_VERSION
 
-    aggregated_attribute :policies, :policies, V2::System::POLICIES
+    aggregated_attribute :policies, :policies, -> { V2::System::POLICIES }
   end
 end
