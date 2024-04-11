@@ -6,10 +6,15 @@ module V2
     extend ActiveSupport::Concern
 
     ALLOWED_CERT_BASED_RBAC_ACTIONS = [
-      { controller: 'policies', action: 'index' },
+      # GET /api/compliance/v2/policies
+      { controller: 'policies', action: 'index', parents: [] },
+      # GET /api/compliance/v2/systems/:id/policies
       { controller: 'policies', action: 'index', parents: %i[systems] },
+      # PATCH /api/compliance/v2/policies/:id/systems/:id
       { controller: 'systems', action: 'update', parents: %i[policies] },
+      # DELETE /api/compliance/v2/policies/:id/systems/:id
       { controller: 'systems', action: 'destroy', parents: %i[policies] },
+      # GET /api/compliance/v2/policies/:id/tailorings/:os_minor_version/tailoring_file
       { controller: 'tailorings', action: 'tailoring_file', parents: %i[policy] }
     ].freeze
 
@@ -68,7 +73,7 @@ module V2
 
     def valid_cert_endpoint?
       ALLOWED_CERT_BASED_RBAC_ACTIONS.include?(
-        { controller: controller_name, action: action_name, parents: params[:parents]&.map(&:to_sym) }.compact
+        controller: controller_name, action: action_name, parents: params[:parents]&.map(&:to_sym).to_a
       )
     end
 
@@ -78,7 +83,6 @@ module V2
     end
     # :nocov:
 
-    # :nocov:
     def valid_cert_auth?
       valid_cert_endpoint? && any_inventory_hosts?
     rescue Faraday::Error => e
@@ -86,7 +90,6 @@ module V2
 
       false
     end
-    # :nocov:
 
     def raw_identity_header
       request.headers['X-RH-IDENTITY']
