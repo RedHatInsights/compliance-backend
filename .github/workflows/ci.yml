@@ -139,6 +139,7 @@ jobs:
       uses: codecov/codecov-action@v4.2.0
       with:
         fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
     - name: Run minitest tests
       env:
         HOSTNAME: rails
@@ -154,6 +155,7 @@ jobs:
       uses: codecov/codecov-action@v4.2.0
       with:
         fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
   migration-robustness:
     runs-on: ubuntu-latest
     services:
