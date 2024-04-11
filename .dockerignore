@@ -6,3 +6,6 @@ scap-security-guide-*
 log/
 tmp/
 xjoin-config
+.docker
+.podman
+.kube
