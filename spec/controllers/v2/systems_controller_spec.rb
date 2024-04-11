@@ -526,7 +526,6 @@ describe V2::SystemsController do
       end
     end
 
-    # TODO: tailoring deletion if no other systems are assigned
     describe 'DELETE destroy' do
       let(:item) { FactoryBot.create(:system, account: current_user.account, policy_id: parent.id, owner_id: owner_id) }
       let(:owner_id) { nil }
