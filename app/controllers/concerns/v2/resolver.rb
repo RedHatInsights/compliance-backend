@@ -40,9 +40,9 @@ module V2
     # Self-join with the requested aggregations built using 1:n associations, also select
     # the aggregated field from the self-joined subquery.
     def join_aggregated(relation)
-      aggregations.reduce(relation) do |scope, (association, aggregation)|
-        scope.joins(subquery_fragment(association, aggregation))
-             .select(aggregation.alias)
+      aggregations.reduce(relation) do |scope, (association, (aggregation, column))|
+        scope.joins(subquery_fragment(association, aggregation.call.as(column)))
+             .select(column)
       end
     end
 

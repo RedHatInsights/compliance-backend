@@ -27,9 +27,9 @@ module V2
       end
 
       # Match any declared `aggregate_field` against the available relationships, return with a hash of
-      # aggregations in a `{ name => field }` format.
+      # aggregations in a `{ name => [field, alias] }` format.
       def aggregations(parents, to_many)
-        filter_from(@aggregated_attributes, to_many - parents.to_a).each_with_object({}) do |(k, (v)), obj|
+        filter_from(@aggregated_attributes, to_many - parents.to_a).each_with_object({}) do |(k, v), obj|
           obj[k] = v
         end
       end
@@ -64,15 +64,15 @@ module V2
 
       # This method allows the definition attributes that are aggregated from any left-outer-joined has_many
       # `association`. The attribute is forwarded to an `aggregate_#{name}` method in the model that should
-      # exist when calling the serializer. The aggregation `function` is automatically aliased with this
-      # name.
+      # exist as an attribute when calling the serializer. The result of the aggregation `function`  should
+      # be aliased to this name when resolving the aggegation.
       def aggregated_attribute(name, association, function)
         target = "aggregate_#{name}"
         attributes name
         define_method(name) { @object.send(target.to_sym) }
 
         @aggregated_attributes ||= {}
-        @aggregated_attributes[name] = { association => [function.as(target)] }
+        @aggregated_attributes[name] = { association => [function, target] }
       end
 
       protected
