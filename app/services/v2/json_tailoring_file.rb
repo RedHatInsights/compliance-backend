@@ -3,7 +3,6 @@
 module V2
   # A class representing a JSON Tailoring File
   class JsonTailoringFile
-    # :nocov:
     def initialize(profile:, rules: {}, set_values: {}, rule_group_ref_ids: [])
       @tailoring = profile
       @rules = rules
@@ -40,12 +39,9 @@ module V2
     end
 
     def build_variables
-      # rubocop:disable Style/HashTransformValues
-      @set_values.each_with_object({}) do |(ref_id, value), obj|
-        obj[ref_id] = { 'value' => value }
+      @set_values.transform_values do |value|
+        { 'value' => value }
       end
-      # rubocop:enable Style/HashTransformValues
     end
-    # :nocov:
   end
 end
