@@ -136,7 +136,7 @@ jobs:
         SPEC_OPTS: "--color --tty --format documentation"
       run: bin/rake spec
     - name: Upload code coverage from RSpec
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v4.2.0
       with:
         fail_ci_if_error: true
     - name: Run minitest tests
@@ -151,7 +151,7 @@ jobs:
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rake test
     - name: Upload code coverage from minitest
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v4.2.0
       with:
         fail_ci_if_error: true
   migration-robustness:
