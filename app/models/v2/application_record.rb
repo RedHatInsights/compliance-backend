@@ -11,6 +11,13 @@ module V2
 
     AN = Arel::Nodes
 
+    # Placeholder field for implicit searching that should always fail as we only want to support explicit search
+    scoped_search on: :_____, ext_method: :unsupported_query
+
+    def self.unsupported_query(_filter, _operator, value)
+      raise ScopedSearch::QueryNotSupported, "'#{value}' is not a valid query string"
+    end
+
     def self.count_by
       primary_key.to_sym
     end

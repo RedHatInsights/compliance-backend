@@ -78,4 +78,12 @@ RSpec.shared_examples 'searchable' do |*parents|
       expect(response_body_data).to match_array(found.map { |item| hash_including('id' => item.id) })
     end
   end
+
+  context 'implicit search' do
+    it 'fails with unprocessble_entity' do
+      get :index, params: passable_params.merge(filter: 'foo', parents: parents)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
 end

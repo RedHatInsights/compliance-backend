@@ -127,7 +127,7 @@ def search_params_v2(model = nil)
               'However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>' \
               "#{model.name.split('::').second.gsub(/([A-Z])/) { " #{Regexp.last_match(1)}" }.strip.pluralize} " \
               'are searchable using attributes ' \
-              "#{model.scoped_search.fields.keys.map { |k| "`#{k}`" }.to_sentence}" \
+              "#{model.scoped_search.fields.keys.reject { |k| k == :_____ }.map { |k| "`#{k}`" }.to_sentence}" \
               '<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)',
             schema: { type: :string }
 end
