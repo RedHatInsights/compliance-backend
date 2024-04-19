@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'exceptions'
-
 # General controller to include all-encompassing behavior
 class ApplicationController < ActionController::API
   include ActionController::Helpers

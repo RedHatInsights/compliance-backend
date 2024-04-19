@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'exceptions'
-
 # Concern to support sorting returned database records
 module Sortable
   extend ActiveSupport::Concern

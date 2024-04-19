@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'open-uri'
-require 'net/http'
-
 # Service used to download reports or anything else. It includes
 # protection against the infamous open('| ls')
 class SafeDownloader

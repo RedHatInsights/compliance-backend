@@ -55,6 +55,7 @@ module ComplianceBackend
       -> request { Insights::Api::Common::IdentityHeader.from_request(request)&.org_id }
     ]
 
+    config.autoload_paths << Rails.root.join('lib')
 
     # Adjust params[tags] to be array
     config.middleware.use Insights::Api::Common::AdjustTags::Middleware

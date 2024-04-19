@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 # Service for Supported Remediations
 class SupportedRemediations
   class << self

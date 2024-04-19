@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'exceptions'
-
 module V2
   # Concern to support searching among database records
   module Searchable

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'exceptions'
-
 module V2
   # Concern to support sorting returned database records
   module Sortable

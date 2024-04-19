@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 # rubocop:disable Metrics/BlockLength
 SupportedSsg = Struct.new(:id, :package, :version, :profiles,
                           :os_major_version, :os_minor_version,

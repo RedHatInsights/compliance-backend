@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'insights-rbac-api-client'
-
 # This service is meant to handle calls to the RBAC API
 class Rbac
   API_CLIENT = RBACApiClient::AccessApi.new

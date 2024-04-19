@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'yaml'
-
 module V1
   # API for Supported SSGs mapped to RHEL minor versions
   class SupportedSsgsController < ApplicationController

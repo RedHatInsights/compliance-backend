@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'rubygems/package'
-require 'zlib'
-
 # Finds the files in a insights tar and returns them as an array
 class ReportsTarReader
   LONG_LINK = '././@LongLink'

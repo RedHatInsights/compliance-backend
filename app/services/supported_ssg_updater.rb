@@ -2,8 +2,6 @@
 
 # This class updates supported SSGs yaml
 class SupportedSsgUpdater
-  require 'yaml'
-
   KEYS_TO_REMOVE = %w[upstream_version brew_url].freeze
 
   def self.run!
