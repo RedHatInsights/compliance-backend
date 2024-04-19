@@ -330,9 +330,9 @@ class AuthenticationTest < ActionController::TestCase
       }.to_json
     )
 
-    Rbac::API_CLIENT.expects(:get_principal_access)
-                    .with(Rbac::APPS, { limit: 1000, auth_names: '', header_params: { X_RH_IDENTITY: encoded_header } })
-                    .returns(RBACApiClient::AccessPagination.new(data: []))
+    Rbac::API_CLIENT.expects(:get_principal_access).with(
+      Rbac::APPS, { limit: 1000, auth_names: '', header_params: { 'X-RH-IDENTITY': encoded_header } }
+    ).returns(RBACApiClient::AccessPagination.new(data: []))
 
     process_test(headers: { 'X-RH-IDENTITY': encoded_header })
   end

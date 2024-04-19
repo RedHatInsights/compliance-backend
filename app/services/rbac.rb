@@ -27,7 +27,7 @@ class Rbac
       begin
         API_CLIENT.get_principal_access(
           self::APPS,
-          self::OPTS.merge(header_params: { X_RH_IDENTITY: identity })
+          self::OPTS.merge(header_params: { 'X-RH-IDENTITY': identity })
         ).data
       rescue RBACApiClient::ApiError => e
         Rails.logger.info(e.message)

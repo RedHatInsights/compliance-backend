@@ -21,7 +21,7 @@ module Insights
 
         private
 
-        def get(path = '', params: {}, headers: { X_RH_IDENTITY: @b64_identity })
+        def get(path = '', params: {}, headers: { 'X-RH-IDENTITY': @b64_identity })
           JSON.parse(Platform.connection.get("#{@url}#{path}", params, headers).body)
         end
       end
