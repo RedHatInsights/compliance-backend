@@ -25,7 +25,7 @@ class HostPolicy < ApplicationPolicy
 
       return scope.none if user.org_id.blank? || groups.blank?
 
-      user_scope = scope.where(org_id: user.org_id)
+      user_scope = scope.where(org_id: user.org_id).non_bootc
 
       return user_scope if groups == Rbac::ANY # Global access
 

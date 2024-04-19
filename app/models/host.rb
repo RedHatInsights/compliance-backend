@@ -39,6 +39,16 @@ class Host < ApplicationRecord
     AN::Quoted.new('host_type')
   )
 
+  BOOTC_STATUS = AN::InfixOperation.new(
+    '->',
+    Host.arel_table[:system_profile],
+    AN::InfixOperation.new(
+      '->>',
+      AN::Quoted.new('bootc_status'),
+      AN::Quoted.new('booted')
+    )
+  )
+
   UNGROUPED_HOSTS = arel_table[:groups].eq(AN::Quoted.new('[]'))
 
   FIRST_GROUP_NAME = AN::NamedFunction.new(
@@ -144,6 +154,8 @@ class Host < ApplicationRecord
     # The OR is inside of Arel in order to prevent pollution of already applied scopes
     where(groups.include?([]) ? grouped.or(UNGROUPED_HOSTS) : grouped)
   }
+
+  scope :non_bootc, -> { where(BOOTC_STATUS.eq(nil)) }
 
   def self.os_minor_versions(hosts)
     distinct.where(id: hosts).pluck(OS_MINOR_VERSION)
