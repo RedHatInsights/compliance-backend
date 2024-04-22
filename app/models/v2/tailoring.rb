@@ -51,7 +51,7 @@ module V2
     end
 
     def rule_group_ref_ids
-      base = V2::RuleGroup.where(id: rules_added.except(:select).select(:rule_group_id))
+      base = V2::RuleGroup.where(id: rules_added.reselect(:rule_group_id))
       base.or(V2::RuleGroup.where(id: base.select(GROUP_ANCESTRY_IDS)))
           .pluck(:ref_id)
     end
