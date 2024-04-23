@@ -9,6 +9,8 @@ module V2
     include V2::Searchable
     include V2::Indexable
 
+    ActiveRecord::Relation.include(V2::MergeWithAlias)
+
     AN = Arel::Nodes
 
     # Placeholder field for implicit searching that should always fail as we only want to support explicit search
