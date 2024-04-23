@@ -1,0 +1,2 @@
+CREATE TRIGGER "v2_rules_update" INSTEAD OF UPDATE ON "v2_rules"
+FOR EACH ROW EXECUTE FUNCTION v2_rules_update();

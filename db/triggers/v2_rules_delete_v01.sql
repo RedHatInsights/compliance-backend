@@ -1,0 +1,2 @@
+CREATE TRIGGER "v2_rules_delete" INSTEAD OF DELETE ON "v2_rules"
+FOR EACH ROW EXECUTE FUNCTION v2_rules_delete();
