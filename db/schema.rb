@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_09_085523) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_23_111013) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -290,26 +290,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_085523) do
       value_definitions.benchmark_id AS security_guide_id
      FROM value_definitions;
   SQL
-  create_view "v2_rules", sql_definition: <<-SQL
-      SELECT rules.id,
-      rules.ref_id,
-      rules.supported,
-      rules.title,
-      rules.severity,
-      rules.description,
-      rules.rationale,
-      rules.created_at,
-      rules.updated_at,
-      rules.slug,
-      rules.remediation_available,
-      rules.benchmark_id AS security_guide_id,
-      rules.upstream,
-      rules.precedence,
-      rules.rule_group_id,
-      rules.value_checks,
-      rules.identifier
-     FROM rules;
-  SQL
   create_view "tailorings", sql_definition: <<-SQL
       SELECT profiles.id,
       profiles.policy_id,
@@ -410,6 +390,26 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_085523) do
       test_results.created_at,
       test_results.updated_at
      FROM test_results;
+  SQL
+  create_view "v2_rules", sql_definition: <<-SQL
+      SELECT rules.id,
+      rules.ref_id,
+      rules.title,
+      rules.severity,
+      rules.description,
+      rules.rationale,
+      rules.created_at,
+      rules.updated_at,
+      rules.remediation_available,
+      rules.benchmark_id AS security_guide_id,
+      rules.upstream,
+      rules.precedence,
+      rules.rule_group_id,
+      rules.value_checks,
+      rules.identifier,
+      rule_references_containers.rule_references AS "references"
+     FROM (rules
+       LEFT JOIN rule_references_containers ON ((rule_references_containers.rule_id = rules.id)));
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
@@ -540,18 +540,118 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_085523) do
       END
       $function$
   SQL
+  create_function :v2_rules_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_rules_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+          INSERT INTO "rules" (
+            "ref_id",
+            "title",
+            "severity",
+            "description",
+            "rationale",
+            "created_at",
+            "updated_at",
+            "remediation_available",
+            "benchmark_id",
+            "upstream",
+            "precedence",
+            "rule_group_id",
+            "value_checks",
+            "identifier"
+          ) VALUES (
+            NEW."ref_id",
+            NEW."title",
+            NEW."severity",
+            NEW."description",
+            NEW."rationale",
+            NEW."created_at",
+            NEW."updated_at",
+            NEW."remediation_available",
+            NEW."security_guide_id",
+            NEW."upstream",
+            NEW."precedence",
+            NEW."rule_group_id",
+            NEW."value_checks",
+            NEW."identifier"
+          ) RETURNING "id" INTO "result_id";
+
+          -- Insert a new rule reference record separately
+          INSERT INTO "rule_references_containers" ("rule_references", "rule_id", "created_at", "updated_at")
+          SELECT NEW."references", "result_id", NOW(), NOW();
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
+  create_function :v2_rules_update, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_rules_update()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          -- Update the rule reference record separately
+          UPDATE "rule_references_container" SET "rule_references" = NEW."references" WHERE "rule_id" = OLD."id";
+
+          UPDATE "rules" SET
+            "ref_id" = NEW."ref_id",
+            "title" = NEW."title",
+            "severity" = NEW."severity",
+            "description" = NEW."description",
+            "rationale" = NEW."rationale",
+            "created_at" = NEW."created_at",
+            "updated_at" = NEW."updated_at",
+            "remediation_available" = NEW."remediation_available",
+            "benchmark_id" = NEW."security_guide_id",
+            "upstream" = NEW."upstream",
+            "precedence" = NEW."precedence",
+            "rule_group_id" = NEW."rule_group_id",
+            "value_checks" = NEW."value_checks",
+            "identifier" = NEW."identifier"
+          WHERE "id" = OLD."id";
+
+          RETURN NEW;
+      END
+      $function$
+  SQL
+  create_function :v2_rules_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_rules_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+        -- Delete the rule reference record separately
+        DELETE FROM "rule_references_containers" WHERE "rule_id" = OLD."id";
+        DELETE FROM "rules" WHERE "id" = OLD."id";
+      RETURN OLD;
+      END
+      $function$
+  SQL
 
 
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
-  create_trigger :v2_policies_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
   SQL
   create_trigger :v2_policies_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
   SQL
-  create_trigger :v2_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
+  create_trigger :v2_policies_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
+  SQL
+  create_trigger :v2_rules_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_rules_update INSTEAD OF UPDATE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_update()
+  SQL
+  create_trigger :v2_rules_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_rules_insert INSTEAD OF INSERT ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_insert()
+  SQL
+  create_trigger :v2_rules_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_rules_delete INSTEAD OF DELETE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_delete()
   SQL
 end

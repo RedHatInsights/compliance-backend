@@ -10,7 +10,10 @@ describe V2::RulesController do
       rationale: :rationale,
       description: :description,
       severity: :severity,
-      precedence: :precedence
+      precedence: :precedence,
+      references: :references,
+      identifier: :identifier,
+      value_checks: :value_checks
     }
   end
 
@@ -63,7 +66,10 @@ describe V2::RulesController do
         description: :description,
         severity: :severity,
         remediation_issue_id: :remediation_issue_id,
-        precedence: :precedence
+        precedence: :precedence,
+        references: :references,
+        identifier: :identifier,
+        value_checks: :value_checks
       }
     end
 
