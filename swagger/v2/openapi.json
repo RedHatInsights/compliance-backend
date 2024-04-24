@@ -83,7 +83,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Policies are searchable using attributes `title`, `os_major_version`, and `os_minor_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Policies are searchable using attributes `title`, `os_major_version`, and `os_minor_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -238,7 +238,7 @@
                     "summary": "",
                     "description": ""
                   },
-                  "List of Policies sorted by \"os_major_verision:asc\"": {
+                  "List of Policies sorted by \"os_major_version:asc\"": {
                     "value": {
                       "data": [
                         {
@@ -824,7 +824,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Policies are searchable using attributes `title`, `os_major_version`, and `os_minor_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Policies are searchable using attributes `title`, `os_major_version`, and `os_minor_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -1070,7 +1070,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Profiles are searchable using attributes `title` and `ref_id`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Profiles are searchable using attributes `title` and `ref_id`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -1517,7 +1517,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Rule Groups are searchable using attributes <br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Rule Groups are searchable using attributes <br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -1974,7 +1974,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Rules are searchable using attributes `title` and `severity`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Rules are searchable using attributes `title` and `severity`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -2452,7 +2452,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Rules are searchable using attributes `title` and `severity`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Rules are searchable using attributes `title` and `severity`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -2967,7 +2967,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Rules are searchable using attributes `title` and `severity`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Rules are searchable using attributes `title` and `severity`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -3552,7 +3552,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Security Guides are searchable using attributes `title`, `version`, `ref_id`, and `os_major_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Security Guides are searchable using attributes `title`, `version`, `ref_id`, and `os_major_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -3677,7 +3677,7 @@
                     "summary": "",
                     "description": ""
                   },
-                  "List of Security Guides sorted by \"os_major_verision:asc\"": {
+                  "List of Security Guides sorted by \"os_major_version:asc\"": {
                     "value": {
                       "data": [
                         {
@@ -4179,7 +4179,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Supported Profiles are searchable using attributes `os_major_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Supported Profiles are searchable using attributes `os_major_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -4226,7 +4226,7 @@
                     "summary": "",
                     "description": ""
                   },
-                  "List of Supported Profiles sorted by \"os_major_verision:asc\"": {
+                  "List of Supported Profiles sorted by \"os_major_version:asc\"": {
                     "value": {
                       "data": [
                         {
@@ -4396,7 +4396,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Systems are searchable using attributes `display_name`, `os_major_version`, `os_minor_version`, and `assigned_or_scanned`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Systems are searchable using attributes `display_name`, `os_major_version`, `os_minor_version`, and `assigned_or_scanned`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -4842,7 +4842,7 @@
                     "summary": "",
                     "description": ""
                   },
-                  "List of Systems sorted by \"os_major_verision:asc\"": {
+                  "List of Systems sorted by \"os_major_version:asc\"": {
                     "value": {
                       "data": [
                         {
@@ -5944,7 +5944,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Systems are searchable using attributes `display_name`, `os_major_version`, `os_minor_version`, and `assigned_or_scanned`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Systems are searchable using attributes `display_name`, `os_major_version`, `os_minor_version`, and `assigned_or_scanned`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -6388,7 +6388,7 @@
                     "summary": "",
                     "description": ""
                   },
-                  "List of Systems sorted by \"os_major_verision:asc\"": {
+                  "List of Systems sorted by \"os_major_version:asc\"": {
                     "value": {
                       "data": [
                         {
@@ -8091,7 +8091,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Tailorings are searchable using attributes `os_minor_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Tailorings are searchable using attributes `os_minor_version`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
@@ -8646,7 +8646,7 @@
             "name": "filter",
             "in": "query",
             "required": false,
-            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Value Definitions are searchable using attributes `title`<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)",
+            "description": "Query string to filter items by their attributes. Compliant with <a href=\"https://github.com/wvanbergen/scoped_search/wiki/Query-language\" target=\"_blank\" title=\"github.com/wvanbergen/scoped_search\">scoped_search query language</a>. However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>Value Definitions are searchable using attributes `title`<br><br>(e.g.: `(version=0.1.47 AND os_major_version=8)`)",
             "schema": {
               "type": "string"
             }
