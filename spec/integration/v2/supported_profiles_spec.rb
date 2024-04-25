@@ -32,7 +32,7 @@ describe 'Supported Profiles', swagger_doc: 'v2/openapi.json' do
         let(:sort_by) { ['os_major_version'] }
         v2_collection_schema 'supported_profile'
 
-        after { |e| autogenerate_examples(e, 'List of Supported Profiles sorted by "os_major_verision:asc"') }
+        after { |e| autogenerate_examples(e, 'List of Supported Profiles sorted by "os_major_version:asc"') }
 
         run_test!
       end

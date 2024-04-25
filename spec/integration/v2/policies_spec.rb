@@ -33,7 +33,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
         let(:sort_by) { ['os_major_version'] }
         v2_collection_schema 'policy'
 
-        after { |e| autogenerate_examples(e, 'List of Policies sorted by "os_major_verision:asc"') }
+        after { |e| autogenerate_examples(e, 'List of Policies sorted by "os_major_version:asc"') }
 
         run_test!
       end
