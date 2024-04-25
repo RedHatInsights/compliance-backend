@@ -128,7 +128,7 @@ def search_params_v2(model = nil)
               "#{model.name.split('::').second.gsub(/([A-Z])/) { " #{Regexp.last_match(1)}" }.strip.pluralize} " \
               'are searchable using attributes ' \
               "#{model.scoped_search.fields.keys.reject { |k| k == :_____ }.map { |k| "`#{k}`" }.to_sentence}" \
-              '<br><br>(e.g.: `(version=0.1.47 AND os_major_verision=8)`)',
+              '<br><br>(e.g.: `(field_1=something AND field_2!="something else") OR field_3>40`)',
             schema: { type: :string }
 end
 
@@ -216,5 +216,5 @@ def auth_header
 end
 
 def v2_auth_header
-  parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string, description: 'For internal use only' }
+  parameter name: :'X-RH-IDENTITY', in: :header, schema: { type: :string }, description: 'For internal use only'
 end
