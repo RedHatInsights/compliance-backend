@@ -98,11 +98,11 @@ module V2
     end
 
     def os_major_version
-      attributes['os_major_version'] || system_profile&.dig('operating_system', 'major')
+      attributes['os_major_version'] || try(:system_profile)&.dig('operating_system', 'major')
     end
 
     def os_minor_version
-      attributes['os_minor_version'] || system_profile&.dig('operating_system', 'minor')
+      attributes['os_minor_version'] || try(:system_profile)&.dig('operating_system', 'minor')
     end
 
     def self.arel_inventory_groups(groups, key)

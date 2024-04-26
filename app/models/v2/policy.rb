@@ -62,15 +62,15 @@ module V2
     before_validation :ensure_default_values
 
     def os_major_version
-      attributes['security_guide__os_major_version'] || security_guide.os_major_version
+      attributes['security_guide__os_major_version'] || try(:security_guide)&.os_major_version
     end
 
     def profile_title
-      attributes['profile__title'] || profile.title
+      attributes['profile__title'] || try(:profile)&.title
     end
 
     def ref_id
-      attributes['profile__ref_id'] || profile.ref_id
+      attributes['profile__ref_id'] || try(:profile)&.ref_id
     end
 
     def os_minor_versions
