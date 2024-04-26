@@ -47,7 +47,7 @@ module V2
     validates :os_minor_version, numericality: { greater_than_or_equal_to: 0 }, uniqueness: { scope: :policy }
 
     def os_major_version
-      attributes['security_guide__os_major_version'] || security_guide.os_major_version
+      attributes['security_guide__os_major_version'] || try(:security_guide)&.os_major_version
     end
 
     def rule_group_ref_ids
