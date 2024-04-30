@@ -25,8 +25,6 @@ objects:
       name: compliance
       version: 15
     kafkaTopics:
-      - topicName: platform.upload.compliance
-        partitions: 1
       - topicName: platform.payload-status
         partitions: 1
       - topicName: platform.inventory.events
