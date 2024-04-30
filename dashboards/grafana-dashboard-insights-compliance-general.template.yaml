@@ -40,7 +40,7 @@ objects:
                 "editorMode": "code",
                 "format": "table",
                 "rawQuery": true,
-                "rawSql": "SELECT deployment_time as \"time\", 'deployed ' || app_name || ' to ' || env_name as \"text\" from deployments WHERE app_name = 'compliance' and env_name = REGEXP_REPLACE(REGEXP_REPLACE('${datasource}', 'crcs.*', 'insights-stage'), 'crcp.*', 'insights-production') and succeeded = true;",
+                "rawSql": "SELECT deployment_time as \"time\", 'deployed ' || app_name || ' to ' || env_name as \"text\" from deployments WHERE app_name = 'compliance' and env_name = REGEXP_REPLACE(REGEXP_REPLACE('${datasource:text}', 'crcs.*', 'insights-stage'), 'crcp.*', 'insights-production') and succeeded = true;",
                 "refId": "Anno",
                 "sql": {
                   "columns": [
@@ -74,7 +74,7 @@ objects:
                 "editorMode": "code",
                 "format": "table",
                 "rawQuery": true,
-                "rawSql": "SELECT deployment_time as \"time\", 'deployed ' || app_name || ' to ' || env_name as \"text\" from deployments WHERE app_name = 'compliance' and env_name = REGEXP_REPLACE(REGEXP_REPLACE('${datasource}', 'crcs.*', 'insights-stage'), 'crcp.*', 'insights-production') and succeeded = false;",
+                "rawSql": "SELECT deployment_time as \"time\", 'deployed ' || app_name || ' to ' || env_name as \"text\" from deployments WHERE app_name = 'compliance' and env_name = REGEXP_REPLACE(REGEXP_REPLACE('${datasource:text}', 'crcs.*', 'insights-stage'), 'crcp.*', 'insights-production') and succeeded = false;",
                 "refId": "Anno",
                 "sql": {
                   "columns": [
