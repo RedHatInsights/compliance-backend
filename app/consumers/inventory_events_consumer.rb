@@ -24,10 +24,8 @@ class InventoryEventsConsumer < ApplicationConsumer
 
   def dispatch
     if service == 'compliance'
-      logger.error('[DBG] calling handle_report_parsing')
       handle_report_parsing
     elsif @msg_value['type'] == 'delete'
-      logger.error('[DBG] calling handle_host_delete')
       handle_host_delete
     else
       logger.debug { "Skipped message of type #{@msg_value['type']}" }
@@ -37,8 +35,6 @@ class InventoryEventsConsumer < ApplicationConsumer
   def handle_report_parsing
     parse_output = parse_report
     validation_topic = Settings.kafka.topics.upload_compliance
-
-    logger.error('[DBG] calling produce with the validation_topic')
     produce(parse_output, topic: validation_topic) if validation_topic
   end
 

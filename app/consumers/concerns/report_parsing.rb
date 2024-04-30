@@ -13,9 +13,7 @@ module ReportParsing
     def parse_report
       raise EntitlementError unless identity.valid?
 
-      logger.error('[DBG] calling validated_reports')
       reports = validated_reports(report_contents, metadata)
-      logger.error('[DBG] calling enqueue_parse_report_job')
       enqueue_parse_report_job(reports)
     rescue EntitlementError, SafeDownloader::DownloadError,
            InventoryEventsConsumer::ReportValidationError => e
@@ -38,7 +36,6 @@ module ReportParsing
       msg += " from request #{request_id} as job #{job}"
       logger.audit_success("[#{org_id}] #{msg}")
 
-      logger.error('[DBG] calling notify_payload_tracker')
       notify_payload_tracker(:received, "File of #{profile_id} is valid. Job #{job} enqueued")
     end
 
@@ -46,9 +43,7 @@ module ReportParsing
       error_message = msg_for_exception(exc)
       logger.error "[#{org_id}] #{error_message}"
       logger.audit_fail "[#{org_id}] #{error_message}"
-      logger.error('[DBG] calling notify_payload_tracker')
       notify_payload_tracker(:error, error_message)
-      logger.error('[DBG] calling notify_report_failure')
       notify_report_failure(exc)
       validation_payload(request_id, valid: false)
     end
@@ -103,7 +98,10 @@ module ReportParsing
 
     def metadata
       (@msg_value.dig('platform_metadata', 'metadata') || {}).merge(
-        'id' => id, 'b64_identity' => b64_identity, 'url' => url, 'request_id' => request_id,
+        'id' => id,
+        'b64_identity' => b64_identity,
+        'url' => url,
+        'request_id' => request_id,
         'org_id' => org_id
       )
     end
