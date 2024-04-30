@@ -29,7 +29,7 @@ module V2
       # Match any declared `aggregate_field` against the available relationships, return with a hash of
       # aggregations in a `{ name => [field, alias] }` format.
       def aggregations(parents, to_many)
-        filter_from(@aggregated_attributes, to_many - parents.to_a).each_with_object({}) do |(k, v), obj|
+        filter_from(@aggregated_attributes, to_many - parents.to_a, true).each_with_object({}) do |(k, v), obj|
           obj[k] = v
         end
       end
@@ -105,30 +105,33 @@ module V2
 
       # Returns a hash of DB fields that are further evaluated by model methods, own fields are grouped
       # under the `nil` key of the hash, fields from other joined associations are keyed under the name
-      # of the given association.
+      # of the given association. Aggregated fields are keyed under the aggregated table with a similar
+      # structure, but they contain an `[aggregation, alias]` pair instead.
       #
       # ```
       # {
       #   nil => [own_field1, own_field2, ...],
       #   another_table1 => [another_table_field1, another_table_field2, ...],
-      #   another_table2 => [another_table_field1, another_table_field2, ...]
+      #   another_table2 => [another_table_field1, another_table_field2, ...],
+      #   another_table3 => [[aggregation, alias], [aggregation, alias], ...]
       # }
       # ```
-      def filter_from(attributes, joined)
+      def filter_from(attributes, joined, aggregate = false)
         attributes ||= {}
 
         reduce_method_fields({}) do |obj, field|
           if attributes.key?(field) && meets_dependency?(attributes[field].keys, joined)
-            merge_dependencies(obj, attributes[field])
+            merge_dependencies(obj, attributes[field], aggregate)
           end
         end
       end
 
-      # Helper method for deep merging a hash of arrays
-      def merge_dependencies(left, right)
+      # Helper method for deep merging a hash of arrays, based on the `aggregate` parameter it can do
+      # either a `+=` (standard) or a `<<` (aggregate) merge.
+      def merge_dependencies(left, right, aggregate)
         right.each_with_object(left) do |(k, v), obj|
           obj[k] ||= []
-          obj[k] += v
+          aggregate ? obj[k] << v : obj[k] += v
         end
       end
     end

@@ -38,30 +38,32 @@ module V2
     end
 
     # Self-join with the requested aggregations built using 1:n associations, also select
-    # the aggregated field from the self-joined subquery.
+    # the aggregated/evaluated/aliased fields from the self-joined subquery.
     def join_aggregated(relation)
-      aggregations.reduce(relation) do |scope, (association, (aggregation, column))|
-        scope.joins(subquery_fragment(association, aggregation.call.as(column)))
-             .select(column)
+      aggregations.reduce(relation) do |scope, (association, fields)|
+        # Evaluate and alias all `fields` tied to a single `association` at once
+        aliases = fields.map { |aggregation, column| aggregation.call.as(column) }
+        scope.joins(subquery_fragment(association, aliases)).select(fields.map(&:second))
       end
     end
 
     # Builds a subquery with the `resource` left outer joined with the `association`, grouped
-    # by the primary key of the `resource` and returning the result with the `aggregation`.
+    # by the primary key of the `resource` and returning the result with the `aliases`.
     # This subquery is then further self-joined with the `resource` and the joining fragment
     # is extracted from the arel tree.
     #
     # The resulting fragment ends up in the following format:
     # ```
     # INNER JOIN (
-    #   SELECT "resource"."id", AGG("association"."XY") FROM "resource" LEFT OUTER JOIN "association" ...
+    #   SELECT "resource"."id", AGG("association"."XY"), AGG("association"."XZ")
+    #   FROM "resource" LEFT OUTER JOIN "association" ...
     # ) "aggregate_association" ON "aggregate_association"."id" = "resource"."id";
     # ```
     #
-    def subquery_fragment(association, aggregation)
+    def subquery_fragment(association, aliases)
       sq = resource.left_outer_joins(association)
                    .group(resource.primary_key)
-                   .select(resource.primary_key, aggregation)
+                   .select(resource.primary_key, *aliases)
       resource.arel_self_join(sq.arel.as(association.to_s))
     end
 
