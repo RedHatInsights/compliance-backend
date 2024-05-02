@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'xccdf/profiles'
-require 'xccdf/profile_os_minor_versions'
 
 module Xccdf
   # A class to test Xccdf::ProfileOsMinorVersions

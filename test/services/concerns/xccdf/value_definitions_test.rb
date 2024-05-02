@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'xccdf/value_definitions'
 
 class ValueDefinitionsTest < ActiveSupport::TestCase
   include Xccdf::Profiles

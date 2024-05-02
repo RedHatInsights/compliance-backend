@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'xccdf/rule_group_relationships'
-require 'xccdf/rule_groups'
 
 class RuleGroupRelationshipsTest < ActiveSupport::TestCase
   include Xccdf::Profiles

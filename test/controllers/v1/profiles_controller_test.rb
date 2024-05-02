@@ -172,7 +172,7 @@ module V1
 
   class ProfilesControllerTest < ActionDispatch::IntegrationTest
     setup do
-      ProfilesController.any_instance.stubs(:authenticate_user).yields
+      V1::ProfilesController.any_instance.stubs(:authenticate_user).yields
       User.current = FactoryBot.create(:user)
       stub_rbac_permissions(Rbac::COMPLIANCE_VIEWER, Rbac::INVENTORY_HOSTS_READ)
     end

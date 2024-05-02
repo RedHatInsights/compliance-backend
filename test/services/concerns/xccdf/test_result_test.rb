@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'xccdf/test_result'
 
 class TestResultTest < ActiveSupport::TestCase
   class Mock
