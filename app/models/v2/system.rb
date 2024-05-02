@@ -5,6 +5,7 @@ module V2
   class System < ApplicationRecord
     self.table_name = 'inventory.hosts'
     self.primary_key = 'id'
+    self.ignored_columns += %w[account]
 
     # rubocop:disable Rails/InverseOf
     # FIXME: after the full remodel and V1 cleanup, inverse_of can be specified
