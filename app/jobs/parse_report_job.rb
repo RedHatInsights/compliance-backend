@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'xccdf_report_parser'
-
 # Saves all of the information we can parse from a Xccdf report into db
 class ParseReportJob
   include Sidekiq::Worker

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'xccdf/profiles'
 
 module Xccdf
   # A class to test Xccdf::Profiles

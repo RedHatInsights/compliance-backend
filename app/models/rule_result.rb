@@ -33,7 +33,7 @@ class RuleResult < ApplicationRecord
   scope :selected, -> { where(result: SELECTED) }
   scope :failed, -> { where(result: FAILED) }
   scope :for_system, ->(host_id) { where(host_id: host_id) }
-  scope :for_policy, ->(policy_id) { joins(:profile).where(profiles: ::Profile.in_policy(policy_id)) }
+  scope :for_policy, ->(policy_id) { joins(:profile).where(profile: { id: ::Profile.in_policy(policy_id) }) }
   scope :latest, ->(policy_id) { for_policy(policy_id).joins(:test_result).merge(TestResult.latest) }
 
   # When requesting rule results, the DB response is scoped down by org_id numbers on the joined inventory. By

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'exception_notifier_custom_data'
 
 # This class tests a "dummy" controller for the exception notifier.
 class MocksController < ActionController::API

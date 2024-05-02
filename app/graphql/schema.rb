@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'compliance_timeout'
+require_relative 'compliance_timeout'
 require_relative 'types/query'
 require_relative 'types/mutation'
 

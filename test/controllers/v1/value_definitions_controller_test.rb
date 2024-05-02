@@ -7,7 +7,7 @@ module V1
     setup do
       User.current = FactoryBot.create(:user)
 
-      ValueDefinitionsController.any_instance.stubs(:authenticate_user).yields
+      V1::ValueDefinitionsController.any_instance.stubs(:authenticate_user).yields
 
       @vd1 = FactoryBot.create(:value_definition, title: 'test1')
       @vd2 = FactoryBot.create(:value_definition, title: 'test2')

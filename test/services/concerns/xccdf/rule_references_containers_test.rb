@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'xccdf/rules'
-require 'xccdf/rule_references_containers'
 
 class RuleReferencesContainersTest < ActiveSupport::TestCase
   class Mock
