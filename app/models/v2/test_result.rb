@@ -7,9 +7,10 @@ module V2
     self.table_name = :v2_test_results
     self.primary_key = :id
 
-    belongs_to :system, optional: true
-    belongs_to :tailoring
-    has_one :policy, through: :tailoring
-    has_one :security_guide, through: :tailoring
+    belongs_to :system, class_name: 'V2::System', optional: true
+    belongs_to :tailoring, class_name: 'V2::Tailoring'
+
+    has_one :policy, class_name: 'V2::Policy', through: :tailoring
+    has_one :security_guide, class_name: 'V2::SecurityGuide', through: :tailoring
   end
 end
