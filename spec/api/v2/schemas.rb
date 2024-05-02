@@ -10,6 +10,7 @@ module Api
       include Metadata
       include Policy
       include Profile
+      include Report
       include Rule
       include RuleGroup
       include RuleTree
@@ -29,6 +30,7 @@ module Api
         policy: POLICY,
         policy_update: POLICY_UPDATE,
         profile: PROFILE,
+        report: REPORT,
         rule: RULE,
         rule_group: RULE_GROUP,
         rule_tree: RULE_TREE,

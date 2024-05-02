@@ -13,7 +13,8 @@ module V2
     # rubocop:enable Rails/InverseOf
     has_many :policy_systems, class_name: 'V2::PolicySystem', dependent: nil
     has_many :policies, through: :policy_systems
-    has_many :reports, class_name: 'V2::Report', dependent: nil
+    has_many :reports, class_name: 'V2::Report', through: :policies
+    has_many :test_results, class_name: 'V2::TestResult', dependent: :destroy
 
     OS_VERSION = AN::InfixOperation.new('->', Host.arel_table[:system_profile], AN::Quoted.new('operating_system'))
     OS_MINOR_VERSION = AN::InfixOperation.new('->', OS_VERSION, AN::Quoted.new('minor')).as('os_minor_version')

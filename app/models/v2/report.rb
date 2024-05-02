@@ -7,9 +7,72 @@ module V2
     self.table_name = :reports
     self.primary_key = :id
 
+    SYSTEM_COUNT = lambda do
+      AN::NamedFunction.new('COUNT', [V2::System.arel_table[:id]]).filter(
+        Pundit.policy_scope(User.current, V2::System).where_clause.ast
+      )
+    end
+
+    COMPLIANT_SYSTEM_COUNT = lambda do
+      AN::NamedFunction.new('COUNT', [V2::System.arel_table[:id]]).filter(
+        Pundit.policy_scope(User.current, V2::System).where_clause.ast.and(
+          V2::TestResult.arel_table[:score].gteq(V2::Report.arel_table[:compliance_threshold])
+        )
+      )
+    end
+
+    UNSUPPORTED_SYSTEM_COUNT = lambda do
+      AN::NamedFunction.new('COUNT', [V2::System.arel_table[:id]]).filter(
+        Pundit.policy_scope(User.current, V2::System).where_clause.ast.and(
+          V2::TestResult.arel_table[:supported].not_eq('t')
+        )
+      )
+    end
+
     # To prevent an autojoin with itself, there should not be an inverse relationship specified
     belongs_to :policy, class_name: 'V2::Policy', foreign_key: :id # rubocop:disable Rails/InverseOf
-    has_many :tailorings, class_name: 'V2::Tailoring', through: :policy
-    has_many :systems, class_name: 'V2::System', through: :tailorings
+    belongs_to :account
+
+    belongs_to :profile, class_name: 'V2::Profile'
+    has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
+    has_many :tailorings, class_name: 'V2::Tailoring', foreign_key: :policy_id, dependent: nil # rubocop:disable Rails/InverseOf
+    has_many :test_results, class_name: 'V2::TestResult', dependent: nil, through: :tailorings
+    has_many :policy_systems, class_name: 'V2::PolicySystem', foreign_key: :policy_id, dependent: nil # rubocop:disable Rails/InverseOf
+    has_many :systems, class_name: 'V2::System', through: :test_results, dependent: nil
+    has_many :assigned_systems, class_name: 'V2::System', through: :policy_systems, source: :system
+
+    sortable_by :title
+    sortable_by :os_major_version
+    sortable_by :total_host_count
+    sortable_by :business_objective
+    sortable_by :compliance_threshold
+
+    searchable_by :title, %i[like unlike eq ne in notin]
+    searchable_by :os_major_version, %i[eq ne in notin] do |_key, op, val|
+      bind = ['IN', 'NOT IN'].include?(op) ? '(?)' : '?'
+
+      {
+        conditions: "security_guide.os_major_version #{op} #{bind}",
+        parameter: [val.split.map(&:to_i)]
+      }
+    end
+
+    validates :account, presence: true
+
+    def os_major_version
+      attributes['security_guide__os_major_version'] || try(:security_guide)&.os_major_version
+    end
+
+    def ref_id
+      attributes['profile__ref_id'] || try(:profile)&.ref_id
+    end
+
+    def profile_title
+      attributes['profile__title'] || try(:profile)&.title
+    end
+
+    def all_systems_exposed
+      total_system_count == try(:aggregate_assigned_system_count)
+    end
   end
 end

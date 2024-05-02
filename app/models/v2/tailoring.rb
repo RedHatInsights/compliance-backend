@@ -33,12 +33,13 @@ module V2
     belongs_to :profile, class_name: 'V2::Profile'
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
     has_one :account, through: :policy, class_name: 'Account'
+    has_one :report, class_name: 'V2::Report', through: :policy, dependent: nil
     has_many :tailoring_rules,
              class_name: 'V2::TailoringRule',
              dependent: :destroy,
              inverse_of: :tailoring
     has_many :rules, class_name: 'V2::Rule', through: :tailoring_rules
-    has_many :reports, class_name: 'V2::Report', dependent: nil
+    has_many :test_results, class_name: 'V2::TestResult', dependent: :destroy
 
     searchable_by :os_minor_version, %i[eq ne]
 
