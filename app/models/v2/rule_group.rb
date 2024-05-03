@@ -13,5 +13,8 @@ module V2
     has_many :rules, class_name: 'V2::Rule', dependent: :destroy
 
     sortable_by :precedence
+
+    searchable_by :title, %i[like unlike eq ne in notin]
+    searchable_by :ref_id, %i[like unlike]
   end
 end

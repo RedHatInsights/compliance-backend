@@ -3,88 +3,88 @@
 - :name: "equality search by title"
   :entities:
     :found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: searched title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: not this title
         :security_guide_id: ${security_guide_id}
   :query: (title = "searched title")
 - :name: "non-equality search by title"
   :entities:
     :found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: not this title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: searched title
         :security_guide_id: ${security_guide_id}
   :query: (title != "searched title")
 - :name: "in search by title"
   :entities:
     :found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: searched title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: not this title
         :security_guide_id: ${security_guide_id}
   :query: (title ^ "searched title")
 - :name: "not-in search by title"
   :entities:
     :found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: not this title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: searched title
         :security_guide_id: ${security_guide_id}
   :query: (title !^ "searched title")
 - :name: "like search by title"
   :entities:
     :found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: searched title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: not this title
         :security_guide_id: ${security_guide_id}
   :query: (title ~ "searched title")
 - :name: "unlike search by title"
   :entities:
     :found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: not this title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: searched title
         :security_guide_id: ${security_guide_id}
   :query: (title !~ "searched title")
 - :name: "equality search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :ref_id: searched_ref_id
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: not_this_ref_id
         :security_guide_id: ${security_guide_id}
   :query: (ref_id = "searched_ref_id")
 - :name: "non-equality search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :title: not_this_ref_id
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_value_definition
+      - :factory: :v2_rule_group
         :ref_id: searched_ref_id
         :security_guide_id: ${security_guide_id}
   :query: (ref_id != "searched_ref_id")
