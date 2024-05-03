@@ -72,7 +72,7 @@ Rails.application.configure do
       $cloudwatch_client ||= CloudWatchLogger::Client.new(
         Settings.logging.credentials,
         Settings.logging.log_group,
-        Settings.logging.log_stream,
+        ENV.fetch('LOGSTREAM').presence || Socket.gethostname, # logstream name falls back to hostname if unset in ENV
         region: Settings.logging.region
       )
       cloudwatch_logger = Insights::Api::Common::LoggerWithAudit.new($cloudwatch_client)
