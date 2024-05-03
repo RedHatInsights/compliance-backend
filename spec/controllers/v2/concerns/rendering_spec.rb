@@ -74,7 +74,7 @@ RSpec.shared_examples 'collection' do |*parents|
     it 'responds with unauthorized status' do
       get :index, params: passable_params.merge(parents: parents)
 
-      expect(response).to have_http_status :forbidden
+      expect(response).to have_http_status :unauthorized
     end
   end
 end
