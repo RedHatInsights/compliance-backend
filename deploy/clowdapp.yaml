@@ -124,6 +124,8 @@ objects:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: LOGSTREAM
+          value: "${LOGSTREAM_IMPORT_SSG}"
         livenessProbe:
           exec:
             command: ["pgrep" ,"-f", "rake"]
@@ -219,6 +221,8 @@ objects:
               fieldPath: metadata.namespace
         - name: ENABLE_API_V2
           value: "${ENABLE_API_V2}"
+        - name: LOGSTREAM
+          value: "${LOGSTREAM_SERVICE}"
         # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
@@ -312,6 +316,8 @@ objects:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: LOGSTREAM
+          value: "${LOGSTREAM_CONSUMER}"
         livenessProbe:
           httpGet:
             path: /metrics
@@ -418,6 +424,8 @@ objects:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: LOGSTREAM
+          value: "${LOGSTREAM_SIDEKIQ}"
 
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
@@ -576,3 +584,8 @@ parameters:
   required: false
 - name: ENABLE_API_V2
   description: Whether to enable APIv2 or not
+- name: LOGSTREAM_SERVICE
+- name: LOGSTREAM_SIDEKIQ
+- name: LOGSTREAM_CONSUMER
+- name: LOGSTREAM_IMPORT_SSG
+  default: compliance-import-ssg
