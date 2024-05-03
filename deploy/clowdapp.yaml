@@ -588,4 +588,4 @@ parameters:
 - name: LOGSTREAM_SIDEKIQ
 - name: LOGSTREAM_CONSUMER
 - name: LOGSTREAM_IMPORT_SSG
-  default: compliance-import-ssg
+  value: 'compliance-import-ssg'
