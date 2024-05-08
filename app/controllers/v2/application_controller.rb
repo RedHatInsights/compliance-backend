@@ -25,9 +25,7 @@ module V2
     end
 
     # This method is being called before any before_action callbacks and it can set
-    # payload information for the metrics collector. As the User.current is not yet
-    # available at this moment, a short path to the org_id is being used to pass it
-    # to the payload if set.
+    # payload information for the metrics collector.
     #
     # https://github.com/yabeda-rb/yabeda-rails#custom-tags
     def append_info_to_payload(payload)
@@ -36,6 +34,8 @@ module V2
       return if identity_header.blank?
 
       payload[:qe] = OpenshiftEnvironment.qe_account?(identity_header.org_id)
+      payload[:path] = obfuscate_path
+      payload[:source] = request_source
     end
 
     protected
@@ -58,6 +58,25 @@ module V2
 
     def pundit_scope(res = resource)
       Pundit.policy_scope(current_user, res)
+    end
+
+    # Iterate through the `request.path` and replace any occurrences of identifiers.
+    def obfuscate_path
+      request.path.split('/').map do |chunk|
+        if UUID.validate(chunk) || chunk =~ /^[0-9]+$/ || chunk =~ /^xccdf_org/
+          ':id'
+        else
+          chunk
+        end
+      end.join('/')
+    end
+
+    # Determine where the request is coming from
+    def request_source
+      return 'insights-frontend' if request.headers['X-RH-FRONTEND-ORIGIN']
+      return 'insights-client' if identity_header.cert_based?
+
+      'basic'
     end
 
     # Default list of additional fields to be passed to the list of selected fields
