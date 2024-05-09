@@ -97,6 +97,17 @@ describe V2::PoliciesController do
         expect(subject).not_to be_nil
       end
 
+      context 'missing profile ID' do
+        let(:params) { {} }
+
+        it 'returns with an error' do
+          post :create, params: params
+
+          expect(response).to have_http_status :not_acceptable
+          expect(response.parsed_body['errors']).to include(match(/profile must exist/))
+        end
+      end
+
       context 'invalid profile ID' do
         let(:profile_id) { 'foo' }
 
