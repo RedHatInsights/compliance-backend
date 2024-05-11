@@ -21,7 +21,7 @@ objects:
     - rbac
     database:
       name: compliance
-      version: 15
+      version: 16
     kafkaTopics:
       - topicName: platform.payload-status
         partitions: 1
