@@ -81,8 +81,8 @@ module V2
       insert = delete = 0
 
       transaction do
-        insert = import(add, on_duplicate_key_ignore: true, validate: false)
         delete = del.delete_all
+        insert = import(add, on_duplicate_key_ignore: true, validate: false)
       end
 
       [insert.ids.count, delete]
