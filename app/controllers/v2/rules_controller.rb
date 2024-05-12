@@ -14,10 +14,7 @@ module V2
     permission_for_action :show, Rbac::COMPLIANCE_VIEWER
 
     def create
-      inserts, deletes = V2::TailoringRule.bulk_assign(
-        new_tailoring_rules,
-        tailoring.rules.where.not(lookup_key => permitted_params[:ids])
-      )
+      inserts, deletes = V2::TailoringRule.bulk_assign(new_tailoring_rules, old_tailoring_rules)
 
       audit_success("Assigned #{inserts} and unassigned #{deletes} Rules to/from Tailoring #{tailoring.id}")
       render_json rules, status: :accepted
@@ -71,6 +68,12 @@ module V2
         items = tailoring.security_guide.rules.where(lookup_key => permitted_params[:ids])
 
         items.map { |item| V2::TailoringRule.new(tailoring: tailoring, rule: item) }
+      end
+    end
+
+    def old_tailoring_rules
+      @old_tailoring_rules ||= begin
+        tailoring.tailoring_rules.joins(:rule).where.not(rule: { lookup_key => permitted_params[:ids] })
       end
     end
 

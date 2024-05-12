@@ -14,10 +14,7 @@ module V2
     permission_for_action :show, Rbac::SYSTEM_READ
 
     def create
-      inserts, deletes = V2::PolicySystem.bulk_assign(
-        new_policy_systems,
-        pundit_scope(policy.systems).where.not(id: permitted_params[:ids])
-      )
+      inserts, deletes = V2::PolicySystem.bulk_assign(new_policy_systems, old_policy_systems)
 
       build_tailorings!
 
@@ -77,6 +74,12 @@ module V2
                             .os_major_versions(major).os_minor_versions(minors)
 
         items.map { |item| V2::PolicySystem.new(policy: policy, system: item) }
+      end
+    end
+
+    def old_policy_systems
+      @old_policy_systems ||= begin
+        policy.policy_systems.joins(:system).merge_with_alias(pundit_scope(policy.systems))
       end
     end
 
