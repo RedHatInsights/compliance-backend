@@ -26,6 +26,7 @@ describe V2::SupportedProfilesController do
     let(:extra_params) { {} }
     let(:item_count) { 2 }
     let(:parents) { nil }
+
     let(:v1_profiles) do
       FactoryBot.create(
         :v2_security_guide,
@@ -41,6 +42,7 @@ describe V2::SupportedProfilesController do
         }
       ).profiles
     end
+
     let(:v2_profiles) do
       FactoryBot.create(
         :v2_security_guide,
@@ -54,6 +56,7 @@ describe V2::SupportedProfilesController do
         }
       ).profiles
     end
+
     let(:rhel8_profiles) do
       FactoryBot.create(
         :v2_security_guide,
