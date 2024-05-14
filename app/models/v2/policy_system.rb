@@ -19,8 +19,8 @@ module V2
         # Look up the latest Profile supporting the given OS minor version
         tailoring.profile = policy.profile.variant_for_minor(system.os_minor_version)
 
-        tailoring.rules = policy.profile.rules
-        tailoring.value_overrides = policy.profile.value_overrides
+        tailoring.rules = tailoring.profile.rules # FIXME: this is inefficient
+        tailoring.value_overrides = tailoring.profile.value_overrides
       end
     end
 
