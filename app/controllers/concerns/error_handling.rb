@@ -40,6 +40,14 @@ module ErrorHandling
                    status: :unprocessable_entity
     end
 
+    # :nocov:
+    rescue_from ActiveRecord::RangeError do |error|
+      logger.info "#{error.message} (#{error.class})"
+      render_error 'Number is not in the supported range',
+                   status: :unprocessable_entity
+    end
+    # :nocov:
+
     invalid_parameter_exceptions = [
       ActionDispatch::Http::Parameters::ParseError,
       StrongerParameters::InvalidParameter,
