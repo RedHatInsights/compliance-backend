@@ -17,12 +17,6 @@ FactoryBot.define do
       rule_count { 0 }
     end
 
-    os_minor_versions do
-      supports_minors&.map do |os_minor_version|
-        association(:profile_os_minor_version, os_minor_version: os_minor_version)
-      end
-    end
-
     value_overrides do
       create_list(:v2_value_definition, value_count, security_guide: security_guide) if value_count.positive?
       security_guide.value_definitions.each_with_object({}) do |value, object|
@@ -31,7 +25,9 @@ FactoryBot.define do
     end
 
     after(:create) do |profile, ev|
-      next if ev.rule_count.zero?
+      ev.supports_minors&.map do |os_minor_version|
+        create(:profile_os_minor_version, os_minor_version: os_minor_version, profile: profile)
+      end
 
       create_list(:v2_rule, ev.rule_count, profiles: [profile], security_guide: profile.security_guide)
     end
