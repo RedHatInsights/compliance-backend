@@ -393,6 +393,30 @@ describe V2::SystemsController do
         end
       end
 
+      context 'policy created from a no longer supported profile' do
+        let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account) }
+
+        before { FactoryBot.create(:v2_profile, ref_id: parent.profile.ref_id, supports_minors: [0, 1, 2, 8]) }
+
+        it 'clones a tailoring from a supported profile' do
+          patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(first_tailoring.profile_id).not_to eq(parent.profile_id)
+        end
+
+        context 'mismatch in supported rules' do
+          before { FactoryBot.create(:v2_rule, profile_id: parent.profile_id) }
+
+          it 'clones a tailoring from a supported profile' do
+            patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+            expect(response).to have_http_status :accepted
+            expect(first_tailoring.profile_id).not_to eq(parent.profile_id)
+          end
+        end
+      end
+
       context 'OS major version mismatch' do
         let(:os_major_version) { 6 }
 
