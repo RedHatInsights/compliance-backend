@@ -26,6 +26,8 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
+        rubygems: latest
+        bundler: latest
     - name: Rubocop
       run: bundle exec rubocop --parallel
     - name: Brakeman
@@ -65,6 +67,8 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
+        rubygems: latest
+        bundler: latest
     - name: Setup database
       env:
         RAILS_ENV: test
@@ -173,6 +177,8 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
+        rubygems: latest
+        bundler: latest
     - name: Setup database and run migrations
       env:
         RAILS_ENV: test
