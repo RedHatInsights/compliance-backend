@@ -151,6 +151,50 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
         run_test!
       end
     end
+
+    patch 'Update a Tailoring' do
+      v2_auth_header
+      tags 'Policies'
+      description 'Updates a Tailoring with the provided value_overrides'
+      operationId 'updateTailoring'
+      content_types
+
+      parameter name: :policy_id, in: :path, type: :string, required: true
+      parameter(
+        name: :id,
+        in: :path,
+        schema: {
+          oneOf: [
+            {
+              type: 'integer',
+              minimum: 6,
+              description: 'OS major version'
+            },
+            {
+              type: 'string',
+              format: 'uuid'
+            }
+          ]
+        },
+        required: true
+      )
+      parameter name: :data, in: :body, schema: ref_schema('tailoring')
+
+      let(:data) do
+        {
+          value_overrides: { FactoryBot.create(:v2_value_definition, security_guide: item.security_guide).id => '123' }
+        }
+      end
+
+      response '202', 'Updates a Tailoring' do
+        let(:id) { item.id }
+        v2_item_schema('tailoring')
+
+        after { |e| autogenerate_examples(e, 'Returns the updated Tailoring') }
+
+        run_test!
+      end
+    end
   end
 
   path '/policies/{policy_id}/tailorings/{id}/tailoring_file.json' do

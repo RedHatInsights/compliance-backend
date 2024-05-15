@@ -38,8 +38,10 @@ module Api
             },
             value_overrides: {
               type: :object,
-              readOnly: true,
-              description: 'Pair of keys and values for Value Definition customizations'
+              description: 'Pair of keys and values for Value Definition customizations',
+              examples: [
+                { Faker::Internet.uuid => 'foo', Faker::Internet.uuid => '123', Faker::Internet.uuid => 'false' }
+              ]
             }
           }
         }.freeze

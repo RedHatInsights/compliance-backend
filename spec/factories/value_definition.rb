@@ -5,8 +5,8 @@ FactoryBot.define do
     ref_id { "foo_value_#{SecureRandom.uuid}" }
     title { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
-    value_type { 'boolean' }
-    default_value { %w[true false].sample }
+    value_type { 'number' }
+    default_value { SecureRandom.random_number.to_s }
 
     security_guide { association :v2_security_guide, os_major_version: os_major_version }
 

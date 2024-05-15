@@ -14,5 +14,18 @@ module V2
 
     searchable_by :title, %i[like unlike eq ne in notin]
     searchable_by :ref_id, %i[like unlike]
+
+    def validate_value(value)
+      return false unless value.is_a?(String)
+
+      case value_type
+      when 'boolean'
+        %w[true false].include?(value)
+      when 'number'
+        value.to_i.to_s == value # FIXME: lower/upper bound validation if it's ever used
+      when 'string'
+        true
+      end
+    end
   end
 end

@@ -11,6 +11,10 @@ module V2
       match_account?
     end
 
+    def update?
+      match_account?
+    end
+
     def tailoring_file?
       match_account?
     end
