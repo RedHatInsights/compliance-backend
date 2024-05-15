@@ -22,7 +22,7 @@ FactoryBot.define do
     trait :with_tailored_values do
       value_overrides do
         profile.value_overrides.to_a.sample(profile.value_overrides.count / 2).to_h.transform_values do |value|
-          value + SecureRandom.random_number(100)
+          value + SecureRandom.random_number(100).to_s
         end
       end
     end

@@ -20,7 +20,7 @@ FactoryBot.define do
     value_overrides do
       create_list(:v2_value_definition, value_count, security_guide: security_guide) if value_count.positive?
       security_guide.value_definitions.each_with_object({}) do |value, object|
-        object[value.id] = SecureRandom.random_number(10)
+        object[value.id] = SecureRandom.random_number(10_000).to_s
       end
     end
 

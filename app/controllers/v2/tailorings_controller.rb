@@ -3,6 +3,8 @@
 module V2
   # API for Tailorings
   class TailoringsController < ApplicationController
+    UPDATE_ATTRIBUTES = { value_overrides: ParamType.map }.freeze
+
     def index
       render_json tailorings
     end
@@ -12,6 +14,17 @@ module V2
       render_json tailoring
     end
     permission_for_action :show, Rbac::POLICY_READ
+
+    def update
+      if tailoring.update(permitted_params.to_h.slice(*UPDATE_ATTRIBUTES.keys))
+        render_json tailoring, status: :accepted
+        audit_success("Updated policy #{tailoring.id}")
+      else
+        render_model_errors tailoring
+      end
+    end
+    permission_for_action :update, Rbac::POLICY_WRITE
+    permitted_params_for_action :update, { id: ID_TYPE, **UPDATE_ATTRIBUTES }
 
     def tailoring_file
       return unless tailoring.tailored?

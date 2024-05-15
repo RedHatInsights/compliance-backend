@@ -45,6 +45,7 @@ module V2
     validates :policy, presence: true
     validates :profile, presence: true
     validates :os_minor_version, numericality: { greater_than_or_equal_to: 0 }, uniqueness: { scope: :policy }
+    validate :value_coherence
 
     def os_major_version
       attributes['security_guide__os_major_version'] || try(:security_guide)&.os_major_version
@@ -74,6 +75,15 @@ module V2
       ValueDefinition.where(id: value_overrides.keys).each_with_object({}) do |value_definition, obj|
         obj[value_definition.ref_id] = value_overrides[value_definition.id]
       end
+    end
+
+    def value_coherence
+      lookup = security_guide.value_definitions.where(id: value_overrides.keys).select(:id, :value_type).index_by(&:id)
+
+      # Validate override types one by one, also fail if one of the definitions does not exist
+      return unless value_overrides.any? { |key, value| !lookup[key]&.validate_value(value) }
+
+      errors.add(:value_overrides, 'Incoherent keys or value types specified')
     end
   end
 end
