@@ -20,8 +20,8 @@ module Resolvers
         end
       end
 
-      def resolve(**kwargs)
-        filters = filter_list(**kwargs)
+      def resolve(**)
+        filters = filter_list(**)
         base_scope = authorized_scope
         filters.reduce(base_scope) { |scope, filter| filter.call(scope) }
       end

@@ -28,7 +28,7 @@ RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                     
       sed -i 's/^\(enabled.*\)/\1\nincludepkgs=postgresql\*/;' /etc/yum.repos.d/CentOS*.repo; \
     fi;                                                                                       \
     rpm -e --nodeps tzdata &>/dev/null                                                     && \
-    microdnf module enable ruby:3.1                                                        && \
+    microdnf module enable ruby:3.3                                                        && \
     microdnf module enable postgresql:13                                                   && \
     microdnf install --nodocs -y $deps $devDeps $extras                                    && \
     chmod +t /tmp                                                                          && \
@@ -60,7 +60,7 @@ WORKDIR /opt/app-root/src
 USER 0
 
 RUN rpm -e --nodeps tzdata &>/dev/null                                     && \
-    microdnf module enable ruby:3.1                                        && \
+    microdnf module enable ruby:3.3                                        && \
     microdnf install --nodocs -y $deps                                     && \
     chmod +t /tmp                                                          && \
     gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin && \
