@@ -2,8 +2,6 @@ ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tz
 ARG devDeps="gcc gcc-c++ gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel tar which util-linux xz"
 ARG extras=""
 ARG prod="true"
-ARG pgRepo="http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-8-4.el8.noarch.rpm"
-ARG pgRepoKey="http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-4.el8.noarch.rpm"
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal AS build
 
@@ -11,8 +9,6 @@ ARG deps
 ARG devDeps
 ARG extras
 ARG prod
-ARG pgRepo
-ARG pgRepoKey
 ARG IMAGE_TAG
 
 USER 0
@@ -22,12 +18,7 @@ WORKDIR /opt/app-root/src
 COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
 
-RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                                \
-    if [ -z "$FULL_RHEL" ] ; then                                                          \
-      rpm -Uvh $pgRepo $pgRepoKey                                                       && \
-      sed -i 's/^\(enabled.*\)/\1\npriority=200/;' /etc/yum.repos.d/CentOS*.repo;          \
-    fi;                                                                                    \
-    rpm -e --nodeps tzdata &>/dev/null                                                  && \
+RUN rpm -e --nodeps tzdata &>/dev/null                                                  && \
     microdnf module enable ruby:3.1                                                     && \
     microdnf module enable postgresql:13                                                && \
     microdnf install --nodocs -y $deps $devDeps $extras                                 && \
