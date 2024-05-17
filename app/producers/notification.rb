@@ -8,7 +8,7 @@ class Notification < ApplicationProducer
   VERSION = 'v1.1.0'
 
   # rubocop:disable Metrics/MethodLength
-  def self.deliver(org_id:, **kwargs)
+  def self.deliver(org_id:, **)
     msg = {
       version: VERSION,
       bundle: BUNDLE,
@@ -16,8 +16,8 @@ class Notification < ApplicationProducer
       event_type: self::EVENT_TYPE,
       timestamp: DateTime.now.iso8601,
       org_id: org_id,
-      events: build_events(**kwargs),
-      context: build_context(**kwargs).to_json,
+      events: build_events(**),
+      context: build_context(**).to_json,
       recipients: []
     }
 
