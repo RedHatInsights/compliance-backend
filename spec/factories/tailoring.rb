@@ -47,16 +47,8 @@ FactoryBot.define do
       end
     end
 
-    trait :with_default_rules do
-      after(:create) do |tailoring, _|
-        tailoring.profile.rules.each do |rule|
-          FactoryBot.create(
-            :v2_tailoring_rule,
-            rule: rule,
-            tailoring: tailoring
-          )
-        end
-      end
+    trait :without_rules do
+      after(:create) { |tailoring, _ev| tailoring.tailoring_rules.delete_all }
     end
   end
 end

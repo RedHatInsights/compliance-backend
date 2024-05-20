@@ -48,6 +48,13 @@ module V2
     validates :os_minor_version, numericality: { greater_than_or_equal_to: 0 }, uniqueness: { scope: :policy }
     validate :value_coherence
 
+    after_create do
+      data = ProfileRule.where(profile_id: profile).pluck(:rule_id).map do |rule_id|
+        TailoringRule.new(tailoring_id: id, rule_id: rule_id)
+      end
+      TailoringRule.import(data, on_duplicate_key_ignore: true, validate: false)
+    end
+
     def os_major_version
       attributes['security_guide__os_major_version'] || try(:security_guide)&.os_major_version
     end
