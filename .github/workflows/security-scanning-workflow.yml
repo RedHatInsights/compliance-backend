@@ -35,7 +35,7 @@ jobs:
     ## Additionally, if you have a Dockerfile you use as your BASE_IMG or you need to
     ## use '--build-arg', those can be define below as well.
 
-    # with:
+    with:
     #   dockerbuild_path: './buildtest'
     #   dockerfile_path: './test'
     #   dockerfile_name: 'Dockerfile.main'
@@ -44,3 +44,6 @@ jobs:
     #   base_dockerfile_path: './test'
     #   base_dockerfile_name: 'Dockerfile.base'
     #   build_arg: '--build-arg BASE_IMAGE="localbuild/baseimage:latest"'
+    #   only_fixed: true
+      fail_on_vulns: false
+    #   severity_fail_cutoff: high
