@@ -160,7 +160,7 @@ describe V2::TailoringsController do
         let(:item) do
           FactoryBot.create(
             :v2_tailoring,
-            rules: [], # all rules deselected
+            :without_rules,
             value_overrides: {}, # no tailored values
             policy: parent,
             os_minor_version: 8
@@ -180,12 +180,7 @@ describe V2::TailoringsController do
 
       context 'with default, no unselected, rules and values' do
         let(:item) do
-          FactoryBot.create(
-            :v2_tailoring,
-            :with_default_rules, # no tailored, no deselected rules
-            policy: parent,
-            os_minor_version: 8
-          )
+          FactoryBot.create(:v2_tailoring, policy: parent, os_minor_version: 8)
         end
 
         it 'returns empty response' do
@@ -196,7 +191,9 @@ describe V2::TailoringsController do
       end
 
       context 'with no tailored rules, but tailored values' do
-        let(:item) { FactoryBot.create(:v2_tailoring, :with_tailored_values, policy: parent, os_minor_version: 8) }
+        let(:item) do
+          FactoryBot.create(:v2_tailoring, :without_rules, :with_tailored_values, policy: parent, os_minor_version: 8)
+        end
 
         it 'returns tailored values and default set of rules, but unselected' do
           get :tailoring_file, params: extra_params.merge(parents: [:policy], format: format)
