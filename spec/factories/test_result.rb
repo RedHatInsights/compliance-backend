@@ -9,14 +9,11 @@ FactoryBot.define do
         association :v2_tailoring
       end
     end
+
     system { association :system, account: account }
     start_time { 5.minutes.ago }
     end_time { 1.minute.ago }
-    score do
-      min = [score_below, score_above].min
-      max = [score_below, score_above].max
-      min + SecureRandom.random_number(max - min + 1)
-    end
+    score { SecureRandom.rand(score_above.to_f..score_below.to_f) }
     supported { true }
 
     transient do
