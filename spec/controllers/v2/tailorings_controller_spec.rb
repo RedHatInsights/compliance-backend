@@ -6,6 +6,7 @@ describe V2::TailoringsController do
   let(:attributes) do
     {
       profile_id: :profile_id,
+      security_guide_id: :security_guide_id,
       value_overrides: :value_overrides,
       os_minor_version: :os_minor_version,
       os_major_version: :os_major_version

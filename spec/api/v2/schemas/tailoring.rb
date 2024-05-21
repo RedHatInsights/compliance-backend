@@ -24,6 +24,12 @@ module Api
               readOnly: true,
               description: 'Identificator of the Profile from which the Tailoring was cloned'
             },
+            security_guide_id: {
+              type: :string,
+              examples: ['8800e1d8-70da-4e62-8cf0-16e8cee784c7'],
+              readOnly: true,
+              description: 'Identificator of the Security Guide that contains the parent Profile'
+            },
             os_major_version: {
               type: :number,
               examples: [7],
