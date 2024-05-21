@@ -84,7 +84,7 @@ module V2
     end
 
     def build_tailorings!
-      new_policy_systems.uniq { |ps| ps.system.os_minor_version }.map do |record|
+      new_policy_systems.uniq { |ps| ps.system.os_minor_version }.each do |record|
         record.run_callbacks(:create)
       end
     end
