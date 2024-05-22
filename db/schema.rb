@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_23_111013) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_22_141517) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -504,42 +504,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_111013) do
       END
       $function$
   SQL
-  create_function :tailorings_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.tailorings_insert()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE result_id uuid;
-      BEGIN
-
-      INSERT INTO "profiles" (
-        "policy_id",
-        "account_id",
-        "parent_profile_id",
-        "benchmark_id",
-        "os_minor_version",
-        "value_overrides",
-        "created_at",
-        "updated_at"
-      ) SELECT
-        NEW."policy_id",
-        "policies"."account_id",
-        NEW."profile_id",
-        "canonical_profiles"."security_guide_id",
-        NEW."os_minor_version",
-        NEW."value_overrides",
-        NEW."created_at",
-        NEW."updated_at"
-      FROM "policies"
-      INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "policies"."profile_id"
-      WHERE "policies"."id" = NEW."policy_id" RETURNING "id" INTO "result_id";
-
-      NEW."id" := "result_id";
-      RETURN NEW;
-
-      END
-      $function$
-  SQL
   create_function :v2_rules_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_rules_insert()
        RETURNS trigger
@@ -631,27 +595,67 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_23_111013) do
       END
       $function$
   SQL
+  create_function :tailorings_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.tailorings_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+
+      INSERT INTO "profiles" (
+        "name",
+        "ref_id",
+        "policy_id",
+        "account_id",
+        "parent_profile_id",
+        "benchmark_id",
+        "os_minor_version",
+        "value_overrides",
+        "created_at",
+        "updated_at"
+      ) SELECT
+        "canonical_profiles"."title",
+        "canonical_profiles"."ref_id",
+        NEW."policy_id",
+        "policies"."account_id",
+        NEW."profile_id",
+        "canonical_profiles"."security_guide_id",
+        NEW."os_minor_version",
+        NEW."value_overrides",
+        NEW."created_at",
+        NEW."updated_at"
+      FROM "policies"
+      INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "policies"."profile_id"
+      WHERE "policies"."id" = NEW."policy_id" RETURNING "id" INTO "result_id";
+
+      NEW."id" := "result_id";
+      RETURN NEW;
+
+      END
+      $function$
+  SQL
 
 
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
-  create_trigger :v2_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
+  create_trigger :v2_policies_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
   SQL
   create_trigger :v2_policies_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
   SQL
-  create_trigger :v2_policies_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
   SQL
-  create_trigger :v2_rules_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_rules_update INSTEAD OF UPDATE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_update()
+  create_trigger :v2_rules_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_rules_delete INSTEAD OF DELETE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_delete()
   SQL
   create_trigger :v2_rules_insert, sql_definition: <<-SQL
       CREATE TRIGGER v2_rules_insert INSTEAD OF INSERT ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_insert()
   SQL
-  create_trigger :v2_rules_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v2_rules_delete INSTEAD OF DELETE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_delete()
+  create_trigger :v2_rules_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_rules_update INSTEAD OF UPDATE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_update()
   SQL
 end
