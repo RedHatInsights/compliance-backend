@@ -21,11 +21,12 @@ module V2
     def join_parents(relation, associations)
       associations.to_a.reduce(relation) do |scope, association|
         ref = scope.reflect_on_association(association)
-        klass = ref.klass
 
-        scope.joins(association)
-             .where(association => { klass.primary_key => permitted_params[ref.foreign_key] })
-             .merge_with_alias(Pundit.policy_scope(current_user, klass))
+        # Do not join the association if it has been already joined
+        scope = scope.joins(association) unless already_joined(scope).include?(association)
+
+        scope.where(association => { ref.klass.primary_key => permitted_params[ref.foreign_key] })
+             .merge_with_alias(Pundit.policy_scope(current_user, ref.klass))
       end
     end
 
@@ -95,6 +96,13 @@ module V2
     # Retrieve the list of aggregations on any one-to-many associations specified by the serializer
     def aggregations
       @aggregations ||= serializer.aggregations(permitted_params[:parents], resource.one_to_many)
+    end
+
+    # List all the joined (direct and indirect) associations of a given scope
+    def already_joined(scope)
+      scope.try(:joins_values).to_a.flat_map do |association|
+        scope.reflect_on_association(association).chain.map(&:name)
+      end
     end
   end
 end
