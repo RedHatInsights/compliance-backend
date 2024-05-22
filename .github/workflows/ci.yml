@@ -140,7 +140,7 @@ jobs:
         SPEC_OPTS: "--color --tty --format documentation"
       run: bin/rake spec
     - name: Upload code coverage from RSpec
-      uses: codecov/codecov-action@v4.2.0
+      uses: codecov/codecov-action@v4.4.1
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -156,7 +156,7 @@ jobs:
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rake test
     - name: Upload code coverage from minitest
-      uses: codecov/codecov-action@v4.2.0
+      uses: codecov/codecov-action@v4.4.1
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
