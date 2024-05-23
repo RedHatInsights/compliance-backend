@@ -11,7 +11,7 @@ module V2
         class Relation
           def find(id)
             # Do not even try to look up by other keys if the ID is a valid UUID
-            return super(id) if ::UUID.validate(id)
+            return super(id) if ::UUID.validate(id.to_s)
 
             # If the lookup does not return a result nor an exception, call `super` again to
             # ensure that an exception is raised.
