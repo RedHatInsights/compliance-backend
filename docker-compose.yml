@@ -315,6 +315,7 @@ services:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - RAILS_LOG_TO_STDOUT=true
       - ACG_CONFIG=/opt/app-root/src/devel.json
+      - RUBY_YJIT_ENABLE=1
   rails:
     env_file: .env
     build:
@@ -335,6 +336,7 @@ services:
       - HOSTNAME=rails
       - ACG_CONFIG=/opt/app-root/src/devel.json
       - SWAGGER_DRY_RUN=0
+      - RUBY_YJIT_ENABLE=1
     ports:
       - 3000:3000
     tmpfs:
@@ -363,6 +365,7 @@ services:
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
       - HOSTNAME=inventory-consumer
       - ACG_CONFIG=/opt/app-root/src/devel.json
+      - RUBY_YJIT_ENABLE=1
     tmpfs:
       - /opt/app-root/src/log
       - /opt/app-root/src/tmp
@@ -397,6 +400,7 @@ services:
       - SIDEKIQ_CONCURRENCY=1
       - HOSTNAME=sidekiq
       - ACG_CONFIG=/opt/app-root/src/devel.json
+      - RUBY_YJIT_ENABLE=1
   redis:
     image: quay.io/cloudservices/redis:latest
     ports:

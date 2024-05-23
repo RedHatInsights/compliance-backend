@@ -138,6 +138,7 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
         SPEC_OPTS: "--color --tty --format documentation"
+        RUBY_YJIT_ENABLE: 1
       run: bin/rake spec
     - name: Upload code coverage from RSpec
       uses: codecov/codecov-action@v4.4.1
@@ -154,6 +155,7 @@ jobs:
         POSTGRESQL_USER: insights
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
+        RUBY_YJIT_ENABLE: 1
       run: bin/rake test
     - name: Upload code coverage from minitest
       uses: codecov/codecov-action@v4.4.1
