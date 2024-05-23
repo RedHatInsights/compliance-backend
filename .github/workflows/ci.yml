@@ -56,9 +56,18 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: insights
+          ACG_CONFIG: ./github-ci.json
+          DATABASE_SERVICE_NAME: postgres
+          HOSTNAME: rails
           POSTGRES_DB: insights
           POSTGRES_PASSWORD: insights
+          POSTGRES_SERVICE_HOST: localhost
+          POSTGRES_USER: insights
+          POSTGRESQL_PASSWORD: insights
+          POSTGRESQL_TEST_DATABASE: insights
+          POSTGRESQL_USER: insights
+          RAILS_ENV: test
+          RUBY_YJIT_ENABLE: 1
         ports: ["5432:5432"]
     steps:
     - name: Checkout code
@@ -70,37 +79,14 @@ jobs:
         rubygems: latest
         bundler: latest
     - name: Setup database
-      env:
-        RAILS_ENV: test
-        ACG_CONFIG: ./github-ci.json
-        DATABASE_SERVICE_NAME: postgres
-        POSTGRES_SERVICE_HOST: localhost
-        POSTGRESQL_USER: insights
-        POSTGRESQL_PASSWORD: insights
-        POSTGRESQL_TEST_DATABASE: insights
       run: |
         bin/rails db:setup;
         bundle exec rails db -p < db/cyndi_setup_test.sql;
     - name: Run zeitwerk check
-      env:
-        RAILS_ENV: test
-        ACG_CONFIG: ./github-ci.json
-        DATABASE_SERVICE_NAME: postgres
-        POSTGRES_SERVICE_HOST: localhost
-        POSTGRESQL_USER: insights
-        POSTGRESQL_PASSWORD: insights
-        POSTGRESQL_TEST_DATABASE: insights
       run: bin/rails zeitwerk:check
     - name: Validate the OpenAPIv2 schema
       env:
-        RAILS_ENV: test
         SWAGGER_DRY_RUN: false
-        ACG_CONFIG: ./github-ci.json
-        DATABASE_SERVICE_NAME: postgres
-        POSTGRES_SERVICE_HOST: localhost
-        POSTGRESQL_USER: insights
-        POSTGRESQL_PASSWORD: insights
-        POSTGRESQL_TEST_DATABASE: insights
         SPEC_OPTS: "--color --tty --format documentation"
       run: |
         bundle exec rails db -p < db/cyndi_setup_test.sql;
@@ -130,13 +116,6 @@ jobs:
     - name: Run RSpec tests
       env:
         HOSTNAME: rails
-        RAILS_ENV: test
-        ACG_CONFIG: ./github-ci.json
-        DATABASE_SERVICE_NAME: postgres
-        POSTGRES_SERVICE_HOST: localhost
-        POSTGRESQL_USER: insights
-        POSTGRESQL_PASSWORD: insights
-        POSTGRESQL_TEST_DATABASE: insights
         SPEC_OPTS: "--color --tty --format documentation"
       run: bin/rake spec
     - name: Upload code coverage from RSpec
@@ -147,13 +126,6 @@ jobs:
     - name: Run minitest tests
       env:
         HOSTNAME: rails
-        RAILS_ENV: test
-        ACG_CONFIG: ./github-ci.json
-        DATABASE_SERVICE_NAME: postgres
-        POSTGRES_SERVICE_HOST: localhost
-        POSTGRESQL_USER: insights
-        POSTGRESQL_PASSWORD: insights
-        POSTGRESQL_TEST_DATABASE: insights
       run: bin/rake test
     - name: Upload code coverage from minitest
       uses: codecov/codecov-action@v4.4.1
@@ -166,9 +138,16 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: insights
+          ACG_CONFIG: ./github-ci.json
+          DATABASE_SERVICE_NAME: postgres
           POSTGRES_DB: insights
           POSTGRES_PASSWORD: insights
+          POSTGRES_SERVICE_HOST: localhost
+          POSTGRES_USER: insights
+          POSTGRESQL_PASSWORD: insights
+          POSTGRESQL_TEST_DATABASE: insights
+          POSTGRESQL_USER: insights
+          RAILS_ENV: test
         ports: ["5432:5432"]
     steps:
     - name: Checkout code
@@ -180,14 +159,6 @@ jobs:
         rubygems: latest
         bundler: latest
     - name: Setup database and run migrations
-      env:
-        RAILS_ENV: test
-        ACG_CONFIG: ./github-ci.json
-        DATABASE_SERVICE_NAME: postgres
-        POSTGRES_SERVICE_HOST: localhost
-        POSTGRESQL_USER: insights
-        POSTGRESQL_PASSWORD: insights
-        POSTGRESQL_TEST_DATABASE: insights
       run: bin/rails db:create db:migrate
     - name: Check if migrations altered the schema.rb
       run: "! git diff --unified=0 -- db/schema.rb | grep ^+ActiveRecord"
