@@ -75,6 +75,8 @@ objects:
           value: "${RAILS_LOG_TO_STDOUT}"
         - name: PATH_PREFIX
           value: "${PATH_PREFIX}"
+        - name: RUBY_YJIT_ENABLE
+          value: "${RUBY_YJIT_ENABLE}"
         - name: APP_NAME
           value: "${APP_NAME}"
         - name: SECRET_KEY_BASE
@@ -168,6 +170,8 @@ objects:
           value: "${PUMA_MAX_THREADS}"
         - name: MALLOC_ARENA_MAX
           value: '2'
+        - name: RUBY_YJIT_ENABLE
+          value: "${RUBY_YJIT_ENABLE}"
         - name: OLD_PATH_PREFIX
           value: "${OLD_PATH_PREFIX}"
         - name: RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR
@@ -269,6 +273,8 @@ objects:
           value: "${RACECAR_OFFSET_COMMIT_INTERVAL}"
         - name: MALLOC_ARENA_MAX
           value: '2'
+        - name: RUBY_YJIT_ENABLE
+          value: "${RUBY_YJIT_ENABLE}"
         - name: SECRET_KEY_BASE
           valueFrom:
             secretKeyRef:
@@ -377,6 +383,8 @@ objects:
           value: "${SIDEKIQ_CONCURRENCY}"
         - name: MALLOC_ARENA_MAX
           value: '2'
+        - name: RUBY_YJIT_ENABLE
+          value: "${RUBY_YJIT_ENABLE}"
         - name: SECRET_KEY_BASE
           valueFrom:
             secretKeyRef:
@@ -587,3 +595,5 @@ parameters:
 - name: LOGSTREAM_CONSUMER
 - name: LOGSTREAM_IMPORT_SSG
   value: 'compliance-import-ssg'
+- name: RUBY_YJIT_ENABLE
+  value: '0'
