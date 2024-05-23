@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_22_141517) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_23_140254) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -601,7 +601,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_141517) do
        LANGUAGE plpgsql
       AS $function$
       DECLARE result_id uuid;
+      DECLARE external boolean;
       BEGIN
+
+      -- Look up if there's at least one existing profile under this policy
+      -- and set the `external` flag to false or true accordingly
+      SELECT CASE WHEN COUNT("id") = 0 THEN TRUE ELSE FALSE END INTO "external"
+      FROM "profiles" WHERE "profiles"."policy_id" = NEW."policy_id" LIMIT 1;
 
       INSERT INTO "profiles" (
         "name",
@@ -612,6 +618,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_141517) do
         "benchmark_id",
         "os_minor_version",
         "value_overrides",
+        "external",
         "created_at",
         "updated_at"
       ) SELECT
@@ -623,6 +630,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_141517) do
         "canonical_profiles"."security_guide_id",
         NEW."os_minor_version",
         NEW."value_overrides",
+        "external",
         NEW."created_at",
         NEW."updated_at"
       FROM "policies"
@@ -640,14 +648,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_22_141517) do
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
-  create_trigger :v2_policies_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
-  SQL
   create_trigger :v2_policies_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
   SQL
   create_trigger :v2_policies_insert, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
+  SQL
+  create_trigger :v2_policies_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
   SQL
   create_trigger :v2_rules_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_rules_delete INSTEAD OF DELETE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_delete()
