@@ -5,6 +5,7 @@ require 'test_helper'
 class TestResultTest < ActiveSupport::TestCase
   class Mock
     include Xccdf::TestResult
+    include Xccdf::RuleResults
 
     attr_accessor :host, :host_profile, :op_test_result, :test_result
   end

@@ -28,7 +28,7 @@ module Xccdf
     end
 
     def selected_op_rule_results
-      @op_rule_results.reject do |rule_result|
+      @op_rule_results&.reject do |rule_result|
         ::RuleResult::NOT_SELECTED.include? rule_result.result
       end
     end
