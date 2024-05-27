@@ -78,6 +78,12 @@ module V2
       V2::SupportedProfile.find_by!(ref_id: ref_id, os_major_version: os_major_version).os_minor_versions
     end
 
+    # This method is calling an APIv1 model to update the cached counter in APIv1+GQL for maintaining
+    # compatibility. After we stop using these old APIs, this will be obsolete and should be deleted.
+    def __v1_update_total_system_count
+      ::Policy.find(id).update_counters!
+    end
+
     private
 
     def ensure_default_values

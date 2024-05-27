@@ -17,6 +17,7 @@ module V2
       inserts, deletes = V2::PolicySystem.bulk_assign(new_policy_systems, old_policy_systems)
 
       build_tailorings!
+      policy.__v1_update_total_system_count # FIXME: clean up after the remodel
 
       audit_success("Assigned #{inserts} and unassigned #{deletes} Systems to/from Policy #{policy.id}")
       render_json systems, status: :accepted
@@ -26,8 +27,10 @@ module V2
 
     def update
       if new_policy_system.save
-        render_json system, status: :accepted
+        policy.__v1_update_total_system_count # FIXME: clean up after the remodel
+
         audit_success("Assigned system #{system.id} to policy #{new_policy_system.policy_id}")
+        render_json system, status: :accepted
       else
         render_model_errors new_policy_system
       end
@@ -39,6 +42,8 @@ module V2
       policy_system = system.policy_systems.find_by!(policy_id: permitted_params[:policy_id])
 
       policy_system.destroy
+      policy.__v1_update_total_system_count # FIXME: clean up after the remodel
+
       audit_success("Unassigned system #{system.id} from policy #{policy_system.policy_id}")
       render_json system, status: :accepted
     end
