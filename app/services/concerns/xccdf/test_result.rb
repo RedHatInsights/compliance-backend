@@ -5,10 +5,9 @@ module Xccdf
   module TestResult
     def save_test_result
       @test_result = ::TestResult.create!(
-        host: @host,
-        profile: @host_profile,
-        supported: supported?,
-        score: score,
+        host: @host, profile: @host_profile,
+        supported: supported?, score: score,
+        failed_rule_count: selected_op_rule_results&.count { |rr| ::RuleResult::FAILED.include?(rr.result) }.to_i,
         start_time: @op_test_result.start_time.in_time_zone,
         end_time: @op_test_result.end_time.in_time_zone
       )

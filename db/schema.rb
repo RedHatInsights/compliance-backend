@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_23_140254) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_27_130454) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -216,6 +216,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_140254) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "supported", default: true
+    t.integer "failed_rule_count", default: 0, null: false
     t.index ["host_id", "profile_id", "end_time"], name: "index_test_results_on_host_id_and_profile_id_and_end_time", unique: true
     t.index ["host_id"], name: "index_test_results_on_host_id"
     t.index ["profile_id"], name: "index_test_results_on_profile_id"
@@ -379,18 +380,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_140254) do
       profile_rules.rule_id
      FROM profile_rules;
   SQL
-  create_view "v2_test_results", sql_definition: <<-SQL
-      SELECT test_results.id,
-      test_results.profile_id AS tailoring_id,
-      test_results.host_id AS system_id,
-      test_results.start_time,
-      test_results.end_time,
-      test_results.score,
-      test_results.supported,
-      test_results.created_at,
-      test_results.updated_at
-     FROM test_results;
-  SQL
   create_view "v2_rules", sql_definition: <<-SQL
       SELECT rules.id,
       rules.ref_id,
@@ -410,6 +399,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_23_140254) do
       rule_references_containers.rule_references AS "references"
      FROM (rules
        LEFT JOIN rule_references_containers ON ((rule_references_containers.rule_id = rules.id)));
+  SQL
+  create_view "v2_test_results", sql_definition: <<-SQL
+      SELECT test_results.id,
+      test_results.profile_id AS tailoring_id,
+      test_results.host_id AS system_id,
+      test_results.start_time,
+      test_results.end_time,
+      test_results.score,
+      test_results.supported,
+      test_results.failed_rule_count,
+      test_results.created_at,
+      test_results.updated_at
+     FROM test_results;
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
