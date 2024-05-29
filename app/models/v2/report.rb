@@ -4,7 +4,7 @@ module V2
   # Model for reports
   class Report < ApplicationRecord
     # FIXME: clean up after the remodel
-    self.table_name = :reports
+    self.table_name = :v2_policies
     self.primary_key = :id
 
     SYSTEM_COUNT = lambda do
@@ -37,9 +37,9 @@ module V2
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
     has_many :tailorings, class_name: 'V2::Tailoring', foreign_key: :policy_id, dependent: nil # rubocop:disable Rails/InverseOf
     has_many :test_results, class_name: 'V2::TestResult', dependent: nil, through: :tailorings
-    has_many :policy_systems, class_name: 'V2::PolicySystem', foreign_key: :policy_id, dependent: nil # rubocop:disable Rails/InverseOf
-    has_many :systems, class_name: 'V2::System', through: :test_results, dependent: nil
-    has_many :assigned_systems, class_name: 'V2::System', through: :policy_systems, source: :system
+    has_many :report_systems, class_name: 'V2::ReportSystem', dependent: nil # rubocop:disable Rails/InverseOf
+    has_many :systems, class_name: 'V2::System', through: :report_systems
+    has_many :reported_systems, class_name: 'V2::System', through: :test_results, source: :system, dependent: nil
 
     sortable_by :title
     sortable_by :os_major_version
@@ -55,6 +55,11 @@ module V2
         conditions: "security_guide.os_major_version #{op} #{bind}",
         parameter: [val.split.map(&:to_i)]
       }
+    end
+    searchable_by :with_reported_systems, %i[eq] do |_key, _op, _val|
+      ids = V2::Report.joins(:test_results).reselect(:id)
+
+      { conditions: "v2_policies.id IN (#{ids.to_sql})" }
     end
 
     validates :account, presence: true

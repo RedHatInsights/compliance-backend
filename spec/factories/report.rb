@@ -65,7 +65,6 @@ FactoryBot.define do
       title { Faker::Lorem.sentence }
       supports_minors { [0] }
       assigned_system_count { 4 }
-      result_system_count { 4 }
       compliant_system_count { 1 }
       unsupported_system_count { 2 }
     end
