@@ -10,7 +10,7 @@ class SafeDownloader
   # Exception class to handle empty reports
   class EmptyFileError < StandardError
     def initialize(message = 'file is empty')
-      super(message)
+      super
     end
   end
 
