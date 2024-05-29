@@ -10,9 +10,9 @@ module V2
     derived_attribute :ref_id, profile: [:ref_id]
     derived_attribute :all_systems_exposed, :total_system_count
 
-    aggregated_attribute :assigned_system_count, :assigned_systems, V2::Report::SYSTEM_COUNT
-    aggregated_attribute :compliant_system_count, :systems, V2::Report::COMPLIANT_SYSTEM_COUNT
-    aggregated_attribute :unsupported_system_count, :systems, V2::Report::UNSUPPORTED_SYSTEM_COUNT
-    aggregated_attribute :result_system_count, :systems, V2::Report::SYSTEM_COUNT
+    aggregated_attribute :assigned_system_count, :systems, V2::Report::SYSTEM_COUNT
+    aggregated_attribute :compliant_system_count, :reported_systems, V2::Report::COMPLIANT_SYSTEM_COUNT
+    aggregated_attribute :unsupported_system_count, :reported_systems, V2::Report::UNSUPPORTED_SYSTEM_COUNT
+    aggregated_attribute :reported_system_count, :reported_systems, V2::Report::SYSTEM_COUNT
   end
 end

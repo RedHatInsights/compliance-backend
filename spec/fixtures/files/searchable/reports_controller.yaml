@@ -138,3 +138,13 @@
         :os_major_version: 9
         :account: ${account}
   :query: (os_major_version !^ "7 9")
+- :name: "search by having systems with test results"
+  :entities:
+    :found:
+      - :factory: :v2_report
+        :account: ${account}
+    :not_found:
+      - :factory: v2_report
+        :assigned_system_count: 0
+        :account: ${account}
+  :query: (with_reported_systems = true)
