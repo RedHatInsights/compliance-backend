@@ -92,7 +92,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/policies/{policy_id}/tailorings/{id}' do
+  path '/policies/{policy_id}/tailorings/{tailoring_id}' do
     let(:policy_id) do
       FactoryBot.create(
         :v2_policy,
@@ -113,27 +113,11 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       content_types
 
       parameter name: :policy_id, in: :path, type: :string, required: true
-      parameter(
-        name: :id,
-        in: :path,
-        schema: {
-          oneOf: [
-            {
-              type: 'integer',
-              minimum: 6,
-              description: 'OS major version'
-            },
-            {
-              type: 'string',
-              format: 'uuid'
-            }
-          ]
-        },
-        required: true
-      )
+      parameter name: :tailoring_id, in: :path, type: :string, required: true,
+                description: 'UUID or OS minor version number'
 
       response '200', 'Returns a Tailoring' do
-        let(:id) { item.id }
+        let(:tailoring_id) { item.id }
         v2_item_schema('tailoring')
 
         after { |e| autogenerate_examples(e, 'Returns a Tailoring') }
@@ -142,7 +126,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:tailoring_id) { Faker::Internet.uuid }
         let(:policy_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
@@ -160,24 +144,8 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       content_types
 
       parameter name: :policy_id, in: :path, type: :string, required: true
-      parameter(
-        name: :id,
-        in: :path,
-        schema: {
-          oneOf: [
-            {
-              type: 'integer',
-              minimum: 6,
-              description: 'OS major version'
-            },
-            {
-              type: 'string',
-              format: 'uuid'
-            }
-          ]
-        },
-        required: true
-      )
+      parameter name: :tailoring_id, in: :path, type: :string, required: true,
+                description: 'UUID or OS minor version number'
       parameter name: :data, in: :body, schema: ref_schema('tailoring')
 
       let(:data) do
@@ -187,7 +155,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       end
 
       response '202', 'Updates a Tailoring' do
-        let(:id) { item.id }
+        let(:tailoring_id) { item.id }
         v2_item_schema('tailoring')
 
         after { |e| autogenerate_examples(e, 'Returns the updated Tailoring') }
@@ -197,7 +165,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/policies/{policy_id}/tailorings/{id}/tailoring_file.json' do
+  path '/policies/{policy_id}/tailorings/{tailoring_id}/tailoring_file.json' do
     let(:policy_id) do
       FactoryBot.create(:v2_policy, :for_tailoring, account: user.account, supports_minors: [1]).id
     end
@@ -222,27 +190,11 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       content_types
 
       parameter name: :policy_id, in: :path, type: :string, required: true
-      parameter(
-        name: :id,
-        in: :path,
-        schema: {
-          oneOf: [
-            {
-              type: 'integer',
-              minimum: 6,
-              description: 'OS major version'
-            },
-            {
-              type: 'string',
-              format: 'uuid'
-            }
-          ]
-        },
-        required: true
-      )
+      parameter name: :tailoring_id, in: :path, type: :string, required: true,
+                description: 'UUID or OS minor version number'
 
       response '200', 'Returns a Tailoring File' do
-        let(:id) { item.id }
+        let(:tailoring_id) { item.id }
         schema ref_schema('tailoring_file')
 
         after { |e| autogenerate_examples(e, 'Returns a Tailoring File') }

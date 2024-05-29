@@ -65,7 +65,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/reports/{id}' do
+  path '/reports/{report_id}' do
     let(:item) do
       FactoryBot.create(
         :v2_report,
@@ -82,10 +82,10 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
       operationId 'Report'
       content_types
 
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :report_id, in: :path, type: :string, required: true
 
       response '200', 'Returns a Report' do
-        let(:id) { item.id }
+        let(:report_id) { item.id }
         v2_item_schema('report')
 
         after { |e| autogenerate_examples(e, 'Returns a Report') }
@@ -94,7 +94,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:report_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
         after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing Report') }

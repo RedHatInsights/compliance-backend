@@ -66,7 +66,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/security_guides/{id}' do
+  path '/security_guides/{security_guide_id}' do
     let(:item) { FactoryBot.create(:v2_security_guide) }
 
     get 'Request a Security Guide' do
@@ -76,10 +76,10 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
       operationId 'SecurityGuide'
       content_types
 
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :security_guide_id, in: :path, type: :string, required: true
 
       response '200', 'Returns a Security Guide' do
-        let(:id) { item.id }
+        let(:security_guide_id) { item.id }
         v2_item_schema('security_guide')
 
         after { |e| autogenerate_examples(e, 'Returns a Security Guide') }
@@ -88,7 +88,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:security_guide_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
         after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing Security Guide') }
@@ -98,7 +98,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/security_guides/{id}/rule_tree' do
+  path '/security_guides/{security_guide_id}/rule_tree' do
     let(:item) { FactoryBot.create(:v2_security_guide, rule_count: 10) }
 
     get 'Request the Rule Tree of a Security Guide' do
@@ -108,10 +108,10 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
       operationId 'SecurityGuideRuleTree'
       content_types
 
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :security_guide_id, in: :path, type: :string, required: true
 
       response '200', 'Returns a the Rule Tree of Security Guide' do
-        let(:id) { item.id }
+        let(:security_guide_id) { item.id }
         schema ref_schema('rule_tree')
 
         after { |e| autogenerate_examples(e, 'Returns the Rule Tree of a Security Guide') }
@@ -120,7 +120,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:security_guide_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
         after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing Security Guide') }

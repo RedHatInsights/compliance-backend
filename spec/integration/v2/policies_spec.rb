@@ -95,7 +95,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/policies/{id}' do
+  path '/policies/{policy_id}' do
     let(:item) { FactoryBot.create(:v2_policy, account: user.account) }
 
     get 'Request a Policy' do
@@ -105,10 +105,10 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       operationId 'Policy'
       content_types
 
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :policy_id, in: :path, type: :string, required: true
 
       response '200', 'Returns a Policy' do
-        let(:id) { item.id }
+        let(:policy_id) { item.id }
         v2_item_schema('policy')
 
         after { |e| autogenerate_examples(e, 'Returns a Policy') }
@@ -117,7 +117,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:policy_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
         after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing Policy') }
@@ -133,13 +133,13 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       operationId 'updatePolicy'
       content_types
 
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :policy_id, in: :path, type: :string, required: true
       parameter name: :data, in: :body, schema: ref_schema('policy_update')
 
       let(:data) { { compliance_threshold: 100 } }
 
       response '202', 'Updates a Policy' do
-        let(:id) { item.id }
+        let(:policy_id) { item.id }
         v2_item_schema('policy')
 
         after { |e| autogenerate_examples(e, 'Returns the updated Policy') }
@@ -155,10 +155,10 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       operationId 'deletePolicy'
       content_types
 
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :policy_id, in: :path, type: :string, required: true
 
       response '202', 'Deletes a Policy' do
-        let(:id) { item.id }
+        let(:policy_id) { item.id }
         v2_item_schema('policy')
 
         after { |e| autogenerate_examples(e, 'Deletes a Policy') }
