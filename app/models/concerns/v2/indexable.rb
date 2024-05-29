@@ -11,11 +11,11 @@ module V2
         class Relation
           def find(id)
             # Do not even try to look up by other keys if the ID is a valid UUID
-            return super(id) if ::UUID.validate(id.to_s)
+            return super if ::UUID.validate(id.to_s)
 
             # If the lookup does not return a result nor an exception, call `super` again to
             # ensure that an exception is raised.
-            base_class.instance_variable_get(:@indexable).try(:call, self, id) || super(id)
+            base_class.instance_variable_get(:@indexable).try(:call, self, id) || super
           end
         end
       end

@@ -52,14 +52,14 @@ module V1
     test 'fails when includes nested' do
       FactoryBot.create(:rule, benchmark: FactoryBot.create(:benchmark))
       get v1_benchmarks_url, params: { include: 'rules.benchmark' }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_match('Invalid parameter:', response.parsed_body['errors'].first)
     end
 
     test 'fails when includes invalid' do
       FactoryBot.create(:rule, benchmark: FactoryBot.create(:benchmark))
       get v1_benchmarks_url, params: { include: 'ducktales,benchmark' }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_match('Invalid parameter:', response.parsed_body['errors'].first)
     end
 

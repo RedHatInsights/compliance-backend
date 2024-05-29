@@ -232,56 +232,56 @@ class MetadataTest < ActionDispatch::IntegrationTest
 
     should 'return invalid parameter if limit=0' do
       get profiles_url, params: { limit: 0 }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_equal('Invalid parameter: limit must be greater than 0',
                    json_body['errors'][0])
     end
 
     should 'return invalid parameter if limit<0' do
       get profiles_url, params: { limit: -256 }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_equal('Invalid parameter: limit must be greater than 0',
                    json_body['errors'][0])
     end
 
     should 'return invalid parameter if limit is float' do
       get profiles_url, params: { limit: 15.12 }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_equal('Invalid parameter: limit must be an integer',
                    json_body['errors'][0])
     end
 
     should 'return invalid parameter if limit is string' do
       get profiles_url, params: { limit: '15.12' }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_equal('Invalid parameter: limit must be an integer',
                    json_body['errors'][0])
     end
 
     should 'return invalid parameter if offset=0' do
       get profiles_url, params: { offset: 0 }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_equal('Invalid parameter: offset must be greater than 0',
                    json_body['errors'][0])
     end
 
     should 'return invalid parameter if offset<0' do
       get profiles_url, params: { offset: -15 }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_equal('Invalid parameter: offset must be greater than 0',
                    json_body['errors'][0])
     end
 
     should 'return invalid parameter if offset is float' do
       get profiles_url, params: { offset: 13.37 }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_equal('Invalid parameter: offset must be an integer',
                    json_body['errors'][0])
     end
 
     should 'return invalid parameter if offset is string' do
       get profiles_url, params: { offset: '13.37' }
-      assert_response 422
+      assert_response :unprocessable_entity
       assert_equal('Invalid parameter: offset must be an integer',
                    json_body['errors'][0])
     end

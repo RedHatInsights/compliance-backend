@@ -14,7 +14,7 @@ class ApplicationSerializer
                                !params[:relationships]
       return {} if relationships_disabled
 
-      super(record, relationships, fieldset, includes_list, params)
+      super
     end
   end
 end
