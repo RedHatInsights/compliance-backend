@@ -62,7 +62,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/security_guides/{security_guide_id}/rules/{id}' do
+  path '/security_guides/{security_guide_id}/rules/{rule_id}' do
     let(:item) { FactoryBot.create(:v2_rule) }
 
     get 'Request a Rule' do
@@ -73,10 +73,10 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
       content_types
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :rule_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
 
       response '200', 'Returns a Rule' do
-        let(:id) { item.id }
+        let(:rule_id) { item.id }
         let(:security_guide_id) { item.security_guide.id }
         v2_item_schema('rule')
 
@@ -86,7 +86,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:rule_id) { Faker::Internet.uuid }
         let(:security_guide_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
@@ -155,7 +155,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/security_guides/{security_guide_id}/profiles/{profile_id}/rules/{id}' do
+  path '/security_guides/{security_guide_id}/profiles/{profile_id}/rules/{rule_id}' do
     let(:item) { FactoryBot.create(:v2_rule, profile_id: profile_id) }
 
     get 'Request a Rule assigned to a Profile' do
@@ -167,12 +167,12 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
       parameter name: :profile_id, in: :path, type: :string, required: true
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :rule_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
 
       response '200', 'Returns a Rule assigned to a Profile' do
         let(:security_guide_id) { V2::Profile.find(profile_id).security_guide_id }
         let(:profile_id) { FactoryBot.create(:v2_profile).id }
-        let(:id) { item.id }
+        let(:rule_id) { item.id }
 
         v2_item_schema('rule')
 
@@ -182,7 +182,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:rule_id) { Faker::Internet.uuid }
         let(:profile_id) { Faker::Internet.uuid }
         let(:security_guide_id) { Faker::Internet.uuid }
 
@@ -295,7 +295,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/policies/{policy_id}/tailorings/{tailoring_id}/rules/{id}' do
+  path '/policies/{policy_id}/tailorings/{tailoring_id}/rules/{rule_id}' do
     let(:tailoring_id) do
       FactoryBot.create(
         :v2_tailoring,
@@ -319,10 +319,10 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
 
       parameter name: :policy_id, in: :path, type: :string, required: true
       parameter name: :tailoring_id, in: :path, type: :string, required: true
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :rule_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
 
       response '202', 'Assigns a Rule to a Tailoring' do
-        let(:id) { item.id }
+        let(:rule_id) { item.id }
 
         after { |e| autogenerate_examples(e, 'Assigns a Rule to a Tailoring') }
 
@@ -330,7 +330,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:rule_id) { Faker::Internet.uuid }
 
         after { |e| autogenerate_examples(e, 'Returns with Not found') }
 
@@ -355,10 +355,10 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
 
       parameter name: :policy_id, in: :path, type: :string, required: true
       parameter name: :tailoring_id, in: :path, type: :string, required: true
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :rule_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
 
       response '202', 'Unassigns a Rule from a Tailoring' do
-        let(:id) { item.id }
+        let(:rule_id) { item.id }
 
         after { |e| autogenerate_examples(e, 'Unassigns a Rule from a Tailoring') }
 
@@ -366,7 +366,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:rule_id) { Faker::Internet.uuid }
 
         after { |e| autogenerate_examples(e, 'Description of an error when unassigning a non-existing Rule') }
 

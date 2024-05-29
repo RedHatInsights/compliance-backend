@@ -67,7 +67,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/systems/{id}' do
+  path '/systems/{system_id}' do
     let(:item) { FactoryBot.create(:system, account: user.account) }
 
     get 'Request a System' do
@@ -77,10 +77,10 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       operationId 'System'
       content_types
 
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :system_id, in: :path, type: :string, required: true
 
       response '200', 'Returns a System' do
-        let(:id) { item.id }
+        let(:system_id) { item.id }
         v2_item_schema('system')
 
         after { |e| autogenerate_examples(e, 'Returns a System') }
@@ -89,7 +89,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:system_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
         after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing System') }
@@ -212,7 +212,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/policies/{policy_id}/systems/{id}' do
+  path '/policies/{policy_id}/systems/{system_id}' do
     let(:policy_id) do
       FactoryBot.create(
         :v2_policy,
@@ -233,11 +233,11 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       operationId 'AssignSystem'
       content_types
 
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :system_id, in: :path, type: :string, required: true
       parameter name: :policy_id, in: :path, type: :string, required: true
 
       response '202', 'Assigns a System to a Policy' do
-        let(:id) { item.id }
+        let(:system_id) { item.id }
         v2_item_schema('system')
 
         after { |e| autogenerate_examples(e, 'Assigns a System to a Policy') }
@@ -246,7 +246,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:system_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
         after { |e| autogenerate_examples(e, 'Assigns a System to a Policy') }
@@ -272,11 +272,11 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       operationId 'UnassignSystem'
       content_types
 
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :system_id, in: :path, type: :string, required: true
       parameter name: :policy_id, in: :path, type: :string, required: true
 
       response '202', 'Unassigns a System from a Policy' do
-        let(:id) { item.id }
+        let(:system_id) { item.id }
         v2_item_schema('system')
 
         after { |e| autogenerate_examples(e, 'Unassigns a System from a Policy') }
@@ -285,7 +285,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:system_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 
         after { |e| autogenerate_examples(e, 'Description of an error when unassigning a non-existing System') }

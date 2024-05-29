@@ -17,6 +17,9 @@ module Api
           json.delete('$schema')
           json.delete('$id')
 
+          # Rename to Tailoring file
+          json['title'] = 'Tailoring File'
+
           json
         end.freeze
       end

@@ -70,7 +70,7 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/security_guides/{security_guide_id}/profiles/{id}' do
+  path '/security_guides/{security_guide_id}/profiles/{profile_id}' do
     let(:item) { FactoryBot.create(:v2_profile) }
 
     get 'Request a Profile' do
@@ -81,10 +81,10 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
       content_types
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
-      parameter name: :id, in: :path, type: :string, required: true
+      parameter name: :profile_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
 
       response '200', 'Returns a Profile' do
-        let(:id) { item.id }
+        let(:profile_id) { item.id }
         let(:security_guide_id) { item.security_guide.id }
         v2_item_schema('profile')
 
@@ -94,7 +94,7 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
       end
 
       response '404', 'Returns with Not Found' do
-        let(:id) { Faker::Internet.uuid }
+        let(:profile_id) { Faker::Internet.uuid }
         let(:security_guide_id) { Faker::Internet.uuid }
         schema ref_schema('errors')
 

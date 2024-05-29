@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_28_151651) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_29_122815) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -314,18 +314,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_151651) do
       benchmarks.package_name
      FROM benchmarks;
   SQL
-  create_view "supported_profiles", sql_definition: <<-SQL
-      SELECT (array_agg(canonical_profiles.id ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS id,
-      (array_agg(canonical_profiles.title ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS title,
-      canonical_profiles.ref_id,
-      (array_agg(security_guides.version ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_version,
-      security_guides.os_major_version,
-      array_agg(DISTINCT profile_os_minor_versions.os_minor_version ORDER BY profile_os_minor_versions.os_minor_version DESC) AS os_minor_versions
-     FROM ((canonical_profiles
-       JOIN security_guides ON ((security_guides.id = canonical_profiles.security_guide_id)))
-       JOIN profile_os_minor_versions ON ((profile_os_minor_versions.profile_id = canonical_profiles.id)))
-    GROUP BY canonical_profiles.ref_id, security_guides.os_major_version;
-  SQL
   create_view "v2_rule_groups", sql_definition: <<-SQL
       SELECT rule_groups.id,
       rule_groups.ref_id,
@@ -404,6 +392,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_28_151651) do
       policy_hosts.policy_id AS report_id,
       policy_hosts.host_id AS system_id
      FROM policy_hosts;
+  SQL
+  create_view "supported_profiles", sql_definition: <<-SQL
+      SELECT (array_agg(canonical_profiles.id ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS id,
+      (array_agg(canonical_profiles.title ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS title,
+      canonical_profiles.ref_id,
+      (array_agg(security_guides.id ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_id,
+      (array_agg(security_guides.version ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_version,
+      security_guides.os_major_version,
+      array_agg(DISTINCT profile_os_minor_versions.os_minor_version ORDER BY profile_os_minor_versions.os_minor_version DESC) AS os_minor_versions
+     FROM ((canonical_profiles
+       JOIN security_guides ON ((security_guides.id = canonical_profiles.security_guide_id)))
+       JOIN profile_os_minor_versions ON ((profile_os_minor_versions.profile_id = canonical_profiles.id)))
+    GROUP BY canonical_profiles.ref_id, security_guides.os_major_version;
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()

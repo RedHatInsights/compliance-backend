@@ -22,13 +22,20 @@ module Api
               type: :string,
               examples: ['xccdf_org.ssgproject.content_profile_cis'],
               readOnly: true,
-              description: 'Identificator of the Profile'
+              description: 'Identificator of the latest supported Profile'
             },
             title: {
               type: :string,
               examples: ['CIS Red Hat Enterprise Linux 7 Benchmark'],
               readOnly: true,
               description: 'Short title of the Profile'
+            },
+            security_guide_id: {
+              type: :string,
+              format: :uuid,
+              examples: ['e6ba5c79-48af-4899-bb1d-964116b58c7a'],
+              readOnly: true,
+              description: 'UUID of the latest Security Guide supporting this Profile'
             },
             security_guide_version: {
               type: :string,
