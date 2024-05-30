@@ -598,4 +598,74 @@ describe V2::SystemsController do
       end
     end
   end
+
+  context '/reports/:id/systems' do
+    let(:attributes) do
+      {
+        display_name: :display_name,
+        groups: :groups,
+        culled_timestamp: -> { culled_timestamp.as_json },
+        stale_timestamp: -> { stale_timestamp.as_json },
+        stale_warning_timestamp: -> { stale_warning_timestamp.as_json },
+        updated: -> { updated.as_json },
+        insights_id: :insights_id,
+        tags: :tags,
+        policies: -> { policies.map { |policy| { id: policy.id, title: policy.title } } },
+        # compliant: :compliant,
+        # last_scanned: :last_scanned,
+        # failed_rule_count: :failed_rule_count,
+        os_major_version: -> { system_profile&.dig('operating_system', 'major') },
+        os_minor_version: -> { system_profile&.dig('operating_system', 'minor') }
+      }
+    end
+
+    let(:parent) do
+      FactoryBot.create(
+        :v2_report,
+        os_major_version: 9,
+        assigned_system_count: 0,
+        supports_minors: [0],
+        account: current_user.account
+      )
+    end
+
+    describe 'GET index' do
+      let(:extra_params) { { account: current_user.account, report_id: parent.id } }
+      let(:item_count) { 2 }
+
+      let(:items) do
+        FactoryBot.create_list(
+          :system, item_count,
+          policy_id: parent.id,
+          os_major_version: 9,
+          os_minor_version: 0,
+          account: current_user.account
+        ).map(&:reload).sort_by(&:id)
+      end
+
+      it_behaves_like 'collection', :reports
+      include_examples 'with metadata', :reports
+      it_behaves_like 'paginable', :reports
+      # it_behaves_like 'sortable', :reports
+      # it_behaves_like 'searchable', :reports
+      it_behaves_like 'taggable', :reports
+    end
+
+    describe 'GET show' do
+      let(:item) do
+        FactoryBot.create(
+          :system,
+          os_major_version: 9,
+          os_minor_version: 0,
+          account: current_user.account,
+          policy_id: parent.id
+        ).reload
+      end
+
+      let(:extra_params) { { report_id: parent.id, id: item.id } }
+      let(:notfound_params) { extra_params.merge(report_id: FactoryBot.create(:v2_report).id) }
+
+      it_behaves_like 'individual', :reports
+    end
+  end
 end

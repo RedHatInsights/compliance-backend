@@ -294,4 +294,127 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       end
     end
   end
+
+  path '/reports/{report_id}/systems' do
+    before do
+      FactoryBot.create_list(
+        :system,
+        25,
+        policy_id: report_id,
+        os_major_version: 8,
+        os_minor_version: 0,
+        account: user.account
+      )
+    end
+
+    let(:report_id) do
+      FactoryBot.create(
+        :v2_report,
+        account: user.account,
+        os_major_version: 8,
+        supports_minors: [0],
+        assigned_system_count: 0
+      ).id
+    end
+
+    get 'Request Systems assigned to a Report' do
+      v2_auth_header
+      tags 'Reports'
+      description 'Lists Systems assigned to a Report'
+      operationId 'ReportSystems'
+      content_types
+      pagination_params_v2
+      sort_params_v2(V2::System)
+      search_params_v2(V2::System)
+
+      parameter name: :report_id, in: :path, type: :string, required: true
+
+      response '200', 'Lists Systems' do
+        v2_collection_schema 'system'
+
+        after { |e| autogenerate_examples(e, 'List of Systems') }
+
+        run_test!
+      end
+
+      response '200', 'Lists Systems assigned to a Report' do
+        let(:sort_by) { ['os_major_version'] }
+        v2_collection_schema 'system'
+
+        after { |e| autogenerate_examples(e, 'List of Systems sorted by "os_major_version:asc"') }
+
+        run_test!
+      end
+
+      response '200', 'Lists Systems assigned to a Report' do
+        let(:filter) { '(os_major_version=8)' }
+        v2_collection_schema 'system'
+
+        after { |e| autogenerate_examples(e, 'List of Systems filtered by "(os_major_version=8)"') }
+
+        run_test!
+      end
+
+      response '422', 'Returns with Unprocessable Content' do
+        let(:sort_by) { ['description'] }
+        schema ref_schema('errors')
+
+        after { |e| autogenerate_examples(e, 'Description of an error when sorting by incorrect parameter') }
+
+        run_test!
+      end
+
+      response '422', 'Returns with Unprocessable Content' do
+        let(:limit) { 103 }
+        schema ref_schema('errors')
+
+        after { |e| autogenerate_examples(e, 'Description of an error when requesting higher limit than supported') }
+
+        run_test!
+      end
+    end
+  end
+
+  path '/reports/{report_id}/systems/{system_id}' do
+    let(:report_id) do
+      FactoryBot.create(
+        :v2_report,
+        account: user.account,
+        os_major_version: 8,
+        supports_minors: [0],
+        assigned_system_count: 0
+      ).id
+    end
+
+    let(:item) { FactoryBot.create(:system, account: user.account, policy_id: report_id) }
+
+    get 'Request a System' do
+      v2_auth_header
+      tags 'Systems'
+      description 'Returns a System under a Report'
+      operationId 'System'
+      content_types
+
+      parameter name: :system_id, in: :path, type: :string, required: true
+      parameter name: :report_id, in: :path, type: :string, required: true
+
+      response '200', 'Returns a System under a Report' do
+        let(:system_id) { item.id }
+        v2_item_schema('system')
+
+        after { |e| autogenerate_examples(e, 'Returns a System under a Report') }
+
+        run_test!
+      end
+
+      response '404', 'Returns with Not Found' do
+        let(:system_id) { Faker::Internet.uuid }
+        schema ref_schema('errors')
+
+        after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing System') }
+
+        run_test!
+      end
+    end
+  end
 end
