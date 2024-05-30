@@ -11,9 +11,6 @@ pipeline {
     options {
         timestamps()
     }
-    environment {
-    }
-
     stages {
         stage('Test notifying back ot the PR') {
             steps {
