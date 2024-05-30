@@ -117,6 +117,26 @@ module Api
                   }
                 }
               }
+            },
+            compliant: {
+              type: %w[boolean null],
+              examples: [false, true],
+              readOnly: true,
+              description: 'Whether the system is compliant or not within a given policy, only available ' \
+                           'under reports.'
+            },
+            failed_rule_count: {
+              type: %w[integer null],
+              examples: [3],
+              readOnly: true,
+              description: 'Number of failed rules within a given policy, only available under reports.'
+            },
+            last_scanned: {
+              type: :string,
+              examples: ['2020-06-04T19:31:55Z'],
+              readOnly: true,
+              description: 'The date when the system has been reported a scan within a given policy, only ' \
+                           'available under reports.'
             }
           }
         }.freeze

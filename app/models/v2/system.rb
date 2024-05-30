@@ -7,13 +7,13 @@ module V2
     self.primary_key = 'id'
     self.ignored_columns += %w[account]
 
-    # rubocop:disable Rails/InverseOf
     # FIXME: after the full remodel and V1 cleanup, inverse_of can be specified
-    belongs_to :account, class_name: 'Account', primary_key: :org_id, foreign_key: :org_id
-    # rubocop:enable Rails/InverseOf
+    belongs_to :account, class_name: 'Account', primary_key: :org_id, foreign_key: :org_id # rubocop:disable Rails/InverseOf
+
     has_many :policy_systems, class_name: 'V2::PolicySystem', dependent: nil
-    has_many :policies, through: :policy_systems
-    has_many :reports, class_name: 'V2::Report', through: :policies
+    has_many :report_systems, class_name: 'V2::ReportSystem', dependent: nil
+    has_many :policies, class_name: 'V2::Policy', through: :policy_systems
+    has_many :reports, class_name: 'V2::Report', through: :report_systems
     has_many :test_results, class_name: 'V2::TestResult', dependent: :destroy
 
     OS_VERSION = AN::InfixOperation.new('->', Host.arel_table[:system_profile], AN::Quoted.new('operating_system'))
