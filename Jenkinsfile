@@ -14,20 +14,14 @@ pipeline {
     stages {
         stage('Test notifying back ot the PR') {
             steps {
-
-//                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                script{
-                    pullRequest.comment('This PR is highly illogical..')
-                }
-  //              }
+                sh "echo 'a step'"
             }
         }
     }
 
     post {
         always{
-            script{
-                pullRequest.comment('Finished build!...')
+            githubPRComment("finished!")
             }
         }
     }
