@@ -22,7 +22,6 @@ pipeline {
     post {
         always{
             githubPRComment("finished!")
-            }
         }
     }
 }
