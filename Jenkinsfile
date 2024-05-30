@@ -1,7 +1,8 @@
-def secrets = [
-    [path: params.VAULT_PATH_INSIGHTSDROID_GITHUB, secretValues: [
-         [envVar: 'GITHUB_TOKEN', vaultKey: 'token'],
-]
+def secrets = [[
+    path: params.VAULT_PATH_INSIGHTSDROID_GITHUB, secretValues: [
+        [envVar: 'GITHUB_TOKEN', vaultKey: 'token'],
+    ],
+]]
 
 def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID]
 
