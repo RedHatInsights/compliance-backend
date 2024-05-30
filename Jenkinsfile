@@ -19,7 +19,7 @@ pipeline {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh '''
-                        text_pr="This is a comment"
+                        export text_pr="This is a comment"
                         curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
                         -X POST -d '{"body": "$text_pr"}' "${GITHUB_API_URL}/repos/${ghprbGhRepository}/issues/${ghprbPullId}/comments"
                     '''
