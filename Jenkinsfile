@@ -2,6 +2,9 @@ def secrets = [
     [path: params.VAULT_PATH_INSIGHTSDROID_GITHUB, secretValues: [
         [envVar: 'GITHUB_TOKEN', vaultKey: 'token'],
         [envVar: 'GITHUB_API_URL', vaultKey: 'mirror_url']]],
+    [path: params.VAULT_PATH_INSIGHTSDROID_GITHUB, secretValues: [
+         [envVar: 'GITHUB_TOKEN', vaultKey: 'token'],
+         [envVar: 'GITHUB_API_URL', vaultKey: 'mirror_url']]],        
 ]
 
 def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID]
@@ -14,14 +17,26 @@ pipeline {
     stages {
         stage('Test notifying back ot the PR') {
             steps {
-                sh "echo 'a step'"
+                withVault([configuration: configuration, vaultSecrets: secrets]) {
+                    sh """
+
+                        env
+
+                        text_pr="This is a comment"
+                        curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
+                        -X POST -d '{"body": "${text_pr}"}' "${GITHUB_API_URL}/repos/${repository_name}/issues/${ghprbPullId}/comments"
+
+                    """
+
+                }
+
             }
         }
     }
 
     post {
         always{
-            githubPRComment("finished!")
+            sh "echo 'done!'"
         }
     }
 }
