@@ -20,11 +20,10 @@ pipeline {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh '''
                         url="${GITHUB_API_URL}/repos/${ghprbGhRepository}/issues/${ghprbPullId}/comments"
-                        message="This is a comment"
                         curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
                         -H "Accept: application/vnd.github+json" \
                         -H "X-GitHub-Api-Version: 2022-11-28" \
-                        -X POST -d "{\"body\": \"$message\"}" "$url"
+                        -X POST -d '{"body":"Me too"}' "$url"
                     '''
 
                 }
