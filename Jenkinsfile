@@ -16,7 +16,9 @@ pipeline {
             steps {
 
 //                withVault([configuration: configuration, vaultSecrets: secrets]) {
-                pullRequest.comment('This PR is highly illogical..')
+                script{
+                    pullRequest.comment('This PR is highly illogical..')
+                }
   //              }
             }
         }
@@ -24,7 +26,9 @@ pipeline {
 
     post {
         always{
+            script{
                 pullRequest.comment('Finished build!...')
+            }
         }
     }
 }
