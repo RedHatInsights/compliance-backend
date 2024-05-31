@@ -15,5 +15,7 @@ module V2
     has_one :policy, class_name: 'V2::Policy', through: :tailoring
     has_one :report, class_name: 'V2::Report', through: :policy
     has_one :account, class_name: 'V2::Account', through: :policy
+
+    has_many :rule_results, class_name: 'V2::RuleResult', dependent: :destroy
   end
 end
