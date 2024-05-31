@@ -45,7 +45,6 @@ describe V2::SystemsController do
       end
 
       let(:extra_params) { { account: current_user.account, **policies } }
-      let(:parents) { nil }
       let(:item_count) { 2 }
 
       let(:items) do

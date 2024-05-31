@@ -26,7 +26,6 @@ describe V2::SupportedProfilesController do
   describe 'GET index' do
     let(:extra_params) { {} }
     let(:item_count) { 2 }
-    let(:parents) { nil }
 
     let(:v1_profiles) do
       FactoryBot.create(
