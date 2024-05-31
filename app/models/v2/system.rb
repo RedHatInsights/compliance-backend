@@ -15,6 +15,7 @@ module V2
     has_many :policies, class_name: 'V2::Policy', through: :policy_systems
     has_many :reports, class_name: 'V2::Report', through: :report_systems
     has_many :test_results, class_name: 'V2::TestResult', dependent: :destroy
+    has_many :rule_results, class_name: 'V2::RuleResult', through: :test_results
 
     OS_VERSION = AN::InfixOperation.new('->', Host.arel_table[:system_profile], AN::Quoted.new('operating_system'))
     OS_MINOR_VERSION = AN::InfixOperation.new('->', OS_VERSION, AN::Quoted.new('minor')).as('os_minor_version')
