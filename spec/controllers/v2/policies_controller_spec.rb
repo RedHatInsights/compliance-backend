@@ -33,7 +33,6 @@ describe V2::PoliciesController do
 
     describe 'GET index' do
       let(:extra_params) { { account: current_user.account, **rhels } }
-      let(:parents) { nil }
       let(:item_count) { 2 }
 
       let(:items) do
