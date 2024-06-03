@@ -30,7 +30,7 @@ module Xccdf
       end
 
       def os_minor_versions
-        SupportedSsg.by_ssg_version(true)[@benchmark.version]
+        SupportedSsg.by_ssg_version(true)[@op_benchmark.version]
                     .select { |ssg| ssg.os_major_version == @benchmark.os_major_version }
                     .map(&:os_minor_version)
       end
