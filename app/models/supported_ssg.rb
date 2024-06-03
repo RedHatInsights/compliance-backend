@@ -80,7 +80,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def by_ssg_version(force = false)
-      cache_wrapper(:'by-ssg', force) { all.group_by(&:version) }
+      cache_wrapper(:'by-ssg', force) { all(true).group_by(&:version) }
     end
 
     def clear
