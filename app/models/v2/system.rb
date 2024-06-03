@@ -14,7 +14,8 @@ module V2
     has_many :report_systems, class_name: 'V2::ReportSystem', dependent: nil
     has_many :policies, class_name: 'V2::Policy', through: :policy_systems
     has_many :reports, class_name: 'V2::Report', through: :report_systems
-    has_many :test_results, class_name: 'V2::TestResult', dependent: :destroy
+    has_many :test_results, -> { where(arel_table[:report_id].eq(V2::Report.arel_table.alias(:reports)[:id])) },
+             class_name: 'V2::TestResult', dependent: :destroy, inverse_of: :system
     has_many :rule_results, class_name: 'V2::RuleResult', through: :test_results
 
     OS_VERSION = AN::InfixOperation.new('->', Host.arel_table[:system_profile], AN::Quoted.new('operating_system'))
