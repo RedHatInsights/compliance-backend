@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_29_122815) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_04_142901) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -374,19 +374,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_29_122815) do
      FROM (rules
        LEFT JOIN rule_references_containers ON ((rule_references_containers.rule_id = rules.id)));
   SQL
-  create_view "v2_test_results", sql_definition: <<-SQL
-      SELECT test_results.id,
-      test_results.profile_id AS tailoring_id,
-      test_results.host_id AS system_id,
-      test_results.start_time,
-      test_results.end_time,
-      test_results.score,
-      test_results.supported,
-      test_results.failed_rule_count,
-      test_results.created_at,
-      test_results.updated_at
-     FROM test_results;
-  SQL
   create_view "report_systems", sql_definition: <<-SQL
       SELECT policy_hosts.id,
       policy_hosts.policy_id AS report_id,
@@ -405,6 +392,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_29_122815) do
        JOIN security_guides ON ((security_guides.id = canonical_profiles.security_guide_id)))
        JOIN profile_os_minor_versions ON ((profile_os_minor_versions.profile_id = canonical_profiles.id)))
     GROUP BY canonical_profiles.ref_id, security_guides.os_major_version;
+  SQL
+  create_view "v2_test_results", sql_definition: <<-SQL
+      SELECT test_results.id,
+      test_results.profile_id AS tailoring_id,
+      profiles.policy_id AS report_id,
+      test_results.host_id AS system_id,
+      test_results.start_time,
+      test_results.end_time,
+      test_results.score,
+      test_results.supported,
+      test_results.failed_rule_count,
+      test_results.created_at,
+      test_results.updated_at
+     FROM (test_results
+       JOIN profiles ON ((profiles.id = test_results.profile_id)));
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
@@ -638,6 +640,40 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_29_122815) do
       END
       $function$
   SQL
+  create_function :v2_test_results_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_test_results_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+          INSERT INTO "test_results" (
+            "profile_id",
+            "host_id",
+            "start_time",
+            "end_time",
+            "score",
+            "supported",
+            "failed_rule_count",
+            "created_at",
+            "updated_at"
+          ) VALUES (
+            NEW."tailoring_id",
+            NEW."system_id",
+            NEW."start_time",
+            NEW."end_time",
+            NEW."score",
+            NEW."supported",
+            COALESCE(NEW."failed_rule_count", 0),
+            NEW."created_at",
+            NEW."updated_at"
+          ) RETURNING "id" INTO "result_id";
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
 
 
   create_trigger :tailorings_insert, sql_definition: <<-SQL
@@ -660,5 +696,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_29_122815) do
   SQL
   create_trigger :v2_rules_update, sql_definition: <<-SQL
       CREATE TRIGGER v2_rules_update INSTEAD OF UPDATE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_update()
+  SQL
+  create_trigger :v2_test_results_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_test_results_insert INSTEAD OF INSERT ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_insert()
   SQL
 end
