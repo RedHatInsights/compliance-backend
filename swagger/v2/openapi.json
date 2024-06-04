@@ -11023,7 +11023,7 @@
           "Systems"
         ],
         "description": "Returns a System under a Report",
-        "operationId": "System",
+        "operationId": "ReportSystem",
         "responses": {
           "200": {
             "description": "Returns a System under a Report",
