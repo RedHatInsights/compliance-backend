@@ -34,6 +34,14 @@ module V2
         end
       end
 
+      # Return the hash of dependencies for optional (weak) attributes in the same format as the `dependencies`
+      # excluding the `nil` key as own fields are never optional.
+      def weak_dependencies(parents)
+        @weak_attributes&.values.to_a.each_with_object({}) do |(deps, fields), hsh|
+          merge_dependencies(hsh, fields, false) if deps.all? { |dep| parents.try(:include?, dep) }
+        end
+      end
+
       # Panko's default way of skipping certain attributes is to construct a hash that contains a list of fields
       # that should be omitted. This method automatically receives a context and a scope argument, where we use
       # the context to pass the `params[:joined]` that are necessary to determine if the required tables are joined.
@@ -62,6 +70,16 @@ module V2
         @derived_attributes[name] = hsh.merge(nil => arr)
       end
 
+      # This method allows the definition of loosely-coupled attributes that are derived from left-outer-joined
+      # models. This means that if there is nothing to join with, their final value would be `nil`.
+      def weak_attribute(name, *parents, **hsh)
+        attributes name
+        delegate name, to: :@object
+
+        @weak_attributes ||= {}
+        @weak_attributes[name] = [parents, hsh]
+      end
+
       # This method allows the definition attributes that are aggregated from any left-outer-joined has_many
       # `association`. The attribute is forwarded to an `aggregate_#{name}` method in the model that should
       # exist as an attribute when calling the serializer. The result of the aggregation `function`  should
@@ -80,15 +98,19 @@ module V2
       # Derived attributes should be excluded if the required associations are not joined with the current scope,
       # i.e. there are no joined parents available. Aggregated attributes should be skipped when its dependencies
       # have been already joined to the current scope, i.e. there is an overlap with parents.
+      # rubocop:disable Metrics/AbcSize
       def to_be_excluded?(field, context)
         @derived_attributes ||= {}
         @aggregated_attributes ||= {}
+        @weak_attributes ||= {}
 
         [
           @derived_attributes.key?(field) && !meets_dependency?(@derived_attributes[field].keys, context[:joined]),
+          @weak_attributes.key?(field) && !meets_dependency?(@weak_attributes[field].first, context[:joined]),
           @aggregated_attributes.key?(field) && meets_dependency?(@aggregated_attributes[field].keys, context[:joined])
         ].any?
       end
+      # rubocop:enable Metrics/AbcSize
 
       # Reduces the "method fields" of the serializer to an array using a passed block
       def reduce_method_fields(initial, &block)

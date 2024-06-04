@@ -26,6 +26,10 @@ Metrics/ClassLength:
   Exclude:
     - 'test/**/*'
     - 'spec/**/*'
+  CountAsOne:
+    - 'array'
+    - 'heredoc'
+    - 'method_call'
 
 Metrics/ModuleLength:
   Exclude:
