@@ -13,7 +13,7 @@ module V2
       scope = join_parents(pundit_scope, permitted_params[:parents])
       # Join with the additional 1:1 relationships required by the serializer, select only the
       # dependencies that are really necessary for the rendering.
-      join_aggregated(join_associated(scope)).select(*select_fields)
+      join_aggregated(join_weak(join_associated(scope))).select(*select_fields)
     end
 
     # Reduce through all the associations of the `relation` and join+scope them or return the
@@ -36,6 +36,13 @@ module V2
       # Do not join with the already joined parents assumed from the (nested) route
       associations = dependencies.keys.excluding(*permitted_params[:parents]).compact
       relation.where.associated(*associations)
+    end
+
+    # Left-outer join with the optional (weak) dependencies required for computing weak attributes
+    def join_weak(relation)
+      weak_dependencies.keys.reduce(relation) do |scope, association|
+        already_joined(scope).include?(association) ? scope : scope.left_outer_joins(association)
+      end
     end
 
     # Self-join with the requested aggregations built using 1:n associations, also select
@@ -72,7 +79,7 @@ module V2
     # so it is understood by SQL. Furthermore, alias any field that is coming from a joined
     # table to avoid any possible hash key collision.
     def select_fields
-      dependencies.flat_map do |(association, fields)|
+      dependencies.merge(weak_dependencies).flat_map do |(association, fields)|
         fields.map do |field|
           if association
             "#{association}.#{field} AS #{association}__#{field}"
@@ -96,6 +103,10 @@ module V2
     # Retrieve the list of aggregations on any one-to-many associations specified by the serializer
     def aggregations
       @aggregations ||= serializer.aggregations(permitted_params[:parents], resource.one_to_many)
+    end
+
+    def weak_dependencies
+      @weak_dependencies ||= serializer.weak_dependencies(permitted_params[:parents])
     end
 
     # List all the joined (direct and indirect) associations of a given scope
