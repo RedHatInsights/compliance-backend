@@ -392,7 +392,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       v2_auth_header
       tags 'Systems'
       description 'Returns a System under a Report'
-      operationId 'System'
+      operationId 'ReportSystem'
       content_types
 
       parameter name: :system_id, in: :path, type: :string, required: true
