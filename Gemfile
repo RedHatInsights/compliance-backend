@@ -4,8 +4,8 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7.0'
 gem 'pg'
+gem 'rails', '~> 7.0'
 # Use Puma as the app server
 gem 'puma', '~> 6'
 # Use Redis adapter to connect to Sidekiq
@@ -18,16 +18,16 @@ gem 'racecar', require: false
 gem 'rdkafka', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-gem 'rack-cors'
 gem 'rack', '>= 2.1.4'
+gem 'rack-cors'
 
 # Swagger
 gem 'rswag-api'
 gem 'rswag-ui'
 
 # Database view, function and trigger management
-gem 'scenic'
 gem 'fx'
+gem 'scenic'
 
 # Config YAML files for all environments
 gem 'config'
@@ -50,28 +50,28 @@ gem 'exception_notification'
 gem 'slack-notifier'
 
 # Sidekiq - use reliable-fetch by Gitlab
-gem 'sidekiq', '< 8'
 gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
+gem 'sidekiq', '< 8'
 
 # Faraday to make requests easier
 gem 'faraday'
 gem 'faraday-retry'
 
 # Helpers for models, pagination, mass import
-gem 'friendly_id', '~> 5.2.4'
-gem 'scoped_search'
-gem 'will_paginate'
 gem 'activerecord-import'
+gem 'friendly_id', '~> 5.2.4'
 gem 'oj'
+gem 'scoped_search'
 gem 'uuid'
+gem 'will_paginate'
 
 # Prometheus exporter
+gem 'prometheus-client-mmap', '<= 0.28.1'
 gem 'yabeda'
+gem 'yabeda-prometheus-mmap'
 gem 'yabeda-puma-plugin'
 gem 'yabeda-rails'
 gem 'yabeda-sidekiq'
-gem 'yabeda-prometheus-mmap'
-gem 'prometheus-client-mmap', '<= 0.28.1'
 
 # Nokogiri
 gem 'nokogiri', force_ruby_platform: true
@@ -96,9 +96,9 @@ gem 'request_store'
 
 # Ruby 3 dependencies
 gem 'cgi', '>= 0.3.5'
-gem 'uri', '>= 0.11.1'
 gem 'rexml'
 gem 'time', '>= 0.2.2'
+gem 'uri', '>= 0.11.1'
 gem 'webrick'
 
 # Allows for tree structures in db
@@ -132,8 +132,8 @@ group :test do
 end
 
 group :development do
-  gem 'graphiql-rails'
   gem 'bullet'
+  gem 'graphiql-rails'
   gem 'listen', '>= 3.0.5'
   gem 'pry-rails'
   gem 'spring'
