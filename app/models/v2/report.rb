@@ -43,7 +43,6 @@ module V2
 
     sortable_by :title
     sortable_by :os_major_version
-    sortable_by :total_host_count
     sortable_by :business_objective
     sortable_by :compliance_threshold
 
