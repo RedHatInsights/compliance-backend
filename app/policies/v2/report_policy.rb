@@ -11,6 +11,10 @@ module V2
       match_account?
     end
 
+    def destroy?
+      match_account?
+    end
+
     # Only show Reports in our user account
     class Scope < V2::ApplicationPolicy::Scope
       def resolve

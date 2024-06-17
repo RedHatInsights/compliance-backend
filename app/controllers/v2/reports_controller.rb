@@ -13,6 +13,14 @@ module V2
     end
     permission_for_action :show, Rbac::REPORT_READ
 
+    def destroy
+      report.delete_test_results
+      audit_success("Removed report #{report.id}")
+      render_json report, status: :accepted
+    end
+    permission_for_action :destroy, Rbac::POLICY_DELETE
+    permitted_params_for_action :destroy, { id: ID_TYPE }
+
     private
 
     def reports

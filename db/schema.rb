@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_04_142901) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_07_103908) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -674,6 +674,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_142901) do
       END
       $function$
   SQL
+  create_function :v2_test_results_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_test_results_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+        -- Delete the v2_test_result records belonging to report
+        DELETE FROM "test_results" WHERE "id" = OLD."id";
+      RETURN OLD;
+      END
+      $function$
+  SQL
 
 
   create_trigger :tailorings_insert, sql_definition: <<-SQL
@@ -696,6 +708,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_04_142901) do
   SQL
   create_trigger :v2_rules_update, sql_definition: <<-SQL
       CREATE TRIGGER v2_rules_update INSTEAD OF UPDATE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_update()
+  SQL
+  create_trigger :v2_test_results_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
   SQL
   create_trigger :v2_test_results_insert, sql_definition: <<-SQL
       CREATE TRIGGER v2_test_results_insert INSTEAD OF INSERT ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_insert()
