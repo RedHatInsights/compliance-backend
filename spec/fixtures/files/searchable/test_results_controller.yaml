@@ -1,0 +1,241 @@
+---
+- :name: "equality search by display_name"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :display_name: searched name
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :display_name: not this name
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (display_name = "searched name")
+- :name: "non-equality search by display_name"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :display_name: not this name
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :display_name: searched name
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (display_name != "searched name")
+- :name: "like search by display_name"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :display_name: searched display_name
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :display_name: not this display_name
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (display_name ~ "searched")
+- :name: "unlike search by display_name"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :display_name: not this display_name
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :display_name: searched display_name
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (display_name !~ "searched")
+
+- :name: "equality search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+  :query: (os_minor_version = 1)
+- :name: "non-equality search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+  :query: (os_minor_version != 2)
+- :name: "in search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 0
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :display_name: not this display_name
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+  :query: (os_minor_version ^ "0 2")
+- :name: "not-in search by os_minor_version"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 0
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (os_minor_version !^ "0 2")
+
+
+- :name: "equality search by security_guide_version"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+  :query: (security_guide_version = "0.0.1")
+- :name: "non-equality search by security_guide_version"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+  :query: (security_guide_version != "0.0.2")
+- :name: "in search by security_guide_version"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 3
+        :policy_id: ${policy.id}
+        :account: ${account}
+  :query: (security_guide_version ^ (0.0.1 0.0.2))
+- :name: "not-in search by security_guide_version"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 3
+        :policy_id: ${policy.id}
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+  :query: (security_guide_version !^ (0.0.1 0.0.2))
+
+- :name: "search by supported"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+        :supported: true
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+        :supported: false
+  :query: (supported = true)
+
+- :name: "search by unsupported"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+        :supported: false
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+        :supported: true
+  :query: (supported = false)
+
+- :name: "search by compliant"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+        :score: 100
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+        :score: 0
+  :query: (compliant = true)
+
+- :name: "search by non-compliant"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :os_minor_version: 1
+        :policy_id: ${policy.id}
+        :account: ${account}
+        :score: 0
+    :not_found:
+      - :factory: :v2_test_result
+        :os_minor_version: 2
+        :policy_id: ${policy.id}
+        :account: ${account}
+        :score: 100
+  :query: (compliant = false)

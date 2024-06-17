@@ -1,0 +1,83 @@
+:entities:
+  - :factory: :v2_test_result
+    :display_name: 'aba'
+    :os_minor_version: 2
+    :score: 0.7
+    :end_time: "2024-06-17 08:11:03 UTC"
+    :groups:
+      - id: 5
+        name: 'aba'
+    :account: ${account}
+    :policy_id: ${policy.id}
+
+  - :factory: :v2_test_result
+    :display_name: 'bac'
+    :os_minor_version: 2
+    :score: 0.2
+    :end_time: "2024-06-17 05:11:03 UTC"
+    :groups:
+      - id: 4
+        name: 'bac'
+    :account: ${account}
+    :policy_id: ${policy.id}
+
+  - :factory: :v2_test_result
+    :display_name: 'aab'
+    :os_minor_version: 1
+    :score: 0.7
+    :end_time: "2024-05-17 08:11:03 UTC"
+    :groups:
+      - id: 3
+        name: 'aab'
+    :account: ${account}
+    :policy_id: ${policy.id}
+
+  - :factory: :v2_test_result
+    :display_name: 'aaa'
+    :os_minor_version: 3
+    :end_time: "2024-06-17 08:11:03 UTC"
+    :score: 0.2
+    :groups:
+      - id: 1
+        name: 'aaa'
+    :account: ${account}
+    :policy_id: ${policy.id}
+
+  - :factory: :v2_test_result
+    :display_name: 'caa'
+    :os_minor_version: 4
+    :end_time: "2024-06-12 08:11:03 UTC"
+    :score: 0.9
+    :groups:
+      - id: 2
+        name: 'caa'
+    :account: ${account}
+    :policy_id: ${policy.id}
+
+  - :factory: :v2_test_result
+    :display_name: 'aaa'
+    :os_minor_version: 4
+    :end_time: "2024-06-12 08:11:03 UTC"
+    :score: 0
+    :groups:
+      - id: 1
+        name: 'aaa'
+    :account: ${account}
+    :policy_id: ${policy.id}
+
+:queries:
+  - :sort_by:
+      - 'display_name'
+    :result: [[3, 5], 2, 0, 1, 4]
+  - :sort_by:
+      - 'security_guide_version'
+    :result: [2, [0, 1], 3, [4, 5]]
+  - :sort_by:
+      - 'score'
+    :result: [5, [1, 3], [2, 0], 4]
+  - :sort_by:
+      - 'end_time'
+    :result: [2, [4, 5], 1, [3, 0]]
+  - :sort_by:
+      - 'groups'
+    :result: [[3, 5], 2, 0, 1, 4]
