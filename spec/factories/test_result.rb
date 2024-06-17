@@ -10,7 +10,17 @@ FactoryBot.define do
       end
     end
 
-    system { association :system, account: account }
+    system do
+      args = {
+        display_name: display_name,
+        policy_id: policy_id,
+        os_major_version: os_major_version,
+        os_minor_version: os_minor_version,
+        groups: groups
+      }.compact
+      association(:system, account: account, **args)
+    end
+
     start_time { 5.minutes.ago }
     end_time { 1.minute.ago }
     score { SecureRandom.rand(score_above.to_f..score_below.to_f) }
@@ -21,6 +31,10 @@ FactoryBot.define do
       score_below { 100 }
       score_above { 0 }
       policy_id { nil }
+      display_name { nil }
+      os_major_version { nil }
+      os_minor_version { nil }
+      groups { nil }
     end
   end
 end
