@@ -231,5 +231,28 @@ describe V2::ReportsController do
         end
       end
     end
+
+    describe 'DELETE destroy' do
+      before { stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ, Rbac::POLICY_DELETE) }
+
+      let(:item) do
+        FactoryBot.create(
+          :v2_report,
+          os_major_version: 9,
+          assigned_system_count: 1,
+          compliant_system_count: 1,
+          unsupported_system_count: 0,
+          supports_minors: [0],
+          account: current_user.account
+        )
+      end
+
+      it 'removes test_results related to the policy under report' do
+        delete :destroy, params: { id: item.id }
+
+        expect(response).to have_http_status :accepted
+        expect(item.reload.test_results).to be_empty
+      end
+    end
   end
 end

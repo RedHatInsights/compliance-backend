@@ -47,7 +47,7 @@ Rails.application.routes.draw do
           resources :systems, only: [:index, :show] do
             resources :policies, only: [:index], parents: [:systems]
           end
-          resources :reports, only: [:index, :show] do
+          resources :reports, only: [:index, :show, :destroy] do
             resources :systems, only: [:index, :show], parents: [:reports]
           end
         end

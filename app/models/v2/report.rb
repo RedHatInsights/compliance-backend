@@ -78,5 +78,10 @@ module V2
     def all_systems_exposed
       total_system_count == try(:aggregate_assigned_system_count)
     end
+
+    def delete_test_results
+      V2::RuleResult.joins(test_result: :tailoring).where(tailorings: { policy_id: id }).delete_all
+      V2::TestResult.where(id: test_results.select(:id)).delete_all
+    end
   end
 end
