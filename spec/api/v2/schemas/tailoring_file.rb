@@ -9,9 +9,20 @@ module Api
       module TailoringFile
         extend Api::V2::Schemas::Util
 
-        TAILORING_FILE = begin
+        FALLBACK_PATH = Rails.root.join('swagger/v2/tailoring_schema.json')
+
+        def self.retrieve_schema
           # Download the JSON:API schema from GitHub
-          json = JSON.parse(Net::HTTP.get(URI.parse('https://raw.githubusercontent.com/ComplianceAsCode/schemas/main/tailoring/schema.json')))
+          content = SafeDownloader.download('https://raw.githubusercontent.com/ComplianceAsCode/schemas/main/tailoring/schema.json')
+          File.open(FALLBACK_PATH, 'w') { |f| f.write(content.read) }
+          content.rewind
+          content
+        rescue SafeDownloader::DownloadError
+          File.read(FALLBACK_PATH)
+        end
+
+        TAILORING_FILE = begin
+          json = JSON.parse(retrieve_schema)
 
           # Delete the unwanted keys that rswag can't parse
           json.delete('$schema')
