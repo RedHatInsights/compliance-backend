@@ -610,9 +610,6 @@ describe V2::SystemsController do
         insights_id: :insights_id,
         tags: :tags,
         policies: -> { policies.map { |policy| { id: policy.id, title: policy.title } } },
-        compliant: :compliant,
-        last_scanned: :last_scanned,
-        failed_rule_count: :failed_rule_count,
         os_major_version: -> { system_profile&.dig('operating_system', 'major') },
         os_minor_version: -> { system_profile&.dig('operating_system', 'minor') }
       }
