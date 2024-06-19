@@ -6,12 +6,12 @@
       - :factory: :system
         :display_name: searched name
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
     :not_found:
       - :factory: :system
         :display_name: not this name
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
   :query: (display_name = "searched name")
 - :name: "non-equality search by display_name"
   :entities:
@@ -19,12 +19,12 @@
       - :factory: :system
         :display_name: not this name
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
     :not_found:
       - :factory: :system
         :display_name: searched name
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
   :query: (display_name != "searched name")
 - :name: "like search by display_name"
   :entities:
@@ -32,12 +32,12 @@
       - :factory: :system
         :display_name: searched display_name
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
     :not_found:
       - :factory: :system
         :display_name: not this display_name
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
   :query: (display_name ~ "searched display_name")
 - :name: "unlike search by display_name"
   :entities:
@@ -45,12 +45,12 @@
       - :factory: :system
         :display_name: not this display_name
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
     :not_found:
       - :factory: :system
         :display_name: searched display_name
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
   :query: (display_name !~ "searched display_name")
 - :name: "equality search by os_major_version"
   :entities:
@@ -67,6 +67,7 @@
   :query: (os_major_version = 7)
   :except_parents:
     - :policies
+    - :reports
 - :name: "non-equality search by os_major_version"
   :entities:
     :found:
@@ -82,6 +83,7 @@
   :query: (os_major_version != 7)
   :except_parents:
     - :policies
+    - :reports
 - :name: "in search by os_major_version"
   :entities:
     :found:
@@ -102,6 +104,7 @@
   :query: (os_major_version ^ "7 9")
   :except_parents:
     - :policies
+    - :reports
 - :name: "not-in search by os_major_version"
   :entities:
     :found:
@@ -121,17 +124,18 @@
   :query: (os_major_version !^ "7 9")
   :except_parents:
     - :policies
+    - :reports
 - :name: "equality search by os_minor_version"
   :entities:
     :found:
       - :factory: :system
         :os_minor_version: 1
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :system
         :os_minor_version: 2
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
         :account: ${account}
   :query: (os_minor_version = 1)
 - :name: "non-equality search by os_minor_version"
@@ -139,12 +143,12 @@
     :found:
       - :factory: :system
         :os_minor_version: 1
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :system
         :os_minor_version: 2
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
         :account: ${account}
   :query: (os_minor_version != 2)
 - :name: "in search by os_minor_version"
@@ -153,16 +157,16 @@
       - :factory: :system
         :os_minor_version: 0
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
       - :factory: :system
         :os_minor_version: 2
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
     :not_found:
       - :factory: :system
         :display_name: not this display_name
         :os_minor_version: 1
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
         :account: ${account}
   :query: (os_minor_version ^ "0 2")
 - :name: "not-in search by os_minor_version"
@@ -170,17 +174,17 @@
     :found:
       - :factory: :system
         :os_minor_version: 1
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :system
         :os_minor_version: 0
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
       - :factory: :system
         :os_minor_version: 2
         :account: ${account}
-        :policy_id: ${policy_id}
+        :policy_id: ${policy.id}
   :query: (os_minor_version !^ "0 2")
 - :name: "combined equality search by os_major_version and os_minor_version"
   :entities:
@@ -201,6 +205,7 @@
   :query: (os_minor_version = 1) and (os_major_version = 7)
   :except_parents:
     - :policies
+    - :reports
 - :name: "combined equality-in search by os_major_version and os_minor_version"
   :entities:
     :found:
@@ -228,6 +233,7 @@
   :query: (os_major_version = 7) and (os_minor_version ^ "1 2")
   :except_parents:
     - :policies
+    - :reports
 - :name: "search by being assigned to a policy or having test results"
   :entities:
     :found:
@@ -251,3 +257,19 @@
       - :factory: :system
         :account: ${account}
   :query: (assigned_or_scanned = true)
+- :name: "search by not having any contextual test_results"
+  :entities:
+    :found:
+      - :factory: :system
+        :policy_id: ${policy_9.id}
+        :os_minor_version: 1
+        :account: ${account}
+    :not_found:
+      - :factory: :system
+        :policy_id: ${policy_9.id}
+        :with_test_result: true
+        :os_minor_version: 1
+        :account: ${account}
+  :query: (never_reported = true)
+  :only_parents:
+    - :reports

@@ -93,9 +93,18 @@ describe V2::SystemsController do
 
     describe 'GET index' do
       let(:extra_params) do
-        { account: current_user.account, policy_id: parent.id, policy_7: parent, policy_8: parent, policy_9: parent }
+        {
+          account: current_user.account,
+          policy_id: parent.id,
+          policy_7: parent,
+          policy_8: parent,
+          policy_9: parent,
+          policy: parent
+        }
       end
+
       let(:item_count) { 2 }
+
       let(:items) do
         FactoryBot.create_list(
           :system,
@@ -620,13 +629,22 @@ describe V2::SystemsController do
         :v2_report,
         os_major_version: 9,
         assigned_system_count: 0,
-        supports_minors: [0],
+        supports_minors: [0, 1, 2, 8],
         account: current_user.account
       )
     end
 
     describe 'GET index' do
-      let(:extra_params) { { account: current_user.account, report_id: parent.id } }
+      let(:extra_params) do
+        {
+          account: current_user.account,
+          report_id: parent.id,
+          policy: parent.policy,
+          policy_9: parent.policy,
+          policy_8: parent.policy,
+          policy_7: parent.policy
+        }
+      end
       let(:item_count) { 2 }
 
       let(:items) do
@@ -642,8 +660,8 @@ describe V2::SystemsController do
       it_behaves_like 'collection', :reports
       include_examples 'with metadata', :reports
       it_behaves_like 'paginable', :reports
-      # it_behaves_like 'sortable', :reports
-      # it_behaves_like 'searchable', :reports
+      it_behaves_like 'sortable', :reports
+      it_behaves_like 'searchable', :reports
       it_behaves_like 'taggable', :reports
     end
 
