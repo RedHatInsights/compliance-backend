@@ -9,10 +9,6 @@ module V2
     derived_attribute :os_major_version, V2::System::OS_MAJOR_VERSION
     derived_attribute :os_minor_version, V2::System::OS_MINOR_VERSION
 
-    weak_attribute :compliant, :reports, reports: [:compliance_threshold], v2_test_results: [:score]
-    weak_attribute :last_scanned, :reports, v2_test_results: [:end_time]
-    weak_attribute :failed_rule_count, :reports, v2_test_results: [:failed_rule_count]
-
     aggregated_attribute :policies, :policies, -> { V2::System::POLICIES }
   end
 end

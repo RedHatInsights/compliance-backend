@@ -14,8 +14,7 @@ module V2
     has_many :report_systems, class_name: 'V2::ReportSystem', dependent: nil
     has_many :policies, class_name: 'V2::Policy', through: :policy_systems
     has_many :reports, class_name: 'V2::Report', through: :report_systems
-    has_many :v2_test_results, -> { where(arel_table[:report_id].eq(V2::Report.arel_table.alias(:reports)[:id])) },
-             class_name: 'V2::TestResult', dependent: :destroy, inverse_of: :system
+    has_many :test_results, class_name: 'V2::TestResult', dependent: :destroy, inverse_of: :system
     has_many :rule_results, class_name: 'V2::RuleResult', through: :test_results
 
     OS_VERSION = AN::InfixOperation.new('->', arel_table[:system_profile], AN::Quoted.new('operating_system'))
@@ -111,18 +110,6 @@ module V2
 
     def os_minor_version
       attributes['os_minor_version'] || try(:system_profile)&.dig('operating_system', 'minor')
-    end
-
-    def compliant
-      attributes['v2_test_results__score'].try(:>=, attributes['reports__compliance_threshold'])
-    end
-
-    def last_scanned
-      attributes['v2_test_results__end_time']
-    end
-
-    def failed_rule_count
-      attributes['v2_test_results__failed_rule_count']
     end
 
     def self.arel_inventory_groups(groups, key)
