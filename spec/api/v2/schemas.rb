@@ -19,6 +19,7 @@ module Api
       include System
       include Tailoring
       include TailoringFile
+      include TestResult
       include Types
       include ValueDefinition
 
@@ -39,6 +40,7 @@ module Api
         system: SYSTEM,
         tailoring: TAILORING,
         tailoring_file: TAILORING_FILE,
+        test_result: TEST_RESULT,
         value_definition: VALUE_DEFINITION
       }.freeze
     end
