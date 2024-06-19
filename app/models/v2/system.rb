@@ -62,22 +62,31 @@ module V2
     sortable_by :groups, first_group_name
 
     searchable_by :display_name, %i[eq neq like unlike]
+
     searchable_by :os_major_version, %i[eq neq in notin] do |_key, op, val|
       {
         conditions: os_major_versions(val.split.map(&:to_i), %w[IN =].include?(op)).arel.where_sql.sub(/^where /i, '')
       }
     end
+
     searchable_by :os_minor_version, %i[eq neq in notin] do |_key, op, val|
       {
         conditions: os_minor_versions(val.split.map(&:to_i), %w[IN =].include?(op)).arel.where_sql.sub(/^where /i, '')
       }
     end
+
     searchable_by :assigned_or_scanned, %i[eq] do |_key, _op, _val|
       ids = V2::System.where(id: V2::PolicySystem.select(:system_id)).or(
         V2::System.where(id: V2::TestResult.select(:system_id))
       ).reselect(:id)
 
       { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
+    end
+
+    searchable_by :never_reported, %i[eq] do |_key, _op, _val|
+      ids = V2::TestResult.reselect(:system_id, :report_id)
+
+      { conditions: "(inventory.hosts.id, reports.id) NOT IN (#{ids.to_sql})" }
     end
 
     scope :with_groups, lambda { |groups, key = :id|

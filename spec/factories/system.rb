@@ -40,12 +40,17 @@ FactoryBot.define do
       tag_count { 5 }
       policy_id { nil }
       owner_id { Faker::Internet.uuid }
+      with_test_result { nil }
     end
 
     after(:create) do |sys, ev|
       next if ev.policy_id.nil?
 
       sys.policy_systems << FactoryBot.create(:v2_policy_system, system_id: sys.id, policy_id: ev.policy_id)
+
+      next if ev.with_test_result.nil?
+
+      FactoryBot.create(:v2_test_result, system: sys, policy_id: ev.policy_id)
     end
   end
 end

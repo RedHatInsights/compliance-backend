@@ -19,6 +19,7 @@
 #       - 'field to sort by with direction (e.g. name:asc, version:desc)'
 #     :result: [3, 2, 1]
 #     :except_parents: [:parent] # skip the test if specified parents are present
+#     :only_parents: [:parent] # run the test only if specified parents are present
 # ```
 # `:result` field is an array of indexes into entities array with expected order, nested arrays will be sorted by id
 #  e.g.: expected order is 0, 1, 2, 3, but 2 and 3 need to be sorted by FactoryBot ID (sorted property is same for both)
@@ -94,6 +95,7 @@ RSpec.shared_examples 'sortable' do |*parents|
 
     }.each do |sort_by, ordered|
       next if parents.to_a.intersect?(test_case[:except_parents].to_a)
+      next if test_case[:only_parents] && !parents.to_a.intersect?(test_case[:only_parents])
 
       it "sorts by #{sort_by.join(', ')}" do
         result = ordered.flat_map do |item|

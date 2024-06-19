@@ -65,7 +65,7 @@ if Rails.env.test?
       value.is_a?(String) && value.match(/^\$\{([a-zA-Z_]+[a-zA-Z_0-9]*)(\.([a-zA-Z_]+))?\}$/) do |m|
         obj_or_attr = extra_params[m[1].to_sym]
         obj_or_attr = obj_or_attr.value if obj_or_attr.is_a?(Struct)
-        obj[key] = m[3] ? obj_or_attr.send(m[3].to_sym) : obj_or_attr
+        obj[key] = m[3] ? obj_or_attr.try(m[3].to_sym) : obj_or_attr
       end
     end
   end
