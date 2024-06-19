@@ -390,7 +390,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
 
     get 'Request a System' do
       v2_auth_header
-      tags 'Systems'
+      tags 'Reports'
       description 'Returns a System under a Report'
       operationId 'ReportSystem'
       content_types
