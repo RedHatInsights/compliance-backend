@@ -14,7 +14,7 @@ module V2
     permission_for_action :show, Rbac::REPORT_READ
 
     def destroy
-      report.delete_test_results
+      report.delete_associated
       audit_success("Removed report #{report.id}")
       render_json report, status: :accepted
     end

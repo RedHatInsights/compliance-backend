@@ -7,14 +7,17 @@ module V2
     self.table_name = :v2_policies
     self.primary_key = :id
 
+    belongs_to :account, class_name: 'Account'
     belongs_to :profile, class_name: 'V2::Profile'
+    belongs_to :report, class_name: 'V2::Report', foreign_key: :id, optional: true # rubocop:disable Rails/InverseOf
+
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
+
     has_many :tailorings, class_name: 'V2::Tailoring', dependent: :destroy
     has_many :tailoring_rules, through: :tailorings, class_name: 'V2::TailoringRule', dependent: :destroy
     has_many :rules, through: :tailoring_rules, class_name: 'V2::Rule'
     has_many :policy_systems, class_name: 'V2::PolicySystem', dependent: :destroy
     has_many :systems, through: :policy_systems, class_name: 'V2::System'
-    belongs_to :account, class_name: 'Account'
 
     validates :account, presence: true
     validates :profile, presence: true
@@ -61,6 +64,12 @@ module V2
     end
 
     before_validation :ensure_default_values
+
+    def delete_associated
+      report.delete_associated
+      V2::Tailoring.where(policy_id: id).delete_all
+      V2::PolicySystem.where(policy_id: id).delete_all
+    end
 
     def os_major_version
       attributes['security_guide__os_major_version'] || try(:security_guide)&.os_major_version
