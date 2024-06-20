@@ -29,14 +29,14 @@ jobs:
           title: 'chore(devel): update .ruby-version'
   update-bundler:
     runs-on: ubuntu-latest
+    env:
+      BUNDLE_FORCE_RUBY_PLATFORM: true
+      BUNDLE_BUILD__FFI: "--enable-system-libffi"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Setup Ruby and install gems
         uses: ruby/setup-ruby@v1
-        env:
-          BUNDLE_FORCE_RUBY_PLATFORM: true
-          BUNDLE_BUILD__FFI: "--enable-system-libffi"
         with:
           bundler-cache: true
           bundler: latest
