@@ -26,6 +26,7 @@ describe V2::TestResultsController do
     request.headers['X-RH-IDENTITY'] = current_user.account.identity_header.raw
     allow(StrongerParameters::InvalidValue).to receive(:new) { |value, _| value.to_sym }
     allow(controller).to receive(:rbac_allowed?).and_return(rbac_allowed?)
+    stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ, Rbac::REPORT_READ)
   end
 
   context '/reports/:id/test_results' do
@@ -71,6 +72,42 @@ describe V2::TestResultsController do
       it_behaves_like 'paginable', :report
       it_behaves_like 'sortable', :report
       it_behaves_like 'searchable', :report
+
+      context 'system from an inaccessible inventory group' do
+        before do
+          stub_rbac_permissions(
+            Rbac::INVENTORY_HOSTS_READ => [{
+              attribute_filter: {
+                key: 'group.id',
+                operation: 'in',
+                value: [nil]
+              }
+            }]
+          )
+
+          items # force-create items
+
+          FactoryBot.create(
+            :v2_test_result,
+            system: FactoryBot.create(
+              :system,
+              account: current_user.account,
+              os_major_version: 8,
+              os_minor_version: 0,
+              policy_id: parent.id,
+              groups: [{ id: 'a_group' }]
+            ),
+            policy_id: parent.id
+          )
+        end
+
+        it 'does not expose the inaccessible system' do
+          get :index, params: { report_id: parent.id, parents: [:report] }
+
+          expect(response).to have_http_status :ok
+          expect(response_body_data).to match_array(items.map { |item| a_hash_including('id' => item.id) })
+        end
+      end
     end
 
     describe 'GET show' do
@@ -92,6 +129,41 @@ describe V2::TestResultsController do
       let(:notfound_params) { extra_params.merge(report_id: FactoryBot.create(:v2_report).id) }
 
       it_behaves_like 'individual', :report
+
+      context 'system from an inaccessible inventory group' do
+        before do
+          stub_rbac_permissions(
+            Rbac::INVENTORY_HOSTS_READ => [{
+              attribute_filter: {
+                key: 'group.id',
+                operation: 'in',
+                value: [nil]
+              }
+            }]
+          )
+        end
+
+        let(:item) do
+          FactoryBot.create(
+            :v2_test_result,
+            system: FactoryBot.create(
+              :system,
+              account: current_user.account,
+              os_major_version: 8,
+              os_minor_version: 0,
+              policy_id: parent.id,
+              groups: [{ id: 'a_group' }]
+            ),
+            policy_id: parent.id
+          )
+        end
+
+        it 'does not expose the inaccessible system' do
+          get :show, params: { id: item.id, report_id: parent.id, parents: [:report] }
+
+          expect(response).to have_http_status :not_found
+        end
+      end
     end
   end
 end

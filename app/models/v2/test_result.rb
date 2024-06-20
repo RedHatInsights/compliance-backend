@@ -63,6 +63,14 @@ module V2
       }
     end
 
+    scope :with_groups, lambda { |groups, table = arel_table|
+      # Skip the [] representing ungrouped hosts from the array when generating the query
+      grouped = V2::System.arel_inventory_groups(groups.flatten, :id, table)
+      ungrouped = table[:groups].eq(AN::Quoted.new('[]'))
+      # The OR is inside of Arel in order to prevent pollution of already applied scopes
+      where(groups.include?([]) ? grouped.or(ungrouped) : grouped)
+    }
+
     # TODO: searchable_by :failed_rule_severity
 
     def display_name
