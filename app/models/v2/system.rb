@@ -91,7 +91,7 @@ module V2
 
     scope :with_groups, lambda { |groups, key = :id|
       # Skip the [] representing ungrouped hosts from the array when generating the query
-      grouped = arel_inventory_groups(groups.flatten, key)
+      grouped = arel_inventory_groups(groups.flatten, key, arel_table)
       ungrouped = arel_table[:groups].eq(AN::Quoted.new('[]'))
       # The OR is inside of Arel in order to prevent pollution of already applied scopes
       where(groups.include?([]) ? grouped.or(ungrouped) : grouped)
@@ -121,13 +121,13 @@ module V2
       attributes['os_minor_version'] || try(:system_profile)&.dig('operating_system', 'minor')
     end
 
-    def self.arel_inventory_groups(groups, key)
+    def self.arel_inventory_groups(groups, key, table)
       jsons = groups.map { |group| [{ key => group }].to_json.dump }
 
       return AN::InfixOperation.new('=', Arel.sql('1'), Arel.sql('0')) if jsons.empty?
 
       AN::InfixOperation.new(
-        '@>', arel_table[:groups],
+        '@>', table[:groups],
         AN::NamedFunction.new(
           'ANY', [
             AN::NamedFunction.new('CAST', [AN.build_quoted("{#{jsons.join(',')}}").as('jsonb[]')])

@@ -22,7 +22,7 @@ describe V2::SystemPolicy do
         expect(Pundit.authorize(user, item, :show?)).to be_truthy
       end
 
-      V2::Policy.where.not(id: items.map(&:id)).find_each do |item|
+      V2::System.where.not(id: items.map(&:id)).find_each do |item|
         expect { Pundit.authorize(user, item, :show?) }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
@@ -55,7 +55,7 @@ describe V2::SystemPolicy do
         expect(Pundit.authorize(user, item, :show?)).to be_truthy
       end
 
-      V2::Policy.where.not(id: items.map(&:id)).find_each do |item|
+      V2::System.where.not(id: items.map(&:id)).find_each do |item|
         expect { Pundit.authorize(user, item, :show?) }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
@@ -87,7 +87,7 @@ describe V2::SystemPolicy do
         expect(Pundit.authorize(user, item, :show?)).to be_truthy
       end
 
-      V2::Policy.where.not(id: items.map(&:id)).find_each do |item|
+      V2::System.where.not(id: items.map(&:id)).find_each do |item|
         expect { Pundit.authorize(user, item, :show?) }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
