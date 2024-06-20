@@ -247,6 +247,27 @@ describe V2::PoliciesController do
         expect { item.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
+      context 'policy with test results' do
+        let(:item) do
+          FactoryBot.create(
+            :v2_report,
+            os_major_version: 9,
+            assigned_system_count: 1,
+            compliant_system_count: 1,
+            unsupported_system_count: 0,
+            supports_minors: [0],
+            account: current_user.account
+          ).policy
+        end
+
+        it 'removes the policy' do
+          delete :destroy, params: { id: item.id }
+
+          expect(response).to have_http_status :accepted
+          expect { item.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
       context 'policy under different account' do
         let(:item) { FactoryBot.create(:v2_policy, account: FactoryBot.create(:v2_account)) }
 

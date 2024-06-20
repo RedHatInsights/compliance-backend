@@ -47,7 +47,8 @@ module V2
     permitted_params_for_action :update, { id: ID_TYPE, **UPDATE_ATTRIBUTES }
 
     def destroy
-      compliance_policy.destroy
+      compliance_policy.delete_associated
+      compliance_policy.delete
       audit_success("Removed policy #{compliance_policy.id}")
       render_json compliance_policy, status: :accepted
     end
