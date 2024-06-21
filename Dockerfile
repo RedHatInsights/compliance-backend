@@ -2,7 +2,7 @@ ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tz
 ARG devDeps="gcc gcc-c++ gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel tar which util-linux xz"
 ARG extras=""
 ARG prod="true"
-ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-13/repo/epel-8/mmraka-postgresql-13-epel-8.repo"
+ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-8/mmraka-postgresql-16-epel-8.repo"
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal AS build
 
@@ -22,7 +22,7 @@ COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
 
 RUN FULL_RHEL=$(microdnf repolist --enabled | grep rhel-8);                                   \
     if [ -z "$FULL_RHEL" ] ; then                                                             \
-      dnf module enable -y postgresql:13 || curl -o /etc/yum.repos.d/postgresql.repo $pgRepo; \
+      dnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgresql.repo $pgRepo; \
     fi;                                                                                       \
     rpm -e --nodeps tzdata &>/dev/null                                                     && \
     microdnf module enable ruby:3.3                                                        && \
