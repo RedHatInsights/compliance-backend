@@ -80,8 +80,13 @@ module V2
     end
 
     def delete_associated
-      V2::RuleResult.joins(test_result: :tailoring).where(tailorings: { policy_id: id }).delete_all
-      V2::TestResult.where(id: test_results.select(:id)).delete_all
+      tailoring_ids = V2::Tailoring.where(policy_id: id).select(:id)
+
+      V2::RuleResult.joins(:historical_test_result)
+                    .where(historical_test_result: { tailoring_id: tailoring_ids })
+                    .delete_all
+
+      V2::HistoricalTestResult.where(tailoring_id: tailoring_ids).delete_all
     end
   end
 end

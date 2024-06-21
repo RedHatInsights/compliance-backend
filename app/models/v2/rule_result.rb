@@ -8,6 +8,8 @@ module V2
     self.ignored_columns += %w[account]
 
     belongs_to :test_result, class_name: 'V2::TestResult'
+    belongs_to :historical_test_result, class_name: 'V2::HistoricalTestResult', foreign_key: :test_result_id,
+                                        inverse_of: :rule_results, optional: true
     belongs_to :rule, class_name: 'V2::Rule'
 
     has_one :system, class_name: 'V2::System', through: :test_result

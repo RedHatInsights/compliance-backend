@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_07_103908) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_21_081235) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -393,7 +393,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_07_103908) do
        JOIN profile_os_minor_versions ON ((profile_os_minor_versions.profile_id = canonical_profiles.id)))
     GROUP BY canonical_profiles.ref_id, security_guides.os_major_version;
   SQL
-  create_view "v2_test_results", sql_definition: <<-SQL
+  create_view "historical_test_results", sql_definition: <<-SQL
       SELECT test_results.id,
       test_results.profile_id AS tailoring_id,
       profiles.policy_id AS report_id,
@@ -407,6 +407,26 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_07_103908) do
       test_results.updated_at
      FROM (test_results
        JOIN profiles ON ((profiles.id = test_results.profile_id)));
+  SQL
+  create_view "v2_test_results", sql_definition: <<-SQL
+      SELECT test_results.id,
+      test_results.profile_id AS tailoring_id,
+      profiles.policy_id AS report_id,
+      test_results.host_id AS system_id,
+      test_results.start_time,
+      test_results.end_time,
+      test_results.score,
+      test_results.supported,
+      test_results.failed_rule_count,
+      test_results.created_at,
+      test_results.updated_at
+     FROM ((test_results
+       JOIN profiles ON ((profiles.id = test_results.profile_id)))
+       JOIN ( SELECT test_results_1.profile_id,
+              test_results_1.host_id,
+              max(test_results_1.end_time) AS end_time
+             FROM test_results test_results_1
+            GROUP BY test_results_1.profile_id, test_results_1.host_id) tr ON (((test_results.profile_id = tr.profile_id) AND (test_results.host_id = tr.host_id) AND (test_results.end_time = tr.end_time))));
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
@@ -708,6 +728,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_07_103908) do
   SQL
   create_trigger :v2_rules_update, sql_definition: <<-SQL
       CREATE TRIGGER v2_rules_update INSTEAD OF UPDATE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_update()
+  SQL
+  create_trigger :historical_test_results_delete, sql_definition: <<-SQL
+      CREATE TRIGGER historical_test_results_delete INSTEAD OF DELETE ON public.historical_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
   SQL
   create_trigger :v2_test_results_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
