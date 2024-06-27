@@ -460,6 +460,19 @@ objects:
     - prefix: insights/compliance/policy_hosts
       query: >-
         SELECT "policy_hosts"."host_id", "policy_hosts"."policy_id" FROM "policy_hosts";
+    - prefix: insights/compliance/failed_rules
+      query: >-
+        SELECT "rules"."ref_id", "accounts"."org_id", COUNT("rule_results"."id") as "failed_count" FROM "rule_results"
+        INNER JOIN "rules" ON "rules"."id" = "rule_results"."rule_id"
+        INNER JOIN "test_results" ON "test_results"."id" = "rule_results"."test_result_id"
+        INNER JOIN "profiles" ON "profiles"."id" = "test_results"."profile_id"
+        INNER JOIN "accounts" ON "accounts"."id" = "profiles"."account_id"
+        INNER JOIN (
+          SELECT "test_results"."profile_id", "test_results"."host_id", MAX("test_results"."end_time") AS "end_time" FROM "test_results"
+          GROUP BY "test_results"."profile_id", "test_results"."host_id"
+        ) AS "tr" ON ("test_results"."profile_id" = "tr"."profile_id" AND "test_results"."host_id" = "tr"."host_id" AND "test_results"."end_time" = "tr"."end_time")
+        WHERE rule_results.result IN ('fail', 'error', 'unknown', 'fixed')
+        GROUP BY "rules"."ref_id", "accounts"."org_id";
 
 - apiVersion: v1
   kind: Secret
