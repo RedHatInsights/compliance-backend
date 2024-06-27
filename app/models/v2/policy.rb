@@ -25,7 +25,6 @@ module V2
     validates :compliance_threshold, numericality: {
       greater_than_or_equal_to: 0, less_than_or_equal_to: 100
     }
-    validate :not_duplicate?, on: :create
 
     sortable_by :title
     sortable_by :os_major_version, 'security_guide.os_major_version'
@@ -99,16 +98,6 @@ module V2
       self.title ||= profile&.title
       self.description ||= profile&.description
       self.compliance_threshold ||= 100.0
-    end
-
-    def not_duplicate?
-      policies = self.class.joins(profile: :security_guide).where(
-        security_guide: { os_major_version: profile&.security_guide&.os_major_version },
-        profile: { ref_id: profile&.ref_id },
-        account_id: account_id
-      ).count
-
-      errors.add(:profile, 'duplication is not supported') unless policies.zero?
     end
   end
 end

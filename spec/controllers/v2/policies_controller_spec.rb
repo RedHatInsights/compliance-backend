@@ -96,17 +96,6 @@ describe V2::PoliciesController do
         expect(subject).not_to be_nil
       end
 
-      context 'duplicate policy type for account' do
-        before { FactoryBot.create(:v2_policy, profile_id: profile_id, account: current_user.account) }
-
-        it 'returns with an error' do
-          post :create, params: params
-
-          expect(response).to have_http_status :not_acceptable
-          expect(response.parsed_body['errors']).to include(match(/duplication is not supported/))
-        end
-      end
-
       context 'missing profile ID' do
         let(:params) { {} }
 
@@ -115,17 +104,6 @@ describe V2::PoliciesController do
 
           expect(response).to have_http_status :not_acceptable
           expect(response.parsed_body['errors']).to include(match(/profile must exist/))
-        end
-      end
-
-      context 'duplicate policy type for account' do
-        before { FactoryBot.create(:v2_policy, profile_id: profile_id, account: current_user.account) }
-
-        it 'returns with an error' do
-          post :create, params: params
-
-          expect(response).to have_http_status :not_acceptable
-          expect(response.parsed_body['errors']).to include(match(/duplication is not supported/))
         end
       end
 
