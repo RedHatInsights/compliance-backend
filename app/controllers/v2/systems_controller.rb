@@ -75,8 +75,10 @@ module V2
         major = policy.os_major_version
         minors = policy.os_minor_versions
         # Filter the passed systems based on what OS versions the policy supports
+        # and also drop any system that is assigned to a sibling policy
         items = pundit_scope.where(id: permitted_params[:ids])
                             .os_major_versions(major).os_minor_versions(minors)
+                            .where.not(id: systems_with_sibling_policies)
 
         items.map { |item| V2::PolicySystem.new(policy: policy, system: item) }
       end
@@ -92,6 +94,22 @@ module V2
       new_policy_systems.uniq { |ps| ps.system.os_minor_version }.each do |record|
         record.run_callbacks(:create)
       end
+    end
+
+    # This method is a product of a performance tradeoff and should be used with caution as there
+    # is no `pundit_scope` around it. The `PolicySystem` model does not have a pundit policy and
+    # creating one is not really meaningful as we don't expose this model via the API. In theory,
+    # we could join the systems to the model and `merge_with_alias` the scope from there, but it
+    # feels like an unnecessary step, as the method is just an extraction to make RuboCop happy
+    # about ABC size. In its call site abouve in `new_policy_systems` there is already a scoping
+    # and this method is basically is just used in a subquery to scope the results down even more.
+    #
+    # TL; DR: DO NOT USE THIS METHOD IN ANY QUERY WITHOUT A `pundit_scope` !!!
+    def systems_with_sibling_policies
+      V2::PolicySystem.joins(policy: :profile)
+                      .where(profile: { ref_id: policy.ref_id }, system_id: permitted_params[:ids])
+                      .where.not(policy_id: policy.id)
+                      .select(:system_id)
     end
 
     def policy

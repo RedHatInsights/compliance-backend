@@ -169,6 +169,7 @@ describe V2::SystemsController do
             :system,
             os_major_version: parent.os_major_version,
             os_minor_version: parent.os_minor_versions.sample,
+            account: current_user.account,
             policy_id: parent.id
           )
         end
@@ -240,6 +241,36 @@ describe V2::SystemsController do
         end
       end
 
+      context 'system already assigned to a sibling policyX' do
+        let(:sibling) do
+          FactoryBot.create(
+            :v2_policy,
+            :for_tailoring,
+            account: current_user.account,
+            os_major_version: parent.os_major_version,
+            supports_minors: [0, 1, 2, 8],
+            profile: parent.profile
+          )
+        end
+
+        let(:item) do
+          FactoryBot.create(
+            :system,
+            os_major_version: parent.os_major_version,
+            os_minor_version: parent.os_minor_versions.sample,
+            account: current_user.account,
+            policy_id: sibling.id
+          )
+        end
+
+        it 'does not assign the system' do
+          post :create, params: { ids: ids + [item.id], policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.systems.map(&:id)).not_to include(item.id)
+        end
+      end
+
       context 'system from an inaccessible inventory group' do
         before do
           stub_rbac_permissions(
@@ -256,9 +287,9 @@ describe V2::SystemsController do
         let(:item) do
           FactoryBot.create(
             :system,
-            os_major_version:
-            parent.os_major_version,
+            os_major_version: parent.os_major_version,
             os_minor_version: parent.os_minor_versions.sample,
+            account: current_user.account,
             groups: [{ id: 'a_group' }]
           )
         end
@@ -376,12 +407,37 @@ describe V2::SystemsController do
       end
 
       context 'policy already linked to the system' do
-        let(:item) { FactoryBot.create(:system, account: current_user.account, policy_id: parent.id) }
+        let(:item) do
+          FactoryBot.create(:system, account: current_user.account, policy_id: parent.id, owner_id: owner_id)
+        end
 
         it 'returns not found' do
           patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
           expect(response).to have_http_status :not_found
+        end
+      end
+
+      context 'system already assigned to a sibling policy' do
+        let(:sibling) do
+          FactoryBot.create(
+            :v2_policy,
+            :for_tailoring,
+            account: current_user.account,
+            supports_minors: [0, 1, 2, 8],
+            profile: parent.profile
+          )
+        end
+
+        let(:item) do
+          FactoryBot.create(:system, account: current_user.account, policy_id: sibling.id, owner_id: owner_id)
+        end
+
+        it 'returns not acceptable' do
+          patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :not_acceptable
+          expect(response.parsed_body['errors']).to include(match(/cannot be assigned to multiple policies/))
         end
       end
 
