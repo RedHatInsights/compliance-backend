@@ -13,6 +13,7 @@ module V2
     validates :policy_id, presence: true
     validates :system_id, presence: true, uniqueness: { scope: :policy_id }
     validate :system_supported?, on: :create
+    validate :system_unique?, on: :create
 
     after_create do
       Tailoring.find_or_create_by!(policy_id: policy_id, os_minor_version: system.os_minor_version) do |tailoring|
@@ -28,6 +29,14 @@ module V2
       elsif policy.os_minor_versions.exclude?(system.os_minor_version)
         errors.add(:system, 'Unsupported OS minor version')
       end
+    end
+
+    def system_unique?
+      return false unless self.class.joins(policy: :profile).where(
+        system_id: system_id, profile: { ref_id: policy.ref_id }
+      ).any?
+
+      errors.add(:system, 'System cannot be assigned to multiple policies of the same type')
     end
   end
 end
