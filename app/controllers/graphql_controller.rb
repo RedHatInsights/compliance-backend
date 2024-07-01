@@ -35,6 +35,8 @@ class GraphqlController < ApplicationController
     super
 
     payload[:gql_op] = parse_gql_op
+    payload[:path] = nil
+    payload[:source] = nil
   end
 
   def rbac_allowed?
