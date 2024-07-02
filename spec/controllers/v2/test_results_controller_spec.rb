@@ -19,6 +19,10 @@ describe V2::TestResultsController do
     }
   end
 
+  let(:sysparams) do # Shared parameters for system creation
+    { account: current_user.account, os_major_version: 8, os_minor_version: 0, policy_id: parent.id }
+  end
+
   let(:current_user) { FactoryBot.create(:v2_user) }
   let(:rbac_allowed?) { true }
 
@@ -48,21 +52,22 @@ describe V2::TestResultsController do
     end
 
     describe 'GET index' do
-      let(:extra_params) { { account: current_user.account, report_id: parent.id, policy: parent.policy } }
+      let(:extra_params) do
+        {
+          account: current_user.account,
+          report_id: parent.id,
+          policy: parent.policy,
+          system_1: FactoryBot.create(:system, **sysparams),
+          system_2: FactoryBot.create(:system, **sysparams)
+        }
+      end
+
       let(:item_count) { 2 }
 
       let(:items) do
         item_count.times.map do
           FactoryBot.create(
-            :v2_test_result,
-            system: FactoryBot.create(
-              :system,
-              account: current_user.account,
-              os_major_version: 8,
-              os_minor_version: 0,
-              policy_id: parent.id
-            ),
-            policy_id: parent.id
+            :v2_test_result, system: FactoryBot.create(:system, **sysparams), policy_id: parent.id
           ).reload
         end.sort_by(&:id)
       end
@@ -114,13 +119,7 @@ describe V2::TestResultsController do
       let(:item) do
         FactoryBot.create(
           :v2_test_result,
-          system: FactoryBot.create(
-            :system,
-            account: current_user.account,
-            os_major_version: 8,
-            os_minor_version: 0,
-            policy_id: parent.id
-          ),
+          system: FactoryBot.create(:system, **sysparams),
           policy_id: parent.id
         ).reload
       end
@@ -146,14 +145,7 @@ describe V2::TestResultsController do
         let(:item) do
           FactoryBot.create(
             :v2_test_result,
-            system: FactoryBot.create(
-              :system,
-              account: current_user.account,
-              os_major_version: 8,
-              os_minor_version: 0,
-              policy_id: parent.id,
-              groups: [{ id: 'a_group' }]
-            ),
+            system: FactoryBot.create(:system, **sysparams, groups: [{ id: 'a_group' }]),
             policy_id: parent.id
           )
         end

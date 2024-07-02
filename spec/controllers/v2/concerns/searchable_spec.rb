@@ -75,7 +75,7 @@ RSpec.shared_examples 'searchable' do |*parents|
         FactoryBot.create(entity.delete(:factory), **entity)
       end
 
-      get :index, params: passable_params.merge(filter: search[:query], parents: parents)
+      get :index, params: passable_params.merge(filter: query_params(search[:query], extra_params), parents: parents)
 
       expect(response_body_data).to match_array(found.map { |item| hash_including('id' => item.id) })
     end
