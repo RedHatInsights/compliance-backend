@@ -7,6 +7,7 @@ FactoryBot.define do
         :v2_policy,
         :for_tailoring,
         title: context.title,
+        system_id: context.system_id,
         system_count: context.assigned_system_count,
         os_major_version: context.os_major_version,
         compliance_threshold: context.compliance_threshold,
@@ -15,41 +16,43 @@ FactoryBot.define do
         supports_minors: context.supports_minors
       )
 
-      unsupported_systems = policy.systems.first(context.unsupported_system_count)
-      compliant_systems = (policy.systems - unsupported_systems).first(context.compliant_system_count)
-      other_systems = policy.systems - unsupported_systems - compliant_systems
+      unless context.system_id
+        unsupported_systems = policy.systems.first(context.unsupported_system_count)
+        compliant_systems = (policy.systems - unsupported_systems).first(context.compliant_system_count)
+        other_systems = policy.systems - unsupported_systems - compliant_systems
 
-      unsupported_systems.each do |system|
-        FactoryBot.create(
-          :v2_test_result,
-          system: system,
-          account: context.account,
-          supported: false,
-          score: nil,
-          policy_id: policy.id
-        )
-      end
+        unsupported_systems.each do |system|
+          FactoryBot.create(
+            :v2_test_result,
+            system: system,
+            account: context.account,
+            supported: false,
+            score: nil,
+            policy_id: policy.id
+          )
+        end
 
-      compliant_systems.each do |system|
-        FactoryBot.create(
-          :v2_test_result,
-          system: system,
-          account: context.account,
-          supported: true,
-          score_above: context.compliance_threshold,
-          policy_id: policy.id
-        )
-      end
+        compliant_systems.each do |system|
+          FactoryBot.create(
+            :v2_test_result,
+            system: system,
+            account: context.account,
+            supported: true,
+            score_above: context.compliance_threshold,
+            policy_id: policy.id
+          )
+        end
 
-      other_systems.each do |system|
-        FactoryBot.create(
-          :v2_test_result,
-          system: system,
-          account: context.account,
-          supported: true,
-          score_below: context.compliance_threshold,
-          policy_id: policy.id
-        )
+        other_systems.each do |system|
+          FactoryBot.create(
+            :v2_test_result,
+            system: system,
+            account: context.account,
+            supported: true,
+            score_below: context.compliance_threshold,
+            policy_id: policy.id
+          )
+        end
       end
 
       instance.id = policy.id
@@ -64,6 +67,7 @@ FactoryBot.define do
       compliance_threshold { 90 }
       title { Faker::Lorem.sentence }
       supports_minors { [0] }
+      system_id { nil }
       assigned_system_count { 4 }
       compliant_system_count { 1 }
       unsupported_system_count { 2 }

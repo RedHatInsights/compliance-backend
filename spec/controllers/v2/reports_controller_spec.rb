@@ -31,8 +31,14 @@ describe V2::ReportsController do
   end
 
   context '/reports' do
+    let(:rhels) do
+      [7, 8, 9].each_with_object({}) do |i, obj|
+        obj["rhel_#{i}".to_sym] = pw(i)
+      end
+    end
+
     describe 'GET index' do
-      let(:extra_params) { { account: current_user.account } }
+      let(:extra_params) { { account: current_user.account, **rhels } }
 
       let(:items) do
         FactoryBot.create_list(
@@ -253,6 +259,57 @@ describe V2::ReportsController do
         expect(response).to have_http_status :accepted
         expect(item.reload.test_results).to be_empty
       end
+    end
+  end
+
+  context '/systems/:id/reports' do
+    before do
+      allow(StrongerParameters::InvalidValue).to receive(:new) { |value, _| value.to_sym }
+      stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ, Rbac::SYSTEM_READ)
+    end
+
+    describe 'GET index' do
+      let(:attributes) do
+        {
+          title: :title,
+          os_major_version: :os_major_version,
+          ref_id: :ref_id,
+          description: :description,
+          profile_title: :profile_title,
+          business_objective: :business_objective,
+          compliance_threshold: :compliance_threshold,
+          all_systems_exposed: -> { false }, # this is inconcistent but we don't care
+          reported_system_count: -> { 0 },
+          compliant_system_count: -> { 0 },
+          unsupported_system_count: -> { 0 }
+        }
+      end
+
+      let(:extra_params) do
+        ver = pw(parent.os_major_version)
+        # Pass the same RHEL version under each `rhel_#` parameter as we are under a policy
+        { account: current_user.account, system_id: parent.id, rhel_7: ver, rhel_8: ver, rhel_9: ver }
+      end
+      let(:owner_id) { nil }
+      let(:parent) { FactoryBot.create(:system, account: current_user.account, owner_id: owner_id) }
+      let(:item_count) { 2 }
+
+      let(:items) do
+        FactoryBot.create_list(
+          :v2_report,
+          item_count,
+          account: current_user.account,
+          system_id: parent.id,
+          os_major_version: parent.os_major_version,
+          supports_minors: [parent.os_minor_version]
+        ).map(&:reload).sort_by(&:id)
+      end
+
+      it_behaves_like 'collection', :systems
+      include_examples 'with metadata', :systems
+      it_behaves_like 'paginable', :systems
+      it_behaves_like 'sortable', :systems
+      it_behaves_like 'searchable', :systems
     end
   end
 end
