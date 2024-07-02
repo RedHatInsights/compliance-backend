@@ -6,11 +6,13 @@
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_report
         :title: not this title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
   :query: (title = "searched title")
 - :name: "non-equality search by title"
@@ -19,11 +21,13 @@
       - :factory: :v2_report
         :title: not this title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
   :query: (title != "searched title")
 - :name: "in search by title"
@@ -32,11 +36,13 @@
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_report
         :title: not this title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
   :query: (title ^ "searched title")
 - :name: "not-in search by title"
@@ -45,11 +51,13 @@
       - :factory: :v2_report
         :title: not this title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
   :query: (title !^ "searched title")
 - :name: "like search by title"
@@ -58,11 +66,13 @@
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_report
         :title: not this title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
   :query: (title ~ "searched title")
 - :name: "unlike search by title"
@@ -71,11 +81,13 @@
       - :factory: :v2_report
         :title: not this title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
   :query: (title !~ "searched title")
 - :name: "equality search by os_major_version"
@@ -84,60 +96,78 @@
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 7
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_policy
         :title: not this title
-        os_major_version: 8
+        :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
   :query: (os_major_version = 7)
+  :except_parents:
+    - :systems
 - :name: "non-equality search by os_major_version"
   :entities:
     :found:
       - :factory: :v2_report
         :title: not this title
-        os_major_version: 8
+        :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_report
         :title: searched title
-        os_major_version: 7
+        :os_major_version: 7
+        :system_id: ${system_id}
         :account: ${account}
   :query: (os_major_version != 7)
+  :except_parents:
+    - :systems
 - :name: "in search by os_major_version"
   :entities:
     :found:
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 7
+        :system_id: ${system_id}
         :account: ${account}
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 9
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_report
         :title: not this title
-        os_major_version: 8
+        :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
   :query: (os_major_version ^ "7 9")
+  :except_parents:
+    - :systems
 - :name: "not-in search by os_major_version"
   :entities:
     :found:
       - :factory: :v2_report
         :title: not this title
-        os_major_version: 8
+        :os_major_version: 8
+        :system_id: ${system_id}
         :account: ${account}
     :not_found:
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 7
+        :system_id: ${system_id}
         :account: ${account}
       - :factory: :v2_report
         :title: searched title
         :os_major_version: 9
+        :system_id: ${system_id}
         :account: ${account}
   :query: (os_major_version !^ "7 9")
+  :except_parents:
+    - :systems
 - :name: "search by having systems with test results"
   :entities:
     :found:
@@ -148,3 +178,5 @@
         :assigned_system_count: 0
         :account: ${account}
   :query: (with_reported_systems = true)
+  :except_parents:
+    - :systems
