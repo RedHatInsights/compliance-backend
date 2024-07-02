@@ -239,3 +239,17 @@
         :account: ${account}
         :score: 100
   :query: (compliant = false)
+
+- :name: "equality search by system_id"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :account: ${account}
+        :system_id: ${system_1.id}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :account: ${account}
+        :system_id: ${system_2.id}
+        :policy_id: ${policy.id}
+  :query: (system_id = ${system_1.id})

@@ -27,6 +27,7 @@ module V2
 
     searchable_by :score, %i[eq gt lt gte lte]
     searchable_by :supported, %i[eq]
+    searchable_by :system_id, %i[eq]
 
     searchable_by :display_name, %i[eq ne like unlike] do |_key, op, val|
       val = "%#{val}%" if ['ILIKE', 'NOT ILIKE'].include?(op)

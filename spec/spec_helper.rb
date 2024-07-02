@@ -56,7 +56,7 @@ if Rails.env.test?
     extra_params.reject { |_, ep| ep.is_a?(ActiveRecord::Base) || ep.is_a?(Struct) }
   end
 
-  # Assembles object to be passed into factory
+  # Assembles an object to be passed into factory
   # - adds url params into an object based on yaml entity definition in sorting and searching specs
   # - if object with method call is passed, it parses object and method into m[1] and m[3] and executes
   def factory_params(item, extra_params)
@@ -67,6 +67,15 @@ if Rails.env.test?
         obj_or_attr = obj_or_attr.value if obj_or_attr.is_a?(Struct)
         obj[key] = m[3] ? obj_or_attr.try(m[3].to_sym) : obj_or_attr
       end
+    end
+  end
+
+  # Assembles a query using interpolations feeded by extra_params (see `factory_params` above)
+  def query_params(value, extra_params)
+    value.gsub(/\$\{([a-zA-Z_]+[a-zA-Z_0-9]*)(\.([a-zA-Z_]+))?\}/) do |_match|
+      obj_or_attr = extra_params[Regexp.last_match[1].to_sym]
+      obj_or_attr = obj_or_attr.value if obj_or_attr.is_a?(Struct)
+      Regexp.last_match[3] ? obj_or_attr.try(Regexp.last_match[3].to_sym) : obj_or_attr
     end
   end
 
