@@ -10,15 +10,19 @@ module V2
 
     indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.gsub('-', '.')) }
 
-    SORTED_SEVERITIES = Arel.sql(
-      AN::Case.new.when(
-        Rule.arel_table[:severity].eq(AN::Quoted.new('high'))
-      ).then(3).when(
-        Rule.arel_table[:severity].eq(AN::Quoted.new('medium'))
-      ).then(2).when(
-        Rule.arel_table[:severity].eq(AN::Quoted.new('low'))
-      ).then(1).else(0).to_sql
-    )
+    # rubocop:disable Metrics/AbcSize
+    def self.sorted_severities(table = arel_table)
+      Arel.sql(
+        AN::Case.new.when(
+          table[:severity].eq(AN::Quoted.new('high'))
+        ).then(3).when(
+          table[:severity].eq(AN::Quoted.new('medium'))
+        ).then(2).when(
+          table[:severity].eq(AN::Quoted.new('low'))
+        ).then(1).else(0).to_sql
+      )
+    end
+    # rubocop:enable Metrics/AbcSize
 
     SHORT_REF_ID_RE = /
       (?<=
@@ -37,7 +41,7 @@ module V2
     has_many :policies, class_name: 'V2::Policy', through: :tailorings
 
     sortable_by :title
-    sortable_by :severity, SORTED_SEVERITIES
+    sortable_by :severity, sorted_severities
     sortable_by :precedence
 
     searchable_by :title, %i[like unlike eq ne in notin]
@@ -52,17 +56,15 @@ module V2
     def remediation_issue_id
       return nil unless remediation_available
 
-      sg_ref = short_ref_id(security_guide__ref_id).sub('-', '')
-      profile_ref = short_ref_id(profiles__ref_id)
+      sg_ref = self.class.short_ref_id(security_guide__ref_id).sub('-', '')
+      profile_ref = self.class.short_ref_id(profiles__ref_id)
 
       "ssg:#{sg_ref}|#{profile_ref}|#{ref_id}"
     rescue NameError
       raise ArgumentError, 'Missing security guide or profile on the ActiveRecord result'
     end
 
-    private
-
-    def short_ref_id(ref_id)
+    def self.short_ref_id(ref_id)
       ref_id.downcase[SHORT_REF_ID_RE] || ref_id
     end
   end

@@ -1,0 +1,221 @@
+---
+
+- :name: "equality search by title"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (title = "searched title")
+- :name: "non-equality search by title"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (title != "searched title")
+- :name: "in search by title"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (title ^ "searched title")
+- :name: "not-in search by title"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (title !^ "searched title")
+- :name: "like search by title"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (title ~ "searched title")
+- :name: "unlike search by title"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (title !~ "searched title")
+
+- :name: "equality search by severity"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :severity: urgent
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :severity: severe
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (severity = "urgent")
+- :name: "non-equality search by severity"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :severity: severe
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :severity: urgent
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (severity != "urgent")
+- :name: "in search by severity"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :severity: urgent
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :severity: severe
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (severity ^ "urgent")
+- :name: "not-in search by severity"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :severity: severe
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :severity: urgent
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (severity !^ "urgent")
+
+- :name: "equality search by result"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :result: pass
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :result: fail
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (result = "pass")
+- :name: "non-equality search by result"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :result: fail
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :result: pass
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (result != "pass")
+- :name: "in search by result"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :result: pass
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+      - :factory: v2_rule_result
+        :result: skip
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :result: fail
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_3.id}
+  :query: (result ^ (pass skip))
+- :name: "not-in search by result"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :result: fail
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :result: pass
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+      - :factory: v2_rule_result
+        :result: skip
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_3.id}
+  :query: (result !^ (pass skip))
+
+- :name: "equality (truthy) search by remediation_available"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :remediation_available: true
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :remediation_available: false
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: remediation_available = true
+- :name: "equality (falsey) search by remediation_available"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :remediation_available: false
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :remediation_available: true
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: remediation_available = false

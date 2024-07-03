@@ -13,6 +13,7 @@ module Api
       include Report
       include Rule
       include RuleGroup
+      include RuleResult
       include RuleTree
       include SecurityGuide
       include SupportedProfile
@@ -34,6 +35,7 @@ module Api
         report: REPORT,
         rule: RULE,
         rule_group: RULE_GROUP,
+        rule_result: RULE_RESULT,
         rule_tree: RULE_TREE,
         security_guide: SECURITY_GUIDE,
         supported_profile: SUPPORTED_PROFILE,

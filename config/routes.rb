@@ -50,7 +50,9 @@ Rails.application.routes.draw do
           end
           resources :reports, only: [:index, :show, :destroy] do
             resources :systems, only: [:index, :show], parents: [:reports]
-            resources :test_results, only: [:index, :show], parents: [:report]
+            resources :test_results, only: [:index, :show], parents: [:report] do
+              resources :rule_results, only: [:index], parents: [:report, :test_result]
+            end
           end
         end
       end
