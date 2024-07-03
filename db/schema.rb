@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_21_081235) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_03_064538) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -576,7 +576,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_21_081235) do
       AS $function$
       BEGIN
           -- Update the rule reference record separately
-          UPDATE "rule_references_container" SET "rule_references" = NEW."references" WHERE "rule_id" = OLD."id";
+          UPDATE "rule_references_containers" SET "rule_references" = NEW."references" WHERE "rule_id" = OLD."id";
 
           UPDATE "rules" SET
             "ref_id" = NEW."ref_id",

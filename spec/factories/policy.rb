@@ -22,7 +22,7 @@ FactoryBot.define do
           os_major_version: os_major_version,
           supports_minors: supports_minors,
           value_count: 5,
-          rule_count: 5
+          rule_count: 20
         )
       end
     end

@@ -1,0 +1,107 @@
+:entities:
+  - :factory: :v2_rule_result
+    :title: 'abdd'
+    :severity: 'high'
+    :precedence: 1234
+    :test_result_id: ${test_result_id}
+    :result: 'pass'
+    :remediation_available: false
+    :rule_id: ${rule_1.id}
+
+  - :factory: :v2_rule_result
+    :title: 'abda'
+    :severity: 'medium'
+    :precedence: 567
+    :test_result_id: ${test_result_id}
+    :result: 'pass'
+    :remediation_available: true
+    :rule_id: ${rule_2.id}
+
+  - :factory: :v2_rule_result
+    :title: 'aaaa'
+    :severity: 'low'
+    :precedence: 8765
+    :test_result_id: ${test_result_id}
+    :result: 'fail'
+    :remediation_available: false
+    :rule_id: ${rule_3.id}
+
+  - :factory: :v2_rule_result
+    :title: 'adac'
+    :severity: 'high'
+    :precedence: 987
+    :test_result_id: ${test_result_id}
+    :result: 'fail'
+    :remediation_available: true
+    :rule_id: ${rule_4.id}
+
+  - :factory: :v2_rule_result
+    :title: 'bbbb'
+    :severity: 'medium'
+    :precedence: 4562
+    :test_result_id: ${test_result_id}
+    :result: 'pass'
+    :remediation_available: false
+    :rule_id: ${rule_5.id}
+
+  - :factory: :v2_rule_result
+    :title: 'cccd'
+    :severity: 'low'
+    :precedence: 2341
+    :test_result_id: ${test_result_id}
+    :result: 'pass'
+    :remediation_available: false
+    :rule_id: ${rule_6.id}
+
+  - :factory: :v2_rule_result
+    :title: 'aaaa'
+    :severity: 'high'
+    :precedence: 954
+    :test_result_id: ${test_result_id}
+    :result: 'fail'
+    :remediation_available: false
+    :rule_id: ${rule_7.id}
+
+  - :factory: :v2_rule_result
+    :title: 'bacc'
+    :severity: 'medium'
+    :precedence: 1854
+    :test_result_id: ${test_result_id}
+    :result: 'pass'
+    :remediation_available: true
+    :rule_id: ${rule_8.id}
+
+  - :factory: :v2_rule_result
+    :title: 'zzab'
+    :severity: 'low'
+    :precedence: 5321
+    :test_result_id: ${test_result_id}
+    :result: 'pass'
+    :remediation_available: false
+    :rule_id: ${rule_9.id}
+
+  - :factory: :v2_rule_result
+    :title: 'edfa'
+    :severity: 'high'
+    :precedence: 954
+    :test_result_id: ${test_result_id}
+    :result: 'fail'
+    :remediation_available: true
+    :rule_id: ${rule_10.id}
+
+:queries:
+  - :sort_by:
+      - 'title'
+    :result: [[2, 6], 1, 0, 3, 7, 4, 5, 9, 8]
+  - :sort_by:
+      - 'severity'
+    :result: [[2, 5, 8], [1, 4, 7], [0, 3, 6, 9]]
+  - :sort_by:
+      - 'precedence'
+    :result: [1, [6, 9], 3, 0, 7, 5, 4, 8, 2]
+  - :sort_by:
+      - 'result'
+    :result: [[2, 3, 6, 9], [0, 1, 4, 5, 7, 8]]
+  - :sort_by:
+      - 'remediation_available'
+    :result: [[0, 2, 4, 5, 6, 8], [1, 3, 7, 9]]
