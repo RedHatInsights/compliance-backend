@@ -11,6 +11,7 @@ module Api
       include Policy
       include Profile
       include Report
+      include ReportStats
       include Rule
       include RuleGroup
       include RuleResult
@@ -33,6 +34,7 @@ module Api
         policy_update: POLICY_UPDATE,
         profile: PROFILE,
         report: REPORT,
+        report_stats: REPORT_STATS,
         rule: RULE,
         rule_group: RULE_GROUP,
         rule_result: RULE_RESULT,

@@ -21,6 +21,14 @@ module V2
     permission_for_action :destroy, Rbac::POLICY_DELETE
     permitted_params_for_action :destroy, { id: ID_TYPE }
 
+    def stats
+      render json: {
+        top_failed_rules: report.top_failed_rules.map { |r| r.attributes.compact }
+      }, status: :ok
+    end
+    permitted_params_for_action :stats, id: ParamType.string
+    permission_for_action :stats, Rbac::REPORT_READ
+
     private
 
     def reports
