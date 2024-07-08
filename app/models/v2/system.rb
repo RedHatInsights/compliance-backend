@@ -89,6 +89,12 @@ module V2
       { conditions: "(inventory.hosts.id, reports.id) NOT IN (#{ids.to_sql})" }
     end
 
+    searchable_by :group_name, %i[eq in] do |_key, _op, val|
+      values = val.split(',').map(&:strip)
+      systems = ::V2::System.with_groups(values, :name)
+      { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
+    end
+
     scope :with_groups, lambda { |groups, key = :id|
       # Skip the [] representing ungrouped hosts from the array when generating the query
       grouped = arel_inventory_groups(groups.flatten, key, arel_table)

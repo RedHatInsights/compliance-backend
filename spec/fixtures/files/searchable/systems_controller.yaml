@@ -273,3 +273,44 @@
   :query: (never_reported = true)
   :only_parents:
     - :reports
+
+- :name: "equality search by group_name"
+  :entities:
+    :found:
+      - :factory: :system
+        :groups:
+          - name: searched name
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :system
+        :groups:
+          - name: searched name
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :system
+        :groups:
+          - name: not this name
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (group_name = "searched name")
+- :name: "in search by group_name"
+  :entities:
+    :found:
+      - :factory: :system
+        :groups:
+          - name: one
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :system
+        :groups:
+          - name: two
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :system
+        :groups:
+          - name: not this name
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (group_name ^ "one,two")
