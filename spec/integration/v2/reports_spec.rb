@@ -164,12 +164,15 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
   end
 
   path '/systems/{system_id}/reports' do
-    let(:system_id) { FactoryBot.create(:system, account: user.account, os_major_version: 8, os_minor_version: 0).id }
+    let(:system_id) do
+      FactoryBot.create(:system, account: user.account, os_major_version: 8, group_count: 2, os_minor_version: 0).id
+    end
 
     before do
       FactoryBot.create_list(
         :v2_report, 5,
         system_id: system_id,
+        assigned_system_count: 5,
         os_major_version: 8,
         supports_minors: [0],
         account: user.account
