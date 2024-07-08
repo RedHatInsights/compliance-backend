@@ -6,6 +6,10 @@
     :os_major_version: ${rhel_9}
     :system_id: ${system_id}
     :account: ${account}
+    :assigned_system_count: 7
+    :compliant_system_count: 1
+    :unsupported_system_count: 2
+    :supports_minors: [0, 1, 2]
 
   - :factory: :v2_report
     :title: 'bac'
@@ -14,6 +18,10 @@
     :os_major_version: ${rhel_8}
     :system_id: ${system_id}
     :account: ${account}
+    :assigned_system_count: 7
+    :compliant_system_count: 2
+    :unsupported_system_count: 2
+    :supports_minors: [0, 1, 2]
 
   - :factory: :v2_report
     :title: 'abc'
@@ -22,6 +30,10 @@
     :os_major_version: ${rhel_8}
     :system_id: ${system_id}
     :account: ${account}
+    :assigned_system_count: 7
+    :compliant_system_count: 3
+    :unsupported_system_count: 2
+    :supports_minors: [0, 1, 2]
 
   - :factory: :v2_report
     :title: 'bca'
@@ -30,6 +42,10 @@
     :os_major_version: ${rhel_7}
     :system_id: ${system_id}
     :account: ${account}
+    :assigned_system_count: 7
+    :compliant_system_count: 4
+    :unsupported_system_count: 2
+    :supports_minors: [0, 1, 2]
 
   - :factory: :v2_report
     :title: 'aab'
@@ -38,6 +54,10 @@
     :os_major_version: ${rhel_7}
     :system_id: ${system_id}
     :account: ${account}
+    :assigned_system_count: 7
+    :compliant_system_count: 5
+    :unsupported_system_count: 2
+    :supports_minors: [0, 1, 2]
 
 :queries:
   - :sort_by:
@@ -57,6 +77,7 @@
   - :sort_by:
       - 'os_major_version'
       - 'compliance_threshold'
-    :result: [4, 3, [1, 2], 0]
+      - 'percent_compliant'
+    :result: [4, 3, 1, 2, 0]
     :except_parents:
       - :systems
