@@ -88,5 +88,17 @@ module V2
 
       V2::HistoricalTestResult.where(tailoring_id: tailoring_ids).delete_all
     end
+
+    # rubocop:disable Metrics/AbcSize
+    def top_failed_rules
+      V2::RuleResult.joins(:test_result, :system, :rule)
+                    .merge_with_alias(Pundit.policy_scope(User.current, V2::System))
+                    .where(result: V2::RuleResult::FAILED)
+                    .group(V2::Rule.arel_table[:ref_id], V2::Rule.arel_table[:severity])
+                    .select(V2::Rule.arel_table[:ref_id], V2::Rule.arel_table[:severity],
+                            V2::RuleResult.arel_table[:result].count.as('count'))
+                    .order(count: :desc).limit(10)
+    end
+    # rubocop:enable Metrics/AbcSize
   end
 end

@@ -53,6 +53,7 @@ Rails.application.routes.draw do
             resources :test_results, only: [:index, :show], parents: [:report] do
               resources :rule_results, only: [:index], parents: [:report, :test_result]
             end
+            get 'stats', on: :member
           end
         end
       end

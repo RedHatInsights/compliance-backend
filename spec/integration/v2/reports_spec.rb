@@ -122,6 +122,46 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
     end
   end
 
+  path '/reports/{report_id}/stats' do
+    let(:item) do
+      FactoryBot.create(
+        :v2_report,
+        os_major_version: 9,
+        supports_minors: [0, 1, 2],
+        account: user.account
+      )
+    end
+
+    get 'Request detailed stats for a Report' do
+      v2_auth_header
+      description 'This feature is exclusively used by the frontend'
+      deprecated true
+      description 'Returns detailed stats for a Report'
+      operationId 'ReportStats'
+      content_types
+
+      parameter name: :report_id, in: :path, type: :string, required: true
+
+      response '200', 'Returns detailed stats for a Report' do
+        let(:report_id) { item.id }
+        v2_item_schema('report_stats')
+
+        after { |e| autogenerate_examples(e, 'Returns detailed stats for a Report') }
+
+        run_test!
+      end
+
+      response '404', 'Returns with Not Found' do
+        let(:report_id) { Faker::Internet.uuid }
+        schema ref_schema('errors')
+
+        after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing Report') }
+
+        run_test!
+      end
+    end
+  end
+
   path '/systems/{system_id}/reports' do
     let(:system_id) { FactoryBot.create(:system, account: user.account, os_major_version: 8, os_minor_version: 0).id }
 

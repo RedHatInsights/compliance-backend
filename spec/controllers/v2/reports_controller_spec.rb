@@ -238,6 +238,97 @@ describe V2::ReportsController do
       end
     end
 
+    describe 'GET stats' do
+      let(:report) do
+        FactoryBot.create(
+          :v2_report,
+          assigned_system_count: 0,
+          os_major_version: 8,
+          supports_minors: [0],
+          account: current_user.account
+        )
+      end
+
+      let(:system) do
+        FactoryBot.create(
+          :system,
+          with_test_result: true,
+          policy_id: report.id,
+          account: current_user.account,
+          os_major_version: 8,
+          os_minor_version: 0
+        )
+      end
+
+      let(:rules) do
+        system.test_results.first.tailoring.rules.sample(10)
+      end
+
+      before do
+        rules.each do |rule|
+          FactoryBot.create(
+            :v2_rule_result,
+            rule_id: rule.id,
+            test_result_id: system.test_results.first.id,
+            result: 'fail'
+          )
+        end
+      end
+
+      it 'returns with the top 10 failed rules' do
+        get :stats, params: { id: report.id }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body['top_failed_rules'].count).to eq(10)
+        response.parsed_body['top_failed_rules'].each do |rule|
+          expect(rule['count']).to eq(1)
+        end
+      end
+
+      context 'in inaccessible inventory groups' do
+        before do
+          stub_rbac_permissions(
+            Rbac::INVENTORY_HOSTS_READ => [{
+              attribute_filter: {
+                key: 'group.id',
+                operation: 'in',
+                value: [nil] # access to ungrouped hosts
+              }
+            }]
+          )
+
+          FactoryBot.create_list(
+            :system, 3,
+            account: current_user.account,
+            os_major_version: 8,
+            os_minor_version: 0,
+            group_count: 2,
+            policy_id: item.id,
+            with_test_result: true
+          ).each do |system|
+            rules.sample(10).map do |rule|
+              FactoryBot.create(
+                :v2_rule_result,
+                rule_id: rule.id,
+                test_result_id: system.test_results.first.id,
+                result: 'fail'
+              )
+            end
+          end
+        end
+      end
+
+      it 'returns with the top 10 failed rules' do
+        get :stats, params: { id: report.id }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body['top_failed_rules'].count).to eq(10)
+        response.parsed_body['top_failed_rules'].each do |rule|
+          expect(rule['count']).to eq(1)
+        end
+      end
+    end
+
     describe 'DELETE destroy' do
       before { stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ, Rbac::POLICY_DELETE) }
 

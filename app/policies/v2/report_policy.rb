@@ -11,6 +11,10 @@ module V2
       match_account?
     end
 
+    def stats?
+      match_account?
+    end
+
     def destroy?
       match_account?
     end
