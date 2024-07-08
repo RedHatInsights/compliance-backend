@@ -13,10 +13,10 @@ describe V2::ReportsController do
       business_objective: :business_objective,
       all_systems_exposed: -> { true },
       compliance_threshold: :compliance_threshold,
-      percent_compliant: :percent_compliant,
-      assigned_system_count: -> { 0 },
-      reported_system_count: -> { 0 },
-      compliant_system_count: -> { 0 },
+      percent_compliant: -> { 50 },
+      assigned_system_count: -> { 2 },
+      reported_system_count: -> { 2 },
+      compliant_system_count: -> { 1 },
       unsupported_system_count: -> { 0 }
     }
   end
@@ -44,7 +44,9 @@ describe V2::ReportsController do
       let(:items) do
         FactoryBot.create_list(
           :v2_report, item_count,
-          assigned_system_count: 0,
+          assigned_system_count: 2,
+          compliant_system_count: 1,
+          unsupported_system_count: 0,
           os_major_version: 8,
           supports_minors: [0, 1],
           account: current_user.account
@@ -68,7 +70,7 @@ describe V2::ReportsController do
             business_objective: :business_objective,
             all_systems_exposed: -> { true },
             compliance_threshold: :compliance_threshold,
-            percent_compliant: :percent_compliant,
+            percent_compliant: -> { 25 },
             assigned_system_count: -> { 4 },
             reported_system_count: -> { 4 },
             compliant_system_count: -> { 1 },
@@ -98,7 +100,7 @@ describe V2::ReportsController do
               business_objective: :business_objective,
               all_systems_exposed: -> { false },
               compliance_threshold: :compliance_threshold,
-              percent_compliant: :percent_compliant,
+              percent_compliant: -> { 25 },
               assigned_system_count: -> { 4 },
               reported_system_count: -> { 4 },
               compliant_system_count: -> { 1 },
@@ -142,13 +144,33 @@ describe V2::ReportsController do
     end
 
     describe 'GET show' do
+      let(:attributes) do
+        {
+          title: :title,
+          os_major_version: :os_major_version,
+          ref_id: :ref_id,
+          description: :description,
+          profile_title: :profile_title,
+          business_objective: :business_objective,
+          all_systems_exposed: -> { true },
+          compliance_threshold: :compliance_threshold,
+          percent_compliant: -> { 50 },
+          assigned_system_count: -> { 2 },
+          reported_system_count: -> { 2 },
+          compliant_system_count: -> { 1 },
+          unsupported_system_count: -> { 0 }
+        }
+      end
+
       let(:extra_params) { { account: current_user.account, id: item.id } }
 
       let(:item) do
         FactoryBot.create(
           :v2_report,
           os_major_version: 9,
-          assigned_system_count: 0,
+          assigned_system_count: 2,
+          compliant_system_count: 1,
+          unsupported_system_count: 0,
           supports_minors: [0, 1, 2],
           account: current_user.account
         )
@@ -167,7 +189,7 @@ describe V2::ReportsController do
             business_objective: :business_objective,
             all_systems_exposed: -> { true },
             compliance_threshold: :compliance_threshold,
-            percent_compliant: :percent_compliant,
+            percent_compliant: -> { 25 },
             assigned_system_count: -> { 4 },
             reported_system_count: -> { 4 },
             compliant_system_count: -> { 1 },
@@ -200,7 +222,7 @@ describe V2::ReportsController do
               business_objective: :business_objective,
               all_systems_exposed: -> { false },
               compliance_threshold: :compliance_threshold,
-              percent_compliant: :percent_compliant,
+              percent_compliant: -> { 25 },
               assigned_system_count: -> { 4 },
               reported_system_count: -> { 4 },
               compliant_system_count: -> { 1 },
@@ -237,6 +259,62 @@ describe V2::ReportsController do
               )
             end
           end
+
+          it_behaves_like 'individual'
+        end
+
+        context 'with mixed inventory groups access' do
+          let(:attributes) do
+            {
+              title: :title,
+              os_major_version: :os_major_version,
+              ref_id: :ref_id,
+              description: :description,
+              profile_title: :profile_title,
+              business_objective: :business_objective,
+              all_systems_exposed: -> { false },
+              compliance_threshold: :compliance_threshold,
+              percent_compliant: -> { 33 },
+              assigned_system_count: -> { 3 },
+              reported_system_count: -> { 3 },
+              compliant_system_count: -> { 1 },
+              unsupported_system_count: -> { 1 }
+            }
+          end
+
+          let!(:item) do
+            FactoryBot.create(
+              :v2_report,
+              os_major_version: 9,
+              assigned_system_count: 5,
+              compliant_system_count: 1,
+              unsupported_system_count: 1,
+              supports_minors: [0, 1, 2],
+              account: current_user.account
+            )
+          end
+
+          before do
+            stub_rbac_permissions(
+              Rbac::INVENTORY_HOSTS_READ => [{
+                attribute_filter: {
+                  key: 'group.id',
+                  operation: 'in',
+                  value: [nil] # access to ungrouped hosts
+                }
+              }]
+            )
+
+            # change groups for some of the non-compliant systems
+            non_compliant_systems = item.test_results.select do |tr|
+              tr.score.try(:<, tr.report.compliance_threshold)
+            end.take(2)
+            non_compliant_systems.each do |tr|
+              tr.system.update!(groups: [Faker::Internet])
+            end
+          end
+
+          let(:extra_params) { { account: current_user.account, id: item.id } }
 
           it_behaves_like 'individual'
         end
@@ -375,7 +453,7 @@ describe V2::ReportsController do
           business_objective: :business_objective,
           compliance_threshold: :compliance_threshold,
           all_systems_exposed: -> { false }, # this is inconcistent but we don't care
-          percent_compliant: :percent_compliant,
+          percent_compliant: -> { 0 },
           reported_system_count: -> { 0 },
           compliant_system_count: -> { 0 },
           unsupported_system_count: -> { 0 }

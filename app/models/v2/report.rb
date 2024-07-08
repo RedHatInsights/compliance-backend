@@ -7,10 +7,6 @@ module V2
     self.table_name = :v2_policies
     self.primary_key = :id
 
-    def percent_compliant
-      0
-    end
-
     SYSTEM_COUNT = lambda do
       AN::NamedFunction.new('COUNT', [V2::System.arel_table[:id]]).filter(
         Pundit.policy_scope(User.current, V2::System).where_clause.ast
@@ -33,6 +29,44 @@ module V2
       )
     end
 
+    # rubocop:disable Metrics/BlockLength
+    PERCENT_COMPLIANT = lambda do
+      AN::NamedFunction.new(
+        'CAST',
+        [
+          AN::NamedFunction.new(
+            'FLOOR',
+            [
+              AN::Multiplication.new(
+                AN::NamedFunction.new(
+                  'COALESCE',
+                  [
+                    AN::Division.new(
+                      AN::NamedFunction.new(
+                        'CAST',
+                        [
+                          COMPLIANT_SYSTEM_COUNT.call.as('FLOAT')
+                        ]
+                      ),
+                      AN::NamedFunction.new(
+                        'NULLIF',
+                        [
+                          AN::NamedFunction.new('CAST', [SYSTEM_COUNT.call.as('FLOAT')]),
+                          Arel.sql('0')
+                        ]
+                      )
+                    ), Arel.sql('0')
+                  ]
+                ),
+                Arel.sql('100')
+              )
+            ]
+          ).as('INTEGER')
+        ]
+      )
+    end
+    # rubocop:enable Metrics/BlockLength
+
     # To prevent an autojoin with itself, there should not be an inverse relationship specified
     belongs_to :policy, class_name: 'V2::Policy', foreign_key: :id # rubocop:disable Rails/InverseOf
     belongs_to :account
@@ -44,12 +78,27 @@ module V2
     has_many :report_systems, class_name: 'V2::ReportSystem', dependent: nil # rubocop:disable Rails/InverseOf
     has_many :systems, class_name: 'V2::System', through: :report_systems
     has_many :reported_systems, class_name: 'V2::System', through: :test_results, source: :system, dependent: nil
+    has_many :reporting_and_non_reporting_systems, lambda {
+      # joining TestResult and System to correctly count the system with content to report
+      system_test_results = arel_table.join(V2::System.arel_table, AN::InnerJoin)
+                                      .on(V2::System.arel_table[:id].eq(V2::ReportSystem.arel_table[:system_id]))
+                                      .join(V2::TestResult.arel_table, AN::OuterJoin)
+                                      .on(V2::TestResult.arel_table[:system_id].eq(V2::System.arel_table[:id]))
+                                      .join_sources
+
+      # aggregation to prevent optimizer (possibly buggy) filtering out join
+      agg = V2::TestResult.arel_table[:id]
+                          .not_eq(nil)
+                          .or(V2::TestResult.arel_table[:id].eq(nil))
+
+      joins(system_test_results).where(agg)
+    }, class_name: 'V2::ReportSystem', dependent: nil, inverse_of: false
 
     sortable_by :title
     sortable_by :os_major_version
     sortable_by :business_objective
     sortable_by :compliance_threshold
-    sortable_by :compliance_percentage, Arel.sql('0')
+    sortable_by :percent_compliant, 'aggregate_percent_compliant'
 
     searchable_by :title, %i[like unlike eq ne in notin]
     searchable_by :os_major_version, %i[eq ne in notin] do |_key, op, val|
