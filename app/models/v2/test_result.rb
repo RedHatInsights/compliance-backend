@@ -64,9 +64,15 @@ module V2
       }
     end
 
-    scope :with_groups, lambda { |groups, table = arel_table|
+    searchable_by :group_name, %i[eq in] do |_key, _op, val|
+      values = val.split(',').map(&:strip)
+      systems = ::V2::TestResult.with_groups(values, V2::System.arel_table.alias(:system), :name)
+      { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
+    end
+
+    scope :with_groups, lambda { |groups, table = arel_table, key = :id|
       # Skip the [] representing ungrouped hosts from the array when generating the query
-      grouped = V2::System.arel_inventory_groups(groups.flatten, :id, table)
+      grouped = V2::System.arel_inventory_groups(groups.flatten, key, table)
       ungrouped = table[:groups].eq(AN::Quoted.new('[]'))
       # The OR is inside of Arel in order to prevent pollution of already applied scopes
       where(groups.include?([]) ? grouped.or(ungrouped) : grouped)

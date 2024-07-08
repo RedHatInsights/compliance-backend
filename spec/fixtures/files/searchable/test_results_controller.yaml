@@ -253,3 +253,44 @@
         :system_id: ${system_2.id}
         :policy_id: ${policy.id}
   :query: (system_id = ${system_1.id})
+
+- :name: "equality search by group_name"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :groups:
+          - name: searched name
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :v2_test_result
+        :groups:
+          - name: searched name
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :groups:
+          - name: not this name
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (group_name = "searched name")
+- :name: "in search by group_name"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :groups:
+          - name: one
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :v2_test_result
+        :groups:
+          - name: two
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :groups:
+          - name: not this name
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (group_name ^ "one,two")
