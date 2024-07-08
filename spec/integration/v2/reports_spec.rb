@@ -106,16 +106,16 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
     delete 'Delete a Report results' do
       v2_auth_header
       tags 'Reports'
-      description 'Deletes a Report results'
+      description "Deletes Report's test results"
       operationId 'DeleteReport'
       content_types
 
       parameter name: :report_id, in: :path, type: :string, required: true
 
-      response '202', 'Deletes a Report results' do
+      response '202', "Deletes Report's test results" do
         let(:report_id) { item.id }
 
-        after { |e| autogenerate_examples(e, 'Deletes a Report results') }
+        after { |e| autogenerate_examples(e, "Deletes Report's test results") }
 
         run_test!
       end
