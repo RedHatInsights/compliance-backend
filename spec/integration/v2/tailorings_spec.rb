@@ -140,7 +140,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       v2_auth_header
       tags 'Policies'
       description 'Updates a Tailoring with the provided value_overrides'
-      operationId 'updateTailoring'
+      operationId 'UpdateTailoring'
       content_types
 
       parameter name: :policy_id, in: :path, type: :string, required: true

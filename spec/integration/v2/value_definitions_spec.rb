@@ -16,7 +16,7 @@ describe 'Value Definitions', swagger_doc: 'v2/openapi.json' do
       v2_auth_header
       tags 'Content'
       description 'Lists Value Definitions'
-      operationId 'Value Definitions'
+      operationId 'ValueDefinitions'
       content_types
       pagination_params_v2
       sort_params_v2(V2::ValueDefinition)
@@ -79,7 +79,7 @@ describe 'Value Definitions', swagger_doc: 'v2/openapi.json' do
       v2_auth_header
       tags 'Content'
       description 'Returns a Value Definition'
-      operationId 'Value Definition'
+      operationId 'ValueDefinition'
       content_types
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true

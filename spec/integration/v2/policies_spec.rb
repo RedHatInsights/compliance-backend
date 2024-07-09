@@ -70,7 +70,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       v2_auth_header
       tags 'Policies'
       description 'Create a Policy with the provided attributes'
-      operationId 'createPolicy'
+      operationId 'CreatePolicy'
       content_types
 
       parameter name: :data, in: :body, schema: ref_schema('policy')
@@ -130,7 +130,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       v2_auth_header
       tags 'Policies'
       description 'Updates a Policy with the provided attributes'
-      operationId 'updatePolicy'
+      operationId 'UpdatePolicy'
       content_types
 
       parameter name: :policy_id, in: :path, type: :string, required: true
@@ -152,7 +152,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       v2_auth_header
       tags 'Policies'
       description 'Deletes a Policy'
-      operationId 'deletePolicy'
+      operationId 'DeletePolicy'
       content_types
 
       parameter name: :policy_id, in: :path, type: :string, required: true
