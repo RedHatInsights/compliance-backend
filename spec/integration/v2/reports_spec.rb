@@ -134,6 +134,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
 
     get 'Request detailed stats for a Report' do
       v2_auth_header
+      tags 'Reports'
       description 'This feature is exclusively used by the frontend'
       deprecated true
       description 'Returns detailed stats for a Report'
@@ -179,7 +180,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
       v2_auth_header
       tags 'Reports'
       description 'Lists Reports'
-      operationId 'Reports'
+      operationId 'SystemReports'
       content_types
       pagination_params_v2
       sort_params_v2(V2::Report)

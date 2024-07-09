@@ -26,7 +26,7 @@ module Api
               },
               count: {
                 type: 'integer',
-                example: 102,
+                examples: [102],
                 readOnly: true,
                 description: 'Number of failures'
               }
