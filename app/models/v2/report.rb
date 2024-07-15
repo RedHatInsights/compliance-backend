@@ -7,6 +7,10 @@ module V2
     self.table_name = :v2_policies
     self.primary_key = :id
 
+    def percent_compliant
+      0
+    end
+
     SYSTEM_COUNT = lambda do
       AN::NamedFunction.new('COUNT', [V2::System.arel_table[:id]]).filter(
         Pundit.policy_scope(User.current, V2::System).where_clause.ast
@@ -45,6 +49,7 @@ module V2
     sortable_by :os_major_version
     sortable_by :business_objective
     sortable_by :compliance_threshold
+    sortable_by :compliance_percentage, Arel.sql('0')
 
     searchable_by :title, %i[like unlike eq ne in notin]
     searchable_by :os_major_version, %i[eq ne in notin] do |_key, op, val|

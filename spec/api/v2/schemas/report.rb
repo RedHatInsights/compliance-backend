@@ -57,6 +57,14 @@ module Api
               description: 'Title of the associated Profile',
               readOnly: true
             },
+            percent_compliant: {
+              type: :number,
+              minimum: 0,
+              maximum: 100,
+              examples: [68],
+              description: 'Describes percentage of compliant systems',
+              readOnly: true
+            },
             assigned_system_count: {
               type: :number,
               minium: 1,
