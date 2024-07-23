@@ -331,8 +331,8 @@ GEM
     request_store (1.7.0)
       rack (>= 1.4)
     require-hooks (0.2.2)
-    rexml (3.2.8)
-      strscan (>= 3.0.9)
+    rexml (3.3.2)
+      strscan
     rspec-core (3.13.0)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.0)
@@ -554,4 +554,4 @@ DEPENDENCIES
   yabeda-sidekiq
 
 BUNDLED WITH
-   2.5.16
+   2.5.11
