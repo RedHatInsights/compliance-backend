@@ -314,3 +314,44 @@
         :account: ${account}
         :policy_id: ${policy.id}
   :query: (group_name ^ "one,two")
+
+- :name: "equality search by policies"
+  :entities:
+    :found:
+      - :factory: :system
+        :account: ${account}
+        :policy_id: ${policy_7.id}
+        :os_minor_version: 1
+      - :factory: :system
+        :account: ${account}
+        :policy_id: ${policy_7.id}
+        :os_minor_version: 1
+    :not_found:
+      - :factory: :system
+        :account: ${account}
+        :policy_id: ${policy_8.id}
+        :os_minor_version: 1
+  :query: (policies = ${policy_7.id})
+  :except_parents:
+    - :policies
+    - :reports
+- :name: "in search by policies"
+  :entities:
+    :found:
+      - :factory: :system
+        :account: ${account}
+        :policy_id: ${policy_7.id}
+        :os_minor_version: 1
+      - :factory: :system
+        :account: ${account}
+        :policy_id: ${policy_8.id}
+        :os_minor_version: 1
+    :not_found:
+      - :factory: :system
+        :account: ${account}
+        :policy_id: ${policy_9.id}
+        :os_minor_version: 1
+  :query: (policies ^ "${policy_7.id} ${policy_8.id}")
+  :except_parents:
+    - :policies
+    - :reports

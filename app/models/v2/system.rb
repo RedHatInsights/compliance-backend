@@ -95,6 +95,13 @@ module V2
       { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
     end
 
+    searchable_by :policies, %i[eq in] do |_key, _op, val|
+      values = val.split.map(&:strip)
+      ids = ::V2::PolicySystem.where(policy_id: values).select(:system_id)
+
+      { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
+    end
+
     scope :with_groups, lambda { |groups, key = :id|
       # Skip the [] representing ungrouped hosts from the array when generating the query
       grouped = arel_inventory_groups(groups.flatten, key, arel_table)
