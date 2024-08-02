@@ -30,6 +30,12 @@ module Api
               readOnly: true,
               description: 'Identificator of the Security Guide that contains the parent Profile'
             },
+            security_guide_version: {
+              type: :string,
+              examples: ['0.1.210'],
+              readOnly: true,
+              description: 'Version of the Security Guide that contains the parent Profile'
+            },
             os_major_version: {
               type: :number,
               examples: [7],

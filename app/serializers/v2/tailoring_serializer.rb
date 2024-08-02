@@ -7,5 +7,6 @@ module V2
 
     derived_attribute :os_major_version, security_guide: [:os_major_version]
     derived_attribute :security_guide_id, profile: [:security_guide_id]
+    derived_attribute :security_guide_version, security_guide: [:version]
   end
 end

@@ -7,6 +7,7 @@ describe V2::TailoringsController do
     {
       profile_id: :profile_id,
       security_guide_id: :security_guide_id,
+      security_guide_version: :security_guide_version,
       value_overrides: :value_overrides,
       os_minor_version: :os_minor_version,
       os_major_version: :os_major_version
