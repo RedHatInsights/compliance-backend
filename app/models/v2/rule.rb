@@ -43,9 +43,11 @@ module V2
     sortable_by :title
     sortable_by :severity, sorted_severities
     sortable_by :precedence
+    sortable_by :remediation_available
 
     searchable_by :title, %i[like unlike eq ne in notin]
     searchable_by :severity, %i[eq ne in notin]
+    searchable_by :remediation_available, %i[eq]
 
     # This field should be only available for rules that have a remediation available and it
     # is bound to a context of a profile and a security guide. A single rule can belong to one

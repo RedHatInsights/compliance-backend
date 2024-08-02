@@ -159,3 +159,28 @@
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
   :query: (severity !^ "searched severity")
+- :name: "equality search by remediation_available"
+  :entities:
+    :found:
+      - :factory: :v2_rule
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+        :remediation_available: true
+      - :factory: :v2_rule
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+        :remediation_available: true
+    :not_found:
+      - :factory: :v2_rule
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+        :remediation_available: false
+      - :factory: :v2_rule
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+        :remediation_available: false
+  :query: remediation_available = true
