@@ -59,6 +59,12 @@ module Api
               readOnly: true,
               description: 'The severity of the Rule'
             },
+            remediation_available: {
+              type: :boolean,
+              examples: [true, false],
+              readOnly: true,
+              description: 'Whether or not a remediation is available for the given rule.'
+            },
             remediation_issue_id: {
               type: %w[string null],
               examples: ['ssg:rhel6|rht-ccp|xccdf_org.ssgproject.content_rule_sshd_disable_rhosts'],

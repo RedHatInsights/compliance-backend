@@ -4,7 +4,8 @@ module V2
   # JSON serialization for an OpenSCAP Rule
   class RuleSerializer < V2::ApplicationSerializer
     attributes :ref_id, :title, :rationale, :description, :severity,
-               :precedence, :identifier, :references, :value_checks
+               :precedence, :identifier, :references, :value_checks,
+               :remediation_available
 
     derived_attribute :remediation_issue_id, :remediation_available, profiles: [:ref_id], security_guide: [:ref_id]
   end
