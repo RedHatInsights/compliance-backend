@@ -63,6 +63,10 @@ module V2
       attributes['profile__security_guide_id'] || try(:profile)&.security_guide_id
     end
 
+    def security_guide_version
+      attributes['profile__security_guide_version'] || try(:security_guide)&.version
+    end
+
     def rule_group_ref_ids
       base = V2::RuleGroup.where(id: rules_added.reselect(:rule_group_id))
       base.or(V2::RuleGroup.where(id: base.select(GROUP_ANCESTRY_IDS)))
