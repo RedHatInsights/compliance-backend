@@ -49,7 +49,7 @@ jobs:
     - name: Build using podman-compose
       run: podman-compose build
     - name: Build using docker-compose
-      run: docker-compose build
+      run: docker compose build
   unit-tests:
     runs-on: ubuntu-latest
     services:
