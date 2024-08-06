@@ -24,36 +24,36 @@ Rails.application.routes.draw do
 
       if !Rails.env.production? || ENV.fetch('ENABLE_API_V2', false).present?
         scope 'v2', module: 'v2', as: 'v2' do
-          resources :security_guides, only: [:index, :show] do
+          resources :security_guides, only: %i[index show] do
             get :supported_profiles, action: :index, controller: :supported_profiles, on: :collection
             get :rule_tree, on: :member
 
-            resources :value_definitions, only: [:index, :show], parents: [:security_guide]
-            resources :rules, only: [:index, :show], parents: [:security_guide]
-            resources :rule_groups, only: [:index, :show], parents: [:security_guide]
-            resources :profiles, only: [:index, :show], parents: [:security_guide] do
-              resources :rules, only: [:index, :show], parents: [:security_guide, :profiles]
+            resources :value_definitions, only: %i[index show], parents: %i[security_guide]
+            resources :rules, only: %i[index show], parents: %i[security_guide]
+            resources :rule_groups, only: %i[index show], parents: %i[security_guide]
+            resources :profiles, only: %i[index show], parents: %i[security_guide] do
+              resources :rules, only: %i[index show], parents: %i[security_guide profiles]
             end
           end
 
-          resources :policies, except: [:new, :edit] do
-            resources :tailorings, only: [:index, :show, :update], parents: [:policy] do
-              resources :rules, only: [:index, :create, :update, :destroy], parents: [:policies, :tailorings]
-              get :tailoring_file, on: :member, :defaults => { :format => 'xml' }, :constraints => { :format => /json|xml/ }
+          resources :policies, except: %i[new edit] do
+            resources :tailorings, only: %i[index show update], parents: %i[policy] do
+              resources :rules, only: %i[index create update destroy], parents: %i[policies tailorings]
+              get :tailoring_file, on: :member, defaults: { format: 'xml' }, constraints: { format: /json|xml/ }
             end
-            resources :systems, only: [:index, :create, :update, :destroy], parents: [:policies]
+            resources :systems, only: %i[index create update destroy], parents: %i[policies]
           end
 
-          resources :systems, only: [:index, :show] do
-            resources :policies, only: [:index], parents: [:systems]
-            resources :reports, only: [:index], parents: [:systems]
+          resources :systems, only: %i[index show] do
+            resources :policies, only: %i[index], parents: %i[systems]
+            resources :reports, only: %i[index], parents: %i[systems]
           end
-          resources :reports, only: [:index, :show, :destroy] do
-            resources :systems, only: [:index, :show], parents: [:reports]
-            resources :test_results, only: [:index, :show], parents: [:report] do
-              resources :rule_results, only: [:index], parents: [:report, :test_result]
+          resources :reports, only: %i[index show destroy] do
+            resources :systems, only: %i[index show], parents: %i[reports]
+            resources :test_results, only: %i[index show], parents: %i[report] do
+              resources :rule_results, only: %i[index], parents: %i[report test_result]
             end
-            get 'stats', on: :member
+            get :stats, on: :member
           end
         end
       end
