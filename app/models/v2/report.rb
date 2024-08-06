@@ -102,7 +102,7 @@ module V2
                     .group(V2::Rule.arel_table[:ref_id], V2::Rule.arel_table[:severity])
                     .select(V2::Rule.arel_table[:ref_id], V2::Rule.arel_table[:severity],
                             V2::RuleResult.arel_table[:result].count.as('count'))
-                    .order(count: :desc).limit(10)
+                    .order(V2::Rule.sorted_severities => :desc, count: :desc).limit(10)
     end
     # rubocop:enable Metrics/AbcSize
   end
