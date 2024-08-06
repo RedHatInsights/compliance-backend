@@ -19,6 +19,11 @@ module V2
     permission_for_action :rule_tree, Rbac::COMPLIANCE_VIEWER
     permitted_params_for_action :rule_tree, id: ID_TYPE.required
 
+    def os_versions
+      render json: security_guides.os_versions, status: :ok
+    end
+    permission_for_action :os_versions, Rbac::COMPLIANCE_VIEWER
+
     private
 
     def security_guides

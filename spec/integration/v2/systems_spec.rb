@@ -67,6 +67,27 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
     end
   end
 
+  path '/systems/os_versions' do
+    before { FactoryBot.create_list(:system, 25, account: user.account) }
+
+    get 'Request the list of available OS versions' do
+      v2_auth_header
+      tags 'Systems'
+      description 'This feature is exclusively used by the frontend'
+      operationId 'SystemsOS'
+      content_types
+      deprecated true
+
+      response '200', 'Lists available OS versions' do
+        schema(type: :array, items: { type: 'string' })
+
+        after { |e| autogenerate_examples(e, 'List of available OS versions') }
+
+        run_test!
+      end
+    end
+  end
+
   path '/systems/{system_id}' do
     let(:item) { FactoryBot.create(:system, account: user.account) }
 
@@ -206,6 +227,47 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
         v2_collection_schema 'system'
 
         after { |e| autogenerate_examples(e, 'List of assigned Systems') }
+
+        run_test!
+      end
+    end
+  end
+
+  path '/policies/{policy_id}/systems/os_versions' do
+    before do
+      FactoryBot.create_list(
+        :system,
+        25,
+        policy_id: policy_id,
+        os_major_version: 8,
+        os_minor_version: 0,
+        account: user.account
+      )
+    end
+
+    let(:policy_id) do
+      FactoryBot.create(
+        :v2_policy,
+        account: user.account,
+        os_major_version: 8,
+        supports_minors: [0]
+      ).id
+    end
+
+    get 'Request the list of available OS versions' do
+      v2_auth_header
+      tags 'Systems'
+      description 'This feature is exclusively used by the frontend'
+      operationId 'PolicySystemsOS'
+      content_types
+      deprecated true
+
+      parameter name: :policy_id, in: :path, type: :string, required: true
+
+      response '200', 'Lists available OS versions' do
+        schema(type: :array, items: { type: 'string' })
+
+        after { |e| autogenerate_examples(e, 'List of available OS versions') }
 
         run_test!
       end
@@ -369,6 +431,48 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
         schema ref_schema('errors')
 
         after { |e| autogenerate_examples(e, 'Description of an error when requesting higher limit than supported') }
+
+        run_test!
+      end
+    end
+  end
+
+  path '/reports/{report_id}/systems/os_versions' do
+    before do
+      FactoryBot.create_list(
+        :system,
+        25,
+        policy_id: report_id,
+        os_major_version: 8,
+        os_minor_version: 0,
+        account: user.account
+      )
+    end
+
+    let(:report_id) do
+      FactoryBot.create(
+        :v2_report,
+        account: user.account,
+        os_major_version: 8,
+        supports_minors: [0],
+        assigned_system_count: 0
+      ).id
+    end
+
+    get 'Request the list of available OS versions' do
+      v2_auth_header
+      tags 'Systems'
+      description 'This feature is exclusively used by the frontend'
+      operationId 'ReportSystemsOS'
+      content_types
+      deprecated true
+
+      parameter name: :report_id, in: :path, type: :string, required: true
+
+      response '200', 'Lists available OS versions' do
+        schema(type: :array, items: { type: 'string' })
+
+        after { |e| autogenerate_examples(e, 'List of available OS versions') }
 
         run_test!
       end

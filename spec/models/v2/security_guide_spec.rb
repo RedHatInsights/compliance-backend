@@ -5,7 +5,7 @@ require 'rails_helper'
 describe V2::SecurityGuide do
   subject { FactoryBot.create(:v2_security_guide, os_major_version: os_version) }
 
-  describe 'os_major_version' do
+  describe '#os_major_version' do
     context 'single digit os_major_version' do
       let(:os_version) { 7 }
 
@@ -23,7 +23,7 @@ describe V2::SecurityGuide do
     end
   end
 
-  describe 'rule_tree' do
+  describe '#rule_tree' do
     let(:os_version) { 8 }
 
     let(:g1) { FactoryBot.create(:v2_rule_group, security_guide: subject, precedence: 1) }
@@ -97,6 +97,22 @@ describe V2::SecurityGuide do
       ]
 
       expect(subject.rule_tree).to eq(result)
+    end
+  end
+
+  describe '.os_versions' do
+    let(:versions) { [7, 8, 9] }
+
+    before do
+      versions.each do |version|
+        FactoryBot.create_list(:v2_security_guide, (1..10).to_a.sample, os_major_version: version)
+      end
+    end
+
+    subject { described_class.all }
+
+    it 'returns a unique and sorted set of all versions' do
+      expect(subject.os_versions).to eq(versions)
     end
   end
 end
