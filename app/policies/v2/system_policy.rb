@@ -23,6 +23,10 @@ module V2
       match_account? && match_group?
     end
 
+    def os_versions?
+      true
+    end
+
     private
 
     def match_account?

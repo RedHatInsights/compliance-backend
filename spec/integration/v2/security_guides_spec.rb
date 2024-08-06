@@ -66,6 +66,27 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
     end
   end
 
+  path '/security_guides/os_versions' do
+    before { FactoryBot.create_list(:v2_security_guide, 25) }
+
+    get 'Request the list of available OS versions' do
+      v2_auth_header
+      tags 'Content'
+      description 'This feature is exclusively used by the frontend'
+      operationId 'SecurityGuidesOS'
+      content_types
+      deprecated true
+
+      response '200', 'Lists available OS versions' do
+        schema(type: :array, items: { type: 'integer' })
+
+        after { |e| autogenerate_examples(e, 'List of available OS versions') }
+
+        run_test!
+      end
+    end
+  end
+
   path '/security_guides/{security_guide_id}' do
     let(:item) { FactoryBot.create(:v2_security_guide) }
 

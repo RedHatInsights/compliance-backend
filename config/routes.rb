@@ -27,10 +27,12 @@ Rails.application.routes.draw do
           resources :security_guides, only: %i[index show] do
             get :supported_profiles, action: :index, controller: :supported_profiles, on: :collection
             get :rule_tree, on: :member
+            get :os_versions, on: :collection
 
             resources :value_definitions, only: %i[index show], parents: %i[security_guide]
             resources :rules, only: %i[index show], parents: %i[security_guide]
             resources :rule_groups, only: %i[index show], parents: %i[security_guide]
+
             resources :profiles, only: %i[index show], parents: %i[security_guide] do
               resources :rules, only: %i[index show], parents: %i[security_guide profiles]
             end
@@ -41,18 +43,28 @@ Rails.application.routes.draw do
               resources :rules, only: %i[index create update destroy], parents: %i[policies tailorings]
               get :tailoring_file, on: :member, defaults: { format: 'xml' }, constraints: { format: /json|xml/ }
             end
-            resources :systems, only: %i[index create update destroy], parents: %i[policies]
+
+            resources :systems, only: %i[index create update destroy], parents: %i[policies] do
+              get :os_versions, on: :collection
+            end
           end
 
           resources :systems, only: %i[index show] do
             resources :policies, only: %i[index], parents: %i[systems]
             resources :reports, only: %i[index], parents: %i[systems]
+
+            get :os_versions, on: :collection
           end
+
           resources :reports, only: %i[index show destroy] do
-            resources :systems, only: %i[index show], parents: %i[reports]
+            resources :systems, only: %i[index show], parents: %i[reports] do
+              get :os_versions, on: :collection
+            end
+
             resources :test_results, only: %i[index show], parents: %i[report] do
               resources :rule_results, only: %i[index], parents: %i[report test_result]
             end
+
             get :stats, on: :member
           end
         end

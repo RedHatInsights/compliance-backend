@@ -20,6 +20,10 @@ module V2
     sortable_by :version, version_to_array(arel_table[:version])
     sortable_by :os_major_version
 
+    def self.os_versions
+      reselect(:os_major_version).distinct.reorder(:os_major_version).map(&:os_major_version)
+    end
+
     # Builds the hierarchical structure of groups and rules
     def rule_tree
       cached_rules = rules.order(:precedence).select(:id, :rule_group_id).group_by(&:rule_group_id)
