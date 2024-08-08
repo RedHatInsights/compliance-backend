@@ -23,6 +23,7 @@ module V2
       render json: security_guides.os_versions, status: :ok
     end
     permission_for_action :os_versions, Rbac::COMPLIANCE_VIEWER
+    permitted_params_for_action :os_versions, { filter: ParamType.string }
 
     private
 

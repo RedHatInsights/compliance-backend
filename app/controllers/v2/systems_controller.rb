@@ -54,6 +54,7 @@ module V2
       render json: systems.os_versions, status: :ok
     end
     permission_for_action :os_versions, Rbac::SYSTEM_READ
+    permitted_params_for_action :os_versions, { filter: ParamType.string }
 
     private
 

@@ -76,6 +76,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
       operationId 'SecurityGuidesOS'
       content_types
       deprecated true
+      search_params_v2(V2::System)
 
       response '200', 'Lists available OS versions' do
         schema(type: :array, items: { type: 'integer' })
