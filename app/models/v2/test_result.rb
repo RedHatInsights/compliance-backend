@@ -110,5 +110,14 @@ module V2
     def security_guide_version
       attributes['security_guide__version'] || try(:security_guide)&.version
     end
+
+    def self.os_versions
+      aliased_table = V2::System.arel_table.alias('system')
+      major = V2::System.os_major_version(aliased_table)
+      minor = V2::System.os_minor_version(aliased_table)
+      concat = AN::NamedFunction.new('CONCAT', [major.left, AN::Quoted.new('.'), minor.left]).as('os_version')
+
+      distinct.reorder(major.left, minor.left).reselect(concat, major, minor).map(&:os_version)
+    end
   end
 end

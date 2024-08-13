@@ -89,6 +89,50 @@ describe 'Test Results', swagger_doc: 'v2/openapi.json' do
     end
   end
 
+  path '/reports/{report_id}/test_results/os_versions' do
+    before do
+      FactoryBot.create_list(
+        :system,
+        25,
+        policy_id: report_id,
+        os_major_version: 8,
+        os_minor_version: 0,
+        account: user.account,
+        with_test_result: true
+      )
+    end
+
+    let(:report_id) do
+      FactoryBot.create(
+        :v2_report,
+        account: user.account,
+        os_major_version: 8,
+        supports_minors: [0],
+        assigned_system_count: 0
+      ).id
+    end
+
+    get 'Request the list of available OS versions' do
+      v2_auth_header
+      tags 'Reports'
+      description 'This feature is exclusively used by the frontend'
+      operationId 'ReportTestResultsOS'
+      content_types
+      deprecated true
+      search_params_v2(V2::TestResult)
+
+      parameter name: :report_id, in: :path, type: :string, required: true
+
+      response '200', 'Lists available OS versions' do
+        schema(type: :array, items: { type: 'string' })
+
+        after { |e| autogenerate_examples(e, 'List of available OS versions') }
+
+        run_test!
+      end
+    end
+  end
+
   path '/reports/{report_id}/test_results/{test_result_id}' do
     let(:report_id) do
       FactoryBot.create(

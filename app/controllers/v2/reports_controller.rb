@@ -29,6 +29,14 @@ module V2
     permitted_params_for_action :stats, id: ParamType.string
     permission_for_action :stats, Rbac::REPORT_READ
 
+    # :nocov:
+    def os_versions
+      render json: reports.os_versions, status: :ok
+    end
+    # :nocov:
+    permission_for_action :os_versions, Rbac::SYSTEM_READ
+    permitted_params_for_action :os_versions, { filter: ParamType.string }
+
     private
 
     def reports
