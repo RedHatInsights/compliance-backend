@@ -154,5 +154,11 @@ module V2
                     .order(V2::Rule.sorted_severities => :desc, count: :desc).limit(10)
     end
     # rubocop:enable Metrics/AbcSize
+
+    def self.os_versions
+      reselect(security_guide: [:os_major_version]).distinct.reorder(:os_major_version).map do |row|
+        row['os_major_version']
+      end
+    end
   end
 end

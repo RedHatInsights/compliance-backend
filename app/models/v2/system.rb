@@ -17,14 +17,29 @@ module V2
     has_many :test_results, class_name: 'V2::TestResult', dependent: :destroy, inverse_of: :system
     has_many :rule_results, class_name: 'V2::RuleResult', through: :test_results
 
-    OS_VERSION = AN::InfixOperation.new('->', arel_table[:system_profile], AN::Quoted.new('operating_system'))
-    OS_MINOR_VERSION = AN::InfixOperation.new('->', OS_VERSION, AN::Quoted.new('minor')).as('os_minor_version')
-    OS_MAJOR_VERSION = AN::InfixOperation.new('->', OS_VERSION, AN::Quoted.new('major')).as('os_major_version')
     OWNER_ID = AN::InfixOperation.new('->>', arel_table[:system_profile], AN::Quoted.new('owner_id'))
 
+    def self.os_version(table = arel_table)
+      AN::InfixOperation.new('->', table[:system_profile], AN::Quoted.new('operating_system'))
+    end
+
+    def self.os_major_version(table = arel_table)
+      AN::InfixOperation.new('->', os_version(table), AN::Quoted.new('major')).as('os_major_version')
+    end
+
+    def self.os_minor_version(table = arel_table)
+      AN::InfixOperation.new('->', os_version(table), AN::Quoted.new('minor')).as('os_minor_version')
+    end
+
     OS_VERSIONS = AN::NamedFunction.new(
-      'CONCAT', [V2::System::OS_MAJOR_VERSION.left, AN::Quoted.new('.'), V2::System::OS_MINOR_VERSION.left]
+      'CONCAT', [os_major_version.left, AN::Quoted.new('.'), os_minor_version.left]
     ).as('os_version')
+
+    def self.os_versions
+      distinct.reorder(os_major_version.left, os_minor_version.left)
+              .reselect(OS_VERSIONS, os_major_version, os_minor_version)
+              .map(&:os_version)
+    end
 
     # rubocop:disable Metrics/MethodLength
     def self.first_group_name(table = arel_table)
@@ -115,11 +130,11 @@ module V2
     }
 
     scope :os_major_versions, lambda { |version, q = true|
-      where(AN::NamedFunction.new('CAST', [OS_MAJOR_VERSION.left.as('int')]).send(q ? :in : :not_in, version))
+      where(AN::NamedFunction.new('CAST', [os_major_version.left.as('int')]).send(q ? :in : :not_in, version))
     }
 
     scope :os_minor_versions, lambda { |version, q = true|
-      where(AN::NamedFunction.new('CAST', [OS_MINOR_VERSION.left.as('int')]).send(q ? :in : :not_in, version))
+      where(AN::NamedFunction.new('CAST', [os_minor_version.left.as('int')]).send(q ? :in : :not_in, version))
     }
 
     def readonly?
@@ -151,12 +166,6 @@ module V2
           ]
         )
       )
-    end
-
-    def self.os_versions
-      distinct.reorder(OS_MAJOR_VERSION.left, OS_MINOR_VERSION.left)
-              .reselect(OS_VERSIONS, OS_MAJOR_VERSION, OS_MINOR_VERSION)
-              .map(&:os_version)
     end
   end
 end

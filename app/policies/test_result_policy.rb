@@ -14,6 +14,10 @@ class TestResultPolicy < ApplicationPolicy
     Pundit.policy(user, record.profile) || Pundit.policy(user, record.host)
   end
 
+  def os_versions?
+    true
+  end
+
   # Only show TestResults belonging to profiles owned by the current user
   class Scope < ::ApplicationPolicy::Scope
     def resolve

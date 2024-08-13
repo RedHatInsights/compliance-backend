@@ -19,6 +19,12 @@ module V2
       match_account?
     end
 
+    # :nocov:
+    def os_versions?
+      true
+    end
+    # :nocov:
+
     # Only show Reports in our user account
     class Scope < V2::ApplicationPolicy::Scope
       def resolve

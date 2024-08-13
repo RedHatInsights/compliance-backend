@@ -45,7 +45,7 @@ Rails.application.routes.draw do
             end
 
             resources :systems, only: %i[index create update destroy], parents: %i[policies] do
-              get :os_versions, on: :collection
+              get :os_versions, on: :collection, parents: %i[policies]
             end
           end
 
@@ -58,14 +58,16 @@ Rails.application.routes.draw do
 
           resources :reports, only: %i[index show destroy] do
             resources :systems, only: %i[index show], parents: %i[reports] do
-              get :os_versions, on: :collection
+              get :os_versions, on: :collection, parents: %i[reports]
             end
 
             resources :test_results, only: %i[index show], parents: %i[report] do
               resources :rule_results, only: %i[index], parents: %i[report test_result]
+              get :os_versions, on: :collection, parents: %i[report]
             end
 
             get :stats, on: :member
+            get :os_versions, on: :collection
           end
         end
       end

@@ -65,6 +65,28 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
     end
   end
 
+  path '/security_guides/os_versions' do
+    before { FactoryBot.create_list(:v2_security_guide, 25) }
+
+    get 'Request the list of available OS versions' do
+      v2_auth_header
+      tags 'Reports'
+      description 'This feature is exclusively used by the frontend'
+      operationId 'ReportsOS'
+      content_types
+      deprecated true
+      search_params_v2(V2::Report)
+
+      response '200', 'Lists available OS versions' do
+        schema(type: :array, items: { type: 'integer' })
+
+        after { |e| autogenerate_examples(e, 'List of available OS versions') }
+
+        run_test!
+      end
+    end
+  end
+
   path '/reports/{report_id}' do
     let(:item) do
       FactoryBot.create(

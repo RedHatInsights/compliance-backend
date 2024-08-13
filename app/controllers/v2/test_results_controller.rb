@@ -13,6 +13,12 @@ module V2
     end
     permission_for_action :show, Rbac::COMPLIANCE_VIEWER
 
+    def os_versions
+      render json: test_results.os_versions, status: :ok
+    end
+    permission_for_action :os_versions, Rbac::SYSTEM_READ
+    permitted_params_for_action :os_versions, { filter: ParamType.string }
+
     private
 
     def test_results
