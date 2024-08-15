@@ -31,11 +31,6 @@ class Profile < ApplicationRecord
     scope: %i[account_id benchmark_id os_minor_version policy_id],
     message: 'must be unique in a policy OS version'
   }, presence: true
-  validates :ref_id, uniqueness: {
-    scope: %i[account_id benchmark_id],
-    conditions: -> { where(external: false) },
-    message: 'must be unique for an internal profile'
-  }, unless: :external
   validates :external, uniqueness: {
     scope: %i[ref_id account_id benchmark_id],
     conditions: -> { where(policy_id: nil) }
