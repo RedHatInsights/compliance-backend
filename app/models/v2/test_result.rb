@@ -70,6 +70,15 @@ module V2
       { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
     end
 
+    searchable_by :failed_rule_severity, %i[eq in] do |_key, _op, val|
+      values = val.split
+      ids = ::V2::RuleResult.joins(:rule)
+                            .where(v2_rules: { severity: values }, rule_results: { result: 'fail' })
+                            .select(:test_result_id)
+
+      { conditions: "v2_test_results.id IN (#{ids.to_sql})" }
+    end
+
     scope :with_groups, lambda { |groups, table = arel_table, key = :id|
       # Skip the [] representing ungrouped hosts from the array when generating the query
       grouped = V2::System.arel_inventory_groups(groups.flatten, key, table)
@@ -77,8 +86,6 @@ module V2
       # The OR is inside of Arel in order to prevent pollution of already applied scopes
       where(groups.include?([]) ? grouped.or(ungrouped) : grouped)
     }
-
-    # TODO: searchable_by :failed_rule_severity
 
     def display_name
       attributes['system__display_name'] || try(:system)&.display_name

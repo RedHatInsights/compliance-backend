@@ -294,3 +294,82 @@
         :account: ${account}
         :policy_id: ${policy.id}
   :query: (group_name ^ "one,two")
+
+- :name: "in search by failed_rule_severity"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :account: ${account}
+        :policy_id: ${policy.id}
+        :additional_rule_results:
+          - :severity: 'high'
+            :result: 'fail'
+          - :severity: 'low'
+            :result: 'fail'
+          - :severity: 'medium'
+            :result: 'fail'
+      - :factory: :v2_test_result
+        :account: ${account}
+        :policy_id: ${policy.id}
+        :additional_rule_results:
+          - :severity: 'medium'
+            :result: 'fail'
+          - :severity: 'high'
+            :result: 'pass'
+          - :severity: 'low'
+            :result: 'pass'
+    :not_found:
+      - :factory: :v2_test_result
+        :account: ${account}
+        :policy_id: ${policy.id}
+        :additional_rule_results:
+          - :severity: 'low'
+            :result: 'fail'
+      - :factory: :v2_test_result
+        :account: ${account}
+        :policy_id: ${policy.id}
+        :additional_rule_results:
+          - :severity: 'high'
+            :result: 'pass'
+          - :severity: 'low'
+            :result: 'pass'
+  :query: (failed_rule_severity ^ "high medium")
+- :name: "equality search by failed_rule_severity"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :account: ${account}
+        :policy_id: ${policy.id}
+        :additional_rule_results:
+          - :severity: 'high'
+            :result: 'fail'
+          - :severity: 'low'
+            :result: 'fail'
+          - :severity: 'medium'
+            :result: 'fail'
+      - :factory: :v2_test_result
+        :account: ${account}
+        :policy_id: ${policy.id}
+        :additional_rule_results:
+          - :severity: 'low'
+            :result: 'fail'
+    :not_found:
+      - :factory: :v2_test_result
+        :account: ${account}
+        :policy_id: ${policy.id}
+        :additional_rule_results:
+          - :severity: 'medium'
+            :result: 'fail'
+          - :severity: 'high'
+            :result: 'pass'
+          - :severity: 'low'
+            :result: 'pass'
+      - :factory: :v2_test_result
+        :account: ${account}
+        :policy_id: ${policy.id}
+        :additional_rule_results:
+          - :severity: 'high'
+            :result: 'pass'
+          - :severity: 'low'
+            :result: 'pass'
+  :query: (failed_rule_severity = "low")

@@ -34,7 +34,23 @@ FactoryBot.define do
       display_name { nil }
       os_major_version { nil }
       os_minor_version { nil }
+      additional_rule_results { [] }
       groups { nil }
+    end
+
+    after(:create) do |tr, ev|
+      ev.additional_rule_results.each do |rr|
+        FactoryBot.create(
+          :v2_rule_result,
+          rule: FactoryBot.create(
+            :v2_rule,
+            security_guide: tr.tailoring.security_guide
+          ),
+          test_result_id: tr.id,
+          severity: rr[:severity],
+          result: rr[:result]
+        )
+      end
     end
   end
 end
