@@ -123,9 +123,9 @@ module V2
 
     searchable_by :profile_ref_ids, %i[neq notin] do |_key, _op, val|
       values = val.split.map(&:strip)
-      ids = ::V2::PolicySystem.joins(policy: :profile).where.not(profile: { ref_id: values }).select(:system_id)
+      ids = ::V2::PolicySystem.joins(policy: :profile).where(profile: { ref_id: values }).select(:system_id)
 
-      { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
+      { conditions: "inventory.hosts.id NOT IN (#{ids.to_sql})" }
     end
 
     scope :with_groups, lambda { |groups, key = :id|
