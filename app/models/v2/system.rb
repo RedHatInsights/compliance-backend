@@ -121,7 +121,7 @@ module V2
       { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
     end
 
-    searchable_by :profile_ref_ids, %i[neq notin] do |_key, _op, val|
+    searchable_by :profile_ref_id, %i[neq notin] do |_key, _op, val|
       values = val.split.map(&:strip)
       ids = ::V2::PolicySystem.joins(policy: :profile).where(profile: { ref_id: values }).select(:system_id)
 
