@@ -356,7 +356,7 @@
     - :policies
     - :reports
 
-- :name: "non-equality search by profile_ref_ids"
+- :name: "non-equality search by profile_ref_id"
   :entities:
     :found:
       - :factory: :system
@@ -372,12 +372,12 @@
         :account: ${account}
         :policy_id: ${policy_7.id}
         :os_minor_version: 1
-  :query: (profile_ref_ids != "${policy_7.ref_id}")
+  :query: (profile_ref_id != "${policy_7.ref_id}")
   :except_parents:
     - :policies
     - :reports
 
-- :name: "not-in search by profile_ref_ids"
+- :name: "not-in search by profile_ref_id"
   :entities:
     :found:
       - :factory: :system
@@ -393,7 +393,7 @@
         :account: ${account}
         :policy_id: ${policy_8.id}
         :os_minor_version: 1
-  :query: (profile_ref_ids !^ "${policy_7.ref_id} ${policy_8.ref_id}")
+  :query: (profile_ref_id !^ "${policy_7.ref_id} ${policy_8.ref_id}")
   :except_parents:
     - :policies
     - :reports
