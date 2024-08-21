@@ -16,6 +16,20 @@ module V2
     searchable_by :ref_id, %i[eq ne in notin]
     searchable_by :os_major_version, %i[eq ne]
 
+    searchable_by :profile_ref_id, %i[eq] do |_key, _op, val|
+      ids = ::V2::Profile.where(ref_id: val).select(:security_guide_id)
+
+      { conditions: "security_guides.id IN (#{ids.to_sql})" }
+    end
+
+    searchable_by :os_minor_version, %i[eq in] do |_key, _op, val|
+      values = val.split.map(&:strip)
+      ids = ::V2::Profile.joins(:os_minor_versions).where(os_minor_versions: { os_minor_version: values })
+                         .select(:security_guide_id)
+
+      { conditions: "security_guides.id IN (#{ids.to_sql})" }
+    end
+
     sortable_by :title
     sortable_by :version, version_to_array(arel_table[:version])
     sortable_by :os_major_version
