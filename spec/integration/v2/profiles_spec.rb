@@ -81,7 +81,8 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
       content_types
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
-      parameter name: :profile_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
+      parameter name: :profile_id, in: :path, type: :string, required: true,
+                description: "UUID or a ref_id with '.' characters replaced with '-'"
 
       response '200', 'Returns a Profile' do
         let(:profile_id) { item.id }
