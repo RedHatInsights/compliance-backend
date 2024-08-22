@@ -23,7 +23,7 @@ module V2
     sortable_by :groups, V2::System.first_group_name(V2::System.arel_table.alias('system'))
     sortable_by :score
     sortable_by :end_time
-    # TODO: sortable_by :failed_rule_count
+    sortable_by :failed_rule_count
 
     searchable_by :score, %i[eq gt lt gte lte]
     searchable_by :supported, %i[eq]
