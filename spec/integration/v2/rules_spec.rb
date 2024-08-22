@@ -73,7 +73,8 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
       content_types
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
-      parameter name: :rule_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
+      parameter name: :rule_id, in: :path, type: :string, required: true,
+                description: "UUID or a ref_id with '.' characters replaced with '-'"
 
       response '200', 'Returns a Rule' do
         let(:rule_id) { item.id }
@@ -167,7 +168,8 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
       parameter name: :profile_id, in: :path, type: :string, required: true
-      parameter name: :rule_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
+      parameter name: :rule_id, in: :path, type: :string, required: true,
+                description: "UUID or a ref_id with '.' characters replaced with '-'"
 
       response '200', 'Returns a Rule assigned to a Profile' do
         let(:security_guide_id) { V2::Profile.find(profile_id).security_guide_id }
@@ -319,7 +321,8 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
 
       parameter name: :policy_id, in: :path, type: :string, required: true
       parameter name: :tailoring_id, in: :path, type: :string, required: true
-      parameter name: :rule_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
+      parameter name: :rule_id, in: :path, type: :string, required: true,
+                description: "UUID or a ref_id with '.' characters replaced with '-'"
 
       response '202', 'Assigns a Rule to a Tailoring' do
         let(:rule_id) { item.id }
@@ -355,7 +358,8 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
 
       parameter name: :policy_id, in: :path, type: :string, required: true
       parameter name: :tailoring_id, in: :path, type: :string, required: true
-      parameter name: :rule_id, in: :path, type: :string, required: true, description: 'UUID or ref_id'
+      parameter name: :rule_id, in: :path, type: :string, required: true,
+                description: "UUID or a ref_id with '.' characters replaced with '-'"
 
       response '202', 'Unassigns a Rule from a Tailoring' do
         let(:rule_id) { item.id }
