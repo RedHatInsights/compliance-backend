@@ -7,6 +7,14 @@
     :groups:
       - id: 5
         name: 'aba'
+    :failed_rule_count: 2
+    :additional_rule_results:
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'fail'
+        :severity: 'low'
+      - :result: 'fail'
+        :severity: 'high'
     :account: ${account}
     :policy_id: ${policy.id}
 
@@ -18,6 +26,20 @@
     :groups:
       - id: 4
         name: 'bac'
+    :failed_rule_count: 3
+    :additional_rule_results:
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'fail'
+        :severity: 'low'
+      - :result: 'fail'
+        :severity: 'high'
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'pass'
+        :severity: 'low'
+      - :result: 'fail'
+        :severity: 'high'
     :account: ${account}
     :policy_id: ${policy.id}
 
@@ -29,6 +51,20 @@
     :groups:
       - id: 3
         name: 'aab'
+    :failed_rule_count: 1
+    :additional_rule_results:
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'pass'
+        :severity: 'low'
+      - :result: 'pass'
+        :severity: 'high'
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'pass'
+        :severity: 'low'
+      - :result: 'fail'
+        :severity: 'high'
     :account: ${account}
     :policy_id: ${policy.id}
 
@@ -40,6 +76,20 @@
     :groups:
       - id: 1
         name: 'aaa'
+    :failed_rule_count: 1
+    :additional_rule_results:
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'pass'
+        :severity: 'low'
+      - :result: 'pass'
+        :severity: 'high'
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'pass'
+        :severity: 'low'
+      - :result: 'fail'
+        :severity: 'high'
     :account: ${account}
     :policy_id: ${policy.id}
 
@@ -52,6 +102,20 @@
       - id: 2
         name: 'caa'
     :account: ${account}
+    :failed_rule_count: 2
+    :additional_rule_results:
+      - :result: 'fail'
+        :severity: 'medium'
+      - :result: 'pass'
+        :severity: 'low'
+      - :result: 'fail'
+        :severity: 'high'
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'pass'
+        :severity: 'low'
+      - :result: 'pass'
+        :severity: 'high'
     :policy_id: ${policy.id}
 
   - :factory: :v2_test_result
@@ -62,6 +126,20 @@
     :groups:
       - id: 1
         name: 'aaa'
+    :failed_rule_count: 0
+    :additional_rule_results:
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'pass'
+        :severity: 'low'
+      - :result: 'pass'
+        :severity: 'high'
+      - :result: 'pass'
+        :severity: 'medium'
+      - :result: 'pass'
+        :severity: 'low'
+      - :result: 'pass'
+        :severity: 'high'
     :account: ${account}
     :policy_id: ${policy.id}
 
@@ -81,3 +159,6 @@
   - :sort_by:
       - 'groups'
     :result: [[3, 5], 2, 0, 1, 4]
+  - :sort_by:
+      - 'failed_rule_count'
+    :result: [5, [3, 2], [0, 4], 1]
