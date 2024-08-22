@@ -9,7 +9,7 @@ FactoryBot.define do
     severity { %w[low medium high].sample }
     precedence { Faker::Number.between(from: 1, to: 9999) }
     identifier { { label: Faker::Fantasy::Tolkien.character, href: Faker::Internet.url } }
-    references { rand(0..5).times.map { { label: Faker::Fantasy::Tolkien.character, href: Faker::Internet.url } } }
+    references { 5.times.map { { label: Faker::Fantasy::Tolkien.character, href: Faker::Internet.url } } }
     remediation_available { false }
     upstream { false }
 
