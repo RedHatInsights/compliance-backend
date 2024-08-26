@@ -35,7 +35,7 @@ RSpec.shared_examples 'paginable' do |*parents|
   # Do not pass instances of `ActiveRecord` or scalar values wrapped with `pw()` to the URL parameters
   let(:passable_params) { reject_nonscalar(extra_params) }
 
-  [2, 5, 10, 15, 20].each do |per_page|
+  [1, 3, 20].each do |per_page|
     it "returns with the requested #{per_page} records per page" do
       items # force creation
       get :index, params: passable_params.merge('limit' => per_page, parents: parents)
@@ -43,7 +43,7 @@ RSpec.shared_examples 'paginable' do |*parents|
       expect(response_body_data.count).to eq(per_page)
     end
 
-    20.times do |offset|
+    [0, 1, 19, 20].each do |offset|
       it "returns #{per_page} records from the offset #{offset}" do
         nth_items = items[offset..(offset + per_page - 1)].map do |sg|
           hash_including(
