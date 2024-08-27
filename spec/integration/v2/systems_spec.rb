@@ -17,6 +17,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       description 'Lists Systems'
       operationId 'Systems'
       content_types
+      tags_params
       pagination_params_v2
       sort_params_v2(V2::System)
       search_params_v2(V2::System, except: %i[never_reported])
@@ -148,6 +149,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       description 'Lists Systems assigned to a Policy'
       operationId 'PolicySystems'
       content_types
+      tags_params
       pagination_params_v2
       sort_params_v2(V2::System, except: %i[os_major_version])
       search_params_v2(
@@ -389,6 +391,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       description 'Lists Systems assigned to a Report'
       operationId 'ReportSystems'
       content_types
+      tags_params
       pagination_params_v2
       sort_params_v2(V2::System, except: %i[os_major_version])
       search_params_v2(V2::System, except: %i[os_major_version policies profile_ref_id assigned_or_scanned])
