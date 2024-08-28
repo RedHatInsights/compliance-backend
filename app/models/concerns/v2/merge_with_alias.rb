@@ -59,6 +59,12 @@ module V2
 
       def nop(_node); end
 
+      def unary(node)
+        expr = visit(node.expr)
+
+        node.expr = expr if @copy
+      end
+
       def binary(node)
         left = visit(node.left)
         right = visit(node.right)
@@ -83,13 +89,14 @@ module V2
       alias visit_Arel_Nodes_Or binary
 
       alias visit_Arel_Nodes_And nary
+      alias visit_Arel_Nodes_Grouping unary
       alias visit_Arel_Attributes_Attribute attribute
 
       alias visit_ActiveRecord_Relation_QueryAttribute nop
-      alias visit_Arel_Nodes_Grouping nop
       alias visit_Arel_Nodes_NamedFunction nop
       alias visit_Arel_Nodes_Quoted nop
       alias visit_Arel_Nodes_TableAlias nop
+      alias visit_Arel_Nodes_SqlLiteral nop
       alias visit_Arel_Table nop
     end
   end
