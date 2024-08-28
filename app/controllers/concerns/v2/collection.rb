@@ -30,7 +30,8 @@ module V2
       def validate_parents!
         current = permitted_params[:parents].last
         reflection = resource.reflect_on_association(current)
-        join_parents(reflection.klass, parent_route_parents).find(permitted_params[reflection.foreign_key])
+        scope = pundit_scope(join_parents(reflection.klass, parent_route_parents))
+        scope.find(permitted_params[reflection.foreign_key])
       end
 
       # Look up the `parents` array from the parent route using a search in Rails' routing table
