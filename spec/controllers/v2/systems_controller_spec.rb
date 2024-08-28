@@ -241,7 +241,7 @@ describe V2::SystemsController do
         end
       end
 
-      context 'system already assigned to a sibling policyX' do
+      context 'system already assigned to a sibling policy' do
         let(:sibling) do
           FactoryBot.create(
             :v2_policy,
