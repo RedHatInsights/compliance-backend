@@ -35,8 +35,13 @@ module V2
 
         return scope.none if user.org_id.blank? || groups.blank?
 
-        base_scope = scope.where(system: { org_id: user.org_id })
         groups == Rbac::ANY ? base_scope : base_scope.with_groups(groups, V2::System.arel_table.alias(:system))
+      end
+
+      def base_scope
+        # Make sure that the `system` reflection is joined to the scope before applying the WHERE clause
+        with_system = scope.try(:joins_values).try(:include?, :system) ? scope : scope.joins(:system)
+        with_system.where(system: { org_id: user.org_id })
       end
     end
   end

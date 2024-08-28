@@ -292,6 +292,30 @@ describe V2::PoliciesController do
       it_behaves_like 'sortable', :systems
       it_behaves_like 'searchable', :systems
 
+      context 'parent system from an inaccessible inventory group' do
+        before do
+          stub_rbac_permissions(
+            Rbac::INVENTORY_HOSTS_READ => [{
+              attribute_filter: {
+                key: 'group.id',
+                operation: 'in',
+                value: [nil]
+              }
+            }]
+          )
+        end
+
+        let(:parent) do
+          FactoryBot.create(:system, account: current_user.account, owner_id: owner_id, groups: [{ id: 'a_group' }])
+        end
+
+        it 'returns not found' do
+          get :index, params: { system_id: parent.id, parents: [:systems] }
+
+          expect(response).to have_http_status :not_found
+        end
+      end
+
       context 'via CERT_AUTH' do
         before { allow(controller).to receive(:any_inventory_hosts?).and_return(true) }
 
@@ -307,11 +331,10 @@ describe V2::PoliciesController do
         context 'system owner_id mismatch' do
           let(:parent) { FactoryBot.create(:system, account: current_user.account) }
 
-          it 'returns empty array' do
+          it 'returns not found' do
             get :index, params: { parents: %i[systems], system_id: parent.id }
 
-            expect(response).to have_http_status :ok
-            expect(response_body_data).to be_empty
+            expect(response).to have_http_status :not_found
           end
         end
       end
