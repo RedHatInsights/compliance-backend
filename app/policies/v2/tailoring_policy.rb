@@ -22,7 +22,7 @@ module V2
     # Only show tailoring in our user account
     class Scope < V2::ApplicationPolicy::Scope
       def resolve
-        resolve scope.where('1=0') if user&.account_id.blank?
+        resolve scope.none if user&.account_id.blank?
 
         scope.where
              .associated(:policy)
