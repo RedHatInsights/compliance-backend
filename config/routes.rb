@@ -22,53 +22,51 @@ Rails.application.routes.draw do
         end
       end
 
-      if !Rails.env.production? || ENV.fetch('ENABLE_API_V2', false).present?
-        scope 'v2', module: 'v2', as: 'v2' do
-          resources :security_guides, only: %i[index show] do
-            get :supported_profiles, action: :index, controller: :supported_profiles, on: :collection
-            get :rule_tree, on: :member
-            get :os_versions, on: :collection
+      scope 'v2', module: 'v2', as: 'v2' do
+        resources :security_guides, only: %i[index show] do
+          get :supported_profiles, action: :index, controller: :supported_profiles, on: :collection
+          get :rule_tree, on: :member
+          get :os_versions, on: :collection
 
-            resources :value_definitions, only: %i[index show], parents: %i[security_guide]
-            resources :rules, only: %i[index show], parents: %i[security_guide]
-            resources :rule_groups, only: %i[index show], parents: %i[security_guide]
+          resources :value_definitions, only: %i[index show], parents: %i[security_guide]
+          resources :rules, only: %i[index show], parents: %i[security_guide]
+          resources :rule_groups, only: %i[index show], parents: %i[security_guide]
 
-            resources :profiles, only: %i[index show], parents: %i[security_guide] do
-              resources :rules, only: %i[index show], parents: %i[security_guide profiles]
-            end
+          resources :profiles, only: %i[index show], parents: %i[security_guide] do
+            resources :rules, only: %i[index show], parents: %i[security_guide profiles]
+          end
+        end
+
+        resources :policies, except: %i[new edit] do
+          resources :tailorings, only: %i[index show update], parents: %i[policy] do
+            resources :rules, only: %i[index create update destroy], parents: %i[policies tailorings]
+            get :tailoring_file, on: :member, defaults: { format: 'xml' }, constraints: { format: /json|xml/ }
           end
 
-          resources :policies, except: %i[new edit] do
-            resources :tailorings, only: %i[index show update], parents: %i[policy] do
-              resources :rules, only: %i[index create update destroy], parents: %i[policies tailorings]
-              get :tailoring_file, on: :member, defaults: { format: 'xml' }, constraints: { format: /json|xml/ }
-            end
+          resources :systems, only: %i[index create update destroy], parents: %i[policies] do
+            get :os_versions, on: :collection, parents: %i[policies]
+          end
+        end
 
-            resources :systems, only: %i[index create update destroy], parents: %i[policies] do
-              get :os_versions, on: :collection, parents: %i[policies]
-            end
+        resources :systems, only: %i[index show] do
+          resources :policies, only: %i[index], parents: %i[systems]
+          resources :reports, only: %i[index], parents: %i[systems]
+
+          get :os_versions, on: :collection
+        end
+
+        resources :reports, only: %i[index show destroy] do
+          resources :systems, only: %i[index show], parents: %i[reports] do
+            get :os_versions, on: :collection, parents: %i[reports]
           end
 
-          resources :systems, only: %i[index show] do
-            resources :policies, only: %i[index], parents: %i[systems]
-            resources :reports, only: %i[index], parents: %i[systems]
-
-            get :os_versions, on: :collection
+          resources :test_results, only: %i[index show], parents: %i[report] do
+            resources :rule_results, only: %i[index], parents: %i[report test_result]
+            get :os_versions, on: :collection, parents: %i[report]
           end
 
-          resources :reports, only: %i[index show destroy] do
-            resources :systems, only: %i[index show], parents: %i[reports] do
-              get :os_versions, on: :collection, parents: %i[reports]
-            end
-
-            resources :test_results, only: %i[index show], parents: %i[report] do
-              resources :rule_results, only: %i[index], parents: %i[report test_result]
-              get :os_versions, on: :collection, parents: %i[report]
-            end
-
-            get :stats, on: :member
-            get :os_versions, on: :collection
-          end
+          get :stats, on: :member
+          get :os_versions, on: :collection
         end
       end
 
