@@ -1,3 +1,5 @@
+
+// a comment
 def secrets = [
     [path: params.VAULT_PATH_SVC_ACCOUNT_EPHEMERAL, secretValues: [
         [envVar: 'OC_LOGIN_TOKEN_DEV', vaultKey: 'oc-login-token-dev'],
