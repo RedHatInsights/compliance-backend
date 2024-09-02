@@ -40,7 +40,7 @@ RSpec.shared_examples 'indexable' do |field, *parents|
                                 end
                               })
 
-    get :show, params: passable_params.merge(parents: parents, id: item.send(field).parameterize)
+    get :show, params: passable_params.merge(parents: parents, id: item.send(field).to_s.parameterize)
 
     expect(response.parsed_body).to match(expected)
   end
