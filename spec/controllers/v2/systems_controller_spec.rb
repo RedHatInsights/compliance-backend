@@ -348,7 +348,7 @@ describe V2::SystemsController do
 
         expect(response).to have_http_status :accepted
         expect(parent.tailorings).to contain_exactly(
-          an_object_having_attributes(os_minor_version: os_minor_version.to_s)
+          an_object_having_attributes(os_minor_version: os_minor_version)
         )
 
         expect(first_tailoring.rules.to_set(&:id)).to eq(first_tailoring.profile.rules.to_set(&:id))
@@ -373,7 +373,7 @@ describe V2::SystemsController do
 
           expect(response).to have_http_status :accepted
           expect(parent.tailorings).to contain_exactly(
-            an_object_having_attributes(os_minor_version: os_minor_version.to_s)
+            an_object_having_attributes(os_minor_version: os_minor_version)
           )
           expect(first_tailoring.rules).not_to eq(first_tailoring.profile.rules)
           expect(first_tailoring.value_overrides).not_to eq(first_tailoring.profile.value_overrides)
@@ -400,7 +400,7 @@ describe V2::SystemsController do
 
             expect(response).to have_http_status :accepted
             expect(parent.tailorings).to contain_exactly(
-              an_object_having_attributes(os_minor_version: os_minor_version.to_s)
+              an_object_having_attributes(os_minor_version: os_minor_version)
             )
           end
         end

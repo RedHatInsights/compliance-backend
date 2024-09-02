@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_03_064538) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_03_073330) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -296,7 +296,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_03_064538) do
       profiles.policy_id,
       profiles.parent_profile_id AS profile_id,
       profiles.value_overrides,
-      profiles.os_minor_version,
+      (NULLIF((profiles.os_minor_version)::text, ''::text))::integer AS os_minor_version,
       profiles.created_at,
       profiles.updated_at
      FROM profiles
@@ -645,7 +645,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_03_064538) do
         "policies"."account_id",
         NEW."profile_id",
         "canonical_profiles"."security_guide_id",
-        NEW."os_minor_version",
+        CAST(NEW."os_minor_version" AS text),
         NEW."value_overrides",
         "external",
         NEW."created_at",
