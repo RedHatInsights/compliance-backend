@@ -19,7 +19,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       content_types
       pagination_params_v2
       sort_params_v2(V2::System)
-      search_params_v2(V2::System)
+      search_params_v2(V2::System, except: %i[never_reported])
 
       response '200', 'Lists Systems' do
         v2_collection_schema 'system'
@@ -149,8 +149,8 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       operationId 'PolicySystems'
       content_types
       pagination_params_v2
-      sort_params_v2(V2::System)
-      search_params_v2(V2::System)
+      sort_params_v2(V2::System, except: %i[os_major_version])
+      search_params_v2(V2::System, except: %i[never_reported os_major_version policies profile_ref_id])
 
       parameter name: :policy_id, in: :path, type: :string, required: true
 
@@ -163,19 +163,19 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       end
 
       response '200', 'Lists Systems assigned to a Policy' do
-        let(:sort_by) { ['os_major_version'] }
+        let(:sort_by) { ['os_minor_version'] }
         v2_collection_schema 'system'
 
-        after { |e| autogenerate_examples(e, 'List of Systems sorted by "os_major_version:asc"') }
+        after { |e| autogenerate_examples(e, 'List of Systems sorted by "os_minor_version:asc"') }
 
         run_test!
       end
 
       response '200', 'Lists Systems assigned to a Policy' do
-        let(:filter) { '(os_major_version=8)' }
+        let(:filter) { '(os_minor_version=0)' }
         v2_collection_schema 'system'
 
-        after { |e| autogenerate_examples(e, 'List of Systems filtered by "(os_major_version=8)"') }
+        after { |e| autogenerate_examples(e, 'List of Systems filtered by "(os_minor_version=0)"') }
 
         run_test!
       end
@@ -388,8 +388,8 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       operationId 'ReportSystems'
       content_types
       pagination_params_v2
-      sort_params_v2(V2::System)
-      search_params_v2(V2::System)
+      sort_params_v2(V2::System, except: %i[os_major_version])
+      search_params_v2(V2::System, except: %i[os_major_version policies profile_ref_id])
 
       parameter name: :report_id, in: :path, type: :string, required: true
 
@@ -402,19 +402,19 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       end
 
       response '200', 'Lists Systems assigned to a Report' do
-        let(:sort_by) { ['os_major_version'] }
+        let(:sort_by) { ['os_minor_version'] }
         v2_collection_schema 'system'
 
-        after { |e| autogenerate_examples(e, 'List of Systems sorted by "os_major_version:asc"') }
+        after { |e| autogenerate_examples(e, 'List of Systems sorted by "os_minor_version:asc"') }
 
         run_test!
       end
 
       response '200', 'Lists Systems assigned to a Report' do
-        let(:filter) { '(os_major_version=8)' }
+        let(:filter) { '(os_minor_version=0)' }
         v2_collection_schema 'system'
 
-        after { |e| autogenerate_examples(e, 'List of Systems filtered by "(os_major_version=8)"') }
+        after { |e| autogenerate_examples(e, 'List of Systems filtered by "(os_minor_version=0)"') }
 
         run_test!
       end

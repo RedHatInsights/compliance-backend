@@ -189,8 +189,8 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
       operationId 'SystemsPolicies'
       content_types
       pagination_params_v2
-      sort_params_v2(V2::Policy)
-      search_params_v2(V2::Policy)
+      sort_params_v2(V2::Policy, except: %i[os_major_version total_system_count])
+      search_params_v2(V2::Policy, except: %i[os_major_version])
 
       parameter name: :system_id, in: :path, type: :string, required: true
 

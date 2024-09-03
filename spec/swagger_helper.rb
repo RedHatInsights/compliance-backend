@@ -119,15 +119,16 @@ def search_params
             schema: { type: :string }
 end
 
-def search_params_v2(model = nil)
+def search_params_v2(model = nil, except: [])
+  keys = model.scoped_search.fields.keys.reject { |key| key == :_____ || except.include?(key) }
+
   parameter name: :filter, in: :query, required: false,
             description: 'Query string to filter items by their attributes. ' \
               'Compliant with <a href="https://github.com/wvanbergen/scoped_search/wiki/Query-language" ' \
               'target="_blank" title="github.com/wvanbergen/scoped_search">scoped_search query language</a>. ' \
               'However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>' \
               "#{model.name.split('::').second.gsub(/([A-Z])/) { " #{Regexp.last_match(1)}" }.strip.pluralize} " \
-              'are searchable using attributes ' \
-              "#{model.scoped_search.fields.keys.reject { |k| k == :_____ }.map { |k| "`#{k}`" }.to_sentence}" \
+              "are searchable using attributes #{keys.map { |k| "`#{k}`" }.to_sentence}" \
               '<br><br>(e.g.: `(field_1=something AND field_2!="something else") OR field_3>40`)',
             schema: { type: :string }
 end
@@ -152,7 +153,7 @@ def sort_params(model = nil)
             }
 end
 
-def sort_params_v2(model = nil)
+def sort_params_v2(model = nil, except: [])
   parameter name: :sort_by, in: :query, required: false,
             description: 'Attribute and direction to sort the items by. ' \
               'Represented by an array of fields with an optional direction ' \
@@ -160,12 +161,14 @@ def sort_params_v2(model = nil)
               'If no direction is selected, `<key>:asc` is used by default.',
             schema: {
               type: :array,
-              items: { enum: sort_combinations(model) }
+              items: { enum: sort_combinations(model, except) }
             }
 end
 
-def sort_combinations(model)
-  fields = model.instance_variable_get(:@sortable_by).keys
+def sort_combinations(model, except = [])
+  fields = model.instance_variable_get(:@sortable_by).keys.reject do |field|
+    except.include?(field)
+  end
   fields + fields.flat_map do |field|
     %w[asc desc].map do |direction|
       [field, direction].join(':')
