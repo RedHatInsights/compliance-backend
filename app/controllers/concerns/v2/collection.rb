@@ -48,6 +48,7 @@ module V2
         data.where('tags @> ?', tags.to_json)
       end
 
+      # rubocop:disable Metrics/AbcSize
       def search(data)
         return data if permitted_params[:filter].blank?
 
@@ -56,8 +57,14 @@ module V2
           raise ActionController::UnpermittedParameters.new(filter: permitted_params[:filter])
         end
 
+        # Pass the parents to the current thread context as there is no other way to access
+        # the parents from inside models. This is obviously an antipattern, but we are limited
+        # by scoped_search here and I have not found any better option.
+        Thread.current[:parents] = permitted_params[:parents]
+
         data.search_for(permitted_params[:filter])
       end
+      # rubocop:enable Metrics/AbcSize
 
       def sort(data)
         order_hash = data.klass.build_order_by(permitted_params[:sort_by])

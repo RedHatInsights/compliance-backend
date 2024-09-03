@@ -208,8 +208,8 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
       operationId 'SystemReports'
       content_types
       pagination_params_v2
-      sort_params_v2(V2::Report)
-      search_params_v2(V2::Report)
+      sort_params_v2(V2::Report, except: %i[os_major_version])
+      search_params_v2(V2::Report, except: %i[os_major_version with_reported_systems])
 
       parameter name: :system_id, in: :path, type: :string, required: true
 

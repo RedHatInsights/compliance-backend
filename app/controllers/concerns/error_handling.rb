@@ -74,6 +74,9 @@ module ErrorHandling
 
     rescue_from ScopedSearch::QueryNotSupported do |error|
       message = "Invalid parameter: #{error.message}"
+      # As we are using the validation to restrict searches for certain hierarchies, the error message
+      # for these should be adjusted to reflect the actual issue.
+      message.sub!(/Value '([^']*)' is not valid for field '([^']+)'/, "Field '\\2' is not searchable in this context")
       logger.info "#{message} (#{ScopedSearch::QueryNotSupported})"
       render_error message, status: :unprocessable_entity
     end
