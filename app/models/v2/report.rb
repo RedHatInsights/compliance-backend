@@ -145,12 +145,12 @@ module V2
 
     # rubocop:disable Metrics/AbcSize
     def top_failed_rules
+      rule_fields = %i[title ref_id identifier severity].map { |field| V2::Rule.arel_table[field] }
+
       V2::RuleResult.joins(:test_result, :system, :rule)
                     .merge_with_alias(Pundit.policy_scope(User.current, V2::System))
                     .where(result: V2::RuleResult::FAILED)
-                    .group(V2::Rule.arel_table[:ref_id], V2::Rule.arel_table[:severity])
-                    .select(V2::Rule.arel_table[:ref_id], V2::Rule.arel_table[:severity],
-                            V2::RuleResult.arel_table[:result].count.as('count'))
+                    .group(rule_fields).select(rule_fields, V2::RuleResult.arel_table[:result].count.as('count'))
                     .order(V2::Rule.sorted_severities => :desc, count: :desc).limit(10)
     end
     # rubocop:enable Metrics/AbcSize
