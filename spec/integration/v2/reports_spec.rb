@@ -65,7 +65,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
     end
   end
 
-  path '/security_guides/os_versions' do
+  path '/reports/os_versions' do
     before { FactoryBot.create_list(:v2_security_guide, 25) }
 
     get 'Request the list of available OS versions' do
