@@ -3,7 +3,7 @@
 module V2
   # JSON serialization for Test Results
   class TestResultSerializer < V2::ApplicationSerializer
-    attributes :end_time, :failed_rule_count, :supported
+    attributes :end_time, :failed_rule_count, :supported, :score
 
     derived_attribute :display_name, system: [:display_name]
     derived_attribute :groups, system: [:groups]

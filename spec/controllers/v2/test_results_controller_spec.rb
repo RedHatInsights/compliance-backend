@@ -15,7 +15,8 @@ describe V2::TestResultsController do
       os_minor_version: :os_minor_version,
       compliant: :compliant,
       supported: :supported,
-      system_id: :system_id
+      system_id: :system_id,
+      score: :score
     }
   end
 
