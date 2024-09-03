@@ -91,6 +91,12 @@ module Api
               readOnly: true,
               description: 'Whether the Test Result is compliant or not within a given Report.'
             },
+            score: {
+              type: :number,
+              examples: [99.99],
+              readOnly: true,
+              description: 'Compliance Score of the System within a given Report.'
+            },
             supported: {
               type: %w[boolean null],
               examples: [false, true],
