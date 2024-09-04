@@ -7,15 +7,14 @@ module Xccdf
 
     included do
       def save_profile_rules
-        ::ProfileRule.transaction do
-          ::ProfileRule.import!(profile_rules,
-                                on_duplicate_key_update: {
-                                  conflict_target: %i[rule_id profile_id],
-                                  columns: %i[rule_id profile_id]
-                                })
+        ::V2::ProfileRule.transaction do
+          ::V2::ProfileRule.import!(profile_rules,
+                                    on_duplicate_key_update: {
+                                      conflict_target: %i[rule_id profile_id],
+                                      columns: %i[rule_id profile_id]
+                                    })
 
-          base = ::ProfileRule.joins(profile: :benchmark)
-                              .where('profiles.parent_profile_id' => nil)
+          base = ::V2::ProfileRule.joins(profile: :security_guide)
 
           profile_rule_links_to_remove(base).delete_all
         end
@@ -36,7 +35,7 @@ module Xccdf
 
       def profile_rule_links_to_remove(base)
         grouped_rules = profile_rules.group_by(&:profile_id)
-        grouped_rules.reduce(ProfileRule.none) do |query, (profile_id, prs)|
+        grouped_rules.reduce(V2::ProfileRule.none) do |query, (profile_id, prs)|
           query.or(
             base.where(profile_id: profile_id)
                 .where.not(rule_id: prs.map(&:rule_id))
