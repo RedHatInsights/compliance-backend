@@ -41,5 +41,11 @@ module V2
     def self.os_versions
       reselect(:os_major_version).distinct.reorder(:os_major_version).map(&:os_major_version)
     end
+
+    def self.from_parser(obj)
+      record = find_or_initialize_by(ref_id: obj.id, version: obj.version)
+      record.assign_attributes(title: obj.title, description: obj.description)
+      record
+    end
   end
 end

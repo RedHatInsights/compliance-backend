@@ -26,7 +26,7 @@ module Xccdf
         name: @test_result_file.test_result.profile_id
       ).find_or_initialize_by(
         ref_id: @test_result_file.test_result.profile_id,
-        benchmark: benchmark
+        benchmark_id: security_guide.id
       )
     end
   end
