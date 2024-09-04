@@ -10,7 +10,7 @@ class PlaybookDownloader
     end
 
     def playbook_exists?(rule)
-      playbook_list(rule.benchmark.os_major_version).include?(rule.short_ref_id)
+      playbook_list(rule.security_guide.os_major_version).include?(rule.short_ref_id)
     end
 
     private

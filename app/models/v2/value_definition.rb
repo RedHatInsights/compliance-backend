@@ -15,6 +15,8 @@ module V2
     searchable_by :title, %i[like unlike eq ne]
     searchable_by :ref_id, %i[like unlike]
 
+    attr_accessor :op_source
+
     def validate_value(value)
       return false unless value.is_a?(String)
 
@@ -26,6 +28,14 @@ module V2
       when 'string'
         true
       end
+    end
+
+    def self.from_parser(obj, existing: nil, security_guide_id: nil)
+      record = existing || new(ref_id: obj.id, security_guide_id: security_guide_id)
+      record.op_source = obj
+      record.assign_attributes(title: obj.title, description: obj.description,
+                               value_type: obj.type, default_value: obj.value)
+      record
     end
   end
 end

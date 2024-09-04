@@ -29,6 +29,19 @@ module V2
       raise ::Exceptions::OSMinorVersionNotSupported.new(security_guide.os_major_version, version)
     end
 
+    def self.from_parser(obj, existing: nil, security_guide_id: nil, value_overrides: nil)
+      record = existing || new(ref_id: obj.id, security_guide_id: security_guide_id)
+
+      record.assign_attributes(
+        title: obj.title,
+        description: obj.description,
+        value_overrides: value_overrides,
+        upstream: false
+      )
+
+      record
+    end
+
     private
 
     def find_variant_for_minor(version)
