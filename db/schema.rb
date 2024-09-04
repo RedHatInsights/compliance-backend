@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_03_073330) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_04_141834) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -530,6 +530,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_03_073330) do
       BEGIN
           INSERT INTO "rules" (
             "ref_id",
+            "slug",
             "title",
             "severity",
             "description",
@@ -545,6 +546,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_03_073330) do
             "identifier"
           ) VALUES (
             NEW."ref_id",
+            LOWER(REGEXP_REPLACE(NEW."ref_id", '\.', '-', 'g')),
             NEW."title",
             NEW."severity",
             NEW."description",
