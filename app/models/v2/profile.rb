@@ -7,7 +7,7 @@ module V2
     self.table_name = :canonical_profiles
     self.primary_key = :id
 
-    indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.gsub('-', '.')) }
+    indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.try(:gsub, '-', '.')) }
 
     sortable_by :title
 
