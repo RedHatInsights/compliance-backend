@@ -8,7 +8,7 @@ module V2
     self.table_name = :v2_rules
     self.primary_key = :id
 
-    indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.gsub('-', '.')) }
+    indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.try(:gsub, '-', '.')) }
 
     # rubocop:disable Metrics/AbcSize
     def self.sorted_severities(table = arel_table)
