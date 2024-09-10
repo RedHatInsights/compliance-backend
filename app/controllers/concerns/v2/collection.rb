@@ -13,7 +13,7 @@ module V2
       def fetch_collection
         scope = filter_by_tags(search(expand_resource))
         count = count_collection(scope)
-        # If the count of records equals zero, make sure that the parents exist.
+        # If the count of records equals zero, make sure that the parents are not accessible
         validate_parents! if count.zero? && permitted_params[:parents]&.any?
 
         sort(scope).limit(pagination_limit).offset(pagination_offset)
@@ -30,13 +30,28 @@ module V2
       def validate_parents!
         current = permitted_params[:parents].last
         reflection = resource.reflect_on_association(current)
+        # Look up the `parents` array from the parent route and use it to scope down the parent
+        # resource to make sure we throw a 404 if it is not accesible.
         scope = pundit_scope(join_parents(reflection.klass, parent_route_parents))
         scope.find(permitted_params[reflection.foreign_key])
       end
 
-      # Look up the `parents` array from the parent route using a search in Rails' routing table
+      # The parent route is usually 2 levels higher, as the current route contains the ID and the
+      # resource name. In some cases when collection metadata like `os_versions` is requested, we
+      # need to drop that extra level. The right level can be determined by checking the length
+      # of the parents.
       def parent_route_parents
-        Rails.application.routes.recognize_path(request.path.split('/')[..-2].join('/'))[:parents]
+        [2, 3].filter_map do |level|
+          route = parent_route(level)
+          route[:parents] if route[:parents]&.count.to_i < permitted_params[:parents]&.count.to_i
+        end.first
+      end
+
+      # Helper method to look up a parent route by removing the `level` amount of elements from
+      # the current request path.
+      def parent_route(level)
+        path = request.path.split('/')[..-level].join('/')
+        Rails.application.routes.recognize_path(path)
       end
 
       def filter_by_tags(data)
