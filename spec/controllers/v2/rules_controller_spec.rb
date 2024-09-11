@@ -30,7 +30,8 @@ describe V2::RulesController do
   context '/security_guides/:id/rules' do
     describe 'GET index' do
       let(:parent) { FactoryBot.create(:v2_security_guide) }
-      let(:extra_params) { { security_guide_id: parent.id } }
+      let(:rule_group) { FactoryBot.create(:v2_rule_group, security_guide: parent) }
+      let(:extra_params) { { security_guide_id: parent.id, rule_group: rule_group } }
       let(:item_count) { 2 }
       let(:items) do
         FactoryBot.create_list(
@@ -77,7 +78,10 @@ describe V2::RulesController do
 
     describe 'GET index' do
       let(:parent) { FactoryBot.create(:v2_profile) }
-      let(:extra_params) { { security_guide_id: parent.security_guide.id, profile_id: parent.id } }
+      let(:rule_group) { FactoryBot.create(:v2_rule_group, security_guide: parent.security_guide) }
+      let(:extra_params) do
+        { security_guide_id: parent.security_guide.id, profile_id: parent.id, rule_group: rule_group }
+      end
       let(:item_count) { 2 }
 
       let(:items) do
@@ -174,11 +178,13 @@ describe V2::RulesController do
     end
 
     describe 'GET index' do
+      let(:rule_group) { FactoryBot.create(:v2_rule_group, security_guide: parent.profile.security_guide) }
       let(:extra_params) do
         {
           policy_id: parent.policy.id,
           tailoring_id: parent.id,
-          security_guide_id: pw(parent.profile.security_guide_id)
+          security_guide_id: pw(parent.profile.security_guide_id),
+          rule_group: rule_group
         }
       end
 

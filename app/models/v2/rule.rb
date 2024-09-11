@@ -48,6 +48,7 @@ module V2
     searchable_by :title, %i[like unlike eq ne in notin]
     searchable_by :severity, %i[eq ne in notin]
     searchable_by :remediation_available, %i[eq]
+    searchable_by :rule_group_id, %i[eq]
 
     # This field should be only available for rules that have a remediation available and it
     # is bound to a context of a profile and a security guide. A single rule can belong to one

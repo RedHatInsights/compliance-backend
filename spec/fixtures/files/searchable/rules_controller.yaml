@@ -184,3 +184,19 @@
         :tailoring_id: ${tailoring_id}
         :remediation_available: false
   :query: remediation_available = true
+
+- :name: "equality search by rule_group_id"
+  :entities:
+    :found:
+      - :factory: :v2_rule
+        :security_guide_id: ${security_guide_id}
+        :parent_count: 0
+        :rule_group: ${rule_group}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+    :not_found:
+      - :factory: :v2_rule
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+  :query: rule_group_id = ${rule_group.id}
