@@ -101,7 +101,7 @@ module V2
     sortable_by :percent_compliant, 'aggregate_percent_compliant'
 
     searchable_by :title, %i[like unlike eq ne in notin]
-    searchable_by :os_major_version, %i[eq ne in notin], except_parents: %i[system] do |_key, op, val|
+    searchable_by :os_major_version, %i[eq ne in notin], except_parents: %i[systems] do |_key, op, val|
       bind = ['IN', 'NOT IN'].include?(op) ? '(?)' : '?'
 
       {
@@ -109,7 +109,7 @@ module V2
         parameter: [val.split.map(&:to_i)]
       }
     end
-    searchable_by :with_reported_systems, %i[eq], except_parents: %i[system] do |_key, _op, _val|
+    searchable_by :with_reported_systems, %i[eq], except_parents: %i[systems] do |_key, _op, _val|
       ids = V2::Report.joins(:test_results).reselect(:id)
 
       { conditions: "v2_policies.id IN (#{ids.to_sql})" }
