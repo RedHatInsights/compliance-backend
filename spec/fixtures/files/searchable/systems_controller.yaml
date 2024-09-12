@@ -257,6 +257,9 @@
       - :factory: :system
         :account: ${account}
   :query: (assigned_or_scanned = true)
+  :except_parents:
+    - :policies
+    - :reports
 - :name: "search by not having any contextual test_results"
   :entities:
     :found:

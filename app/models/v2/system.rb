@@ -94,7 +94,7 @@ module V2
       }
     end
 
-    searchable_by :assigned_or_scanned, %i[eq] do |_key, _op, _val|
+    searchable_by :assigned_or_scanned, %i[eq], except_parents: %i[policies reports] do |_key, _op, _val|
       ids = V2::System.where(id: V2::PolicySystem.select(:system_id)).or(
         V2::System.where(id: V2::TestResult.select(:system_id))
       ).reselect(:id)
