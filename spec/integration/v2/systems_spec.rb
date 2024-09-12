@@ -150,7 +150,9 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       content_types
       pagination_params_v2
       sort_params_v2(V2::System, except: %i[os_major_version])
-      search_params_v2(V2::System, except: %i[never_reported os_major_version policies profile_ref_id])
+      search_params_v2(
+        V2::System, except: %i[never_reported os_major_version policies profile_ref_id assigned_or_scanned]
+      )
 
       parameter name: :policy_id, in: :path, type: :string, required: true
 
@@ -389,7 +391,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       content_types
       pagination_params_v2
       sort_params_v2(V2::System, except: %i[os_major_version])
-      search_params_v2(V2::System, except: %i[os_major_version policies profile_ref_id])
+      search_params_v2(V2::System, except: %i[os_major_version policies profile_ref_id assigned_or_scanned])
 
       parameter name: :report_id, in: :path, type: :string, required: true
 
