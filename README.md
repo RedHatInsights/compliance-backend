@@ -80,7 +80,7 @@ Let's examine how to run the project:
 #### Deployment
 
 ```shell
-bonfire deploy compliance --optional-deps-method hybrid --frontends true --source=appsre --ref-env insights-stage --timeout 900 --no-remove-resources=all
+bonfire deploy compliance --optional-deps-method hybrid --frontends true --source=appsre --ref-env insights-stage --timeout 900
 ```
 
 This will set up the environment with all service dependencies, 3scale gateway, frontend
