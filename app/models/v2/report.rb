@@ -147,7 +147,7 @@ module V2
     def top_failed_rules
       rule_fields = %i[title ref_id identifier severity].map { |field| V2::Rule.arel_table[field] }
 
-      V2::RuleResult.joins(:test_result, :system, :rule)
+      V2::RuleResult.joins(:system, :rule) # Because joins(test_results: :system, rule: []) is not that pretty
                     .merge_with_alias(Pundit.policy_scope(User.current, V2::System))
                     .where(result: V2::RuleResult::FAILED)
                     .group(rule_fields).select(rule_fields, V2::RuleResult.arel_table[:result].count.as('count'))
