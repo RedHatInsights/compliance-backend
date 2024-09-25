@@ -149,7 +149,7 @@ module V2
 
       V2::RuleResult.joins(:system, :rule) # Because joins(test_results: :system, rule: []) is not that pretty
                     .merge_with_alias(Pundit.policy_scope(User.current, V2::System))
-                    .where(result: V2::RuleResult::FAILED)
+                    .where(result: V2::RuleResult::FAILED, v2_test_results: { report_id: id }) # FIXME: aliasing
                     .group(rule_fields).select(rule_fields, V2::RuleResult.arel_table[:result].count.as('count'))
                     .order(V2::Rule.sorted_severities => :desc, count: :desc).limit(10)
     end
