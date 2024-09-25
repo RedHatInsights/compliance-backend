@@ -53,7 +53,8 @@ module V2
         offset: ParamType.integer & ParamType.gte(0),
         sort_by: ParamType.array(ParamType.string) | ParamType.string,
         tags: ParamType.array(ParamType.string) | ParamType.string,
-        filter: ParamType.string
+        filter: ParamType.string,
+        ids_only: ParamType.boolean
       }
 
       permitted_params_for_action :show, id: ParamType.string

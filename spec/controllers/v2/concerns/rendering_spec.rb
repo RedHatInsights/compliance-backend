@@ -68,6 +68,21 @@ RSpec.shared_examples 'collection' do |*parents|
     end
   end
 
+  context 'ids_only' do
+    it 'only serializes the ID field' do
+      collection = items.map { |item| hash_including('id' => item.id) }
+
+      get :index, params: passable_params.merge(parents: parents)
+
+      expect(response).to have_http_status :ok
+      expect(response_body_data).to match_array(collection)
+
+      response_body_data.each do |item|
+        expect(item.keys.count).to eq((attributes.keys + %i[id type]).count)
+      end
+    end
+  end
+
   context 'Unathorized' do
     let(:rbac_allowed?) { false }
 

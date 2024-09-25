@@ -20,6 +20,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
       operationId 'Rules'
       content_types
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::Rule)
       search_params_v2(V2::Rule)
 
@@ -113,6 +114,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
       operationId 'ProfileRules'
       content_types
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::Rule)
       search_params_v2(V2::Rule)
 
@@ -225,6 +227,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
       operationId 'TailoringRules'
       content_types
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::Rule)
       search_params_v2(V2::Rule)
 

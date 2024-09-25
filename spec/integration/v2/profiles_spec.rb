@@ -19,6 +19,7 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
       operationId 'Profiles'
       content_types
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::Profile)
       search_params_v2(V2::Profile)
 

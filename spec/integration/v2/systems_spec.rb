@@ -19,6 +19,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       content_types
       tags_params
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::System)
       search_params_v2(V2::System, except: %i[never_reported])
 
@@ -151,6 +152,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       content_types
       tags_params
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::System, except: %i[os_major_version])
       search_params_v2(
         V2::System, except: %i[never_reported os_major_version policies profile_ref_id assigned_or_scanned]
@@ -393,6 +395,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       content_types
       tags_params
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::System, except: %i[os_major_version])
       search_params_v2(V2::System, except: %i[os_major_version policies profile_ref_id assigned_or_scanned])
 

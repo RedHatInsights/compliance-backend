@@ -37,6 +37,7 @@ describe 'Rule Results', swagger_doc: 'v2/openapi.json' do
       operationId 'ReportRuleResults'
       content_types
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::RuleResult)
       search_params_v2(V2::RuleResult)
 

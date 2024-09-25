@@ -111,6 +111,12 @@ def pagination_params_v2
             schema: { type: :integer, minimum: 0, default: 0 }
 end
 
+def ids_only_param
+  parameter name: :ids_only, in: :query, required: false,
+            description: 'Indicates whether to return only resource IDs.',
+            schema: { type: :boolean }
+end
+
 def search_params
   parameter name: :search, in: :query, required: false,
             description: 'Query string compliant with scoped_search ' \
