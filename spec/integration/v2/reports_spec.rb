@@ -25,6 +25,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
       operationId 'Reports'
       content_types
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::Report)
       search_params_v2(V2::Report)
 
@@ -208,6 +209,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
       operationId 'SystemReports'
       content_types
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::Report, except: %i[os_major_version])
       search_params_v2(V2::Report, except: %i[os_major_version with_reported_systems])
 

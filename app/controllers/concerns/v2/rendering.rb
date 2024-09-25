@@ -31,8 +31,12 @@ module V2
       end
 
       def serialize_collection(model)
+        only = permitted_params[:ids_only] ? [:id] : []
+
         Panko::Response.new(
-          data: Panko::ArraySerializer.new(model, each_serializer: serializer, context: serialization_context),
+          data: Panko::ArraySerializer.new(
+            model, only: only, each_serializer: serializer, context: serialization_context
+          ),
           **metadata(model)
         )
       end

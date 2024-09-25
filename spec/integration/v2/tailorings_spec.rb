@@ -40,6 +40,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       operationId 'Tailorings'
       content_types
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::Tailoring)
       search_params_v2(V2::Tailoring)
 

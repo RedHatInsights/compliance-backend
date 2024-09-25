@@ -19,6 +19,7 @@ describe 'Rule Groups', swagger_doc: 'v2/openapi.json' do
       operationId 'Rule Groups'
       content_types
       pagination_params_v2
+      ids_only_param
       sort_params_v2(V2::RuleGroup)
       search_params_v2(V2::RuleGroup)
 
