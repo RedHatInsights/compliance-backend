@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_04_141834) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_26_141107) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -383,6 +383,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_04_141834) do
   create_view "supported_profiles", sql_definition: <<-SQL
       SELECT (array_agg(canonical_profiles.id ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS id,
       (array_agg(canonical_profiles.title ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS title,
+      (array_agg(canonical_profiles.description ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS description,
       canonical_profiles.ref_id,
       (array_agg(security_guides.id ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_id,
       (array_agg(security_guides.version ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_version,
