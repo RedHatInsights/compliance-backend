@@ -493,7 +493,7 @@ parameters:
   value: latest
 - name: IMAGE
   description: Image name
-  value: quay.io/cloudservices/compliance-backend
+  value: quay.io/redhat-services-prod/insights-management-tenant/insights-compliance/compliance-backend
 - name: ENV_NAME
   description: ClowdEnv Name
 - name: REPLICAS_BACKEND
