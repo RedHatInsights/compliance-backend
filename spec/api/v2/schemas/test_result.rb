@@ -109,7 +109,7 @@ module Api
               readOnly: true,
               description: 'Number of failed rules in the Test Result'
             },
-            last_scanned: {
+            end_time: {
               type: :string,
               examples: ['2020-06-04T19:31:55Z'],
               readOnly: true,
