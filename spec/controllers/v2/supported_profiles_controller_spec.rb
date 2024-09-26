@@ -7,6 +7,7 @@ describe V2::SupportedProfilesController do
     {
       ref_id: :ref_id,
       title: :title,
+      description: :description,
       security_guide_id: :security_guide_id,
       security_guide_version: :security_guide_version,
       os_major_version: :os_major_version,

@@ -30,6 +30,13 @@ module Api
               readOnly: true,
               description: 'Short title of the Profile'
             },
+            description: {
+              type: :string,
+              examples: ['This profile defines a baseline that aligns to the Center for Internet Security®' \
+              'Red Hat Enterprise Linux 7 Benchmark™, v2.2.0, released 12-27-2017.'],
+              readOnly: true,
+              description: 'Longer description of the Profile'
+            },
             security_guide_id: {
               type: :string,
               format: :uuid,
