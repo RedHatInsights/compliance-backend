@@ -6,12 +6,12 @@ module V2
     def index
       render_json test_results
     end
-    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :index, Rbac::REPORT_READ
 
     def show
       render_json test_result
     end
-    permission_for_action :show, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :show, Rbac::REPORT_READ
 
     def os_versions
       render json: test_results.os_versions, status: :ok
