@@ -40,7 +40,7 @@ module Types
       description 'All business objectives visible by the user'
     end
 
-    enforce_rbac Rbac::COMPLIANCE_VIEWER
+    enforce_rbac Rbac::V1_COMPLIANCE_VIEWER
 
     def system(id:)
       Pundit.authorize(context[:current_user], ::Host.find(id), :show?)

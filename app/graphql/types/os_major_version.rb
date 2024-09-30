@@ -10,6 +10,6 @@ module Types
     field :os_major_version, Int, null: false
     cached_static_field :profiles, [::Types::Profile], null: true
 
-    enforce_rbac Rbac::COMPLIANCE_VIEWER
+    enforce_rbac Rbac::V1_COMPLIANCE_VIEWER
   end
 end

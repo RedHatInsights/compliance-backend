@@ -13,6 +13,6 @@ module Types
     field :description, String, null: true
     field :default_value, String, null: false
 
-    enforce_rbac Rbac::COMPLIANCE_VIEWER
+    enforce_rbac Rbac::V1_COMPLIANCE_VIEWER
   end
 end

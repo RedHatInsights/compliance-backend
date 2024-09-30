@@ -13,12 +13,12 @@ module V1
       permitted_params[:sort_by] ||= 'score'
       render_json resolve_collection
     end
-    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :index, Rbac::V1_COMPLIANCE_VIEWER
 
     def show
       render_json profile
     end
-    permission_for_action :show, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :show, Rbac::V1_COMPLIANCE_VIEWER
 
     def create
       Policy.transaction do
@@ -65,7 +65,7 @@ module V1
 
       audit_tailoring_file
     end
-    permission_for_action :tailoring_file, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :tailoring_file, Rbac::V1_COMPLIANCE_VIEWER
     permitted_params_for_action :tailoring_file, id: ID_TYPE.required
 
     private

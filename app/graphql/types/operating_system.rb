@@ -10,6 +10,6 @@ module Types
     field :major, Int, null: false
     field :minor, Int, null: false
 
-    enforce_rbac Rbac::COMPLIANCE_VIEWER
+    enforce_rbac Rbac::V1_COMPLIANCE_VIEWER
   end
 end

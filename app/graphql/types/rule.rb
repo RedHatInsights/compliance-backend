@@ -20,7 +20,7 @@ module Types
     field :failed_count, Int, null: true
     field :compliant, Boolean, null: false
 
-    enforce_rbac Rbac::COMPLIANCE_VIEWER
+    enforce_rbac Rbac::V1_COMPLIANCE_VIEWER
 
     def compliant
       system_id && profile_id && %w[pass notapplicable notselected].include?(

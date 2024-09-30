@@ -20,7 +20,7 @@ module Types
     cached_static_field :value_definitions, [::Types::ValueDefinition], null: true
     cached_static_field :rule_tree, GraphQL::Types::JSON, null: true
 
-    enforce_rbac Rbac::COMPLIANCE_VIEWER
+    enforce_rbac Rbac::V1_COMPLIANCE_VIEWER
 
     def profiles
       object.profiles.canonical

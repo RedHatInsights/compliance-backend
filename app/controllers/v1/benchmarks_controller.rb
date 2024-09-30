@@ -6,12 +6,12 @@ module V1
     def index
       render_json benchmarks
     end
-    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :index, Rbac::V1_COMPLIANCE_VIEWER
 
     def show
       render_json benchmark
     end
-    permission_for_action :show, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :show, Rbac::V1_COMPLIANCE_VIEWER
 
     private
 
