@@ -6,7 +6,7 @@ module V1
     def index
       render_json resolve_collection
     end
-    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :index, Rbac::V1_COMPLIANCE_VIEWER
 
     private
 

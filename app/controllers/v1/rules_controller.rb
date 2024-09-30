@@ -6,7 +6,7 @@ module V1
     def index
       render_json resolve_collection
     end
-    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :index, Rbac::V1_COMPLIANCE_VIEWER
     permitted_params_for_action :index, policy_id: ID_TYPE
 
     def show
@@ -20,7 +20,7 @@ module V1
 
       render_json rule
     end
-    permission_for_action :show, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :show, Rbac::V1_COMPLIANCE_VIEWER
 
     private
 
