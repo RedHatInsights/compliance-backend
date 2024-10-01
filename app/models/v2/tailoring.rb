@@ -55,6 +55,12 @@ module V2
       TailoringRule.import(data, on_duplicate_key_ignore: true, validate: false)
     end
 
+    def self.for_policy(policy, os_minor_version)
+      profile = policy.profile.variant_for_minor(os_minor_version)
+      V2::Tailoring.new(policy: policy, os_minor_version: os_minor_version,
+                        profile: profile, value_overrides: profile.value_overrides)
+    end
+
     def os_major_version
       attributes['security_guide__os_major_version'] || try(:security_guide)&.os_major_version
     end

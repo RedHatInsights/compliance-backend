@@ -70,6 +70,43 @@ describe V2::TailoringsController do
       it_behaves_like 'indexable', :os_minor_version, :policy
     end
 
+    describe 'POST create' do
+      let(:os_minor_version) { SecureRandom.random_number(10) }
+      let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile) }
+      let(:params) { { policy_id: parent.id, os_minor_version: os_minor_version, parents: [:policy] } }
+
+      let(:canonical_profile) do
+        FactoryBot.create(:v2_profile, ref_id_suffix: 'foo', supports_minors: [os_minor_version])
+      end
+
+      it 'creates a tailoring according to the OS minor version' do
+        post :create, params: params
+
+        expect(response).to have_http_status :created
+        expect(parent.tailorings.map(&:id)).to include(response_body_data['id'])
+      end
+
+      context 'tailoring already exists' do
+        before { FactoryBot.create(:v2_tailoring, policy: parent, os_minor_version: os_minor_version) }
+
+        it 'fails with an error' do
+          post :create, params: params
+
+          expect(response).to have_http_status :not_acceptable
+        end
+      end
+
+      context 'unsupported OS minor version' do
+        let(:canonical_profile) { FactoryBot.create(:v2_profile, ref_id_suffix: 'foo', supports_minors: []) }
+
+        it 'returns not found' do
+          post :create, params: params
+
+          expect(response).to have_http_status :not_found
+        end
+      end
+    end
+
     describe 'PATCH update' do
       let(:os_minor_version) { SecureRandom.random_number(10) }
       let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile) }
