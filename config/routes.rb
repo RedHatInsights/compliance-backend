@@ -38,7 +38,7 @@ Rails.application.routes.draw do
         end
 
         resources :policies, except: %i[new edit] do
-          resources :tailorings, only: %i[index show update], parents: %i[policy] do
+          resources :tailorings, only: %i[index show create update], parents: %i[policy] do
             resources :rules, only: %i[index create update destroy], parents: %i[policies tailorings]
             get :tailoring_file, on: :member, defaults: { format: 'xml' }, constraints: { format: /json|xml/ }
           end

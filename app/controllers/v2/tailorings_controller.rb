@@ -3,6 +3,7 @@
 module V2
   # API for Tailorings
   class TailoringsController < ApplicationController
+    CREATE_ATTRIBUTES = { os_minor_version: ParamType.integer & ParamType.gte(0) }.freeze
     UPDATE_ATTRIBUTES = { value_overrides: ParamType.map }.freeze
 
     def index
@@ -14,6 +15,21 @@ module V2
       render_json tailoring
     end
     permission_for_action :show, Rbac::POLICY_READ
+
+    def create
+      # Look up the latest Profile supporting the given OS minor version
+      new_tailoring = V2::Tailoring.for_policy(policy, permitted_params[:os_minor_version])
+      new_tailoring.account = current_user.account
+
+      if new_tailoring.save
+        render_json new_tailoring, status: :created
+        audit_success("Created tailoring #{new_tailoring.id}")
+      else
+        render_model_errors new_tailoring
+      end
+    end
+    permission_for_action :create, Rbac::POLICY_WRITE
+    permitted_params_for_action :create, { id: ID_TYPE, **CREATE_ATTRIBUTES }
 
     def update
       if tailoring.update(permitted_params.to_h.slice(*UPDATE_ATTRIBUTES.keys))
@@ -43,6 +59,10 @@ module V2
 
     def tailoring
       @tailoring ||= authorize(expand_resource.find(permitted_params[:id]))
+    end
+
+    def policy
+      V2::Policy.find(permitted_params[:policy_id])
     end
 
     def build_file(format)
