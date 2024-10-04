@@ -23,16 +23,6 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       ).id
     end
 
-    before do
-      25.times.map do |version|
-        FactoryBot.create(
-          :v2_tailoring,
-          policy: V2::Policy.find(policy_id),
-          os_minor_version: version
-        )
-      end
-    end
-
     get 'Request Tailorings' do
       v2_auth_header
       tags 'Policies'
@@ -43,6 +33,16 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       ids_only_param
       sort_params_v2(V2::Tailoring)
       search_params_v2(V2::Tailoring)
+
+      before do
+        25.times.map do |version|
+          FactoryBot.create(
+            :v2_tailoring,
+            policy: V2::Policy.find(policy_id),
+            os_minor_version: version
+          )
+        end
+      end
 
       parameter name: :policy_id, in: :path, type: :string, required: true
 
@@ -87,6 +87,35 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
         schema ref_schema('errors')
 
         after { |e| autogenerate_examples(e, 'Description of an error when requesting higher limit than supported') }
+
+        run_test!
+      end
+    end
+
+    post 'Create a Tailoring' do
+      let(:policy_id) do
+        FactoryBot.create(
+          :v2_policy,
+          account: user.account,
+          profile: FactoryBot.create(:v2_profile, ref_id_suffix: 'foo', supports_minors: [1])
+        ).id
+      end
+
+      v2_auth_header
+      tags 'Policies'
+      description 'Create a Tailoring with the provided attributes (for ImageBuilder only)'
+      operationId 'CreateTailoring'
+      content_types
+
+      parameter name: :policy_id, in: :path, type: :string, required: true
+      parameter name: :data, in: :body, schema: ref_schema('tailoring_create')
+
+      response '201', 'Creates a Tailoring' do
+        let(:data) { { os_minor_version: 1 } }
+
+        v2_item_schema('tailoring')
+
+        after { |e| autogenerate_examples(e) }
 
         run_test!
       end
