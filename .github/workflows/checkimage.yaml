@@ -1,0 +1,31 @@
+name: Regular base image update check
+on:
+  schedule:
+    - cron: "5 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install skopeo
+        run: sudo apt-get install -y skopeo
+      - name: Check change
+        run: |
+          base=$(grep -Po '(?<=FROM )([^\s]*)(?= AS base)' Dockerfile)
+          skopeo inspect "docker://$base" | grep -Po '(?<="Digest": ")([^"]+)' > .baseimagedigest
+          docker run --rm -u 0 quay.io/cloudservices/compliance-backend:latest sh -c \
+            'microdnf update -y $(cat /opt/installedpackages) > /dev/null; rpm -q $(cat /opt/installedpackages) | sort | sha256sum | cut -d " " -f 1' \
+            >> .baseimagedigest
+      - name: Do change if the digest changed
+        run: |
+          git config user.name 'Update-a-Bot'
+          git config user.email 'insights@redhat.com'
+          git add .baseimagedigest
+          git commit -m "chore(image): update and rebuild image" || echo "No new changes"
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: 'chore(image): update base image'
