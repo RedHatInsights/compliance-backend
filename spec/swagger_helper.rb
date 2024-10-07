@@ -158,7 +158,7 @@ def sort_params(model = nil)
 end
 
 def sort_params_v2(model = nil, except: [])
-  parameter name: :sort_by, in: :query, required: false,
+  parameter name: :sort_by, in: :query, required: false, style: :form, explode: true,
             description: 'Attribute and direction to sort the items by. ' \
               'Represented by an array of fields with an optional direction ' \
               '(`<key>:asc` or `<key>:desc`).<br><br>' \
