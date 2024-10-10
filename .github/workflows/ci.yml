@@ -45,7 +45,7 @@ jobs:
     - name: Set up the environment
       run: |
         cp .env.example .env
-        pip3 install podman-compose==1.0.6
+        pipx install podman-compose==1.0.6
     - name: Build using podman-compose
       run: podman-compose build
     - name: Build using docker-compose
