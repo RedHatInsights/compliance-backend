@@ -38,6 +38,12 @@ module V2
       reselect(:os_major_version).distinct.reorder(:os_major_version).map(&:os_major_version)
     end
 
+    def self.from_parser(obj)
+      record = find_or_initialize_by(ref_id: obj.id, version: obj.version)
+      record.assign_attributes(title: obj.title, description: obj.description)
+      record
+    end
+
     # Builds the hierarchical structure of groups and rules
     def rule_tree
       cached_rules = rules.order(:precedence).select(:id, :rule_group_id).group_by(&:rule_group_id)
