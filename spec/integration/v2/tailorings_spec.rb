@@ -195,6 +195,49 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
     end
   end
 
+  path '/policies/{policy_id}/tailorings/{tailoring_id}/rule_tree' do
+    let(:policy_id) do
+      FactoryBot.create(
+        :v2_policy,
+        account: user.account,
+        profile: FactoryBot.create(:v2_profile, rule_count: 10, ref_id_suffix: 'foo', supports_minors: [1])
+      ).id
+    end
+
+    let(:item) do
+      FactoryBot.create(:v2_tailoring, :with_mixed_rules, policy: V2::Policy.find(policy_id), os_minor_version: 1)
+    end
+
+    get 'Request the Rule Tree of a Tailoring' do
+      v2_auth_header
+      tags 'Policies'
+      description 'Returns the Rule Tree of a Tailoring'
+      operationId 'TailoringRuleTree'
+      content_types
+
+      parameter name: :policy_id, in: :path, type: :string, required: true
+      parameter name: :tailoring_id, in: :path, type: :string, required: true
+
+      response '200', 'Returns the Rule Tree of a Tailoring' do
+        let(:tailoring_id) { item.id }
+        schema ref_schema('rule_tree')
+
+        after { |e| autogenerate_examples(e, 'Returns the Rule Tree of a Tailoring') }
+
+        run_test!
+      end
+
+      response '404', 'Returns with Not Found' do
+        let(:tailoring_id) { Faker::Internet.uuid }
+        schema ref_schema('errors')
+
+        after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing Tailoring') }
+
+        run_test!
+      end
+    end
+  end
+
   path '/policies/{policy_id}/tailorings/{tailoring_id}/tailoring_file.json' do
     let(:policy_id) do
       FactoryBot.create(:v2_policy, :for_tailoring, account: user.account, supports_minors: [1]).id

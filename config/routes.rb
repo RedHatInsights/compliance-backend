@@ -33,14 +33,18 @@ Rails.application.routes.draw do
           resources :rule_groups, only: %i[index show], parents: %i[security_guide]
 
           resources :profiles, only: %i[index show], parents: %i[security_guide] do
+            get :rule_tree, on: :member, parents: %i[security_guide]
+
             resources :rules, only: %i[index show], parents: %i[security_guide profiles]
           end
         end
 
         resources :policies, except: %i[new edit] do
           resources :tailorings, only: %i[index show create update], parents: %i[policy] do
-            resources :rules, only: %i[index create update destroy], parents: %i[policies tailorings]
             get :tailoring_file, on: :member, defaults: { format: 'xml' }, constraints: { format: /json|xml/ }
+            get :rule_tree, on: :member, parents: %i[policy]
+
+            resources :rules, only: %i[index create update destroy], parents: %i[policies tailorings]
           end
 
           resources :systems, only: %i[index create update destroy], parents: %i[policies] do

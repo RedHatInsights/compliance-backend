@@ -3,6 +3,8 @@
 module V2
   # Model for profile tailoring
   class Tailoring < ApplicationRecord
+    include V2::RuleTree
+
     GROUP_ANCESTRY_IDS = Arel::Nodes::NamedFunction.new(
       'CAST',
       [
@@ -40,6 +42,7 @@ module V2
              inverse_of: :tailoring
     has_many :rules, class_name: 'V2::Rule', through: :tailoring_rules
     has_many :test_results, class_name: 'V2::TestResult', dependent: :destroy
+    has_many :rule_groups, through: :security_guide, class_name: 'V2::RuleGroup'
 
     searchable_by :os_minor_version, %i[eq ne]
 

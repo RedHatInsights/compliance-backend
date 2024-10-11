@@ -106,4 +106,39 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
       end
     end
   end
+
+  path '/security_guides/{security_guide_id}/profiles/{profile_id}/rule_tree' do
+    let(:item) { FactoryBot.create(:v2_profile, rule_count: 10) }
+
+    get 'Request the Rule Tree of a Profile' do
+      v2_auth_header
+      tags 'Content'
+      description 'Returns the Rule Tree of a Profile'
+      operationId 'ProfileTree'
+      content_types
+
+      parameter name: :security_guide_id, in: :path, type: :string, required: true
+      parameter name: :profile_id, in: :path, type: :string, required: true
+
+      response '200', 'Returns the Rule Tree of a Profile' do
+        let(:profile_id) { item.id }
+        let(:security_guide_id) { item.security_guide.id }
+        schema ref_schema('rule_tree')
+
+        after { |e| autogenerate_examples(e, 'Returns the Rule Tree of a Profile') }
+
+        run_test!
+      end
+
+      response '404', 'Returns with Not Found' do
+        let(:profile_id) { Faker::Internet.uuid }
+        let(:security_guide_id) { Faker::Internet.uuid }
+        schema ref_schema('errors')
+
+        after { |e| autogenerate_examples(e, 'Description of an error when requesting a non-existing Profile') }
+
+        run_test!
+      end
+    end
+  end
 end

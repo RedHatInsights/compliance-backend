@@ -21,33 +21,47 @@ describe V2::ProfilesController do
     allow(controller).to receive(:rbac_allowed?).and_return(rbac_allowed?)
   end
 
-  describe 'GET index' do
-    let(:parent) { FactoryBot.create(:v2_security_guide) }
-    let(:extra_params) { { security_guide_id: parent.id } }
-    let(:item_count) { 2 }
-    let(:items) do
-      FactoryBot.create_list(
-        :v2_profile,
-        item_count,
-        value_count: 10,
-        security_guide: parent
-      ).sort_by(&:id)
+  context '/security_guides/:id/profiles' do
+    describe 'GET index' do
+      let(:parent) { FactoryBot.create(:v2_security_guide) }
+      let(:extra_params) { { security_guide_id: parent.id } }
+      let(:item_count) { 2 }
+      let(:items) do
+        FactoryBot.create_list(
+          :v2_profile,
+          item_count,
+          value_count: 10,
+          security_guide: parent
+        ).sort_by(&:id)
+      end
+
+      it_behaves_like 'collection', :security_guide
+      include_examples 'with metadata', :security_guide
+      it_behaves_like 'paginable', :security_guide
+      it_behaves_like 'sortable', :security_guide
+      it_behaves_like 'searchable', :security_guide
     end
 
-    it_behaves_like 'collection', :security_guide
-    include_examples 'with metadata', :security_guide
-    it_behaves_like 'paginable', :security_guide
-    it_behaves_like 'sortable', :security_guide
-    it_behaves_like 'searchable', :security_guide
-  end
+    describe 'GET show' do
+      let(:item) { FactoryBot.create(:v2_profile) }
+      let(:parent) { item.security_guide }
+      let(:extra_params) { { security_guide_id: parent.id, id: item.id } }
+      let(:notfound_params) { extra_params.merge(security_guide_id: FactoryBot.create(:v2_security_guide).id) }
 
-  describe 'GET show' do
-    let(:item) { FactoryBot.create(:v2_profile) }
-    let(:parent) { item.security_guide }
-    let(:extra_params) { { security_guide_id: parent.id, id: item.id } }
-    let(:notfound_params) { extra_params.merge(security_guide_id: FactoryBot.create(:v2_security_guide).id) }
+      it_behaves_like 'individual', :security_guide
+      it_behaves_like 'indexable', :ref_id, :security_guide
+    end
 
-    it_behaves_like 'individual', :security_guide
-    it_behaves_like 'indexable', :ref_id, :security_guide
+    describe 'GET rule_tree' do
+      let(:item) { FactoryBot.create(:v2_profile, rule_count: 5) }
+      let(:parent) { item.security_guide }
+
+      it 'calls the rule tree on the model' do
+        get :rule_tree, params: { id: item.id, security_guide_id: parent.id, parents: %i[security_guide] }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).not_to be_empty
+      end
+    end
   end
 end

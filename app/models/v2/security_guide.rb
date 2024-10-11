@@ -3,6 +3,8 @@
 module V2
   # Model for Security Guides
   class SecurityGuide < ApplicationRecord
+    include V2::RuleTree
+
     # FIXME: clean up after the remodel
     self.primary_key = :id
 
@@ -36,21 +38,6 @@ module V2
 
     def self.os_versions
       reselect(:os_major_version).distinct.reorder(:os_major_version).map(&:os_major_version)
-    end
-
-    # Builds the hierarchical structure of groups and rules
-    def rule_tree
-      cached_rules = rules.order(:precedence).select(:id, :rule_group_id).group_by(&:rule_group_id)
-
-      rule_groups.order(:precedence).select(:id, :ancestry).arrange_serializable do |group, children|
-        {
-          id: group.id,
-          type: :rule_group,
-          children: children + (cached_rules[group.id]&.map do |rule|
-            { id: rule.id, type: :rule }
-          end || [])
-        }
-      end
     end
   end
 end
