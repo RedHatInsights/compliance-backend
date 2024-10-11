@@ -11,6 +11,10 @@ module V2
       match_account?
     end
 
+    def rule_tree?
+      match_account?
+    end
+
     def update?
       match_account?
     end

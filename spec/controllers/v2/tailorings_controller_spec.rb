@@ -70,6 +70,26 @@ describe V2::TailoringsController do
       it_behaves_like 'indexable', :os_minor_version, :policy
     end
 
+    describe 'GET rule_tree' do
+      let(:os_minor_version) { SecureRandom.random_number(10) }
+      let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile) }
+
+      let(:item) do
+        FactoryBot.create(:v2_tailoring, :with_mixed_rules, policy: parent, os_minor_version: os_minor_version)
+      end
+
+      let(:canonical_profile) do
+        FactoryBot.create(:v2_profile, rule_count: 5, ref_id_suffix: 'foo', supports_minors: [os_minor_version])
+      end
+
+      it 'calls the rule tree on the model' do
+        get :rule_tree, params: { id: item.id, policy_id: parent.id, parents: %i[policy] }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).not_to be_empty
+      end
+    end
+
     describe 'POST create' do
       let(:os_minor_version) { SecureRandom.random_number(10) }
       let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile) }

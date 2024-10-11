@@ -3,6 +3,8 @@
 module V2
   # Model for SCAP policies
   class Policy < ApplicationRecord
+    include V2::RuleTree
+
     # FIXME: clean up after the remodel
     self.table_name = :v2_policies
     self.primary_key = :id
@@ -18,6 +20,7 @@ module V2
     has_many :rules, through: :tailoring_rules, class_name: 'V2::Rule'
     has_many :policy_systems, class_name: 'V2::PolicySystem', dependent: :destroy
     has_many :systems, through: :policy_systems, class_name: 'V2::System'
+    has_many :rule_groups, through: :security_guide, class_name: 'V2::RuleGroup'
 
     validates :account, presence: true
     validates :profile, presence: true

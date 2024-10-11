@@ -16,6 +16,12 @@ module V2
     end
     permission_for_action :show, Rbac::POLICY_READ
 
+    def rule_tree
+      render json: tailoring.rule_tree
+    end
+    permission_for_action :rule_tree, Rbac::COMPLIANCE_VIEWER
+    permitted_params_for_action :rule_tree, id: ID_TYPE.required
+
     def create
       # Look up the latest Profile supporting the given OS minor version
       new_tailoring = V2::Tailoring.for_policy(policy, permitted_params[:os_minor_version])

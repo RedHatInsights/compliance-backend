@@ -3,6 +3,8 @@
 module V2
   # Model for Canonical Profile
   class Profile < ApplicationRecord
+    include V2::RuleTree
+
     # FIXME: clean up after the remodel
     self.table_name = :canonical_profiles
     self.primary_key = :id
@@ -18,6 +20,7 @@ module V2
     has_many :profile_rules, class_name: 'V2::ProfileRule', dependent: :destroy
     has_many :rules, through: :profile_rules, class_name: 'V2::Rule'
     has_many :os_minor_versions, class_name: 'V2::ProfileOsMinorVersion', dependent: :destroy
+    has_many :rule_groups, through: :security_guide, class_name: 'V2::RuleGroup'
 
     def variant_for_minor(version)
       self.class.joins(:security_guide, :os_minor_versions)

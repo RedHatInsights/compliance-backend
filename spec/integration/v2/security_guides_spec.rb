@@ -133,7 +133,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
 
-      response '200', 'Returns a the Rule Tree of Security Guide' do
+      response '200', 'Returns the Rule Tree of a Security Guide' do
         let(:security_guide_id) { item.id }
         schema ref_schema('rule_tree')
 
