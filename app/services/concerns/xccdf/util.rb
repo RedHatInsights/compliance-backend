@@ -9,6 +9,7 @@ module Xccdf
       include ::Xccdf::Benchmarks
       include ::Xccdf::Profiles
       include ::Xccdf::Rules
+      include ::Xccdf::Fixes
       include ::Xccdf::RuleGroups
       include ::Xccdf::ValueDefinitions
       include ::Xccdf::ProfileRules
@@ -28,6 +29,7 @@ module Xccdf
         save_profiles
         save_rule_groups
         save_rules
+        save_fixes
         save_rule_group_relationships
         save_profile_rules
         save_profile_os_minor_versions
