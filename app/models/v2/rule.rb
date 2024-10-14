@@ -39,6 +39,7 @@ module V2
     has_many :tailoring_rules, class_name: 'V2::TailoringRule', dependent: :destroy
     has_many :tailorings, through: :tailoring_rules, class_name: 'V2::Tailoring'
     has_many :policies, class_name: 'V2::Policy', through: :tailorings
+    has_many :fixes, class_name: 'V2::Fix', dependent: :destroy
 
     sortable_by :title
     sortable_by :severity, sorted_severities

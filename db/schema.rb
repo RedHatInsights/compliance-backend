@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_26_141107) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_14_100839) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -41,6 +41,20 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_26_141107) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["title"], name: "index_business_objectives_on_title"
+  end
+
+  create_table "fixes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "strategy"
+    t.string "disruption"
+    t.string "complexity"
+    t.string "system"
+    t.text "text"
+    t.uuid "rule_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["rule_id", "system"], name: "index_fixes_on_rule_id_and_system", unique: true
+    t.index ["rule_id"], name: "index_fixes_on_rule_id"
+    t.index ["system"], name: "index_fixes_on_system"
   end
 
   create_table "friendly_id_slugs", id: :serial, force: :cascade do |t|
