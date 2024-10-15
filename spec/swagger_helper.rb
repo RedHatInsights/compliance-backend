@@ -64,8 +64,8 @@ def x_rh_identity(account = nil)
       'org_id': account&.org_id || '1234',
       'type': 'User',
       'user': {
-        'email': 'a@b.com',
-        'username': 'a@b.com',
+        'email': 'no-reply@redhat.com',
+        'username': 'Compliance User',
         'first_name': 'a',
         'last_name': 'b',
         'is_active': true,
