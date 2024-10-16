@@ -494,7 +494,6 @@ parameters:
 - name: IMAGE
   description: Image name
   value: quay.io/redhat-services-prod/insights-management-tenant/insights-compliance/compliance-backend
-- name: IMAGE_DIGEST
 - name: ENV_NAME
   description: ClowdEnv Name
 - name: REPLICAS_BACKEND
