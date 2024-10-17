@@ -54,7 +54,7 @@ objects:
       schedule: ${IMPORT_SSG_SCHEDULE}
       concurrencyPolicy: Forbid
       podSpec:
-        image: ${IMAGE}:${IMAGE_TAG}
+        image: "${REGISTRY_IMG}${IMAGE_SEPARATOR}${IMAGE_DIGEST}"
         initContainers:
         - command: ["/bin/sh"]
           args: ["-c", "$HOME/scripts/abort_if_pending_migrations.sh"]
@@ -119,7 +119,7 @@ objects:
               key: db.auth_token
               optional: true
         - name: IMAGE_TAG
-          value: "${IMAGE}:${IMAGE_TAG}"
+          value: "${REGISTRY_IMG}${IMAGE_SEPARATOR}${IMAGE_DIGEST}"
         - name: NAMESPACE
           valueFrom:
             fieldRef:
@@ -139,7 +139,7 @@ objects:
           enabled: true
           apiPath: compliance
       podSpec:
-        image: ${IMAGE}:${IMAGE_TAG}
+        image: "${REGISTRY_IMG}${IMAGE_SEPARATOR}${IMAGE_DIGEST}"
         initContainers:
         - command: ["/bin/sh"]
           args: ["-c", "$HOME/scripts/check_migration_status_and_ssg_synced.sh"]
@@ -214,7 +214,7 @@ objects:
               key: db.auth_token
               optional: true
         - name: IMAGE_TAG
-          value: "${IMAGE}:${IMAGE_TAG}"
+          value: "${REGISTRY_IMG}${IMAGE_SEPARATOR}${IMAGE_DIGEST}"
         - name: QE_ACCOUNTS
           value: "${QE_ACCOUNTS}"
         - name: NAMESPACE
@@ -253,7 +253,7 @@ objects:
       deploymentStrategy:
         privateStrategy: Recreate
       podSpec:
-        image: ${IMAGE}:${IMAGE_TAG}
+        image: "${REGISTRY_IMG}${IMAGE_SEPARATOR}${IMAGE_DIGEST}"
         initContainers:
         - command: ["/bin/sh"]
           args: ["-c", "$HOME/scripts/check_migration_status_and_ssg_synced.sh"]
@@ -315,7 +315,7 @@ objects:
               key: db.auth_token
               optional: true
         - name: IMAGE_TAG
-          value: "${IMAGE}:${IMAGE_TAG}"
+          value: "${REGISTRY_IMG}${IMAGE_SEPARATOR}${IMAGE_DIGEST}"
         - name: QE_ACCOUNTS
           value: "${QE_ACCOUNTS}"
         - name: NAMESPACE
@@ -347,7 +347,7 @@ objects:
       deploymentStrategy:
         privateStrategy: Recreate
       podSpec:
-        image: ${IMAGE}:${IMAGE_TAG}
+        image: "${REGISTRY_IMG}${IMAGE_SEPARATOR}${IMAGE_DIGEST}"
         initContainers:
         - command: ["/bin/sh"]
           args: ["-c", "$HOME/scripts/check_migration_status_and_ssg_synced.sh"]
@@ -425,7 +425,7 @@ objects:
               key: db.auth_token
               optional: true
         - name: IMAGE_TAG
-          value: "${IMAGE}:${IMAGE_TAG}"
+          value: "${REGISTRY_IMG}${IMAGE_SEPARATOR}${IMAGE_DIGEST}"
         - name: QE_ACCOUNTS
           value: "${QE_ACCOUNTS}"
         - name: NAMESPACE
@@ -494,6 +494,12 @@ parameters:
 - name: IMAGE
   description: Image name
   value: quay.io/redhat-services-prod/insights-management-tenant/insights-compliance/compliance-backend
+- name: IMAGE_SEPARATOR
+  value: ":"
+- name: REGISTRY_IMG
+  value: "${IMAGE}"
+- name: IMAGE_DIGEST
+  value: "${IMAGE_TAG}"
 - name: ENV_NAME
   description: ClowdEnv Name
 - name: REPLICAS_BACKEND
