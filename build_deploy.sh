@@ -12,7 +12,7 @@ export CICD_IMAGE_BUILDER_IMAGE_NAME='quay.io/cloudservices/compliance-backend'
 if [[ "$GIT_BRANCH" == "origin/security-compliance" ]]; then
     # Generate a tag for the container image based on the current date and Git commit short hash.
     SECURITY_COMPLIANCE_TAG="sc-$(date +%Y%m%d)-$(git rev-parse --short=7 HEAD)"
-    export CICD_IMAGE_BUILDER_BUILD_ARGS=("IMAGE_TAG=$SECURITY_COMPLIANCE_TAG")
+    export "IMAGE_TAG=${SECURITY_COMPLIANCE_TAG}"
 else
     # If the current Git branch is not 'origin/security-compliance':
     export CICD_IMAGE_BUILDER_BUILD_ARGS=("IMAGE_TAG=$(cicd::image_builder::get_image_tag)")
