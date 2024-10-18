@@ -17,6 +17,8 @@ elif [ "$APPLICATION_TYPE" = "compliance-import-remediations" ]; then
   exec bundle exec rake import_remediations --trace
 elif [ "$APPLICATION_TYPE" = "compliance-import-ssg" ]; then
   exec bundle exec rake ssg:import_rhel_supported --trace
+elif [ "$APPLICATION_TYPE" = "compliance-reindex-db" ]; then
+  exec bundle exec rake db:reindex --trace
 elif [ "$APPLICATION_TYPE" = "sleep" ]; then
   while true; do sleep 60; done
 else
