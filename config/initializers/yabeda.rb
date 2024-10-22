@@ -9,8 +9,8 @@ Yabeda.configure do
   default_tag :source, 'basic'
 end
 
-# Start the metrics server for sidekiq and racecar
-if %w[sidekiq racecar].any? { |p| $0.include?(p) }
+# Start the metrics server for sidekiq
+if ['sidekiq'].any? { |p| $0.include?(p) }
   ENV['PROMETHEUS_EXPORTER_PORT'] = ClowderCommonRuby::Config.load.metricsPort.to_s
   Yabeda::Prometheus::Exporter.start_metrics_server!
 end

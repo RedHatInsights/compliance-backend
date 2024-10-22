@@ -181,7 +181,6 @@ GEM
       bigdecimal (~> 3.1)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
-    king_konf (1.0.1)
     language_server-protocol (3.17.0.3)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -264,9 +263,6 @@ GEM
     pundit (2.4.0)
       activesupport (>= 3.0.0)
     racc (1.8.1)
-    racecar (2.11.0)
-      king_konf (~> 1.0.0)
-      rdkafka (~> 0.15.0)
     rack (2.2.13)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
@@ -496,7 +492,6 @@ DEPENDENCIES
   pry-remote
   puma (~> 6)
   pundit
-  racecar
   rack (>= 2.1.4)
   rack-cors
   rails (~> 8.0)
