@@ -247,6 +247,7 @@ GEM
     parser (3.3.2.0)
       ast (~> 2.4.1)
       racc
+    parslet (2.0.0)
     pg (1.5.6)
     prometheus-client-mmap (0.28.1)
       rb_sys (~> 0.9)
@@ -426,6 +427,8 @@ GEM
     time (0.3.0)
       date
     timeout (0.4.1)
+    toml (0.3.0)
+      parslet (>= 1.8.0, < 3.0.0)
     typhoeus (1.4.1)
       ethon (>= 0.9.0)
     tzinfo (2.0.6)
@@ -541,6 +544,7 @@ DEPENDENCIES
   spring-watcher-listen
   stronger_parameters
   time (>= 0.2.2)
+  toml
   tzinfo-data
   uri (>= 0.11.1)
   uuid

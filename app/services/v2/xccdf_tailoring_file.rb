@@ -2,20 +2,32 @@
 
 module V2
   # A class representing an XCCDF Tailoring File
-  class XccdfTailoringFile
+  class XccdfTailoringFile < TailoringFile
     extend Forwardable
 
     XCCDF = 'xccdf'
 
-    def initialize(profile:, rules: {}, set_values: {}, rule_group_ref_ids: [])
+    def initialize(profile:, rules: {}, set_values: {}, rule_group_ref_ids: [], **_hsh)
       @tailoring = profile
       @rules = rules
       @rule_group_ref_ids = rule_group_ref_ids
       @set_values = set_values
     end
 
+    def mime
+      Mime[:xml]
+    end
+
+    def extension
+      'xml'
+    end
+
     def output
       builder.to_xml
+    end
+
+    def empty?
+      !@tailoring.tailored?
     end
 
     private

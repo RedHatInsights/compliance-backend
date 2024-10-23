@@ -399,5 +399,44 @@ describe V2::TailoringsController do
 
       include_examples 'tailoring_file'
     end
+
+    context 'TOML' do
+      let(:format) { :toml }
+      let(:tailoring_file) { TOML.load(response.body) }
+      let(:extra_params) { { policy_id: parent.id, id: item.id } }
+
+      let(:parent) do
+        FactoryBot.create(
+          :v2_policy,
+          :for_tailoring,
+          account: current_user.account,
+          supports_minors: [8]
+        )
+      end
+
+      let(:item) do
+        FactoryBot.create(
+          :v2_tailoring,
+          :with_mixed_rules,
+          value_overrides: {}, # no tailored values
+          policy: parent,
+          os_minor_version: 8
+        )
+      end
+
+      it 'returns tailoring_file' do
+        FactoryBot.create(
+          :fix,
+          rule: item.rules.sample,
+          system: V2::Fix::BLUEPRINT,
+          text: "foo = \"bar\"\n"
+        )
+
+        get :tailoring_file, params: extra_params.merge(parents: [:policy], format: format)
+
+        expect(response).to have_http_status :ok
+        expect(tailoring_file).not_to be_empty
+      end
+    end
   end
 end

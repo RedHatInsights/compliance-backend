@@ -49,10 +49,11 @@ module V2
     permitted_params_for_action :update, { id: ID_TYPE, **UPDATE_ATTRIBUTES }
 
     def tailoring_file
-      return unless tailoring.tailored?
+      builder = file_builder(params[:format].to_sym)
 
-      format = params[:format].to_sym
-      send_data(build_file(format), filename: filename(format), type: Mime[format])
+      return if builder.empty? # no-content for empty XMLs
+
+      send_data(builder.output, filename: builder.filename, type: builder.mime)
     end
     permission_for_action :tailoring_file, Rbac::POLICY_READ
     permitted_params_for_action :tailoring_file, id: ID_TYPE.required
@@ -71,21 +72,14 @@ module V2
       V2::Policy.find(permitted_params[:policy_id])
     end
 
-    def build_file(format)
-      builder = format == :json ? JsonTailoringFile : XccdfTailoringFile
-
-      builder.new(
+    def file_builder(format)
+      V2::TailoringFile.new(
         profile: tailoring,
         rules: tailoring.rules_added + tailoring.rules_removed,
         rule_group_ref_ids: tailoring.rule_group_ref_ids,
-        set_values: tailoring.value_overrides_by_ref_id
-      ).output
-    end
-
-    def filename(format)
-      extension = format == :json ? 'json' : 'xml'
-
-      "#{tailoring.security_guide.ref_id}__#{tailoring.profile.ref_id}__tailoring.#{extension}"
+        set_values: tailoring.value_overrides_by_ref_id,
+        format: format
+      )
     end
 
     def resource
