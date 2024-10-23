@@ -2,16 +2,28 @@
 
 module V2
   # A class representing a JSON Tailoring File
-  class JsonTailoringFile
-    def initialize(profile:, rules: {}, set_values: {}, rule_group_ref_ids: [])
+  class JsonTailoringFile < TailoringFile
+    def initialize(profile:, rules: {}, set_values: {}, rule_group_ref_ids: [], **_hsh)
       @tailoring = profile
       @rules = rules
       @rule_group_ref_ids = rule_group_ref_ids
       @set_values = set_values
     end
 
+    def mime
+      Mime[:json]
+    end
+
+    def extension
+      'json'
+    end
+
     def output
       Oj.dump('profiles' => [build_profile])
+    end
+
+    def empty?
+      !@tailoring.tailored?
     end
 
     private

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_14_100839) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_24_044139) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
