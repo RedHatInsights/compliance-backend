@@ -5,9 +5,8 @@ namespace :db do
   task status: [:environment] do
     begin
       ActiveRecord::Base.connection
-    rescue StandardError # rubocop:disable Lint/SuppressedException
-    ensure
-      abort('ERROR: Database unavailable') unless ActiveRecord::Base.connected?
+    rescue => _e # rubocop:disable Style/RescueStandardError
+      abort('ERROR: Database unavailable')
     end
   end
 end

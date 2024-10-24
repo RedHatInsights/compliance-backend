@@ -86,9 +86,9 @@ module V2
       alias visit_Arel_Nodes_Equality binary
       alias visit_Arel_Nodes_InfixOperation binary
       alias visit_Arel_Nodes_NotEqual binary
-      alias visit_Arel_Nodes_Or binary
 
       alias visit_Arel_Nodes_And nary
+      alias visit_Arel_Nodes_Or nary
       alias visit_Arel_Nodes_Grouping unary
       alias visit_Arel_Attributes_Attribute attribute
 

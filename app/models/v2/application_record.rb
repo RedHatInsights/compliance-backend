@@ -62,21 +62,6 @@ module V2
       )
     end
 
-    # Monkey-patching the list of RETURNING columns to always have the primary_key fields.
-    # This issue has been introduced by Rails 7.1.3 and will be only fixed in 7.1.4 that
-    # has not been released yet.
-    #
-    # FIXME: delete after Rails 7.1.4 is out
-    def self._returning_columns_for_insert
-      @_returning_columns_for_insert ||= begin
-        auto_populated_columns = columns.filter_map do |c|
-          c.name if connection.return_value_after_insert?(c)
-        end
-
-        auto_populated_columns.empty? ? Array(primary_key) : auto_populated_columns
-      end
-    end
-
     def self.bulk_assign(add, del)
       insert = delete = 0
 
