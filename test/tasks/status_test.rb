@@ -9,7 +9,7 @@ class DbStatusTest < ActiveSupport::TestCase
   end
 
   test 'db:status fails without a database connection' do
-    ActiveRecord::Base.stubs(:connected?)
+    ActiveRecord::Base.stubs(:connection).raises(StandardError)
     assert_raises SystemExit do
       capture_io do
         Rake::Task['db:status'].execute
@@ -18,7 +18,6 @@ class DbStatusTest < ActiveSupport::TestCase
   end
 
   test 'db:status succeeds with a database connection' do
-    ActiveRecord::Base.stubs(:connected?).returns(true)
     assert_nothing_raised do
       capture_io do
         Rake::Task['db:status'].execute
