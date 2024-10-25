@@ -35,7 +35,7 @@ module V2
       return if identity_header.blank?
 
       payload[:qe] = OpenshiftEnvironment.qe_account?(identity_header.org_id)
-      payload[:path] = obfuscate_path
+      # payload[:path] = obfuscate_path
       payload[:source] = request_source
     end
 
