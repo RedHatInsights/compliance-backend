@@ -40,7 +40,7 @@ class ApplicationController < ActionController::API
     return if identity_header.blank?
 
     payload[:qe] = OpenshiftEnvironment.qe_account?(identity_header.org_id)
-    payload[:path] = nil
+    # payload[:path] = nil
     payload[:source] = nil
   end
 

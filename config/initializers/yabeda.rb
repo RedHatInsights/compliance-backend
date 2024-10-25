@@ -6,7 +6,7 @@ Yabeda.configure do
   default_tag :qe, 0
   default_tag :gql_op, nil
   # APIv2 specific tags
-  default_tag :path, nil
+  # default_tag :path, nil
   default_tag :source, 'basic'
 end
 
