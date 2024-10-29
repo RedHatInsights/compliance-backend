@@ -14,7 +14,7 @@ module V2
 
     sortable_by :precedence
 
-    searchable_by :title, %i[like unlike eq ne in notin]
+    searchable_by :title, %i[like unlike eq ne]
     searchable_by :ref_id, %i[like unlike]
   end
 end

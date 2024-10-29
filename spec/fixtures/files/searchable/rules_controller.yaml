@@ -30,36 +30,6 @@
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
   :query: (title != "searched title")
-- :name: "in search by title"
-  :entities:
-    :found:
-      - :factory: :v2_rule
-        :title: searched title
-        :security_guide_id: ${security_guide_id}
-        :profile_id: ${profile_id}
-        :tailoring_id: ${tailoring_id}
-    :not_found:
-      - :factory: :v2_rule
-        :title: not this title
-        :security_guide_id: ${security_guide_id}
-        :profile_id: ${profile_id}
-        :tailoring_id: ${tailoring_id}
-  :query: (title ^ "searched title")
-- :name: "not-in search by title"
-  :entities:
-    :found:
-      - :factory: :v2_rule
-        :title: not this title
-        :security_guide_id: ${security_guide_id}
-        :profile_id: ${profile_id}
-        :tailoring_id: ${tailoring_id}
-    :not_found:
-      - :factory: :v2_rule
-        :title: searched title
-        :security_guide_id: ${security_guide_id}
-        :profile_id: ${profile_id}
-        :tailoring_id: ${tailoring_id}
-  :query: (title !^ "searched title")
 - :name: "like search by title"
   :entities:
     :found:

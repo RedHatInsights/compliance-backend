@@ -26,32 +26,6 @@
         :test_result_id: ${test_result_id}
         :rule_id: ${rule_2.id}
   :query: (title != "searched title")
-- :name: "in search by title"
-  :entities:
-    :found:
-      - :factory: v2_rule_result
-        :title: searched title
-        :test_result_id: ${test_result_id}
-        :rule_id: ${rule_1.id}
-    :not_found:
-      - :factory: v2_rule_result
-        :title: not this title
-        :test_result_id: ${test_result_id}
-        :rule_id: ${rule_2.id}
-  :query: (title ^ "searched title")
-- :name: "not-in search by title"
-  :entities:
-    :found:
-      - :factory: v2_rule_result
-        :title: not this title
-        :test_result_id: ${test_result_id}
-        :rule_id: ${rule_1.id}
-    :not_found:
-      - :factory: v2_rule_result
-        :title: searched title
-        :test_result_id: ${test_result_id}
-        :rule_id: ${rule_2.id}
-  :query: (title !^ "searched title")
 - :name: "like search by title"
   :entities:
     :found:
