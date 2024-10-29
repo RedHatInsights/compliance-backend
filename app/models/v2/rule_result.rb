@@ -27,9 +27,9 @@ module V2
     scope :passed, -> { where(result: PASSED) }
     scope :failed, -> { where(result: FAILED) }
 
-    scope :with_groups, lambda { |groups, table = arel_table|
+    scope :with_groups, lambda { |groups, table = V2::System.arel_table|
       # Skip the [] representing ungrouped hosts from the array when generating the query
-      grouped = V2::System.arel_inventory_groups(groups.flatten, :id, table)
+      grouped = arel_json_lookup(table[:groups], V2::System.groups_as_json(groups.flatten, :id))
       ungrouped = table[:groups].eq(AN::Quoted.new('[]'))
       # The OR is inside of Arel in order to prevent pollution of already applied scopes
       where(groups.include?([]) ? grouped.or(ungrouped) : grouped)
