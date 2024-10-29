@@ -25,7 +25,7 @@ module V2
     end
 
     searchable_by :os_minor_version, %i[eq in] do |_key, _op, val|
-      values = val.split.map(&:strip)
+      values = val.split(',').map(&:to_i)
       ids = ::V2::Profile.joins(:os_minor_versions).where(os_minor_versions: { os_minor_version: values })
                          .select(:security_guide_id)
 

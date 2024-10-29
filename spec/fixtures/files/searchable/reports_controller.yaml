@@ -113,7 +113,7 @@
         :os_major_version: 8
         :system_id: ${system_id}
         :account: ${account}
-  :query: (os_major_version ^ "7 9")
+  :query: (os_major_version ^ (7 9))
   :except_parents:
     - :systems
 - :name: "not-in search by os_major_version"
@@ -135,7 +135,7 @@
         :os_major_version: 9
         :system_id: ${system_id}
         :account: ${account}
-  :query: (os_major_version !^ "7 9")
+  :query: (os_major_version !^ (7 9))
   :except_parents:
     - :systems
 - :name: "search by having systems with test results"

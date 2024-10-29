@@ -58,7 +58,7 @@ module V2
 
       {
         conditions: "rule.severity #{op} #{bind}",
-        parameter: [val.split]
+        parameter: [val.split(',')]
       }
     end
 

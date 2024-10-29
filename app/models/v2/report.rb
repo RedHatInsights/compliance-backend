@@ -106,7 +106,7 @@ module V2
 
       {
         conditions: "security_guide.os_major_version #{op} #{bind}",
-        parameter: [val.split.map(&:to_i)]
+        parameter: [val.split(',').map(&:to_i)]
       }
     end
     searchable_by :with_reported_systems, %i[eq], except_parents: %i[systems] do |_key, _op, _val|

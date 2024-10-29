@@ -131,7 +131,7 @@
         :system_id: ${system_id}
   :except_parents:
     - :systems
-  :query: (os_major_version ^ "7 9")
+  :query: (os_major_version ^ (7 9))
 - :name: "not-in search by os_major_version"
   :entities:
     :found:
@@ -151,7 +151,7 @@
         :os_major_version: 9
         :account: ${account}
         :system_id: ${system_id}
-  :query: (os_major_version !^ "7 9")
+  :query: (os_major_version !^ (7 9))
   :except_parents:
     - :systems
 - :name: "equality search by os_minor_version"
