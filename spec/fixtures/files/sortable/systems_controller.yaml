@@ -71,5 +71,11 @@
       - :policies
       - :reports
   - :sort_by:
+      - 'os_version'
+    :result: [2, 4, 5, 1, 3, 0]
+    :except_parents:
+      - :policies
+      - :reports
+  - :sort_by:
       - 'groups'
     :result: [[3, 5], 2, 0, 1, 4]

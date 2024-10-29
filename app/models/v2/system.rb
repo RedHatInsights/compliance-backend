@@ -31,13 +31,23 @@ module V2
       AN::InfixOperation.new('->', os_version(table), AN::Quoted.new('minor')).as('os_minor_version')
     end
 
-    OS_VERSIONS = AN::NamedFunction.new(
+    def self.sortable_os(table = arel_table)
+      AN::NamedFunction.new(
+        'ROW',
+        [
+          AN::NamedFunction.new('CAST', [V2::System.os_major_version(table).left.as('int')]),
+          AN::NamedFunction.new('CAST', [V2::System.os_minor_version(table).left.as('int')])
+        ]
+      )
+    end
+
+    OS_VERSION = AN::NamedFunction.new(
       'CONCAT', [os_major_version.left, AN::Quoted.new('.'), os_minor_version.left]
     ).as('os_version')
 
     def self.os_versions
       distinct.reorder(os_major_version.left, os_minor_version.left)
-              .reselect(OS_VERSIONS, os_major_version, os_minor_version)
+              .reselect(OS_VERSION, os_major_version, os_minor_version)
               .map(&:os_version)
     end
 
@@ -78,9 +88,20 @@ module V2
     sortable_by :display_name
     sortable_by :os_major_version
     sortable_by :os_minor_version
+    sortable_by :os_version, sortable_os
     sortable_by :groups, first_group_name
 
     searchable_by :display_name, %i[eq neq like unlike]
+
+    searchable_by :os_version, %i[in], except_parents: %i[policies reports] do |_key, _op, val|
+      jsons = val.split(',').each_with_object([]) do |version, obj|
+        major, minor = version.split('.')
+
+        obj << { operating_system: { major: major.to_i, minor: minor.to_i } }.to_json.dump
+      end
+
+      { conditions: arel_json_lookup(arel_table[:system_profile], jsons).to_sql }
+    end
 
     searchable_by :os_major_version, %i[eq neq in notin], except_parents: %i[policies reports] do |_key, op, val|
       {
