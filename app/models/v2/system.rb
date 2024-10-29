@@ -105,13 +105,15 @@ module V2
 
     searchable_by :os_major_version, %i[eq neq in notin], except_parents: %i[policies reports] do |_key, op, val|
       {
-        conditions: os_major_versions(val.split.map(&:to_i), %w[IN =].include?(op)).arel.where_sql.sub(/^where /i, '')
+        conditions: os_major_versions(val.split(',').map(&:to_i), %w[IN =].include?(op)).arel
+                                                                                        .where_sql.sub(/^where /i, '')
       }
     end
 
     searchable_by :os_minor_version, %i[eq neq in notin] do |_key, op, val|
       {
-        conditions: os_minor_versions(val.split.map(&:to_i), %w[IN =].include?(op)).arel.where_sql.sub(/^where /i, '')
+        conditions: os_minor_versions(val.split(',').map(&:to_i), %w[IN =].include?(op)).arel
+                                                                                        .where_sql.sub(/^where /i, '')
       }
     end
 
@@ -136,14 +138,14 @@ module V2
     end
 
     searchable_by :policies, %i[eq in], except_parents: %i[policies reports] do |_key, _op, val|
-      values = val.split.map(&:strip)
+      values = val.split(',').map(&:strip)
       ids = ::V2::PolicySystem.where(policy_id: values).select(:system_id)
 
       { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
     end
 
     searchable_by :profile_ref_id, %i[neq notin], except_parents: %i[policies reports] do |_key, _op, val|
-      values = val.split.map(&:strip)
+      values = val.split(',').map(&:strip)
       ids = ::V2::PolicySystem.joins(policy: :profile).where(profile: { ref_id: values }).select(:system_id)
 
       { conditions: "inventory.hosts.id NOT IN (#{ids.to_sql})" }

@@ -71,21 +71,27 @@
   :entities:
     :found:
       - :factory: :v2_profile
-        :ref_id: searched ref_id
+        :ref_id: ref_id_1
+        :security_guide_id: ${security_guide_id}
+      - :factory: :v2_profile
+        :ref_id: ref_id_2
         :security_guide_id: ${security_guide_id}
     :not_found:
       - :factory: :v2_profile
-        :ref_id: not this ref_id
+        :ref_id: ref_id_3
         :security_guide_id: ${security_guide_id}
-  :query: (ref_id ^ "searched ref_id")
+  :query: (ref_id ^ (ref_id_1 ref_id_2))
 - :name: "not-in search by ref_id"
   :entities:
     :found:
       - :factory: :v2_profile
-        :ref_id: not this ref_id
+        :ref_id: ref_id_1
         :security_guide_id: ${security_guide_id}
     :not_found:
       - :factory: :v2_profile
-        :ref_id: searched ref_id
+        :ref_id: ref_id_2
         :security_guide_id: ${security_guide_id}
-  :query: (ref_id !^ "searched ref_id")
+      - :factory: :v2_profile
+        :ref_id: ref_id_3
+        :security_guide_id: ${security_guide_id}
+  :query: (ref_id !^ (ref_id_2 ref_id_3))

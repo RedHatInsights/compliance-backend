@@ -101,7 +101,7 @@
         :os_minor_version: 1
         :policy_id: ${policy_8.id}
         :account: ${account}
-  :query: (os_major_version ^ "7 9")
+  :query: (os_major_version ^ (7 9))
   :except_parents:
     - :policies
     - :reports
@@ -121,7 +121,7 @@
         :os_minor_version: 1
         :policy_id: ${policy_9.id}
         :account: ${account}
-  :query: (os_major_version !^ "7 9")
+  :query: (os_major_version !^ (7 9))
   :except_parents:
     - :policies
     - :reports
@@ -168,7 +168,7 @@
         :os_minor_version: 1
         :policy_id: ${policy.id}
         :account: ${account}
-  :query: (os_minor_version ^ "0 2")
+  :query: (os_minor_version ^ (0 2))
 - :name: "not-in search by os_minor_version"
   :entities:
     :found:
@@ -185,7 +185,7 @@
         :os_minor_version: 2
         :account: ${account}
         :policy_id: ${policy.id}
-  :query: (os_minor_version !^ "0 2")
+  :query: (os_minor_version !^ (0 2))
 - :name: "combined equality search by os_major_version and os_minor_version"
   :entities:
     :found:
@@ -230,7 +230,7 @@
         :os_minor_version: 2
         :policy_id: ${policy_8.id}
         :account: ${account}
-  :query: (os_major_version = 7) and (os_minor_version ^ "1 2")
+  :query: (os_major_version = 7) and (os_minor_version ^ (1 2))
   :except_parents:
     - :policies
     - :reports
@@ -341,10 +341,10 @@
     :not_found:
       - :factory: :system
         :groups:
-          - name: not this name
+          - name: three
         :account: ${account}
         :policy_id: ${policy.id}
-  :query: (group_name ^ "one,two")
+  :query: (group_name ^ (one two))
 
 - :name: "equality search by policies"
   :entities:
@@ -382,7 +382,7 @@
         :account: ${account}
         :policy_id: ${policy_9.id}
         :os_minor_version: 1
-  :query: (policies ^ "${policy_7.id} ${policy_8.id}")
+  :query: (policies ^ (${policy_7.id} ${policy_8.id}))
   :except_parents:
     - :policies
     - :reports
@@ -424,7 +424,7 @@
         :account: ${account}
         :policy_id: ${policy_8.id}
         :os_minor_version: 1
-  :query: (profile_ref_id !^ "${policy_7.ref_id} ${policy_8.ref_id}")
+  :query: (profile_ref_id !^ (${policy_7.ref_id} ${policy_8.ref_id}))
   :except_parents:
     - :policies
     - :reports

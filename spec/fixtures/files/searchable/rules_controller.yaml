@@ -99,36 +99,42 @@
   :entities:
     :found:
       - :factory: :v2_rule
-        :title: searched title
-        :severity: searched severity
+        :severity: low
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+      - :factory: :v2_rule
+        :severity: high
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
-        :title: not this title
-        :severity: not this severity
+        :severity: medium
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
-  :query: (severity ^ "searched severity")
+  :query: (severity ^ (low high))
 - :name: "not-in search by severity"
   :entities:
     :found:
       - :factory: :v2_rule
-        :title: not this title
-        :severity: not this severity
+        :severity: high
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
       - :factory: :v2_rule
-        :title: searched title
-        :severity: searched severity
+        :severity: medium
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
-  :query: (severity !^ "searched severity")
+      - :factory: :v2_rule
+        :severity: low
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+  :query: (severity !^ (low medium))
 - :name: "equality search by remediation_available"
   :entities:
     :found:

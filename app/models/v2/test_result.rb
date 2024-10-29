@@ -43,7 +43,7 @@ module V2
 
       {
         conditions: "CAST(system.system_profile->'operating_system'->>'minor' AS int) #{op} #{bind}",
-        parameter: [val.split.map(&:to_i)]
+        parameter: [val.split(',').map(&:to_i)]
       }
     end
 
@@ -71,9 +71,8 @@ module V2
     end
 
     searchable_by :failed_rule_severity, %i[eq in] do |_key, _op, val|
-      values = val.split
       ids = ::V2::RuleResult.joins(:rule)
-                            .where(v2_rules: { severity: values }, rule_results: { result: 'fail' })
+                            .where(v2_rules: { severity: val.split(',') }, rule_results: { result: 'fail' })
                             .select(:test_result_id)
 
       { conditions: "v2_test_results.id IN (#{ids.to_sql})" }

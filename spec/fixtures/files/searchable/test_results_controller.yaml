@@ -95,7 +95,7 @@
         :os_minor_version: 1
         :policy_id: ${policy.id}
         :account: ${account}
-  :query: (os_minor_version ^ "0 2")
+  :query: (os_minor_version ^ (0 2))
 - :name: "not-in search by os_minor_version"
   :entities:
     :found:
@@ -112,7 +112,7 @@
         :os_minor_version: 2
         :account: ${account}
         :policy_id: ${policy.id}
-  :query: (os_minor_version !^ "0 2")
+  :query: (os_minor_version !^ (0 2))
 
 
 - :name: "equality search by security_guide_version"
@@ -290,10 +290,10 @@
     :not_found:
       - :factory: :v2_test_result
         :groups:
-          - name: not this name
+          - name: three
         :account: ${account}
         :policy_id: ${policy.id}
-  :query: (group_name ^ "one,two")
+  :query: (group_name ^ (one two))
 
 - :name: "in search by failed_rule_severity"
   :entities:
@@ -333,7 +333,7 @@
             :result: 'pass'
           - :severity: 'low'
             :result: 'pass'
-  :query: (failed_rule_severity ^ "high medium")
+  :query: (failed_rule_severity ^ (high medium))
 - :name: "equality search by failed_rule_severity"
   :entities:
     :found:

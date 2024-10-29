@@ -41,7 +41,7 @@ module V2
 
       {
         conditions: "security_guide.os_major_version #{op} #{bind}",
-        parameter: [val.split.map(&:to_i)]
+        parameter: [val.split(',').map(&:to_i)]
       }
     end
     searchable_by :os_minor_version, %i[eq] do |_key, _op, val|
