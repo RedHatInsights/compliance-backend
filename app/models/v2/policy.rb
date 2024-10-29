@@ -35,7 +35,7 @@ module V2
     sortable_by :business_objective
     sortable_by :compliance_threshold
 
-    searchable_by :title, %i[like unlike eq ne in notin]
+    searchable_by :title, %i[like unlike eq ne]
     searchable_by :os_major_version, %i[eq ne in notin], except_parents: %i[systems] do |_key, op, val|
       bind = ['IN', 'NOT IN'].include?(op) ? '(?)' : '?'
 

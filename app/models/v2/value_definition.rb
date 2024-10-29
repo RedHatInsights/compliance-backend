@@ -12,7 +12,7 @@ module V2
 
     sortable_by :title
 
-    searchable_by :title, %i[like unlike eq ne in notin]
+    searchable_by :title, %i[like unlike eq ne]
     searchable_by :ref_id, %i[like unlike]
 
     def validate_value(value)

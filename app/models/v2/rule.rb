@@ -46,7 +46,7 @@ module V2
     sortable_by :precedence
     sortable_by :remediation_available
 
-    searchable_by :title, %i[like unlike eq ne in notin]
+    searchable_by :title, %i[like unlike eq ne]
     searchable_by :severity, %i[eq ne in notin]
     searchable_by :remediation_available, %i[eq]
     searchable_by :rule_group_id, %i[eq]

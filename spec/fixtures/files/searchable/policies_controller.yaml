@@ -38,44 +38,6 @@
           - 0
         :account: ${account}
   :query: (title != "searched title")
-- :name: "in search by title"
-  :entities:
-    :found:
-      - :factory: :v2_policy
-        :title: searched title
-        :system_id: ${system_id}
-        :os_major_version: 8
-        :supports_minors:
-          - 0
-        :account: ${account}
-    :not_found:
-      - :factory: :v2_policy
-        :title: not this title
-        :system_id: ${system_id}
-        :os_major_version: 8
-        :supports_minors:
-          - 0
-        :account: ${account}
-  :query: (title ^ "searched title")
-- :name: "not-in search by title"
-  :entities:
-    :found:
-      - :factory: :v2_policy
-        :title: not this title
-        :system_id: ${system_id}
-        :os_major_version: 8
-        :supports_minors:
-          - 0
-        :account: ${account}
-    :not_found:
-      - :factory: :v2_policy
-        :title: searched title
-        :system_id: ${system_id}
-        :os_major_version: 8
-        :supports_minors:
-          - 0
-        :account: ${account}
-  :query: (title !^ "searched title")
 - :name: "like search by title"
   :entities:
     :found:

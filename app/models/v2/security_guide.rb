@@ -13,8 +13,8 @@ module V2
     has_many :rules, class_name: 'V2::Rule', dependent: :destroy
     has_many :rule_groups, class_name: 'V2::RuleGroup', dependent: :destroy
 
-    searchable_by :title, %i[like unlike eq ne in notin]
-    searchable_by :version, %i[eq ne in notin]
+    searchable_by :title, %i[like unlike eq ne]
+    searchable_by :version, %i[eq ne]
     searchable_by :ref_id, %i[eq ne in notin]
     searchable_by :os_major_version, %i[eq ne]
 

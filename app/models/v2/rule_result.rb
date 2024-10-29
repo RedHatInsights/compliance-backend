@@ -43,7 +43,7 @@ module V2
 
     searchable_by :result, %i[eq ne in notin]
 
-    searchable_by :title, %i[eq neq in notin like unlike] do |_key, op, val|
+    searchable_by :title, %i[eq neq like unlike] do |_key, op, val|
       val = "%#{val}%" if ['ILIKE', 'NOT ILIKE'].include?(op)
       bind = ['IN', 'NOT IN'].include?(op) ? '(?)' : '?'
 
