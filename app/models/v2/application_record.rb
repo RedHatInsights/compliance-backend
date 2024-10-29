@@ -62,6 +62,20 @@ module V2
       )
     end
 
+    # Looks up for an array of JSONs (using ANY/OR) in a column
+    def self.arel_json_lookup(column, jsons)
+      return AN::InfixOperation.new('=', Arel.sql('1'), Arel.sql('0')) if jsons.empty?
+
+      AN::InfixOperation.new(
+        '@>', column,
+        AN::NamedFunction.new(
+          'ANY', [
+            AN::NamedFunction.new('CAST', [AN.build_quoted("{#{jsons.join(',')}}").as('jsonb[]')])
+          ]
+        )
+      )
+    end
+
     def self.bulk_assign(add, del)
       insert = delete = 0
 
