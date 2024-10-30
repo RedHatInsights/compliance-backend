@@ -270,7 +270,7 @@ services:
     image: compliance-backend-rails
     entrypoint: ''
     command: sh -c '
-      if bundle exec rake db:version 2> /dev/null; then
+      if bundle exec rake db:exists 2> /dev/null; then
         bundle exec rake --trace db:migrate;
       else
         bundle exec rake --trace db:setup;
