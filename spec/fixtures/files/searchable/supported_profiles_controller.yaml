@@ -1,5 +1,4 @@
 ---
-
 - :name: "equality search by os_major_version"
   :entities:
     :found:
@@ -26,3 +25,48 @@
         :supports_minors:
           - 0
   :query: (os_major_version != 7)
+- :name: "equality search by title"
+  :entities:
+    :found:
+      - :factory: :v2_profile
+        :os_major_version: 7
+        :title: 'foo'
+        :supports_minors:
+          - 0
+    :not_found:
+      - :factory: :v2_profile
+        :os_major_version: 8
+        :title: 'bar'
+        :supports_minors:
+          - 0
+  :query: (title = "foo")
+- :name: "like search by title"
+  :entities:
+    :found:
+      - :factory: :v2_profile
+        :os_major_version: 7
+        :title: 'foo'
+        :supports_minors:
+          - 0
+    :not_found:
+      - :factory: :v2_profile
+        :os_major_version: 8
+        :title: 'bar'
+        :supports_minors:
+          - 0
+  :query: (title ~ "fo")
+- :name: "equality search by ref_id"
+  :entities:
+    :found:
+      - :factory: :v2_profile
+        :os_major_version: 7
+        :ref_id: 'foo'
+        :supports_minors:
+          - 0
+    :not_found:
+      - :factory: :v2_profile
+        :os_major_version: 8
+        :ref_id: 'bar'
+        :supports_minors:
+          - 0
+  :query: (ref_id = "foo")
