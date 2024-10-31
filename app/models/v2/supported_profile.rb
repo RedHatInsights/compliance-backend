@@ -8,6 +8,8 @@ module V2
     self.primary_key = :id
 
     searchable_by :os_major_version, %i[eq ne]
+    searchable_by :title, %i[eq like]
+    searchable_by :ref_id, %i[eq]
 
     sortable_by :title
     sortable_by :os_major_version
