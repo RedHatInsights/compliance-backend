@@ -114,6 +114,12 @@ module V2
 
       { conditions: "v2_policies.id IN (#{ids.to_sql})" }
     end
+    searchable_by :percent_compliant, %i[eq gt lt gte lte], except_parents: %i[systems] do |_key, op, val|
+      {
+        conditions: "aggregate_percent_compliant #{op} ?",
+        parameter: [val]
+      }
+    end
 
     validates :account, presence: true
 

@@ -150,3 +150,118 @@
   :query: (with_reported_systems = true)
   :except_parents:
     - :systems
+- :name: "equality search by percent_compliant"
+  :entities:
+    :found:
+      - :factory: :v2_report
+        :title: searched title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 2
+        :assigned_system_count: 10
+        :unsupported_system_count: 3
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_report
+        :title: not this title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 8
+        :assigned_system_count: 10
+        :unsupported_system_count: 2
+        :account: ${account}
+  :query: (percent_compliant = 20)
+  :except_parents:
+    - :systems
+- :name: "greater search by percent_compliant"
+  :entities:
+    :found:
+      - :factory: :v2_report
+        :title: searched title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 8
+        :assigned_system_count: 10
+        :unsupported_system_count: 2
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_report
+        :title: not this title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 2
+        :assigned_system_count: 10
+        :unsupported_system_count: 3
+        :account: ${account}
+  :query: (percent_compliant > 50)
+  :except_parents:
+    - :systems
+- :name: "greater or equal search by percent_compliant"
+  :entities:
+    :found:
+      - :factory: :v2_report
+        :title: searched title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 8
+        :assigned_system_count: 10
+        :unsupported_system_count: 2
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_report
+        :title: not this title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 2
+        :assigned_system_count: 10
+        :unsupported_system_count: 3
+        :account: ${account}
+  :query: (percent_compliant >= 50)
+  :except_parents:
+    - :systems
+- :name: "less search by percent_compliant"
+  :entities:
+    :found:
+      - :factory: :v2_report
+        :title: searched title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 2
+        :assigned_system_count: 10
+        :unsupported_system_count: 3
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_report
+        :title: not this title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 8
+        :assigned_system_count: 10
+        :unsupported_system_count: 2
+        :account: ${account}
+  :query: (percent_compliant < 50)
+  :except_parents:
+    - :systems
+- :name: "less or equal search by percent_compliant"
+  :entities:
+    :found:
+      - :factory: :v2_report
+        :title: searched title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 2
+        :assigned_system_count: 10
+        :unsupported_system_count: 3
+        :account: ${account}
+    :not_found:
+      - :factory: :v2_report
+        :title: not this title
+        :os_major_version: 8
+        :system_id: ${system_id}
+        :compliant_system_count: 8
+        :assigned_system_count: 10
+        :unsupported_system_count: 2
+        :account: ${account}
+  :query: (percent_compliant < 50)
+  :except_parents:
+    - :systems
