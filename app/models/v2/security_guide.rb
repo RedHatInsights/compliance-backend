@@ -24,10 +24,12 @@ module V2
       { conditions: "security_guides.id IN (#{ids.to_sql})" }
     end
 
-    searchable_by :os_minor_version, %i[eq in] do |_key, _op, val|
-      values = val.split(',').map(&:to_i)
-      ids = ::V2::Profile.joins(:os_minor_versions).where(os_minor_versions: { os_minor_version: values })
-                         .select(:security_guide_id)
+    searchable_by :supported_profile, %i[eq] do |_key, _op, val|
+      ref_id, os_minor = val.split(':')
+
+      ids = ::V2::Profile.joins(:os_minor_versions).where(
+        ref_id: ref_id, os_minor_versions: { os_minor_version: os_minor.to_i }
+      ).select(:security_guide_id)
 
       { conditions: "security_guides.id IN (#{ids.to_sql})" }
     end
