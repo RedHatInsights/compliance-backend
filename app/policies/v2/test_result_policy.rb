@@ -15,6 +15,10 @@ module V2
       true
     end
 
+    def security_guide_versions?
+      true
+    end
+
     private
 
     def match_account?

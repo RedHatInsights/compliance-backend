@@ -125,5 +125,12 @@ module V2
 
       distinct.reorder(major.left, minor.left).reselect(concat, major, minor).map(&:os_version)
     end
+
+    def self.security_guide_versions
+      reselect(security_guide: [:version])
+        .reorder(version_to_array(V2::SecurityGuide.arel_table.alias('security_guide')[:version]))
+        .map(&:version)
+        .uniq # using this instead of `.distinct` to properly handle sorting of versions. It should still perform fine.
+    end
   end
 end

@@ -67,6 +67,7 @@ Rails.application.routes.draw do
           resources :test_results, only: %i[index show], parents: %i[report] do
             resources :rule_results, only: %i[index], parents: %i[report test_result]
             get :os_versions, on: :collection, parents: %i[report]
+            get :security_guide_versions, on: :collection, parents: %i[report]
           end
 
           get :stats, on: :member
