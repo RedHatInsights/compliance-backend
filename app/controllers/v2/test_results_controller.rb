@@ -19,6 +19,12 @@ module V2
     permission_for_action :os_versions, Rbac::SYSTEM_READ
     permitted_params_for_action :os_versions, { filter: ParamType.string }
 
+    def security_guide_versions
+      render json: test_results.security_guide_versions, status: :ok
+    end
+    permission_for_action :security_guide_versions, Rbac::REPORT_READ
+    permitted_params_for_action :security_guide_versions, { filter: ParamType.string }
+
     private
 
     def test_results
