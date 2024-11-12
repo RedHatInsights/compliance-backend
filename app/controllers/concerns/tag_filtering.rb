@@ -35,7 +35,6 @@ module TagFiltering
   end
 
   def self.tags_supported?(resource)
-    # TODO: left side if for V1 compatibility
-    resource.try(:taggable?) || resource.base_class.column_names.include?('tags')
+    resource.try(:taggable?)
   end
 end

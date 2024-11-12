@@ -26,6 +26,7 @@ describe V2::TestResultsController do
 
   let(:current_user) { FactoryBot.create(:v2_user) }
   let(:rbac_allowed?) { true }
+  let(:meta_keys) { %w[total limit offset tags] }
 
   before do
     request.headers['X-RH-IDENTITY'] = current_user.account.identity_header.raw
@@ -78,6 +79,7 @@ describe V2::TestResultsController do
       it_behaves_like 'paginable', :report
       it_behaves_like 'sortable', :report
       it_behaves_like 'searchable', :report
+      it_behaves_like 'taggable', :report
 
       context 'system from an inaccessible inventory group' do
         before do
