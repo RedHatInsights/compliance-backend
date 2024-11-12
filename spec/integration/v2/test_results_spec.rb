@@ -37,6 +37,7 @@ describe 'Test Results', swagger_doc: 'v2/openapi.json' do
       description 'Lists Test Results under a Report'
       operationId 'ReportTestResults'
       content_types
+      tags_params
       pagination_params_v2
       ids_only_param
       sort_params_v2(V2::TestResult)

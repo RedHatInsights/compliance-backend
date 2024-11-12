@@ -7,7 +7,13 @@ module V2
     self.table_name = :v2_test_results
     self.primary_key = :id
 
-    belongs_to :system, class_name: 'V2::System', optional: true
+    if Rails.env.test? # For testing taggable
+      belongs_to :system, class_name: 'V2::System', optional: true, autosave: true
+      delegate :tags=, to: :system
+    else
+      belongs_to :system, class_name: 'V2::System', optional: true
+    end
+
     belongs_to :tailoring, class_name: 'V2::Tailoring'
     belongs_to :report, class_name: 'V2::Report', optional: true
 
@@ -85,6 +91,10 @@ module V2
       # The OR is inside of Arel in order to prevent pollution of already applied scopes
       where(groups.include?([]) ? grouped.or(ungrouped) : grouped)
     }
+
+    def self.taggable?
+      true
+    end
 
     def display_name
       attributes['system__display_name'] || try(:system)&.display_name

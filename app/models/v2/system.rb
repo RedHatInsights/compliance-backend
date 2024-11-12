@@ -167,6 +167,10 @@ module V2
       where(AN::NamedFunction.new('CAST', [os_minor_version.left.as('int')]).send(q ? :in : :not_in, version))
     }
 
+    def self.taggable?
+      true
+    end
+
     def readonly?
       Rails.env.production?
     end
