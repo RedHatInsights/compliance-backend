@@ -24,6 +24,13 @@ module Api
               readOnly: true,
               description: 'Identificator of the Rule'
             },
+            rule_group_id: {
+              type: :string,
+              format: :uuid,
+              examples: ['cf50fd69-0205-49e8-8e12-c1b2a6291f1d'],
+              readOnly: true,
+              description: 'UUID of the parent Rule Group'
+            },
             title: {
               type: :string,
               examples: ['Remove tftp'],

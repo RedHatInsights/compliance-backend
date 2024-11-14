@@ -201,3 +201,15 @@
         :test_result_id: ${test_result_id}
         :rule_id: ${rule_2.id}
   :query: remediation_available = false
+
+- :name: "equality search by rule_group_id"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: rule_group_id = ${rule_1.rule_group_id}

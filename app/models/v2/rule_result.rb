@@ -69,8 +69,19 @@ module V2
       }
     end
 
+    searchable_by :rule_group_id, %i[eq] do |_key, _op, val|
+      {
+        conditions: 'rule.rule_group_id = ?',
+        parameter: [val]
+      }
+    end
+
     def ref_id
       attributes['rule__ref_id'] || try(:rule)&.ref_id
+    end
+
+    def rule_group_id
+      attributes['rule__rule_group_id'] || try(:rule)&.rule_group_id
     end
 
     def title

@@ -8,6 +8,7 @@ module V2
     derived_attribute :system_id, system: [:id] # This is for the policy to work properly
 
     derived_attribute :ref_id, rule: [:ref_id]
+    derived_attribute :rule_group_id, rule: [:rule_group_id]
     derived_attribute :title, rule: [:title]
     derived_attribute :rationale, rule: [:rationale]
     derived_attribute :description, rule: [:description]
