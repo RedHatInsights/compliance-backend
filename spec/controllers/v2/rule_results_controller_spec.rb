@@ -9,6 +9,7 @@ describe V2::RuleResultsController do
       rule_id: :rule_id,
       system_id: :system_id,
       ref_id: :ref_id,
+      rule_group_id: :rule_group_id,
       title: :title,
       rationale: :rationale,
       description: :description,

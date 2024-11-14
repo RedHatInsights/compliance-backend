@@ -6,6 +6,7 @@ describe V2::RulesController do
   let(:attributes) do
     {
       ref_id: :ref_id,
+      rule_group_id: :rule_group_id,
       title: :title,
       rationale: :rationale,
       description: :description,
@@ -63,6 +64,7 @@ describe V2::RulesController do
     let(:attributes) do
       {
         ref_id: :ref_id,
+        rule_group_id: :rule_group_id,
         title: :title,
         rationale: :rationale,
         description: :description,
