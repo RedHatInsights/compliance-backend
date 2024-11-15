@@ -23,7 +23,7 @@ SELECT
     system_profile_facts as system_profile,
     groups,
     canonical_facts->'insights_id' as insights_id
-FROM dblink('dbname=insights user=insights', 'select id, account, org_id, display_name, created_on, modified_on, stale_timestamp, tags, system_profile_facts, groups, canonical_facts from hosts') as hosts(
+FROM dblink('dbname=insights user=insights', 'select id, account, org_id, display_name, created_on, modified_on, stale_timestamp, tags, system_profile_facts, groups, canonical_facts from hbi.hosts') as hosts(
     id uuid,
     account character varying(10),
     org_id character varying(10),
