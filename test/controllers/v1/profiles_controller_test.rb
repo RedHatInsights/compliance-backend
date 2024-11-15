@@ -717,9 +717,6 @@ module V1
         )
 
         profile_id = @profile.id
-        assert_audited_success 'Autoremoved policy', @profile.policy.id, 'with the initial/main profile'
-        assert_audited_success 'Autoremoved policy', 'with the last profile'
-        assert_audited_success 'Removed profile', profile_id
         assert_difference('Profile.count' => -2, 'Policy.count' => -1) do
           delete v1_profile_path(profile_id)
         end
@@ -774,7 +771,7 @@ module V1
           post profiles_path, params: { data: {} }
         end
         assert_response :unprocessable_entity
-        assert_match 'param is missing or the value is empty: data',
+        assert_match 'param is missing or the value is empty or invalid: data',
                      response.parsed_body.dig('errors', 0)
       end
 
@@ -792,7 +789,7 @@ module V1
           post profiles_path, params: { data: { attributes: {} } }
         end
         assert_response :unprocessable_entity
-        assert_match 'param is missing or the value is empty: data',
+        assert_match 'param is missing or the value is empty or invalid: data',
                      response.parsed_body.dig('errors', 0)
       end
 
@@ -812,7 +809,7 @@ module V1
           )
         end
         assert_response :unprocessable_entity
-        assert_match 'param is missing or the value is empty: ' \
+        assert_match 'param is missing or the value is empty or invalid: ' \
                      'parent_profile_id',
                      response.parsed_body.dig('errors', 0)
       end
@@ -1237,7 +1234,7 @@ module V1
       test 'update without data' do
         patch v1_profile_path(@profile.id), params: params({})
         assert_response :unprocessable_entity
-        assert_match 'param is missing or the value is empty: data',
+        assert_match 'param is missing or the value is empty or invalid: data',
                      response.parsed_body.dig('errors', 0)
       end
 

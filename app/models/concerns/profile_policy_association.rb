@@ -47,15 +47,15 @@ module ProfilePolicyAssociation
     def destroy_policy_with_internal
       return if external?
 
-      destroyed_policy = policy&.reload&.destroy
-      audit_policy_with_main_autoremove(destroyed_policy)
+      policy&.reload&.destroy
+      audit_policy_with_main_autoremove(policy)
     end
 
     def destroy_empty_policy
       return if policy&.profiles&.reload&.any?
 
-      destroyed_policy = policy&.destroy
-      audit_empty_policy_autoremove(destroyed_policy)
+      policy&.destroy
+      audit_empty_policy_autoremove(policy)
     end
 
     private

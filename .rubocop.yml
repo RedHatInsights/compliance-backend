@@ -7,7 +7,7 @@ inherit_from:
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3.3
-  TargetRailsVersion: 7.2
+  TargetRailsVersion: 8.0
   Exclude:
     - 'db/**/*'
     - 'bin/**/*'
@@ -80,6 +80,9 @@ Naming/VariableNumber:
   Enabled: false
 
 Security/IoMethods:
+  Enabled: false
+
+Style/SafeNavigationChainLength:
   Enabled: false
 
 Style/HashSyntax:

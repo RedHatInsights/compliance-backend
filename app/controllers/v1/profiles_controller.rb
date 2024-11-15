@@ -49,9 +49,9 @@ module V1
 
     def destroy
       authorize profile
-      destroyed_profile = profile.destroy
-      audit_removal(destroyed_profile)
-      render_json destroyed_profile, status: :accepted
+      profile.destroy
+      audit_removal(profile)
+      render_json profile, status: :accepted
     end
     permission_for_action :destroy, Rbac::POLICY_DELETE
 
