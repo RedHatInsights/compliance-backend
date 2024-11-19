@@ -60,11 +60,11 @@ module Api
 
         TAILORING_CREATE = {
           type: :object,
+          required: %w[os_minor_version],
           properties: {
             os_minor_version: {
               type: :number,
               examples: [1],
-              required: true,
               description: 'Minor version of the Operating System that the Tailoring covers'
             }
           }
