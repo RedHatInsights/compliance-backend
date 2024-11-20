@@ -1527,6 +1527,7 @@
         ],
         "description": "Returns the Rule Tree of a Profile",
         "operationId": "ProfileTree",
+        "deprecated": true,
         "responses": {
           "200": {
             "description": "Returns the Rule Tree of a Profile",
@@ -13605,6 +13606,7 @@
         ],
         "description": "Create a Tailoring with the provided attributes (for ImageBuilder only)",
         "operationId": "CreateTailoring",
+        "deprecated": true,
         "responses": {
           "201": {
             "description": "Creates a Tailoring",
@@ -13874,6 +13876,7 @@
         ],
         "description": "Returns the Rule Tree of a Tailoring",
         "operationId": "TailoringRuleTree",
+        "deprecated": true,
         "responses": {
           "200": {
             "description": "Returns the Rule Tree of a Tailoring",
