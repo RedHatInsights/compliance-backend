@@ -106,6 +106,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       description 'Create a Tailoring with the provided attributes (for ImageBuilder only)'
       operationId 'CreateTailoring'
       content_types
+      deprecated true
 
       parameter name: :policy_id, in: :path, type: :string, required: true
       parameter name: :data, in: :body, schema: ref_schema('tailoring_create')
@@ -214,6 +215,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       description 'Returns the Rule Tree of a Tailoring'
       operationId 'TailoringRuleTree'
       content_types
+      deprecated true
 
       parameter name: :policy_id, in: :path, type: :string, required: true
       parameter name: :tailoring_id, in: :path, type: :string, required: true

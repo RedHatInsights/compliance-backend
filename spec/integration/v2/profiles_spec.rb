@@ -116,6 +116,7 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
       description 'Returns the Rule Tree of a Profile'
       operationId 'ProfileTree'
       content_types
+      deprecated true
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
       parameter name: :profile_id, in: :path, type: :string, required: true
