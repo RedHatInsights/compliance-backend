@@ -14,7 +14,8 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
     get 'Request Policies' do
       v2_auth_header
       tags 'Policies'
-      description 'Lists Policies'
+      description 'Retrieve the list of policies that have been created ' \
+                  'to test the compliance of your registered systems.'
       operationId 'Policies'
       content_types
       pagination_params_v2
@@ -70,7 +71,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
     post 'Create a Policy' do
       v2_auth_header
       tags 'Policies'
-      description 'Create a Policy with the provided attributes'
+      description 'Create a new security policy.'
       operationId 'CreatePolicy'
       content_types
 
@@ -102,7 +103,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
     get 'Request a Policy' do
       v2_auth_header
       tags 'Policies'
-      description 'Returns a Policy'
+      description 'Retrieve a specific policy.'
       operationId 'Policy'
       content_types
 
@@ -130,7 +131,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
     patch 'Update a Policy' do
       v2_auth_header
       tags 'Policies'
-      description 'Updates a Policy with the provided attributes'
+      description 'Edit or update an existing policy.'
       operationId 'UpdatePolicy'
       content_types
 
@@ -152,7 +153,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
     delete 'Delete a Policy' do
       v2_auth_header
       tags 'Policies'
-      description 'Deletes a Policy'
+      description 'Delete a specific policy.'
       operationId 'DeletePolicy'
       content_types
 
@@ -186,7 +187,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
     get 'Request Policies assigned to a System' do
       v2_auth_header
       tags 'Systems'
-      description 'Lists Policies under a System'
+      description 'List all policies assigned to a single system.'
       operationId 'SystemsPolicies'
       content_types
       pagination_params_v2

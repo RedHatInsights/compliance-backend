@@ -15,7 +15,7 @@ describe 'Rule Groups', swagger_doc: 'v2/openapi.json' do
     get 'Request Rule Groups' do
       v2_auth_header
       tags 'Content'
-      description 'Lists Rule Groups'
+      description 'List all rules groups.'
       operationId 'Rule Groups'
       content_types
       pagination_params_v2
@@ -68,7 +68,7 @@ describe 'Rule Groups', swagger_doc: 'v2/openapi.json' do
     get 'Request a Rule Group' do
       v2_auth_header
       tags 'Content'
-      description 'Returns a Rule Group'
+      description 'Retrieve a specific rule group.'
       operationId 'RuleGroup'
       content_types
 

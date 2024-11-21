@@ -16,7 +16,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
     get 'Request Rules' do
       v2_auth_header
       tags 'Content'
-      description 'Lists Rules assigned'
+      description 'Retrieve a list of rules for a specific security guide.'
       operationId 'Rules'
       content_types
       pagination_params_v2
@@ -69,7 +69,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
     get 'Request a Rule' do
       v2_auth_header
       tags 'Content'
-      description 'Returns a Rule'
+      description 'Retrieve a specific rule from a specific security guide.'
       operationId 'Rule'
       content_types
 
@@ -110,7 +110,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
     get 'Request Rules assigned to a Profile' do
       v2_auth_header
       tags 'Content'
-      description 'Lists Rules assigned to a Profile'
+      description 'Retrieve a list of all security guide rules for a specific profile.'
       operationId 'ProfileRules'
       content_types
       pagination_params_v2
@@ -164,7 +164,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
     get 'Request a Rule assigned to a Profile' do
       v2_auth_header
       tags 'Content'
-      description 'Returns a Rule assigned to a Profile'
+      description 'Retrieve a specific security guide rule for a specific profile.'
       operationId 'ProfileRule'
       content_types
 
@@ -223,7 +223,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
     get 'Request Rules assigned to a Tailoring' do
       v2_auth_header
       tags 'Policies'
-      description 'Lists Rules assigned to a Tailoring'
+      description 'Retrieve a list of rules relating to specific tailorings.'
       operationId 'TailoringRules'
       content_types
       pagination_params_v2
@@ -318,7 +318,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
 
       v2_auth_header
       tags 'Policies'
-      description 'Assigns a Rule to a Tailoring'
+      description 'Add a rule to a specific tailoring.'
       operationId 'AssignRule'
       content_types
 
@@ -355,7 +355,7 @@ describe 'Rules', swagger_doc: 'v2/openapi.json' do
 
       v2_auth_header
       tags 'Policies'
-      description 'Unassigns a Rule from a Tailoring'
+      description 'Use this to remove a rule from your tailoring.'
       operationId 'UnassignRule'
       content_types
 

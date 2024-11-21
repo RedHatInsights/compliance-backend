@@ -15,7 +15,7 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
     get 'Request Profiles' do
       v2_auth_header
       tags 'Content'
-      description 'Lists Profiles'
+      description 'List all security guide profiles.'
       operationId 'Profiles'
       content_types
       pagination_params_v2
@@ -77,7 +77,7 @@ describe 'Profiles', swagger_doc: 'v2/openapi.json' do
     get 'Request a Profile' do
       v2_auth_header
       tags 'Content'
-      description 'Returns a Profile'
+      description 'Retrieve a specific profile.'
       operationId 'Profile'
       content_types
 

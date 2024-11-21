@@ -13,7 +13,7 @@ describe 'Supported Profiles', swagger_doc: 'v2/openapi.json' do
     get 'Request Supported Profiles' do
       v2_auth_header
       tags 'Content'
-      description 'Lists Supported Profiles'
+      description 'Retrieve the list of profiles supported by particular RHEL versions.'
       operationId 'SupportedProfiles'
       content_types
       pagination_params_v2

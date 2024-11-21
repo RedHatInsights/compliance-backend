@@ -34,7 +34,7 @@ describe 'Test Results', swagger_doc: 'v2/openapi.json' do
     get 'Request Test Results under a Report' do
       v2_auth_header
       tags 'Reports'
-      description 'Lists Test Results under a Report'
+      description 'Retrieve all of the test results for a specific report.'
       operationId 'ReportTestResults'
       content_types
       tags_params
@@ -194,7 +194,7 @@ describe 'Test Results', swagger_doc: 'v2/openapi.json' do
     get 'Request a Test Result' do
       v2_auth_header
       tags 'Reports'
-      description 'Returns a Test Result under a Report'
+      description 'Retrieve a specific test result for a specific report.'
       operationId 'ReportTestResult'
       content_types
 

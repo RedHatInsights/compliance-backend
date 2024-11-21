@@ -33,7 +33,7 @@ describe 'Rule Results', swagger_doc: 'v2/openapi.json' do
     get 'Request Rule Results under a Report' do
       v2_auth_header
       tags 'Reports'
-      description 'Lists Rule Results under a Report'
+      description 'Retrieve all of the rule results for a specific report.'
       operationId 'ReportRuleResults'
       content_types
       pagination_params_v2

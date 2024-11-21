@@ -15,7 +15,7 @@ describe 'Value Definitions', swagger_doc: 'v2/openapi.json' do
     get 'Request Value Definitions' do
       v2_auth_header
       tags 'Content'
-      description 'Lists Value Definitions'
+      description 'Retrieve a list of the fields which can be edited within a profile.'
       operationId 'ValueDefinitions'
       content_types
       pagination_params_v2
@@ -79,7 +79,7 @@ describe 'Value Definitions', swagger_doc: 'v2/openapi.json' do
     get 'Request a Value Definition' do
       v2_auth_header
       tags 'Content'
-      description 'Returns a Value Definition'
+      description 'Retrieve a specific value definition.'
       operationId 'ValueDefinition'
       content_types
 
