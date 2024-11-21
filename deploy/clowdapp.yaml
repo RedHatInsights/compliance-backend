@@ -298,10 +298,6 @@ objects:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: ENABLE_API_V2
-          value: "${ENABLE_API_V2}"
-        - name: API_V2_ORG_IDS
-          value: "${API_V2_ORG_IDS}"
         - name: LOGSTREAM
           value: "${LOGSTREAM_SERVICE}"
         # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
@@ -683,10 +679,6 @@ parameters:
 - name: QE_ACCOUNTS
   description: Pipe-separated list of numerical identifiers
   required: false
-- name: ENABLE_API_V2
-  description: Whether to enable APIv2 or not
-- name: API_V2_ORG_IDS
-  description: Pipe-separated list of numerical identifiers
 - name: LOGSTREAM_SERVICE
 - name: LOGSTREAM_SIDEKIQ
 - name: LOGSTREAM_CONSUMER

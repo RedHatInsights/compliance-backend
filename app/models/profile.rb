@@ -32,14 +32,6 @@ class Profile < ApplicationRecord
     message: 'must be unique in a policy OS version'
   }, presence: true
 
-  if ENV.fetch('ENABLE_API_V2', false).blank?
-    validates :ref_id, uniqueness: {
-      scope: %i[account_id benchmark_id],
-      conditions: -> { where(external: false) },
-      message: 'must be unique for an internal profile'
-    }, unless: :external
-  end
-
   validates :external, uniqueness: {
     scope: %i[ref_id account_id benchmark_id],
     conditions: -> { where(policy_id: nil) }

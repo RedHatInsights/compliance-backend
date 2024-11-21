@@ -16,7 +16,6 @@ module V2
     include ::ErrorHandling
 
     before_action :set_csp_hsts
-    before_action :prod_lockdown
 
     class << self
       def permission_for_action(action, permission)
@@ -44,18 +43,6 @@ module V2
     def audit_success(msg)
       Rails.logger.audit_success(msg)
     end
-
-    # :nocov:
-    def prod_lockdown
-      return if !Rails.env.production? || ENV.fetch('ENABLE_API_V2', false).present? || org_passthrough?
-
-      raise ActiveRecord::RecordNotFound
-    end
-
-    def org_passthrough?
-      ENV.fetch('API_V2_ORG_IDS', '').split('|').include?(identity_header.org_id)
-    end
-    # :nocov:
 
     def set_csp_hsts
       response.set_header('Content-Security-Policy', "default-src 'none'")
