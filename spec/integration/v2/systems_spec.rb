@@ -14,7 +14,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
     get 'Request Systems' do
       v2_auth_header
       tags 'Systems'
-      description 'Lists Systems'
+      description 'List all systems that are accessible when you are logged into your account.'
       operationId 'Systems'
       content_types
       tags_params
@@ -77,7 +77,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
     get 'Request the list of available OS versions' do
       v2_auth_header
       tags 'Systems'
-      description 'This feature is exclusively used by the frontend'
+      description 'This feature is exclusively used by the frontend.'
       operationId 'SystemsOS'
       content_types
       deprecated true
@@ -99,7 +99,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
     get 'Request a System' do
       v2_auth_header
       tags 'Systems'
-      description 'Returns a System'
+      description 'Get information about one specific system.'
       operationId 'System'
       content_types
 
@@ -149,7 +149,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
     get 'Request Systems assigned to a Policy' do
       v2_auth_header
       tags 'Policies'
-      description 'Lists Systems assigned to a Policy'
+      description 'Retrieve all of the systems assigned to a specific policy.'
       operationId 'PolicySystems'
       content_types
       tags_params
@@ -301,7 +301,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
 
       v2_auth_header
       tags 'Policies'
-      description 'Assigns a System to a Policy'
+      description 'Assign a specific system to a specific policy.'
       operationId 'AssignSystem'
       content_types
 
@@ -340,7 +340,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
 
       v2_auth_header
       tags 'Policies'
-      description 'Unassigns a System from a Policy'
+      description 'Remove a specific system from a specific policy.'
       operationId 'UnassignSystem'
       content_types
 
@@ -392,7 +392,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
     get 'Request Systems assigned to a Report' do
       v2_auth_header
       tags 'Reports'
-      description 'Lists Systems assigned to a Report'
+      description 'Retrieve all of the systems for a specific report.'
       operationId 'ReportSystems'
       content_types
       tags_params
@@ -508,7 +508,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
     get 'Request a System' do
       v2_auth_header
       tags 'Reports'
-      description 'Returns a System under a Report'
+      description 'Retrieve a specific system from a specific report.'
       operationId 'ReportSystem'
       content_types
 

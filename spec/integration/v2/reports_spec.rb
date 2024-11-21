@@ -21,7 +21,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
     get 'Request Reports' do
       v2_auth_header
       tags 'Reports'
-      description 'Lists Reports'
+      description 'Retrieve a list of all available reports.'
       operationId 'Reports'
       content_types
       pagination_params_v2
@@ -101,7 +101,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
     get 'Request a Report' do
       v2_auth_header
       tags 'Reports'
-      description 'Returns a Report'
+      description 'Retrieve a specific report.'
       operationId 'Report'
       content_types
 
@@ -129,7 +129,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
     delete 'Delete a Report results' do
       v2_auth_header
       tags 'Reports'
-      description "Deletes Report's test results"
+      description 'Delete test results for a specific report.'
       operationId 'DeleteReport'
       content_types
 
@@ -205,7 +205,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
     get 'Request Reports' do
       v2_auth_header
       tags 'Reports'
-      description 'Lists Reports'
+      description 'Retrieve a list of reports for a specific system.'
       operationId 'SystemReports'
       content_types
       pagination_params_v2

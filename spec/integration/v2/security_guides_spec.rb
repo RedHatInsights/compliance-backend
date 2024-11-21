@@ -13,7 +13,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
     get 'Request Security Guides' do
       v2_auth_header
       tags 'Content'
-      description 'Lists Security Guides'
+      description 'Retrieve a list of all SCAP security guides.'
       operationId 'SecurityGuides'
       content_types
       pagination_params_v2
@@ -95,7 +95,7 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
     get 'Request a Security Guide' do
       v2_auth_header
       tags 'Content'
-      description 'Returns a Security Guide'
+      description 'Retrieve a specific security guide.'
       operationId 'SecurityGuide'
       content_types
 
@@ -127,9 +127,10 @@ describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
     get 'Request the Rule Tree of a Security Guide' do
       v2_auth_header
       tags 'Content'
-      description 'Returns the Rule Tree of a Security Guide'
+      description 'Returns rule tree of a security guide.'
       operationId 'SecurityGuideRuleTree'
       content_types
+      deprecated true
 
       parameter name: :security_guide_id, in: :path, type: :string, required: true
 

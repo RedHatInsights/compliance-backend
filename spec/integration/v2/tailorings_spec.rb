@@ -26,7 +26,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
     get 'Request Tailorings' do
       v2_auth_header
       tags 'Policies'
-      description 'Lists Tailorings'
+      description 'Retrieve a list of all tailorings.'
       operationId 'Tailorings'
       content_types
       pagination_params_v2
@@ -139,7 +139,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
     get 'Request a Tailoring' do
       v2_auth_header
       tags 'Policies'
-      description 'Returns a Tailoring'
+      description 'Retrieve a specific tailoring.'
       operationId 'Tailoring'
       content_types
 
@@ -170,7 +170,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
     patch 'Update a Tailoring' do
       v2_auth_header
       tags 'Policies'
-      description 'Updates a Tailoring with the provided value_overrides'
+      description 'Edit or update an existing tailoring.'
       operationId 'UpdateTailoring'
       content_types
 
@@ -212,7 +212,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
     get 'Request the Rule Tree of a Tailoring' do
       v2_auth_header
       tags 'Policies'
-      description 'Returns the Rule Tree of a Tailoring'
+      description 'Returns rule tree of a tailoring.'
       operationId 'TailoringRuleTree'
       content_types
       deprecated true
@@ -260,7 +260,7 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
     get 'Request a Tailoring file' do
       v2_auth_header
       tags 'Policies'
-      description 'Returns a Tailoring File'
+      description 'Retrieve a tailoring file of a specific tailoring.'
       operationId 'TailoringFile'
       content_types
 
