@@ -75,6 +75,41 @@ pipeline {
                             slackSend  channel: '@eshamard', color: "warning", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
                         }
                     }
+                stage('Run floorist smoke tests') {
+                    steps {
+                        withVault([configuration: configuration, vaultSecrets: secrets]) {
+                            sh '''
+                                AVAILABLE_CLUSTERS=('ephemeral' 'crcd')
+                                curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
+                                source ./.cicd_bootstrap.sh
+                                source "${CICD_ROOT}/deploy_ephemeral_env.sh"
+
+                                mkdir -p $WORKSPACE/artifacts
+                                # Update IQE plugin config to run floorist plugin tests.
+                                export COMPONENT_NAME="compliance"
+                                export IQE_CJI_NAME="floorist"
+                                # Pass in COMPONENT_NAME.
+                                export IQE_ENV_VARS="COMPONENT_NAME=$COMPONENT_NAME"
+                                export IQE_PLUGINS="floorist"
+                                export IQE_MARKER_EXPRESSION="floorist_smoke"
+                                export IQE_IMAGE_TAG="floorist"
+
+                                # Run smoke tests with ClowdJobInvocation
+                                source $CICD_ROOT/cji_smoke_test.sh
+
+
+                                source "${CICD_ROOT}/cji_smoke_test.sh"
+                            '''
+                        }
+                    }
+                    post {
+                        failure {
+                            slackSend  channel: '@prichard', color: "danger", message: "Floorist smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
+                        }
+                        unstable {
+                            slackSend  channel: '@prichard', color: "warning", message: "Floorist smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
+                        }
+                    }
                 }
             }
         }
