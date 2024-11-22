@@ -79,7 +79,6 @@ pipeline {
                     steps {
                         withVault([configuration: configuration, vaultSecrets: secrets]) {
                             sh '''
-                                mkdir -p $WORKSPACE/artifacts
                                 # Update IQE plugin config to run floorist plugin tests.
                                 export COMPONENT_NAME="compliance"
                                 export IQE_CJI_NAME="floorist"
