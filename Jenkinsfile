@@ -75,6 +75,7 @@ pipeline {
                             slackSend  channel: '@eshamard', color: "warning", message: "Smoke tests failed in Compliance PR check. <${env.ghprbPullLink}|PR link>  (<${env.BUILD_URL}|Build>)"
                         }
                     }
+                }
                 stage('Run floorist smoke tests') {
                     steps {
                         withVault([configuration: configuration, vaultSecrets: secrets]) {
