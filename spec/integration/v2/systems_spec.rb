@@ -21,7 +21,9 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       pagination_params_v2
       ids_only_param
       sort_params_v2(V2::System)
-      search_params_v2(V2::System, except: %i[never_reported])
+      # NOTE: os_version filtering works on /systems, but is not encouraged, for other than FE needs
+      #       see 445f86bb9bc13f4202ad86eb3770213040958985
+      search_params_v2(V2::System, except: %i[never_reported os_version])
 
       response '200', 'Lists Systems' do
         v2_collection_schema 'system'
@@ -155,7 +157,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       ids_only_param
       sort_params_v2(V2::System, except: %i[os_major_version])
       search_params_v2(
-        V2::System, except: %i[never_reported os_major_version policies profile_ref_id assigned_or_scanned]
+        V2::System, except: %i[os_version never_reported os_major_version policies profile_ref_id assigned_or_scanned]
       )
 
       parameter name: :policy_id, in: :path, type: :string, required: true
@@ -397,7 +399,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       pagination_params_v2
       ids_only_param
       sort_params_v2(V2::System, except: %i[os_major_version])
-      search_params_v2(V2::System, except: %i[os_major_version policies profile_ref_id assigned_or_scanned])
+      search_params_v2(V2::System, except: %i[os_version os_major_version policies profile_ref_id assigned_or_scanned])
 
       parameter name: :report_id, in: :path, type: :string, required: true
 
