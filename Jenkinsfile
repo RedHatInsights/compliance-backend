@@ -45,7 +45,6 @@ pipeline {
                 }
             }
         }
-
         stage('Run Tests') {
             parallel {
                 stage('Run unit tests') {
