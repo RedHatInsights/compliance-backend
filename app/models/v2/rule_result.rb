@@ -62,7 +62,7 @@ module V2
       }
     end
 
-    searchable_by :remediation_available, %i[eq] do |_key, _op, val|
+    searchable_by :remediation_available, %i[eq], except_parents: %i[reports] do |_key, _op, val|
       {
         conditions: 'rule.remediation_available = ?',
         parameter: [ActiveModel::Type::Boolean.new.cast(val)]
