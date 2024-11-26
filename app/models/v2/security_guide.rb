@@ -19,7 +19,7 @@ module V2
     searchable_by :os_major_version, %i[eq ne]
 
     searchable_by :profile_ref_id, %i[eq] do |_key, _op, val|
-      ids = ::V2::Profile.where(ref_id: val).select(:security_guide_id)
+      ids = ::V2::Profile.unscoped.where(ref_id: val).select(:security_guide_id)
 
       { conditions: "security_guides.id IN (#{ids.to_sql})" }
     end
@@ -27,7 +27,7 @@ module V2
     searchable_by :supported_profile, %i[eq] do |_key, _op, val|
       ref_id, os_minor = val.split(':')
 
-      ids = ::V2::Profile.joins(:os_minor_versions).where(
+      ids = ::V2::Profile.unscoped.joins(:os_minor_versions).where(
         ref_id: ref_id, os_minor_versions: { os_minor_version: os_minor.to_i }
       ).select(:security_guide_id)
 

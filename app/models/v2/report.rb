@@ -110,9 +110,9 @@ module V2
       }
     end
     searchable_by :with_reported_systems, %i[eq], except_parents: %i[systems] do |_key, _op, _val|
-      ids = V2::Report.joins(:reported_systems)
+      ids = V2::Report.unscoped.joins(:reported_systems)
                       .merge_with_alias(Pundit.policy_scope(User.current, V2::System))
-                      .reselect(:id)
+                      .select(:id)
 
       { conditions: "v2_policies.id IN (#{ids.to_sql})" }
     end

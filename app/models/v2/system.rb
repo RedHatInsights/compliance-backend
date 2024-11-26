@@ -118,35 +118,34 @@ module V2
     end
 
     searchable_by :assigned_or_scanned, %i[eq], except_parents: %i[policies reports] do |_key, _op, _val|
-      ids = V2::System.where(id: V2::PolicySystem.select(:system_id)).or(
-        V2::System.where(id: V2::TestResult.select(:system_id))
-      ).reselect(:id)
+      assigned = V2::PolicySystem.select(:system_id)
+      scanned = V2::TestResult.select(:system_id)
 
-      { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
+      { conditions: "inventory.hosts.id IN (#{assigned.to_sql}) OR inventory.hosts.id IN (#{scanned.to_sql})" }
     end
 
     searchable_by :never_reported, %i[eq], only_parents: %i[reports] do |_key, _op, _val|
-      ids = V2::TestResult.reselect(:system_id, :report_id)
+      ids = V2::TestResult.unscoped.select(:system_id, :report_id)
 
       { conditions: "(inventory.hosts.id, reports.id) NOT IN (#{ids.to_sql})" }
     end
 
     searchable_by :group_name, %i[eq in] do |_key, _op, val|
       values = val.split(',').map(&:strip)
-      systems = ::V2::System.with_groups(values, :name)
+      systems = ::V2::System.unscoped.with_groups(values, :name)
       { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
     end
 
     searchable_by :policies, %i[eq in], except_parents: %i[policies reports] do |_key, _op, val|
       values = val.split(',').map(&:strip)
-      ids = ::V2::PolicySystem.where(policy_id: values).select(:system_id)
+      ids = ::V2::PolicySystem.unscoped.where(policy_id: values).select(:system_id)
 
       { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
     end
 
     searchable_by :profile_ref_id, %i[neq notin], except_parents: %i[policies reports] do |_key, _op, val|
       values = val.split(',').map(&:strip)
-      ids = ::V2::PolicySystem.joins(policy: :profile).where(profile: { ref_id: values }).select(:system_id)
+      ids = ::V2::PolicySystem.unscoped.joins(policy: :profile).where(profile: { ref_id: values }).select(:system_id)
 
       { conditions: "inventory.hosts.id NOT IN (#{ids.to_sql})" }
     end
