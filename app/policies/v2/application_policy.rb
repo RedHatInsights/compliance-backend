@@ -56,6 +56,12 @@ module V2
       def resolve
         scope.all
       end
+
+      # Redefine this method in subclasses if you want to limit the join scope for aggregations.
+      # This is not intended for limiting the user access, but to improve query performance.
+      def aggregate
+        scope.all
+      end
     end
   end
 end

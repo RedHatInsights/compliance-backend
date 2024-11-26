@@ -45,6 +45,11 @@ module V2
         user.cert_authenticated? ? resolve_cert_auth : resolve_regular
       end
 
+      # In aggregations, we should not join with all systems, so scoping them `org_id`
+      def aggregate
+        base_scope
+      end
+
       private
 
       def resolve_regular
