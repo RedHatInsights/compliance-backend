@@ -58,6 +58,7 @@ module V2
     # INNER JOIN (
     #   SELECT "resource"."id", AGG("association"."XY"), AGG("association"."XZ")
     #   FROM "resource" LEFT OUTER JOIN "association" ...
+    #   WHERE (#{aggregate_scope}) GROUP BY "resource"."id"
     # ) "aggregate_association" ON "aggregate_association"."id" = "resource"."id";
     # ```
     #
@@ -65,7 +66,16 @@ module V2
       sq = resource.left_outer_joins(association)
                    .group(resource.primary_key)
                    .select(resource.primary_key, *aliases)
+                   .merge(aggregate_scope)
       resource.arel_self_join(sq.arel.as(association.to_s))
+    end
+
+    # This is a hack to utilize a Pundit scope for an alternative resolution for aggregations.
+    # The default resolution is just `scope.all` but the `aggregate` method can be easily
+    # redefined on the given scopes to make lookups faster.
+    def aggregate_scope
+      policy = Pundit.policy(current_user, resource)
+      policy.class::Scope.new(current_user, resource).aggregate
     end
 
     # Iterate through the (nested) fields to be selected and set their names accordingly
