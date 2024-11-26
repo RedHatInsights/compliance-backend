@@ -39,7 +39,7 @@ describe 'Rule Results', swagger_doc: 'v2/openapi.json' do
       pagination_params_v2
       ids_only_param
       sort_params_v2(V2::RuleResult)
-      search_params_v2(V2::RuleResult)
+      search_params_v2(V2::RuleResult, except: %i[remediation_available])
 
       parameter name: :test_result_id, in: :path, type: :string, required: true
       parameter name: :report_id, in: :path, type: :string, required: true
