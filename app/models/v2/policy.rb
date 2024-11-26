@@ -58,9 +58,10 @@ module V2
       )
 
       match_os_minors = Arel::Nodes::NamedFunction.new('ANY', [V2::SupportedProfile.arel_table[:os_minor_versions]])
-      ids = V2::Policy.joins(profile: :security_guide).joins(supported_profiles)
+      ids = V2::Policy.unscoped
+                      .joins(profile: :security_guide).joins(supported_profiles)
                       .where(Arel::Nodes.build_quoted(val).eq(match_os_minors))
-                      .reselect(arel_table[:id])
+                      .select(arel_table[:id])
 
       { conditions: "v2_policies.id IN (#{ids.to_sql})" }
     end
