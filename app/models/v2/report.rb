@@ -101,23 +101,22 @@ module V2
     sortable_by :percent_compliant, 'aggregate_percent_compliant'
 
     searchable_by :title, %i[like unlike eq ne]
-    searchable_by :os_major_version, %i[eq ne in notin], except_parents: %i[systems] do |_key, op, val|
-      bind = ['IN', 'NOT IN'].include?(op) ? '(?)' : '?'
+    searchable_by :os_major_version, %i[eq ne in notin], except_parents: %i[systems] do |key, op, val|
+      values = val.split(',').map(&:to_i)
 
-      {
-        conditions: "security_guide.os_major_version #{op} #{bind}",
-        parameter: [val.split(',').map(&:to_i)]
-      }
+      { conditions: arel_inotineqneq(op, V2::SecurityGuide.arel_table.alias('security_guide')[key], values).to_sql }
     end
+
     searchable_by :with_reported_systems, %i[eq], except_parents: %i[systems] do |_key, _op, _val|
       ids = V2::Report.unscoped.joins(:reported_systems)
                       .merge_with_alias(Pundit.policy_scope(User.current, V2::System))
                       .select(:id)
 
-      { conditions: "v2_policies.id IN (#{ids.to_sql})" }
+      { conditions: AN::In.new(arel_table.alias('v2_policies')[:id], ids).to_sql }
     end
+
     searchable_by :percent_compliant, %i[eq gt lt gte lte], except_parents: %i[systems] do |_key, op, val|
-      {
+      { # this can't be converted to arel easily
         conditions: "aggregate_percent_compliant #{op} ?",
         parameter: [val]
       }

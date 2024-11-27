@@ -36,14 +36,13 @@ module V2
     sortable_by :compliance_threshold
 
     searchable_by :title, %i[like unlike eq ne]
-    searchable_by :os_major_version, %i[eq ne in notin], except_parents: %i[systems] do |_key, op, val|
-      bind = ['IN', 'NOT IN'].include?(op) ? '(?)' : '?'
 
-      {
-        conditions: "security_guide.os_major_version #{op} #{bind}",
-        parameter: [val.split(',').map(&:to_i)]
-      }
+    searchable_by :os_major_version, %i[eq ne in notin], except_parents: %i[systems] do |key, op, val|
+      values = val.split(',').map(&:to_i)
+
+      { conditions: arel_inotineqneq(op, V2::SecurityGuide.arel_table.alias('security_guide')[key], values).to_sql }
     end
+
     searchable_by :os_minor_version, %i[eq] do |_key, _op, val|
       # Rails doesn't support composed foreign keys yet, so we have to manually join with `SupportedProfile` using
       # `Profile#ref_id` and `SecurityGuide#os_major_version`.
@@ -57,13 +56,13 @@ module V2
         )
       )
 
-      match_os_minors = Arel::Nodes::NamedFunction.new('ANY', [V2::SupportedProfile.arel_table[:os_minor_versions]])
+      match_os_minors = AN::NamedFunction.new('ANY', [V2::SupportedProfile.arel_table[:os_minor_versions]])
       ids = V2::Policy.unscoped
                       .joins(profile: :security_guide).joins(supported_profiles)
                       .where(Arel::Nodes.build_quoted(val).eq(match_os_minors))
                       .select(arel_table[:id])
 
-      { conditions: "v2_policies.id IN (#{ids.to_sql})" }
+      { conditions: AN::In.new(arel_table[:id], ids.arel).to_sql }
     end
 
     before_validation :ensure_default_values

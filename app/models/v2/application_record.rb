@@ -51,12 +51,12 @@ module V2
 
     # Splits up a version and converts it to an array of integers for better sorting
     def self.version_to_array(column)
-      Arel::Nodes::NamedFunction.new(
+      AN::NamedFunction.new(
         'CAST',
         [
-          Arel::Nodes::NamedFunction.new(
+          AN::NamedFunction.new(
             'string_to_array',
-            [column, Arel::Nodes::Quoted.new('.')]
+            [column, AN::Quoted.new('.')]
           ).as('int[]')
         ]
       )
@@ -74,6 +74,19 @@ module V2
           ]
         )
       )
+    end
+
+    def self.arel_inotineqneq(operator, left, right)
+      case operator
+      when 'IN'
+        AN::In.new(left, right)
+      when 'NOT IN'
+        AN::Not.new(AN::In.new(left, right))
+      when '='
+        left.eq(right.first)
+      when '<>'
+        left.not_eq(right.first)
+      end
     end
 
     def self.bulk_assign(add, del)

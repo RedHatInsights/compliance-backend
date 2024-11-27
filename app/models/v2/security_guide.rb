@@ -21,7 +21,7 @@ module V2
     searchable_by :profile_ref_id, %i[eq] do |_key, _op, val|
       ids = ::V2::Profile.unscoped.where(ref_id: val).select(:security_guide_id)
 
-      { conditions: "security_guides.id IN (#{ids.to_sql})" }
+      { conditions: AN::In.new(arel_table[:id], ids.arel).to_sql }
     end
 
     searchable_by :supported_profile, %i[eq] do |_key, _op, val|
@@ -31,7 +31,7 @@ module V2
         ref_id: ref_id, os_minor_versions: { os_minor_version: os_minor.to_i }
       ).select(:security_guide_id)
 
-      { conditions: "security_guides.id IN (#{ids.to_sql})" }
+      { conditions: AN::In.new(arel_table[:id], ids.arel).to_sql }
     end
 
     sortable_by :title

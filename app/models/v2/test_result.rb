@@ -81,7 +81,7 @@ module V2
                             .where(v2_rules: { severity: val.split(',') }, rule_results: { result: 'fail' })
                             .select(:test_result_id)
 
-      { conditions: "v2_test_results.id IN (#{ids.to_sql})" }
+      { conditions: AN::In.new(arel_table[:id], ids.arel).to_sql }
     end
 
     scope :with_groups, lambda { |groups, table = V2::System.arel_table, key = :id|
