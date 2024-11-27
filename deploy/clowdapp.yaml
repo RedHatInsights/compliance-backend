@@ -549,6 +549,33 @@ objects:
         WHERE rule_results.result IN ('fail', 'error', 'unknown', 'fixed')
         GROUP BY "rules"."ref_id", "accounts"."org_id";
 
+- apiVersion: metrics.console.redhat.com/v1alpha1
+  kind: FloorPlan
+  metadata:
+    name: compliance-hms
+  spec:
+    database:
+      secretName: ${FLOORIST_DB_SECRET_NAME}
+    objectStore:
+      secretName: ${FLOORIST_HMS_BUCKET_SECRET_NAME}
+    logLevel: ${FLOORIST_LOGLEVEL}
+    suspend: ${{FLOORIST_SUSPEND}}
+    queries:
+    - prefix: hms_analytics/compliance/tests
+      chunksize: 200000
+      query: >-
+        SELECT
+          "v2_test_results"."start_time" AS "start_time",
+          "v2_test_results"."end_time" AS "end_time",
+          "v2_test_results"."system_id"::TEXT AS "system_id",
+          "canonical_profiles"."ref_id" AS "canonical_profile_ref_id",
+          "accounts"."org_id" AS "org_id"
+          FROM "v2_test_results"
+          INNER JOIN "tailorings" ON "tailorings"."id" = "v2_test_results"."tailoring_id"
+          INNER JOIN "v2_policies" ON "v2_policies"."id" = "tailorings"."policy_id"
+          INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "tailorings"."profile_id"
+          INNER JOIN "accounts" ON "accounts"."id" = "v2_policies"."account_id";
+
 - apiVersion: v1
   kind: Secret
   type: Opaque
@@ -657,6 +684,9 @@ parameters:
 - description: database secret name
   name: FLOORIST_DB_SECRET_NAME
   value: compliance-db
+- name: FLOORIST_HMS_BUCKET_SECRET_NAME
+  description: HMS bucket secret name
+  value: floorist-bucket
 - description: bucket secret name
   name: FLOORIST_BUCKET_SECRET_NAME
   required: true
