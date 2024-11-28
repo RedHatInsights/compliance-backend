@@ -231,6 +231,7 @@ branch. Pull requests are warmly welcome.
 
 This project ensures code style guidelines are followed on every pull request
 using [Rubocop](https://github.com/rubocop-hq/rubocop).
+Format for git commit message is described in `.commitlint.yml`.
 
 ## Licensing
 
