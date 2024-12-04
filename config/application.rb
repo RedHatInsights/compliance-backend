@@ -30,7 +30,7 @@ Dotenv::Rails.load unless Rails.env.production?
 module ComplianceBackend
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.2
+    config.load_defaults 8.0
 
     # Partial inserts are necessary for writing into views with read-only fields
     config.active_record.partial_inserts = true # FIXME: clean up after the remodel
