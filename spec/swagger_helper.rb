@@ -211,11 +211,8 @@ def v2_param(schema, field, **args)
 end
 
 def content_types
-  # HACK: the argument is passed as a symbol to avoid being duplicated.
-  # Possibly an rswag issue.
-  # (see https://github.com/rswag/rswag/blob/8399d508f46492b0baa2d72e63f8260ecd9a737f/rswag-specs/lib/rswag/specs/swagger_formatter.rb#L151)
-  consumes :'application/vnd.api+json'
-  produces :'application/vnd.api+json'
+  consumes 'application/vnd.api+json'
+  produces 'application/vnd.api+json'
 end
 
 def auth_header
