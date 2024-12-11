@@ -45,7 +45,6 @@ pipeline {
                 }
             }
         }
-
         stage('Run Tests') {
             parallel {
                 stage('Run unit tests') {
@@ -64,6 +63,18 @@ pipeline {
                                 source ./.cicd_bootstrap.sh
                                 source "${CICD_ROOT}/deploy_ephemeral_env.sh"
                                 source "${CICD_ROOT}/cji_smoke_test.sh"
+
+                                # Update IQE plugin config to run floorist plugin tests.
+                                export COMPONENT_NAME="compliance"
+                                export IQE_CJI_NAME="floorist"
+                                # Pass in COMPONENT_NAME.
+                                export IQE_ENV_VARS="COMPONENT_NAME=$COMPONENT_NAME"
+                                export IQE_PLUGINS="floorist"
+                                export IQE_MARKER_EXPRESSION="floorist_smoke"
+                                export IQE_IMAGE_TAG="floorist"
+
+                                # Run smoke tests with ClowdJobInvocation
+                                source "${CICD_ROOT}/cji_smoke_test.sh"
                             '''
                         }
                     }
@@ -79,7 +90,6 @@ pipeline {
             }
         }
     }
-
     post {
         always{
             archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true
