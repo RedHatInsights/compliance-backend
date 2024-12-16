@@ -37,11 +37,6 @@ gem 'jsonapi-serializer'
 # APIv2 serializer
 gem 'panko_serializer'
 
-# GraphQL support
-gem 'graphql'
-gem 'graphql-batch'
-gem 'graphql-fragment_cache'
-
 # Pundit authorization system
 gem 'pundit'
 
@@ -134,7 +129,6 @@ end
 
 group :development do
   gem 'bullet'
-  gem 'graphiql-rails'
   gem 'listen', '>= 3.0.5'
   gem 'pry-rails'
   gem 'spring'

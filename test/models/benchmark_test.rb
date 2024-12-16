@@ -472,124 +472,118 @@ module Xccdf
     end
 
     context 'rule_tree' do
-      [true, false].each do |graphql|
-        should "builds an array of hashes with graphql=#{graphql}" do
-          profile = FactoryBot.create(:canonical_profile)
-          vds = FactoryBot.create_list(:value_definition, 3)
-          rg_1 = FactoryBot.create(
-            :rule_group,
-            benchmark: profile.benchmark,
-            precedence: 1
-          )
-          rg_2 = FactoryBot.create(
-            :rule_group,
-            benchmark: profile.benchmark,
-            precedence: 2
-          )
-          r_11 = FactoryBot.create(
-            :rule,
-            profiles: [profile],
-            benchmark: profile.benchmark,
-            rule_group: rg_1,
-            values: vds.map(&:id),
-            precedence: 3
-          )
-          rg_21 = FactoryBot.create(
-            :rule_group,
-            benchmark: profile.benchmark,
-            ancestry: rg_2.id,
-            precedence: 4
-          )
-          rg_211 = FactoryBot.create(
-            :rule_group,
-            benchmark: profile.benchmark,
-            ancestry: rg_21.id,
-            precedence: 5
-          )
-          r_2111 = FactoryBot.create(
-            :rule,
-            profiles: [profile],
-            benchmark: profile.benchmark,
-            rule_group: rg_211,
-            precedence: 6
-          )
-          r_211 = FactoryBot.create(
-            :rule,
-            profiles: [profile],
-            benchmark: profile.benchmark,
-            rule_group: rg_21,
-            precedence: 7
-          )
-          r_21 = FactoryBot.create(
-            :rule,
-            :with_references,
-            profiles: [profile],
-            benchmark: profile.benchmark,
-            rule_group: rg_2,
-            precedence: 8
-          )
+      should 'builds an array of hashes' do
+        profile = FactoryBot.create(:canonical_profile)
+        vds = FactoryBot.create_list(:value_definition, 3)
+        rg_1 = FactoryBot.create(
+          :rule_group,
+          benchmark: profile.benchmark,
+          precedence: 1
+        )
+        rg_2 = FactoryBot.create(
+          :rule_group,
+          benchmark: profile.benchmark,
+          precedence: 2
+        )
+        r_11 = FactoryBot.create(
+          :rule,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          rule_group: rg_1,
+          values: vds.map(&:id),
+          precedence: 3
+        )
+        rg_21 = FactoryBot.create(
+          :rule_group,
+          benchmark: profile.benchmark,
+          ancestry: rg_2.id,
+          precedence: 4
+        )
+        rg_211 = FactoryBot.create(
+          :rule_group,
+          benchmark: profile.benchmark,
+          ancestry: rg_21.id,
+          precedence: 5
+        )
+        r_2111 = FactoryBot.create(
+          :rule,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          rule_group: rg_211,
+          precedence: 6
+        )
+        r_211 = FactoryBot.create(
+          :rule,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          rule_group: rg_21,
+          precedence: 7
+        )
+        r_21 = FactoryBot.create(
+          :rule,
+          :with_references,
+          profiles: [profile],
+          benchmark: profile.benchmark,
+          rule_group: rg_2,
+          precedence: 8
+        )
 
-          def _adjust(field, graphql)
-            graphql ? field.to_s.camelize(:lower).to_sym : field
-          end
+        expected_response = [
+          {
+            type: :rule_group,
+            id: rg_1.id,
+            ref_id: rg_1.ref_id,
+            title: rg_1.title,
+            children: [
+              {
+                type: :rule,
+                id: r_11.id,
+                ref_id: r_11.ref_id
+              }
+            ]
+          },
+          {
+            type: :rule_group,
+            id: rg_2.id,
+            ref_id: rg_2.ref_id,
+            title: rg_2.title,
+            children: [
+              {
+                type: :rule_group,
+                id: rg_21.id,
+                ref_id: rg_21.ref_id,
+                title: rg_21.title,
+                children: [
+                  {
+                    type: :rule_group,
+                    id: rg_211.id,
+                    ref_id: rg_211.ref_id,
+                    title: rg_211.title,
+                    children: [
+                      {
+                        type: :rule,
+                        id: r_2111.id,
+                        ref_id: r_2111.ref_id
+                      }
+                    ]
+                  },
+                  {
+                    type: :rule,
+                    id: r_211.id,
+                    ref_id: r_211.ref_id
+                  }
+                ]
+              },
+              {
+                type: :rule,
+                id: r_21.id,
+                ref_id: r_21.ref_id
+              }
+            ]
+          }
+        ]
 
-          expected_response = [
-            {
-              _adjust(:type, graphql) => _adjust(:rule_group, graphql),
-              _adjust(:id, graphql) => rg_1.id,
-              _adjust(:ref_id, graphql) => rg_1.ref_id,
-              _adjust(:title, graphql) => rg_1.title,
-              _adjust(:children, graphql) => [
-                {
-                  _adjust(:type, graphql) => _adjust(:rule, graphql),
-                  _adjust(:id, graphql) => r_11.id,
-                  _adjust(:ref_id, graphql) => r_11.ref_id
-                }
-              ]
-            },
-            {
-              _adjust(:type, graphql) => _adjust(:rule_group, graphql),
-              _adjust(:id, graphql) => rg_2.id,
-              _adjust(:ref_id, graphql) => rg_2.ref_id,
-              _adjust(:title, graphql) => rg_2.title,
-              _adjust(:children, graphql) => [
-                {
-                  _adjust(:type, graphql) => _adjust(:rule_group, graphql),
-                  _adjust(:id, graphql) => rg_21.id,
-                  _adjust(:ref_id, graphql) => rg_21.ref_id,
-                  _adjust(:title, graphql) => rg_21.title,
-                  _adjust(:children, graphql) => [
-                    {
-                      _adjust(:type, graphql) => _adjust(:rule_group, graphql),
-                      _adjust(:id, graphql) => rg_211.id,
-                      _adjust(:ref_id, graphql) => rg_211.ref_id,
-                      _adjust(:title, graphql) => rg_211.title,
-                      _adjust(:children, graphql) => [
-                        {
-                          _adjust(:type, graphql) => _adjust(:rule, graphql),
-                          _adjust(:id, graphql) => r_2111.id,
-                          _adjust(:ref_id, graphql) => r_2111.ref_id
-                        }
-                      ]
-                    },
-                    {
-                      _adjust(:type, graphql) => _adjust(:rule, graphql),
-                      _adjust(:id, graphql) => r_211.id,
-                      _adjust(:ref_id, graphql) => r_211.ref_id
-                    }
-                  ]
-                },
-                {
-                  _adjust(:type, graphql) => _adjust(:rule, graphql),
-                  _adjust(:id, graphql) => r_21.id,
-                  _adjust(:ref_id, graphql) => r_21.ref_id
-                }
-              ]
-            }
-          ]
-
-          assert_equal profile.benchmark.rule_tree(graphql), expected_response
-        end
+        assert_equal profile.benchmark.rule_tree, expected_response
       end
     end
   end

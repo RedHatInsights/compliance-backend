@@ -20,7 +20,7 @@ module Sortable
     private
 
     # Declares the field to be used for the basis of deterministic sorting
-    # when retrieving records via the REST/GQL APIs.
+    # when retrieving records via the REST APIs.
     def default_sort(column)
       @default_sort = column
     end

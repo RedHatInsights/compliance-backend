@@ -9,13 +9,13 @@ module RuleTree
   RULE_GROUP_ATTRIBUTES = %i[id ref_id title].freeze
 
   included do
-    def rule_tree(graphql = false)
+    def rule_tree
       cached_rules = rules.group_by(&:rule_group_id)
 
       rule_groups.arrange_serializable do |group, children|
-        serialize(group, RULE_GROUP_ATTRIBUTES, graphql).merge(
+        serialize(group, RULE_GROUP_ATTRIBUTES).merge(
           children: children + (cached_rules[group.id]&.map do |rule|
-            serialize(rule, RULE_ATTRIBUTES, graphql)
+            serialize(rule, RULE_ATTRIBUTES)
           end || [])
         )
       end
@@ -23,14 +23,10 @@ module RuleTree
 
     private
 
-    def serialize(item, attrs, graphql)
-      attrs.each_with_object(type: adjust_field(item.class, graphql)) do |key, obj|
-        obj[adjust_field(key, graphql)] = item[key]
+    def serialize(item, attrs)
+      attrs.each_with_object(type: item.class.to_s.underscore.to_sym) do |key, obj|
+        obj[key.to_s.underscore.to_sym] = item[key]
       end
-    end
-
-    def adjust_field(field, graphql)
-      (graphql ? field.to_s.camelize(:lower) : field.to_s.underscore).to_sym
     end
   end
 end

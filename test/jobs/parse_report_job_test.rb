@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 
 class ParseReportJobTest < ActiveSupport::TestCase
   setup do

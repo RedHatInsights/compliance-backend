@@ -43,6 +43,7 @@ namespace :ssg do
       end
       # Clear the old cached values
       SupportedSsg.clear
+      # FIXME: delete this after the next successful SSG import!
       # Clear the GraphQL fragment cache
       Rails.cache.delete_matched('graphql/*')
     end
