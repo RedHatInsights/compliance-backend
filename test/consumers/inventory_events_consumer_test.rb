@@ -2,6 +2,7 @@
 
 require 'test_helper'
 require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 
 class InventoryEventsConsumerTest < ActiveSupport::TestCase
   setup do

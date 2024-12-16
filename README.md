@@ -14,7 +14,7 @@ your auditors, get alerts, and create playbooks to fix your hosts.
 
 This project does two main things:
 
-1. Serve as the API/GraphQL backend for the web UI
+1. Serve as the API backend for the web UI
    [compliance-frontend](https://github.com/RedHatInsights/compliance-frontend)
    and for other consumers,
 2. Connect to a Kafka message queue provided by the Insights Platform.
@@ -23,7 +23,7 @@ This project does two main things:
 
 The Insights Compliance backend comprises of these components/services:
 
-* Rails web server — serving REST API and GraphQL (port 3000)
+* Rails web server — serving REST API (port 3000)
 * Sidekiq — job runner connected through Redis (see [app/jobs](app/jobs))
 * Inventory Consumer (racecar) — processor of Kafka messages,
   mainly to process and parse reports

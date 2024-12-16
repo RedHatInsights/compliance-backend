@@ -84,12 +84,6 @@ Rails.application.routes.draw do
         as: "#{prefix}/#{Settings.app_name}/rswag_api"
       mount Rswag::Ui::Engine => '/',
         as: "#{prefix}/#{Settings.app_name}/rswag_ui"
-      post 'graphql' => 'graphql#query'
-      if Rails.env.development?
-        mount GraphiQL::Rails::Engine, at: "/graphiql",
-          graphql_path: "#{prefix}/#{Settings.app_name}/graphql",
-          as: "#{prefix}/#{Settings.app_name}/graphiql"
-      end
     end
   end
 

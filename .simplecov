@@ -8,7 +8,6 @@ SimpleCov.start do
 
   add_group 'Consumers', 'app/consumers'
   add_group 'Controllers', 'app/controllers'
-  add_group 'GraphQL', 'app/graphql'
   add_group 'Jobs', 'app/jobs'
   add_group 'Models', 'app/models'
   add_group 'Policies', 'app/policies'
