@@ -118,36 +118,48 @@ module V2
     end
 
     searchable_by :assigned_or_scanned, %i[eq], except_parents: %i[policies reports] do |_key, _op, _val|
-      assigned = V2::PolicySystem.select(:system_id)
-      scanned = V2::TestResult.select(:system_id)
+      assigned = V2::PolicySystem.arel_table.project(Arel.sql('1'))
+                                 .where(V2::PolicySystem.arel_table[:system_id].eq(arel_table[:id]))
 
-      { conditions: "inventory.hosts.id IN (#{assigned.to_sql}) OR inventory.hosts.id IN (#{scanned.to_sql})" }
+      scanned = V2::TestResult.arel_table.project(Arel.sql('1'))
+                              .where(V2::TestResult.arel_table[:system_id].eq(arel_table[:id]))
+
+      { conditions: AN::Or.new([AN::Exists.new(assigned), AN::Exists.new(scanned)]).to_sql }
     end
 
     searchable_by :never_reported, %i[eq], only_parents: %i[reports] do |_key, _op, _val|
-      ids = V2::TestResult.unscoped.select(:system_id, :report_id)
+      subquery = V2::TestResult.arel_table.project(Arel.sql('1')).where(
+        V2::TestResult.arel_table[:system_id].eq(arel_table[:id]).and(
+          V2::TestResult.arel_table[:report_id].eq(V2::Report.arel_table.alias('reports')[:id])
+        )
+      )
 
-      { conditions: "(inventory.hosts.id, reports.id) NOT IN (#{ids.to_sql})" }
+      { conditions: AN::Not.new(AN::Exists.new(subquery)).to_sql }
     end
 
     searchable_by :group_name, %i[eq in] do |_key, _op, val|
       values = val.split(',').map(&:strip)
       systems = ::V2::System.unscoped.with_groups(values, :name)
+
       { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
     end
 
     searchable_by :policies, %i[eq in], except_parents: %i[policies reports] do |_key, _op, val|
       values = val.split(',').map(&:strip)
-      ids = ::V2::PolicySystem.unscoped.where(policy_id: values).select(:system_id)
+      subquery = V2::PolicySystem.arel_table.project(Arel.sql('1')).where(
+        V2::PolicySystem.arel_table[:system_id].eq(arel_table[:id]).and(
+          V2::PolicySystem.arel_table[:policy_id].in(values)
+        )
+      )
 
-      { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
+      { conditions: AN::Exists.new(subquery).to_sql }
     end
 
     searchable_by :profile_ref_id, %i[neq notin], except_parents: %i[policies reports] do |_key, _op, val|
       values = val.split(',').map(&:strip)
       ids = ::V2::PolicySystem.unscoped.joins(policy: :profile).where(profile: { ref_id: values }).select(:system_id)
 
-      { conditions: "inventory.hosts.id NOT IN (#{ids.to_sql})" }
+      { conditions: Arel::Nodes::Not.new(Arel::Nodes::In.new(arel_table[:id], ids.arel)).to_sql }
     end
 
     scope :with_groups, lambda { |groups, key = :id|
