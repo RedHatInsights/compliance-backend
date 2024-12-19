@@ -18,7 +18,7 @@ FactoryBot.define do
     if Rails.env.test?
       self.table_name = 'inventory.hosts_v1_1'
     elsif Rails.env.development?
-      self.table_name = 'hosts'
+      self.table_name = 'hbi.hosts'
 
       establish_connection(
         Rails.configuration.database_configuration[Rails.env].merge(
