@@ -27,6 +27,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           title: 'chore(devel): update .ruby-version'
+          branch: automation/ruby-version
   update-bundler:
     runs-on: ubuntu-latest
     env:
@@ -52,3 +53,4 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           title: 'chore(deps): update bundler version'
+          branch: automation/bundler-version
