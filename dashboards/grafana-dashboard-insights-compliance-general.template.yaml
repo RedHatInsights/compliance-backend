@@ -100,7 +100,7 @@ objects:
         "editable": true,
         "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
-        "id": 933908,
+        "id": 995701,
         "links": [],
         "liveNow": false,
         "panels": [
@@ -1406,7 +1406,7 @@ objects:
           {
             "datasource": {
               "type": "prometheus",
-              "uid": "$datasource"
+              "uid": "${cloudwatch_datasource}"
             },
             "fieldConfig": {
               "defaults": {
@@ -1488,12 +1488,15 @@ objects:
             "targets": [
               {
                 "datasource": {
-                  "uid": "$datasource"
+                  "type": "prometheus",
+                  "uid": "${cloudwatch_datasource}"
                 },
-                "expr": "sum(kafka_consumergroup_group_topic_sum_lag{topic=~\".*platform.inventory.events\", group=\"complianceinventory-events-consumer\"}) by (topic)",
+                "editorMode": "builder",
+                "expr": "sum by(topic) (aws_kafka_sum_offset_lag_sum{consumer_group=\"complianceinventory-events-consumer\", topic=~\".*platform.inventory.events\"})",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "{{topic}}",
+                "range": true,
                 "refId": "B"
               }
             ],
@@ -1565,7 +1568,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 0,
-              "y": 30
+              "y": 24
             },
             "id": 35,
             "options": {
@@ -1675,7 +1678,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 12,
-              "y": 30
+              "y": 24
             },
             "id": 57,
             "options": {
@@ -1787,7 +1790,7 @@ objects:
               "h": 8,
               "w": 12,
               "x": 0,
-              "y": 36
+              "y": 30
             },
             "id": 23763572011,
             "options": {
@@ -1897,7 +1900,7 @@ objects:
               "h": 8,
               "w": 12,
               "x": 12,
-              "y": 36
+              "y": 30
             },
             "id": 23763572007,
             "options": {
@@ -2009,7 +2012,7 @@ objects:
               "h": 8,
               "w": 12,
               "x": 0,
-              "y": 44
+              "y": 38
             },
             "id": 23763572014,
             "options": {
@@ -2121,7 +2124,7 @@ objects:
               "h": 8,
               "w": 12,
               "x": 12,
-              "y": 44
+              "y": 38
             },
             "id": 23763572015,
             "options": {
@@ -2309,7 +2312,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 0,
-              "y": 52
+              "y": 46
             },
             "id": 42,
             "options": {
@@ -2492,7 +2495,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 12,
-              "y": 52
+              "y": 46
             },
             "id": 58,
             "options": {
@@ -2687,7 +2690,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 0,
-              "y": 58
+              "y": 52
             },
             "id": 53,
             "options": {
@@ -2871,7 +2874,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 12,
-              "y": 58
+              "y": 52
             },
             "id": 52,
             "options": {
@@ -3067,7 +3070,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 0,
-              "y": 64
+              "y": 58
             },
             "id": 60,
             "options": {
@@ -3275,7 +3278,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 12,
-              "y": 64
+              "y": 58
             },
             "id": 61,
             "options": {
@@ -3460,7 +3463,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 0,
-              "y": 70
+              "y": 64
             },
             "id": 23763571993,
             "options": {
@@ -3632,7 +3635,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 12,
-              "y": 70
+              "y": 64
             },
             "id": 23763571992,
             "options": {
@@ -3674,7 +3677,7 @@ objects:
               "h": 1,
               "w": 24,
               "x": 0,
-              "y": 76
+              "y": 70
             },
             "id": 34,
             "panels": [
@@ -4086,8 +4089,7 @@ objects:
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "red",
@@ -4159,8 +4161,7 @@ objects:
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "red",
@@ -4231,8 +4232,7 @@ objects:
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "red",
@@ -4412,8 +4412,7 @@ objects:
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "red",
@@ -4488,8 +4487,7 @@ objects:
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "red",
@@ -4564,8 +4562,7 @@ objects:
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "red",
@@ -4640,8 +4637,7 @@ objects:
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
-                          "value": null
+                          "color": "green"
                         },
                         {
                           "color": "red",
@@ -4719,7 +4715,7 @@ objects:
               "auto_count": 30,
               "auto_min": "10s",
               "current": {
-                "selected": false,
+                "selected": true,
                 "text": "10m",
                 "value": "10m"
               },
@@ -4806,7 +4802,7 @@ objects:
             },
             {
               "current": {
-                "selected": false,
+                "selected": true,
                 "text": "appsrep07ue1-prometheus",
                 "value": "P7E8E1698DF0AC988"
               },
@@ -4825,7 +4821,26 @@ objects:
             },
             {
               "current": {
-                "selected": true,
+                "selected": false,
+                "text": "aws-resources-exporter-stage",
+                "value": "P80B3240D3DAB93EB"
+              },
+              "description": "CloudWatch provided AWS metrics source.\nAt the time of writing it is only used to gain Kafka lag metrics.",
+              "hide": 0,
+              "includeAll": false,
+              "multi": false,
+              "name": "cloudwatch_datasource",
+              "options": [],
+              "query": "prometheus",
+              "queryValue": "",
+              "refresh": 1,
+              "regex": "/aws-resources-.*/",
+              "skipUrlSync": false,
+              "type": "datasource"
+            },
+            {
+              "current": {
+                "selected": false,
                 "text": "include",
                 "value": "1"
               },
@@ -4885,7 +4900,7 @@ objects:
         "timezone": "",
         "title": "Compliance",
         "uid": "compliance",
-        "version": 14,
+        "version": 1,
         "weekStart": ""
       }
   kind: ConfigMap
