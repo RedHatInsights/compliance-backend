@@ -10,6 +10,8 @@ module V2
 
     indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.try(:gsub, '-', '.')) }
 
+    attr_accessor :op_source
+
     # rubocop:disable Metrics/AbcSize
     def self.sorted_severities(table = arel_table)
       Arel.sql(
@@ -71,5 +73,21 @@ module V2
     def self.short_ref_id(ref_id)
       ref_id.downcase[SHORT_REF_ID_RE] || ref_id
     end
+
+    # rubocop:disable Metrics/ParameterLists
+    def self.from_parser(obj, existing: nil, rule_group_id: nil,
+                         security_guide_id: nil, precedence: nil, value_checks: nil)
+      record = existing || new(ref_id: obj.id, security_guide_id: security_guide_id)
+
+      record.op_source = obj
+
+      record.assign_attributes(title: obj.title, description: obj.description, rationale: obj.rationale,
+                               severity: obj.severity, precedence: precedence, rule_group_id: rule_group_id,
+                               upstream: false, value_checks: value_checks, identifier: obj.identifier&.to_h,
+                               references: obj.references.map(&:to_h), remediation_available: false)
+
+      record
+    end
+    # rubocop:enable Metrics/ParameterLists
   end
 end
