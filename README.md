@@ -86,7 +86,7 @@ bonfire deploy compliance --optional-deps-method hybrid --frontends true --sourc
 This will set up the environment with all service dependencies, 3scale gateway, frontend
 and platform [mocks](https://github.com/RedHatInsights/mocks/) (authentication & authorization).
 
-A custom (local) clowdapp can be used for deployment if the step 2 of the setup has been not skipped. 
+A custom (local) clowdapp can be used for deployment if the step 2 of the setup has been not skipped.
 A custom image can be used by overwriting parameters of the clowder template. Note that the container
 image needs to be pushed to an accessible location.
 ```shell
@@ -218,12 +218,11 @@ If there is a `tags` column defined in any model, it always should be a `jsonb` 
 ## API documentation
 
 The API documentation can be found at `/api/compliance` and you may access the raw OpenAPI
-definition [here](https://github.com/RedHatInsights/compliance-backend/blob/master/swagger/v1/openapi.json).
+definition [here](https://github.com/RedHatInsights/compliance-backend/blob/master/swagger/v2/openapi.json).
 Docs can be updated by running:
 ```shell
 rake rswag:specs:swaggerize
 ```
-You can build this API by converting the JSON representation (OpenAPI 2.x) using [swagger2openapi](https://github.com/Mermade/oas-kit/blob/master/packages/swagger2openapi).
 
 ## Contributing
 
