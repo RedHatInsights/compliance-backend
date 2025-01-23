@@ -107,7 +107,7 @@ module Api
               type: %w[integer null],
               examples: [3],
               readOnly: true,
-              description: 'Number of failures, errors and unknown states for rules in the Test Result'
+              description: 'Number of failed rules in the Test Result'
             },
             end_time: {
               type: :string,
