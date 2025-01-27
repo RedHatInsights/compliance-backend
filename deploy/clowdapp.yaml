@@ -576,6 +576,30 @@ objects:
           INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "tailorings"."profile_id"
           INNER JOIN "accounts" ON "accounts"."id" = "v2_policies"."account_id";
 
+- apiVersion: metrics.console.redhat.com/v1alpha1
+  kind: FloorPlan
+  metadata:
+    name: compliance-hms
+  spec:
+    database:
+      secretName: ${FLOORIST_DB_SECRET_NAME}
+    objectStore:
+      secretName: ${FLOORIST_HMS_BUCKET_SECRET_NAME}
+    logLevel: ${FLOORIST_LOGLEVEL}
+    suspend: ${{FLOORIST_SUSPEND}}
+    queries:
+    - prefix: hms_analytics/compliance/systems
+      chunksize: 200000
+      query: >-
+        SELECT
+          "v2_policies"."account_id" AS "org_id",
+          "policy_systems"."system_id"::TEXT AS "system_id",
+          MAX("v2_test_results"."updated_at") AS "updated_at"
+        FROM "v2_policies"
+        INNER JOIN "policy_systems" ON "policy_systems"."policy_id" = "v2_policies"."id"
+        INNER JOIN "v2_test_results" ON "v2_test_results"."system_id" = "policy_systems"."system_id"
+        GROUP BY "v2_policies"."account_id", "policy_systems"."system_id";
+
 - apiVersion: v1
   kind: Secret
   type: Opaque
