@@ -591,25 +591,14 @@ objects:
     - prefix: hms_analytics/compliance/systems
       chunksize: 200000
       query: >-
-        WITH "tested_systems" AS (
-          SELECT "policy_systems"."system_id", MAX("v2_test_results"."updated_at") AS "updated_at"
-          FROM "policy_systems"
-          JOIN "v2_test_results" ON "v2_test_results"."system_id" = "policy_systems"."system_id"
-          GROUP BY "policy_systems"."system_id"
-        )
         SELECT
-          "policies"."account_id" AS "org_id",
-          JSON_AGG(
-            JSON_BUILD_OBJECT(
-              'system_id', "policy_systems"."system_id"::text,
-              'updated_at', "tested_systems"."updated_at"
-            )
-          ) AS "systems"
-        FROM "policies"
-        INNER JOIN "policy_systems" ON "policy_systems"."policy_id" = "policies"."id"
-        LEFT JOIN "tested_systems" ON "tested_systems"."system_id" = "policy_systems"."system_id"
-        WHERE "tested_systems"."updated_at" IS NOT NULL
-        GROUP BY "policies"."account_id";
+          "v2_policies"."account_id" AS "org_id",
+          "policy_systems"."system_id"::TEXT AS "system_id",
+          MAX("v2_test_results"."updated_at") AS "updated_at"
+        FROM "v2_policies"
+        INNER JOIN "policy_systems" ON "policy_systems"."policy_id" = "v2_policies"."id"
+        INNER JOIN "v2_test_results" ON "v2_test_results"."system_id" = "policy_systems"."system_id"
+        GROUP BY "v2_policies"."account_id", "policy_systems"."system_id";
 
 - apiVersion: v1
   kind: Secret
