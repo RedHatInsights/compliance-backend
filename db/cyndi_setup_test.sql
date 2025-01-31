@@ -35,6 +35,7 @@ SELECT
     stale_timestamp,
     stale_timestamp + INTERVAL '1' DAY * 7 AS stale_warning_timestamp,
     stale_timestamp + INTERVAL '1' DAY * 14 AS culled_timestamp,
+    stale_timestamp + INTERVAL '1' DAY * 8 AS per_reporter_staleness,
     tags,
     system_profile,
     groups,

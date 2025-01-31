@@ -45,6 +45,11 @@ module Api
               readOnly: true,
               examples: ['2020-06-04T19:31:55Z']
             },
+            last_check_in: {
+              type: :string,
+              readOnly: true,
+              examples: ['2020-06-04T19:31:55Z']
+            },
             stale_timestamp: {
               type: :string,
               readOnly: true,
