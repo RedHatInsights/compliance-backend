@@ -60,10 +60,5 @@ module ComplianceBackend
     config.middleware.use Insights::Api::Common::AdjustTags::Middleware
     # Compensate the missing MIME type in Satellite-forwarded requests
     config.middleware.use Insights::Api::Common::SatelliteCompensation::Middleware
-
-    # GraphiQL
-    if Rails.env.development?
-      config.middleware.use Rack::MethodOverride
-    end
   end
 end
