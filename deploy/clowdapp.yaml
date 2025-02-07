@@ -579,6 +579,28 @@ objects:
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
   metadata:
+    name: compliance-assigned-hosts
+  spec:
+    database:
+      secretName: ${FLOORIST_DB_SECRET_NAME}
+    objectStore:
+      secretName: ${FLOORIST_HMS_BUCKET_SECRET_NAME}
+    logLevel: ${FLOORIST_LOGLEVEL}
+    suspend: ${{FLOORIST_SUSPEND}}
+    queries:
+    - prefix: hms_analytics/compliance/tests
+      chunksize: 200000
+      query: >-
+        SELECT DISTINCT
+          "accounts"."org_id"
+        FROM "v2_policies"
+        INNER JOIN "accounts" ON "accounts"."id" = "v2_policies"."account_id"
+        WHERE "v2_policies"."id" IN (
+          SELECT "policy_systems"."policy_id" FROM "policy_systems" GROUP BY "policy_systems"."policy_id" HAVING COUNT("policy_systems"."system_id") > 0);
+
+- apiVersion: metrics.console.redhat.com/v1alpha1
+  kind: FloorPlan
+  metadata:
     name: compliance-tested-hosts
   spec:
     database:
