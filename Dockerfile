@@ -2,9 +2,9 @@ ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tz
 ARG devDeps="gcc gcc-c++ gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel tar which util-linux xz"
 ARG extras=""
 ARG prod="true"
-ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-8/mmraka-postgresql-16-epel-8.repo"
+ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-9/mmraka-postgresql-16-epel-9.repo"
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal AS build
+FROM registry.access.redhat.com/ubi9/ubi-minimal AS build
 
 ARG deps
 ARG devDeps
@@ -44,7 +44,7 @@ ENV prometheus_multiproc_dir=/opt/app-root/src/tmp prometheus_rust_mmaped_file=f
 
 #############################################################
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 ARG deps
 ARG devDeps
