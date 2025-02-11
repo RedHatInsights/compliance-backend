@@ -33,6 +33,7 @@ rules:
     -
       - Dockerfile
       - clowder
+      - Rails
       - RBAC
       - deps
       - Konflux
