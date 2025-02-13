@@ -141,11 +141,11 @@ jobs:
         RUBY_YJIT_ENABLE: 1
       run: bin/rake spec
     - name: Upload code coverage from RSpec
-      uses: codecov/codecov-action@v4.6.0
+      uses: codecov/codecov-action@v5.3.1
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
-        version: v9.0.4
+        version: v10.0.1
     - name: Run minitest tests
       env:
         HOSTNAME: rails
@@ -159,11 +159,11 @@ jobs:
         RUBY_YJIT_ENABLE: 1
       run: bin/rake test
     - name: Upload code coverage from minitest
-      uses: codecov/codecov-action@v4.6.0
+      uses: codecov/codecov-action@v5.3.1
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
-        version: v9.0.4
+        version: v10.0.1
   migration-robustness:
     runs-on: ubuntu-latest
     services:
