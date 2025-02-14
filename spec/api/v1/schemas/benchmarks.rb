@@ -10,6 +10,7 @@ module Api
 
         BENCHMARK = {
           type: 'object',
+          deprecated: true,  # Mark APIv1 benchmark schema as deprecated
           required: %w[ref_id title version],
           properties: {
             ref_id: {
