@@ -13,7 +13,9 @@ RSpec.configure do |config|
   config.openapi_root = Rails.root.to_s + '/swagger'
   # FIXME: https://github.com/rswag/rswag/issues/666
   # config.swagger_strict_schema_validation = true
+
   config.before(:each) do
+    # Stubbing external requests for testing
     stub_request(:get, /#{Settings.endpoints.rbac_url}/)
       .to_return(status: 200,
                  body: { 'data': [{ 'permission': 'compliance:*:*' }] }.to_json)
@@ -88,7 +90,7 @@ end
 def include_param
   parameter name: :include, in: :query, required: false,
             schema: { type: :string },
-            description: 'A comma seperated list of resources to include in ' \
+            description: 'A comma separated list of resources to include in ' \
                          'the response'
 end
 

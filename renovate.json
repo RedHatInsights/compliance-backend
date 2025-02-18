@@ -1,11 +1,20 @@
 {
-    "extends": [
-        "github>konflux-ci/mintmaker//config/renovate/renovate.json"
-    ],
-    "schedule": [
-        "on Monday after 3am and before 10am"
-    ],
-    "ignorePaths": [
-      ".pre-commit-config.yaml"
+  "extends": [
+    "github>konflux-ci/mintmaker//config/renovate/renovate.json"
+  ],
+  "ignorePaths": [
+    ".pre-commit-config.yaml"
+  ],
+  "tekton": {
+    "enabled": true,
+    "packageRules": [
+      {
+        "matchUpdateTypes": [
+          "digest"
+        ],
+        "platformAutomerge": true,
+        "automerge": true
+      }
     ]
+  }
 }

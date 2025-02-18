@@ -22,6 +22,7 @@ module V1
         get v1_systems_url
 
         assert_response :success
+        assert response.headers['Warning'].present?, 'Warning header is missing'
       end
 
       should 'return hosts from allowed groups' do
@@ -80,6 +81,7 @@ module V1
         get v1_systems_url, params: { search: 'name=bar' }
 
         assert_response :success
+        assert response.headers['Warning'].present?, 'Warning header is missing'
       end
 
       should 'systems can be sorted' do
@@ -90,7 +92,7 @@ module V1
           policy_id: policy.id
         }
         assert_response :success
-
+        assert response.headers['Warning'].present?, 'Warning header is missing'
         result = response.parsed_body
         hosts = policy.hosts.pluck(:display_name).sort.reverse
 
@@ -132,6 +134,7 @@ module V1
 
         assert_equal response.parsed_body['data'].count, 2
         assert_response :success
+        assert response.headers['Warning'].present?, 'Warning header is missing'
       end
 
       should 'filter systems based on stale_timestamp' do

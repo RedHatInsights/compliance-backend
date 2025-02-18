@@ -32,6 +32,7 @@ module V1
       get rule_url(Rule.first),
           headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
+      assert response.headers['Warning'].present?, 'Warning header is missing'
     end
 
     should 'disallow access to rules#index with cert auth' do
@@ -147,6 +148,7 @@ module V1
           rule = FactoryBot.create(:rule, profiles: [@profile], identifier: { label: 'foo-to-find', system: 'bar' })
           get v1_rules_url, params: { search: "#{identifier}=foo-to-find" }
           assert_response :success
+
           assert_equal response.parsed_body['data'][0]['id'], rule.id
         end
       end

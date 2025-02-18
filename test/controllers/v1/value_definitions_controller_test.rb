@@ -17,7 +17,7 @@ module V1
       get v1_value_definitions_url
 
       assert_response :success
-
+      assert response.headers['Warning'].present?, 'Warning header is missing'
       value_definitions = response.parsed_body
 
       assert_equal 2, value_definitions['data'].count
@@ -32,7 +32,7 @@ module V1
       }
 
       assert_response :success
-
+      assert response.headers['Warning'].present?, 'Warning header is missing'
       value_definitions = response.parsed_body
 
       assert_equal 1, value_definitions['data'].count
@@ -47,7 +47,7 @@ module V1
       }
 
       assert_response :success
-
+      assert response.headers['Warning'].present?, 'Warning header is missing'
       value_definitions = response.parsed_body
 
       assert_equal 1, value_definitions['data'].count

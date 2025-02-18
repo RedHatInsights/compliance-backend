@@ -18,6 +18,7 @@ module V1
       get v1_rule_results_url
 
       assert_response :success
+      assert response.headers['Warning'].present?, 'Warning header is missing'
     end
 
     test 'rule results can be sorted' do
@@ -36,6 +37,7 @@ module V1
       rule_results = response.parsed_body['data']
 
       assert_equal(rule_results.map { |rr| rr['id'] }, [rr2, rr1].map(&:id))
+      assert response.headers['Warning'].present?, 'Warning header is missing'
     end
   end
 end

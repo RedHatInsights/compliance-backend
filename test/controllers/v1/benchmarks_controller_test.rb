@@ -13,6 +13,7 @@ module V1
     test '#index success' do
       get v1_benchmarks_url
       assert_response :success
+      assert response.headers['Warning'].present?, 'Warning header is missing'
     end
 
     test '#show success' do
@@ -20,6 +21,7 @@ module V1
       stub_supported_ssg(@hosts, [bm1.version])
       get v1_benchmarks_url(bm1)
       assert_response :success
+      assert response.headers['Warning'].present?, 'Warning header is missing'
     end
 
     test '#index includes rules' do

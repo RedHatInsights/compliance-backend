@@ -11,10 +11,11 @@ module V1
     end
 
     context 'index' do
-      should 'lists all supported SSGs' do
+      should 'list all supported SSGs' do
         get v1_supported_ssgs_url
 
         assert_response :success
+        assert response.headers['Warning'].present?, 'Warning header is missing'
       end
     end
   end
