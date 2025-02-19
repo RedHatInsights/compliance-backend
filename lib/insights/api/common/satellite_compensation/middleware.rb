@@ -12,6 +12,8 @@ module Insights
           end
 
           def call(env)
+            puts "\n\u001b[31;1m◉\u001b[0m lib/insights/api/common/satellite_compensation/middleware.rb"
+            puts "-" * 40
             if env['HTTP_USER_AGENT'] =~ /foreman|satellite/i
               # Sometimes Satellite forwards the client requests with an empty string
               # as content-type and Rails does not like it.

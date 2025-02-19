@@ -338,6 +338,17 @@ describe V2::PoliciesController do
           end
         end
       end
+
+      context 'with unsupported parameter from Satellite' do
+        let(:parent) { FactoryBot.create(:system, account: current_user.account) }
+        let(:extra_params) { { parents: %i[systems], system_id: parent.id } }
+
+        it 'ignores \'branch_id\' parameter sent by Satellite' do
+          get :index, params: extra_params.merge(branch_id: SecureRandom.uuid)
+
+          expect(response).to have_http_status :accepted
+        end
+      end
     end
   end
 end

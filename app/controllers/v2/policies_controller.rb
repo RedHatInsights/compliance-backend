@@ -13,6 +13,10 @@ module V2
     UPDATE_ATTRIBUTES = CREATE_ATTRIBUTES.except(:title, :profile_id).freeze
 
     def index
+      puts "\n\u001b[31;1m◉\u001b[0m app/controllers/v2/policies_controller.rb"
+      puts "request.url: #{request.url}"
+      puts "-" * 40
+
       render_json compliance_policies
     end
     permission_for_action :index, Rbac::POLICY_READ
