@@ -39,16 +39,18 @@ RSpec.configure do |config|
 end
 
 def autogenerate_examples(example, label = 'Response example', summary = '', description = '')
-  content = example.metadata[:response][:content] || {}
-  body = JSON.parse(response.body, symbolize_names: true)
-  example_obj = { "#{label}": { value: body, summary: summary, description: description } }
-  example.metadata[:response][:content] = content.deep_merge(
-    {
-      'application/vnd.api+json': {
-        examples: example_obj
-      }
+  return if example.metadata[:response][:content]&.key?('application/vnd.api+json')
+
+  example_obj = {
+    label.to_sym => {
+      value: JSON.parse(response.body, symbolize_names: true),
+      summary: summary,
+      description: description
     }
-  )
+  }
+
+  example.metadata[:response][:content] ||= {}
+  example.metadata[:response][:content]['application/vnd.api+json'] = { examples: example_obj }
 end
 
 def encoded_header(account = nil)

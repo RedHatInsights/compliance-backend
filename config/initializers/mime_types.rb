@@ -4,4 +4,7 @@
 # Add new mime types for use in respond_to blocks:
 # Mime::Type.register "text/richtext", :rtf
 
-Mime::Type.register "application/vnd.api+json", :json
+unless Mime::Type.lookup_by_extension(:json)&.to_s == "application/vnd.api+json"
+    Mime::Type.unregister(:json) if Mime::Type.lookup_by_extension(:json)
+    Mime::Type.register "application/vnd.api+json", :json
+end
