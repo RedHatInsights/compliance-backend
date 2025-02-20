@@ -121,13 +121,13 @@
                     "value": {
                       "data": [
                         {
-                          "id": "2c7e1f15-1ff6-4c4b-91d6-4535cc700f94",
+                          "id": "2d87af74-fffd-4435-9956-ceeb12e17870",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Placeat assumenda soluta unde.",
-                            "version": "100.0.1",
-                            "description": "Dolor perspiciatis quae. Nihil minima earum. Qui itaque ipsa.",
+                            "title": "Eum alias quam et.",
+                            "version": "100.0.2",
+                            "description": "Consequatur aliquam voluptas. Dolorum veniam esse. Doloribus officia consequuntur.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -135,11 +135,11 @@
                             "rules": {
                               "data": [
                                 {
-                                  "id": "f77e08e9-1232-48d3-91a1-7b25f2508624",
+                                  "id": "6047b5d4-b1b9-4561-9b32-498513a814db",
                                   "type": "rule"
                                 },
                                 {
-                                  "id": "2941ff77-de14-4b2b-a95f-ae2e090f964f",
+                                  "id": "5eb2017b-9688-4ed3-b14a-1b1d67e63fb9",
                                   "type": "rule"
                                 }
                               ]
@@ -147,7 +147,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "1aaa864b-1e80-4f13-9600-cb34d1b931c4",
+                                  "id": "4c054207-abbf-4195-83dd-9cb3ee527087",
                                   "type": "profile"
                                 }
                               ]
@@ -158,13 +158,13 @@
                           }
                         },
                         {
-                          "id": "a2d117bb-c15d-48ed-84e9-15abe50f8ddf",
+                          "id": "5bdb3d82-141e-487c-bfb3-c043e3902a57",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Enim voluptatibus commodi et.",
-                            "version": "100.0.2",
-                            "description": "Voluptas eum iste. Rem quia vel. Eaque similique tenetur.",
+                            "title": "Exercitationem similique eveniet voluptatem.",
+                            "version": "100.0.1",
+                            "description": "Blanditiis vero voluptatibus. Quo commodi sint. Esse laudantium delectus.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": []
                           },
@@ -172,11 +172,11 @@
                             "rules": {
                               "data": [
                                 {
-                                  "id": "bc62004f-c69f-46ff-a81a-cd037149066f",
+                                  "id": "6985af78-51eb-405b-9679-232f223ad037",
                                   "type": "rule"
                                 },
                                 {
-                                  "id": "f6116ac1-e1af-4b96-9aa4-41675e714454",
+                                  "id": "4505f39f-16eb-47af-9346-69d55345d4c8",
                                   "type": "rule"
                                 }
                               ]
@@ -184,7 +184,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "0b9a28de-85e8-45b9-a104-cf233d437091",
+                                  "id": "10b65b68-356b-465a-8401-9bdec55ebd74",
                                   "type": "profile"
                                 }
                               ]
@@ -307,143 +307,143 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "894a8879-42ca-42b3-8d7e-19e2786b4606",
+                        "id": "8116f9d4-221f-44b8-b53e-b8a0409e6513",
                         "type": "benchmark",
                         "attributes": {
                           "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                          "title": "Omnis reprehenderit ut laboriosam.",
+                          "title": "Voluptatum beatae esse consequatur.",
                           "version": "100.0.4",
-                          "description": "Qui ex fugit. Ipsa architecto quod. Ipsam fugiat velit.",
+                          "description": "Vel aliquam debitis. Magni reiciendis ut. Eius id voluptatem.",
                           "os_major_version": "7",
                           "latest_supported_os_minor_versions": [],
                           "rule_tree": [
                             {
                               "type": "rule_group",
-                              "id": "428c7ba3-b124-489a-b3b3-b582fe7ffe12",
-                              "ref_id": "foo_group_86bf7272-3b22-45cc-b7ce-472759b564ae",
-                              "title": "Dolor dolore commodi veniam.",
+                              "id": "f585ca96-0586-4bdb-9eaf-11b418280bc5",
+                              "ref_id": "foo_group_f3582878-3014-4d7e-8e52-70c38f9ca619",
+                              "title": "Perferendis ipsum distinctio cum.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "960c75d9-cfcd-40a6-931c-34dc8fcb0ff9",
-                                  "ref_id": "foo_rule_3e2f14e8-1791-463a-86db-23067ab04e0d"
+                                  "id": "ce5938de-28f5-481a-9a15-4d882dd278a6",
+                                  "ref_id": "foo_rule_725092fe-a79a-4fd9-bf21-505d1607215d"
                                 }
                               ]
                             },
                             {
                               "type": "rule_group",
-                              "id": "4b41be7a-463d-427c-ac2b-43823b6042ab",
-                              "ref_id": "foo_group_7b4da413-775e-43e9-972b-e5585e6eb650",
-                              "title": "Qui esse ut culpa.",
+                              "id": "b0201db9-866e-4df3-a72f-95001694cb75",
+                              "ref_id": "foo_group_741bd918-b921-4428-a068-c39d966e10f0",
+                              "title": "Earum corporis nulla quo.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "172a06cf-0aed-41f6-8e96-889f4ba32d21",
-                                  "ref_id": "foo_rule_f7488502-c399-41ec-b87a-b095e302cced"
+                                  "id": "ab471d2c-d29b-4dc1-9719-f8132c1708a2",
+                                  "ref_id": "foo_rule_467a176c-d750-47e6-aa6e-b99d0c4ccaf9"
                                 }
                               ]
                             },
                             {
                               "type": "rule_group",
-                              "id": "7db14974-ca1e-4ede-8830-a697659088eb",
-                              "ref_id": "foo_group_239052dc-74f5-4062-8dc0-86b5de829923",
-                              "title": "Quia itaque quidem voluptatem.",
+                              "id": "79482da4-501c-4ff4-8c7b-c4fdfb88449d",
+                              "ref_id": "foo_group_4ddca62c-fa98-40c2-adab-2de0665fb141",
+                              "title": "Et suscipit corporis qui.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "b373572c-9e9c-41f0-b376-bfc2df9c04b8",
-                                  "ref_id": "foo_rule_8ee5e1fa-c98e-418a-93cc-e2167c8a9828"
+                                  "id": "208f00c6-bf45-4395-906b-3b5b1153c21d",
+                                  "ref_id": "foo_rule_b419fe4c-e8b8-4bc1-8822-0acc89493c77"
                                 }
                               ]
                             },
                             {
                               "type": "rule_group",
-                              "id": "65ed8cf6-035f-423a-8c18-4f071eb1b783",
-                              "ref_id": "foo_group_a2eeb601-c1ef-4746-a68c-a848b3ebc30b",
-                              "title": "Reiciendis occaecati alias voluptatem.",
+                              "id": "1e3eaaa9-fe48-4000-b30a-9daa3e1a790a",
+                              "ref_id": "foo_group_d36bb403-aaf8-4cf7-9e20-db37672c9811",
+                              "title": "Voluptatem est eum ex.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "801587ca-e2b6-4508-8193-e60fde0089fd",
-                                  "ref_id": "foo_rule_032caf33-6bb2-4d47-8b09-a2df55de4c55"
+                                  "id": "8d13abc2-b4ad-4692-bfb0-bbb7ff60f97e",
+                                  "ref_id": "foo_rule_174b0f9d-e5d7-4b13-be8d-b3715db73296"
                                 }
                               ]
                             },
                             {
                               "type": "rule_group",
-                              "id": "dd11acaa-9a2b-42ac-b99a-bb8ed208d4ed",
-                              "ref_id": "foo_group_6b1a3f02-153b-4667-b374-af20668d56d5",
-                              "title": "Iusto vitae omnis ipsam.",
+                              "id": "1f4c8971-baad-4df9-857e-069d506142c8",
+                              "ref_id": "foo_group_81fc9842-2167-48f6-98a2-ae694565e4d4",
+                              "title": "Quasi expedita harum corporis.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "9921b45b-36e0-4b8f-b1f4-7ad35969e26d",
-                                  "ref_id": "foo_rule_41023f49-de5d-4e90-8593-8df96eedc222"
+                                  "id": "eb7bb725-acdb-47c0-8042-34e3fb8a2a06",
+                                  "ref_id": "foo_rule_89d0f464-11fc-4ec6-add4-89d3ed6d1b8f"
                                 }
                               ]
                             },
                             {
                               "type": "rule_group",
-                              "id": "e09c1e50-b7f6-4467-b50d-d4a801d71cbe",
-                              "ref_id": "foo_group_d220375c-d998-481b-89db-73f14a20686e",
-                              "title": "Corrupti et iste sed.",
+                              "id": "9d9fcc24-8087-4b01-a9bb-3c36575f35a1",
+                              "ref_id": "foo_group_5c07899c-11ec-4c28-9f46-7ec8e655cfb2",
+                              "title": "Cumque est esse veniam.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "b741913b-7feb-4d32-b7d9-f01ddbbbf24a",
-                                  "ref_id": "foo_rule_254904a7-22cf-4687-8165-ee026553ff0d"
+                                  "id": "d3f2a748-6592-42df-9b4a-fad3af1d2d45",
+                                  "ref_id": "foo_rule_fa9b4b7d-164f-4714-8877-d6b62537fd38"
                                 }
                               ]
                             },
                             {
                               "type": "rule_group",
-                              "id": "675490e6-7228-47e4-8703-c686e965f467",
-                              "ref_id": "foo_group_a592fc92-883a-44e3-8ff6-1e4d039e0ebd",
-                              "title": "Ad et aut itaque.",
+                              "id": "128102fb-ab59-44ce-95fd-838351cea362",
+                              "ref_id": "foo_group_3bd74a19-9a1a-4d8a-ac57-ca49fa770c07",
+                              "title": "Libero pariatur est esse.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "1baa0c85-3e10-4a5d-a3fe-9eb9a222e362",
-                                  "ref_id": "foo_rule_46a14e7b-5dfd-4abd-9ff3-57b803b296f2"
+                                  "id": "625e62b2-e1ec-48a6-b45d-3fb63380508b",
+                                  "ref_id": "foo_rule_921343b2-3e5e-4a43-9179-0c7558fd35f5"
                                 }
                               ]
                             },
                             {
                               "type": "rule_group",
-                              "id": "c5128aa5-1d8d-42f2-87f5-9e24d2d25dc2",
-                              "ref_id": "foo_group_bd4043f1-4fa0-49f1-9369-3f764aa8fe83",
-                              "title": "Velit facere qui soluta.",
+                              "id": "40a4f5c1-8b56-475f-9106-bb5f71db1955",
+                              "ref_id": "foo_group_7e740c5f-c024-434b-b441-05147985b404",
+                              "title": "Veniam nisi dolor quo.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "e683df4c-c487-4e40-b097-bb4403285350",
-                                  "ref_id": "foo_rule_897f4b4d-af4a-4a9d-8c30-94e10fabee29"
+                                  "id": "978b6451-7334-4090-af94-b90fc98f7c55",
+                                  "ref_id": "foo_rule_fcdab495-e571-4819-a022-484ece2fee0b"
                                 }
                               ]
                             },
                             {
                               "type": "rule_group",
-                              "id": "66a8dc9c-15e0-4bf5-9258-29bf6d49977f",
-                              "ref_id": "foo_group_7c660e93-a174-44a8-9c04-c94a1436f5d7",
-                              "title": "Dolores dolor vel ad.",
+                              "id": "e002b768-ab62-4ab0-86a1-86a8441c4a08",
+                              "ref_id": "foo_group_b210d363-a264-46a5-bc95-c9fb03c8f15a",
+                              "title": "Sed nemo in occaecati.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "551def25-035b-4cd7-94bb-d30e242c02be",
-                                  "ref_id": "foo_rule_93de98b9-41a1-4638-b949-6c30f7a7ba1a"
+                                  "id": "a73ea4f8-7921-443c-9d5c-045de0e7fbd2",
+                                  "ref_id": "foo_rule_db1545e4-ee22-4d8d-9830-f5efbf09799a"
                                 }
                               ]
                             },
                             {
                               "type": "rule_group",
-                              "id": "3a37ba19-5f9a-4ffc-830e-5c9ceb3de875",
-                              "ref_id": "foo_group_063dc25e-c66c-4d3d-9639-718b7e5125ad",
-                              "title": "Ullam ut quae voluptatem.",
+                              "id": "2175422b-17ae-4cab-9739-5665923d32d5",
+                              "ref_id": "foo_group_6c52890c-b8c9-46ed-9272-fbd52bc03bd8",
+                              "title": "Qui laboriosam esse sunt.",
                               "children": [
                                 {
                                   "type": "rule",
-                                  "id": "76c43e04-b792-45b2-9b7c-e1627b7848dc",
-                                  "ref_id": "foo_rule_17c3d4d8-c98f-4558-a085-132fd68e19dd"
+                                  "id": "389fe766-668c-4aea-9902-ab3442c5045c",
+                                  "ref_id": "foo_rule_91e50c19-6575-41f4-b3b4-52c8ca47587c"
                                 }
                               ]
                             }
@@ -453,43 +453,43 @@
                           "rules": {
                             "data": [
                               {
-                                "id": "960c75d9-cfcd-40a6-931c-34dc8fcb0ff9",
+                                "id": "ce5938de-28f5-481a-9a15-4d882dd278a6",
                                 "type": "rule"
                               },
                               {
-                                "id": "172a06cf-0aed-41f6-8e96-889f4ba32d21",
+                                "id": "ab471d2c-d29b-4dc1-9719-f8132c1708a2",
                                 "type": "rule"
                               },
                               {
-                                "id": "b373572c-9e9c-41f0-b376-bfc2df9c04b8",
+                                "id": "208f00c6-bf45-4395-906b-3b5b1153c21d",
                                 "type": "rule"
                               },
                               {
-                                "id": "801587ca-e2b6-4508-8193-e60fde0089fd",
+                                "id": "8d13abc2-b4ad-4692-bfb0-bbb7ff60f97e",
                                 "type": "rule"
                               },
                               {
-                                "id": "9921b45b-36e0-4b8f-b1f4-7ad35969e26d",
+                                "id": "eb7bb725-acdb-47c0-8042-34e3fb8a2a06",
                                 "type": "rule"
                               },
                               {
-                                "id": "b741913b-7feb-4d32-b7d9-f01ddbbbf24a",
+                                "id": "d3f2a748-6592-42df-9b4a-fad3af1d2d45",
                                 "type": "rule"
                               },
                               {
-                                "id": "1baa0c85-3e10-4a5d-a3fe-9eb9a222e362",
+                                "id": "625e62b2-e1ec-48a6-b45d-3fb63380508b",
                                 "type": "rule"
                               },
                               {
-                                "id": "e683df4c-c487-4e40-b097-bb4403285350",
+                                "id": "978b6451-7334-4090-af94-b90fc98f7c55",
                                 "type": "rule"
                               },
                               {
-                                "id": "551def25-035b-4cd7-94bb-d30e242c02be",
+                                "id": "a73ea4f8-7921-443c-9d5c-045de0e7fbd2",
                                 "type": "rule"
                               },
                               {
-                                "id": "76c43e04-b792-45b2-9b7c-e1627b7848dc",
+                                "id": "389fe766-668c-4aea-9902-ab3442c5045c",
                                 "type": "rule"
                               }
                             ]
@@ -497,11 +497,11 @@
                           "profiles": {
                             "data": [
                               {
-                                "id": "022506c0-d14d-46c8-b85c-24ac470c4f2a",
+                                "id": "18686ce8-74c5-4015-9867-654ee7d96553",
                                 "type": "profile"
                               },
                               {
-                                "id": "1e04256c-dd93-4249-bf63-2c3993d60635",
+                                "id": "aa90a111-30b3-47f0-b38b-f61482c7333a",
                                 "type": "profile"
                               }
                             ]
@@ -644,16 +644,16 @@
                     "value": {
                       "data": [
                         {
-                          "id": "b260b1c2-9ba7-4388-b284-46677898784f",
+                          "id": "74a17e7e-dcb1-4f36-91ca-49a9d56db2d7",
                           "type": "business_objective",
                           "attributes": {
-                            "title": "Numquam similique vel animi."
+                            "title": "Omnis velit aut neque."
                           },
                           "relationships": {
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "d5c5bfd6-c994-448f-9162-a4afa263ba59",
+                                  "id": "59a24ed2-bee2-4219-9a91-53e4f98d4cd4",
                                   "type": "profile"
                                 }
                               ]
@@ -661,16 +661,16 @@
                           }
                         },
                         {
-                          "id": "0bddeaad-9d3f-4cdb-b48a-ea54bf66e714",
+                          "id": "3e65e55a-09ee-4612-be2f-e123f4d5d129",
                           "type": "business_objective",
                           "attributes": {
-                            "title": "Voluptatem eos magnam laudantium."
+                            "title": "Perferendis voluptatem quisquam ipsum."
                           },
                           "relationships": {
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "144834bc-4647-425a-b8b1-42537044994b",
+                                  "id": "41970d7b-e16f-4af5-984e-5bd1edf564b1",
                                   "type": "profile"
                                 }
                               ]
@@ -788,16 +788,16 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "494fac09-0c67-4226-8994-2c9c7fc80658",
+                        "id": "ea9a2b2b-dcca-4c69-aa52-2661f99cbf76",
                         "type": "business_objective",
                         "attributes": {
-                          "title": "Totam ipsa inventore ipsum."
+                          "title": "Consequatur et nisi voluptas."
                         },
                         "relationships": {
                           "profiles": {
                             "data": [
                               {
-                                "id": "08b65494-5864-417b-93a6-3329953ba8a8",
+                                "id": "e2c88b49-d2df-47f5-b26b-9e59dff3ee76",
                                 "type": "profile"
                               }
                             ]
@@ -943,10 +943,10 @@
                     "value": {
                       "data": [
                         {
-                          "id": "f4066397-57c0-4e3b-a184-ba5f47794912",
+                          "id": "22f6c379-a8a4-458c-8ca4-ba0ea64d4706",
                           "type": "profile",
                           "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_profile_aedcd46b-8014-409d-a4ca-a82bf1533d23",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_0a446896-8409-4682-b5d3-06ec29f5fba5",
                             "score": 0.42,
                             "parent_profile_id": null,
                             "external": false,
@@ -975,7 +975,7 @@
                             },
                             "benchmark": {
                               "data": {
-                                "id": "c98ae288-0ca8-4c5e-a8b8-4d5350342d77",
+                                "id": "105b6f7a-fb68-4c8f-bc87-98e7005998d5",
                                 "type": "benchmark"
                               }
                             },
@@ -988,7 +988,7 @@
                             "hosts": {
                               "data": [
                                 {
-                                  "id": "46872938-f8ad-400b-8e33-c628ba9901ed",
+                                  "id": "70f1cf51-9421-4428-873d-614ba1b731f6",
                                   "type": "host"
                                 }
                               ]
@@ -996,7 +996,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "27cc5046-46a0-48be-a371-31baf91690a3",
+                                  "id": "bb3180f3-f06c-45d3-a8c2-108186a9d71d",
                                   "type": "test_result"
                                 }
                               ]
@@ -1004,10 +1004,10 @@
                           }
                         },
                         {
-                          "id": "ce51608c-dec2-4360-9167-e8817de40a99",
+                          "id": "dc135124-6393-4cf8-9218-a6d1bfdd6673",
                           "type": "profile",
                           "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_profile_3d1f6150-bd50-4296-91e8-3173ea82675f",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_5a259652-d79b-42c4-a1dd-06c5f0fbc054",
                             "score": 0.68,
                             "parent_profile_id": null,
                             "external": false,
@@ -1018,8 +1018,8 @@
                             "os_minor_version": "",
                             "parent_profile_ref_id": null,
                             "values": {},
-                            "name": "Fugit molestiae et quia.",
-                            "description": "Deserunt ipsam reiciendis. Totam reiciendis necessitatibus. Repudiandae est quam.",
+                            "name": "Ab debitis quo omnis.",
+                            "description": "Quaerat assumenda tempore. Quia fugit sed. Reiciendis ducimus excepturi.",
                             "canonical": true,
                             "tailored": false,
                             "total_host_count": 0,
@@ -1028,7 +1028,7 @@
                             "test_result_host_count": 0,
                             "unsupported_host_count": 0,
                             "business_objective": null,
-                            "policy_type": "Fugit molestiae et quia."
+                            "policy_type": "Ab debitis quo omnis."
                           },
                           "relationships": {
                             "account": {
@@ -1036,7 +1036,7 @@
                             },
                             "benchmark": {
                               "data": {
-                                "id": "8fe80830-f36a-4cad-b5a6-279d4fbf2f01",
+                                "id": "9705fdbb-8916-4898-9a73-c86eb829821e",
                                 "type": "benchmark"
                               }
                             },
@@ -1049,7 +1049,7 @@
                             "hosts": {
                               "data": [
                                 {
-                                  "id": "46872938-f8ad-400b-8e33-c628ba9901ed",
+                                  "id": "70f1cf51-9421-4428-873d-614ba1b731f6",
                                   "type": "host"
                                 }
                               ]
@@ -1057,7 +1057,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "24114b60-2aab-4092-9fcf-72aad30690bf",
+                                  "id": "a84f3e28-d2be-4881-aa7a-60deb1249430",
                                   "type": "test_result"
                                 }
                               ]
@@ -1065,25 +1065,25 @@
                           }
                         },
                         {
-                          "id": "9fc2a723-592c-4ed7-8ab5-c64303207707",
+                          "id": "569bcd1a-91fc-4281-9c18-c629a8a65533",
                           "type": "profile",
                           "attributes": {
-                            "ref_id": "xccdf_org.ssgproject.content_profile_3d1f6150-bd50-4296-91e8-3173ea82675f",
+                            "ref_id": "xccdf_org.ssgproject.content_profile_5a259652-d79b-42c4-a1dd-06c5f0fbc054",
                             "score": 0.0,
-                            "parent_profile_id": "ce51608c-dec2-4360-9167-e8817de40a99",
+                            "parent_profile_id": "dc135124-6393-4cf8-9218-a6d1bfdd6673",
                             "external": false,
                             "compliance_threshold": 100.0,
                             "os_major_version": "7",
                             "os_version": "7",
-                            "policy_profile_id": "9fc2a723-592c-4ed7-8ab5-c64303207707",
+                            "policy_profile_id": "569bcd1a-91fc-4281-9c18-c629a8a65533",
                             "os_minor_version": "",
-                            "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_3d1f6150-bd50-4296-91e8-3173ea82675f",
+                            "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_5a259652-d79b-42c4-a1dd-06c5f0fbc054",
                             "values": {
-                              "2762a472-2128-4cd4-b301-9e7112fc93d8": "hkaqoo",
-                              "2e2d8f98-ab62-4853-8c29-31b402b663e6": "hikfcv",
-                              "71ed5e73-1a89-4ac0-b4fb-3ebee841202d": "cnkcvh",
-                              "83a9e740-ddaa-4cf1-b117-74ee59eacf60": "jcivzh",
-                              "a57bad15-4c5b-4036-a641-827fe7e960e9": "uebeba"
+                              "0f33e2d7-e127-42b2-96b9-2504fef5ec76": "keupeg",
+                              "1ec042d9-6542-4719-b30c-a1e0359a5cac": "dmhioj",
+                              "1f0366cd-dd5f-4810-93d5-085f3ad6b37f": "dizmqp",
+                              "29a3fe0e-0350-4e9a-b275-1ec9670cf360": "pteadp",
+                              "f70de495-3d28-4558-9cc0-1059d341173c": "pgrwvs"
                             },
                             "name": "Policy for Profile",
                             "description": "Policy assigned to Profile",
@@ -1095,24 +1095,24 @@
                             "test_result_host_count": 0,
                             "unsupported_host_count": 0,
                             "business_objective": null,
-                            "policy_type": "Fugit molestiae et quia."
+                            "policy_type": "Ab debitis quo omnis."
                           },
                           "relationships": {
                             "account": {
                               "data": {
-                                "id": "c29f977f-b010-4a38-ab0c-efb2a28d6894",
+                                "id": "83ed892a-1e44-435e-b1f6-4f74c80c70d6",
                                 "type": "account"
                               }
                             },
                             "benchmark": {
                               "data": {
-                                "id": "8fe80830-f36a-4cad-b5a6-279d4fbf2f01",
+                                "id": "9705fdbb-8916-4898-9a73-c86eb829821e",
                                 "type": "benchmark"
                               }
                             },
                             "parent_profile": {
                               "data": {
-                                "id": "ce51608c-dec2-4360-9167-e8817de40a99",
+                                "id": "dc135124-6393-4cf8-9218-a6d1bfdd6673",
                                 "type": "profile"
                               }
                             },
@@ -1205,23 +1205,23 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "41e43f9a-5f8c-44ad-a537-78962cecc40d",
+                        "id": "53ced04c-004b-4e12-95ad-963a2068f9a8",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_5b8d7447-37f2-4703-8284-052ec6493ae2",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_019b2265-e3a7-4fe5-84c6-25f22c8c9ea4",
                           "score": 0.0,
-                          "parent_profile_id": "6c9c44d8-62c3-44b7-ae1f-d6d077d0d5cf",
+                          "parent_profile_id": "0be2c556-130c-4651-8707-8df925f9617c",
                           "external": false,
                           "compliance_threshold": 93.5,
                           "os_major_version": "7",
                           "os_version": "7",
-                          "policy_profile_id": "41e43f9a-5f8c-44ad-a537-78962cecc40d",
+                          "policy_profile_id": "53ced04c-004b-4e12-95ad-963a2068f9a8",
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_5b8d7447-37f2-4703-8284-052ec6493ae2",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_019b2265-e3a7-4fe5-84c6-25f22c8c9ea4",
                           "values": {
-                            "c97d36f9-20ca-4786-a748-dbdaf7403b5b": "lelkar",
-                            "6fbc5a7d-f7f2-495d-91b5-c9c2a8b792f0": "imyiqw",
-                            "7ad9ee76-432f-465d-8d5f-a7b5a4582996": "nnudyx"
+                            "af2e6c4b-71b8-41fd-b0b5-8f24b0351d24": "pauagp",
+                            "66c19157-b5c4-4f57-aec4-15e61d0aaca2": "cytkag",
+                            "fc0b0147-2248-40dd-b67e-ab0fc85dfe36": "aafqxp"
                           },
                           "name": "A custom name",
                           "description": "Canonical (Generated) Profile",
@@ -1238,30 +1238,30 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "3b1658e5-f8f0-4580-b9a2-2c89319438b4",
+                              "id": "664c5b66-9abf-4d60-9387-3ead68ffd6a9",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "5ffa356c-ec0c-4c4b-8d05-90a4763fa6a6",
+                              "id": "e5a106a7-1fd3-4740-8201-84d0903484db",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "6c9c44d8-62c3-44b7-ae1f-d6d077d0d5cf",
+                              "id": "0be2c556-130c-4651-8707-8df925f9617c",
                               "type": "profile"
                             }
                           },
                           "rules": {
                             "data": [
                               {
-                                "id": "e2025eeb-efb2-45ba-a763-441b519dd701",
+                                "id": "751386ca-9078-4ad9-9b09-1d5ac652edef",
                                 "type": "rule"
                               },
                               {
-                                "id": "ff7cb8e6-b973-4ccd-b4a1-b36d28b3e573",
+                                "id": "a832e68a-c2ae-43a6-8b38-f5be01470247",
                                 "type": "rule"
                               }
                             ]
@@ -1269,11 +1269,11 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "9fcf9775-a11c-4d6d-962d-99135684224e",
+                                "id": "75869545-5127-4a0b-a4f7-a693bf736a36",
                                 "type": "host"
                               },
                               {
-                                "id": "82831064-6342-4e9b-b7c8-d5d6f50df15a",
+                                "id": "fac9bfff-6e46-49b2-b8fe-f7f0930cf583",
                                 "type": "host"
                               }
                             ]
@@ -1444,10 +1444,10 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "e54a4694-cb22-49ae-8562-67a3935d88ec",
+                        "id": "62d24bef-24f2-4fa8-a7d8-a4029c7466da",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_3de75efb-8921-42b9-a655-7ed276e866c8",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_ac9713f5-713d-48a8-b7aa-743a55b0fa91",
                           "score": 0.42,
                           "parent_profile_id": null,
                           "external": false,
@@ -1458,11 +1458,11 @@
                           "os_minor_version": "",
                           "parent_profile_ref_id": null,
                           "values": {
-                            "0500263b-4e81-41fd-97c7-222b04f2f208": "kfohbj",
-                            "3309c874-edc7-45f6-a6c0-aa9c7b5c6b79": "eyrlyw",
-                            "6f464b92-7060-41b2-ac29-61b22d60b28d": "jvizkf",
-                            "8d28ceae-6a3f-4f5f-9657-e94194a636a6": "jrbmyf",
-                            "911bdc13-da2d-4a0b-a06a-e90f1de40c99": "plmjrb"
+                            "56da1cc7-92a4-46fd-a8bb-baab6007aa1a": "emltct",
+                            "ba000b59-9ee4-4b67-b9dd-e17fcd62c455": "blxmuj",
+                            "c2d1674f-13d2-4f4f-a7d6-11f2c87de5be": "vstydu",
+                            "cbc56ead-1f31-4bad-ab36-beebc2f1fa94": "zscyom",
+                            "f9d8a106-ab11-41aa-b7fa-ba3c6d08b10a": "fjchyv"
                           },
                           "name": "Canonical Profile",
                           "description": "Canonical (Generated) Profile",
@@ -1479,13 +1479,13 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "f33d5846-eaf2-4817-9eb5-a918a479ab73",
+                              "id": "2677084d-b95f-4651-8ca8-f68b42be061c",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "67894b54-7b56-4f7d-a58d-6742c22dff53",
+                              "id": "d8151552-7be7-4cfa-ad5c-ccc70e6647f2",
                               "type": "benchmark"
                             }
                           },
@@ -1501,7 +1501,7 @@
                           "test_results": {
                             "data": [
                               {
-                                "id": "3b2d2418-4f29-40b7-83db-bb1e70c4a460",
+                                "id": "e95e4ccf-5f69-4a89-b24e-87650e4d8350",
                                 "type": "test_result"
                               }
                             ]
@@ -1510,13 +1510,13 @@
                       },
                       "included": [
                         {
-                          "id": "67894b54-7b56-4f7d-a58d-6742c22dff53",
+                          "id": "d8151552-7be7-4cfa-ad5c-ccc70e6647f2",
                           "type": "benchmark",
                           "attributes": {
                             "ref_id": "xccdf_org.ssgproject.content_benchmark_RHEL-7",
-                            "title": "Ullam ipsam enim deleniti.",
+                            "title": "Temporibus eos occaecati nisi.",
                             "version": "100.0.19",
-                            "description": "Aperiam dolor laudantium. Dolorum quia est. Nisi minus ut.",
+                            "description": "Ducimus neque rerum. Dolorum adipisci laborum. In dignissimos dolorem.",
                             "os_major_version": "7",
                             "latest_supported_os_minor_versions": [],
                             "rule_tree": []
@@ -1643,19 +1643,19 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "a8f54de4-827f-4099-a90a-5b4f77640cb3",
+                        "id": "74abb90f-0ef1-4aa8-8f2d-717c98b71e04",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_d31b6cce-9d13-4fad-a822-c92154b85f39",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_ec2fdbe7-a326-403e-9550-c23151930d8a",
                           "score": 0.0,
-                          "parent_profile_id": "590c08dd-117e-4743-b5a6-e420505523c7",
+                          "parent_profile_id": "499fe597-d8e7-42ea-9c58-4ee572f9e6fd",
                           "external": false,
                           "compliance_threshold": 93.5,
                           "os_major_version": "7",
                           "os_version": "7",
-                          "policy_profile_id": "a8f54de4-827f-4099-a90a-5b4f77640cb3",
+                          "policy_profile_id": "74abb90f-0ef1-4aa8-8f2d-717c98b71e04",
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_de3a353a-6162-4152-9ec7-593a014a15bd",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_bfd76e85-9d57-41e0-8dbd-d4bb340ff7b2",
                           "values": {},
                           "name": "Policy for Profile",
                           "description": "An updated custom description",
@@ -1672,42 +1672,42 @@
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "d37851fb-6eb7-45dc-8b00-e2a90e1771e8",
+                              "id": "8f9df600-49d4-4e8f-8672-69db698521c6",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "d99c124e-1c92-4ae9-8242-aa275c1983d3",
+                              "id": "551d4714-51cf-4eee-8c4e-f16b86b5481e",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "590c08dd-117e-4743-b5a6-e420505523c7",
+                              "id": "499fe597-d8e7-42ea-9c58-4ee572f9e6fd",
                               "type": "profile"
                             }
                           },
                           "rules": {
                             "data": [
                               {
-                                "id": "90aabcb3-8bc0-4787-af87-b039b2c7d300",
+                                "id": "e0152977-c5c7-4980-bd79-20f6279368fb",
                                 "type": "rule"
                               },
                               {
-                                "id": "8f2e2c12-f48b-46c7-93b2-c937261c1523",
+                                "id": "828d648f-da8a-4df1-b936-6bdbf493a58b",
                                 "type": "rule"
                               },
                               {
-                                "id": "ddceeeba-1d33-441e-a5b4-ca6e0fc27be1",
+                                "id": "14a395ca-eb25-439c-a855-3a38efb454ce",
                                 "type": "rule"
                               },
                               {
-                                "id": "af7e6aac-3293-4e91-9228-cd99e167cb52",
+                                "id": "9bd3b52a-09ac-4632-8a34-cc81322c16e1",
                                 "type": "rule"
                               },
                               {
-                                "id": "7271a227-0e53-41ad-8870-01e0ab7c533f",
+                                "id": "6286e1e0-60a3-438d-a1e9-ce714b5af2f0",
                                 "type": "rule"
                               }
                             ]
@@ -1715,11 +1715,11 @@
                           "hosts": {
                             "data": [
                               {
-                                "id": "988d3e89-7417-49ac-a094-e4a7feac8453",
+                                "id": "c7786c60-b680-494e-b8b4-3849df42490b",
                                 "type": "host"
                               },
                               {
-                                "id": "0de8c18e-09c9-4cf2-98d0-b8f2b0bd9ef1",
+                                "id": "d68bb7c1-e6a6-47f4-97c8-1b69a94585d8",
                                 "type": "host"
                               }
                             ]
@@ -1898,22 +1898,22 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "e65577b8-b75a-4f51-bdd0-5a35b35ee2c6",
+                        "id": "70bc0489-9a10-4756-8857-e72ca665a8db",
                         "type": "profile",
                         "attributes": {
-                          "ref_id": "xccdf_org.ssgproject.content_profile_320ce75b-e8dc-4abf-a82d-54c8786dddd2",
+                          "ref_id": "xccdf_org.ssgproject.content_profile_8e7adf32-3808-48ba-aede-8c8f6895d57d",
                           "score": 0.0,
-                          "parent_profile_id": "0b157fc7-108e-4c14-a828-a9417aedde5c",
+                          "parent_profile_id": "feafbf87-1b49-48c4-9dff-fec88bdce2ea",
                           "external": false,
                           "compliance_threshold": 100.0,
                           "os_major_version": "7",
                           "os_version": "7",
                           "policy_profile_id": null,
                           "os_minor_version": "",
-                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_320ce75b-e8dc-4abf-a82d-54c8786dddd2",
+                          "parent_profile_ref_id": "xccdf_org.ssgproject.content_profile_8e7adf32-3808-48ba-aede-8c8f6895d57d",
                           "values": {},
-                          "name": "Voluptas maiores ea est.",
-                          "description": "Autem fuga ipsum. Consequuntur omnis sit. Aperiam officia quo.",
+                          "name": "Blanditiis corrupti quam tempora.",
+                          "description": "Soluta sed enim. Omnis necessitatibus consequatur. Itaque enim necessitatibus.",
                           "canonical": false,
                           "tailored": false,
                           "total_host_count": 0,
@@ -1922,24 +1922,24 @@
                           "test_result_host_count": 0,
                           "unsupported_host_count": 0,
                           "business_objective": null,
-                          "policy_type": "At maiores hic quam."
+                          "policy_type": "Voluptas pariatur aut dolores."
                         },
                         "relationships": {
                           "account": {
                             "data": {
-                              "id": "fd84c6cf-1e02-43c6-b594-ef577cb6f46f",
+                              "id": "5015711d-f934-4080-a711-79b694dd290c",
                               "type": "account"
                             }
                           },
                           "benchmark": {
                             "data": {
-                              "id": "b0563228-b193-4f6a-955d-5d9209f57233",
+                              "id": "70194324-369e-4801-8215-7f72f8dd53fe",
                               "type": "benchmark"
                             }
                           },
                           "parent_profile": {
                             "data": {
-                              "id": "0b157fc7-108e-4c14-a828-a9417aedde5c",
+                              "id": "feafbf87-1b49-48c4-9dff-fec88bdce2ea",
                               "type": "profile"
                             }
                           },
@@ -2087,7 +2087,7 @@
                     "value": {
                       "data": [
                         {
-                          "id": "8a11629e-0a73-4a86-a667-0dde4f4c3be4",
+                          "id": "8c5e49ee-b8e1-4981-9848-6cdc37ca167e",
                           "type": "rule_result",
                           "attributes": {
                             "result": "pass"
@@ -2095,13 +2095,13 @@
                           "relationships": {
                             "host": {
                               "data": {
-                                "id": "8c6f2c0e-ce69-467f-909f-0fd16d5c6b41",
+                                "id": "20ec3758-3cff-42c8-8e71-264721115ac8",
                                 "type": "host"
                               }
                             },
                             "rule": {
                               "data": {
-                                "id": "33f95e97-ec7f-4150-bfaf-42bc7906ebf1",
+                                "id": "e371da26-33f5-4799-a5bf-c8aa44cac351",
                                 "type": "rule"
                               }
                             }
@@ -2263,19 +2263,19 @@
                     "value": {
                       "data": [
                         {
-                          "id": "315862fd-8caa-4772-a20d-4072236d01e7",
+                          "id": "c9fe6e89-1173-4eca-8dfe-2c5dfae50dd7",
                           "type": "rule",
                           "attributes": {
-                            "ref_id": "foo_rule_4024ed8f-7923-4912-8ce5-73984d87bc6b",
-                            "title": "Veritatis qui ut velit.",
-                            "rationale": "Quos aut est. Maiores quibusdam eveniet. Ipsam dolore in.",
-                            "description": "Possimus non voluptatem. Vel rerum quo. Voluptates sit similique.",
-                            "severity": "high",
-                            "slug": "foo_rule_4024ed8f-7923-4912-8ce5-73984d87bc6b",
+                            "ref_id": "foo_rule_3c169e74-2af8-484d-8a9a-ce6c5ea0130c",
+                            "title": "Iste aut provident enim.",
+                            "rationale": "Nobis provident sapiente. Eum iusto illo. Reiciendis quam laudantium.",
+                            "description": "Reprehenderit a non. Autem quia qui. Fugit sed eaque.",
+                            "severity": "low",
+                            "slug": "foo_rule_3c169e74-2af8-484d-8a9a-ce6c5ea0130c",
                             "values": [
-                              "b527d0b1-1ba7-4bfb-98c6-1847e325bcb3",
-                              "8fc3a865-b6d7-449a-99b1-b052ac4c4ac1",
-                              "05fb6858-ca5b-466b-b3ee-52021c2ec78a"
+                              "4cdbd633-0db1-4b6a-b200-09dd25d1c1f3",
+                              "bf0fd3bb-36c1-47e0-8b8d-dfb3cbdecbe6",
+                              "3227d7e2-4adf-4d2d-90e8-a2c2fa0198e8"
                             ],
                             "precedence": 1,
                             "remediation_issue_id": null
@@ -2283,25 +2283,25 @@
                           "relationships": {
                             "benchmark": {
                               "data": {
-                                "id": "4749dede-84a4-4aa5-bb63-908bc56a5786",
+                                "id": "f4881fad-34e0-4207-a473-b3d73e398d76",
                                 "type": "benchmark"
                               }
                             },
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "141c4dfd-72e3-4dc8-ad8f-7ef9b46380cb",
+                                  "id": "68efcc5a-50b8-4040-871e-7d7aad5eeccd",
                                   "type": "profile"
                                 },
                                 {
-                                  "id": "025d4b83-50eb-4068-b900-c6e98b12233d",
+                                  "id": "013d92de-92d1-491f-a687-c1e4d61c6e27",
                                   "type": "profile"
                                 }
                               ]
                             },
                             "rule_identifier": {
                               "data": {
-                                "id": "b133021e-ddf0-482f-98f2-ef7cd6a18733",
+                                "id": "4cf35dc6-c7d6-4854-95b9-35a7a75171ec",
                                 "type": "rule_identifier"
                               }
                             }
@@ -2421,19 +2421,19 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "800ca1df-090a-4e04-9ca0-9eb269c42cf1",
+                        "id": "c3492116-d5d9-4b5d-bbcb-77b89433c8db",
                         "type": "rule",
                         "attributes": {
-                          "ref_id": "foo_rule_13246dbf-40db-4520-bcc9-0f89457b6257",
-                          "title": "Aut quam optio fugiat.",
-                          "rationale": "Nisi et quam. Qui quae illo. Porro est voluptatum.",
-                          "description": "Sequi in nihil. Minus a eligendi. Sit ex hic.",
-                          "severity": "medium",
-                          "slug": "foo_rule_13246dbf-40db-4520-bcc9-0f89457b6257",
+                          "ref_id": "foo_rule_8f00a5b6-17bf-46a9-b6c4-ddb2a7347fc2",
+                          "title": "Dignissimos consequatur voluptatem maiores.",
+                          "rationale": "Molestiae error qui. Pariatur commodi dolor. Molestias odit cupiditate.",
+                          "description": "Consequatur deleniti veniam. Nostrum suscipit consectetur. Officiis qui ipsam.",
+                          "severity": "high",
+                          "slug": "foo_rule_8f00a5b6-17bf-46a9-b6c4-ddb2a7347fc2",
                           "values": [
-                            "e108a9cd-9f38-40a3-b090-08ea332f7659",
-                            "4d8671ca-2364-4e82-8d04-5f8634e97247",
-                            "e93fad4a-3617-4051-a794-d54dcfd402d1"
+                            "82f1f44f-d338-40be-84f3-73263c4e4ba7",
+                            "1ce79551-bf8e-4fb2-abd6-1890310afce6",
+                            "6f1edb79-292b-47cd-b573-a87116556653"
                           ],
                           "precedence": 1,
                           "remediation_issue_id": null
@@ -2441,25 +2441,25 @@
                         "relationships": {
                           "benchmark": {
                             "data": {
-                              "id": "c6764ac0-669e-4bde-ad5c-0bacbd3320e2",
+                              "id": "92163296-99e1-4ee1-9c30-30fa83e4fafc",
                               "type": "benchmark"
                             }
                           },
                           "profiles": {
                             "data": [
                               {
-                                "id": "b640900a-745d-4bca-a17d-1a40e9064492",
+                                "id": "09d72d04-d700-4095-909c-69d945d9ee36",
                                 "type": "profile"
                               },
                               {
-                                "id": "60e7976c-b5e5-4df2-bf4c-8e61d970f3b6",
+                                "id": "3b0e0e58-9cda-4402-abe2-051d99269a60",
                                 "type": "profile"
                               }
                             ]
                           },
                           "rule_identifier": {
                             "data": {
-                              "id": "ad36b930-a837-4d74-a0ce-48c68454acf5",
+                              "id": "3da1738b-0ab6-42cd-be70-be20489b8c70",
                               "type": "rule_identifier"
                             }
                           }
@@ -3020,146 +3020,6 @@
                           }
                         },
                         {
-                          "id": "RHEL-7.9:scap-security-guide-0.1.63-1.el7_9",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.63-1.el7_9",
-                            "version": "0.1.63",
-                            "os_major_version": "7",
-                            "os_minor_version": "9",
-                            "profiles": [
-                              "anssi_nt28_enhanced",
-                              "anssi_nt28_high",
-                              "anssi_nt28_intermediary",
-                              "anssi_nt28_minimal",
-                              "C2S",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cjis",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ncp",
-                              "ospp",
-                              "pci-dss_centric",
-                              "pci-dss",
-                              "rhelh-stig",
-                              "rhelh-vpp",
-                              "rht-ccp",
-                              "standard",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-7.9:scap-security-guide-0.1.66-1.el7_9",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.66-1.el7_9",
-                            "version": "0.1.66",
-                            "os_major_version": "7",
-                            "os_minor_version": "9",
-                            "profiles": [
-                              "anssi_nt28_enhanced",
-                              "anssi_nt28_high",
-                              "anssi_nt28_intermediary",
-                              "anssi_nt28_minimal",
-                              "C2S",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cjis",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ncp",
-                              "ospp",
-                              "pci-dss_centric",
-                              "pci-dss",
-                              "rhelh-stig",
-                              "rhelh-vpp",
-                              "rht-ccp",
-                              "standard",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-7.9:scap-security-guide-0.1.69-1.el7_9",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.69-1.el7_9",
-                            "version": "0.1.69",
-                            "os_major_version": "7",
-                            "os_minor_version": "9",
-                            "profiles": [
-                              "anssi_nt28_enhanced",
-                              "anssi_nt28_high",
-                              "anssi_nt28_intermediary",
-                              "anssi_nt28_minimal",
-                              "C2S",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cjis",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ncp",
-                              "ospp",
-                              "pci-dss_centric",
-                              "pci-dss",
-                              "rhelh-stig",
-                              "rhelh-vpp",
-                              "rht-ccp",
-                              "standard",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-7.9:scap-security-guide-0.1.72-2.el7_9",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.72-2.el7_9",
-                            "version": "0.1.72",
-                            "os_major_version": "7",
-                            "os_minor_version": "9",
-                            "profiles": [
-                              "anssi_nt28_enhanced",
-                              "anssi_nt28_high",
-                              "anssi_nt28_intermediary",
-                              "anssi_nt28_minimal",
-                              "C2S",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cjis",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ncp",
-                              "ospp",
-                              "pci-dss_centric",
-                              "pci-dss",
-                              "rhelh-stig",
-                              "rhelh-vpp",
-                              "rht-ccp",
-                              "standard",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
                           "id": "RHEL-8.0:scap-security-guide-0.1.42-11.el8",
                           "type": "supported_ssg",
                           "attributes": {
@@ -3315,34 +3175,6 @@
                           }
                         },
                         {
-                          "id": "RHEL-8.4:scap-security-guide-0.1.66-1.el8_4",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.66-1.el8_4",
-                            "version": "0.1.66",
-                            "os_major_version": "8",
-                            "os_minor_version": "4",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
                           "id": "RHEL-8.5:scap-security-guide-0.1.57-5.el8",
                           "type": "supported_ssg",
                           "attributes": {
@@ -3427,342 +3259,6 @@
                           }
                         },
                         {
-                          "id": "RHEL-8.6:scap-security-guide-0.1.63-1.el8_6",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.63-1.el8_6",
-                            "version": "0.1.63",
-                            "os_major_version": "8",
-                            "os_minor_version": "6",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.6:scap-security-guide-0.1.66-1.el8_6",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.66-1.el8_6",
-                            "version": "0.1.66",
-                            "os_major_version": "8",
-                            "os_minor_version": "6",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.6:scap-security-guide-0.1.69-3.el8_6",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.69-3.el8_6",
-                            "version": "0.1.69",
-                            "os_major_version": "8",
-                            "os_minor_version": "6",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.6:scap-security-guide-0.1.72-2.el8_9",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.72-2.el8_9",
-                            "version": "0.1.72",
-                            "os_major_version": "8",
-                            "os_minor_version": "6",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.7:scap-security-guide-0.1.63-4.el8",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.63-4.el8",
-                            "version": "0.1.63",
-                            "os_major_version": "8",
-                            "os_minor_version": "7",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.7:scap-security-guide-0.1.66-2.el8_7",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.66-2.el8_7",
-                            "version": "0.1.66",
-                            "os_major_version": "8",
-                            "os_minor_version": "7",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.8:scap-security-guide-0.1.66-2.el8",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.66-2.el8",
-                            "version": "0.1.66",
-                            "os_major_version": "8",
-                            "os_minor_version": "8",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.8:scap-security-guide-0.1.69-2.el8_8",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.69-2.el8_8",
-                            "version": "0.1.69",
-                            "os_major_version": "8",
-                            "os_minor_version": "8",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.8:scap-security-guide-0.1.72-2.el8_9",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.72-2.el8_9",
-                            "version": "0.1.72",
-                            "os_major_version": "8",
-                            "os_minor_version": "8",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.9:scap-security-guide-0.1.69-2.el8",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.69-2.el8",
-                            "version": "0.1.69",
-                            "os_major_version": "8",
-                            "os_minor_version": "9",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.9:scap-security-guide-0.1.72-2.el8_9",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.72-2.el8_9",
-                            "version": "0.1.72",
-                            "os_major_version": "8",
-                            "os_minor_version": "9",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-8.10:scap-security-guide-0.1.72-2.el8_9",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.72-2.el8_9",
-                            "version": "0.1.72",
-                            "os_major_version": "8",
-                            "os_minor_version": "10",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
                           "id": "RHEL-9.0:scap-security-guide-0.1.60-6.el9_0",
                           "type": "supported_ssg",
                           "attributes": {
@@ -3789,368 +3285,11 @@
                               "stig_gui"
                             ]
                           }
-                        },
-                        {
-                          "id": "RHEL-9.0:scap-security-guide-0.1.66-1.el9_0",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.66-1.el9_0",
-                            "version": "0.1.66",
-                            "os_major_version": "9",
-                            "os_minor_version": "0",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.0:scap-security-guide-0.1.63-2.el9_0",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.63-2.el9_0",
-                            "version": "0.1.63",
-                            "os_major_version": "9",
-                            "os_minor_version": "0",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.0:scap-security-guide-0.1.69-3.el9_3",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.69-3.el9_3",
-                            "version": "0.1.69",
-                            "os_major_version": "9",
-                            "os_minor_version": "0",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "ccn_advanced",
-                              "ccn_basic",
-                              "ccn_intermediate",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.0:scap-security-guide-0.1.72-1.el9_3",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.72-1.el9_3",
-                            "version": "0.1.72",
-                            "os_major_version": "9",
-                            "os_minor_version": "0",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "ccn_advanced",
-                              "ccn_basic",
-                              "ccn_intermediate",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.1:scap-security-guide-0.1.63-5.el9",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.63-5.el9",
-                            "version": "0.1.63",
-                            "os_major_version": "9",
-                            "os_minor_version": "1",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.1:scap-security-guide-0.1.66-1.el9_1",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.66-1.el9_1",
-                            "version": "0.1.66",
-                            "os_major_version": "9",
-                            "os_minor_version": "1",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.2:scap-security-guide-0.1.66-1.el9_1",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.66-1.el9_1",
-                            "version": "0.1.66",
-                            "os_major_version": "9",
-                            "os_minor_version": "2",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.2:scap-security-guide-0.1.69-3.el9_3",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.69-3.el9_3",
-                            "version": "0.1.69",
-                            "os_major_version": "9",
-                            "os_minor_version": "2",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "ccn_advanced",
-                              "ccn_basic",
-                              "ccn_intermediate",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.2:scap-security-guide-0.1.72-1.el9_3",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.72-1.el9_3",
-                            "version": "0.1.72",
-                            "os_major_version": "9",
-                            "os_minor_version": "2",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "ccn_advanced",
-                              "ccn_basic",
-                              "ccn_intermediate",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.3:scap-security-guide-0.1.69-3.el9_3",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.69-3.el9_3",
-                            "version": "0.1.69",
-                            "os_major_version": "9",
-                            "os_minor_version": "3",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "ccn_advanced",
-                              "ccn_basic",
-                              "ccn_intermediate",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.3:scap-security-guide-0.1.72-1.el9_3",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.72-1.el9_3",
-                            "version": "0.1.72",
-                            "os_major_version": "9",
-                            "os_minor_version": "3",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "ccn_advanced",
-                              "ccn_basic",
-                              "ccn_intermediate",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
-                        },
-                        {
-                          "id": "RHEL-9.4:scap-security-guide-0.1.72-1.el9_3",
-                          "type": "supported_ssg",
-                          "attributes": {
-                            "package": "scap-security-guide-0.1.72-1.el9_3",
-                            "version": "0.1.72",
-                            "os_major_version": "9",
-                            "os_minor_version": "4",
-                            "profiles": [
-                              "anssi_bp28_enhanced",
-                              "anssi_bp28_high",
-                              "anssi_bp28_intermediary",
-                              "anssi_bp28_minimal",
-                              "ccn_advanced",
-                              "ccn_basic",
-                              "ccn_intermediate",
-                              "cis",
-                              "cis_server_l1",
-                              "cis_workstation_l1",
-                              "cis_workstation_l2",
-                              "cui",
-                              "e8",
-                              "hipaa",
-                              "ism_o",
-                              "ospp",
-                              "pci-dss",
-                              "stig",
-                              "stig_gui"
-                            ]
-                          }
                         }
                       ],
                       "meta": {
-                        "total": 58,
-                        "revision": "2024-02-21"
+                        "total": 29,
+                        "revision": "2022-08-18"
                       }
                     },
                     "summary": "",
@@ -4239,7 +3378,7 @@
             "name": "tags",
             "in": "query",
             "required": false,
-            "description": "A string or an array of tags to narrow down the results against. The namespace, key and value are concatenated using `/` and `=` symbols. In case the values contain symbols used for separators, `/` is replaced with `%2F`, `=` is replaced with `%3D`.<br><br>e.g.: `namespace/key=value`, `insights-client/selinux-config=SELINUX%3Denforcing`",
+            "description": "An array of tags to narrow down the search results. In case the value contains symbols used for separators (`/` or `=`), they need to be encoded.<br>e.g.: `namespace/key=value`, `insights-client/selinux-config=SELINUX%3Denforcing`",
             "schema": {
               "type": "array",
               "items": {
@@ -4311,26 +3450,26 @@
                     "value": {
                       "data": [
                         {
-                          "id": "4ab74870-323e-40ed-8582-95d82c863dc2",
+                          "id": "1b37f6a1-66b2-4342-8636-ae20140fd614",
                           "type": "host",
                           "attributes": {
-                            "name": "weimann-mclaughlin.test",
+                            "name": "wiegand-lemke.example",
                             "os_major_version": 7,
                             "os_minor_version": 9,
-                            "last_scanned": "2024-06-19T14:31:57Z",
+                            "last_scanned": "2025-02-23T12:03:20Z",
                             "groups": [
                               {
-                                "id": "d662d13d-acae-4b9a-bfde-1d0655fcff73",
-                                "name": "RSS"
+                                "id": "6936e766-989f-4814-ac82-794a19283b5e",
+                                "name": "AGP"
                               }
                             ],
                             "rules_passed": 0,
                             "rules_failed": 0,
                             "has_policy": true,
-                            "culled_timestamp": "2034-07-03T14:31:57Z",
-                            "stale_timestamp": "2034-06-19T14:31:57Z",
-                            "stale_warning_timestamp": "2034-06-26T14:31:57Z",
-                            "updated": "2024-06-19T14:31:57Z",
+                            "culled_timestamp": "2035-03-09T12:03:20Z",
+                            "stale_timestamp": "2035-02-23T12:03:20Z",
+                            "stale_warning_timestamp": "2035-03-02T12:03:20Z",
+                            "updated": "2025-02-23T12:03:20Z",
                             "insights_id": "45b7b025-4bf4-48a5-abbd-161c12ece8f4",
                             "compliant": false
                           },
@@ -4338,7 +3477,7 @@
                             "test_results": {
                               "data": [
                                 {
-                                  "id": "bafb2143-e94f-48ce-ae46-88e7a059438e",
+                                  "id": "28d7faf3-9277-4bf4-93fc-e0d4dca997cc",
                                   "type": "test_result"
                                 }
                               ]
@@ -4346,7 +3485,7 @@
                             "profiles": {
                               "data": [
                                 {
-                                  "id": "fab0bc38-c11d-4401-8064-d40fca2e195b",
+                                  "id": "5daf699e-fe08-4fb7-b7a6-802a7ab44ae2",
                                   "type": "profile"
                                 }
                               ]
@@ -4470,26 +3609,26 @@
                   "Response example": {
                     "value": {
                       "data": {
-                        "id": "bd7b2a70-4a83-406c-9c89-10a9c7a5879b",
+                        "id": "87a7adea-1ce2-4dda-a077-77cb3181ba0e",
                         "type": "host",
                         "attributes": {
-                          "name": "cummings.example",
+                          "name": "lockman-kuphal.test",
                           "os_major_version": 7,
                           "os_minor_version": 9,
-                          "last_scanned": "2024-06-19T14:31:57Z",
+                          "last_scanned": "2025-02-23T12:03:20Z",
                           "groups": [
                             {
-                              "id": "e1a152d2-0503-436c-9c4a-59df8ef09ec0",
-                              "name": "IB"
+                              "id": "78a463dd-8d70-49db-98ab-185647b6223f",
+                              "name": "COM"
                             }
                           ],
                           "rules_passed": 0,
                           "rules_failed": 0,
                           "has_policy": true,
-                          "culled_timestamp": "2034-07-03T14:31:57Z",
-                          "stale_timestamp": "2034-06-19T14:31:57Z",
-                          "stale_warning_timestamp": "2034-06-26T14:31:57Z",
-                          "updated": "2024-06-19T14:31:57Z",
+                          "culled_timestamp": "2035-03-09T12:03:20Z",
+                          "stale_timestamp": "2035-02-23T12:03:20Z",
+                          "stale_warning_timestamp": "2035-03-02T12:03:20Z",
+                          "updated": "2025-02-23T12:03:20Z",
                           "insights_id": "45b7b025-4bf4-48a5-abbd-161c12ece8f4",
                           "compliant": false
                         },
@@ -4497,7 +3636,7 @@
                           "test_results": {
                             "data": [
                               {
-                                "id": "cf734591-d294-4436-96f6-b888614f359f",
+                                "id": "f7489cc6-1769-420c-93bb-19086ecf3b1d",
                                 "type": "test_result"
                               }
                             ]
@@ -4505,7 +3644,7 @@
                           "profiles": {
                             "data": [
                               {
-                                "id": "dd3b3c04-6ffb-492e-8e00-91c08276588b",
+                                "id": "773f5a04-6177-4047-80b2-94a7563c34c4",
                                 "type": "profile"
                               }
                             ]
@@ -4619,38 +3758,38 @@
                     "value": {
                       "data": [
                         {
-                          "id": "b8a4fa23-ad5a-4943-9f22-0ae8b72be9c9",
+                          "id": "1be4ea79-baba-49d6-a24b-aff2fa81d6ac",
                           "type": "value_definition",
                           "attributes": {
-                            "ref_id": "foo_value_786b4c13-61b4-4b9e-a6f6-909699c3038e",
-                            "title": "Asperiores unde iusto quia.",
-                            "description": "Sed veritatis voluptas. Aut unde commodi. Sint suscipit voluptas.",
+                            "ref_id": "foo_value_3b35bf40-c6da-4c5e-a8f4-5438566d4354",
+                            "title": "Esse facere eveniet aut.",
+                            "description": "Quos blanditiis sit. Nulla accusamus sapiente. Ut illo quis.",
                             "value_type": "boolean",
                             "default_value": "true"
                           },
                           "relationships": {
                             "benchmark": {
                               "data": {
-                                "id": "afbf52c5-41d1-4850-abb2-59a3a8285541",
+                                "id": "3262f04f-b991-484f-ac25-373b587440da",
                                 "type": "benchmark"
                               }
                             }
                           }
                         },
                         {
-                          "id": "e723491d-ba36-46cf-a51b-d5bfc9606bdd",
+                          "id": "e4c21dc6-71bd-434c-956c-1e4e40957ba7",
                           "type": "value_definition",
                           "attributes": {
-                            "ref_id": "foo_value_84b87909-753b-42e0-a431-0ff3e1f4150d",
-                            "title": "In ut beatae reprehenderit.",
-                            "description": "Reprehenderit et in. Est eos rem. Consectetur qui id.",
+                            "ref_id": "foo_value_002f2d3e-8337-4a1e-beda-0df2e92bab68",
+                            "title": "Aperiam voluptatibus impedit aut.",
+                            "description": "Praesentium facere perspiciatis. Autem animi perferendis. Ut saepe sed.",
                             "value_type": "boolean",
                             "default_value": "true"
                           },
                           "relationships": {
                             "benchmark": {
                               "data": {
-                                "id": "e6828fad-f338-48e5-921e-bd1d3eca8bab",
+                                "id": "eb949b07-cc7c-4fb5-8189-19b0720f7892",
                                 "type": "benchmark"
                               }
                             }
