@@ -39,16 +39,21 @@ RSpec.configure do |config|
 end
 
 def autogenerate_examples(example, label = 'Response example', summary = '', description = '')
-  content = example.metadata[:response][:content] || {}
-  body = JSON.parse(response.body, symbolize_names: true)
-  example_obj = { "#{label}": { value: body, summary: summary, description: description } }
-  example.metadata[:response][:content] = content.deep_merge(
-    {
-      'application/vnd.api+json': {
-        examples: example_obj
-      }
+  # FIXME: hack to avoid duplicated keys
+  # Needed after previous hack was removed during Rails 8 upgrade
+  # (see https://github.com/RedHatInsights/compliance-backend/commit/8b530996f#diff-1e8cf3de001b876faaf2655349c90959c6a725c8ead4744a692aa285e986a4ffL214)
+  return if example.metadata[:response][:content]&.key?('application/vnd.api+json')
+
+  example_obj = {
+    label.to_sym => {
+      value: JSON.parse(response.body, symbolize_names: true),
+      summary: summary,
+      description: description
     }
-  )
+  }
+
+  example.metadata[:response][:content] ||= {}
+  example.metadata[:response][:content]['application/vnd.api+json'] = { examples: example_obj }
 end
 
 def encoded_header(account = nil)
