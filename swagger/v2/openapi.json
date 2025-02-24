@@ -403,9 +403,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -453,9 +451,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -505,9 +501,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -586,9 +580,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -619,9 +611,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -679,9 +669,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -758,9 +746,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -1013,9 +999,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -1355,9 +1339,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -1405,9 +1387,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -1472,9 +1452,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -1505,9 +1483,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -1664,9 +1640,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/rule_tree"
                 }
@@ -1687,9 +1661,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -1997,9 +1969,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -2047,9 +2017,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -2098,9 +2066,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2168,9 +2134,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -2201,9 +2165,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -2313,9 +2275,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -2346,9 +2306,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -2651,9 +2609,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -2701,9 +2657,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -2795,7 +2749,7 @@
           "Content"
         ],
         "description": "List all rules groups.",
-        "operationId": "Rule Groups",
+        "operationId": "RuleGroups",
         "responses": {
           "200": {
             "description": "Lists Rule Groups",
@@ -3019,9 +2973,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -3069,9 +3021,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -3136,9 +3086,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -3169,9 +3117,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -3340,9 +3286,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -3390,9 +3334,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -4317,9 +4259,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -4367,9 +4307,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -4465,9 +4403,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -4498,9 +4434,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -5453,9 +5387,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -5503,9 +5435,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -5610,9 +5540,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -5643,9 +5571,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -5874,9 +5800,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -5924,9 +5848,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -6383,9 +6305,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -6987,9 +6907,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -7037,9 +6955,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -7090,9 +7006,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -7152,9 +7066,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -7185,9 +7097,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -7336,9 +7246,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/rule_tree"
                 }
@@ -7359,9 +7267,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -7540,9 +7446,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -7590,9 +7494,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -9026,9 +8928,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -9076,9 +8976,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -9129,9 +9027,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -9224,9 +9120,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -9257,9 +9151,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -10668,9 +10560,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -10718,9 +10608,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -11190,9 +11078,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -11289,9 +11175,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -11391,9 +11275,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -11424,9 +11306,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -11521,9 +11401,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -11554,9 +11432,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -13145,9 +13021,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -13195,9 +13069,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -13256,9 +13128,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -13364,9 +13234,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -13397,9 +13265,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -13763,9 +13629,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -13813,9 +13677,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -13872,9 +13734,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -13960,9 +13820,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -13993,9 +13851,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -14062,9 +13918,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -14240,9 +14094,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/rule_tree"
                 }
@@ -14263,9 +14115,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -14338,9 +14188,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/tailoring_file"
                 }
@@ -15363,9 +15211,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -15413,9 +15259,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -15474,9 +15318,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -15529,9 +15371,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "array",
                   "items": {
@@ -15632,9 +15472,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -15665,9 +15503,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -16010,9 +15846,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -16060,9 +15894,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -16127,9 +15959,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "type": "object",
                   "properties": {
@@ -16160,9 +15990,7 @@
                     "summary": "",
                     "description": ""
                   }
-                }
-              },
-              "application/vnd.api+json": {
+                },
                 "schema": {
                   "$ref": "#/components/schemas/errors"
                 }
@@ -17699,5 +17527,19 @@
         }
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Systems"
+    },
+    {
+      "name": "Content"
+    },
+    {
+      "name": "Policies"
+    },
+    {
+      "name": "Reports"
+    }
+  ]
 }
