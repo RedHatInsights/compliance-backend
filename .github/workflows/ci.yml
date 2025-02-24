@@ -22,6 +22,10 @@ jobs:
       uses: wagoid/commitlint-github-action@v4
       with:
         configFile: './.commitlint.yml'
+    - name: Validate OpenAPI definition
+      uses: swaggerexpert/swagger-editor-validate@v1
+      with:
+        definition-file: swagger/v2/openapi.json
     - name: Setup Ruby and install gems
       uses: ruby/setup-ruby@v1
       with:
@@ -91,7 +95,7 @@ jobs:
         POSTGRESQL_PASSWORD: insights
         POSTGRESQL_TEST_DATABASE: insights
       run: bin/rails zeitwerk:check
-    - name: Validate the OpenAPIv2 schema
+    - name: Detect missing changes in OpenAPI spec
       env:
         RAILS_ENV: test
         SWAGGER_DRY_RUN: false
@@ -119,13 +123,6 @@ jobs:
             exit 1
           fi
         done
-
-        diff <(echo 'null') <(curl -s 'https://validator.swagger.io/validator/debug' -H 'accept: application/json' -H 'Content-Type: application/json' -d @openapi.old.json | jq '.schemaValidationMessages')
-        if [[ $? != 0 ]]; then
-          rm openapi.old.json
-          exit 1
-        fi
-        rm openapi.old.json
         exit 0
     - name: Run RSpec tests
       env:

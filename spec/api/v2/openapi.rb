@@ -19,7 +19,8 @@ module Api
           paths: {},
           components: {
             schemas: SCHEMAS
-          }
+          },
+          tags: tags
         }
       end
 
@@ -34,6 +35,15 @@ module Api
             url: 'https://{defaultHost}/api/compliance/v2',
             variables: { defaultHost: { default: 'console.redhat.com' } }
           }
+        ]
+      end
+
+      def tags
+        [
+          { name: 'Systems' },
+          { name: 'Content' },
+          { name: 'Policies' },
+          { name: 'Reports' }
         ]
       end
 
