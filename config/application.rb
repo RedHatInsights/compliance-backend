@@ -59,6 +59,10 @@ module ComplianceBackend
     # Adjust params[tags] to be array
     config.middleware.use Insights::Api::Common::AdjustTags::Middleware
     # Compensate the missing MIME type in Satellite-forwarded requests
+    puts "\n\u001b[31;1m◉\u001b[0m config/application.rb"
+    puts "config.middleware: #{config.middleware}"
+    puts "configuring middleware to use Insights::Api::Common::SatelliteCompensation::Middleware"
+    puts "-" * 40
     config.middleware.use Insights::Api::Common::SatelliteCompensation::Middleware
   end
 end
