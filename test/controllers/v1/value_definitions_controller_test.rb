@@ -32,6 +32,7 @@ module V1
       }
 
       assert_response :success
+      assert response.headers['Warning'].present?, 'Warning header is missing'
 
       value_definitions = response.parsed_body
 
