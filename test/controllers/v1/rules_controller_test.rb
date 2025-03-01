@@ -32,6 +32,7 @@ module V1
       get rule_url(Rule.first),
           headers: { 'X-RH-IDENTITY': encoded_header }
       assert_response :success
+      assert response.headers['Warning'].present?, 'Warning header is missing'
     end
 
     should 'disallow access to rules#index with cert auth' do
