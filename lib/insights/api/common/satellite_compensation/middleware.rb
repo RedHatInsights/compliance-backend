@@ -12,14 +12,10 @@ module Insights
           end
 
           def call(env)
-            if env['HTTP_USER_AGENT'] =~ /foreman|satellite/i
+            if env['HTTP_USER_AGENT'] =~ /foreman|satellite/i && env['CONTENT_TYPE'] == ''
               # Sometimes Satellite forwards the client requests with an empty string
               # as content-type and Rails does not like it.
-              env['CONTENT_TYPE'] = nil if env['CONTENT_TYPE'] == ''
-
-              # There is an additional branch_id parameter coming from Satellite that
-              # fails on the stricter checking of params in our REST API.
-              Rack::Request.new(env).delete_param('branch_id')
+              env['CONTENT_TYPE'] = nil
             end
 
             @app.call(env)
