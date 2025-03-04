@@ -588,7 +588,7 @@ objects:
     logLevel: ${FLOORIST_LOGLEVEL}
     suspend: ${{FLOORIST_SUSPEND}}
     queries:
-    - prefix: hms_analytics/compliance/tests
+    - prefix: hms_analytics/compliance/assigned_systems
       chunksize: 200000
       query: >-
         SELECT DISTINCT
