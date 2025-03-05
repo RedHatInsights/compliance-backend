@@ -8,6 +8,7 @@ describe V2::TestResultsController do
       end_time: -> { end_time.as_json },
       failed_rule_count: :failed_rule_count,
       display_name: :display_name,
+      security_guide_id: :security_guide_id,
       security_guide_version: :security_guide_version,
       groups: :groups,
       tags: -> { tags.map { |t| t.slice('key', 'namespace', 'value') } },

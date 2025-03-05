@@ -2,6 +2,7 @@
 
 module V2
   # Database model representing latest results of compliance scans
+  # rubocop:disable Metrics/ClassLength
   class TestResult < ApplicationRecord
     # FIXME: clean up after the remodel
     self.table_name = :v2_test_results
@@ -123,6 +124,10 @@ module V2
       !score.nil? && score >= threshold.to_f
     end
 
+    def security_guide_id
+      attributes['security_guide__id'] || try(:security_guide)&.id
+    end
+
     def security_guide_version
       attributes['security_guide__version'] || try(:security_guide)&.version
     end
@@ -143,4 +148,5 @@ module V2
         .uniq # using this instead of `.distinct` to properly handle sorting of versions. It should still perform fine.
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
