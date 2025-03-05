@@ -17,7 +17,7 @@ jobs:
           base=$(grep -Po '(?<=FROM )([^\s]*)(?= AS build)' Dockerfile)
           skopeo inspect "docker://$base" | jq .Digest --raw-output > .baseimagedigest
           docker run --rm -u 0 quay.io/cloudservices/compliance-backend:latest sh -c \
-            'microdnf update -y $(cat /opt/installedpackages) > /dev/null; rpm -q $(cat /opt/installedpackages) | sort | sha256sum | cut -d " " -f 1' \
+            'rpm -qa | grep -v "gpg-pubkey" > /opt/installedpackages; microdnf update -y $(cat /opt/installedpackages) > /dev/null; rpm -q $(cat /opt/installedpackages) | sort | sha256sum | cut -d " " -f 1' \
             >> .baseimagedigest
       - name: Do change if the digest changed
         run: |
