@@ -193,6 +193,9 @@ GEM
       ffi (~> 1.15)
       mini_portile2 (~> 2.6)
       rake (> 12)
+    karafka-testing (2.4.6)
+      karafka (>= 2.4.0, < 2.5.0)
+      waterdrop (>= 2.7.0)
     language_server-protocol (3.17.0.3)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -329,6 +332,10 @@ GEM
     request_store (1.7.0)
       rack (>= 1.4)
     rexml (3.4.0)
+    rspec (3.13.0)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
     rspec-core (3.13.2)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.3)
@@ -490,6 +497,7 @@ DEPENDENCIES
   irb (>= 1.2)
   jsonapi-serializer
   karafka (>= 2.4.0)
+  karafka-testing
   listen (>= 3.0.5)
   minitest-reporters
   minitest-stub-const
@@ -511,6 +519,7 @@ DEPENDENCIES
   redis (~> 4.5)
   request_store
   rexml
+  rspec
   rspec-rails
   rswag-api
   rswag-specs
