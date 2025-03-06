@@ -107,6 +107,8 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'irb', '>= 1.2'
+  gem 'karafka-testing'
+  gem 'rspec'
   gem 'minitest-reporters'
   gem 'minitest-stub-const'
   gem 'mocha'
