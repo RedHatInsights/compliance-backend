@@ -32,6 +32,7 @@ rules:
     - always
     -
       - Dockerfile
+      - image
       - clowder
       - RBAC
       - deps
