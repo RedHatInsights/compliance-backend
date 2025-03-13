@@ -3238,15 +3238,57 @@
                 "examples": {
                   "List of Rule Results": {
                     "value": {
-                      "data": [],
+                      "data": [
+                        {
+                          "id": "3fb56936-aeee-4e9c-aeb3-ccdb4ac6bc0d",
+                          "result": "fail",
+                          "rule_id": "819e44f6-6a9d-43b1-826e-5448dfc9f81d",
+                          "type": "rule_result",
+                          "system_id": "3b74a0bd-94b8-4f4b-b6cf-604238168ad0",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_4a99bbc682f6aa19e80358f297787d54",
+                          "rule_group_id": "0411dfc7-982f-4611-9a8d-2fba1d35ca32",
+                          "title": "Minima laborum voluptas suscipit.",
+                          "rationale": "Cupiditate enim similique. Omnis autem cupiditate. Eveniet ut vel.",
+                          "description": "Fuga laborum iure. Dolore et incidunt. Et magnam velit.",
+                          "severity": "medium",
+                          "precedence": 8215,
+                          "identifier": {
+                            "href": "http://stiedemann-barton.test/miguel",
+                            "label": "Arwen"
+                          },
+                          "references": [
+                            {
+                              "href": "http://schaden-jakubowski.test/reita_ritchie",
+                              "label": "Eärwen"
+                            },
+                            {
+                              "href": "http://runolfsdottir.test/kaycee",
+                              "label": "Gil-galad"
+                            },
+                            {
+                              "href": "http://morar.example/clement.dubuque",
+                              "label": "Eärendil"
+                            },
+                            {
+                              "href": "http://gerhold-miller.test/sherie",
+                              "label": "Pervinca Took"
+                            },
+                            {
+                              "href": "http://monahan.example/marc",
+                              "label": "Othrondir"
+                            }
+                          ],
+                          "remediation_issue_id": null
+                        }
+                      ],
                       "meta": {
-                        "total": 0,
+                        "total": 1,
                         "limit": 10,
                         "offset": 0
                       },
                       "links": {
-                        "first": "/api/compliance/v2/reports/6b3eabdb-3e55-4358-89ea-00b7afde4148/test_results/41880bac-fefb-4828-87e6-59f6fba8f868/rule_results?limit=10&offset=0",
-                        "last": "/api/compliance/v2/reports/6b3eabdb-3e55-4358-89ea-00b7afde4148/test_results/41880bac-fefb-4828-87e6-59f6fba8f868/rule_results?limit=10&offset=0"
+                        "first": "/api/compliance/v2/reports/eaf30f4e-2f2c-4801-ab17-1bbb37775bf3/test_results/b13bd0ab-f0a4-4c2c-ab00-1323db2c561f/rule_results?limit=10&offset=0",
+                        "last": "/api/compliance/v2/reports/eaf30f4e-2f2c-4801-ab17-1bbb37775bf3/test_results/b13bd0ab-f0a4-4c2c-ab00-1323db2c561f/rule_results?limit=10&offset=0"
                       }
                     },
                     "summary": "",
@@ -3254,16 +3296,58 @@
                   },
                   "List of Rule Results sorted by \"result:asc\"": {
                     "value": {
-                      "data": [],
+                      "data": [
+                        {
+                          "id": "8dbedc69-892c-41bb-86bd-23fe3111859c",
+                          "result": "fail",
+                          "rule_id": "a0479b21-1325-49f8-a566-ebebce95a208",
+                          "type": "rule_result",
+                          "system_id": "9c5e1e9f-c403-4a23-bbe4-1628b67719cb",
+                          "ref_id": "xccdf_org.ssgproject.content_rule_72def59e7b1afa22c4a828ede97d7ec2",
+                          "rule_group_id": "6e603f40-8a97-4a47-89c9-b66843276b9f",
+                          "title": "Sit deserunt soluta est.",
+                          "rationale": "In voluptatem ut. Fugiat nostrum rerum. Ab assumenda sed.",
+                          "description": "At aut consequuntur. Minus impedit dolores. Aliquam sed aut.",
+                          "severity": "medium",
+                          "precedence": 6225,
+                          "identifier": {
+                            "href": "http://howell-adams.example/chi",
+                            "label": "Bert"
+                          },
+                          "references": [
+                            {
+                              "href": "http://champlin-langworth.example/avery",
+                              "label": "Halmir"
+                            },
+                            {
+                              "href": "http://bode.test/buford_anderson",
+                              "label": "Durin"
+                            },
+                            {
+                              "href": "http://hintz.example/donya",
+                              "label": "Asgon"
+                            },
+                            {
+                              "href": "http://hauck.example/dillon_feeney",
+                              "label": "Ohtar"
+                            },
+                            {
+                              "href": "http://brown-kilback.test/lottie",
+                              "label": "Brodda"
+                            }
+                          ],
+                          "remediation_issue_id": null
+                        }
+                      ],
                       "meta": {
-                        "total": 0,
+                        "total": 1,
                         "limit": 10,
                         "offset": 0,
                         "sort_by": "result"
                       },
                       "links": {
-                        "first": "/api/compliance/v2/reports/0a0f95fe-4bc2-4d10-a455-1c20267e8b64/test_results/c3a760a7-1525-4d75-8c19-50ebe40ffff8/rule_results?limit=10&offset=0&sort_by=result",
-                        "last": "/api/compliance/v2/reports/0a0f95fe-4bc2-4d10-a455-1c20267e8b64/test_results/c3a760a7-1525-4d75-8c19-50ebe40ffff8/rule_results?limit=10&offset=0&sort_by=result"
+                        "first": "/api/compliance/v2/reports/b05967b5-e63a-4526-a5a5-8fc73e36d459/test_results/27d686c2-362e-4e88-bc36-34847ec9caa1/rule_results?limit=10&offset=0&sort_by=result",
+                        "last": "/api/compliance/v2/reports/b05967b5-e63a-4526-a5a5-8fc73e36d459/test_results/27d686c2-362e-4e88-bc36-34847ec9caa1/rule_results?limit=10&offset=0&sort_by=result"
                       }
                     },
                     "summary": "",
