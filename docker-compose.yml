@@ -296,13 +296,14 @@ services:
     image: compliance-backend-rails
     restart: on-failure
     entrypoint: ''
-    command: 'bundle exec racecar -l log/inventory-consumer.log InventoryEventsConsumer'
+    command: 'bundle exec karafka server'
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
       - HOSTNAME=inventory-consumer
       - ACG_CONFIG=/opt/app-root/src/devel.json
       - RUBY_YJIT_ENABLE=1
+      - RAILS_ENV=development
     tmpfs:
       - /opt/app-root/src/log
       - /opt/app-root/src/tmp
