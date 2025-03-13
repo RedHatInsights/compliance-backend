@@ -10,14 +10,22 @@ describe 'Rule Results', swagger_doc: 'v2/openapi.json' do
 
   path '/reports/{report_id}/test_results/{test_result_id}/rule_results' do
     let(:test_result_id) do
-      FactoryBot.create(
+      system = FactoryBot.create(
         :system,
         policy_id: report_id,
         os_major_version: 8,
         os_minor_version: 0,
         account: user.account,
         with_test_result: true
-      ).test_results.first.id
+      )
+      FactoryBot.create(
+        :v2_test_result,
+        system: system,
+        policy_id: report_id,
+        additional_rule_results: [{ severity: 'medium', result: 'fail' }]
+      )
+
+      system.test_results.first.id
     end
 
     let(:report_id) do
@@ -25,8 +33,7 @@ describe 'Rule Results', swagger_doc: 'v2/openapi.json' do
         :v2_report,
         account: user.account,
         os_major_version: 8,
-        supports_minors: [0],
-        assigned_system_count: 0
+        supports_minors: [0]
       ).id
     end
 
