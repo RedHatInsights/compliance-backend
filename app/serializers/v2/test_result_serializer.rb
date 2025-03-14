@@ -13,5 +13,6 @@ module V2
     derived_attribute :compliant, :score, report: [:compliance_threshold]
     derived_attribute :system_id, :system_id
     derived_attribute :security_guide_version, security_guide: [:version]
+    derived_attribute :security_guide_id, security_guide: [:id]
   end
 end
