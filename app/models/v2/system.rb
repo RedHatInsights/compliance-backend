@@ -2,7 +2,6 @@
 
 module V2
   # Class representing read-only systems syndicated from the host-based inventory
-  # rubocop:disable Metrics/ClassLength
   class System < ApplicationRecord
     self.table_name = 'inventory.hosts'
     self.primary_key = 'id'
@@ -30,10 +29,6 @@ module V2
 
     def self.os_minor_version(table = arel_table)
       AN::InfixOperation.new('->', os_version(table), AN::Quoted.new('minor')).as('os_minor_version')
-    end
-
-    def self.last_check_in(table = arel_table)
-      table[:per_reporter_staleness].as('last_check_in')
     end
 
     def self.sortable_os(table = arel_table)
@@ -195,5 +190,4 @@ module V2
       groups.map { |group| [{ key => group }].to_json.dump }
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
