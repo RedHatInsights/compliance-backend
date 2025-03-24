@@ -6,7 +6,7 @@
 
 compliance-backend is a project meant to parse OpenSCAP reports into a database,
 and perform all kind of actions that will make your systems more compliant with
-a policy. For example, you should be able to generate reports of all kinds for
+a policy.. For example, you should be able to generate reports of all kinds for
 your auditors, get alerts, and create playbooks to fix your hosts.
 
 
