@@ -100,7 +100,7 @@ objects:
         "editable": true,
         "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
-        "id": 995701,
+        "id": 764711,
         "links": [],
         "liveNow": false,
         "panels": [
@@ -4786,8 +4786,8 @@ objects:
             {
               "current": {
                 "selected": false,
-                "text": "crcs02ue1-prometheus",
-                "value": "PDD8BE47D10408F45"
+                "text": "crcp01ue1-prometheus",
+                "value": "PC1EAC84DCBBF0697"
               },
               "hide": 0,
               "includeAll": false,
@@ -4803,8 +4803,8 @@ objects:
             {
               "current": {
                 "selected": true,
-                "text": "appsrep07ue1-prometheus",
-                "value": "P7E8E1698DF0AC988"
+                "text": "appsres11ue1-prometheus",
+                "value": "PC52EF5F0B75AF530"
               },
               "hide": 0,
               "includeAll": false,
@@ -4815,7 +4815,7 @@ objects:
               "query": "prometheus",
               "queryValue": "",
               "refresh": 1,
-              "regex": "appsre[ps]07ue1-prometheus",
+              "regex": "appsre[ps]11ue1-prometheus",
               "skipUrlSync": false,
               "type": "datasource"
             },
@@ -4900,7 +4900,7 @@ objects:
         "timezone": "",
         "title": "Compliance",
         "uid": "compliance",
-        "version": 1,
+        "version": 56,
         "weekStart": ""
       }
   kind: ConfigMap
