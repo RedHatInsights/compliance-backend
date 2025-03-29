@@ -125,14 +125,19 @@ module Xccdf
         ref_id: 'foo_bar.ssgproject.benchmark_RHEL-8',
         version: '1', title: 'A', description: 'A'
       )
+      bm10 = Xccdf::Benchmark.create!(
+        ref_id: 'foo_bar.ssgproject.benchmark_RHEL-10',
+        version: '1', title: 'A', description: 'A'
+      )
 
       assert_equal Set.new(Xccdf::Benchmark.os_major_version(6).to_a),
                    Set.new([bm61, bm62])
       assert_equal Xccdf::Benchmark.os_major_version(7).to_a, [bm7]
       assert_equal Xccdf::Benchmark.os_major_version(8).to_a, [bm8]
+      assert_equal Xccdf::Benchmark.os_major_version(10).to_a, [bm10]
 
       assert_equal Set.new(Xccdf::Benchmark.os_major_version(6, false).to_a),
-                   Set.new([bm7, bm8])
+                   Set.new([bm7, bm8, bm10])
     end
 
     test 'os_major_version scoped_search' do
