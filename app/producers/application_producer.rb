@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'rdkafka'
+require 'karafka'
 
 # Common Kafka producer client
 class ApplicationProducer
   BROKERS = Settings.kafka.brokers.split(',').freeze
   EXCEPTIONS = [Rdkafka::RdkafkaError, Rdkafka::AbstractHandle::WaitTimeoutError].freeze
-  CLIENT_ID = 'compliance-backend'
   SERVICE = 'compliance'
+  CLIENT_ID = 'compliance-backend'
   DATE_FORMAT = :iso8601
   # Define TOPIC in the inherited class.
   # Example:
@@ -28,40 +28,23 @@ class ApplicationProducer
         service: SERVICE,
         source: ENV.fetch('APPLICATION_TYPE', nil)
       )
-      kafka&.produce(payload: msg.to_json, topic: self::TOPIC)&.wait
+      kafka&.produce_sync(payload: msg.to_json, topic: self::TOPIC)
     end
 
     def logger
       Rails.logger
     end
 
-    def kafka_ca_cert
-      return unless %w[ssl sasl_ssl].include?(Settings.kafka.security_protocol.downcase)
-
-      Settings.kafka.ssl_ca_location
-    end
-
-    def sasl_config
-      return {} unless Settings.kafka.security_protocol.downcase == 'sasl_ssl'
-
-      {
-        'sasl.username' => Settings.kafka.sasl_username,
-        'sasl.password' => Settings.kafka.sasl_password,
-        'sasl.mechanism' => Settings.kafka.sasl_mechanism,
-        'security.protocol' => Settings.kafka.security_protocol
-      }
-    end
-
-    def kafka_config
-      {
-        'bootstrap.servers' => Settings.kafka.brokers,
-        'client.id' => self::CLIENT_ID,
-        'ssl.ca.location' => kafka_ca_cert
-      }.merge(sasl_config).compact
-    end
-
     def kafka
-      @kafka ||= Rdkafka::Config.new(kafka_config).producer if self::BROKERS.any?
+      return unless self::BROKERS.any?
+
+      @kafka ||= WaterDrop::Producer.new do |config|
+        config.deliver = true
+        config.kafka = {
+          'bootstrap.servers': self::BROKERS.first,
+          'request.required.acks': 1
+        }
+      end
     end
   end
 end
