@@ -60,10 +60,11 @@ module V2
     def remediation_issue_id
       return nil unless remediation_available
 
-      sg_ref = self.class.short_ref_id(security_guide__ref_id).sub('-', '')
+      sg_ref = security_guide__ref_id
+      sg_ver = security_guide__version
       profile_ref = self.class.short_ref_id(profiles__ref_id)
 
-      "ssg:#{sg_ref}|#{profile_ref}|#{ref_id}"
+      "ssg:#{sg_ref}|#{sg_ver}|#{profile_ref}|#{ref_id}"
     rescue NameError
       raise ArgumentError, 'Missing security guide or profile on the ActiveRecord result'
     end

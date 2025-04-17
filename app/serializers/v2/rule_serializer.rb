@@ -7,6 +7,7 @@ module V2
                :precedence, :identifier, :references, :value_checks,
                :remediation_available, :rule_group_id
 
-    derived_attribute :remediation_issue_id, :remediation_available, profiles: [:ref_id], security_guide: [:ref_id]
+    derived_attribute :remediation_issue_id, :remediation_available,
+                      profiles: [:ref_id], security_guide: %i[ref_id version]
   end
 end

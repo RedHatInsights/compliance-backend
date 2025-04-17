@@ -114,7 +114,8 @@ module Api
             },
             remediation_issue_id: {
               type: %w[string null],
-              examples: ['ssg:rhel6|rht-ccp|xccdf_org.ssgproject.content_rule_sshd_disable_rhosts'],
+              examples: ['ssg:xccdf_org.ssgproject.content_benchmark_RHEL-6|0.1.46|rht-ccp|' \
+                         'xccdf_org.ssgproject.content_rule_sshd_disable_rhosts'],
               readOnly: true,
               description: 'The idenfitier of the remediation associated to this rule, only available ' \
                            'under profiles.'
