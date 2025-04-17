@@ -120,6 +120,7 @@ describe V2::RulesController do
                .select(
                  items.first.class.arel_table[Arel.star],
                  'security_guide.ref_id AS security_guide__ref_id',
+                 'security_guide.version AS security_guide__version',
                  'profiles.ref_id AS profiles__ref_id'
                ).order(:id)
         end
@@ -161,6 +162,7 @@ describe V2::RulesController do
               .select(
                 rule.class.arel_table[Arel.star],
                 'security_guide.ref_id AS security_guide__ref_id',
+                'security_guide.version AS security_guide__version',
                 'profiles.ref_id AS profiles__ref_id'
               ).find(rule.id)
         end

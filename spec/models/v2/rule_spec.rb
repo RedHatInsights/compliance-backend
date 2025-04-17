@@ -32,12 +32,18 @@ describe V2::Rule do
               .select(
                 described_class.arel_table[Arel.star],
                 'security_guide.ref_id AS security_guide__ref_id',
+                'security_guide.version AS security_guide__version',
                 'profiles.ref_id AS profiles__ref_id'
               ).find(rule.id)
     end
 
     it 'builds the id' do
-      expect(subject.remediation_issue_id).to eq('ssg:rhel7|foo|xccdf_org.ssgproject.content_rule_test')
+      # The short version of the profile ref_id is used (`foo`), but it only exists
+      # in the context of the remediation_issue_id.
+      expect(subject.remediation_issue_id).to eq(
+        "ssg:#{profile.security_guide.ref_id}|#{profile.security_guide.version}|" \
+        "foo|#{rule.ref_id}"
+      )
     end
 
     context 'with remediation_available=false' do
