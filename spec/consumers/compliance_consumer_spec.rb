@@ -61,7 +61,7 @@ describe ComplianceConsumer do
     end
 
     describe 'received compliance message' do
-      let(:service_class) { ReportParser }
+      let(:service_class) { Kafka::ReportParser }
       let(:type) { 'updated' }
       let(:message) do
         super().deep_merge(
@@ -74,9 +74,9 @@ describe ComplianceConsumer do
       end
 
       it 'delegates to ReportParser service' do
-        allow(@service).to receive(:parse_report)
+        allow(@service).to receive(:parse_reports)
 
-        expect(@service).to receive(:parse_report)
+        expect(@service).to receive(:parse_reports)
 
         consumer.consume
       end
