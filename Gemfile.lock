@@ -181,7 +181,6 @@ GEM
       bigdecimal (~> 3.1)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
-    king_konf (1.0.1)
     karafka (2.4.13)
       base64 (~> 0.2)
       karafka-core (>= 2.4.4, < 2.5.0)
@@ -279,9 +278,6 @@ GEM
     pundit (2.4.0)
       activesupport (>= 3.0.0)
     racc (1.8.1)
-    racecar (2.11.0)
-      king_konf (~> 1.0.0)
-      rdkafka (~> 0.15.0)
     rack (2.2.13)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
@@ -340,6 +336,10 @@ GEM
     request_store (1.7.0)
       rack (>= 1.4)
     rexml (3.4.0)
+    rspec (3.13.0)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
     rspec-core (3.13.2)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.3)
@@ -438,6 +438,10 @@ GEM
     useragent (0.16.11)
     uuid (2.3.9)
       macaddr (~> 1.0)
+    waterdrop (2.8.0)
+      karafka-core (>= 2.4.3, < 3.0.0)
+      karafka-rdkafka (>= 0.17.5)
+      zeitwerk (~> 2.3)
     webmock (3.24.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -496,6 +500,8 @@ DEPENDENCIES
   insights-rbac-api-client (~> 2.0.0)
   irb (>= 1.2)
   jsonapi-serializer
+  karafka (>= 2.4.0)
+  karafka-testing
   listen (>= 3.0.5)
   minitest-reporters
   minitest-stub-const
@@ -511,7 +517,6 @@ DEPENDENCIES
   pry-remote
   puma (~> 6)
   pundit
-  racecar
   rack (>= 2.1.4)
   rack-cors
   rails (~> 8.0)
@@ -519,6 +524,7 @@ DEPENDENCIES
   redis (~> 4.5)
   request_store
   rexml
+  rspec
   rspec-rails
   rswag-api
   rswag-specs
