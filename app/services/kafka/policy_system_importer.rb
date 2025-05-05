@@ -9,8 +9,8 @@ module Kafka
     end
 
     def import
-      ensure_exists(V2::Policy, policy_id, "Policy")
-      ensure_exists(V2::System, system_id, "System")
+      ensure_exists(V2::Policy, policy_id, 'Policy')
+      ensure_exists(V2::System, system_id, 'System')
 
       V2::PolicySystem.create!(policy_id: policy_id, system_id: system_id)
       @logger.audit_success("[#{org_id}] Imported PolicySystem for System #{system_id}")
