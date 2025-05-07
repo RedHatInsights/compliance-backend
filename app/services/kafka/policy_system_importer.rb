@@ -37,7 +37,7 @@ module Kafka
     end
 
     def policy_id
-      payload.dig('host', 'system_profile', 'image_builder', 'compliance_policy_id')
+      @message.dig('host', 'system_profile', 'image_builder', 'compliance_policy_id')
     end
 
     def org_id
