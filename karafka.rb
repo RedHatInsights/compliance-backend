@@ -48,3 +48,13 @@ class KarafkaApp < Karafka::App
     end
   end
 end
+
+require 'karafka/instrumentation/vendors/kubernetes/liveness_listener'
+
+listener = Karafka::Instrumentation::Vendors::Kubernetes::LivenessListener.new(
+  port: 3000,
+  polling_ttl: 300_000,
+  consuming_ttl: 60_000
+)
+
+Karafka.monitor.subscribe(listener)
