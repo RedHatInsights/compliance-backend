@@ -4,6 +4,7 @@
 class ApplicationConsumer < Karafka::BaseConsumer
   attr_reader :message
 
+  # rubocop:disable Metrics/MethodLength
   def consume
     messages.each do |message|
       @message = message
@@ -24,6 +25,7 @@ class ApplicationConsumer < Karafka::BaseConsumer
       mark_as_consumed(message)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   protected
 
