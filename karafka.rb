@@ -23,6 +23,7 @@ class KarafkaApp < Karafka::App
     'ssl.ca.location': ca_location
   }.merge(sasl_config).compact
 
+  # Totally useless comment
   setup do |config|
     config.kafka = kafka_config
     config.client_id = 'compliance-backend'
