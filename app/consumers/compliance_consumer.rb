@@ -2,13 +2,8 @@
 
 # Receives messages from the Kafka topic, dispatches them to the appropriate service
 class ComplianceConsumer < ApplicationConsumer
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def consume_one
-    # rubocop:disable Rails/Output
-    puts "payload: #{payload}"
-    puts '-' * 40
-    # rubocop:enable Rails/Output
-
     if service == 'compliance'
       Kafka::ReportParser.new(payload, logger).parse_reports
     elsif message_type == 'created' && policy_id
@@ -19,7 +14,7 @@ class ComplianceConsumer < ApplicationConsumer
       logger.debug "Skipped message of type '#{message_type}'"
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 
   private
 

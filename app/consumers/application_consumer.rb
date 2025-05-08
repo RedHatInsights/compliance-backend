@@ -4,13 +4,18 @@
 class ApplicationConsumer < Karafka::BaseConsumer
   attr_reader :message
 
+  # rubocop:disable Metrics/MethodLength
   def consume
     messages.each do |message|
       @message = message
 
-      if attempt > 2
-        logger.error 'Discarded message'
-        mark_as_consumed(message)
+      if retrying?
+        logger.debug 'Retrying message'
+
+        if attempt > 2
+          logger.error 'Discarded message'
+          mark_as_consumed(message)
+        end
       end
 
       consume_one
@@ -20,6 +25,7 @@ class ApplicationConsumer < Karafka::BaseConsumer
       mark_as_consumed(message)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   protected
 

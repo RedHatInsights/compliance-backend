@@ -12,7 +12,7 @@ module Kafka
       ensure_exists(V2::Policy, policy_id, 'Policy')
       ensure_exists(V2::System, system_id, 'System')
 
-      V2::PolicySystem.create!(policy_id: policy_id, system_id: system_id)
+      V2::PolicySystem.new(policy_id: policy_id, system_id: system_id).save!
       @logger.audit_success("[#{org_id}] Imported PolicySystem for System #{system_id}")
     end
 
@@ -21,14 +21,7 @@ module Kafka
     def ensure_exists(model, id, name)
       return if model.exists?(id: id)
 
-      @logger.audit_fail("[#{org_id}] Failed to import PolicySystem: #{name} not found")
-      raise ActiveRecord::RecordNotFound, "#{name} with ID #{id} not found"
-    end
-
-    def validate_system
-      return if V2::System.exists?(id: system_id)
-
-      @logger.audit_fail("[#{org_id}] Failed to import PolicySystem: System not found")
+      @logger.audit_fail("[#{org_id}] Failed to import PolicySystem: #{name} not found with ID #{id}")
       raise ActiveRecord::RecordNotFound
     end
 

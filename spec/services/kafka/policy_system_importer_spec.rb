@@ -30,8 +30,10 @@ describe Kafka::PolicySystemImporter do
 
   it 'imports PolicySystem' do
     expect(V2::PolicySystem).to receive(:new).with(
-      policy_id: policy_id,
-      system_id: system_id
+      {
+        policy_id: policy_id,
+        system_id: system_id
+      }
     ).and_return(instance_double(V2::PolicySystem, save!: true))
 
     expect(Karafka.logger).to receive(:audit_success).with(
@@ -46,7 +48,7 @@ describe Kafka::PolicySystemImporter do
 
     it 'handles and logs exception' do
       expect(Karafka.logger).to receive(:audit_fail).with(
-        "[#{org_id}] Failed to import PolicySystem: System not found"
+        "[#{org_id}] Failed to import PolicySystem: System not found with ID #{system_id}"
       )
 
       expect { service.import }.to raise_error(ActiveRecord::RecordNotFound)
@@ -58,7 +60,7 @@ describe Kafka::PolicySystemImporter do
 
     it 'handles and logs exception' do
       expect(Karafka.logger).to receive(:audit_fail).with(
-        "[#{org_id}] Failed to import PolicySystem: Policy not found"
+        "[#{org_id}] Failed to import PolicySystem: Policy not found with ID #{policy_id}"
       )
 
       expect { service.import }.to raise_error(ActiveRecord::RecordNotFound)
