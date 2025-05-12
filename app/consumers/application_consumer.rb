@@ -12,7 +12,7 @@ class ApplicationConsumer < Karafka::BaseConsumer
       if retrying?
         logger.debug 'Retrying message'
 
-        if attempt > 2
+        if attempt > 3
           logger.error 'Discarded message'
           mark_as_consumed(message)
         end
