@@ -2,6 +2,8 @@
 
 # Karafka configuration
 class KarafkaApp < Karafka::App
+  CLIENT_ID = 'compliance-backend'
+
   # librdkafka config creation
   security_protocol = Settings.kafka.security_protocol.downcase
 
@@ -20,12 +22,13 @@ class KarafkaApp < Karafka::App
 
   kafka_config = {
     'bootstrap.servers': Settings.kafka.brokers,
+    'client.id': self::CLIENT_ID,
     'ssl.ca.location': ca_location
   }.merge(sasl_config).compact
 
   setup do |config|
     config.kafka = kafka_config
-    config.client_id = 'compliance-backend'
+    config.client_id = self::CLIENT_ID
     config.initial_offset = 'latest'
 
     # Wait for at least 1 seconds after an error
