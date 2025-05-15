@@ -38,13 +38,7 @@ class ApplicationProducer
     def kafka
       return unless self::BROKERS.any?
 
-      @kafka ||= WaterDrop::Producer.new do |config|
-        config.deliver = true
-        config.kafka = {
-          'bootstrap.servers': Settings.kafka.brokers,
-          'request.required.acks': 1
-        }
-      end
+      @kafka ||= Karafka.producer
     end
   end
 end
