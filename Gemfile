@@ -14,7 +14,8 @@ gem 'redis', '~> 4.5'
 gem 'bootsnap', '>= 1.1.0', require: false
 
 # Kafka integration
-gem "karafka", ">= 2.4.0"
+gem 'racecar', require: false
+gem 'rdkafka', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack', '>= 2.1.4'
@@ -107,8 +108,6 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'irb', '>= 1.2'
-  gem 'karafka-testing'
-  gem 'rspec'
   gem 'minitest-reporters'
   gem 'minitest-stub-const'
   gem 'mocha'
