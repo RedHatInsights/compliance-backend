@@ -41,7 +41,7 @@ class ApplicationProducer
       @kafka ||= WaterDrop::Producer.new do |config|
         config.deliver = true
         config.kafka = {
-          'bootstrap.servers': Settings.kafka.brokers,
+          'bootstrap.servers': self::BROKERS.first,
           'request.required.acks': 1
         }
       end
