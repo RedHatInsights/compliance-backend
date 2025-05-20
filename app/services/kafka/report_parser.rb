@@ -13,7 +13,6 @@ module Kafka
       @logger = logger
     end
 
-    # rubocop:disable Metrics/MethodLength
     def parse_reports
       # Map successfuly parsed (validated) reports by scanned profile
       parsed_reports = validated_reports.map do |xml|
@@ -29,7 +28,6 @@ module Kafka
       produce_validation_message('failure')
       raise
     end
-    # rubocop:enable Metrics/MethodLength
 
     private
 
