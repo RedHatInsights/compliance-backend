@@ -13,7 +13,6 @@ FactoryBot.define do
       system_id { nil }
       supports_minors { [] }
       system_count { 0 }
-      empty_policy { false }
     end
 
     trait :for_tailoring do
@@ -31,7 +30,7 @@ FactoryBot.define do
     after(:create) do |policy, ev|
       if ev.system_id # If system_id is specified, do not generate any assigned systems
         policy.policy_systems << FactoryBot.create(:v2_policy_system, system_id: ev.system_id, policy_id: policy.id)
-      elsif ev.supports_minors.any? && !ev.empty_policy
+      elsif ev.supports_minors.any?
         ev.system_count.times do
           FactoryBot.create(
             :system,
