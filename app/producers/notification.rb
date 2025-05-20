@@ -21,7 +21,7 @@ class Notification < ApplicationProducer
       recipients: []
     }
 
-    kafka&.produce(payload: msg.to_json, topic: self::TOPIC)
+    kafka&.produce_sync(payload: msg.to_json, topic: self::TOPIC)
   rescue *EXCEPTIONS => e
     logger.error("Notification delivery failed: #{e}")
   end
