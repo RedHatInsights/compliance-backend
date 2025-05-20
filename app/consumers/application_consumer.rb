@@ -4,10 +4,8 @@
 class ApplicationConsumer < Karafka::BaseConsumer
   attr_reader :message
 
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def consume
-    logger.info "Processing #{messages.metadata.topic}/#{messages.metadata.partition} " \
-                "#{messages.metadata.first_offset}-#{messages.metadata.last_offset}"
     messages.each do |message|
       @message = message
 
@@ -27,7 +25,7 @@ class ApplicationConsumer < Karafka::BaseConsumer
       mark_as_consumed(message)
     end
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   protected
 
