@@ -30,7 +30,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   def handle_report_parsing
     parse_output = parse_report
     validation_topic = Settings.kafka.topics.upload_compliance
-    produce_sync(parse_output, topic: validation_topic) if validation_topic
+    produce(parse_output, topic: validation_topic) if validation_topic # TODO: producer change
   end
 
   def handle_host_delete

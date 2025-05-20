@@ -1,31 +1,9 @@
 # frozen_string_literal: true
 
-# Karafka configuration
 class KarafkaApp < Karafka::App
-  # librdkafka config creation
-  security_protocol = Settings.kafka.security_protocol.downcase
-
-  sasl_config = if security_protocol == 'sasl_ssl'
-                  {
-                    'sasl.username': Settings.kafka.sasl_username,
-                    'sasl.password': Settings.kafka.sasl_password,
-                    'sasl.mechanism': Settings.kafka.sasl_mechanism,
-                    'security.protocol': Settings.kafka.security_protocol
-                  }
-                else
-                  {}
-                end
-
-  ca_location = Settings.kafka.ssl_ca_location if %w[ssl sasl_ssl].include?(security_protocol)
-
-  kafka_config = {
-    'bootstrap.servers': Settings.kafka.brokers,
-    'ssl.ca.location': ca_location
-  }.merge(sasl_config).compact
-
   setup do |config|
-    config.kafka = kafka_config
-    config.client_id = 'compliance-backend'
+    config.kafka = { 'bootstrap.servers': Settings.kafka.brokers }
+    config.client_id = 'compliance_backend'
 
     # Wait for at least 1 seconds after an error
     config.pause_timeout = 1_000
