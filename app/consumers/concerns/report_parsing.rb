@@ -32,7 +32,8 @@ module ReportParsing
     private
 
     def notify_report_success(profile_id, job)
-      msg = "Enqueued report parsing of #{profile_id} from request #{request_id} as job #{job}"
+      msg = "Enqueued report parsing of #{profile_id}"
+      msg += " from request #{request_id} as job #{job}"
       logger.audit_success("[#{org_id}] #{msg}")
 
       notify_payload_tracker(:received, "File of #{profile_id} is valid. Job #{job} enqueued")
@@ -56,10 +57,12 @@ module ReportParsing
       ReportUploadFailed.deliver(host: host, org_id: org_id, request_id: request_id, error: msg_for_notification(exc))
     end
 
+    # rubocop:disable Metrics/MethodLength
     def msg_for_exception(exc)
       case exc
       when EntitlementError
-        "Rejected report with request id #{request_id}: invalid identity or missing insights entitlement"
+        "Rejected report with request id #{request_id}: " \
+        'invalid identity or missing insights entitlement'
       when SafeDownloader::DownloadError
         "Failed to dowload report with request id #{request_id}: #{exc.message}"
       when InventoryEventsConsumer::ReportValidationError
@@ -68,6 +71,7 @@ module ReportParsing
         "Error parsing report: #{request_id} - #{exc.message}"
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def msg_for_notification(exc)
       case exc
@@ -81,19 +85,19 @@ module ReportParsing
     end
 
     def id
-      @message.dig('host', 'id')
+      @msg_value.dig('host', 'id')
     end
 
     def service
-      @message.dig('platform_metadata', 'service')
+      @msg_value.dig('platform_metadata', 'service')
     end
 
     def url
-      @message.dig('platform_metadata', 'url')
+      @msg_value.dig('platform_metadata', 'url')
     end
 
     def metadata
-      (@message.dig('platform_metadata', 'metadata') || {}).merge(
+      (@msg_value.dig('platform_metadata', 'metadata') || {}).merge(
         'id' => id,
         'b64_identity' => b64_identity,
         'url' => url,
@@ -103,11 +107,11 @@ module ReportParsing
     end
 
     def request_id
-      @message.dig('platform_metadata', 'request_id')
+      @msg_value.dig('platform_metadata', 'request_id')
     end
 
     def b64_identity
-      @message.dig('platform_metadata', 'b64_identity')
+      @msg_value.dig('platform_metadata', 'b64_identity')
     end
 
     def report_contents
