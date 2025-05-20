@@ -26,7 +26,6 @@ class KarafkaApp < Karafka::App
   setup do |config|
     config.kafka = kafka_config
     config.client_id = 'compliance-backend'
-    config.initial_offset = 'latest'
 
     # Wait for at least 1 seconds after an error
     config.pause_timeout = 1_000
