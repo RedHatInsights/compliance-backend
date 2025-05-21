@@ -1,33 +1,13 @@
 # frozen_string_literal: true
 
-# Parent class for all Karafka consumers, contains general logic
-class ApplicationConsumer < Karafka::BaseConsumer
-  attr_reader :message
+require 'racecar/consumer'
 
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-  def consume
-    logger.info "Processing #{messages.metadata.topic}/#{messages.metadata.partition} " \
-                "#{messages.metadata.first_offset}-#{messages.metadata.last_offset}"
-    messages.each do |message|
-      @message = message
-
-      if retrying?
-        logger.debug 'Retrying message'
-
-        if attempt > 3
-          logger.error 'Discarded message'
-          mark_as_consumed(message)
-        end
-      end
-
-      consume_one
-
-      logger.info 'Consumed message'
-
-      mark_as_consumed(message)
-    end
+# Parent class for all Racecar consumers, contains general logic
+class ApplicationConsumer < Racecar::Consumer
+  def process(message)
+    @msg_value = JSON.parse(message.value)
+    logger.info "Received message, enqueueing: #{@msg_value}"
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   protected
 
