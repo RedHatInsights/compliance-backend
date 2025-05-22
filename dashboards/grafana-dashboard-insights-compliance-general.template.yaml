@@ -100,7 +100,7 @@ objects:
         "editable": true,
         "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
-        "id": 764711,
+        "id": 1008107,
         "links": [],
         "liveNow": false,
         "panels": [
@@ -1491,13 +1491,17 @@ objects:
                   "type": "prometheus",
                   "uid": "${cloudwatch_datasource}"
                 },
-                "editorMode": "builder",
-                "expr": "sum by(topic) (aws_kafka_sum_offset_lag_sum{consumer_group=\"complianceinventory-events-consumer\", topic=~\".*platform.inventory.events\"})",
+                "disableTextWrap": false,
+                "editorMode": "code",
+                "expr": "sum by(topic) (aws_kafka_max_offset_lag_sum{consumer_group=\"complianceinventory-events-consumer\", topic=\"platform.inventory.events\"})",
                 "format": "time_series",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
                 "intervalFactor": 1,
                 "legendFormat": "{{topic}}",
                 "range": true,
-                "refId": "B"
+                "refId": "B",
+                "useBackend": false
               }
             ],
             "title": "Kafka consumer lag",
@@ -1773,8 +1777,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "transparent",
-                      "value": null
+                      "color": "transparent"
                     },
                     {
                       "color": "red",
@@ -1883,8 +1886,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "transparent",
-                      "value": null
+                      "color": "transparent"
                     },
                     {
                       "color": "red",
@@ -1995,8 +1997,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "transparent",
-                      "value": null
+                      "color": "transparent"
                     },
                     {
                       "color": "red",
@@ -2107,8 +2108,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "transparent",
-                      "value": null
+                      "color": "transparent"
                     },
                     {
                       "color": "red",
@@ -2219,8 +2219,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green",
-                      "value": null
+                      "color": "green"
                     },
                     {
                       "color": "red",
@@ -2402,8 +2401,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green",
-                      "value": null
+                      "color": "green"
                     },
                     {
                       "color": "red",
@@ -2582,8 +2580,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green",
-                      "value": null
+                      "color": "green"
                     },
                     {
                       "color": "red",
@@ -2766,8 +2763,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green",
-                      "value": null
+                      "color": "green"
                     },
                     {
                       "color": "red",
@@ -2962,8 +2958,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green",
-                      "value": null
+                      "color": "green"
                     },
                     {
                       "color": "red",
@@ -3170,8 +3165,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green",
-                      "value": null
+                      "color": "green"
                     },
                     {
                       "color": "red",
@@ -3370,8 +3364,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green",
-                      "value": null
+                      "color": "green"
                     },
                     {
                       "color": "red",
@@ -3542,8 +3535,7 @@ objects:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green",
-                      "value": null
+                      "color": "green"
                     },
                     {
                       "color": "red",
@@ -4705,7 +4697,6 @@ objects:
             "type": "row"
           }
         ],
-        "refresh": false,
         "schemaVersion": 39,
         "tags": [],
         "templating": {
@@ -4715,7 +4706,7 @@ objects:
               "auto_count": 30,
               "auto_min": "10s",
               "current": {
-                "selected": true,
+                "selected": false,
                 "text": "10m",
                 "value": "10m"
               },
@@ -4786,8 +4777,8 @@ objects:
             {
               "current": {
                 "selected": false,
-                "text": "crcp01ue1-prometheus",
-                "value": "PC1EAC84DCBBF0697"
+                "text": "crcs02ue1-prometheus",
+                "value": "PDD8BE47D10408F45"
               },
               "hide": 0,
               "includeAll": false,
@@ -4802,7 +4793,7 @@ objects:
             },
             {
               "current": {
-                "selected": true,
+                "selected": false,
                 "text": "appsres11ue1-prometheus",
                 "value": "PC52EF5F0B75AF530"
               },
@@ -4900,7 +4891,7 @@ objects:
         "timezone": "",
         "title": "Compliance",
         "uid": "compliance",
-        "version": 56,
+        "version": 1,
         "weekStart": ""
       }
   kind: ConfigMap
