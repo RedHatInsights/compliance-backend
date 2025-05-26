@@ -1,7 +1,4 @@
 {
-  "extends": [
-    "github>konflux-ci/mintmaker//config/renovate/renovate.json"
-  ],
   "ignorePaths": [
     ".pre-commit-config.yaml"
   ],
