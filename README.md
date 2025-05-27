@@ -25,7 +25,7 @@ The Insights Compliance backend comprises of these components/services:
 
 * Rails web server — serving REST API (port 3000)
 * Sidekiq — job runner connected through Redis (see [app/jobs](app/jobs))
-* Inventory Consumer (racecar) — processor of Kafka messages,
+* Inventory Consumer (karafka) — processor of Kafka messages,
   mainly to process and parse reports
 
 ### Dependent Services
@@ -153,7 +153,7 @@ Run the tests:
 docker compose exec rails bundle exec rake test:validate
 
 # run a single test file
-docker compose exec -e TEST=$TEST rails bundle exec rake test TEST=test/consumers/inventory_events_consumer_test.rb
+docker compose exec -e TEST=$TEST rails bundle exec rake test TEST=test/models/host_test.rb
 
 # run a specific Rspec test
 podman-compose exec -e SPEC_OPTS="-e 'V2::ReportsController /reports GET index' --color --tty --format documentation" rails bundle exec rake spec
