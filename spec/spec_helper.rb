@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 if Rails.env.test?
+  require 'karafka/testing/rspec/helpers'
   require 'simplecov'
 
   if ENV['GITHUB_ACTIONS']
@@ -22,7 +23,15 @@ if Rails.env.test?
     config.shared_context_metadata_behavior = :apply_to_host_groups
 
     config.include FactoryBot::Syntax::Methods
+    config.include Karafka::Testing::RSpec::Helpers
   end
+
+  # rubocop:disable Layout/LineLength
+  # FIXME: Remove this once we move away from v1 tests
+  # Needed due to Karafka not expecting Mocha and Rspec mocking to be used at the same time
+  # https://github.com/karafka/karafka-testing/blob/2c22020b9befb1e583eba2e75a857a42ea45c389/lib/karafka/testing/rspec/helpers.rb#L49-L53
+  # rubocop:enable Layout/LineLength
+  Object.send(:remove_const, :Mocha)
 
   # rubocop:disable Metrics/MethodLength
   def stub_rbac_permissions(*arr, **hsh)
