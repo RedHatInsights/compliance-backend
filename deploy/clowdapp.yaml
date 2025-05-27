@@ -342,10 +342,6 @@ objects:
           value: "${PATH_PREFIX}"
         - name: APP_NAME
           value: "${APP_NAME}"
-        - name: RACECAR_MIN_MESSAGE_QUEUE_SIZE
-          value: "${RACECAR_QUEUE_SIZE}"
-        - name: RACECAR_OFFSET_COMMIT_INTERVAL
-          value: "${RACECAR_OFFSET_COMMIT_INTERVAL}"
         - name: MALLOC_ARENA_MAX
           value: '2'
         - name: RUBY_YJIT_ENABLE
@@ -399,8 +395,9 @@ objects:
           value: "${LOGSTREAM_CONSUMER}"
         livenessProbe:
           httpGet:
-            path: /metrics
-            port: metrics
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
           timeoutSeconds: 5
           periodSeconds: 30
         readinessProbe:
@@ -701,12 +698,6 @@ parameters:
 - name: REDIS_SSL
   description: 'Whether to use secured connection to Redis. Use string values of true or false'
   value: "true"
-- name: RACECAR_OFFSET_COMMIT_INTERVAL
-  required: true
-  value: "5"
-- name: RACECAR_QUEUE_SIZE
-  required: true
-  value: "5"
 - name: SIDEKIQ_CONCURRENCY
   value: "1"
 - name: DISABLE_RBAC
