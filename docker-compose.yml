@@ -2,6 +2,7 @@
 services:
   kafka:
     image: docker.io/confluentinc/cp-kafka
+    platform: linux/amd64
     ports:
       - 29092:29092
     environment:
@@ -20,6 +21,7 @@ services:
       CLUSTER_ID: OTQ3MmM2NDRhNjg3NDZhOG
   createtopics:
     image: docker.io/confluentinc/cp-kafka
+    platform: linux/amd64
     depends_on:
       - kafka
     links:
@@ -31,6 +33,7 @@ services:
                        kafka-topics --create --if-not-exists --topic platform.inventory.events --bootstrap-server kafka:29092'"
   puptoo:
     image: quay.io/cloudservices/insights-puptoo:latest
+    platform: linux/amd64
     environment:
       - REJECTION_TOPIC=platform.upload.validation
       - LOGLEVEL=INFO
@@ -42,6 +45,7 @@ services:
       - kafka
   minio:
     image: quay.io/cloudservices/minio
+    platform: linux/amd64
     command: server /data
     volumes:
       - /data
@@ -50,26 +54,28 @@ services:
     env_file: .env
   createbuckets:
     image: docker.io/minio/mc
+    platform: linux/amd64
     depends_on:
       - minio
     links:
       - minio
     entrypoint: /bin/sh
     command: -c '
-      until /usr/bin/mc config host add myminio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY >/dev/null; do sleep 1; done ;
+      until /usr/bin/mc alias set myminio http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD >/dev/null; do sleep 1; done ;
       /usr/bin/mc mb myminio/insights-upload-perma;
       /usr/bin/mc mb myminio/insights-upload-rejected;
-      /usr/bin/mc policy set download myminio/insights-upload-perma;
-      /usr/bin/mc policy set download myminio/insights-upload-rejected;
+      /usr/bin/mc anonymous set download myminio/insights-upload-perma;
+      /usr/bin/mc anonymous set download myminio/insights-upload-rejected;
       exit 0;'
     volumes:
       - /data
     env_file: .env
   ingress:
     image: quay.io/cloudservices/insights-ingress:latest
+    platform: linux/amd64
     environment:
-      - AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
-      - AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
+      - AWS_ACCESS_KEY_ID=$MINIO_ROOT_USER
+      - AWS_SECRET_ACCESS_KEY=$MINIO_ROOT_PASSWORD
       - AWS_REGION=us-east-1
       - INGRESS_STAGEBUCKET=insights-upload-perma
       - INGRESS_REJECTBUCKET=insights-upload-rejected
@@ -80,8 +86,8 @@ services:
       - INGRESS_WEBPORT=8080
       - INGRESS_METRICSPORT=3001
       - INGRESS_MINIODEV=true
-      - INGRESS_MINIOACCESSKEY=$MINIO_ACCESS_KEY
-      - INGRESS_MINIOSECRETKEY=$MINIO_SECRET_KEY
+      - INGRESS_MINIOACCESSKEY=$MINIO_ROOT_USER
+      - INGRESS_MINIOSECRETKEY=$MINIO_ROOT_PASSWORD
       - INGRESS_MINIOENDPOINT=minio:9000
       - INGRESS_MAXSIZE=104857600 # 100 MB
     env_file: .env
@@ -93,6 +99,7 @@ services:
       - kafka
   db:
     image: docker.io/library/postgres:16-alpine
+    platform: linux/amd64
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U insights -d insights"]
@@ -108,8 +115,15 @@ services:
       - 5432:5432
     volumes:
       - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U insights -d insights"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   rbac:
     image: quay.io/cloudservices/rbac:latest
+    platform: linux/amd64
     restart: on-failure
     environment:
       - REDIS_PORT=6379
@@ -137,6 +151,7 @@ services:
       - ./config/devel/rbac/permissions:/opt/rbac/rbac/management/role/permissions
   build-rbac-db:
     image: quay.io/cloudservices/rbac:latest
+    platform: linux/amd64
     environment:
       - REDIS_PORT=6379
       - REDIS_HOST=redis
@@ -164,6 +179,7 @@ services:
     command: -c './rbac/manage.py migrate ; ./rbac/manage.py seeds'
   inventory:
     image: quay.io/cloudservices/insights-inventory:latest
+    platform: linux/amd64
     command: bash -c 'sleep 10 && make upgrade_db && make run_inv_mq_service'
     entrypoint: ''
     environment:
@@ -181,13 +197,14 @@ services:
     restart: on-failure
   inventory-web:
     image: quay.io/cloudservices/insights-inventory:latest
+    platform: linux/amd64
     command: bash -c 'sleep 10 && make upgrade_db && python run_gunicorn.py'
     entrypoint: ''
     environment:
       - INVENTORY_DB_HOST=db
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - KAFKA_TOPIC=platform.system_profile
-        KAFKA_GROUP=inventory
+      - KAFKA_GROUP=inventory
       - INVENTORY_LOG_LEVEL=DEBUG
       - KAFKA_SECONDARY_TOPIC_ENABLED=True
       - LISTEN_PORT=8081
@@ -202,6 +219,7 @@ services:
       - kafka
   compliance-ssg:
     image: quay.io/cloudservices/compliance-ssg
+    platform: linux/amd64
     restart: on-failure
     environment:
       - NGINX_PORT=8088
@@ -213,6 +231,7 @@ services:
   #
   build-rails-db:
     image: compliance-backend-rails
+    platform: linux/amd64
     entrypoint: ''
     command: sh -c '
       if bundle exec rake db:exists 2> /dev/null; then
@@ -225,8 +244,7 @@ services:
       echo "Setting up Cyndi data in the development DB";
       bundle exec rails db -p < db/cyndi_setup_devel.sql;
       echo "Setting up Cyndi data in the test DB";
-      RAILS_ENV=test bundle exec rails db -p < db/cyndi_setup_test.sql;
-      '
+      RAILS_ENV=test bundle exec rails db -p < db/cyndi_setup_test.sql;'
     tmpfs:
       - /opt/app-root/src/log
       - /opt/app-root/src/tmp
@@ -242,6 +260,7 @@ services:
       - ACG_CONFIG=/opt/app-root/src/devel.json
   import-ssg:
     image: compliance-backend-rails
+    platform: linux/amd64
     entrypoint: ''
     command: 'bundle exec rake ssg:import_rhel_supported'
     restart: on-failure
@@ -264,6 +283,7 @@ services:
       - RUBY_YJIT_ENABLE=1
   rails:
     env_file: .env
+    platform: linux/amd64
     build:
       context: .
       target: build
@@ -303,6 +323,7 @@ services:
       - compliance-ssg
   inventory-consumer:
     image: compliance-backend-rails
+    platform: linux/amd64
     restart: on-failure
     entrypoint: ''
     command: 'bundle exec racecar -l log/inventory-consumer.log InventoryEventsConsumer'
@@ -327,6 +348,7 @@ services:
       - kafka
   sidekiq:
     image: compliance-backend-rails
+    platform: linux/amd64
     restart: on-failure
     tmpfs:
       - /opt/app-root/src/log
@@ -349,5 +371,6 @@ services:
       - RUBY_YJIT_ENABLE=1
   redis:
     image: quay.io/cloudservices/redis:latest
+    platform: linux/amd64
     ports:
       - 6379:6379
