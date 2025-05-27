@@ -52,16 +52,23 @@ services:
     ports:
       - 9000:9000
     env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   createbuckets:
     image: docker.io/minio/mc
     platform: linux/amd64
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
     links:
       - minio
     entrypoint: /bin/sh
     command: -c '
-      until /usr/bin/mc alias set myminio http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD >/dev/null; do sleep 1; done ;
+      /usr/bin/mc alias set myminio http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD >/dev/null;
       /usr/bin/mc mb myminio/insights-upload-perma;
       /usr/bin/mc mb myminio/insights-upload-rejected;
       /usr/bin/mc anonymous set download myminio/insights-upload-perma;
@@ -177,10 +184,24 @@ services:
       - ./config/devel/rbac/permissions:/opt/rbac/rbac/management/role/permissions
     entrypoint: /bin/sh
     command: -c './rbac/manage.py migrate ; ./rbac/manage.py seeds'
+  inventory-migrator:
+    image: quay.io/cloudservices/insights-inventory:latest
+    platform: linux/amd64
+    command: bash -c 'make upgrade_db'
+    entrypoint: ''
+    environment:
+      - INVENTORY_DB_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      createtopics:
+        condition: service_completed_successfully # Make sure topics are ready
   inventory:
     image: quay.io/cloudservices/insights-inventory:latest
     platform: linux/amd64
-    command: bash -c 'sleep 10 && make upgrade_db && make run_inv_mq_service'
+    command: bash -c 'make run_inv_mq_service'
     entrypoint: ''
     environment:
       - INVENTORY_DB_HOST=db
@@ -188,17 +209,15 @@ services:
       - INVENTORY_LOG_LEVEL=ERROR
       - KAFKA_SECONDARY_TOPIC_ENABLED=True
     depends_on:
-      - db
-      - kafka
-      - createtopics
+      inventory-migrator:
+        condition: service_completed_successfully
     links:
-      - db
-      - kafka
+      - inventory-migrator
     restart: on-failure
   inventory-web:
     image: quay.io/cloudservices/insights-inventory:latest
     platform: linux/amd64
-    command: bash -c 'sleep 10 && make upgrade_db && python run_gunicorn.py'
+    command: bash -c 'python run_gunicorn.py'
     entrypoint: ''
     environment:
       - INVENTORY_DB_HOST=db
@@ -211,12 +230,10 @@ services:
     ports:
       - 8081:8081
     depends_on:
-      - db
-      - kafka
-      - createtopics
+      inventory-migrator:
+        condition: service_completed_successfully
     links:
-      - db
-      - kafka
+      - inventory-migrator
   compliance-ssg:
     image: quay.io/cloudservices/compliance-ssg
     platform: linux/amd64
