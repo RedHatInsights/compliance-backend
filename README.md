@@ -109,7 +109,7 @@ values as needed:
 cp .env.example .env
 ```
 
-Either podman-compose or docker-compose should work. Note that *1.0.6* and newer
+Either podman-compose or docker compose should work. Note that *1.0.6* and newer
 versions of podman-compose [handle multi-level dependencies poorly](https://github.com/containers/podman-compose/issues/683)
 which might cause problems with startup. Furthermore podman-compose does not
 support exec, so podman commands must be run manually against the running
@@ -117,7 +117,7 @@ container, as demonstrated:
 
 ```shell
 # docker
-docker-compose exec rails bash
+docker compose exec rails bash
 
 # podman
 podman exec compliance-backend_rails_1 bash
@@ -126,13 +126,13 @@ podman exec compliance-backend_rails_1 bash
 Bring up the everything, including inventory, ingress, etc.:
 
 ```shell
-docker-compose up
+docker compose up
 ```
 
 Access the rails console:
 
 ```shell
-docker-compose exec rails bundle exec rails console
+docker compose exec rails bundle exec rails console
 ```
 
 Attach the container to the current terminal:
@@ -143,23 +143,23 @@ docker attach compliance-backend_rails_1
 Debug with pry-remote:
 
 ```shell
-docker-compose exec rails pry-remote -w
+docker compose exec rails pry-remote -w
 ```
 
 Run the tests:
 
 ```shell
 # run all tests (same thing run on PRs to master)
-docker-compose exec rails bundle exec rake test:validate
+docker compose exec rails bundle exec rake test:validate
 
 # run a single test file
-docker-compose exec -e TEST=$TEST rails bundle exec rake test TEST=test/consumers/inventory_events_consumer_test.rb
+docker compose exec -e TEST=$TEST rails bundle exec rake test TEST=test/consumers/inventory_events_consumer_test.rb
 
 # run a specific Rspec test
 podman-compose exec -e SPEC_OPTS="-e 'V2::ReportsController /reports GET index' --color --tty --format documentation" rails bundle exec rake spec
 
 # run a single test case
-docker-compose exec rails bundle exec rake test TEST=test/path/to_test.rb TESTOPTS="-n '/matching test description/'"
+docker compose exec rails bundle exec rake test TEST=test/path/to_test.rb TESTOPTS="-n '/matching test description/'"
 ```
 
 Access logs:
@@ -167,7 +167,7 @@ note: podman-compose does not support the logs command, so similar to exec,
 it must be run against the container itself, as shown
 
 ```shell
-docker-compose logs -f sidekiq
+docker compose logs -f sidekiq
 
 # podman
 podman logs -f compliance-backend_sidekiq_1
@@ -208,7 +208,7 @@ bundle exec rake dev:db:seed
 To create hosts in the inventory the `kafka_producer.py` script can be used from the `inventory` container:
 
 ```
-docker-compose run -e NUM_HOSTS=1000 -e INVENTORY_HOST_ACCOUNT=00001 inventory-web bash -c 'pipenv install --system --dev; python3 ./utils/kafka_producer.py;'
+docker compose run -e NUM_HOSTS=1000 -e INVENTORY_HOST_ACCOUNT=00001 inventory-web bash -c 'pipenv install --system --dev; python3 ./utils/kafka_producer.py;'
 ```
 
 ### Tagging
