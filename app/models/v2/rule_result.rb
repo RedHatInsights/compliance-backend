@@ -2,6 +2,7 @@
 
 module V2
   # Class representing individual rule results unter a test result
+  # rubocop:disable Metrics/ClassLength
   class RuleResult < ApplicationRecord
     # FIXME: clean up after the remodel
     self.table_name = :rule_results
