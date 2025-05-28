@@ -2,6 +2,7 @@
 
 module V2
   # Class representing individual rule results unter a test result
+  # rubocop:disable Metrics/ClassLength
   class RuleResult < ApplicationRecord
     # FIXME: clean up after the remodel
     self.table_name = :rule_results
@@ -76,6 +77,15 @@ module V2
       }
     end
 
+    searchable_by :identifier_label, %i[eq neq like unlike] do |_key, op, val|
+      val = "%#{val}%" if ['ILIKE', 'NOT ILIKE'].include?(op)
+
+      {
+        conditions: "rule.identifier->>'label' #{op} ?",
+        parameter: [val]
+      }
+    end
+
     def ref_id
       attributes['rule__ref_id'] || try(:rule)&.ref_id
     end
@@ -135,4 +145,5 @@ module V2
     end
     # :nocov:
   end
+  # rubocop:enable Metrics/ClassLength
 end

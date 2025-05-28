@@ -213,3 +213,80 @@
         :test_result_id: ${test_result_id}
         :rule_id: ${rule_2.id}
   :query: rule_group_id = ${rule_1.rule_group_id}
+
+- :name: "equality search by identifier_label"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :identifier:
+          :label: "CEE-XYZ-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :identifier:
+          :label: "CEE-ABC-1234"
+          :href: "https://example.com/cee-abc-1234"
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (identifier_label = "CEE-XYZ-1234")
+- :name: "non-equality search by identifier_label"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :identifier:
+          :label: "CEE-ABC-1234"
+          :href: "https://example.com/cee-abc-1234"
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :identifier:
+          :label: "CEE-XYZ-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (identifier_label != "CEE-XYZ-1234")
+- :name: "like search by identifier_label"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :identifier:
+          :label: "CEE-XYZ-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :identifier:
+          :label: "CEE-ABC-1234"
+          :href: "https://example.com/cee-abc-1234"
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (identifier_label ~ "CEE-XYZ")
+- :name: "unlike search by identifier_label"
+  :entities:
+    :found:
+      - :factory: v2_rule_result
+        :title: not this title
+        :identifier:
+          :label: "CEE-ABC-1234"
+          :href: "https://example.com/cee-abc-1234"
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_1.id}
+    :not_found:
+      - :factory: v2_rule_result
+        :title: searched title
+        :identifier:
+          :label: "CEE-XYZ-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :test_result_id: ${test_result_id}
+        :rule_id: ${rule_2.id}
+  :query: (identifier_label !~ "CEE-XYZ")
