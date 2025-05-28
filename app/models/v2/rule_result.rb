@@ -153,4 +153,5 @@ module V2
     end
     # :nocov:
   end
+  # rubocop:enable Metrics/ClassLength
 end
