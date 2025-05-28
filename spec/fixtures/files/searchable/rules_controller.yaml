@@ -60,6 +60,90 @@
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
   :query: (title !~ "searched title")
+- :name: "equality search by CEE label"
+  :entities:
+    :found:
+      - :factory: :v2_rule
+        :title: just title
+        :identifier:
+          :label: "CEE-XYZ-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+    :not_found:
+      - :factory: :v2_rule
+        :title: just title
+        :identifier:
+          :label: "CEE-ABC-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+  :query: (title = "CEE-XYZ-1234")
+- :name: "non-equality search by CEE label"
+  :entities:
+    :found:
+      - :factory: :v2_rule
+        :title: just title
+        :identifier:
+          :label: "CEE-ABC-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+    :not_found:
+      - :factory: :v2_rule
+        :title: just title
+        :identifier:
+          :label: "CEE-XYZ-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+  :query: (title != "CEE-XYZ-1234")
+- :name: "like search by CEE label"
+  :entities:
+    :found:
+      - :factory: :v2_rule
+        :title: just title
+        :identifier:
+          :label: "CEE-XYZ-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+    :not_found:
+      - :factory: :v2_rule
+        :title: just title
+        :identifier:
+          :label: "CEE-ABC-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+  :query: (title ~ "CEE-XYZ")
+- :name: "unlike search by CEE label"
+  :entities:
+    :found:
+      - :factory: :v2_rule
+        :title: just title
+        :identifier:
+          :label: "CEE-ABC-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+    :not_found:
+      - :factory: :v2_rule
+        :title: just title
+        :identifier:
+          :label: "CEE-XYZ-1234"
+          :href: "https://example.com/cee-xyz-1234"
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+  :query: (title !~ "CEE-XYZ")
 
 - :name: "equality search by severity"
   :entities:
