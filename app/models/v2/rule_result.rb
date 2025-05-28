@@ -43,14 +43,32 @@ module V2
 
     searchable_by :result, %i[eq ne in notin]
 
+    # Searching rule results by title should also consider rule result identifier label as it was before
     searchable_by :title, %i[eq neq like unlike] do |_key, op, val|
       val = "%#{val}%" if ['ILIKE', 'NOT ILIKE'].include?(op)
-      bind = ['IN', 'NOT IN'].include?(op) ? '(?)' : '?'
 
-      {
-        conditions: "rule.title #{op} #{bind}",
-        parameter: [val]
-      }
+      case op
+      when '='
+        {
+          conditions: "rule.title = ? OR rule.identifier->>'label' = ?",
+          parameter: [val, val]
+        }
+      when '<>'
+        {
+          conditions: "rule.title != ? AND rule.identifier->>'label' != ?",
+          parameter: [val, val]
+        }
+      when 'ILIKE'
+        {
+          conditions: "rule.title ILIKE ? OR rule.identifier->>'label' ILIKE ?",
+          parameter: [val, val]
+        }
+      when 'NOT ILIKE'
+        {
+          conditions: "NOT (rule.title ILIKE ? OR rule.identifier->>'label' ILIKE ?)",
+          parameter: [val, val]
+        }
+      end
     end
 
     searchable_by :severity, %i[eq ne in notin] do |_key, op, val|
