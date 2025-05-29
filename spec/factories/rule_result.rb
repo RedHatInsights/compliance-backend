@@ -9,6 +9,7 @@ FactoryBot.define do
       severity { nil }
       remediation_available { nil }
       precedence { nil }
+      identifier { nil }
     end
 
     after(:create) do |rr, ev|
@@ -16,7 +17,8 @@ FactoryBot.define do
         title: ev.title,
         severity: ev.severity,
         remediation_available: ev.remediation_available,
-        precedence: ev.precedence
+        precedence: ev.precedence,
+        identifier: ev.identifier
       }.compact
 
       rr.rule.update(attrs) if attrs.any?

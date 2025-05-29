@@ -50,6 +50,14 @@ module V2
     searchable_by :severity, %i[eq ne in notin]
     searchable_by :remediation_available, %i[eq]
     searchable_by :rule_group_id, %i[eq]
+    searchable_by :identifier_label, %i[eq neq like unlike] do |_key, op, val|
+      val = "%#{val}%" if ['ILIKE', 'NOT ILIKE'].include?(op)
+
+      {
+        conditions: "v2_rules.identifier->>'label' #{op} ?",
+        parameter: [val]
+      }
+    end
 
     # This field should be only available for rules that have a remediation available and it
     # is bound to a context of a profile and a security guide. A single rule can belong to one
