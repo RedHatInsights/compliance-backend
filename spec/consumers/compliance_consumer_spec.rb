@@ -25,6 +25,22 @@ describe ComplianceConsumer do
     end
   end
 
+  describe 'handling messages raising errors' do
+    let(:type) { 'delete' }
+
+    before do
+      allow(consumer).to receive(:retrying?)
+        .and_return(true)
+    end
+
+    it 'retries processing' do
+      expect(Karafka.logger).to receive(:debug)
+        .with('Retrying message')
+
+      consumer.consume
+    end
+  end
+
   describe 'handling updated messages for different service' do
     let(:type) { 'updated' }
     let(:message) do
