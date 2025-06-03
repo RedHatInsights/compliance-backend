@@ -15,9 +15,9 @@ module V2
 
     COMPLIANT_SYSTEM_COUNT = lambda do
       AN::NamedFunction.new('COUNT', [V2::System.arel_table[:id]]).filter(
-        Pundit.policy_scope(User.current, V2::System).where_clause.ast.and(
-          V2::TestResult.arel_table[:score].gteq(V2::Report.arel_table[:compliance_threshold])
-        )
+        Pundit.policy_scope(User.current, V2::System).where_clause.ast
+          .and(V2::TestResult.arel_table[:score].gteq(V2::Report.arel_table[:compliance_threshold]))
+          .and(V2::TestResult.arel_table[:supported].eq(true))
       )
     end
 

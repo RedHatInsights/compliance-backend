@@ -66,7 +66,7 @@ module V2
       op = ActiveModel::Type::Boolean.new.cast(val) ? '>=' : '<'
 
       {
-        conditions: "score #{op} report.compliance_threshold"
+        conditions: "score #{op} report.compliance_threshold AND supported = true"
       }
     end
 
