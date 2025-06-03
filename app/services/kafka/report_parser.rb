@@ -128,7 +128,7 @@ module Kafka
         error: exception_message(exception),
         org_id: org_id
       )
-      produce_validation_message('failed')
+      produce_validation_message('failure')
     end
 
     def exception_message(exception)
