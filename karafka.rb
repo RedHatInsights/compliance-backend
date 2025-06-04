@@ -53,7 +53,7 @@ class KarafkaApp < Karafka::App
   routes.draw do
     consumer_group :'complianceinventory-events-consumer' do
       topic Settings.kafka.topics.inventory_events do
-        consumer ComplianceConsumer
+        consumer InventoryEventsConsumer
       end
     end
   end
