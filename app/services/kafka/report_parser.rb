@@ -25,8 +25,8 @@ module Kafka
         notify_report_success(profile_id, job)
       end
       produce_validation_message('success')
-    rescue EntitlementError, ReportParseError, SafeDownloader::DownloadError
-      produce_validation_message('failure')
+    rescue EntitlementError, ReportParseError, SafeDownloader::DownloadError => e
+      parse_error(e)
       raise
     end
     # rubocop:enable Metrics/MethodLength
@@ -56,9 +56,6 @@ module Kafka
 
     def reports
       @reports ||= SafeDownloader.download_reports(url, ssl_only: Settings.report_download_ssl_only)
-    rescue SafeDownloader::DownloadError => e
-      parse_error(e)
-      raise
     end
 
     def identity
@@ -132,13 +129,13 @@ module Kafka
     end
 
     def exception_message(exception)
-      case exception
-      when EntitlementError
+      case exception.class.to_s
+      when 'Kafka::ReportParser::EntitlementError'
         "Rejected report with request id #{request_id}: invalid identity or missing insights entitlement"
-      when SafeDownloader::DownloadError
-        "Failed to dowload report with request id #{request_id}: #{exception.message}"
-      when ReportParseError
-        "Invalid report: #{exception.cause.message}"
+      when 'SafeDownloader::DownloadError'
+        "Failed to download report with request id #{request_id}: #{exception.message}"
+      when 'Kafka::ReportParser::ReportParseError'
+        "Invalid report: #{exception.cause&.message}"
       else
         "Error parsing report: #{request_id} - #{exception.message}"
       end
