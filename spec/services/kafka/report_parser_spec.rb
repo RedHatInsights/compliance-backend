@@ -28,19 +28,27 @@ describe Kafka::ReportParser do
       {
         'host' => {
           'id' => system.id,
-          'timestamp' => DateTime.now.iso8601(6),
-          'org_id' => org_id
+          'timestamp' => DateTime.now.iso8601(6)
         },
         'platform_metadata' => {
           'b64_identity' => current_user.account.b64_identity,
-          'request_id' => request_id
+          'request_id' => request_id,
+          'org_id' => org_id
         }
       }
     end
 
     it 'raises entitlement error' do
-      expect { service.parse_reports }.to raise_error(Kafka::ReportParser::EntitlementError)
+      expect(Karafka.logger)
+        .to receive(:audit_fail)
+        .with(
+          a_string_matching([
+            /\A\[#{org_id}\] Rejected report with request id \S+: /,
+            /invalid identity or missing insights entitlement\z/
+          ].join)
+        )
       expect(ParseReportJob.jobs.size).to eq(0)
+      expect { service.parse_reports }.to raise_error(Kafka::ReportParser::EntitlementError)
     end
   end
 
@@ -52,8 +60,16 @@ describe Kafka::ReportParser do
     end
 
     it 'raises download error' do
-      expect { service.parse_reports }.to raise_error(SafeDownloader::DownloadError)
+      expect(Karafka.logger)
+        .to receive(:audit_fail)
+        .with(
+          a_string_matching([
+            /\A\[#{org_id}\] Failed to download report with request id \S+: /,
+            /SafeDownloader::DownloadError\z/
+          ].join)
+        )
       expect(ParseReportJob.jobs.size).to eq(0)
+      expect { service.parse_reports }.to raise_error(SafeDownloader::DownloadError)
     end
   end
 
@@ -78,8 +94,13 @@ describe Kafka::ReportParser do
     end
 
     it 'raises parse error' do
-      expect { service.parse_reports }.to raise_error(Kafka::ReportParser::ReportParseError)
+      expect(Karafka.logger)
+        .to receive(:audit_fail)
+        .with(
+          a_string_matching(/\A\[#{org_id}\] Invalid report: (.+)\z/)
+        )
       expect(ParseReportJob.jobs.size).to eq(0)
+      expect { service.parse_reports }.to raise_error(Kafka::ReportParser::ReportParseError)
     end
   end
 
