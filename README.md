@@ -158,6 +158,9 @@ docker compose exec -e TEST=$TEST rails bundle exec rake test TEST=test/models/h
 # run a specific Rspec test
 podman-compose exec -e SPEC_OPTS="-e 'V2::ReportsController /reports GET index' --color --tty --format documentation" rails bundle exec rake spec
 
+# run Rspec tests in a specific directory (doesn't work with tests including shared_examples)
+podman-compose exec -e SPEC_OPTS="-P 'spec/policies/v2/*.rb' --color --tty --format documentation" rails bundle exec rake spec
+
 # run a single test case
 docker compose exec rails bundle exec rake test TEST=test/path/to_test.rb TESTOPTS="-n '/matching test description/'"
 ```
