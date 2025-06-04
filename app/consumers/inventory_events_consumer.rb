@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Receives messages from the Kafka topic, dispatches them to the appropriate service
-class ComplianceConsumer < ApplicationConsumer
+class InventoryEventsConsumer < ApplicationConsumer
   # rubocop:disable Metrics/AbcSize
   def consume_one
     if service == 'compliance'

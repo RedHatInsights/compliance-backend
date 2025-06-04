@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ComplianceConsumer do
+describe InventoryEventsConsumer do
   subject(:consumer) { karafka.consumer_for(Settings.kafka.topics.inventory_events) }
 
   before do
