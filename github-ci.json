@@ -13,6 +13,12 @@
             }
         },
     "kafka": {
+        "brokers": [
+            {
+                "hostname": "kafka",
+                "port": 29092
+            }
+        ],
         "topics": [
             {
                 "requestedName": "platform.inventory.events",
