@@ -5,6 +5,8 @@ require 'sidekiq/testing'
 Sidekiq::Testing.fake!
 
 class ParseReportJobTest < ActiveSupport::TestCase
+  include Karafka::Testing::Minitest::Helpers
+
   setup do
     @host = FactoryBot.create(:host, org_id: '1234')
     @msg_value = {
