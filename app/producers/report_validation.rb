@@ -3,7 +3,6 @@
 # A Kafka producer client for upload-compliance
 class ReportValidation < ApplicationProducer
   TOPIC = Settings.kafka.topics.upload_compliance
-  DATE_FORMAT = :rfc3339
 
   # rubocop:disable Metrics/ParameterLists
   def self.deliver(request_id:, service:, validation:)

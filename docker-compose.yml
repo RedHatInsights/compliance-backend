@@ -332,7 +332,7 @@ services:
       - redis
       - rbac
       - compliance-ssg
-  compliance-consumer:
+  inventory-consumer:
     image: compliance-backend-rails
     platform: linux/amd64
     restart: on-failure
@@ -341,7 +341,7 @@ services:
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - DISABLE_DATABASE_ENVIRONMENT_CHECK=1
-      - HOSTNAME=compliance-consumer
+      - HOSTNAME=inventory-consumer
       - ACG_CONFIG=/opt/app-root/src/devel.json
       - RUBY_YJIT_ENABLE=1
       - RAILS_ENV=development

@@ -29,18 +29,11 @@ class KarafkaApp < Karafka::App
   setup do |config|
     config.kafka = kafka_config
     config.client_id = self::CLIENT_ID
-    config.initial_offset = 'latest'
-
-    # Wait for at least 1 seconds after an error
-    config.pause_timeout = 1_000
-
     config.consumer_persistence = !Rails.env.development?
   end
 
   Karafka.monitor.subscribe(
-    Karafka::Instrumentation::LoggerListener.new(
-      log_polling: true
-    )
+    Karafka::Instrumentation::LoggerListener.new(log_polling: false)
   )
 
   Karafka.producer.monitor.subscribe(
