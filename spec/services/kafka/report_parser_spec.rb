@@ -47,8 +47,8 @@ describe Kafka::ReportParser do
             /invalid identity or missing insights entitlement\z/
           ].join)
         )
-      expect(ParseReportJob.jobs.size).to eq(0)
       expect { service.parse_reports }.to raise_error(Kafka::ReportParser::EntitlementError)
+      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -68,8 +68,8 @@ describe Kafka::ReportParser do
             /SafeDownloader::DownloadError\z/
           ].join)
         )
-      expect(ParseReportJob.jobs.size).to eq(0)
       expect { service.parse_reports }.to raise_error(SafeDownloader::DownloadError)
+      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -99,8 +99,8 @@ describe Kafka::ReportParser do
         .with(
           a_string_matching(/\A\[#{org_id}\] Invalid report: (.+)\z/)
         )
-      expect(ParseReportJob.jobs.size).to eq(0)
       expect { service.parse_reports }.to raise_error(Kafka::ReportParser::ReportParseError)
+      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 

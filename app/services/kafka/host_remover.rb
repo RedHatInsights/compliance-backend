@@ -12,14 +12,10 @@ module Kafka
     def remove_host
       DeleteHost.perform_async(@message)
     rescue StandardError => e
-      @logger.audit_fail(
-        "[#{org_id}] Failed to enqueue DeleteHost job for host #{id}: #{e}"
-      )
+      @logger.audit_fail("[#{org_id}] Failed to enqueue DeleteHost job for host #{id}: #{e}")
       raise
     else
-      @logger.audit_success(
-        "[#{org_id}] Enqueued DeleteHost job for host #{id}"
-      )
+      @logger.audit_success("[#{org_id}] Enqueued DeleteHost job for host #{id}")
     end
 
     private

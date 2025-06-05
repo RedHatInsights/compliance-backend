@@ -16,7 +16,7 @@ module Kafka
     # rubocop:disable Metrics/MethodLength
     def parse_reports
       # Map successfuly parsed (validated) reports by scanned profile
-      parsed_reports = validated_reports.map do |xml|
+      parsed_reports = downloaded_reports.map do |xml|
         [parse(xml).test_result_file.test_result.profile_id, xml]
       end
       # Evaluate each report individually and notify about the result
@@ -33,7 +33,7 @@ module Kafka
 
     private
 
-    def validated_reports
+    def downloaded_reports
       raise EntitlementError unless identity.valid?
       raise ReportParseError if reports.empty?
 
