@@ -150,6 +150,42 @@ module V2
       { conditions: "inventory.hosts.id NOT IN (#{ids.to_sql})" }
     end
 
+    searchable_by :available_for_policy_id, %i[eq], except_parents: %i[policies reports] do |_key, _op, val|
+
+      begin
+        target_policy_data = V2::Policy.joins(profile: :security_guide)
+          .select('v2_policies.id AS policy_id',
+            'canonical_profiles.ref_id AS cp_ref_id',
+            'security_guides.os_major_version AS sg_os_major_version')
+          .find_by!(id: val)
+      rescue ActiveRecord::RecordNotFound
+        return { conditions: 'FALSE' }
+      end
+
+      excluded_systems_arel_condition = V2::PolicySystem.joins(policy: { profile: :security_guide })
+        .where(
+          V2::Profile.arel_table[:ref_id].eq(target_policy_data.cp_ref_id)
+          .and(V2::SecurityGuide.arel_table[:os_major_version].eq(target_policy_data.sg_os_major_version))
+          .and(V2::Policy.arel_table[:id].not_eq(target_policy_data.policy_id))
+        )
+        .where(
+          V2::PolicySystem.arel_table[:system_id].eq(V2::System.arel_table[:id])
+        )
+        .arel
+        .exists
+
+      # Identify if a given system is associated with the target policy
+      associated_with_target_policy_arel_condition = V2::System.arel_table[:id].in(
+        V2::PolicySystem.where(policy_id: val).select(:system_id)
+      )
+      # Identify if a given system is associated with any other "duplicated" policy (same ref_id and os_major_version)
+      combined_condition = Arel::Nodes::Not.new(excluded_systems_arel_condition)
+        .or(associated_with_target_policy_arel_condition)
+
+      sql_condition = combined_condition.to_sql
+      { conditions: sql_condition }
+    end
+
     scope :with_groups, lambda { |groups, key = :id|
       # Skip the [] representing ungrouped hosts from the array when generating the query
       grouped = arel_json_lookup(arel_table[:groups], groups_as_json(groups.flatten, key))
