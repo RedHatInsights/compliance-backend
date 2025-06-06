@@ -2,6 +2,7 @@
 
 module Kafka
   # Consumer concerns related to report parsing
+  # rubocop:disable Metrics/ClassLength
   class ReportParser
     # Raise an error if entitlement is not available
     class EntitlementError < StandardError; end
@@ -13,16 +14,12 @@ module Kafka
       @logger = logger
     end
 
-    # rubocop:disable Metrics/MethodLength
     def parse_reports
       # Map successfuly parsed (validated) reports by scanned profile
-      parsed_reports = downloaded_reports.map do |xml|
-        [parse(xml).test_result_file.test_result.profile_id, xml]
-      end
+      parsed_reports = downloaded_reports.map { |xml| parse(xml) }
       # Evaluate each report individually and notify about the result
-      parsed_reports.each_with_index do |(profile_id, _report), idx|
-        job = ParseReportJob.perform_async(idx, metadata)
-        notify_report_success(profile_id, job)
+      parsed_reports.each do |report|
+        process_report(report.test_result_file.test_result.profile_id, report)
       end
       produce_validation_message('success')
     rescue EntitlementError, ReportParseError => e
@@ -31,7 +28,6 @@ module Kafka
       parse_error(e)
       raise
     end
-    # rubocop:enable Metrics/MethodLength
 
     private
 
@@ -116,6 +112,67 @@ module Kafka
       )
     end
 
+    def process_report(profile, report)
+      @logger.info "Processing #{profile} report #{report}"
+
+      # Storing notification preconditions before saving the report
+      should_notify = notifications_allowed?(report)
+
+      # Evaluate compliance of the report
+      if report_compliant?(report)
+        report.save_all
+      elsif should_notify
+        @logger.info('Emitting notification due to non-compliance')
+        notify_non_compliant!
+      end
+
+      notify_remediation(report)
+      parse_success(report, profile)
+    end
+
+    def report_compliant?(report)
+      report.supported? && report.score >= report.policy.compliance_threshold
+    end
+
+    def notifications_allowed?(report)
+      previously_compliant = report.policy&.compliant?(report.system)
+      no_test_results = report.policy&.test_result_systems&.where(id: report.system.id)&.empty?
+
+      previously_compliant || no_test_results
+    end
+
+    def notify_non_compliant!(report)
+      SystemNonCompliant.deliver(
+        system: report.system,
+        org_id: @message['org_id'],
+        policy: report.policy,
+        policy_threshold: report.policy.compliance_threshold,
+        compliance_score: report.score
+      )
+    end
+
+    def notify_remediation(report)
+      RemediationUpdates.deliver(
+        system_id: @message['id'],
+        issue_ids: remediation_issue_ids(report)
+      )
+    end
+
+    def remediation_issue_ids(report)
+      report.failed_rules
+            .includes(profiles: :benchmark)
+            .collect(&:remediation_issue_id)
+            .compact
+    end
+
+    def parse_success(report, profile)
+      msg = "[#{org_id}] Successfull report of #{profile} " \
+            "for policy #{report.system_profile.policy_id} " \
+            "from system #{@message['id']}"
+      @logger.audit_success msg
+      produce_validation_message('success')
+    end
+
     def parse_error(exception)
       msg = "[#{org_id}] #{exception_message(exception)}"
       @logger.error msg
@@ -143,4 +200,5 @@ module Kafka
       end
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
