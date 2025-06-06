@@ -19,6 +19,7 @@ if Rails.env.test?
   require 'minitest/reporters'
   require 'minitest/mock'
   require 'mocha/minitest'
+  require 'karafka/testing/minitest/helpers'
 
   Minitest::Reporters.use!(
     [
