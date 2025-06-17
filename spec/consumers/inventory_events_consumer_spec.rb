@@ -25,17 +25,15 @@ describe InventoryEventsConsumer do
     end
   end
 
-  describe 'handling messages raising errors' do
+  describe 'handling messages after three retries' do
     let(:type) { 'delete' }
 
     before do
-      allow(consumer).to receive(:retrying?)
-        .and_return(true)
+      allow(consumer).to receive(:attempt).and_return(4)
     end
 
-    it 'retries processing' do
-      expect(Karafka.logger).to receive(:debug)
-        .with('Retrying message')
+    it 'logs and discards message' do
+      expect(Karafka.logger).to receive(:error).with('Discarded message')
 
       consumer.consume
     end
