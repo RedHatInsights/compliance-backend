@@ -58,23 +58,35 @@ describe InventoryEventsConsumer do
     end
   end
 
-  describe 'handling created messages without policy ID' do
-    let(:type) { 'created' }
+  describe 'handling messages without policy ID' do
+    context 'message is created' do
+      let(:type) { 'created' }
 
-    it 'logs a debug message and skips processing' do
-      expect(Karafka.logger).to receive(:debug).with("Skipped message of type '#{type}'")
+      it 'logs a debug message and skips processing' do
+        expect(Karafka.logger).to receive(:debug).with("Skipped message of type '#{type}'")
 
-      consumer.consume
+        consumer.consume
+      end
+    end
+
+    context 'message is updated' do
+      let(:type) { 'updated' }
+
+      it 'logs a debug message and skips processing' do
+        expect(Karafka.logger).to receive(:debug).with("Skipped message of type '#{type}'")
+
+        consumer.consume
+      end
     end
   end
 
-  context 'routing to the appropriate service' do
+  describe 'routing to the appropriate service' do
     before do
       @service = instance_double(service_class)
       allow(service_class).to receive(:new).and_return(@service)
     end
 
-    describe 'received compliance message' do
+    context 'received compliance message' do
       let(:service_class) { Kafka::ReportParser }
       let(:type) { 'updated' }
       let(:message) do
@@ -96,7 +108,7 @@ describe InventoryEventsConsumer do
       end
     end
 
-    describe 'received delete message' do
+    context 'received delete message' do
       let(:service_class) { Kafka::HostRemover }
       let(:type) { 'delete' }
 
@@ -109,9 +121,8 @@ describe InventoryEventsConsumer do
       end
     end
 
-    describe 'received create message' do
+    context 'receives message with a policy ID' do
       let(:service_class) { Kafka::PolicySystemImporter }
-      let(:type) { 'created' }
       let(:message) do
         super().deep_merge(
           {
@@ -126,12 +137,28 @@ describe InventoryEventsConsumer do
         )
       end
 
-      it 'delegates to PolicySystemImporter service' do
-        allow(@service).to receive(:import)
+      context 'message is created' do
+        let(:type) { 'created' }
 
-        expect(@service).to receive(:import)
+        it 'delegates to PolicySystemImporter service' do
+          allow(@service).to receive(:import)
 
-        consumer.consume
+          expect(@service).to receive(:import)
+
+          consumer.consume
+        end
+      end
+
+      context 'message is updated' do
+        let(:type) { 'updated' }
+
+        it 'delegates to PolicySystemImporter service' do
+          allow(@service).to receive(:import)
+
+          expect(@service).to receive(:import)
+
+          consumer.consume
+        end
       end
     end
   end

@@ -66,4 +66,20 @@ describe Kafka::PolicySystemImporter do
       expect { service.import }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
+
+  context 'when PolicySystem already exists' do
+    before do
+      FactoryBot.create(:v2_policy_system, policy_id: policy_id, system_id: system_id)
+    end
+
+    it 'logs debug message and does not create a new PolicySystem' do
+      expect(Karafka.logger).to receive(:info).with(
+        "[#{org_id}] PolicySystem for System #{system_id} already exists"
+      )
+
+      expect(V2::PolicySystem).not_to receive(:new)
+
+      service.import
+    end
+  end
 end
