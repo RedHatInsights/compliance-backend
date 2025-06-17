@@ -4,12 +4,12 @@
 class InventoryEventsConsumer < ApplicationConsumer
   # rubocop:disable Metrics/AbcSize
   def consume_one
-    if service == 'compliance'
-      Kafka::ReportParser.new(payload, logger).parse_reports
-    elsif message_type == 'created' && policy_id
-      Kafka::PolicySystemImporter.new(payload, logger).import
-    elsif message_type == 'delete'
+    if message_type == 'delete'
       Kafka::HostRemover.new(payload, logger).remove_host
+    elsif service == 'compliance'
+      Kafka::ReportParser.new(payload, logger).parse_reports
+    elsif policy_id && %w[created updated].include?(message_type)
+      Kafka::PolicySystemImporter.new(payload, logger).import
     else
       logger.debug "Skipped message of type '#{message_type}'"
     end
