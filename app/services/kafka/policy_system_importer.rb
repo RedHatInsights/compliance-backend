@@ -13,25 +13,35 @@ module Kafka
     end
 
     def import
-      if V2::PolicySystem.exists?(policy_id: @policy_id, system_id: @system_id)
-        @logger.info("[#{@org_id}] PolicySystem for System #{@system_id} already exists")
-        return
+      return unless sources_exist?
+
+      policy_system = V2::PolicySystem.new(policy_id: @policy_id, system_id: @system_id)
+
+      if policy_system.save
+        @logger.audit_success("[#{@org_id}] Imported PolicySystem for System #{@system_id} from #{@msg_type} message")
+      else
+        audit_fail(policy_system.errors.full_messages.join(', ').to_s)
       end
-
-      ensure_exists(V2::Policy, @policy_id, 'Policy')
-      ensure_exists(V2::System, @system_id, 'System')
-
-      V2::PolicySystem.new(policy_id: @policy_id, system_id: @system_id).save!
-      @logger.audit_success("[#{@org_id}] Imported PolicySystem for System #{@system_id} from #{@msg_type} message")
     end
 
     private
 
-    def ensure_exists(model, id, name)
-      return if model.exists?(id: id)
+    def sources_exist?
+      validate_resource(V2::System, @system_id, 'System', raise_on_missing: true) &&
+        validate_resource(V2::Policy, @policy_id, 'Policy')
+    end
 
-      @logger.audit_fail("[#{@org_id}] Failed to import PolicySystem: #{name} not found with ID #{id}")
-      raise ActiveRecord::RecordNotFound
+    def validate_resource(model_class, id, resource_name, raise_on_missing: false)
+      return true if model_class.exists?(id: id)
+
+      audit_fail("#{resource_name} not found with ID #{id}")
+      raise ActiveRecord::RecordNotFound if raise_on_missing
+
+      false
+    end
+
+    def audit_fail(message)
+      @logger.audit_fail("[#{@org_id}] Failed to import PolicySystem: #{message}")
     end
   end
 end
