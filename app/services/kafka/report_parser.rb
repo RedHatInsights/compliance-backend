@@ -25,7 +25,9 @@ module Kafka
         notify_report_success(profile_id, job)
       end
       produce_validation_message('success')
-    rescue EntitlementError, ReportParseError, SafeDownloader::DownloadError => e
+    rescue EntitlementError, ReportParseError => e
+      parse_error(e)
+    rescue SafeDownloader::DownloadError => e
       parse_error(e)
       raise
     end
@@ -35,7 +37,7 @@ module Kafka
 
     def downloaded_reports
       raise EntitlementError unless identity.valid?
-      raise ReportParseError if reports.empty?
+      raise ReportParseError, 'Report empty' if reports.empty?
 
       reports
     end
@@ -101,7 +103,7 @@ module Kafka
     rescue PG::Error, ActiveRecord::StatementInvalid => e
       parse_error(e)
     rescue StandardError
-      raise ReportParseError
+      raise ReportParseError, 'Report parsing failed'
     end
 
     def produce_validation_message(result)
@@ -135,7 +137,7 @@ module Kafka
       when 'SafeDownloader::DownloadError'
         "Failed to download report with request id #{request_id}: #{exception.message}"
       when 'Kafka::ReportParser::ReportParseError'
-        "Invalid report: #{exception.cause&.message}"
+        "Invalid report: #{exception.message}"
       else
         "Error parsing report: #{request_id} - #{exception.message}"
       end
