@@ -38,7 +38,7 @@ describe Kafka::ReportParser do
       }
     end
 
-    it 'raises entitlement error' do
+    it 'logs entitlement error' do
       expect(Karafka.logger)
         .to receive(:audit_fail)
         .with(
@@ -47,7 +47,7 @@ describe Kafka::ReportParser do
             /invalid identity or missing insights entitlement\z/
           ].join)
         )
-      expect { service.parse_reports }.to raise_error(Kafka::ReportParser::EntitlementError)
+      service.parse_reports
       expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
@@ -59,7 +59,7 @@ describe Kafka::ReportParser do
         .and_raise(SafeDownloader::DownloadError)
     end
 
-    it 'raises download error' do
+    it 'logs and raises download error' do
       expect(Karafka.logger)
         .to receive(:audit_fail)
         .with(
@@ -80,8 +80,13 @@ describe Kafka::ReportParser do
         .and_return([])
     end
 
-    it 'raises parse error' do
-      expect { service.parse_reports }.to raise_error(Kafka::ReportParser::ReportParseError)
+    it 'logs parse error' do
+      expect(Karafka.logger)
+        .to receive(:audit_fail)
+        .with(
+          "[#{org_id}] Invalid report: Report empty"
+        )
+      service.parse_reports
       expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
@@ -93,13 +98,13 @@ describe Kafka::ReportParser do
         .and_return([file_fixture('wrong_xccdf_report.xml').read])
     end
 
-    it 'raises parse error' do
+    it 'logs parse error' do
       expect(Karafka.logger)
         .to receive(:audit_fail)
         .with(
-          a_string_matching(/\A\[#{org_id}\] Invalid report: (.+)\z/)
+          "[#{org_id}] Invalid report: Report parsing failed"
         )
-      expect { service.parse_reports }.to raise_error(Kafka::ReportParser::ReportParseError)
+      service.parse_reports
       expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
