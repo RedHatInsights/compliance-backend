@@ -9,6 +9,7 @@ module Kafka
       @policy_id = message.dig('host', 'system_profile', 'image_builder', 'compliance_policy_id')
       @system_id = message.dig('host', 'id')
       @org_id = message.dig('host', 'org_id')
+      @msg_type = message.dig('type')
     end
 
     def import
@@ -21,7 +22,7 @@ module Kafka
       ensure_exists(V2::System, @system_id, 'System')
 
       V2::PolicySystem.new(policy_id: @policy_id, system_id: @system_id).save!
-      @logger.audit_success("[#{@org_id}] Imported PolicySystem for System #{@system_id}")
+      @logger.audit_success("[#{@org_id}] Imported PolicySystem for System #{@system_id} from #{@msg_type} message")
     end
 
     private

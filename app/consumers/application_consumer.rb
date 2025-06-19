@@ -4,11 +4,9 @@
 class ApplicationConsumer < Karafka::BaseConsumer
   attr_reader :message
 
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def consume
-    logger.info "Processing #{messages.metadata.topic}/#{messages.metadata.partition} " \
-                "#{messages.metadata.first_offset}-#{messages.metadata.last_offset} " \
-                "with processing lag #{messages.metadata.processing_lag}"
+    log_metadata
+
     messages.each do |message|
       @message = message
 
@@ -20,14 +18,18 @@ class ApplicationConsumer < Karafka::BaseConsumer
       consume_one
       mark_as_consumed(message)
     end
-
-    logger.info 'Batch consumed'
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   protected
 
   def logger
     Rails.logger
+  end
+
+  private
+
+  def log_metadata
+    logger.info "Processing from #{messages.metadata.topic}/#{messages.metadata.partition} " \
+                "with processing lag #{messages.metadata.processing_lag}"
   end
 end
