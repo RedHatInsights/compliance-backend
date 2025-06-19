@@ -37,7 +37,7 @@ describe Kafka::PolicySystemImporter do
     ).and_return(instance_double(V2::PolicySystem, save!: true))
 
     expect(Karafka.logger).to receive(:audit_success).with(
-      "[#{org_id}] Imported PolicySystem for System #{system_id}"
+      "[#{org_id}] Imported PolicySystem for System #{system_id} from #{type} message"
     )
 
     service.import
