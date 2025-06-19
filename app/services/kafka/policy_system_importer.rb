@@ -3,6 +3,8 @@
 module Kafka
   # Service for importing a new association between a System and a Policy
   class PolicySystemImporter
+    MODELS = [V2::Policy, V2::System].freeze
+
     def initialize(message, logger)
       @logger = logger
 
@@ -13,25 +15,32 @@ module Kafka
     end
 
     def import
-      if V2::PolicySystem.exists?(policy_id: @policy_id, system_id: @system_id)
-        @logger.info("[#{@org_id}] PolicySystem for System #{@system_id} already exists")
-        return
+      return unless sources_exist?
+
+      policy_system = V2::PolicySystem.new(policy_id: @policy_id, system_id: @system_id)
+
+      if policy_system.save
+        @logger.audit_success("[#{@org_id}] Imported PolicySystem for System #{@system_id} from #{@msg_type} message")
+      else
+        @logger.audit_fail("[#{@org_id}] Failed to import PolicySystem: " \
+                            "#{policy_system.errors.full_messages.join(', ')}")
       end
-
-      ensure_exists(V2::Policy, @policy_id, 'Policy')
-      ensure_exists(V2::System, @system_id, 'System')
-
-      V2::PolicySystem.new(policy_id: @policy_id, system_id: @system_id).save!
-      @logger.audit_success("[#{@org_id}] Imported PolicySystem for System #{@system_id} from #{@msg_type} message")
     end
 
     private
 
-    def ensure_exists(model, id, name)
-      return if model.exists?(id: id)
+    def sources_exist?
+      MODELS.each do |model|
+        model_name = model.name.demodulize
+        id = instance_variable_get("@#{model_name.downcase}_id")
 
-      @logger.audit_fail("[#{@org_id}] Failed to import PolicySystem: #{name} not found with ID #{id}")
-      raise ActiveRecord::RecordNotFound
+        unless model.exists?(id: id)
+          @logger.audit_fail("[#{@org_id}] Failed to import PolicySystem: #{model_name} not found with ID #{id}")
+          return false
+        end
+      end
+
+      true
     end
   end
 end
