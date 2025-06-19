@@ -29,41 +29,47 @@ describe Kafka::PolicySystemImporter do
   end
 
   it 'imports PolicySystem' do
-    expect(V2::PolicySystem).to receive(:new).with(
-      {
-        policy_id: policy_id,
-        system_id: system_id
-      }
-    ).and_return(instance_double(V2::PolicySystem, save!: true))
-
     expect(Karafka.logger).to receive(:audit_success).with(
       "[#{org_id}] Imported PolicySystem for System #{system_id} from #{type} message"
     )
 
-    service.import
+    expect { service.import }.to change(V2::PolicySystem, :count).by(1)
   end
 
   context 'received invalid system ID' do
     let(:system_id) { Faker::Internet.uuid }
 
-    it 'handles and logs exception' do
+    it 'raises and logs exception' do
       expect(Karafka.logger).to receive(:audit_fail).with(
         "[#{org_id}] Failed to import PolicySystem: System not found with ID #{system_id}"
       )
 
       expect { service.import }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(V2::PolicySystem.count).to eq(0)
     end
   end
 
   context 'received invalid policy ID' do
     let(:policy_id) { Faker::Internet.uuid }
 
-    it 'handles and logs exception' do
+    it 'logs error message and does not link System to Policy' do
       expect(Karafka.logger).to receive(:audit_fail).with(
         "[#{org_id}] Failed to import PolicySystem: Policy not found with ID #{policy_id}"
       )
 
-      expect { service.import }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { service.import }.not_to change(V2::PolicySystem, :count)
+    end
+  end
+
+  context 'received incompatible policy' do
+    let(:policy_id) { FactoryBot.create(:v2_policy, os_major_version: 7, supports_minors: [0], empty_policy: true).id }
+
+    it 'logs error message and does not link System to Policy' do
+      expect(Karafka.logger).to receive(:audit_fail).with(
+        "[#{org_id}] Failed to import PolicySystem: System Unsupported OS major version"
+      )
+
+      expect { service.import }.not_to change(V2::PolicySystem, :count)
     end
   end
 
@@ -72,14 +78,12 @@ describe Kafka::PolicySystemImporter do
       FactoryBot.create(:v2_policy_system, policy_id: policy_id, system_id: system_id)
     end
 
-    it 'logs debug message and does not create a new PolicySystem' do
-      expect(Karafka.logger).to receive(:info).with(
-        "[#{org_id}] PolicySystem for System #{system_id} already exists"
+    it 'logs error message and does not link System to Policy' do
+      expect(Karafka.logger).to receive(:audit_fail).with(
+        a_string_including("[#{org_id}] Failed to import PolicySystem: System has already been taken")
       )
 
-      expect(V2::PolicySystem).not_to receive(:new)
-
-      service.import
+      expect { service.import }.not_to change(V2::PolicySystem, :count)
     end
   end
 end
