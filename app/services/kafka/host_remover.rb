@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Kafka
-  # Service for removing a host based on a kafka message
-  # FIXME: refactor the DeleteHost job into this service while utilizing V2 model validations
+  # Service for removing a host's associations
   class HostRemover
     def initialize(message, logger)
       @message = message
