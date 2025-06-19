@@ -51,7 +51,7 @@ describe Kafka::PolicySystemImporter do
         "[#{org_id}] Failed to import PolicySystem: System not found with ID #{system_id}"
       )
 
-      expect { service.import }.to raise_error(ActiveRecord::RecordNotFound)
+      service.import
     end
   end
 
@@ -63,7 +63,19 @@ describe Kafka::PolicySystemImporter do
         "[#{org_id}] Failed to import PolicySystem: Policy not found with ID #{policy_id}"
       )
 
-      expect { service.import }.to raise_error(ActiveRecord::RecordNotFound)
+      service.import
+    end
+  end
+
+  context 'received incompatible policy' do
+    let(:policy_id) { FactoryBot.create(:v2_policy, os_major_version: 7, supports_minors: [0], empty_policy: true).id }
+
+    it 'handles and logs exception' do
+      expect(Karafka.logger).to receive(:audit_fail).with(
+        "[#{org_id}] Failed to import PolicySystem: Validation failed: System Unsupported OS major version"
+      )
+
+      service.import
     end
   end
 
