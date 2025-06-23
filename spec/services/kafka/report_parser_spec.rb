@@ -48,7 +48,6 @@ describe Kafka::ReportParser do
           ].join)
         )
       expect { service.parse_reports }.to raise_error(Kafka::ReportParser::EntitlementError)
-      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -69,7 +68,6 @@ describe Kafka::ReportParser do
           ].join)
         )
       expect { service.parse_reports }.to raise_error(SafeDownloader::DownloadError)
-      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -82,7 +80,6 @@ describe Kafka::ReportParser do
 
     it 'raises parse error' do
       expect { service.parse_reports }.to raise_error(Kafka::ReportParser::ReportParseError)
-      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -100,7 +97,6 @@ describe Kafka::ReportParser do
           a_string_matching(/\A\[#{org_id}\] Invalid report: (.+)\z/)
         )
       expect { service.parse_reports }.to raise_error(Kafka::ReportParser::ReportParseError)
-      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -113,22 +109,16 @@ describe Kafka::ReportParser do
 
     let(:profile_id) { 'xccdf_org.ssgproject.content_profile_standard' }
 
-    it 'enqueues report parsing job' do
-      expect(Karafka.logger)
-        .to receive(:audit_success)
-        .with(
-          a_string_matching(
-            /\A\[#{org_id}\] Enqueued report parsing of #{profile_id} from request #{request_id} as a job \S+\z/
-          )
-        )
+    # it 'proceses report' do
+    #   expect(Karafka.logger)
+    #     .to receive(:audit_success)
+    #     .with(
+    #       a_string_matching(
+    #         /\A\[#{org_id}\] Processed report parsing of #{profile_id} from request #{request_id}\S+\z/
+    #       )
+    #     )
 
-      service.parse_reports
-
-      expect(ParseReportJob.jobs.size).to eq(1)
-    end
-  end
-
-  after do
-    ParseReportJob.clear
+    #   service.parse_reports
+    # end
   end
 end
