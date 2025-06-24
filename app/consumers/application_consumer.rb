@@ -10,9 +10,10 @@ class ApplicationConsumer < Karafka::BaseConsumer
     messages.each do |message|
       @message = message
 
-      if attempt > 2
-        logger.error 'Discarded message'
+      if attempt > 3
+        logger.error "Discarded message after #{attempt} attempts: #{message.payload}"
         mark_as_consumed(message)
+        next
       end
 
       consume_one
