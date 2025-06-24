@@ -4,6 +4,7 @@
 class ApplicationConsumer < Karafka::BaseConsumer
   attr_reader :message
 
+  # rubocop:disable Metrics/MethodLength
   def consume
     log_metadata
 
