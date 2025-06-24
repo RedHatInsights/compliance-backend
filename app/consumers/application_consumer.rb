@@ -21,6 +21,7 @@ class ApplicationConsumer < Karafka::BaseConsumer
       mark_as_consumed(message)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   protected
 
