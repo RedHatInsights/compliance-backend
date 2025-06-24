@@ -12,10 +12,10 @@ class ApplicationConsumer < Karafka::BaseConsumer
 
       if attempt > 2
         logger.error 'Discarded message'
-        mark_as_consumed(message)
+      else
+        consume_one
       end
 
-      consume_one
       mark_as_consumed(message)
     end
   end
