@@ -113,9 +113,9 @@ describe InventoryEventsConsumer do
       let(:type) { 'delete' }
 
       it 'delegates to DeletedHostCleaner service' do
-        allow(@service).to receive(:remove_host)
+        allow(@service).to receive(:cleanup_host)
 
-        expect(@service).to receive(:remove_host)
+        expect(@service).to receive(:cleanup_host)
 
         consumer.consume
       end
