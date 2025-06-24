@@ -4,24 +4,21 @@
 class ApplicationConsumer < Karafka::BaseConsumer
   attr_reader :message
 
-  # rubocop:disable Metrics/MethodLength
   def consume
     log_metadata
 
     messages.each do |message|
       @message = message
 
-      if attempt > 3
-        logger.error "Discarded message after #{attempt} attempts: #{message.payload}"
+      if attempt > 2
+        logger.error 'Last attempt to consume the message'
         mark_as_consumed(message)
-        next
       end
 
       consume_one
       mark_as_consumed(message)
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   protected
 
