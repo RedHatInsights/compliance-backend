@@ -29,7 +29,7 @@ pipeline {
         CICD_URL="https://raw.githubusercontent.com/RedHatInsights/cicd-tools/main"
         COMPONENT_NAME="compliance"
         IMAGE="quay.io/cloudservices/compliance-backend"
-        IQE_CJI_TIMEOUT="30m"
+        IQE_CJI_TIMEOUT="40m"
         IQE_FILTER_EXPRESSION=""
         IQE_MARKER_EXPRESSION="compliance_smoke"
         IQE_PLUGINS="compliance"
