@@ -3,7 +3,7 @@
 module Kafka
   # Service for removing a host based on a kafka message
   # FIXME: refactor the DeleteHost job into this service while utilizing V2 model validations
-  class HostRemover
+  class DeletedHostCleaner
     def initialize(message, logger)
       @message = message
       @logger = logger

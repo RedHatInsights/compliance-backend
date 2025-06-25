@@ -2,12 +2,12 @@
 
 require 'rails_helper'
 
-describe Kafka::HostRemover do
+describe Kafka::DeletedHostCleaner do
   after do
     DeleteHost.clear
   end
 
-  let(:service) { Kafka::HostRemover.new(message, Karafka.logger) }
+  let(:service) { Kafka::DeletedHostCleaner.new(message, Karafka.logger) }
 
   let(:type) { 'delete' }
   let(:user) { FactoryBot.create(:v2_user) }

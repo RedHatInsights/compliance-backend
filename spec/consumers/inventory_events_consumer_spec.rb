@@ -109,10 +109,10 @@ describe InventoryEventsConsumer do
     end
 
     context 'received delete message' do
-      let(:service_class) { Kafka::HostRemover }
+      let(:service_class) { Kafka::DeletedHostCleaner }
       let(:type) { 'delete' }
 
-      it 'delegates to HostRemover service' do
+      it 'delegates to DeletedHostCleaner service' do
         allow(@service).to receive(:remove_host)
 
         expect(@service).to receive(:remove_host)
