@@ -34,6 +34,7 @@ pipeline {
         IQE_MARKER_EXPRESSION="compliance_smoke"
         IQE_PLUGINS="compliance"
         REF_ENV="insights-stage"
+        DEPLOY_TIMEOUT="1200"
     }
 
     stages {
