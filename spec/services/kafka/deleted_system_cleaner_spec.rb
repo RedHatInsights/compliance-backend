@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-describe Kafka::DeletedHostCleaner do
-  let(:service) { Kafka::DeletedHostCleaner.new(message, Karafka.logger) }
+describe Kafka::DeletedSystemCleaner do
+  let(:service) { Kafka::DeletedSystemCleaner.new(message, Karafka.logger) }
 
   let(:type) { 'delete' }
   let(:user) { FactoryBot.create(:v2_user) }
@@ -25,7 +25,7 @@ describe Kafka::DeletedHostCleaner do
     )
 
     expect do
-      service.cleanup_host
+      service.cleanup_system
     end.to change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
        .and change { policy.systems.count }.from(1).to(0)
   end
@@ -40,7 +40,7 @@ describe Kafka::DeletedHostCleaner do
       )
 
       expect do
-        service.cleanup_host
+        service.cleanup_system
       end.to change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
          .and change { policy.systems.count }.from(2).to(1)
 
@@ -61,7 +61,7 @@ describe Kafka::DeletedHostCleaner do
     it 'does not perform cleanup and does not log' do
       expect(Karafka.logger).not_to receive(:audit_success)
 
-      service.cleanup_host
+      service.cleanup_system
     end
   end
 
@@ -75,7 +75,7 @@ describe Kafka::DeletedHostCleaner do
         "[#{org_id}] Failed to delete related records for System #{system.id}: StandardError"
       )
 
-      expect { service.cleanup_host }.to raise_error(StandardError)
+      expect { service.cleanup_system }.to raise_error(StandardError)
     end
   end
 end
