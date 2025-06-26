@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Kafka
-  # Service for removing a host based on a kafka message
-  class DeletedHostCleaner
+  # Service for removing a system based on a kafka message
+  class DeletedSystemCleaner
     def initialize(message, logger)
       @message = message
       @logger = logger
@@ -16,7 +16,7 @@ module Kafka
       { qe: OpenshiftEnvironment.qe_account?(@org_id) }
     end
 
-    def cleanup_host
+    def cleanup_system
       num_removed = remove_related
       audit_success if num_removed.positive?
     rescue StandardError => e

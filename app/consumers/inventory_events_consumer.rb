@@ -5,7 +5,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   # rubocop:disable Metrics/AbcSize
   def consume_one
     if message_type == 'delete'
-      Kafka::DeletedHostCleaner.new(payload, logger).cleanup_host
+      Kafka::DeletedSystemCleaner.new(payload, logger).cleanup_system
     elsif service == 'compliance'
       Kafka::ReportParser.new(payload, logger).parse_reports
     elsif policy_id && %w[created updated].include?(message_type)
