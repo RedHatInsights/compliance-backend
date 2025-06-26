@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Kafka
-  # Service for removing a host's associations
-  class DeletedHostCleaner
+  # Service for removing records associated with a deleted system based on a kafka message
+  class DeletedSystemCleaner
     def initialize(message, logger)
       @message = message
       @logger = logger
@@ -11,7 +11,7 @@ module Kafka
       @org_id = @message.dig('org_id')
     end
 
-    def cleanup_host
+    def cleanup_system
       num_removed = remove_related
       audit_success if num_removed.positive?
     rescue StandardError => e
