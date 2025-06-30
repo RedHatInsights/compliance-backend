@@ -119,6 +119,7 @@ module Kafka
       should_notify = notifications_allowed?(report)
 
       # Evaluate compliance of the report
+      report.check_for_missing_benchmark_info # FIXME: temporary workaround to trigger xccdf_report_parser.rb before it needs Host
       if report_compliant?(report)
         report.save_all
       elsif should_notify
@@ -131,6 +132,9 @@ module Kafka
     end
 
     def report_compliant?(report)
+      puts "\n\u001b[31;1m◉\u001b[0m app/services/kafka/report_parser.rb"
+      puts "report.host.id: #{report.host.id}"
+      puts "-" * 40
       report.supported? && report.score >= report.policy.compliance_threshold
     end
 
