@@ -54,6 +54,9 @@ module Xccdf
 
       def invalidate_cache
         Rails.cache.delete("#{@new_host_profile&.id}/#{@host&.id}/results")
+        puts "\n\u001b[31;1m◉\u001b[0m app/services/concerns/xccdf/util.rb"
+        puts "@host_profile: #{@host_profile}"
+        puts "-" * 40
         @host_profile.rules.each do |rule|
           Rails.cache.delete("#{rule.id}/#{@host&.id}/compliant")
         end

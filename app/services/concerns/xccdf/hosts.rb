@@ -4,6 +4,9 @@ module Xccdf
   # Methods related to saving Hosts from openscap_parser
   module Hosts
     def host_profile
+      puts "\n\u001b[31;1m◉\u001b[0m app/services/concerns/xccdf/hosts.rb"
+      puts "@host.class: #{@host.class}"
+      puts "-" * 40
       @host_profile ||= test_result_profile.clone_to(
         policy: Policy.with_hosts(@host)
                       .with_ref_ids(test_result_profile.ref_id)
@@ -22,6 +25,7 @@ module Xccdf
     private
 
     def test_result_profile
+      # binding.pry
       @test_result_profile ||= ::Profile.canonical.create_with(
         name: @test_result_file.test_result.profile_id
       ).find_or_initialize_by(
