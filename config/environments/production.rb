@@ -52,14 +52,13 @@ Rails.application.configure do
     config.cache_store = :redis_cache_store, begin
       if ENV.fetch('PRIMARY_REDIS_AS_CACHE', false) == 'true' # Fall-back to the clowder-redis in ephemeral
         redis_url = Settings.redis.url
-        redis_password = Settings.redis.password
+        redis_password = Settings.redis.password.presence
       else # Use the dedicated redis if available
         redis_url = "redis://#{Settings.redis.cache_hostname}:#{Settings.redis.cache_port}"
-        redis_password = Settings.redis.cache_password.present? ? Settings.redis.cache_password : nil
+        redis_password = Settings.redis.cache_password.presence
       end
 
-      # FIXME: Settings.redis.ssl after clowder provides it
-      { url: redis_url, password: redis_password, ssl: ActiveModel::Type::Boolean.new.cast(ENV.fetch('SETTINGS__REDIS__SSL', nil))}
+      { url: redis_url, password: redis_password, ssl: Settings.redis.ssl}
     end
 
     # Override is necessary as it gets set during initialization without the proper config available
