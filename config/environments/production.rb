@@ -65,8 +65,7 @@ Rails.application.configure do
     Rails.cache = ActiveSupport::Cache.lookup_store(*config.cache_store)
 
     # Set up cloudwatch logging if available
-    # FIXME: change this to Settings.logging.type == "cloudwatch"
-    if Settings.logging&.credentials&.access_key_id.present?
+    if Settings.logging.type == "cloudwatch"
       $cloudwatch_client ||= CloudWatchLogger::Client.new(
         Settings.logging.credentials,
         Settings.logging.log_group,
