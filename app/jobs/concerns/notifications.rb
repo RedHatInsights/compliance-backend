@@ -27,10 +27,9 @@ module Notifications
 
     def notify_non_compliant!
       SystemNonCompliant.deliver(
-        host: parser.host,
+        system: parser.host,
         org_id: @msg_value['org_id'],
         policy: parser.policy,
-        policy_threshold: parser.policy.compliance_threshold,
         compliance_score: parser.score
       )
     end
