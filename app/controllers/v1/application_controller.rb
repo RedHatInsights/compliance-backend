@@ -15,7 +15,9 @@ module V1
     private
 
     def add_deprecation_warning
-      response.set_header('Warning', '299 - APIv1 will soon be deprecated. Please migrate to APIv2.')
+      response.set_header('Deprecation', '@1754611200')
+      response.set_header('Sunset', '@1757030400')
+      response.set_header('Link', '<https://console.redhat.com/docs/api/compliance/v2>; rel="successor-version"')
     end
   end
 end

@@ -22,7 +22,9 @@ module V1
         get v1_systems_url
 
         assert_response :success
-        assert response.headers['Warning'].present?, 'Warning header is missing'
+        %w[Deprecation Sunset Link].each do |header|
+          assert response.headers[header].present?
+        end
       end
 
       should 'return hosts from allowed groups' do

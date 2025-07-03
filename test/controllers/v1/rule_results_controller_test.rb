@@ -18,7 +18,9 @@ module V1
       get v1_rule_results_url
 
       assert_response :success
-      assert response.headers['Warning'].present?, 'Warning header is missing'
+      %w[Deprecation Sunset Link].each do |header|
+        assert response.headers[header].present?
+      end
     end
 
     test 'rule results can be sorted' do

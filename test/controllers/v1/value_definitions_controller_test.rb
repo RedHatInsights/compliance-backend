@@ -32,7 +32,9 @@ module V1
       }
 
       assert_response :success
-      assert response.headers['Warning'].present?, 'Warning header is missing'
+      %w[Deprecation Sunset Link].each do |header|
+        assert response.headers[header].present?
+      end
 
       value_definitions = response.parsed_body
 
