@@ -27,13 +27,13 @@ class Notification < ApplicationProducer
   end
   # rubocop:enable Metrics/MethodLength
 
-  def self.build_context(host:, **_kwargs)
+  def self.build_context(system:, **_kwargs)
     {
-      display_name: host&.display_name,
-      host_url: "https://console.redhat.com/insights/inventory/#{host&.id}",
-      inventory_id: host&.id,
-      rhel_version: [host&.os_major_version, host&.os_minor_version].join('.'),
-      tags: host&.tags
+      display_name: system&.display_name,
+      host_url: "https://console.redhat.com/insights/inventory/#{system&.id}",
+      inventory_id: system&.id,
+      rhel_version: [system&.os_major_version, system&.os_minor_version].join('.'),
+      tags: system&.tags
     }
   end
 end
