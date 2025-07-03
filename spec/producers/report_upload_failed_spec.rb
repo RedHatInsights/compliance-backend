@@ -21,7 +21,7 @@ describe ReportUploadFailed do
 
   it 'provides event details to notification' do
     ReportUploadFailed.deliver(
-      host: system,
+      system: system,
       request_id: request_id,
       error: error,
       org_id: org_id

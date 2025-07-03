@@ -15,7 +15,7 @@ describe RemediationUpdates do
     end
 
     it 'sends a correct message to the correct topic' do
-      RemediationUpdates.deliver(host_id: system_id, issue_ids: issue_ids)
+      RemediationUpdates.deliver(system_id: system_id, issue_ids: issue_ids)
 
       expect(karafka.produced_messages.size).to eq(1)
       expect(JSON.parse(karafka.produced_messages.first[:payload])).to match(hash_including(correct_message))
@@ -35,7 +35,7 @@ describe RemediationUpdates do
         )
       )
 
-      expect { RemediationUpdates.deliver(host_id: system_id, issue_ids: issue_ids) }.to_not raise_error
+      expect { RemediationUpdates.deliver(system_id: system_id, issue_ids: issue_ids) }.to_not raise_error
     end
   end
 end

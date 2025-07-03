@@ -23,7 +23,7 @@ describe SystemNonCompliant do
 
   it 'provides event details to notification' do
     SystemNonCompliant.deliver(
-      host: system,
+      system: system,
       org_id: org_id,
       policy: policy,
       compliance_score: compliance_score
