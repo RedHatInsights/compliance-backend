@@ -5,12 +5,12 @@ class SystemNonCompliant < Notification
   EVENT_TYPE = 'compliance-below-threshold'
 
   # rubocop:disable Metrics/MethodLength
-  def self.build_events(host:, policy:, compliance_score:)
+  def self.build_events(system:, policy:, compliance_score:)
     [{
       metadata: {},
       payload: {
-        host_id: host&.id,
-        host_name: host&.display_name,
+        host_id: system&.id,
+        host_name: system&.display_name,
         policy_id: policy&.profile_id,
         policy_name: policy&.title,
         policy_threshold: policy&.compliance_threshold&.round(1),

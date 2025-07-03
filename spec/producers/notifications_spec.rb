@@ -36,7 +36,7 @@ describe Notification do
     end
 
     it 'sends a correct message to the correct topic' do
-      MockNotification.deliver(host: system, org_id: org_id)
+      MockNotification.deliver(system: system, org_id: org_id)
 
       expect(karafka.produced_messages.size).to eq(1)
       expect(karafka.produced_messages.first[:payload]).to eq(correct_message)
@@ -55,7 +55,7 @@ describe Notification do
           /\ANotification delivery failed:/
         )
       )
-      expect { MockNotification.deliver(host: system, org_id: org_id) }.to_not raise_error
+      expect { MockNotification.deliver(system: system, org_id: org_id) }.to_not raise_error
     end
   end
 end
