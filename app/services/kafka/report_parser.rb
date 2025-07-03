@@ -122,7 +122,7 @@ module Kafka
       @logger.audit_fail msg
 
       ReportUploadFailed.deliver(
-        host: Host.find_by(id: id, account: account),
+        system: Host.find_by(id: id, account: account),
         request_id: request_id,
         error: exception_message(exception),
         org_id: org_id

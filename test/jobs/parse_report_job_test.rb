@@ -84,7 +84,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
       .stubs(:remediation_issue_ids)
       .returns([@issue_id])
     RemediationUpdates.expects(:deliver).with(
-      host_id: @msg_value['id'],
+      system_id: @msg_value['id'],
       issue_ids: [@issue_id]
     )
     SafeDownloader.expects(:download_reports)
@@ -108,7 +108,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     Host.stubs(:find_by).returns(nil)
 
     ReportUploadFailed.expects(:deliver).with(
-      host: nil, request_id: '', org_id: @msg_value['org_id'],
+      system: nil, request_id: '', org_id: @msg_value['org_id'],
       error: "Failed to parse report profileid from host #{@msg_value['id']}: WrongFormatError"
     )
 
@@ -134,7 +134,7 @@ class ParseReportJobTest < ActiveSupport::TestCase
     Host.stubs(:find_by).returns(@host)
 
     ReportUploadFailed.expects(:deliver).with(
-      host: @host, request_id: '', org_id: @msg_value['org_id'],
+      system: @host, request_id: '', org_id: @msg_value['org_id'],
       error: "Failed to parse report profileid from host #{@msg_value['id']}: WrongFormatError"
     )
 
