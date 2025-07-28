@@ -19,6 +19,8 @@ class ParseReportJobTest < ActiveSupport::TestCase
     @file = file_fixture('report.tar.gz').read
     @parser = mock('XccdfReportParser')
     @policy = mock('Policy')
+    # FIXME: can be removed after rewriting the parser to use V2::Policy
+    @policy.stubs(:id).returns('policyUUID')
     @host = mock('Host')
     @host.stubs(:id)
     @issue_id = 'ssg:rhel7|short_profile_ref_id|rule_ref_id'
