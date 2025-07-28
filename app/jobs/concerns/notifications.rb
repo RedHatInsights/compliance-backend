@@ -26,10 +26,13 @@ module Notifications
     end
 
     def notify_non_compliant!
+      # FIXME: after rewriting the parser to use V2::Policy, the additional lookup can be removed
+      v2_policy = V2::Policy.find_by(id: parser.policy.id)
+
       SystemNonCompliant.deliver(
         system: parser.host,
         org_id: @msg_value['org_id'],
-        policy: parser.policy,
+        policy: v2_policy,
         compliance_score: parser.score
       )
     end
