@@ -114,6 +114,17 @@
         "responses": {
           "200": {
             "description": "lists all benchmarks requested",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -283,6 +294,17 @@
         "responses": {
           "404": {
             "description": "benchmark not found",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -301,6 +323,17 @@
           },
           "200": {
             "description": "retrieves a benchmark",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -637,6 +670,17 @@
         "responses": {
           "200": {
             "description": "lists all business_objectives requested",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -764,6 +808,17 @@
         "responses": {
           "404": {
             "description": "business_objective not found",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -782,6 +837,17 @@
           },
           "200": {
             "description": "retrieves a business_objective",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -936,6 +1002,17 @@
         "responses": {
           "200": {
             "description": "lists all profiles requested filtered by OS",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -1199,6 +1276,17 @@
         "responses": {
           "201": {
             "description": "creates a profile",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -1420,6 +1508,17 @@
         "responses": {
           "404": {
             "description": "profile not found",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -1438,6 +1537,17 @@
           },
           "200": {
             "description": "retrieves a profile with included benchmark",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -1619,6 +1729,17 @@
         "responses": {
           "404": {
             "description": "profile not found",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -1637,6 +1758,17 @@
           },
           "200": {
             "description": "updates a profile",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -1874,6 +2006,17 @@
         "responses": {
           "404": {
             "description": "profile not found",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -1892,6 +2035,17 @@
           },
           "202": {
             "description": "destroys a profile",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -2080,6 +2234,17 @@
         "responses": {
           "200": {
             "description": "lists all rule_results requested",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -2256,6 +2421,17 @@
         "responses": {
           "200": {
             "description": "lists all rules requested",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -2397,6 +2573,17 @@
         "responses": {
           "404": {
             "description": "rule not found",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -2415,6 +2602,17 @@
           },
           "200": {
             "description": "retrieves a rule",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -2515,6 +2713,17 @@
         "responses": {
           "200": {
             "description": "successful status",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -2541,6 +2750,17 @@
           },
           "500": {
             "description": "unsuccessful status",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -2597,6 +2817,17 @@
         "responses": {
           "200": {
             "description": "lists all supported_ssgs requested",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -3443,6 +3674,17 @@
         "responses": {
           "200": {
             "description": "lists all hosts requested",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -3585,6 +3827,17 @@
         "responses": {
           "404": {
             "description": "system not found",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -3603,6 +3856,17 @@
           },
           "200": {
             "description": "retrieves a system",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -3751,6 +4015,17 @@
         "responses": {
           "200": {
             "description": "lists all value_definitions requested",
+            "headers": {
+              "Deprecation": {
+                "$ref": "#/components/headers/Deprecation"
+              },
+              "Sunset": {
+                "$ref": "#/components/headers/Sunset"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "examples": {
@@ -4396,6 +4671,29 @@
             }
           }
         }
+      }
+    },
+    "headers": {
+      "Deprecation": {
+        "description": "This API will be officially deprecated at the time specified by the returned value.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "@1754611200"
+      },
+      "Sunset": {
+        "description": "This API will be removed at the time specified by the returned value.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "@1757030400"
+      },
+      "Link": {
+        "description": "This header provides a link to the successor version of the API.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "<https://console.redhat.com/docs/api/compliance/v2>; rel=\"successor-version\""
       }
     }
   }
