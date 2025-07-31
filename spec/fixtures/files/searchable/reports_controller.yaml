@@ -103,7 +103,7 @@
         :system_id: ${system_id}
         :account: ${account}
       - :factory: :v2_report
-        :title: searched title
+        :title: also searched title
         :os_major_version: 9
         :system_id: ${system_id}
         :account: ${account}
@@ -131,7 +131,7 @@
         :system_id: ${system_id}
         :account: ${account}
       - :factory: :v2_report
-        :title: searched title
+        :title: also searched title
         :os_major_version: 9
         :system_id: ${system_id}
         :account: ${account}

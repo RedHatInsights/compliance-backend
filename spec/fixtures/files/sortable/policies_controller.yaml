@@ -22,7 +22,7 @@
     :system_id: ${system_id}
 
   - :factory: :v2_policy
-    :title: 'aab'
+    :title: 'aac'
     :business_objective: 'aab'
     :compliance_threshold: 90
     :os_major_version: ${rhel_7}
@@ -55,7 +55,7 @@
     :system_id: ${system_id}
 
   - :factory: :v2_policy
-    :title: 'aaa'
+    :title: 'aab'
     :business_objective: 'aaa'
     :compliance_threshold: 80
     :os_major_version: ${rhel_8}
@@ -68,7 +68,7 @@
 :queries:
   - :sort_by:
       - 'title'
-    :result: [[3, 5], 2, 0, 1, 4]
+    :result: [3, 5, 2, 0, 1, 4]
   - :sort_by:
       - 'business_objective'
     :result: [[3, 5], 2, 0, 1, 4]
