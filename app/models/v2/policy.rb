@@ -24,7 +24,7 @@ module V2
 
     validates :account, presence: true
     validates :profile, presence: true
-    validates :title, presence: true
+    validates :title, presence: true, uniqueness: { scope: :account_id }
     validates :compliance_threshold, numericality: {
       greater_than_or_equal_to: 0, less_than_or_equal_to: 100
     }
