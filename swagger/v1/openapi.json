@@ -27,6 +27,7 @@
     "/benchmarks": {
       "get": {
         "summary": "List all benchmarks",
+        "deprecated": true,
         "tags": [
           "benchmark"
         ],
@@ -260,6 +261,7 @@
     "/benchmarks/{id}": {
       "get": {
         "summary": "Retrieve a benchmark",
+        "deprecated": true,
         "tags": [
           "benchmark"
         ],
@@ -586,6 +588,7 @@
     "/business_objectives": {
       "get": {
         "summary": "List all business_objectives",
+        "deprecated": true,
         "tags": [
           "business_objective"
         ],
@@ -774,6 +777,7 @@
     "/business_objectives/{id}": {
       "get": {
         "summary": "Retrieve a business_objective",
+        "deprecated": true,
         "tags": [
           "business_objective"
         ],
@@ -912,6 +916,7 @@
     "/profiles": {
       "get": {
         "summary": "List all profiles",
+        "deprecated": true,
         "tags": [
           "profile"
         ],
@@ -1259,6 +1264,7 @@
       },
       "post": {
         "summary": "Create a profile",
+        "deprecated": true,
         "tags": [
           "profile"
         ],
@@ -1474,6 +1480,7 @@
     "/profiles/{id}": {
       "get": {
         "summary": "Retrieve a profile",
+        "deprecated": true,
         "tags": [
           "profile"
         ],
@@ -1695,6 +1702,7 @@
       },
       "patch": {
         "summary": "Update a profile",
+        "deprecated": true,
         "tags": [
           "profile"
         ],
@@ -1972,6 +1980,7 @@
       },
       "delete": {
         "summary": "Destroy a profile",
+        "deprecated": true,
         "tags": [
           "profile"
         ],
@@ -2150,6 +2159,7 @@
     "/rule_results": {
       "get": {
         "summary": "List all rule_results",
+        "deprecated": true,
         "tags": [
           "rule_result"
         ],
@@ -2328,6 +2338,7 @@
     "/rules": {
       "get": {
         "summary": "List all rules",
+        "deprecated": true,
         "tags": [
           "rule"
         ],
@@ -2539,6 +2550,7 @@
     "/rules/{id}": {
       "get": {
         "summary": "Retrieve a rule",
+        "deprecated": true,
         "tags": [
           "rule"
         ],
@@ -2705,6 +2717,7 @@
     "/status": {
       "get": {
         "summary": "status",
+        "deprecated": true,
         "tags": [
           "status"
         ],
@@ -2791,6 +2804,7 @@
     "/supported_ssgs": {
       "get": {
         "summary": "List all supported SSGs",
+        "deprecated": true,
         "tags": [
           "supported_ssg"
         ],
@@ -3560,6 +3574,7 @@
     "/systems": {
       "get": {
         "summary": "List all hosts",
+        "deprecated": true,
         "tags": [
           "host"
         ],
@@ -3793,6 +3808,7 @@
     "/systems/{id}": {
       "get": {
         "summary": "Retrieve a system",
+        "deprecated": true,
         "tags": [
           "host"
         ],
@@ -3957,6 +3973,7 @@
     "/value_definitions": {
       "get": {
         "summary": "List all value definitions",
+        "deprecated": true,
         "tags": [
           "value_definition"
         ],
