@@ -33,7 +33,7 @@ pipeline {
         IQE_FILTER_EXPRESSION=""
         IQE_MARKER_EXPRESSION="compliance_smoke"
         IQE_PLUGINS="compliance"
-        REF_ENV="insights-stage"
+        REF_ENV="insights-production"
     }
 
     stages {
