@@ -38,6 +38,18 @@ RSpec.configure do |config|
   end
 end
 
+def parse_body(response)
+  content_type = response.content_type
+  body = response.body
+
+  case content_type
+  when 'application/toml'
+    body
+  else
+    JSON.parse(body, symbolize_names: true)
+  end
+end
+
 def autogenerate_examples(example, label = 'Response example', summary = '', description = '')
   # FIXME: hack to avoid duplicated keys
   # Needed after previous hack was removed during Rails 8 upgrade
@@ -46,14 +58,14 @@ def autogenerate_examples(example, label = 'Response example', summary = '', des
 
   example_obj = {
     label.to_sym => {
-      value: JSON.parse(response.body, symbolize_names: true),
+      value: parse_body(response),
       summary: summary,
       description: description
     }
   }
 
   example.metadata[:response][:content] ||= {}
-  example.metadata[:response][:content]['application/vnd.api+json'] = { examples: example_obj }
+  example.metadata[:response][:content][response.content_type] = { examples: example_obj }
 end
 
 def encoded_header(account = nil)
