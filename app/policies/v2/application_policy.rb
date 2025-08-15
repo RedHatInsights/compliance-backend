@@ -37,6 +37,16 @@ module V2
     alias new? create?
     alias edit? update?
 
+    protected
+
+    def match_workspace?(system)
+      groups = user.inventory_groups
+      return true if groups == Rbac::ANY
+      return system.group_ids.intersect?(groups) if KesselRbac.enabled?
+
+      (system.groups.blank? && groups&.include?([])) || system.group_ids.intersect?(groups)
+    end
+
     private
 
     def match_account?

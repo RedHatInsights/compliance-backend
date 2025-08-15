@@ -7,6 +7,7 @@ module V2
       render_json supported_profiles
     end
     permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    kessel_permission_for_action :index, KesselRbac::POLICY_VIEW
 
     private
 

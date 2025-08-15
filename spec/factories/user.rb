@@ -10,5 +10,13 @@ FactoryBot.define do
 
       account { association :v2_account, :with_cert_auth, system_owner_id: system_owner_id }
     end
+
+    trait :with_service_account_type do
+      account { association :v2_account, :with_service_account_type }
+    end
+
+    trait :with_invalid_identity_type do
+      account { association :v2_account, :with_invalid_identity_type }
+    end
   end
 end

@@ -10,16 +10,19 @@ module V2
       render_json tailorings
     end
     permission_for_action :index, Rbac::POLICY_READ
+    kessel_permission_for_action :index, KesselRbac::POLICY_VIEW
 
     def show
       render_json tailoring
     end
     permission_for_action :show, Rbac::POLICY_READ
+    kessel_permission_for_action :show, KesselRbac::POLICY_VIEW
 
     def rule_tree
       render json: tailoring.rule_tree
     end
     permission_for_action :rule_tree, Rbac::COMPLIANCE_VIEWER
+    kessel_permission_for_action :rule_tree, KesselRbac::POLICY_VIEW
     permitted_params_for_action :rule_tree, id: ID_TYPE.required
 
     def create
@@ -35,6 +38,7 @@ module V2
       end
     end
     permission_for_action :create, Rbac::POLICY_WRITE
+    kessel_permission_for_action :create, KesselRbac::POLICY_EDIT
     permitted_params_for_action :create, { id: ID_TYPE, **CREATE_ATTRIBUTES }
 
     def update
@@ -46,6 +50,7 @@ module V2
       end
     end
     permission_for_action :update, Rbac::POLICY_WRITE
+    kessel_permission_for_action :update, KesselRbac::POLICY_EDIT
     permitted_params_for_action :update, { id: ID_TYPE, **UPDATE_ATTRIBUTES }
 
     def tailoring_file
@@ -56,6 +61,7 @@ module V2
       send_data(builder.output, filename: builder.filename, type: builder.mime)
     end
     permission_for_action :tailoring_file, Rbac::POLICY_READ
+    kessel_permission_for_action :tailoring_file, KesselRbac::POLICY_VIEW
     permitted_params_for_action :tailoring_file, id: ID_TYPE.required
 
     private
