@@ -53,11 +53,35 @@ module V2
       return valid_cert_auth? if identity_header.cert_based?
 
       permission = self.class.instance_variable_get(:@action_permissions)[action_name.to_sym]
-      user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
+
+      if KesselClient.enabled?
+        # KESSEL: Use default workspace check for the action permission
+        # Inventory read is enforced by the graph and inherited from default or root
+        kessel_rbac_allowed?(permission)
+      else
+        user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
+      end
     end
 
     def pundit_scope(res = resource)
       Pundit.policy_scope(current_user, res)
+    end
+
+    # Kessel-based authorization check using default workspace pattern
+    def kessel_rbac_allowed?(permission)
+      return false unless permission
+
+      default_workspace_id = KesselClient.get_default_workspace_id(raw_identity_header)
+
+      KesselClient.check_permission(
+        resource_type: 'workspace',
+        resource_id: default_workspace_id,
+        permission: permission,
+        user: user
+      )
+    rescue KesselClient::AuthorizationError => e
+      Rails.logger.error("Kessel RBAC check failed: #{e.message}")
+      false
     end
 
     # Iterate through the `request.path` and replace any occurrences of identifiers.
