@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "/swagger/v2/tailoring_schema_toml.json",
+  "title": "Blueprint Configuration Schema",
+  "description": "Incomplete schema inspired by content of https://github.com/osbuild/blueprint-schema/blob/993ad4c66cdeb043417012bf2238806002d8be95/testdata/all-fields2.in.toml",
+  "type": "string",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the blueprint"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the blueprint"
+    },
+    "customizations": {
+      "type": "object",
+      "properties": {
+        "openscap": {
+          "type": "object",
+          "properties": {
+            "datastream": {
+              "type": "string"
+            },
+            "profile_id": {
+              "type": "string"
+            },
+            "tailoring": {
+              "type": "object",
+              "properties": {
+                "selected": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "unselected": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
