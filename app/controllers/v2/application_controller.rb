@@ -22,6 +22,11 @@ module V2
         @action_permissions ||= {}
         @action_permissions[action.to_sym] ||= permission
       end
+
+      def kessel_permission_for_action(action, permission)
+        @kessel_action_permissions ||= {}
+        @kessel_action_permissions[action.to_sym] ||= permission
+      end
     end
 
     # This method is being called before any before_action callbacks and it can set
@@ -52,8 +57,19 @@ module V2
     def rbac_allowed?
       return valid_cert_auth? if identity_header.cert_based?
 
+      return kessel_rbac_allowed? if KesselRbac.enabled?
+
+      v1_rbac_allowed?
+    end
+
+    def v1_rbac_allowed?
       permission = self.class.instance_variable_get(:@action_permissions)[action_name.to_sym]
       user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
+    end
+
+    def kessel_rbac_allowed?
+      permission = self.class.instance_variable_get(:@kessel_action_permissions)[action_name.to_sym]
+      user.kessel_authorized_to?(permission)
     end
 
     def pundit_scope(res = resource)
