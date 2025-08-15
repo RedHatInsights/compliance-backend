@@ -9,20 +9,26 @@ module Api
       module TailoringFile
         extend Api::V2::Schemas::Util
 
-        FALLBACK_PATH = Rails.root.join('swagger/v2/tailoring_schema.json')
+        JSON_FALLBACK_PATH = Rails.root.join('swagger/v2/tailoring_schema.json')
+        TOML_FALLBACK_PATH = Rails.root.join('swagger/v2/tailoring_schema_toml.json')
 
-        def self.retrieve_schema
-          # Download the JSON:API schema from GitHub
-          content = SafeDownloader.download('https://raw.githubusercontent.com/ComplianceAsCode/schemas/main/tailoring/schema.json')
-          File.open(FALLBACK_PATH, 'w') { |f| f.write(content.read) }
+        JSON_SCHEMA_URL = 'https://raw.githubusercontent.com/ComplianceAsCode/schemas/main/tailoring/schema.json'
+        # FIXME: after there's a proper schema for TOML, this should be specified
+        # https://github.com/osbuild/blueprint-schema
+        TOML_SCHEMA_URL = nil
+
+        def self.retrieve_schema(schema_url, fallback)
+          # Download the API schema from GitHub
+          content = SafeDownloader.download(schema_url)
+          File.open(fallback, 'w') { |f| f.write(content.read) }
           content.rewind
           content
         rescue SafeDownloader::DownloadError
-          File.read(FALLBACK_PATH)
+          File.read(fallback)
         end
 
-        TAILORING_FILE = begin
-          json = JSON.parse(retrieve_schema)
+        TAILORING_FILE_JSON = begin
+          json = JSON.parse(retrieve_schema(JSON_SCHEMA_URL, JSON_FALLBACK_PATH))
 
           # Delete the unwanted keys that rswag can't parse
           json.delete('$schema')
@@ -32,6 +38,20 @@ module Api
           json['title'] = 'Tailoring File'
 
           json
+        end.freeze
+
+        TAILORING_FILE_TOML = begin
+          # Necessary string conversion due to TOML parser not supporting StringIO
+          toml = JSON.parse(retrieve_schema(TOML_SCHEMA_URL, TOML_FALLBACK_PATH))
+
+          # Delete the unwanted keys that rswag can't parse
+          toml.delete('$schema')
+          toml.delete('$id')
+
+          # Rename to Tailoring file
+          toml['name'] = 'Tailoring File Blueprint'
+
+          toml
         end.freeze
       end
     end
