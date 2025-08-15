@@ -4,11 +4,16 @@ module V2
   # Policies for accessing Systems
   class SystemPolicy < V2::ApplicationPolicy
     def index?
+      # KESSEL: This stays; handled in scoping
       true # FIXME: this is handled in scoping
     end
 
     def show?
-      match_account? && match_group?
+      if KesselClient.enabled?
+        kessel_system_check('view')
+      else
+        match_account? && match_group?
+      end
     end
 
     def create?
@@ -16,11 +21,19 @@ module V2
     end
 
     def update?
-      match_account? && match_group?
+      if KesselClient.enabled?
+        kessel_system_check('update')
+      else
+        match_account? && match_group?
+      end
     end
 
     def destroy?
-      match_account? && match_group?
+      if KesselClient.enabled?
+        kessel_system_check('destroy')
+      else
+        match_account? && match_group?
+      end
     end
 
     def os_versions?
@@ -39,6 +52,20 @@ module V2
       (groups == Rbac::ANY) || (record.groups.blank? && groups&.include?([])) || record.group_ids.intersect?(groups)
     end
 
+    # Kessel-based system authorization check
+    def kessel_system_check(action)
+      KesselClient.check_permission(
+        resource_type: 'system',
+        resource_id: record.id,
+        permission: "compliance_system_#{action}",
+        user: user,
+        use_check_for_update: %w[update destroy].include?(action)
+      )
+    rescue KesselClient::AuthorizationError => e
+      Rails.logger.error("Kessel system check failed: #{e.message}")
+      false
+    end
+
     # Only show systems in our user account
     class Scope < V2::ApplicationPolicy::Scope
       def resolve
@@ -53,6 +80,14 @@ module V2
       private
 
       def resolve_regular
+        # KESSEL: do the same OR consider doing workspace (inventory group) lookup here
+        # This is because we know the verb here,
+        # so we can do list_objects(workspace, view_systems, user)
+        # I think you would still filter on org_id because this is effectively an implicit
+        # query param, not an authorization function any more.
+        # Cross org access will require making this "query param" explicit.
+        # Cert auth path stays the same b/c we don't have cert auth identities (yet?)
+
         groups = user.inventory_groups
 
         # No access to systems if there is no org_id or any RBAC (group) rule available
