@@ -50,14 +50,14 @@ RSpec.describe KesselClient, type: :service do
       end
 
       it 'fails on invalid identity' do
-        expect {
+        expect do
           described_class.check_permission(
             resource_type: 'workspace',
             resource_id: 'test-workspace',
             permission: 'compliance_policy_view',
             user: create(:v2_user, :with_invalid_identity_type)
           )
-        }.to raise_error('unsupported identity type')
+        end.to raise_error('unsupported identity type')
       end
 
       it 'accepts service accounts' do
@@ -171,7 +171,7 @@ RSpec.describe KesselClient, type: :service do
         user: user
       )
 
-      expect(result).to eq(['workspace-1', 'workspace-2'])
+      expect(result).to eq(%w[workspace-1 workspace-2])
     end
 
     context 'when Kessel is disabled' do

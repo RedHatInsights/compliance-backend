@@ -21,7 +21,7 @@ RSpec.describe User, type: :model do
 
         context 'when user is authorized' do
           let(:workspace_id) { "default-workspace-#{user.org_id}" }
-          
+
           before do
             # Mock the Rbac service workspace lookup
             allow(Rbac).to receive(:get_default_workspace_id).and_return(workspace_id)
@@ -42,10 +42,10 @@ RSpec.describe User, type: :model do
               user: user
             )
           end
-          
+
           it 'calls Rbac service to get workspace ID' do
             user.authorized_to?(permission)
-            
+
             expect(Rbac).to have_received(:get_default_workspace_id).with(user.account.identity_header.raw)
           end
         end
@@ -81,8 +81,9 @@ RSpec.describe User, type: :model do
         before do
           allow(KesselClient).to receive(:enabled?).and_return(false)
           allow(user).to receive(:rbac_permissions).and_return([
-            double('permission', permission: 'compliance:policy:read')
-          ])
+                                                                 double('permission',
+                                                                        permission: 'compliance:policy:read')
+                                                               ])
           allow(Rbac).to receive(:verify).and_return(true)
         end
 
@@ -111,11 +112,11 @@ RSpec.describe User, type: :model do
 
         context 'when user has workspace access' do
           before do
-            allow(KesselClient).to receive(:list_workspaces_with_permission).and_return(['workspace-1', 'workspace-2'])
+            allow(KesselClient).to receive(:list_workspaces_with_permission).and_return(%w[workspace-1 workspace-2])
           end
 
           it 'returns workspace IDs' do
-            expect(user.inventory_groups).to eq(['workspace-1', 'workspace-2'])
+            expect(user.inventory_groups).to eq(%w[workspace-1 workspace-2])
           end
 
           it 'calls KesselClient with correct parameters' do
@@ -140,7 +141,9 @@ RSpec.describe User, type: :model do
 
         context 'when KesselClient raises an error' do
           before do
-            allow(KesselClient).to receive(:list_workspaces_with_permission).and_raise(KesselClient::AuthorizationError, 'Test error')
+            allow(KesselClient).to receive(:list_workspaces_with_permission).and_raise(
+              KesselClient::AuthorizationError, 'Test error'
+            )
             allow(Rails.logger).to receive(:error)
           end
 
