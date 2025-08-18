@@ -43,6 +43,7 @@ class KesselClient
     # @param user [User] User to check permission for
     # @param use_check_for_update [Boolean] Whether to use CheckForUpdate (for writes/sensitive reads)
     # @return [Boolean] Whether user has permission
+    # rubocop:disable Metrics/MethodLength
     def check_permission(resource_type:, resource_id:, permission:, user:, use_check_for_update: false)
       return true unless enabled?
 
@@ -67,11 +68,13 @@ class KesselClient
         raise AuthorizationError, "Authorization check failed: #{e.message}"
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     # List workspaces where user has a specific permission
     # @param permission [String] Permission to check
     # @param user [User] User to check permission for
     # @return [Array<String>] Array of workspace IDs
+    # rubocop:disable Metrics/MethodLength
     def list_workspaces_with_permission(permission:, user:)
       return [] unless enabled?
 
@@ -92,32 +95,25 @@ class KesselClient
       begin
         response = client.streamed_list_objects(request)
 
-        workspace_ids = []
-        response.each do |object|
-          workspace_ids << object.resource_id
-        end
-        workspace_ids
+        response.map(&:resource_id)
       rescue StandardError => e
         Rails.logger.error("Kessel workspace listing failed: #{e.message}")
         raise AuthorizationError, "Workspace listing failed: #{e.message}"
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     # Get default workspace ID for organization
     # Delegates to Rbac service to avoid duplicating RBAC API logic
     # @param identity_header [String] Raw X-RH-IDENTITY header from request
     # @return [String] Default workspace ID
-    def get_default_workspace_id(identity_header)
-      Rbac.get_default_workspace_id(identity_header)
-    end
+    delegate :get_default_workspace_id, to: :Rbac
 
     # Get root workspace ID for organization
     # Delegates to Rbac service to avoid duplicating RBAC API logic
     # @param identity_header [String] Raw X-RH-IDENTITY header from request
     # @return [String] Root workspace ID
-    def get_root_workspace_id(identity_header)
-      Rbac.get_root_workspace_id(identity_header)
-    end
+    delegate :get_root_workspace_id, to: :Rbac
 
     private
 
@@ -149,6 +145,7 @@ class KesselClient
       credentials
     end
 
+    # rubocop:disable Metrics/AbcSize
     def build_oauth_credentials
       # Fetch OIDC discovery metadata
       discovery = fetch_oidc_discovery(Settings.kessel.auth.oidc_issuer)
@@ -166,8 +163,7 @@ class KesselClient
       Rails.logger.error("Failed to build OAuth credentials: #{e.message}")
       raise ConfigurationError, "Failed to build OAuth credentials: #{e.message}"
     end
-
-
+    # rubocop:enable Metrics/AbcSize
 
     def build_resource_reference(resource_type, resource_id)
       ResourceReference.new(
@@ -177,6 +173,7 @@ class KesselClient
       )
     end
 
+    # rubocop:disable Metrics/MethodLength
     def build_subject_reference(user)
       identity = user.account.identity_header.identity
 
@@ -198,6 +195,7 @@ class KesselClient
         )
       )
     end
+    # rubocop:enable Metrics/MethodLength
 
     def map_permission(rbac_permission)
       PERMISSION_MAPPINGS[rbac_permission] || rbac_permission.gsub(':', '_').gsub('*', 'all')
