@@ -3,6 +3,7 @@
 require 'insights-rbac-api-client'
 
 # This service is meant to handle calls to the RBAC API
+# rubocop:disable Metrics/ClassLength
 class Rbac
   API_CLIENT = RBACApiClient::AccessApi.new
   APPS = 'compliance,inventory'
@@ -69,6 +70,7 @@ class Rbac
     # @param workspace_type [String] Type of workspace ('default' or 'root')
     # @param identity_header [String] Raw X-RH-IDENTITY header from request
     # @return [String] Workspace ID
+    # rubocop:disable Metrics/MethodLength
     def get_workspace_id_by_type(workspace_type, identity_header)
       # Extract org_id from identity header for caching
       parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
@@ -92,6 +94,7 @@ class Rbac
       Rails.logger.error("Failed to get #{workspace_type} workspace ID for org #{org_id}: #{e.message}")
       raise AuthorizationError, "Failed to get #{workspace_type} workspace ID: #{e.message}"
     end
+    # rubocop:enable Metrics/MethodLength
 
     def verify(permitted, requested)
       permitted_access = structurize(permitted)
@@ -118,40 +121,53 @@ class Rbac
       require 'faraday'
       require 'json'
 
-      # Build RBAC API URL using existing configuration pattern
-      # This uses the same configuration as the existing RBAC client
-      rbac_base_url = if Settings.respond_to?(:endpoints) && Settings.endpoints.respond_to?(:rbac)
-                        "#{Settings.endpoints.rbac.scheme}://#{Settings.endpoints.rbac.host}"
-                      else
-                        # Fallback for local development
-                        'http://localhost:8000'
-                      end
+      rbac_base_url = build_rbac_base_url
+      response = make_workspace_request(rbac_base_url, workspace_type, identity_header)
+      extract_workspace_id(response, workspace_type, identity_header)
+    end
 
+    # Build RBAC API base URL using existing configuration pattern
+    def build_rbac_base_url
+      if Settings.respond_to?(:endpoints) && Settings.endpoints.respond_to?(:rbac)
+        "#{Settings.endpoints.rbac.scheme}://#{Settings.endpoints.rbac.host}"
+      else
+        # Fallback for local development
+        'http://localhost:8000'
+      end
+    end
+
+    # Make HTTP request to RBAC v2 workspaces endpoint
+    def make_workspace_request(rbac_base_url, workspace_type, identity_header)
       conn = Faraday.new(url: rbac_base_url) do |f|
         f.request :url_encoded
         f.response :json
         f.adapter Faraday.default_adapter
       end
 
-      response = conn.get('/v2/workspaces') do |req|
+      conn.get('/v2/workspaces') do |req|
         req.params['type'] = workspace_type
         req.headers['X-RH-IDENTITY'] = identity_header
         req.headers['Content-Type'] = 'application/json'
       end
+    end
 
-      if response.success?
-        workspaces = response.body
-        workspace = workspaces.dig('data')&.first
-        if workspace&.dig('id')
-          workspace['id']
-        else
-          parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
-          data_array = workspaces.dig('data') || []
-          raise "No #{workspace_type} workspace found for org #{parsed_identity.org_id}. Response contained #{data_array.length} workspaces."
-        end
-      else
-        raise "RBAC API error: #{response.status} - #{response.body}"
-      end
+    # Extract workspace ID from RBAC v2 API response
+    def extract_workspace_id(response, workspace_type, identity_header)
+      raise "RBAC API error: #{response.status} - #{response.body}" unless response.success?
+
+      workspaces = response.body
+      workspace = workspaces.dig('data')&.first
+      return workspace['id'] if workspace&.dig('id')
+
+      handle_missing_workspace(workspace_type, identity_header, workspaces)
+    end
+
+    # Handle case where no workspace was found in the response
+    def handle_missing_workspace(workspace_type, identity_header, workspaces)
+      parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
+      data_array = workspaces.dig('data') || []
+      raise "No #{workspace_type} workspace found for org #{parsed_identity.org_id}. " \
+            "Response contained #{data_array.length} workspaces."
     end
 
     def structurize(access_entry)
@@ -172,3 +188,4 @@ class Rbac
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

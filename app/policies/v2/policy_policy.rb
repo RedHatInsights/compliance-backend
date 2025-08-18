@@ -34,6 +34,7 @@ module V2
     private
 
     # Kessel-based default workspace authorization check
+    # rubocop:disable Metrics/MethodLength
     def kessel_default_workspace_check(permission)
       # Get the raw identity header from the current request context
       # This requires access to the controller's raw_identity_header method
@@ -51,6 +52,7 @@ module V2
       Rails.logger.error("Kessel policy check failed: #{e.message}")
       false
     end
+    # rubocop:enable Metrics/MethodLength
 
     # Only show policies in our user account
     class Scope < V2::ApplicationPolicy::Scope

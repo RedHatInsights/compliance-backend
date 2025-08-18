@@ -39,7 +39,7 @@ FactoryBot.define do
           Base64.encode64({
             identity: {
               org_id: org_id,
-              type: 'InvalidType',
+              type: 'InvalidType'
             }.compact,
             entitlements: {
               insights: {
@@ -57,7 +57,7 @@ FactoryBot.define do
           Base64.encode64({
             identity: {
               org_id: org_id,
-              type: 'ServiceAccount',
+              type: 'ServiceAccount'
             }.compact,
             entitlements: {
               insights: {

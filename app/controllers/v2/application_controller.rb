@@ -68,6 +68,7 @@ module V2
     end
 
     # Kessel-based authorization check using default workspace pattern
+    # rubocop:disable Metrics/MethodLength
     def kessel_rbac_allowed?(permission)
       return false unless permission
 
@@ -83,6 +84,7 @@ module V2
       Rails.logger.error("Kessel RBAC check failed: #{e.message}")
       false
     end
+    # rubocop:enable Metrics/MethodLength
 
     # Iterate through the `request.path` and replace any occurrences of identifiers.
     def obfuscate_path
