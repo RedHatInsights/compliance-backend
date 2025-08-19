@@ -382,7 +382,7 @@ services:
       - ACG_CONFIG=/opt/app-root/src/devel.json
       - RUBY_YJIT_ENABLE=1
   redis:
-    image: quay.io/cloudservices/redis:latest
+    image: registry.redhat.io/rhel9/redis-7:latest
     platform: linux/amd64
     ports:
       - 6379:6379
