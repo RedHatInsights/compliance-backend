@@ -3,6 +3,7 @@
 require 'insights-rbac-api-client'
 
 # This service is meant to handle calls to the RBAC API
+# rubocop:disable Metrics/ClassLength
 class Rbac
   API_CLIENT = RBACApiClient::AccessApi.new
   APPS = 'compliance,inventory'
@@ -51,6 +52,50 @@ class Rbac
       end
     end
 
+    # Get default workspace ID for organization using RBAC v2 API
+    # @param identity_header [String] Raw X-RH-IDENTITY header from request
+    # @return [String] Default workspace ID
+    def get_default_workspace_id(identity_header)
+      get_workspace_id_by_type('default', identity_header)
+    end
+
+    # Get root workspace ID for organization using RBAC v2 API
+    # @param identity_header [String] Raw X-RH-IDENTITY header from request
+    # @return [String] Root workspace ID
+    def get_root_workspace_id(identity_header)
+      get_workspace_id_by_type('root', identity_header)
+    end
+
+    # Get workspace ID by type using RBAC v2 API
+    # @param workspace_type [String] Type of workspace ('default' or 'root')
+    # @param identity_header [String] Raw X-RH-IDENTITY header from request
+    # @return [String] Workspace ID
+    # rubocop:disable Metrics/MethodLength
+    def get_workspace_id_by_type(workspace_type, identity_header)
+      # Extract org_id from identity header for caching
+      parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
+      org_id = parsed_identity.org_id
+
+      # Cache workspace IDs since they're guaranteed to never change
+      cache_key = "workspace_#{workspace_type}_#{org_id}"
+      return @workspace_cache[cache_key] if @workspace_cache&.key?(cache_key)
+
+      # Make RBAC v2 API call to get workspace
+      # GET /v2/workspaces?type={workspace_type}
+      # Use the actual identity header from the request
+      workspace_id = fetch_workspace_from_rbac_v2(workspace_type, identity_header)
+
+      # Cache the result
+      @workspace_cache ||= {}
+      @workspace_cache[cache_key] = workspace_id
+
+      workspace_id
+    rescue StandardError => e
+      Rails.logger.error("Failed to get #{workspace_type} workspace ID for org #{org_id}: #{e.message}")
+      raise AuthorizationError, "Failed to get #{workspace_type} workspace ID: #{e.message}"
+    end
+    # rubocop:enable Metrics/MethodLength
+
     def verify(permitted, requested)
       permitted_access = structurize(permitted)
       requested_access = structurize(requested)
@@ -67,6 +112,63 @@ class Rbac
     end
 
     private
+
+    # Fetch workspace from RBAC v2 API
+    # @param workspace_type [String] Type of workspace ('default' or 'root')
+    # @param identity_header [String] Raw X-RH-IDENTITY header from request
+    # @return [String] Workspace ID
+    def fetch_workspace_from_rbac_v2(workspace_type, identity_header)
+      require 'faraday'
+      require 'json'
+
+      rbac_base_url = build_rbac_base_url
+      response = make_workspace_request(rbac_base_url, workspace_type, identity_header)
+      extract_workspace_id(response, workspace_type, identity_header)
+    end
+
+    # Build RBAC API base URL using existing configuration pattern
+    def build_rbac_base_url
+      if Settings.respond_to?(:endpoints) && Settings.endpoints.respond_to?(:rbac)
+        "#{Settings.endpoints.rbac.scheme}://#{Settings.endpoints.rbac.host}"
+      else
+        # Fallback for local development
+        'http://localhost:8000'
+      end
+    end
+
+    # Make HTTP request to RBAC v2 workspaces endpoint
+    def make_workspace_request(rbac_base_url, workspace_type, identity_header)
+      conn = Faraday.new(url: rbac_base_url) do |f|
+        f.request :url_encoded
+        f.response :json
+        f.adapter Faraday.default_adapter
+      end
+
+      conn.get('/v2/workspaces') do |req|
+        req.params['type'] = workspace_type
+        req.headers['X-RH-IDENTITY'] = identity_header
+        req.headers['Content-Type'] = 'application/json'
+      end
+    end
+
+    # Extract workspace ID from RBAC v2 API response
+    def extract_workspace_id(response, workspace_type, identity_header)
+      raise "RBAC API error: #{response.status} - #{response.body}" unless response.success?
+
+      workspaces = response.body
+      workspace = workspaces.dig('data')&.first
+      return workspace['id'] if workspace&.dig('id')
+
+      handle_missing_workspace(workspace_type, identity_header, workspaces)
+    end
+
+    # Handle case where no workspace was found in the response
+    def handle_missing_workspace(workspace_type, identity_header, workspaces)
+      parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
+      data_array = workspaces.dig('data') || []
+      raise "No #{workspace_type} workspace found for org #{parsed_identity.org_id}. " \
+            "Response contained #{data_array.length} workspaces."
+    end
 
     def structurize(access_entry)
       app, resource, action = access_entry.split(':')
@@ -86,3 +188,4 @@ class Rbac
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
