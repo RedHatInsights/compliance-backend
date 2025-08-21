@@ -4,24 +4,6 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   def draw_routes(prefix)
     scope "#{prefix}/#{Settings.app_name}" do
-      concern :rest_api_v1 do
-        scope module: 'v1' do
-          resource 'status', only: :show
-          resources :benchmarks, only: [:index, :show]
-          resources :business_objectives, only: [:index, :show]
-          resources :profiles do
-            member do
-              get 'tailoring_file'
-            end
-          end
-          resources :rule_results, only: [:index]
-          resources :value_definitions, only: [:index]
-          resources :systems, only: [:index, :show]
-          resources :rules, only: [:index, :show]
-          resources :supported_ssgs, only: [:index]
-        end
-      end
-
       scope 'v2', module: 'v2', as: 'v2' do
         resources :security_guides, only: %i[index show] do
           get :supported_profiles, action: :index, controller: :supported_profiles, on: :collection
@@ -73,11 +55,6 @@ Rails.application.routes.draw do
           get :stats, on: :member
           get :os_versions, on: :collection
         end
-      end
-
-      concerns :rest_api_v1
-      scope 'v1', as: 'v1' do
-        concerns :rest_api_v1
       end
 
       mount Rswag::Api::Engine => '/',
