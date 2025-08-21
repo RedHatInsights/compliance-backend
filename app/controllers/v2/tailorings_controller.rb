@@ -58,6 +58,19 @@ module V2
     permission_for_action :tailoring_file, Rbac::POLICY_READ
     permitted_params_for_action :tailoring_file, id: ID_TYPE.required
 
+    def compare
+      target_tailoring = V2::Tailoring.for_policy(tailoring.policy, permitted_params[:target_os_minor_version])
+
+      comparison_result = build_comparison(tailoring, target_tailoring)
+
+      render_json comparison_result
+    end
+    permission_for_action :compare, Rbac::POLICY_READ
+    permitted_params_for_action :compare, {
+      id: ID_TYPE.required,
+      target_os_minor_version: ParamType.integer & ParamType.gte(0)
+    }
+
     private
 
     def tailorings
@@ -80,6 +93,37 @@ module V2
         set_values: tailoring.value_overrides_by_ref_id,
         format: format
       )
+    end
+
+    def build_comparison(source_tailoring, target_tailoring)
+      source_rules = source_tailoring.rules.includes(:security_guide)
+      target_rules = target_tailoring.rules.includes(:security_guide)
+
+      rules_map = {}
+
+      source_rules.each do |rule|
+        add_rule_to_map(rules_map, rule, source_tailoring)
+      end
+
+      target_rules.each do |rule|
+        add_rule_to_map(rules_map, rule, target_tailoring)
+      end
+
+      rules_map.values
+    end
+
+    def add_rule_to_map(rules_map, rule, tailoring)
+      version_info = {
+        os_major_version: tailoring.os_major_version,
+        os_minor_version: tailoring.os_minor_version,
+        ssg_version: tailoring.security_guide_version
+      }
+
+      if rules_map[rule.ref_id]
+        rules_map[rule.ref_id][:versions] << version_info
+      else
+        rules_map[rule.ref_id] = { rule: rule, versions: [version_info] }
+      end
     end
 
     def resource
