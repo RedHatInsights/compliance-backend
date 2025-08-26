@@ -6,12 +6,12 @@ module V2
     def index
       render_json rule_groups
     end
-    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :index, Rbac::POLICY_READ
 
     def show
       render_json rule_group
     end
-    permission_for_action :show, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :show, Rbac::POLICY_READ
 
     private
 
