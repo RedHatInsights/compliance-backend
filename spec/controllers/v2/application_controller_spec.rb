@@ -21,7 +21,7 @@ describe V2::ApplicationController do
           )
         end
       )
-      subject.class.instance_variable_set(:@action_permissions, { index: Rbac::COMPLIANCE_VIEWER })
+      subject.class.instance_variable_set(:@action_permissions, { index: Rbac::POLICY_READ })
     end
 
     context 'cert based auth' do
@@ -35,7 +35,7 @@ describe V2::ApplicationController do
     end
 
     context 'with sufficient permissions' do
-      let(:permissions) { [Rbac::INVENTORY_HOSTS_READ, Rbac::COMPLIANCE_VIEWER] }
+      let(:permissions) { [Rbac::INVENTORY_HOSTS_READ, Rbac::POLICY_READ] }
 
       it 'returns true' do
         expect(subject.send(:rbac_allowed?)).to be true
@@ -44,7 +44,7 @@ describe V2::ApplicationController do
 
     context 'with insufficient permission' do
       context 'when only inventory:groups:read is permitted' do
-        let(:permissions) { ['inventory:groups:read', Rbac::COMPLIANCE_VIEWER] }
+        let(:permissions) { ['inventory:groups:read', Rbac::POLICY_READ] }
 
         it 'results in rejecting access' do
           expect(subject.send(:rbac_allowed?)).to be false
@@ -60,7 +60,7 @@ describe V2::ApplicationController do
       end
 
       context 'when inventory:hosts:read permission is missing' do
-        let(:permissions) { [Rbac::COMPLIANCE_VIEWER] }
+        let(:permissions) { [Rbac::POLICY_READ] }
 
         it 'results in rejecting access' do
           expect(subject.send(:rbac_allowed?)).to be false
