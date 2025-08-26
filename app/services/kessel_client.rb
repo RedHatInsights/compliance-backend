@@ -95,7 +95,7 @@ class KesselClient
       begin
         response = client.streamed_list_objects(request)
 
-        response.map(&:resource_id)
+        response.map(&:object).map(&:resource_id)
       rescue StandardError => e
         Rails.logger.error("Kessel workspace listing failed: #{e.message}")
         raise AuthorizationError, "Workspace listing failed: #{e.message}"
