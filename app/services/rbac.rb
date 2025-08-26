@@ -79,7 +79,7 @@ class Rbac
       return @workspace_cache[cache_key] if @workspace_cache&.key?(cache_key)
 
       # Make RBAC v2 API call to get workspace
-      # GET /v2/workspaces?type={workspace_type}
+      # GET /v2/workspaces/?type={workspace_type}
       # Use the actual identity header from the request
       workspace_id = fetch_workspace_from_rbac_v2(workspace_type, identity_header)
 
@@ -142,7 +142,7 @@ class Rbac
         f.adapter Faraday.default_adapter
       end
 
-      conn.get('/v2/workspaces') do |req|
+      conn.get('/api/rbac/v2/workspaces/') do |req|
         req.params['type'] = workspace_type
         req.headers['X-RH-IDENTITY'] = identity_header
         req.headers['Content-Type'] = 'application/json'
