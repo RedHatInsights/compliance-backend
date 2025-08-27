@@ -439,4 +439,127 @@ describe V2::TailoringsController do
       end
     end
   end
+
+  context '/policies/:id/tailorings/:id/compare' do
+    describe 'GET compare' do
+      let(:canonical_profile) do
+        FactoryBot.create(:v2_profile, ref_id_suffix: 'foo', supports_minors: [7, 8], rule_count: 10)
+      end
+      let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile) }
+      let(:source_tailoring) { FactoryBot.create(:v2_tailoring, policy: parent, os_minor_version: 7) }
+      let(:extra_params) { { policy_id: parent.id, id: source_tailoring.id, target_os_minor_version: 8 } }
+
+      context 'successful comparisons' do
+        it 'returns comparison between tailorings with identical rules' do
+          get :compare, params: extra_params.merge(parents: [:policy])
+
+          expect(response).to have_http_status :ok
+
+          comparison_result = response.parsed_body['data']
+          expect(comparison_result).to be_an(Array)
+          expect(comparison_result).not_to be_empty
+
+          comparison_result.each do |rule|
+            expect(rule).to have_key('available_in_versions')
+            expect(rule['available_in_versions']).to be_an(Array)
+            expect(rule['available_in_versions'].length).to eq(2)
+
+            versions = rule['available_in_versions']
+            expect(versions.map { |v| v['os_minor_version'] }).to contain_exactly(7, 8)
+            expect(versions.all? { |v| v.key?('os_major_version') }).to be(true)
+            expect(versions.all? { |v| v.key?('ssg_version') }).to be(true)
+          end
+        end
+
+        it 'returns comparison with rules that differ between versions' do
+          source_tailoring_mixed = FactoryBot.create(
+            :v2_tailoring,
+            :with_mixed_rules,
+            policy: parent,
+            os_minor_version: 7
+          )
+
+          mixed_params = extra_params.merge(id: source_tailoring_mixed.id)
+          get :compare, params: mixed_params.merge(parents: [:policy])
+
+          expect(response).to have_http_status :ok
+
+          comparison_result = response.parsed_body['data']
+          expect(comparison_result).to be_an(Array)
+          expect(comparison_result).not_to be_empty
+
+          single_version_rules = comparison_result.select { |rule| rule['available_in_versions'].length == 1 }
+          dual_version_rules = comparison_result.select { |rule| rule['available_in_versions'].length == 2 }
+
+          expect(single_version_rules).not_to be_empty
+          expect(dual_version_rules).not_to be_empty
+
+          single_version_rules.each do |rule|
+            version = rule['available_in_versions'].first
+            expect([7, 8]).to include(version['os_minor_version'])
+            expect(version).to have_key('os_major_version')
+            expect(version).to have_key('ssg_version')
+          end
+
+          dual_version_rules.each do |rule|
+            versions = rule['available_in_versions']
+            expect(versions.map { |v| v['os_minor_version'] }).to contain_exactly(7, 8)
+          end
+        end
+
+        it 'includes all required rule attributes in the response' do
+          get :compare, params: extra_params.merge(parents: [:policy])
+
+          comparison_result = response.parsed_body['data']
+          first_rule = comparison_result.first
+
+          expect(first_rule).to have_key('id')
+          expect(first_rule).to have_key('ref_id')
+          expect(first_rule).to have_key('title')
+          expect(first_rule).to have_key('available_in_versions')
+
+          expect(first_rule['ref_id']).to match(/xccdf_org\.ssgproject\.content_rule_/)
+        end
+
+        it 'returns unique rules without duplicates' do
+          get :compare, params: extra_params.merge(parents: [:policy])
+
+          comparison_result = response.parsed_body['data']
+          ref_ids = comparison_result.map { |rule| rule['ref_id'] }
+
+          expect(ref_ids.uniq.length).to eq(ref_ids.length)
+        end
+      end
+
+      context 'validation errors' do
+        it 'returns 422 if target_os_minor_version does not exist' do
+          get :compare, params: extra_params.merge(parents: [:policy], target_os_minor_version: 10)
+
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'returns 422 if target_os_minor_version is not an integer' do
+          get :compare, params: extra_params.merge(parents: [:policy], target_os_minor_version: '8.0')
+
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'returns 422 if target_os_minor_version is missing' do
+          params_without_target = extra_params.except(:target_os_minor_version)
+          get :compare, params: params_without_target.merge(parents: [:policy])
+
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'returns 404 if source tailoring does not exist' do
+          get :compare, params: extra_params.merge(
+            parents: [:policy],
+            id: SecureRandom.uuid
+          )
+
+          expect(response).to have_http_status :not_found
+        end
+      end
+    end
+  end
 end
