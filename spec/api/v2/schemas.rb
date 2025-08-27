@@ -44,7 +44,8 @@ module Api
         system: SYSTEM,
         tailoring: TAILORING,
         tailoring_create: TAILORING_CREATE,
-        tailoring_file: TAILORING_FILE,
+        tailoring_file_json: TAILORING_FILE_JSON,
+        tailoring_file_toml: TAILORING_FILE_TOML,
         test_result: TEST_RESULT,
         value_definition: VALUE_DEFINITION
       }.freeze

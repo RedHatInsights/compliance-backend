@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "/swagger/v2/tailoring_schema_toml.json",
+  "title": "Blueprint Configuration Schema",
+  "description": "Incomplete schema inspired by content of https://github.com/osbuild/blueprint-schema/blob/993ad4c66cdeb043417012bf2238806002d8be95/testdata/all-fields2.in.toml",
+  "type": "string",
+  "additionalProperties": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the blueprint"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the blueprint"
+    }
+  }
+}
