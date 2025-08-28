@@ -44,12 +44,13 @@ class KesselClient
     # @param use_check_for_update [Boolean] Whether to use CheckForUpdate (for writes/sensitive reads)
     # @return [Boolean] Whether user has permission
     # rubocop:disable Metrics/MethodLength
-    def check_permission(resource_type:, resource_id:, permission:, user:, use_check_for_update: false)
+    def check_permission(resource_type:, resource_id:, permission:, user:, use_check_for_update: false,
+                         reporter_type: 'rbac')
       return true unless enabled?
 
       kessel_permission = map_permission(permission)
 
-      object = build_resource_reference(resource_type, resource_id)
+      object = build_resource_reference(resource_type, resource_id, reporter_type)
       subject = build_subject_reference(user)
 
       request_class = use_check_for_update ? CheckForUpdateRequest : CheckRequest
@@ -165,11 +166,11 @@ class KesselClient
     end
     # rubocop:enable Metrics/AbcSize
 
-    def build_resource_reference(resource_type, resource_id)
+    def build_resource_reference(resource_type, resource_id, reporter_type)
       ResourceReference.new(
         resource_type: resource_type,
         resource_id: resource_id,
-        reporter: ReporterReference.new(type: 'rbac')
+        reporter: ReporterReference.new(type: reporter_type)
       )
     end
 
