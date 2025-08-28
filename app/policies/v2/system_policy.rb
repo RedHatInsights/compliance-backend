@@ -54,9 +54,10 @@ module V2
     # Kessel-based system authorization check
     def kessel_system_check(action)
       KesselClient.check_permission(
-        resource_type: 'system',
+        resource_type: 'host',
+        reporter_type: 'hbi',
         resource_id: record.id,
-        permission: "compliance_system_#{action}",
+        permission: action,
         user: user,
         use_check_for_update: %w[update destroy].include?(action)
       )
