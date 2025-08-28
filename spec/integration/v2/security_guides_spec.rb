@@ -5,7 +5,7 @@ require 'swagger_helper'
 describe 'Security Guides', swagger_doc: 'v2/openapi.json' do
   let(:'X-RH-IDENTITY') { FactoryBot.create(:v2_user).account.identity_header.raw }
 
-  before { stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ) }
+  before { stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ) }
 
   path '/security_guides' do
     before { FactoryBot.create_list(:v2_security_guide, 25) }

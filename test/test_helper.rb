@@ -5,6 +5,8 @@ require 'rails'
 if Rails.env.test?
   require 'simplecov'
 
+  RBAC_COMPLIANCE_ADMIN = 'compliance:*:*'
+
   if ENV['GITHUB_ACTIONS']
     require 'simplecov-cobertura'
     SimpleCov.command_name 'test'

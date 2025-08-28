@@ -6,7 +6,7 @@ module V2
     def index
       render_json supported_profiles
     end
-    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    permission_for_action :index, Rbac::POLICY_READ
 
     private
 

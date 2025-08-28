@@ -8,7 +8,11 @@ module V2
     end
 
     def show?
-      match_account? && match_group?
+      if KesselClient.enabled?
+        kessel_system_check('view')
+      else
+        match_account? && match_group?
+      end
     end
 
     def create?
@@ -16,11 +20,19 @@ module V2
     end
 
     def update?
-      match_account? && match_group?
+      if KesselClient.enabled?
+        kessel_system_check('update')
+      else
+        match_account? && match_group?
+      end
     end
 
     def destroy?
-      match_account? && match_group?
+      if KesselClient.enabled?
+        kessel_system_check('destroy')
+      else
+        match_account? && match_group?
+      end
     end
 
     def os_versions?
@@ -37,6 +49,21 @@ module V2
       groups = user.inventory_groups
       # Global access || ungrouped host || group matching
       (groups == Rbac::ANY) || (record.groups.blank? && groups&.include?([])) || record.group_ids.intersect?(groups)
+    end
+
+    # Kessel-based system authorization check
+    def kessel_system_check(action)
+      KesselClient.check_permission(
+        resource_type: 'host',
+        reporter_type: 'hbi',
+        resource_id: record.id,
+        permission: action,
+        user: user,
+        use_check_for_update: %w[update destroy].include?(action)
+      )
+    rescue KesselClient::AuthorizationError => e
+      Rails.logger.error("Kessel system check failed: #{e.message}")
+      false
     end
 
     # Only show systems in our user account
