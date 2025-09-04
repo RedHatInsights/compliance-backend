@@ -5,7 +5,7 @@ require 'swagger_helper'
 describe 'Rule Groups', swagger_doc: 'v2/openapi.json' do
   let(:'X-RH-IDENTITY') { FactoryBot.create(:v2_user).account.identity_header.raw }
 
-  before { stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ) }
+  before { stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ) }
 
   path '/security_guides/{security_guide_id}/rule_groups' do
     before { FactoryBot.create_list(:v2_rule_group, 25, security_guide_id: security_guide_id) }

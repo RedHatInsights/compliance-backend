@@ -52,6 +52,7 @@ module V2
     end
 
     # Kessel-based system authorization check
+    # rubocop:disable Metrics/MethodLength
     def kessel_system_check(action)
       KesselClient.check_permission(
         resource_type: 'host',
@@ -65,6 +66,7 @@ module V2
       Rails.logger.error("Kessel system check failed: #{e.message}")
       false
     end
+    # rubocop:enable Metrics/MethodLength
 
     # Only show systems in our user account
     class Scope < V2::ApplicationPolicy::Scope
