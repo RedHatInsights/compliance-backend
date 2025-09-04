@@ -13,14 +13,14 @@ class KesselClient
     # Compliance permissions
     'compliance:policy:read' => 'compliance_policy_view',
     'compliance:policy:create' => 'compliance_policy_create',
-    'compliance:policy:write' => 'compliance_policy_write',
+    'compliance:policy:write' => 'compliance_policy_edit',
     'compliance:policy:delete' => 'compliance_policy_delete',
     'compliance:report:read' => 'compliance_report_view',
     'compliance:system:read' => 'compliance_system_view',
-    'compliance:*:read' => 'compliance_all_view',
-    'compliance:*:*' => 'compliance_all_all',
+    'compliance:*:read' => 'compliance_all_read',
+
     # Inventory permissions
-    'inventory:hosts:read' => 'inventory_hosts_view'
+    'inventory:hosts:read' => 'inventory_host_view'
   }.freeze
 
   class << self
@@ -44,6 +44,7 @@ class KesselClient
     # @param use_check_for_update [Boolean] Whether to use CheckForUpdate (for writes/sensitive reads)
     # @return [Boolean] Whether user has permission
     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/ParameterLists
     def check_permission(resource_type:, resource_id:, permission:, user:, use_check_for_update: false,
                          reporter_type: 'rbac')
       return true unless enabled?
@@ -69,6 +70,7 @@ class KesselClient
         raise AuthorizationError, "Authorization check failed: #{e.message}"
       end
     end
+    # rubocop:enable Metrics/ParameterLists
     # rubocop:enable Metrics/MethodLength
 
     # List workspaces where user has a specific permission

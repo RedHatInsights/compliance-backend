@@ -1134,7 +1134,7 @@ module V1
         parent = FactoryBot.create(:canonical_profile, upstream: false)
 
         allowed_groups = hosts[0..1].map { |h| h.groups.first['id'] }
-        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+        stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
                                 attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',
@@ -1379,7 +1379,7 @@ module V1
         hosts = FactoryBot.create_list(:host, 4, :with_groups, group_count: 1)
         stub_supported_ssg(hosts, [@profile.benchmark.version])
         allowed_groups = hosts[0..1].map { |h| h.groups.first['id'] }
-        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+        stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
                                 attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',
@@ -1436,7 +1436,7 @@ module V1
         hosts = FactoryBot.create_list(:host, 4, :with_groups, group_count: 1)
         stub_supported_ssg(hosts, [@profile.benchmark.version])
         allowed_groups = hosts[0..1].map { |h| h.groups.first['id'] }
-        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+        stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
                                 attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',
