@@ -6,7 +6,7 @@ describe 'Policies', swagger_doc: 'v2/openapi.json' do
   let(:user) { FactoryBot.create(:v2_user) }
   let(:'X-RH-IDENTITY') { user.account.identity_header.raw }
 
-  before { stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ) }
+  before { stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ) }
 
   path '/policies' do
     before { FactoryBot.create_list(:v2_policy, 25, account: user.account) }

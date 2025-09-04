@@ -19,7 +19,7 @@ module V2
     def rule_tree
       render json: tailoring.rule_tree
     end
-    permission_for_action :rule_tree, Rbac::POLICY_READ
+    permission_for_action :rule_tree, Rbac::COMPLIANCE_VIEWER
     permitted_params_for_action :rule_tree, id: ID_TYPE.required
 
     def create
