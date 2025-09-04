@@ -157,10 +157,7 @@ RSpec.describe KesselClient, type: :service do
 
   describe '.list_workspaces_with_permission' do
     let(:mock_client) { double('kessel_client') }
-    let(:mock_response) do
-      [double('object', object: double('object', resource_id: 'workspace-1')),
-       double('object', object: double('object', resource_id: 'workspace-2'))]
-    end
+    let(:mock_response) { [double('object', resource_id: 'workspace-1'), double('object', resource_id: 'workspace-2')] }
 
     before do
       allow(described_class).to receive(:enabled?).and_return(true)
@@ -170,7 +167,7 @@ RSpec.describe KesselClient, type: :service do
 
     it 'returns workspace IDs' do
       result = described_class.list_workspaces_with_permission(
-        permission: 'inventory_host_view',
+        permission: 'inventory_hosts_view',
         user: user
       )
 
@@ -184,7 +181,7 @@ RSpec.describe KesselClient, type: :service do
 
       it 'returns empty array' do
         result = described_class.list_workspaces_with_permission(
-          permission: 'inventory_host_view',
+          permission: 'inventory_hosts_view',
           user: user
         )
 
@@ -226,7 +223,8 @@ RSpec.describe KesselClient, type: :service do
   describe 'permission mapping' do
     it 'maps RBAC v1 permissions to Kessel compound permissions' do
       expect(described_class::PERMISSION_MAPPINGS['compliance:policy:read']).to eq('compliance_policy_view')
-      expect(described_class::PERMISSION_MAPPINGS['inventory:hosts:read']).to eq('inventory_host_view')
+      expect(described_class::PERMISSION_MAPPINGS['compliance:*:*']).to eq('compliance_all_all')
+      expect(described_class::PERMISSION_MAPPINGS['inventory:hosts:read']).to eq('inventory_hosts_view')
     end
   end
 end

@@ -13,13 +13,14 @@ class KesselClient
     # Compliance permissions
     'compliance:policy:read' => 'compliance_policy_view',
     'compliance:policy:create' => 'compliance_policy_create',
-    'compliance:policy:write' => 'compliance_policy_edit',
+    'compliance:policy:write' => 'compliance_policy_write',
     'compliance:policy:delete' => 'compliance_policy_delete',
     'compliance:report:read' => 'compliance_report_view',
     'compliance:system:read' => 'compliance_system_view',
-
+    'compliance:*:read' => 'compliance_all_view',
+    'compliance:*:*' => 'compliance_all_all',
     # Inventory permissions
-    'inventory:hosts:read' => 'inventory_host_view'
+    'inventory:hosts:read' => 'inventory_hosts_view'
   }.freeze
 
   class << self

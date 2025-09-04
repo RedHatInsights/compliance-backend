@@ -6,7 +6,7 @@ describe 'Reports', swagger_doc: 'v2/openapi.json' do
   let(:user) { FactoryBot.create(:v2_user) }
   let(:'X-RH-IDENTITY') { user.account.identity_header.raw }
 
-  before { stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ, Rbac::REPORT_READ) }
+  before { stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ, Rbac::REPORT_READ) }
 
   path '/reports' do
     before do

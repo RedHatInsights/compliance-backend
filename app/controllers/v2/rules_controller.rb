@@ -6,12 +6,12 @@ module V2
     def index
       render_json rules
     end
-    permission_for_action :index, Rbac::POLICY_READ
+    permission_for_action :index, Rbac::COMPLIANCE_VIEWER
 
     def show
       render_json rule
     end
-    permission_for_action :show, Rbac::POLICY_READ
+    permission_for_action :show, Rbac::COMPLIANCE_VIEWER
 
     def create
       inserts, deletes = V2::TailoringRule.bulk_assign(new_tailoring_rules, old_tailoring_rules)
