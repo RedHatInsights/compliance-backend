@@ -15,10 +15,6 @@ RSpec.describe User, type: :model do
       let(:permission) { 'compliance:policy:read' }
 
       context 'when Kessel is enabled' do
-        before do
-          allow(KesselClient).to receive(:enabled?).and_return(true)
-        end
-
         context 'when user is authorized' do
           let(:workspace_id) { "default-workspace-#{user.org_id}" }
 
