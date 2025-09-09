@@ -14,6 +14,8 @@ class Rbac
   INVENTORY_HOSTS_READ = 'inventory:hosts:read'
   V1_COMPLIANCE_VIEWER = 'compliance:policy:read'
   COMPLIANCE_VIEWER = 'compliance:*:read'
+  # This is only used in tests - shouldn't be used in any other scope
+  COMPLIANCE_ADMIN = 'compliance:*:*'
   POLICY_READ = 'compliance:policy:read'
   POLICY_CREATE = 'compliance:policy:create'
   POLICY_DELETE = 'compliance:policy:delete'

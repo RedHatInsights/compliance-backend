@@ -6,7 +6,7 @@ describe 'Rule Results', swagger_doc: 'v2/openapi.json' do
   let(:user) { FactoryBot.create(:v2_user) }
   let(:'X-RH-IDENTITY') { user.account.identity_header.raw }
 
-  before { stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ) }
+  before { stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ) }
 
   path '/reports/{report_id}/test_results/{test_result_id}/rule_results' do
     let(:test_result_id) do
