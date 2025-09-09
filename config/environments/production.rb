@@ -58,7 +58,7 @@ Rails.application.configure do
         redis_password = Settings.redis.cache_password.presence
       end
 
-      { url: redis_url, password: redis_password, ssl: Settings.redis.ssl}
+      { url: redis_url, password: redis_password, ssl: ActiveModel::Type::Boolean.new.cast(Settings.redis.ssl)}
     end
 
     # Override is necessary as it gets set during initialization without the proper config available
