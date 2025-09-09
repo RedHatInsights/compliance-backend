@@ -119,10 +119,13 @@ describe V2::TailoringsController do
       context 'unsupported OS minor version' do
         let(:canonical_profile) { FactoryBot.create(:v2_profile, ref_id_suffix: 'foo', supports_minors: []) }
 
-        it 'returns not found' do
+        it 'returns unprocessable entity' do
           post :create, params: params
 
-          expect(response).to have_http_status :not_found
+          expect(response.parsed_body['errors']).to include(
+            match(/Profile does not support OS version/)
+          )
+          expect(response).to have_http_status :unprocessable_entity
         end
       end
     end
