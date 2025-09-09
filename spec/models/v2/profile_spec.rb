@@ -49,7 +49,7 @@ describe V2::Profile do
 
     context 'no variant' do
       it 'raises an error' do
-        expect { subject.variant_for_minor(0) }.to raise_exception(ActiveRecord::RecordNotFound)
+        expect { subject.variant_for_minor(0) }.to raise_exception(Exceptions::OSMinorVersionNotSupported)
       end
     end
   end

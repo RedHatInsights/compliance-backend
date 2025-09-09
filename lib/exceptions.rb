@@ -22,4 +22,11 @@ module Exceptions
       super('Invalid encoding of tag(s)')
     end
   end
+
+  # Exception for trying to request a profile with an OS minor version that is not supported
+  class OSMinorVersionNotSupported < StandardError
+    def initialize(os_major_version, os_minor_version)
+      super("Profile does not support OS version #{os_major_version}.#{os_minor_version}")
+    end
+  end
 end
