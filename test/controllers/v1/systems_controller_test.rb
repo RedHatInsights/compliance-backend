@@ -35,7 +35,7 @@ module V1
 
         allowed_groups = [@host1.groups.first['id'], nil]
 
-        stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
                                 attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',
@@ -60,7 +60,7 @@ module V1
 
         allowed_groups = [nil]
 
-        stub_rbac_permissions(RBAC_COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
+        stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ => [{
                                 attribute_filter: {
                                   key: 'group.id',
                                   operation: 'in',

@@ -4,8 +4,6 @@ if Rails.env.test?
   require 'karafka/testing/rspec/helpers'
   require 'simplecov'
 
-  RBAC_COMPLIANCE_ADMIN = 'compliance:*:*'
-
   if ENV['GITHUB_ACTIONS']
     require 'simplecov-cobertura'
     SimpleCov.command_name 'spec'
