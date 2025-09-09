@@ -2,7 +2,7 @@ sidekiq_config = lambda do |config|
   config.redis = {
     url: Settings.redis.url,
     password: Settings.redis.password.presence,
-    ssl: Settings.redis.ssl,
+    ssl: ActiveModel::Type::Boolean.new.cast(Settings.redis.ssl),
     network_timeout: 5
   }
   config[:dead_timeout_in_seconds] = 2.weeks.to_i

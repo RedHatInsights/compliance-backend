@@ -18,7 +18,7 @@ namespace :redis do
       Redis.new(
         url: Settings.redis.url,
         password: Settings.redis.password.presence,
-        ssl: Settings.redis.ssl
+        ssl: ActiveModel::Type::Boolean.new.cast(Settings.redis.ssl)
       ).ping
     rescue Redis::BaseError
       abort('ERROR: Redis unavailable')
