@@ -23,10 +23,21 @@ module V2
     has_many :rule_groups, through: :security_guide, class_name: 'V2::RuleGroup'
 
     def variant_for_minor(version)
-      self.class.unscoped.joins(:security_guide, :os_minor_versions)
+      profile = find_variant_for_minor(version)
+      return profile if profile
+
+      raise ::Exceptions::OSMinorVersionNotSupported.new(security_guide.os_major_version, version)
+    end
+
+    private
+
+    def find_variant_for_minor(version)
+      self.class.unscoped
+          .joins(:security_guide, :os_minor_versions)
           .order(self.class.version_to_array(V2::SecurityGuide.arel_table.alias('security_guide')[:version]).desc)
-          .find_by!(
-            ref_id: ref_id, security_guide: { os_major_version: security_guide.os_major_version },
+          .find_by(
+            ref_id: ref_id,
+            security_guide: { os_major_version: security_guide.os_major_version },
             os_minor_versions: { os_minor_version: version }
           )
     end
