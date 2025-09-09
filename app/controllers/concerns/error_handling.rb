@@ -80,5 +80,10 @@ module ErrorHandling
       logger.info "#{message} (#{ScopedSearch::QueryNotSupported})"
       render_error message, status: :unprocessable_entity
     end
+
+    rescue_from ::Exceptions::OSMinorVersionNotSupported do |error|
+      logger.info "#{error.message} (#{error.class})"
+      render_error error.message, status: :not_found
+    end
   end
 end
