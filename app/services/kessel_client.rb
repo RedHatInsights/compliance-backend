@@ -3,6 +3,8 @@
 require 'kessel-sdk'
 require 'kessel/inventory/v1beta2/inventory_service_services_pb'
 
+# rubocop:disable Metrics/ClassLength
+
 # Service for interacting with Kessel for RBAC v2 authorization
 class KesselClient
   class AuthorizationError < StandardError; end
@@ -36,12 +38,31 @@ class KesselClient
     include Kessel::GRPC
     include Kessel::Auth
 
+    # rubocop:disable Metrics/MethodLength
+    def default_permission_allowed?(permission)
+      return false unless permission
+
+      default_workspace_id = get_default_workspace_id(raw_identity_header)
+
+      check_permission(
+        resource_type: 'workspace',
+        resource_id: default_workspace_id,
+        permission: permission,
+        user: user
+      )
+    rescue AuthorizationError => e
+      Rails.logger.error("Kessel RBAC check failed: #{e.message}")
+      false
+    end
+    # rubocop:enable Metrics/MethodLength
+
     # Check if user has permission on a resource
     # @param resource_type [String] Type of resource (e.g., 'workspace', 'system')
     # @param resource_id [String] ID of the resource
     # @param permission [String] Permission to check
     # @param user [User] User to check permission for
     # @param use_check_for_update [Boolean] Whether to use CheckForUpdate (for writes/sensitive reads)
+    # @param reporter_type [rbac | hbi]
     # @return [Boolean] Whether user has permission
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/ParameterLists
@@ -205,3 +226,5 @@ class KesselClient
     end
   end
 end
+
+# rubocop:enable Metrics/ClassLength

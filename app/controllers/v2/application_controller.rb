@@ -57,7 +57,7 @@ module V2
       if KesselClient.enabled?
         # KESSEL: Use default workspace check for the action permission
         # Inventory read is enforced by the graph and inherited from default or root
-        kessel_rbac_allowed?(permission)
+        KesselClient.default_permission_allowed?(permission)
       else
         user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
       end
@@ -66,25 +66,6 @@ module V2
     def pundit_scope(res = resource)
       Pundit.policy_scope(current_user, res)
     end
-
-    # Kessel-based authorization check using default workspace pattern
-    # rubocop:disable Metrics/MethodLength
-    def kessel_rbac_allowed?(permission)
-      return false unless permission
-
-      default_workspace_id = KesselClient.get_default_workspace_id(raw_identity_header)
-
-      KesselClient.check_permission(
-        resource_type: 'workspace',
-        resource_id: default_workspace_id,
-        permission: permission,
-        user: user
-      )
-    rescue KesselClient::AuthorizationError => e
-      Rails.logger.error("Kessel RBAC check failed: #{e.message}")
-      false
-    end
-    # rubocop:enable Metrics/MethodLength
 
     # Iterate through the `request.path` and replace any occurrences of identifiers.
     def obfuscate_path

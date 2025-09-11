@@ -13,7 +13,7 @@ class User < ApplicationRecord
     return true if rbac_disabled?
 
     if KesselClient.enabled?
-      kessel_authorized_to?(access_request)
+      KesselClient.default_permission_allowed?(access_request)
     else
       rbac_permissions.any? do |access|
         Rbac.verify(access.permission, access_request)
@@ -40,21 +40,6 @@ class User < ApplicationRecord
 
   def rbac_disabled?
     ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
-  end
-
-  # Kessel-based authorization check using default workspace pattern
-  def kessel_authorized_to?(access_request)
-    default_workspace_id = KesselClient.get_default_workspace_id(account.identity_header.raw)
-
-    KesselClient.check_permission(
-      resource_type: 'workspace',
-      resource_id: default_workspace_id,
-      permission: access_request,
-      user: self
-    )
-  rescue KesselClient::AuthorizationError => e
-    Rails.logger.error("Kessel authorization failed for user #{id}: #{e.message}")
-    false
   end
 
   # Kessel-based inventory groups using workspace listing
