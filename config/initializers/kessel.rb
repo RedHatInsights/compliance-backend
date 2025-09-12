@@ -37,9 +37,13 @@ Rails.application.configure do
   # Validate Kessel configuration when enabled
   if Settings.kessel.enabled
     Rails.logger.info 'Kessel is enabled, validating configuration...'
-    
+
     if Settings.kessel.url.blank?
       raise 'KESSEL_URL must be set when Kessel is enabled'
+    end
+
+    unless Settings.kessel.auth.enabled
+      raise 'KESSEL_AUTH_ENABLED must be set when Kessel is enabled'
     end
 
     if Settings.kessel.auth.enabled
