@@ -8,7 +8,7 @@ module V2
     end
 
     def show?
-      if KesselClient.enabled?
+      if Kessel.enabled?
         kessel_default_workspace_check('compliance_policy_view')
       else
         match_account?
@@ -16,7 +16,7 @@ module V2
     end
 
     def update?
-      if KesselClient.enabled?
+      if Kessel.enabled?
         kessel_default_workspace_check('compliance_policy_write')
       else
         match_account?
@@ -24,7 +24,7 @@ module V2
     end
 
     def destroy?
-      if KesselClient.enabled?
+      if Kessel.enabled?
         kessel_default_workspace_check('compliance_policy_delete')
       else
         match_account?
@@ -39,16 +39,16 @@ module V2
       # Get the raw identity header from the current request context
       # This requires access to the controller's raw_identity_header method
       identity_header = user.account.identity_header.raw
-      default_workspace_id = KesselClient.get_default_workspace_id(identity_header)
+      default_workspace_id = Kessel.get_default_workspace_id(identity_header)
 
-      KesselClient.check_permission(
+      Kessel.check_permission(
         resource_type: 'workspace',
         resource_id: default_workspace_id,
         permission: permission,
         user: user,
         use_check_for_update: permission.include?('write') || permission.include?('delete')
       )
-    rescue KesselClient::AuthorizationError => e
+    rescue Kessel::AuthorizationError => e
       Rails.logger.error("Kessel policy check failed: #{e.message}")
       false
     end

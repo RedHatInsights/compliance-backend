@@ -8,7 +8,7 @@ module V2
     end
 
     def show?
-      if KesselClient.enabled?
+      if Kessel.enabled?
         kessel_system_check('view')
       else
         match_account? && match_group?
@@ -20,7 +20,7 @@ module V2
     end
 
     def update?
-      if KesselClient.enabled?
+      if Kessel.enabled?
         kessel_system_check('update')
       else
         match_account? && match_group?
@@ -28,7 +28,7 @@ module V2
     end
 
     def destroy?
-      if KesselClient.enabled?
+      if Kessel.enabled?
         kessel_system_check('destroy')
       else
         match_account? && match_group?
@@ -54,7 +54,7 @@ module V2
     # Kessel-based system authorization check
     # rubocop:disable Metrics/MethodLength
     def kessel_system_check(action)
-      KesselClient.check_permission(
+      Kessel.check_permission(
         resource_type: 'host',
         reporter_type: 'hbi',
         resource_id: record.id,
@@ -62,7 +62,7 @@ module V2
         user: user,
         use_check_for_update: %w[update destroy].include?(action)
       )
-    rescue KesselClient::AuthorizationError => e
+    rescue Kessel::AuthorizationError => e
       Rails.logger.error("Kessel system check failed: #{e.message}")
       false
     end

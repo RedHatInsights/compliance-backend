@@ -8,18 +8,18 @@ RSpec.describe User, type: :model do
   describe 'Kessel integration' do
     before do
       # Mock KesselClient
-      allow(KesselClient).to receive(:enabled?).and_return(true)
+      allow(Kessel).to receive(:enabled?).and_return(true)
     end
 
     describe '#inventory_groups' do
       context 'when Kessel is enabled' do
         before do
-          allow(KesselClient).to receive(:enabled?).and_return(true)
+          allow(Kessel).to receive(:enabled?).and_return(true)
         end
 
         context 'when user has workspace access' do
           before do
-            allow(KesselClient).to receive(:list_workspaces_with_permission).and_return(%w[workspace-1 workspace-2])
+            allow(Kessel).to receive(:list_workspaces_with_permission).and_return(%w[workspace-1 workspace-2])
           end
 
           it 'returns workspace IDs' do
@@ -29,7 +29,7 @@ RSpec.describe User, type: :model do
           it 'calls KesselClient with correct parameters' do
             user.inventory_groups
 
-            expect(KesselClient).to have_received(:list_workspaces_with_permission).with(
+            expect(Kessel).to have_received(:list_workspaces_with_permission).with(
               permission: Rbac::INVENTORY_HOSTS_READ,
               user: user
             )
@@ -38,7 +38,7 @@ RSpec.describe User, type: :model do
 
         context 'when user has no workspace access' do
           before do
-            allow(KesselClient).to receive(:list_workspaces_with_permission).and_return([])
+            allow(Kessel).to receive(:list_workspaces_with_permission).and_return([])
           end
 
           it 'returns empty array' do
@@ -48,8 +48,8 @@ RSpec.describe User, type: :model do
 
         context 'when KesselClient raises an error' do
           before do
-            allow(KesselClient).to receive(:list_workspaces_with_permission).and_raise(
-              KesselClient::AuthorizationError, 'Test error'
+            allow(Kessel).to receive(:list_workspaces_with_permission).and_raise(
+              Kessel::AuthorizationError, 'Test error'
             )
             allow(Rails.logger).to receive(:error)
           end
@@ -63,7 +63,7 @@ RSpec.describe User, type: :model do
 
       context 'when Kessel is disabled' do
         before do
-          allow(KesselClient).to receive(:enabled?).and_return(false)
+          allow(Kessel).to receive(:enabled?).and_return(false)
           allow(user).to receive(:rbac_permissions).and_return([])
           allow(Rbac).to receive(:load_inventory_groups).and_return(['group-1'])
         end

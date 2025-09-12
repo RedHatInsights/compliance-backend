@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe KesselClient, type: :service do
+RSpec.describe Kessel, type: :service do
   let(:user) { create(:v2_user) }
   let(:org_id) { user.org_id }
 
@@ -150,7 +150,7 @@ RSpec.describe KesselClient, type: :service do
             permission: 'compliance_policy_view',
             user: user
           )
-        end.to raise_error(KesselClient::AuthorizationError, /Authorization check failed/)
+        end.to raise_error(Kessel::AuthorizationError, /Authorization check failed/)
       end
     end
   end
