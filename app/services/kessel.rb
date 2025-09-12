@@ -136,22 +136,19 @@ class Kessel
     end
 
     def build_insecure_client
-      KesselInventoryService::Stub.new(Settings.kessel.url, :this_channel_is_insecure)
+      KesselInventoryService::ClientBuilder.new(Settings.kessel.url).insecure
     end
 
     def build_secure_client
-      credentials = build_credentials
-      KesselInventoryService::Stub.new(Settings.kessel.url, credentials)
-    end
-
-    def build_credentials
-      credentials = GRPC::Core::ChannelCredentials.new
+      builder = KesselInventoryService::ClientBuilder.new(Settings.kessel.url)
 
       if Settings.kessel.auth.enabled
-        credentials = credentials.compose(@oauth_creds)
+        builder.oauth2_client_authenticated(@oauth_creds)
+      else
+        builder.authenticated
       end
 
-      credentials
+      builder.build
     end
 
     # rubocop:disable Metrics/AbcSize
