@@ -12,8 +12,8 @@ class User < ApplicationRecord
   def authorized_to?(access_request)
     return true if rbac_disabled?
 
-    if KesselClient.enabled?
-      KesselClient.default_permission_allowed?(access_request)
+    if Kessel.enabled?
+      Kessel.default_permission_allowed?(access_request)
     else
       rbac_permissions.any? do |access|
         Rbac.verify(access.permission, access_request)
@@ -25,7 +25,7 @@ class User < ApplicationRecord
     # No need to fetch inventory groups if the RBAC feature is globally disabled or using CERT_AUTH
     return Rbac::ANY if rbac_disabled? || cert_authenticated?
 
-    if KesselClient.enabled?
+    if Kessel.enabled?
       kessel_inventory_groups
     else
       @inventory_groups ||= Rbac.load_inventory_groups(rbac_permissions)
@@ -45,13 +45,13 @@ class User < ApplicationRecord
   # Kessel-based inventory groups using workspace listing
   def kessel_inventory_groups
     @kessel_inventory_groups ||= begin
-      workspace_ids = KesselClient.list_workspaces_with_permission(
+      workspace_ids = Kessel.list_workspaces_with_permission(
         permission: Rbac::INVENTORY_HOSTS_READ,
         user: self
       )
 
       workspace_ids.empty? ? [] : workspace_ids
-    rescue KesselClient::AuthorizationError => e
+    rescue Kessel::AuthorizationError => e
       Rails.logger.error("Kessel inventory groups failed for user #{id}: #{e.message}")
       []
     end

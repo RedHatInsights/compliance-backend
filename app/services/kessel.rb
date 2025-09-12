@@ -6,7 +6,7 @@ require 'kessel/inventory/v1beta2/inventory_service_services_pb'
 # rubocop:disable Metrics/ClassLength
 
 # Service for interacting with Kessel for RBAC v2 authorization
-class KesselClient
+class Kessel
   class AuthorizationError < StandardError; end
   class ConfigurationError < StandardError; end
 
@@ -56,14 +56,6 @@ class KesselClient
     end
     # rubocop:enable Metrics/MethodLength
 
-    # Check if user has permission on a resource
-    # @param resource_type [String] Type of resource (e.g., 'workspace', 'system')
-    # @param resource_id [String] ID of the resource
-    # @param permission [String] Permission to check
-    # @param user [User] User to check permission for
-    # @param use_check_for_update [Boolean] Whether to use CheckForUpdate (for writes/sensitive reads)
-    # @param reporter_type [rbac | hbi]
-    # @return [Boolean] Whether user has permission
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/ParameterLists
     def check_permission(resource_type:, resource_id:, permission:, user:, use_check_for_update: false,
@@ -94,10 +86,6 @@ class KesselClient
     # rubocop:enable Metrics/ParameterLists
     # rubocop:enable Metrics/MethodLength
 
-    # List workspaces where user has a specific permission
-    # @param permission [String] Permission to check
-    # @param user [User] User to check permission for
-    # @return [Array<String>] Array of workspace IDs
     # rubocop:disable Metrics/MethodLength
     def list_workspaces_with_permission(permission:, user:)
       return [] unless enabled?
@@ -127,17 +115,7 @@ class KesselClient
     end
     # rubocop:enable Metrics/MethodLength
 
-    # Get default workspace ID for organization
-    # Delegates to Rbac service to avoid duplicating RBAC API logic
-    # @param identity_header [String] Raw X-RH-IDENTITY header from request
-    # @return [String] Default workspace ID
     delegate :get_default_workspace_id, to: :Rbac
-
-    # Get root workspace ID for organization
-    # Delegates to Rbac service to avoid duplicating RBAC API logic
-    # @param identity_header [String] Raw X-RH-IDENTITY header from request
-    # @return [String] Root workspace ID
-    delegate :get_root_workspace_id, to: :Rbac
 
     private
 

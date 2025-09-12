@@ -54,10 +54,10 @@ module V2
 
       permission = self.class.instance_variable_get(:@action_permissions)[action_name.to_sym]
 
-      if KesselClient.enabled?
+      if Kessel.enabled?
         # KESSEL: Use default workspace check for the action permission
         # Inventory read is enforced by the graph and inherited from default or root
-        KesselClient.default_permission_allowed?(permission)
+        Kessel.default_permission_allowed?(permission)
       else
         user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
       end
