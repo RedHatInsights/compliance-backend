@@ -7,16 +7,19 @@ module V2
       render_json profiles
     end
     permission_for_action :index, Rbac::COMPLIANCE_VIEWER
+    v2_permission_for_action :index, KesselClient::SECURITY_GUIDE_VIEW
 
     def show
       render_json profile
     end
     permission_for_action :show, Rbac::COMPLIANCE_VIEWER
+    v2_permission_for_action :show, KesselClient::SECURITY_GUIDE_VIEW
 
     def rule_tree
       render json: profile.rule_tree
     end
     permission_for_action :rule_tree, Rbac::COMPLIANCE_VIEWER
+    v2_permission_for_action :rule_tree, KesselClient::SECURITY_GUIDE_VIEW
     permitted_params_for_action :rule_tree, id: ID_TYPE.required
 
     private

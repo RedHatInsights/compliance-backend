@@ -22,6 +22,11 @@ module V2
         @action_permissions ||= {}
         @action_permissions[action.to_sym] ||= permission
       end
+
+      def v2_permission_for_action(action, permission)
+        @v2_action_permissions ||= {}
+        @v2_action_permissions[action.to_sym] ||= permission
+      end
     end
 
     # This method is being called before any before_action callbacks and it can set
@@ -52,15 +57,19 @@ module V2
     def rbac_allowed?
       return valid_cert_auth? if identity_header.cert_based?
 
-      permission = self.class.instance_variable_get(:@action_permissions)[action_name.to_sym]
+      return v2_rbac_allowed? if KesselClient.enabled?
 
-      if Kessel.enabled?
-        # KESSEL: Use default workspace check for the action permission
-        # Inventory read is enforced by the graph and inherited from default or root
-        Kessel.default_permission_allowed?(permission)
-      else
-        user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
-      end
+      v1_rbac_allowed?
+    end
+
+    def v1_rbac_allowed?
+      permission = self.class.instance_variable_get(:@action_permissions)[action_name.to_sym]
+      user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
+    end
+
+    def v2_rbac_allowed?
+      permission = self.class.instance_variable_get(:@v2_action_permissions)[action_name.to_sym]
+      user.v2_authorized_to?(permission)
     end
 
     def pundit_scope(res = resource)
