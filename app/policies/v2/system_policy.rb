@@ -8,11 +8,7 @@ module V2
     end
 
     def show?
-      if Kessel.enabled?
-        kessel_system_check('view')
-      else
-        match_account? && match_group?
-      end
+      match_account? && system_match_group?(record)
     end
 
     def create?
@@ -20,19 +16,11 @@ module V2
     end
 
     def update?
-      if Kessel.enabled?
-        kessel_system_check('update')
-      else
-        match_account? && match_group?
-      end
+      match_account? && system_match_group?(record)
     end
 
     def destroy?
-      if Kessel.enabled?
-        kessel_system_check('destroy')
-      else
-        match_account? && match_group?
-      end
+      match_account? && system_match_group?(record)
     end
 
     def os_versions?
@@ -44,29 +32,6 @@ module V2
     def match_account?
       record.org_id == user.org_id
     end
-
-    def match_group?
-      groups = user.inventory_groups
-      # Global access || ungrouped host || group matching
-      (groups == Rbac::ANY) || (record.groups.blank? && groups&.include?([])) || record.group_ids.intersect?(groups)
-    end
-
-    # Kessel-based system authorization check
-    # rubocop:disable Metrics/MethodLength
-    def kessel_system_check(action)
-      Kessel.check_permission(
-        resource_type: 'host',
-        reporter_type: 'hbi',
-        resource_id: record.id,
-        permission: action,
-        user: user,
-        use_check_for_update: %w[update destroy].include?(action)
-      )
-    rescue Kessel::AuthorizationError => e
-      Rails.logger.error("Kessel system check failed: #{e.message}")
-      false
-    end
-    # rubocop:enable Metrics/MethodLength
 
     # Only show systems in our user account
     class Scope < V2::ApplicationPolicy::Scope

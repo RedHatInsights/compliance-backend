@@ -9,15 +9,17 @@ class User < ApplicationRecord
 
   delegate :org_id, :system_owner_id, :cert_authenticated?, to: :account
 
+  def v2_authorized_to?(permission)
+    return true unless KesselClient.enabled?
+
+    KesselClient.default_permission_allowed?(permission, user)
+  end
+
   def authorized_to?(access_request)
     return true if rbac_disabled?
 
-    if Kessel.enabled?
-      Kessel.default_permission_allowed?(access_request)
-    else
-      rbac_permissions.any? do |access|
-        Rbac.verify(access.permission, access_request)
-      end
+    rbac_permissions.any? do |access|
+      Rbac.verify(access.permission, access_request)
     end
   end
 
@@ -25,11 +27,14 @@ class User < ApplicationRecord
     # No need to fetch inventory groups if the RBAC feature is globally disabled or using CERT_AUTH
     return Rbac::ANY if rbac_disabled? || cert_authenticated?
 
-    if Kessel.enabled?
-      kessel_inventory_groups
-    else
-      @inventory_groups ||= Rbac.load_inventory_groups(rbac_permissions)
-    end
+    @inventory_groups ||= if KesselClient.enabled?
+                            KesselClient.list_workspaces_with_permission(
+                              permission: KesselClient::SYSTEM_VIEW,
+                              user: self
+                            )
+                          else
+                            Rbac.load_inventory_groups(rbac_permissions)
+                          end
   end
 
   private
@@ -40,21 +45,6 @@ class User < ApplicationRecord
 
   def rbac_disabled?
     ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
-  end
-
-  # Kessel-based inventory groups using workspace listing
-  def kessel_inventory_groups
-    @kessel_inventory_groups ||= begin
-      workspace_ids = Kessel.list_workspaces_with_permission(
-        permission: Rbac::INVENTORY_HOSTS_READ,
-        user: self
-      )
-
-      workspace_ids.empty? ? [] : workspace_ids
-    rescue Kessel::AuthorizationError => e
-      Rails.logger.error("Kessel inventory groups failed for user #{id}: #{e.message}")
-      []
-    end
   end
 
   class << self

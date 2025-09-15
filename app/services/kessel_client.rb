@@ -6,24 +6,18 @@ require 'kessel/inventory/v1beta2/inventory_service_services_pb'
 # rubocop:disable Metrics/ClassLength
 
 # Service for interacting with Kessel for RBAC v2 authorization
-class Kessel
+class KesselClient
   class AuthorizationError < StandardError; end
   class ConfigurationError < StandardError; end
 
-  # Permission mappings from RBAC v1 to Kessel compound permissions
-  PERMISSION_MAPPINGS = {
-    # Compliance permissions
-    'compliance:policy:read' => 'compliance_policy_view',
-    'compliance:policy:create' => 'compliance_policy_create',
-    'compliance:policy:write' => 'compliance_policy_edit',
-    'compliance:policy:delete' => 'compliance_policy_delete',
-    'compliance:report:read' => 'compliance_report_view',
-    'compliance:system:read' => 'compliance_system_view',
-    'compliance:*:read' => 'compliance_all_read',
-
-    # Inventory permissions
-    'inventory:hosts:read' => 'inventory_host_view'
-  }.freeze
+  POLICY_VIEW = 'compliance_policy_view'
+  POLICY_NEW = 'compliance_policy_new'
+  POLICY_EDIT = 'compliance_policy_edit'
+  POLICY_REMOVE = 'compliance_policy_remove'
+  SYSTEM_VIEW = 'compliance_system_view'
+  REPORT_VIEW = 'compliance_report_view'
+  REPORT_REMOVE = 'compliance_report_remove'
+  SECURITY_GUIDE_VIEW = 'compliance_securityguide_view'
 
   class << self
     def enabled?
@@ -34,21 +28,27 @@ class Kessel
       @client ||= build_client
     end
 
+    def auth
+      @auth ||= build_oauth_credentials
+    end
+
     include Kessel::Inventory::V1beta2
     include Kessel::GRPC
     include Kessel::Auth
 
     # rubocop:disable Metrics/MethodLength
-    def default_permission_allowed?(permission)
+    def default_permission_allowed?(permission, user)
       return false unless permission
 
-      default_workspace_id = get_default_workspace_id(auth, Settings.endpoints.rbac_url, raw_identity_header)
+      default_workspace_id = get_default_workspace_id(auth, Settings.endpoints.rbac.url,
+                                                      user.account.identity_header.raw)
 
       check_permission(
         resource_type: 'workspace',
         resource_id: default_workspace_id,
         permission: permission,
-        user: user
+        user: user,
+        use_check_for_update: permission.include?('write') || permission.include?('delete')
       )
     rescue AuthorizationError => e
       Rails.logger.error("Kessel RBAC check failed: #{e.message}")
@@ -62,15 +62,13 @@ class Kessel
                          reporter_type: 'rbac')
       return true unless enabled?
 
-      kessel_permission = map_permission(permission)
-
       object = build_resource_reference(resource_type, resource_id, reporter_type)
       subject = build_subject_reference(user)
 
       request_class = use_check_for_update ? CheckForUpdateRequest : CheckRequest
       request = request_class.new(
         object: object,
-        relation: kessel_permission,
+        relation: permission,
         subject: subject
       )
 
@@ -90,8 +88,6 @@ class Kessel
     def list_workspaces_with_permission(permission:, user:)
       return [] unless enabled?
 
-      kessel_permission = map_permission(permission)
-
       object_type = RepresentationType.new(
         resource_type: 'workspace',
         reporter_type: 'rbac'
@@ -100,7 +96,7 @@ class Kessel
 
       request = StreamedListObjectsRequest.new(
         object_type: object_type,
-        relation: kessel_permission,
+        relation: permission,
         subject: subject
       )
 
@@ -122,8 +118,6 @@ class Kessel
     def build_client
       raise ConfigurationError, 'Kessel is not enabled' unless enabled?
 
-      @oauth_creds = build_oauth_credentials
-
       # Create gRPC client using the actual Kessel SDK API
       if Settings.kessel.insecure
         build_insecure_client
@@ -136,14 +130,14 @@ class Kessel
     end
 
     def build_insecure_client
-      KesselInventoryService::ClientBuilder.new(Settings.kessel.url).insecure
+      KesselInventoryService::ClientBuilder.new(Settings.kessel.url).insecure.build
     end
 
     def build_secure_client
       builder = KesselInventoryService::ClientBuilder.new(Settings.kessel.url)
 
       if Settings.kessel.auth.enabled
-        builder.oauth2_client_authenticated(@oauth_creds)
+        builder.oauth2_client_authenticated(auth)
       else
         builder.authenticated
       end
@@ -157,14 +151,11 @@ class Kessel
       discovery = fetch_oidc_discovery(Settings.kessel.auth.oidc_issuer)
 
       # Create OAuth2 client credentials
-      oauth = OAuth2ClientCredentials.new(
+      OAuth2ClientCredentials.new(
         client_id: Settings.kessel.auth.client_id,
         client_secret: Settings.kessel.auth.client_secret,
         token_endpoint: discovery.token_endpoint
       )
-
-      # Return gRPC call credentials
-      oauth2_call_credentials(oauth)
     rescue StandardError => e
       Rails.logger.error("Failed to build OAuth credentials: #{e.message}")
       raise ConfigurationError, "Failed to build OAuth credentials: #{e.message}"
@@ -202,70 +193,68 @@ class Kessel
       )
     end
     # rubocop:enable Metrics/MethodLength
-
-    def map_permission(rbac_permission)
-      PERMISSION_MAPPINGS[rbac_permission] || rbac_permission.gsub(':', '_').gsub('*', 'all')
-    end
   end
 end
 
 # rubocop:enable Metrics/ClassLength
 # Utilities used by Kessel
 class KesselUtils
-  def get_default_workspace_id(auth, rbac_base_endpoint, identity_header)
-    parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
-    org_id = parsed_identity.org_id
-    cache_key = "workspace_default_#{org_id}"
+  class << self
+    def get_default_workspace_id(auth, rbac_base_endpoint, identity_header)
+      parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
+      org_id = parsed_identity.org_id
+      cache_key = "workspace_default_#{org_id}"
 
-    return @workspace_cache[cache_key] if @workspace_cache&.key?(cache_key)
+      return @workspace_cache[cache_key] if @workspace_cache&.key?(cache_key)
 
-    workspace_id = fetch_default_workspace(auth, rbac_base_endpoint, org_id)
-    @workspace_cache ||= {}
-    @workspace_cache[cache_key] = workspace_id
+      workspace_id = fetch_default_workspace(auth, rbac_base_endpoint, org_id)
+      @workspace_cache ||= {}
+      @workspace_cache[cache_key] = workspace_id
 
-    workspace_id
-  end
-
-  private
-
-  def fetch_default_workspace(auth, rbac_base_endpoint, org_id)
-    access_token = auth.get_token
-
-    workspace_response = make_workspace_request(rbac_base_endpoint, access_token, org_id)
-    workspace_id = extract_workspace_id(workspace_response)
-
-    raise "No default workspace found for org id: #{org_id}" unless workspace_id
-
-    workspace_id
-  end
-
-  def make_workspace_request(rbac_base_endpoint, access_token, org_id)
-    conn = build_faraday_connection(rbac_base_endpoint)
-
-    conn.get('/api/rbac/v2/workspaces/') do |req|
-      req.params['type'] = 'default'
-      req.headers['authorization'] = "Bearer #{access_token}"
-      req.headers['x-rh-rbac-org-id'] = org_id
-      req.headers['Content-Type'] = 'application/json'
+      workspace_id
     end
-  end
 
-  def build_faraday_connection(rbac_base_endpoint)
-    Faraday.new(url: rbac_base_endpoint) do |f|
-      f.request :url_encoded
-      f.response :json
-      f.adapter Faraday.default_adapter
-      # Do we need to add ENV['SSL_CERT_FILE'] ?
+    private
+
+    def fetch_default_workspace(auth, rbac_base_endpoint, org_id)
+      access_token = auth.get_token.access_token
+
+      workspace_response = make_workspace_request(rbac_base_endpoint, access_token, org_id)
+      workspace_id = extract_workspace_id(workspace_response)
+
+      raise "No default workspace found for org id: #{org_id}" unless workspace_id
+
+      workspace_id
     end
-  end
 
-  def extract_workspace_id(response)
-    raise "RBAC API error: #{response.status} - #{response.body}" unless response.success?
+    def make_workspace_request(rbac_base_endpoint, access_token, org_id)
+      conn = build_faraday_connection(rbac_base_endpoint)
 
-    workspaces = response.body
-    workspace = workspaces.dig('data')&.first
-    return workspace['id'] if workspace&.dig('id')
+      conn.get('/api/rbac/v2/workspaces/') do |req|
+        req.params['type'] = 'default'
+        req.headers['authorization'] = "Bearer #{access_token}"
+        req.headers['x-rh-rbac-org-id'] = org_id
+        req.headers['Content-Type'] = 'application/json'
+      end
+    end
 
-    nil
+    def build_faraday_connection(rbac_base_endpoint)
+      Faraday.new(url: rbac_base_endpoint) do |f|
+        f.request :url_encoded
+        f.response :json
+        f.adapter Faraday.default_adapter
+        # Do we need to add ENV['SSL_CERT_FILE'] ?
+      end
+    end
+
+    def extract_workspace_id(response)
+      raise "RBAC API error: #{response.status} - #{response.body}" unless response.success?
+
+      workspaces = response.body
+      workspace = workspaces.dig('data')&.first
+      return workspace['id'] if workspace&.dig('id')
+
+      nil
+    end
   end
 end
