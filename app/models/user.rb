@@ -12,7 +12,7 @@ class User < ApplicationRecord
   def v2_authorized_to?(permission)
     return true unless KesselClient.enabled?
 
-    KesselClient.default_permission_allowed?(permission, user)
+    KesselClient.default_permission_allowed?(permission, self)
   end
 
   def authorized_to?(access_request)

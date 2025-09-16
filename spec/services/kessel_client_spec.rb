@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Kessel, type: :service do
+RSpec.describe KesselClient, type: :service do
   let(:user) { create(:v2_user) }
   let(:org_id) { user.org_id }
 
@@ -150,7 +150,7 @@ RSpec.describe Kessel, type: :service do
             permission: 'compliance_policy_view',
             user: user
           )
-        end.to raise_error(Kessel::AuthorizationError, /Authorization check failed/)
+        end.to raise_error(KesselClient::AuthorizationError, /Authorization check failed/)
       end
     end
   end
@@ -194,39 +194,100 @@ RSpec.describe Kessel, type: :service do
   end
 
   describe '.get_default_workspace_id' do
+    let(:auth) { double('oauth_credentials') }
     let(:identity_header) { user.account.identity_header.raw }
     let(:workspace_id) { "default-workspace-#{org_id}" }
 
     before do
-      allow(Rbac).to receive(:get_default_workspace_id).and_return(workspace_id)
+      allow(KesselUtils).to receive(:get_default_workspace_id).and_return(workspace_id)
     end
 
-    it 'delegates to Rbac service and returns workspace ID' do
-      result = described_class.get_default_workspace_id(identity_header)
+    it 'delegates to KesselUtils and returns workspace ID' do
+      result = described_class.get_default_workspace_id(auth, Settings.endpoints.rbac.url, identity_header)
       expect(result).to eq(workspace_id)
-      expect(Rbac).to have_received(:get_default_workspace_id).with(identity_header)
+      expect(KesselUtils).to have_received(:get_default_workspace_id).with(auth, Settings.endpoints.rbac.url,
+                                                                           identity_header)
     end
   end
 
-  describe '.get_root_workspace_id' do
-    let(:identity_header) { user.account.identity_header.raw }
-    let(:workspace_id) { "root-workspace-#{org_id}" }
+  describe '.default_permission_allowed?' do
+    let(:permission) { 'compliance_policy_view' }
+    let(:workspace_id) { "default-workspace-#{org_id}" }
+    let(:auth) { double('oauth_credentials') }
 
     before do
-      allow(Rbac).to receive(:get_root_workspace_id).and_return(workspace_id)
+      allow(described_class).to receive(:enabled?).and_return(true)
+      allow(described_class).to receive(:auth).and_return(auth)
+      allow(described_class).to receive(:get_default_workspace_id).and_return(workspace_id)
+      allow(described_class).to receive(:check_permission).and_return(true)
     end
 
-    it 'delegates to Rbac service and returns workspace ID' do
-      result = described_class.get_root_workspace_id(identity_header)
-      expect(result).to eq(workspace_id)
-      expect(Rbac).to have_received(:get_root_workspace_id).with(identity_header)
+    context 'when user has permission' do
+      it 'returns true' do
+        result = described_class.default_permission_allowed?(permission, user)
+        expect(result).to be true
+      end
+
+      it 'calls check_permission with workspace context' do
+        described_class.default_permission_allowed?(permission, user)
+
+        expect(described_class).to have_received(:check_permission).with(
+          resource_type: 'workspace',
+          resource_id: workspace_id,
+          permission: permission,
+          user: user,
+          use_check_for_update: false
+        )
+      end
+    end
+
+    context 'when permission contains write or delete' do
+      let(:permission) { 'compliance_policy_write' }
+
+      it 'uses check_for_update' do
+        described_class.default_permission_allowed?(permission, user)
+
+        expect(described_class).to have_received(:check_permission).with(
+          resource_type: 'workspace',
+          resource_id: workspace_id,
+          permission: permission,
+          user: user,
+          use_check_for_update: true
+        )
+      end
+    end
+
+    context 'when permission is nil' do
+      it 'returns false' do
+        result = described_class.default_permission_allowed?(nil, user)
+        expect(result).to be false
+      end
+    end
+
+    context 'when authorization fails' do
+      before do
+        allow(described_class).to receive(:check_permission).and_raise(KesselClient::AuthorizationError, 'Test error')
+        allow(Rails.logger).to receive(:error)
+      end
+
+      it 'returns false and logs error' do
+        result = described_class.default_permission_allowed?(permission, user)
+        expect(result).to be false
+        expect(Rails.logger).to have_received(:error).with(/Kessel RBAC check failed/)
+      end
     end
   end
 
-  describe 'permission mapping' do
-    it 'maps RBAC v1 permissions to Kessel compound permissions' do
-      expect(described_class::PERMISSION_MAPPINGS['compliance:policy:read']).to eq('compliance_policy_view')
-      expect(described_class::PERMISSION_MAPPINGS['inventory:hosts:read']).to eq('inventory_host_view')
+  describe 'permission constants' do
+    it 'defines compliance permission constants' do
+      expect(described_class::POLICY_VIEW).to eq('compliance_policy_view')
+      expect(described_class::POLICY_NEW).to eq('compliance_policy_new')
+      expect(described_class::POLICY_EDIT).to eq('compliance_policy_edit')
+      expect(described_class::POLICY_REMOVE).to eq('compliance_policy_remove')
+      expect(described_class::SYSTEM_VIEW).to eq('compliance_system_view')
+      expect(described_class::REPORT_VIEW).to eq('compliance_report_view')
+      expect(described_class::REPORT_REMOVE).to eq('compliance_report_remove')
+      expect(described_class::SECURITY_GUIDE_VIEW).to eq('compliance_securityguide_view')
     end
   end
 end
