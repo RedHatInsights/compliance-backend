@@ -15,7 +15,6 @@ class AuthenticationTest < ActionController::TestCase
       render plain: user.org_id
     end
     permission_for_action :index, Rbac::POLICY_READ
-    v2_permission_for_action :index, Rbac::POLICY_READ
 
     def raising
       raise 'Error'
