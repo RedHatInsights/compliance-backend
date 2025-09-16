@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'sidekiq/testing'
 require 'rails_helper'
 
 describe Kafka::ReportParser do

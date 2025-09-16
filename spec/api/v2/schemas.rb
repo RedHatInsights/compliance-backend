@@ -17,6 +17,7 @@ module Api
       include RuleResult
       include RuleTree
       include SecurityGuide
+      include Status
       include SupportedProfile
       include System
       include Tailoring
@@ -40,6 +41,7 @@ module Api
         rule_result: RULE_RESULT,
         rule_tree: RULE_TREE,
         security_guide: SECURITY_GUIDE,
+        status: STATUS,
         supported_profile: SUPPORTED_PROFILE,
         system: SYSTEM,
         tailoring: TAILORING,
