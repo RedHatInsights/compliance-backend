@@ -7,13 +7,13 @@ module V2
       render_json rule_groups
     end
     permission_for_action :index, Rbac::COMPLIANCE_VIEWER
-    v2_permission_for_action :index, KesselClient::SECURITY_GUIDE_VIEW
+    v2_permission_for_action :index, KesselRbac::SECURITY_GUIDE_VIEW
 
     def show
       render_json rule_group
     end
     permission_for_action :show, Rbac::COMPLIANCE_VIEWER
-    v2_permission_for_action :show, KesselClient::SECURITY_GUIDE_VIEW
+    v2_permission_for_action :show, KesselRbac::SECURITY_GUIDE_VIEW
 
     private
 

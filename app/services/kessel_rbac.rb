@@ -6,7 +6,7 @@ require 'kessel/inventory/v1beta2/inventory_service_services_pb'
 # rubocop:disable Metrics/ClassLength
 
 # Service for interacting with Kessel for RBAC v2 authorization
-class KesselClient
+class KesselRbac
   class AuthorizationError < StandardError; end
   class ConfigurationError < StandardError; end
 
