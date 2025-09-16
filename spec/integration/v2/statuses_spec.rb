@@ -2,7 +2,7 @@
 
 require 'swagger_helper'
 
-describe 'Status API', swagger_doc: 'v1/openapi.json' do
+describe 'Status API', swagger_doc: 'v2/openapi.json' do
   path '/status' do
     get 'status' do
       tags 'status'

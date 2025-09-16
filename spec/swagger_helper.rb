@@ -21,7 +21,6 @@ RSpec.configure do |config|
   end
 
   config.openapi_specs = {
-    'v1/openapi.json' => Api::V1::Openapi.doc,
     'v2/openapi.json' => Api::V2::Openapi.doc
   }
 
