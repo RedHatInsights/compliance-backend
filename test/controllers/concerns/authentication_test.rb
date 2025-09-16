@@ -5,7 +5,7 @@ require 'test_helper'
 # This class tests a "dummy" controller for authentication.
 class AuthenticationTest < ActionController::TestCase
   # rubocop:disable Rails/ApplicationController
-  class AuthenticatedMockController < V1::ApplicationController
+  class AuthenticatedMockController < V2::ApplicationController
     include Authentication
 
     def index
