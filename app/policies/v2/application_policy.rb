@@ -5,16 +5,6 @@ module V2
   # should be overriding only the methods that would make sense
   # to override.
   class ApplicationPolicy
-    class << self
-      def system_match_group?(system)
-        groups = user.inventory_groups
-        return true if groups == Rbac::ANY
-        return system.group_ids.intersect?(groups) if KesselClient.enabled?
-
-        (system.groups.blank? && groups&.include?([])) || system.group_ids.intersect?(groups)
-      end
-    end
-
     attr_reader :user, :record
 
     def initialize(user, record)
@@ -46,6 +36,16 @@ module V2
 
     alias new? create?
     alias edit? update?
+
+    protected
+
+    def system_match_group?(system)
+      groups = user.inventory_groups
+      return true if groups == Rbac::ANY
+      return system.group_ids.intersect?(groups) if KesselRbac.enabled?
+
+      (system.groups.blank? && groups&.include?([])) || system.group_ids.intersect?(groups)
+    end
 
     private
 
