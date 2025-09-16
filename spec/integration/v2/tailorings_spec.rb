@@ -278,4 +278,111 @@ describe 'Tailorings', swagger_doc: 'v2/openapi.json' do
       end
     end
   end
+
+  path '/policies/{policy_id}/tailorings/{tailoring_id}/compare' do
+    let(:policy_id) do
+      FactoryBot.create(:v2_policy, :for_tailoring, account: user.account, supports_minors: [1, 2]).id
+    end
+
+    before { allow(StrongerParameters::InvalidValue).to receive(:new) { |value, _| value.to_sym } }
+
+    let(:item) do
+      FactoryBot.create(
+        :v2_tailoring,
+        :with_mixed_rules,
+        :with_tailored_values,
+        policy: V2::Policy.find(policy_id),
+        os_minor_version: 1
+      )
+    end
+
+    get 'Compare Tailoring rules across OS minor versions' do
+      v2_auth_header
+      tags 'Policies'
+      description 'Compare rules of a tailoring to a target OS minor version\'s profile rules.'
+      operationId 'CompareTailoring'
+      content_types
+
+      parameter name: :policy_id, in: :path, type: :string, required: true
+      parameter name: :tailoring_id, in: :path, type: :string, required: true,
+                description: 'UUID or OS minor version number'
+      parameter name: :target_os_minor_version, in: :query, type: :integer, required: true,
+                description: 'Target OS minor version to compare against'
+      parameter name: :diff_only, in: :query, type: :boolean, required: false,
+                description: 'Whether to return only the differences between the tailoring and the canonical ruleset'
+
+      response '200', 'Returns Tailoring Rules Comparison' do
+        let(:tailoring_id) { item.id }
+        let(:target_os_minor_version) { 2 }
+        let(:diff_only) { false }
+
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :string, format: :uuid },
+                   ref_id: { type: :string, example: 'xccdf_org.ssgproject.content_rule_package_tftp_removed' },
+                   title: { type: :string, example: 'Remove tftp' },
+                   available_in_versions: {
+                     type: :array,
+                     items: {
+                       type: :object,
+                       properties: {
+                         os_major_version: { type: :integer, example: 9 },
+                         os_minor_version: { type: :integer, example: 1 },
+                         ssg_version: { type: :string, example: '0.1.210' }
+                       }
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Returns Tailoring Rules Comparison') }
+
+        run_test!
+      end
+
+      response '200', 'Returns Tailoring Rules Comparison' do
+        let(:tailoring_id) { item.id }
+        let(:target_os_minor_version) { 2 }
+        let(:diff_only) { true }
+
+        schema type: :array,
+               items: {
+                 type: :object,
+                 properties: {
+                   id: { type: :string, format: :uuid },
+                   ref_id: { type: :string, example: 'xccdf_org.ssgproject.content_rule_package_tftp_removed' },
+                   title: { type: :string, example: 'Remove tftp' },
+                   available_in_versions: {
+                     type: :array,
+                     items: {
+                       type: :object,
+                       properties: {
+                         os_major_version: { type: :integer, example: 9 },
+                         os_minor_version: { type: :integer, example: 1 },
+                         ssg_version: { type: :string, example: '0.1.210' }
+                       }
+                     }
+                   }
+                 }
+               }
+
+        after { |e| autogenerate_examples(e, 'Returns Tailoring Rules Comparison (differences only)') }
+
+        run_test!
+      end
+
+      response '404', 'Returns with Not Found' do
+        let(:tailoring_id) { Faker::Internet.uuid }
+        let(:policy_id) { Faker::Internet.uuid }
+        let(:target_os_minor_version) { 2 }
+        schema ref_schema('errors')
+
+        after { |e| autogenerate_examples(e, 'Description of an error when comparing a non-existing Tailoring') }
+
+        run_test!
+      end
+    end
+  end
 end
