@@ -8,29 +8,29 @@ RSpec.describe User, type: :model do
   describe 'Kessel integration' do
     before do
       # Mock KesselClient
-      allow(KesselClient).to receive(:enabled?).and_return(true)
+      allow(KesselRbac).to receive(:enabled?).and_return(true)
     end
 
     describe '#v2_authorized_to?' do
       context 'when Kessel is enabled' do
         before do
-          allow(KesselClient).to receive(:enabled?).and_return(true)
+          allow(KesselRbac).to receive(:enabled?).and_return(true)
         end
 
         context 'when user is authorized' do
           before do
-            allow(KesselClient).to receive(:default_permission_allowed?).and_return(true)
+            allow(KesselRbac).to receive(:default_permission_allowed?).and_return(true)
           end
 
           it 'returns true' do
-            expect(user.v2_authorized_to?(KesselClient::POLICY_VIEW)).to be true
+            expect(user.v2_authorized_to?(KesselRbac::POLICY_VIEW)).to be true
           end
 
           it 'calls KesselClient with correct parameters' do
-            user.v2_authorized_to?(KesselClient::POLICY_VIEW)
+            user.v2_authorized_to?(KesselRbac::POLICY_VIEW)
 
-            expect(KesselClient).to have_received(:default_permission_allowed?).with(
-              KesselClient::POLICY_VIEW,
+            expect(KesselRbac).to have_received(:default_permission_allowed?).with(
+              KesselRbac::POLICY_VIEW,
               user
             )
           end
@@ -38,28 +38,28 @@ RSpec.describe User, type: :model do
 
         context 'when user is not authorized' do
           before do
-            allow(KesselClient).to receive(:default_permission_allowed?).and_return(false)
+            allow(KesselRbac).to receive(:default_permission_allowed?).and_return(false)
           end
 
           it 'returns false' do
-            expect(user.v2_authorized_to?(KesselClient::POLICY_VIEW)).to be false
+            expect(user.v2_authorized_to?(KesselRbac::POLICY_VIEW)).to be false
           end
         end
       end
 
       context 'when Kessel is disabled' do
         before do
-          allow(KesselClient).to receive(:enabled?).and_return(false)
-          allow(KesselClient).to receive(:default_permission_allowed?)
+          allow(KesselRbac).to receive(:enabled?).and_return(false)
+          allow(KesselRbac).to receive(:default_permission_allowed?)
         end
 
         it 'returns true (bypasses authorization)' do
-          expect(user.v2_authorized_to?(KesselClient::POLICY_VIEW)).to be true
+          expect(user.v2_authorized_to?(KesselRbac::POLICY_VIEW)).to be true
         end
 
         it 'does not call KesselClient' do
-          user.v2_authorized_to?(KesselClient::POLICY_VIEW)
-          expect(KesselClient).not_to have_received(:default_permission_allowed?)
+          user.v2_authorized_to?(KesselRbac::POLICY_VIEW)
+          expect(KesselRbac).not_to have_received(:default_permission_allowed?)
         end
       end
     end
@@ -67,12 +67,12 @@ RSpec.describe User, type: :model do
     describe '#inventory_groups' do
       context 'when Kessel is enabled' do
         before do
-          allow(KesselClient).to receive(:enabled?).and_return(true)
+          allow(KesselRbac).to receive(:enabled?).and_return(true)
         end
 
         context 'when user has workspace access' do
           before do
-            allow(KesselClient).to receive(:list_workspaces_with_permission).and_return(%w[workspace-1 workspace-2])
+            allow(KesselRbac).to receive(:list_workspaces_with_permission).and_return(%w[workspace-1 workspace-2])
           end
 
           it 'returns workspace IDs' do
@@ -82,8 +82,8 @@ RSpec.describe User, type: :model do
           it 'calls KesselClient with correct parameters' do
             user.inventory_groups
 
-            expect(KesselClient).to have_received(:list_workspaces_with_permission).with(
-              permission: KesselClient::SYSTEM_VIEW,
+            expect(KesselRbac).to have_received(:list_workspaces_with_permission).with(
+              permission: KesselRbac::SYSTEM_VIEW,
               user: user
             )
           end
@@ -91,7 +91,7 @@ RSpec.describe User, type: :model do
 
         context 'when user has no workspace access' do
           before do
-            allow(KesselClient).to receive(:list_workspaces_with_permission).and_return([])
+            allow(KesselRbac).to receive(:list_workspaces_with_permission).and_return([])
           end
 
           it 'returns empty array' do
@@ -101,20 +101,20 @@ RSpec.describe User, type: :model do
 
         context 'when KesselClient raises an error' do
           before do
-            allow(KesselClient).to receive(:list_workspaces_with_permission).and_raise(
-              KesselClient::AuthorizationError, 'Test error'
+            allow(KesselRbac).to receive(:list_workspaces_with_permission).and_raise(
+              KesselRbac::AuthorizationError, 'Test error'
             )
           end
 
           it 'propagates the error' do
-            expect { user.inventory_groups }.to raise_error(KesselClient::AuthorizationError, 'Test error')
+            expect { user.inventory_groups }.to raise_error(KesselRbac::AuthorizationError, 'Test error')
           end
         end
       end
 
       context 'when Kessel is disabled' do
         before do
-          allow(KesselClient).to receive(:enabled?).and_return(false)
+          allow(KesselRbac).to receive(:enabled?).and_return(false)
           allow(user).to receive(:rbac_permissions).and_return([])
           allow(Rbac).to receive(:load_inventory_groups).and_return(['group-1'])
         end

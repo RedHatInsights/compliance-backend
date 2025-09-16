@@ -57,7 +57,7 @@ module V2
     def rbac_allowed?
       return valid_cert_auth? if identity_header.cert_based?
 
-      return v2_rbac_allowed? if KesselClient.enabled?
+      return v2_rbac_allowed? if KesselRbac.enabled?
 
       v1_rbac_allowed?
     end
