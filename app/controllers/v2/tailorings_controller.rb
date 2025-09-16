@@ -5,6 +5,10 @@ module V2
   class TailoringsController < ApplicationController
     CREATE_ATTRIBUTES = { os_minor_version: ParamType.integer & ParamType.gte(0) }.freeze
     UPDATE_ATTRIBUTES = { value_overrides: ParamType.map }.freeze
+    COMPARE_ATTRIBUTES = {
+      target_os_minor_version: ParamType.integer & ParamType.gte(0),
+      diff_only: ParamType.boolean
+    }.freeze
 
     def index
       render_json tailorings
@@ -57,6 +61,20 @@ module V2
     end
     permission_for_action :tailoring_file, Rbac::POLICY_READ
     permitted_params_for_action :tailoring_file, id: ID_TYPE.required
+
+    def compare
+      comparison = V2::TailoringRuleComparator.new(
+        source_tailoring: tailoring,
+        target_os_minor_version: permitted_params[:target_os_minor_version],
+        diff_only: permitted_params[:diff_only]
+      ).build_comparison
+
+      render json: comparison, status: :ok
+    rescue V2::TailoringRuleComparator::InvalidTargetVersionError => e
+      render_error e.message, status: :unprocessable_entity
+    end
+    permission_for_action :compare, Rbac::POLICY_READ
+    permitted_params_for_action :compare, { id: ID_TYPE.required, **COMPARE_ATTRIBUTES }
 
     private
 

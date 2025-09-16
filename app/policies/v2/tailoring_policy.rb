@@ -23,6 +23,10 @@ module V2
       match_account?
     end
 
+    def compare?
+      match_account?
+    end
+
     # Only show tailoring in our user account
     class Scope < V2::ApplicationPolicy::Scope
       def resolve
