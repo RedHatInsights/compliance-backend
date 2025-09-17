@@ -23,7 +23,7 @@ module V2
         @action_permissions[action.to_sym] ||= permission
       end
 
-      def v2_permission_for_action(action, permission)
+      def kessel_permission_for_action(action, permission)
         @v2_action_permissions ||= {}
         @v2_action_permissions[action.to_sym] ||= permission
       end
@@ -57,7 +57,7 @@ module V2
     def rbac_allowed?
       return valid_cert_auth? if identity_header.cert_based?
 
-      return v2_rbac_allowed? if KesselRbac.enabled?
+      return kessel_rbac_allowed? if KesselRbac.enabled?
 
       v1_rbac_allowed?
     end
@@ -67,9 +67,9 @@ module V2
       user.authorized_to?(Rbac::INVENTORY_HOSTS_READ) && user.authorized_to?(permission)
     end
 
-    def v2_rbac_allowed?
+    def kessel_rbac_allowed?
       permission = self.class.instance_variable_get(:@v2_action_permissions)[action_name.to_sym]
-      user.v2_authorized_to?(permission)
+      user.kessel_authorized_to?(permission)
     end
 
     def pundit_scope(res = resource)

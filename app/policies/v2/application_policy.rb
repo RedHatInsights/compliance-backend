@@ -39,7 +39,7 @@ module V2
 
     protected
 
-    def system_match_group?(system)
+    def match_workspace?(system)
       groups = user.inventory_groups
       return true if groups == Rbac::ANY
       return system.group_ids.intersect?(groups) if KesselRbac.enabled?
