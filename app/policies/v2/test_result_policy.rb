@@ -8,7 +8,7 @@ module V2
     end
 
     def show?
-      match_account? && system_match_group?(record.system)
+      match_account? && match_workspace?(record.system)
     end
 
     def os_versions?

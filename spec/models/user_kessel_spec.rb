@@ -23,11 +23,11 @@ RSpec.describe User, type: :model do
           end
 
           it 'returns true' do
-            expect(user.v2_authorized_to?(KesselRbac::POLICY_VIEW)).to be true
+            expect(user.kessel_authorized_to?(KesselRbac::POLICY_VIEW)).to be true
           end
 
           it 'calls KesselClient with correct parameters' do
-            user.v2_authorized_to?(KesselRbac::POLICY_VIEW)
+            user.kessel_authorized_to?(KesselRbac::POLICY_VIEW)
 
             expect(KesselRbac).to have_received(:default_permission_allowed?).with(
               KesselRbac::POLICY_VIEW,
@@ -42,7 +42,7 @@ RSpec.describe User, type: :model do
           end
 
           it 'returns false' do
-            expect(user.v2_authorized_to?(KesselRbac::POLICY_VIEW)).to be false
+            expect(user.kessel_authorized_to?(KesselRbac::POLICY_VIEW)).to be false
           end
         end
       end
@@ -54,11 +54,11 @@ RSpec.describe User, type: :model do
         end
 
         it 'returns true (bypasses authorization)' do
-          expect(user.v2_authorized_to?(KesselRbac::POLICY_VIEW)).to be true
+          expect(user.kessel_authorized_to?(KesselRbac::POLICY_VIEW)).to be true
         end
 
         it 'does not call KesselClient' do
-          user.v2_authorized_to?(KesselRbac::POLICY_VIEW)
+          user.kessel_authorized_to?(KesselRbac::POLICY_VIEW)
           expect(KesselRbac).not_to have_received(:default_permission_allowed?)
         end
       end

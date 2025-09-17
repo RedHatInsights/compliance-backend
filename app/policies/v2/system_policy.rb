@@ -8,7 +8,7 @@ module V2
     end
 
     def show?
-      match_account? && system_match_group?(record)
+      match_account? && match_workspace?(record)
     end
 
     def create?
@@ -16,11 +16,11 @@ module V2
     end
 
     def update?
-      match_account? && system_match_group?(record)
+      match_account? && match_workspace?(record)
     end
 
     def destroy?
-      match_account? && system_match_group?(record)
+      match_account? && match_workspace?(record)
     end
 
     def os_versions?

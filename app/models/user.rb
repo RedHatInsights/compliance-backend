@@ -9,7 +9,7 @@ class User < ApplicationRecord
 
   delegate :org_id, :system_owner_id, :cert_authenticated?, to: :account
 
-  def v2_authorized_to?(permission)
+  def kessel_authorized_to?(permission)
     return true unless KesselRbac.enabled?
 
     KesselRbac.default_permission_allowed?(permission, self)

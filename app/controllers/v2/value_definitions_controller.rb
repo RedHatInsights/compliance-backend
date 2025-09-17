@@ -7,13 +7,13 @@ module V2
       render_json value_definitions
     end
     permission_for_action :index, Rbac::COMPLIANCE_VIEWER
-    v2_permission_for_action :index, KesselRbac::SECURITY_GUIDE_VIEW
+    kessel_permission_for_action :index, KesselRbac::SECURITY_GUIDE_VIEW
 
     def show
       render_json value_definition
     end
     permission_for_action :show, Rbac::COMPLIANCE_VIEWER
-    v2_permission_for_action :show, KesselRbac::SECURITY_GUIDE_VIEW
+    kessel_permission_for_action :show, KesselRbac::SECURITY_GUIDE_VIEW
 
     private
 
