@@ -24,8 +24,8 @@ module V2
       end
 
       def kessel_permission_for_action(action, permission)
-        @v2_action_permissions ||= {}
-        @v2_action_permissions[action.to_sym] ||= permission
+        @kessel_action_permissions ||= {}
+        @kessel_action_permissions[action.to_sym] ||= permission
       end
     end
 
@@ -68,7 +68,7 @@ module V2
     end
 
     def kessel_rbac_allowed?
-      permission = self.class.instance_variable_get(:@v2_action_permissions)[action_name.to_sym]
+      permission = self.class.instance_variable_get(:@kessel_action_permissions)[action_name.to_sym]
       user.kessel_authorized_to?(permission)
     end
 
