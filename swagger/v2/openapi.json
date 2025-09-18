@@ -7361,6 +7361,70 @@
         }
       }
     },
+    "/status": {
+      "get": {
+        "summary": "status",
+        "tags": [
+          "status"
+        ],
+        "description": "Display Compliance status",
+        "operationId": "Status",
+        "responses": {
+          "200": {
+            "description": "successful status",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data": {
+                        "api": true
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/status"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "unsuccessful status",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Response example": {
+                    "value": {
+                      "data": {
+                        "api": false
+                      }
+                    },
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/status"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/security_guides/supported_profiles": {
       "get": {
         "summary": "Request Supported Profiles",
@@ -17000,6 +17064,20 @@
             ],
             "readOnly": true,
             "description": "Major version of the Operating System that the Security Guide covers"
+          }
+        }
+      },
+      "status": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "api": {
+                "type": "boolean",
+                "example": true
+              }
+            }
           }
         }
       },
