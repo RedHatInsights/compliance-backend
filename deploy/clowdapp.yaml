@@ -303,13 +303,13 @@ objects:
         # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
-            path: /api/compliance/v1/openapi.json
+            path: /api/compliance/v2/openapi.json
             port: web
           initialDelaySeconds: 10
           periodSeconds: 30
         readinessProbe:
           httpGet:
-            path: /api/compliance/v1/status
+            path: /api/compliance/v2/status
             port: web
           initialDelaySeconds: 10
           periodSeconds: 30
