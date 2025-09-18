@@ -3,6 +3,9 @@
 module V2
   # API for Rules under Security Guides
   class RulesController < ApplicationController
+    CREATE_ATTRIBUTES = { ids: ParamType.array(ID_TYPE), policy_id: ID_TYPE, tailoring_id: ID_TYPE }.freeze
+    UPDATE_ATTRIBUTES = { id: ID_TYPE, policy_id: ID_TYPE, tailoring_id: ID_TYPE }.freeze
+
     def index
       render_json rules
     end
@@ -23,7 +26,7 @@ module V2
     end
     permission_for_action :create, Rbac::POLICY_WRITE
     kessel_permission_for_action :create, KesselRbac::POLICY_EDIT
-    permitted_params_for_action :create, { ids: ParamType.array(ID_TYPE), policy_id: ID_TYPE, tailoring_id: ID_TYPE }
+    permitted_params_for_action :create, CREATE_ATTRIBUTES
 
     def update
       if new_tailoring_rule.save
@@ -35,7 +38,7 @@ module V2
     end
     permission_for_action :update, Rbac::POLICY_WRITE
     kessel_permission_for_action :update, KesselRbac::POLICY_EDIT
-    permitted_params_for_action :update, { id: ID_TYPE, policy_id: ID_TYPE, tailoring_id: ID_TYPE }
+    permitted_params_for_action :update, UPDATE_ATTRIBUTES
 
     def destroy
       tailoring_rule = rule.tailoring_rules.find_by!(tailoring_id: permitted_params[:tailoring_id])
@@ -46,7 +49,7 @@ module V2
     end
     permission_for_action :destroy, Rbac::POLICY_DELETE
     kessel_permission_for_action :destroy, KesselRbac::POLICY_REMOVE
-    permitted_params_for_action :destroy, { id: ID_TYPE, policy_id: ID_TYPE, tailoring_id: ID_TYPE }
+    permitted_params_for_action :destroy, UPDATE_ATTRIBUTES
 
     private
 
