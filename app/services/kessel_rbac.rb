@@ -49,7 +49,7 @@ class KesselRbac
         resource_id: default_workspace_id,
         permission: permission,
         user: user,
-        use_check_for_update: permission.include?('write') || permission.include?('delete')
+        use_check_for_update: %w[write delete].include?(permission)
       )
     rescue AuthorizationError => e
       Rails.logger.error("Kessel RBAC check failed: #{e.message}")
