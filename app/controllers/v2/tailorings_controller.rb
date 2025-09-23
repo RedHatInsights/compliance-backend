@@ -58,6 +58,23 @@ module V2
     permission_for_action :tailoring_file, Rbac::POLICY_READ
     permitted_params_for_action :tailoring_file, id: ID_TYPE.required
 
+    def compare
+      comparison = V2::TailoringComparator.new(tailoring, permitted_params).compare
+
+      render_json comparison, status: :ok
+    rescue V2::TailoringComparator::InvalidTargetVersionError => e
+      render_error e.message, status: :unprocessable_entity
+    end
+    permission_for_action :compare, Rbac::POLICY_READ
+    permitted_params_for_action :compare, {
+      id: ID_TYPE,
+      target_os_minor: ParamType.integer & ParamType.gte(0),
+      diff_only: ParamType.boolean,
+      filter: ParamType.string,
+      limit: ParamType.integer & ParamType.gt(0) & ParamType.lte(100),
+      offset: ParamType.integer & ParamType.gte(0)
+    }
+
     private
 
     def tailorings

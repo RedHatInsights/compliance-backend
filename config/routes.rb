@@ -43,6 +43,8 @@ Rails.application.routes.draw do
           resources :tailorings, only: %i[index show create update], parents: %i[policy] do
             get :tailoring_file, on: :member, defaults: { format: 'xml' }, constraints: { format: /json|xml|toml/ }
             get :rule_tree, on: :member, parents: %i[policy]
+            get :compare, action: :compare, on: :member, parents: %i[policy]
+            # patch :migrations, action: :update, controller: :migrations, on: :member, parents: %i[policy]
 
             resources :rules, only: %i[index create update destroy], parents: %i[policies tailorings]
           end
