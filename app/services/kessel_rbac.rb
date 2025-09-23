@@ -36,7 +36,6 @@ class KesselRbac
     include Kessel::GRPC
     include Kessel::Auth
 
-    # rubocop:disable Metrics/MethodLength
     def default_permission_allowed?(permission, user)
       return false unless permission
 
@@ -44,25 +43,22 @@ class KesselRbac
         resource_type: 'workspace',
         resource_id: get_default_workspace_id(auth, user.account.identity_header.raw),
         permission: permission,
-        user: user,
-        use_check_for_update: permission.exclude?('view')
+        user: user
       )
     rescue AuthorizationError => e
       Rails.logger.error("Kessel RBAC check failed: #{e.message}")
       false
     end
-    # rubocop:enable Metrics/MethodLength
 
     # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/ParameterLists
-    def check_permission(resource_type:, resource_id:, permission:, user:, use_check_for_update: false,
-                         reporter_type: 'rbac')
+    def check_permission(resource_type:, resource_id:, permission:, user:, reporter_type: 'rbac')
       return true unless enabled?
 
       object = build_resource_reference(resource_type, resource_id, reporter_type)
       subject = build_subject_reference(user)
+      update = permission.exclude?('view')
 
-      request_class = use_check_for_update ? CheckForUpdateRequest : CheckRequest
+      request_class = update ? CheckForUpdateRequest : CheckRequest
       request = request_class.new(
         object: object,
         relation: permission,
@@ -70,7 +66,7 @@ class KesselRbac
       )
 
       begin
-        method = use_check_for_update ? :check_for_update : :check
+        method = update ? :check_for_update : :check
         response = client.public_send(method, request)
         response.allowed
       rescue StandardError => e
@@ -78,7 +74,6 @@ class KesselRbac
         raise AuthorizationError, "Authorization check failed: #{e.message}"
       end
     end
-    # rubocop:enable Metrics/ParameterLists
     # rubocop:enable Metrics/MethodLength
 
     # rubocop:disable Metrics/MethodLength
