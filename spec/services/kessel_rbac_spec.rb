@@ -286,7 +286,6 @@ RSpec.describe KesselRbac, type: :service do
       expect(described_class::POLICY_REMOVE).to eq('compliance_policy_remove')
       expect(described_class::SYSTEM_VIEW).to eq('compliance_system_view')
       expect(described_class::REPORT_VIEW).to eq('compliance_report_view')
-      expect(described_class::REPORT_REMOVE).to eq('compliance_report_remove')
       expect(described_class::SECURITY_GUIDE_VIEW).to eq('compliance_securityguide_view')
     end
   end
