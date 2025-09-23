@@ -69,6 +69,24 @@ module Api
             }
           }
         }.freeze
+
+        TAILORING_COMPARE = {
+          type: :object,
+          required: %w[target_os_minor_version],
+          properties: {
+            target_os_minor_version: {
+              type: :number,
+              examples: [1],
+              description: 'Minor version of the Operating System that the Tailoring covers'
+            },
+            diff_only: {
+              type: :boolean,
+              examples: [true, false],
+              description: 'Whether to return only the differences between the Tailoring and the rules from the ' \
+                           'canonical ruleset. Defaults to false.'
+            }
+          }
+        }.freeze
       end
     end
   end
