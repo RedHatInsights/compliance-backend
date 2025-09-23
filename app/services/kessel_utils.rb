@@ -3,14 +3,14 @@
 # Utilities used by Kessel
 class KesselUtils
   class << self
-    def get_default_workspace_id(auth, rbac_base_endpoint, identity_header)
+    def get_default_workspace_id(auth, identity_header)
       parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
       org_id = parsed_identity.org_id
       cache_key = "workspace_default_#{org_id}"
 
       return @workspace_cache[cache_key] if @workspace_cache&.key?(cache_key)
 
-      workspace_id = fetch_default_workspace(auth, rbac_base_endpoint, org_id)
+      workspace_id = fetch_default_workspace(auth, Settings.endpoints.rbac.url, org_id)
       @workspace_cache ||= {}
       @workspace_cache[cache_key] = workspace_id
 

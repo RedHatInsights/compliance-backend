@@ -17,7 +17,6 @@ class KesselRbac
   POLICY_REMOVE = 'compliance_policy_remove'
   SYSTEM_VIEW = 'compliance_system_view'
   REPORT_VIEW = 'compliance_report_view'
-  REPORT_REMOVE = 'compliance_report_remove'
   SECURITY_GUIDE_VIEW = 'compliance_securityguide_view'
 
   class << self
@@ -41,12 +40,9 @@ class KesselRbac
     def default_permission_allowed?(permission, user)
       return false unless permission
 
-      default_workspace_id = get_default_workspace_id(auth, Settings.endpoints.rbac.url,
-                                                      user.account.identity_header.raw)
-
       check_permission(
         resource_type: 'workspace',
-        resource_id: default_workspace_id,
+        resource_id: get_default_workspace_id(auth, user.account.identity_header.raw),
         permission: permission,
         user: user,
         use_check_for_update: permission.exclude?('view')
