@@ -1,21 +1,20 @@
 # frozen_string_literal: true
 
-require 'kessel'
+require 'kessel-sdk'
 
 # Utility functions to build a Kessel client from the current Settings
 class KesselBuilder
+  class ConfigurationError < StandardError; end
   class << self
     include Kessel::Inventory::V1beta2
     include Kessel::GRPC
     include Kessel::Auth
 
-    def enabled?
-      ActiveModel::Type::Boolean.new.cast(Settings.kessel.enabled)
+    def auth
+      @auth ||= build_oauth_credentials
     end
 
     def build_client
-      raise ConfigurationError, 'Kessel is not enabled' unless enabled?
-
       if Settings.kessel.insecure
         build_insecure_client
       else

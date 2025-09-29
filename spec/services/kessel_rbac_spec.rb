@@ -17,30 +17,12 @@ RSpec.describe KesselRbac, type: :service do
     stub_const('Kessel::RepresentationType', Class.new)
   end
 
-  describe '.enabled?' do
-    context 'when Kessel is enabled in settings' do
-      before { allow(Settings.kessel).to receive(:enabled).and_return(true) }
-
-      it 'returns true' do
-        expect(described_class.enabled?).to be true
-      end
-    end
-
-    context 'when Kessel is disabled in settings' do
-      before { allow(Settings.kessel).to receive(:enabled).and_return(false) }
-
-      it 'returns false' do
-        expect(described_class.enabled?).to be false
-      end
-    end
-  end
-
   describe '.check_permission' do
     let(:mock_client) { double('kessel_client') }
     let(:mock_response) { double('response', allowed: true) }
 
     before do
-      allow(described_class).to receive(:enabled?).and_return(true)
+      allow(KesselRbac).to receive(:enabled?).and_return(true)
       allow(described_class).to receive(:client).and_return(mock_client)
     end
 
@@ -104,7 +86,7 @@ RSpec.describe KesselRbac, type: :service do
 
     context 'when Kessel is disabled' do
       before do
-        allow(described_class).to receive(:enabled?).and_return(false)
+        allow(KesselRbac).to receive(:enabled?).and_return(false)
       end
 
       it 'returns true (bypasses Kessel)' do
@@ -119,18 +101,17 @@ RSpec.describe KesselRbac, type: :service do
       end
     end
 
-    context 'when using check_for_update' do
+    context 'when permission contains write operations' do
       before do
         allow(mock_client).to receive(:check_for_update).and_return(mock_response)
       end
 
-      it 'calls check_for_update method' do
+      it 'calls check_for_update method for write operations' do
         described_class.check_permission(
           resource_type: 'workspace',
           resource_id: 'test-workspace',
           permission: 'compliance_policy_write',
-          user: user,
-          use_check_for_update: true
+          user: user
         )
 
         expect(mock_client).to have_received(:check_for_update)
@@ -163,7 +144,7 @@ RSpec.describe KesselRbac, type: :service do
     end
 
     before do
-      allow(described_class).to receive(:enabled?).and_return(true)
+      allow(KesselRbac).to receive(:enabled?).and_return(true)
       allow(described_class).to receive(:client).and_return(mock_client)
       allow(mock_client).to receive(:streamed_list_objects).and_return(mock_response)
     end
@@ -179,7 +160,7 @@ RSpec.describe KesselRbac, type: :service do
 
     context 'when Kessel is disabled' do
       before do
-        allow(described_class).to receive(:enabled?).and_return(false)
+        allow(KesselRbac).to receive(:enabled?).and_return(false)
       end
 
       it 'returns empty array' do
@@ -203,10 +184,9 @@ RSpec.describe KesselRbac, type: :service do
     end
 
     it 'delegates to KesselUtils and returns workspace ID' do
-      result = described_class.get_default_workspace_id(auth, Settings.endpoints.rbac.url, identity_header)
+      result = described_class.get_default_workspace_id(auth, identity_header)
       expect(result).to eq(workspace_id)
-      expect(KesselUtils).to have_received(:get_default_workspace_id).with(auth, Settings.endpoints.rbac.url,
-                                                                           identity_header)
+      expect(KesselUtils).to have_received(:get_default_workspace_id).with(auth, identity_header)
     end
   end
 
@@ -216,10 +196,10 @@ RSpec.describe KesselRbac, type: :service do
     let(:auth) { double('oauth_credentials') }
 
     before do
-      allow(described_class).to receive(:enabled?).and_return(true)
-      allow(described_class).to receive(:auth).and_return(auth)
+      allow(KesselRbac).to receive(:enabled?).and_return(true)
       allow(described_class).to receive(:get_default_workspace_id).and_return(workspace_id)
       allow(described_class).to receive(:check_permission).and_return(true)
+      allow(described_class).to receive(:auth).and_return(auth)
     end
 
     context 'when user has permission' do
@@ -235,8 +215,7 @@ RSpec.describe KesselRbac, type: :service do
           resource_type: 'workspace',
           resource_id: workspace_id,
           permission: permission,
-          user: user,
-          use_check_for_update: false
+          user: user
         )
       end
     end
@@ -244,15 +223,14 @@ RSpec.describe KesselRbac, type: :service do
     context 'when permission contains write or delete' do
       let(:permission) { 'compliance_policy_write' }
 
-      it 'uses check_for_update' do
+      it 'calls check_permission for write permission' do
         described_class.default_permission_allowed?(permission, user)
 
         expect(described_class).to have_received(:check_permission).with(
           resource_type: 'workspace',
           resource_id: workspace_id,
           permission: permission,
-          user: user,
-          use_check_for_update: true
+          user: user
         )
       end
     end
@@ -270,10 +248,10 @@ RSpec.describe KesselRbac, type: :service do
         allow(Rails.logger).to receive(:error)
       end
 
-      it 'returns false and logs error' do
-        result = described_class.default_permission_allowed?(permission, user)
-        expect(result).to be false
-        expect(Rails.logger).to have_received(:error).with(/Kessel RBAC check failed/)
+      it 'raises if check_permission raises' do
+        expect do
+          described_class.default_permission_allowed?(permission, user)
+        end.to raise_error(KesselRbac::AuthorizationError)
       end
     end
   end

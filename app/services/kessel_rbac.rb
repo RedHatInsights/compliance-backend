@@ -7,7 +7,6 @@ require_relative 'kessel_utils'
 # Service for interacting with Kessel for RBAC v2 authorization
 class KesselRbac
   class AuthorizationError < StandardError; end
-  class ConfigurationError < StandardError; end
 
   POLICY_VIEW = 'compliance_policy_view'
   POLICY_NEW = 'compliance_policy_new'
@@ -18,12 +17,12 @@ class KesselRbac
   SECURITY_GUIDE_VIEW = 'compliance_securityguide_view'
 
   class << self
-    def client
-      @client ||= build_client
+    def enabled?
+      ActiveModel::Type::Boolean.new.cast(Settings.kessel.enabled)
     end
 
-    def auth
-      @auth ||= build_oauth_credentials
+    def client
+      @client ||= build_client
     end
 
     include Kessel::Inventory::V1beta2
@@ -71,6 +70,7 @@ class KesselRbac
 
     delegate :get_default_workspace_id, to: :KesselUtils
     delegate :build_client, to: :KesselBuilder
+    delegate :auth, to: :KesselBuilder
 
     def build_resource_reference(resource_type, resource_id, reporter_type)
       ResourceReference.new(
@@ -83,7 +83,7 @@ class KesselRbac
     def run_check_permission(object, permission, subject)
       update = update_permission?(permission)
       request_class = update ? CheckForUpdateRequest : CheckRequest
-      request_class.new(
+      request = request_class.new(
         object: object,
         relation: permission,
         subject: subject
