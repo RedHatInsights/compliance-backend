@@ -40,6 +40,7 @@ module V2
     # :nocov:
     permission_for_action :os_versions, Rbac::SYSTEM_READ
     permitted_params_for_action :os_versions, { filter: ParamType.string }
+    kessel_permission_for_action :os_versions, KesselRbac::SYSTEM_VIEW
 
     private
 
