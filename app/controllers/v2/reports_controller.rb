@@ -7,11 +7,13 @@ module V2
       render_json reports
     end
     permission_for_action :index, Rbac::REPORT_READ
+    kessel_permission_for_action :index, KesselRbac::REPORT_VIEW
 
     def show
       render_json report
     end
     permission_for_action :show, Rbac::REPORT_READ
+    kessel_permission_for_action :show, KesselRbac::REPORT_VIEW
 
     def destroy
       report.delete_associated
@@ -19,6 +21,7 @@ module V2
       render_json report, status: :accepted
     end
     permission_for_action :destroy, Rbac::POLICY_DELETE
+    kessel_permission_for_action :destroy, KesselRbac::POLICY_REMOVE
     permitted_params_for_action :destroy, { id: ID_TYPE }
 
     def stats
@@ -28,6 +31,7 @@ module V2
     end
     permitted_params_for_action :stats, id: ParamType.string
     permission_for_action :stats, Rbac::REPORT_READ
+    kessel_permission_for_action :stats, KesselRbac::REPORT_VIEW
 
     # :nocov:
     def os_versions
@@ -36,6 +40,7 @@ module V2
     # :nocov:
     permission_for_action :os_versions, Rbac::SYSTEM_READ
     permitted_params_for_action :os_versions, { filter: ParamType.string }
+    kessel_permission_for_action :os_versions, KesselRbac::SYSTEM_VIEW
 
     private
 

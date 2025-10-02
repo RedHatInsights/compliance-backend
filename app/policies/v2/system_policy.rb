@@ -8,7 +8,7 @@ module V2
     end
 
     def show?
-      match_account? && match_group?
+      match_account? && match_workspace?(record)
     end
 
     def create?
@@ -16,11 +16,11 @@ module V2
     end
 
     def update?
-      match_account? && match_group?
+      match_account? && match_workspace?(record)
     end
 
     def destroy?
-      match_account? && match_group?
+      match_account? && match_workspace?(record)
     end
 
     def os_versions?
@@ -31,12 +31,6 @@ module V2
 
     def match_account?
       record.org_id == user.org_id
-    end
-
-    def match_group?
-      groups = user.inventory_groups
-      # Global access || ungrouped host || group matching
-      (groups == Rbac::ANY) || (record.groups.blank? && groups&.include?([])) || record.group_ids.intersect?(groups)
     end
 
     # Only show systems in our user account

@@ -16,11 +16,13 @@ module V2
       render_json compliance_policies
     end
     permission_for_action :index, Rbac::POLICY_READ
+    kessel_permission_for_action :index, KesselRbac::POLICY_VIEW
 
     def show
       render_json compliance_policy
     end
     permission_for_action :show, Rbac::POLICY_READ
+    kessel_permission_for_action :show, KesselRbac::POLICY_VIEW
 
     def create
       new_policy = V2::Policy.new(account: current_user.account, **permitted_params.to_h.slice(*CREATE_ATTRIBUTES.keys))
@@ -33,6 +35,7 @@ module V2
       end
     end
     permission_for_action :create, Rbac::POLICY_CREATE
+    kessel_permission_for_action :create, KesselRbac::POLICY_NEW
     permitted_params_for_action :create, CREATE_ATTRIBUTES
 
     def update
@@ -44,6 +47,7 @@ module V2
       end
     end
     permission_for_action :update, Rbac::POLICY_WRITE
+    kessel_permission_for_action :update, KesselRbac::POLICY_EDIT
     permitted_params_for_action :update, { id: ID_TYPE, **UPDATE_ATTRIBUTES }
 
     def destroy
@@ -53,6 +57,7 @@ module V2
       render_json compliance_policy, status: :accepted
     end
     permission_for_action :destroy, Rbac::POLICY_DELETE
+    kessel_permission_for_action :destroy, KesselRbac::POLICY_REMOVE
     permitted_params_for_action :destroy, { id: ID_TYPE }
 
     private
