@@ -55,9 +55,7 @@ class KesselUtils
 
       workspaces = response.body
       workspace = workspaces.dig('data')&.first
-      return workspace['id'] if workspace&.dig('id')
-
-      nil
+      workspace&.dig('id')
     end
   end
 end
