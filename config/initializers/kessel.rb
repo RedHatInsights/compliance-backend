@@ -34,6 +34,10 @@ Rails.application.configure do
     Settings.kessel.insecure = ActiveModel::Type::Boolean.new.cast(ENV['KESSEL_INSECURE'])
   end
 
+  if ENV["KESSEL_PRINCIPAL_DOMAIN"].present?
+    Settings.kessel.principal_domain = ENV['KESSEL_PRINCIPAL_DOMAIN']
+  end
+
   # Validate Kessel configuration when enabled
   if Settings.kessel.enabled
     Rails.logger.info 'Kessel is enabled, validating configuration...'

@@ -322,6 +322,8 @@ objects:
           value: ${KESSEL_AUTH_OIDC_ISSUER}
         - name: KESSEL_INSECURE
           value: ${KESSEL_INSECURE}
+        - name: KESSEL_PRINCIPAL_DOMAIN
+          value: ${KESSEL_PRINCIPAL_DOMAIN}
         # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
@@ -786,3 +788,6 @@ parameters:
 - name: KESSEL_AUTH_OIDC_ISSUER
 - name: KESSEL_INSECURE
   value: "FALSE"
+- name: KESSEL_PRINCIPAL_DOMAIN
+  value: "redhat"
+

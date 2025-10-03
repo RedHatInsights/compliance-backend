@@ -21,6 +21,10 @@ class KesselRbac
       ActiveModel::Type::Boolean.new.cast(Settings.kessel.enabled)
     end
 
+    def principal_domain
+      Settings.kessel.principal_domain
+    end
+
     def client
       @client ||= build_client
     end
@@ -129,7 +133,7 @@ class KesselRbac
       SubjectReference.new(
         resource: ResourceReference.new(
           resource_type: 'principal',
-          resource_id: "redhat/#{principal_id(user)}",
+          resource_id: "#{principal_domain}/#{principal_id(user)}",
           reporter: ReporterReference.new(type: 'rbac')
         )
       )
