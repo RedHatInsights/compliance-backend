@@ -83,6 +83,11 @@ class XccdfReportParser
   end
 
   def check_for_missing_benchmark
+    puts "\n\u001b[31;1m◉\u001b[0m app/services/xccdf_report_parser.rb"
+    puts "#check_for_missing_benchmark"
+    puts "@op_benchmark.class: #{@op_benchmark.class}"
+    puts "benchmark: #{benchmark}"
+    puts "-" * 40
     # rubocop:disable Style/GuardClause
     unless benchmark.persisted?
       raise UnknownBenchmarkError,
@@ -116,6 +121,9 @@ class XccdfReportParser
   end
 
   def check_for_missing_benchmark_info
+    puts "\n\u001b[31;1m◉\u001b[0m app/services/xccdf_report_parser.rb"
+    puts "#check_for_missing_benchmark_info"
+    puts "-" * 40
     check_for_missing_benchmark
     check_for_missing_test_result_profile
     check_for_missing_rules
