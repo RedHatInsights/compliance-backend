@@ -11,8 +11,7 @@ class Rbac
 
   INVENTORY_UNGROUPED_ENTRIES = [].freeze
   INVENTORY_HOSTS_READ = 'inventory:hosts:read'
-  V1_COMPLIANCE_VIEWER = 'compliance:policy:read'
-  COMPLIANCE_VIEWER = 'compliance:*:read'
+  COMPLIANCE_VIEWER = 'compliance:policy:read'
   COMPLIANCE_ADMIN = 'compliance:*:*'
   POLICY_READ = 'compliance:policy:read'
   POLICY_CREATE = 'compliance:policy:create'
