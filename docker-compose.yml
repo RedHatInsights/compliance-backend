@@ -44,7 +44,7 @@ services:
     links:
       - kafka
   minio:
-    image: quay.io/cloudservices/minio
+    image: docker.io/minio/minio
     platform: linux/amd64
     command: server /data
     volumes:
