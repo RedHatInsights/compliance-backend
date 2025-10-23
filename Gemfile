@@ -53,7 +53,7 @@ gem 'faraday-retry'
 
 # Helpers for models, pagination, mass import
 gem 'activerecord-import'
-gem 'friendly_id', '~> 5.2.4'
+gem 'friendly_id', '~> 5.5.0'
 gem 'oj'
 gem 'toml'
 gem 'scoped_search'
