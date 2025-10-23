@@ -61,7 +61,7 @@ gem 'uuid'
 gem 'will_paginate'
 
 # Prometheus exporter
-gem 'prometheus-client-mmap', '<= 0.28.1'
+gem 'prometheus-client-mmap', '<= 1.2.10'
 gem 'yabeda'
 gem 'yabeda-prometheus-mmap'
 gem 'yabeda-puma-plugin'
