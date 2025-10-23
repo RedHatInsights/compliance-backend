@@ -75,7 +75,7 @@ gem 'nokogiri', force_ruby_platform: true
 gem 'cloudwatchlogger'
 
 # Parsing OpenSCAP reports library
-gem 'openscap_parser', '~> 1.6.0'
+gem 'openscap_parser', '~> 1.7.0'
 
 # RBAC service API
 gem 'insights-rbac-api-client', '~> 2.0.0'
