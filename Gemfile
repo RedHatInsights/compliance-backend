@@ -45,7 +45,7 @@ gem 'slack-notifier'
 
 # Sidekiq - use reliable-fetch by Gitlab
 gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
-gem 'sidekiq', '< 8'
+gem 'sidekiq', '< 9'
 
 # Faraday to make requests easier
 gem 'faraday'
