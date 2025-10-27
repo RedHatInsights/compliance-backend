@@ -8,7 +8,7 @@ module V2
     end
 
     def show?
-      match_account? && match_workspace?(record.system)
+      match_account? && match_group?
     end
 
     def os_versions?
@@ -23,6 +23,13 @@ module V2
 
     def match_account?
       record.system.org_id == user.org_id
+    end
+
+    def match_group?
+      groups = user.inventory_groups
+      system = record.system
+      # Global access || ungrouped host || group matching
+      (groups == Rbac::ANY) || (system.groups.blank? && groups&.include?([])) || system.group_ids.intersect?(groups)
     end
 
     # Only show test results in our user account

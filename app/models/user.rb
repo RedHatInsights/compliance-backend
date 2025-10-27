@@ -9,12 +9,6 @@ class User < ApplicationRecord
 
   delegate :org_id, :system_owner_id, :cert_authenticated?, to: :account
 
-  def kessel_authorized_to?(permission)
-    return true unless KesselRbac.enabled?
-
-    KesselRbac.default_permission_allowed?(permission, self)
-  end
-
   def authorized_to?(access_request)
     return true if rbac_disabled?
 
@@ -27,14 +21,7 @@ class User < ApplicationRecord
     # No need to fetch inventory groups if the RBAC feature is globally disabled or using CERT_AUTH
     return Rbac::ANY if rbac_disabled? || cert_authenticated?
 
-    @inventory_groups ||= if KesselRbac.enabled?
-                            KesselRbac.list_workspaces_with_permission(
-                              permission: KesselRbac::SYSTEM_VIEW,
-                              user: self
-                            )
-                          else
-                            Rbac.load_inventory_groups(rbac_permissions)
-                          end
+    @inventory_groups ||= Rbac.load_inventory_groups(rbac_permissions)
   end
 
   private
