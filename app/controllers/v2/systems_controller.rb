@@ -7,13 +7,11 @@ module V2
       render_json systems
     end
     permission_for_action :index, Rbac::SYSTEM_READ
-    kessel_permission_for_action :index, KesselRbac::SYSTEM_VIEW
 
     def show
       render_json system
     end
     permission_for_action :show, Rbac::SYSTEM_READ
-    kessel_permission_for_action :show, KesselRbac::SYSTEM_VIEW
 
     def create
       inserts, deletes = V2::PolicySystem.bulk_assign(new_policy_systems, old_policy_systems)
@@ -25,7 +23,6 @@ module V2
       render_json systems, status: :accepted
     end
     permission_for_action :create, Rbac::POLICY_WRITE
-    kessel_permission_for_action :create, KesselRbac::POLICY_EDIT
     permitted_params_for_action :create, { ids: ParamType.array(ID_TYPE), policy_id: ID_TYPE, tailoring_id: ID_TYPE }
 
     def update
@@ -39,7 +36,6 @@ module V2
       end
     end
     permission_for_action :update, Rbac::POLICY_WRITE
-    kessel_permission_for_action :update, KesselRbac::POLICY_EDIT
     permitted_params_for_action :update, { id: ID_TYPE }
 
     def destroy
@@ -52,14 +48,12 @@ module V2
       render_json system, status: :accepted
     end
     permission_for_action :destroy, Rbac::POLICY_WRITE
-    kessel_permission_for_action :destroy, KesselRbac::POLICY_EDIT
     permitted_params_for_action :destroy, { id: ID_TYPE }
 
     def os_versions
       render json: systems.os_versions, status: :ok
     end
     permission_for_action :os_versions, Rbac::SYSTEM_READ
-    kessel_permission_for_action :os_versions, KesselRbac::SYSTEM_VIEW
     permitted_params_for_action :os_versions, { filter: ParamType.string }
 
     private

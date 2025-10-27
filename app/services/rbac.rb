@@ -12,15 +12,13 @@ class Rbac
   INVENTORY_UNGROUPED_ENTRIES = [].freeze
   INVENTORY_HOSTS_READ = 'inventory:hosts:read'
   COMPLIANCE_VIEWER = 'compliance:policy:read'
+  COMPLIANCE_ADMIN = 'compliance:*:*'
   POLICY_READ = 'compliance:policy:read'
   POLICY_CREATE = 'compliance:policy:create'
   POLICY_DELETE = 'compliance:policy:delete'
   POLICY_WRITE = 'compliance:policy:write'
   REPORT_READ = 'compliance:report:read'
   SYSTEM_READ = 'compliance:system:read'
-
-  # This is only used in tests - shouldn't be used in any other scope
-  COMPLIANCE_ADMIN = 'compliance:*:*'
 
   class AuthorizationError < StandardError; end
 

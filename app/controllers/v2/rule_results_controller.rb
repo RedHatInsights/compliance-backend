@@ -7,7 +7,6 @@ module V2
       render_json rule_results
     end
     permission_for_action :index, Rbac::REPORT_READ
-    kessel_permission_for_action :index, KesselRbac::REPORT_VIEW
 
     private
 
