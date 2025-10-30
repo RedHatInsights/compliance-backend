@@ -16,6 +16,15 @@ metadata:
   name: compliance-backend-on-pull-request
   namespace: insights-management-tenant
 spec:
+  taskRunSpecs:
+    - pipelineTaskName: build-container
+      stepSpecs:
+        - name: build
+          computeResources:
+            requests:
+              cpu: '4'
+            limits:
+              cpu: '8'
   params:
   - name: git-url
     value: '{{source_url}}'
