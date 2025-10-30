@@ -31,7 +31,6 @@ jobs:
   update-bundler:
     runs-on: ubuntu-latest
     env:
-      BUNDLE_FORCE_RUBY_PLATFORM: true
       BUNDLE_BUILD__FFI: "--enable-system-libffi"
     steps:
       - name: Checkout repository
