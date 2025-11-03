@@ -79,6 +79,7 @@ gem 'openscap_parser', '~> 1.6.0'
 
 # RBAC service API
 gem 'insights-rbac-api-client', '~> 2.0.0'
+gem 'unleash', '~> 6.3.0'
 
 # Kessel SDK for RBAC v2 migration
 gem 'kessel-sdk', '~> 1.4.1'
