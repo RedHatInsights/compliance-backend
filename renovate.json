@@ -8,7 +8,9 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["\\.tekton/.*\\.yaml$"],
+      "managerFilePatterns": [
+        "/\\.tekton/.*\\.yaml$/"
+      ],
       "matchStrings": [
         "RedHatInsights/konflux-pipelines/raw/v(?<currentValue>[\\d.]+)"
       ],
@@ -18,18 +20,27 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["RedHatInsights/konflux-pipelines"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": [
+        "RedHatInsights/konflux-pipelines"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "automerge": true
     },
     {
       "description": "Disable all bundler dependency updates",
-      "matchManagers": ["bundler"],
+      "matchManagers": [
+        "bundler"
+      ],
       "enabled": false
     },
     {
       "description": "Disable all ruby version updates",
-      "matchManagers": ["ruby-version"],
+      "matchManagers": [
+        "ruby-version"
+      ],
       "enabled": false
     }
   ],
