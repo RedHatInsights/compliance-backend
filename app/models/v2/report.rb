@@ -29,6 +29,14 @@ module V2
       )
     end
 
+    NEVER_REPORTED_SYSTEM_COUNT = lambda do
+      AN::NamedFunction.new('COUNT', [V2::System.arel_table[:id]]).filter(
+        Pundit.policy_scope(User.current, V2::System).where_clause.ast.and(
+          V2::TestResult.arel_table[:id].eq(nil)
+        )
+      )
+    end
+
     # rubocop:disable Metrics/BlockLength
     PERCENT_COMPLIANT = lambda do
       AN::NamedFunction.new(

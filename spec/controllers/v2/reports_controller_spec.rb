@@ -17,7 +17,8 @@ describe V2::ReportsController do
       assigned_system_count: -> { 2 },
       reported_system_count: -> { 2 },
       compliant_system_count: -> { 1 },
-      unsupported_system_count: -> { 0 }
+      unsupported_system_count: -> { 0 },
+      never_reported_system_count: -> { 0 }
     }
   end
   before { stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ, Rbac::REPORT_READ) }
@@ -74,7 +75,8 @@ describe V2::ReportsController do
             assigned_system_count: -> { 4 },
             reported_system_count: -> { 4 },
             compliant_system_count: -> { 1 },
-            unsupported_system_count: -> { 2 }
+            unsupported_system_count: -> { 2 },
+            never_reported_system_count: -> { 0 }
           }
         end
 
@@ -104,7 +106,8 @@ describe V2::ReportsController do
               assigned_system_count: -> { 4 },
               reported_system_count: -> { 4 },
               compliant_system_count: -> { 1 },
-              unsupported_system_count: -> { 2 }
+              unsupported_system_count: -> { 2 },
+              never_reported_system_count: -> { 0 }
             }
           end
 
@@ -158,7 +161,8 @@ describe V2::ReportsController do
           assigned_system_count: -> { 2 },
           reported_system_count: -> { 2 },
           compliant_system_count: -> { 1 },
-          unsupported_system_count: -> { 0 }
+          unsupported_system_count: -> { 0 },
+          never_reported_system_count: -> { 0 }
         }
       end
 
@@ -193,7 +197,8 @@ describe V2::ReportsController do
             assigned_system_count: -> { 4 },
             reported_system_count: -> { 4 },
             compliant_system_count: -> { 1 },
-            unsupported_system_count: -> { 2 }
+            unsupported_system_count: -> { 2 },
+            never_reported_system_count: -> { 0 }
           }
         end
 
@@ -226,7 +231,8 @@ describe V2::ReportsController do
               assigned_system_count: -> { 4 },
               reported_system_count: -> { 4 },
               compliant_system_count: -> { 1 },
-              unsupported_system_count: -> { 2 }
+              unsupported_system_count: -> { 2 },
+              never_reported_system_count: -> { 0 }
             }
           end
 
@@ -278,7 +284,8 @@ describe V2::ReportsController do
               assigned_system_count: -> { 3 },
               reported_system_count: -> { 3 },
               compliant_system_count: -> { 1 },
-              unsupported_system_count: -> { 1 }
+              unsupported_system_count: -> { 1 },
+              never_reported_system_count: -> { 0 }
             }
           end
 
@@ -318,6 +325,66 @@ describe V2::ReportsController do
 
           it_behaves_like 'individual'
         end
+      end
+
+      context 'with never reported systems' do
+        let(:attributes) do
+          {
+            title: :title,
+            os_major_version: :os_major_version,
+            ref_id: :ref_id,
+            description: :description,
+            profile_title: :profile_title,
+            business_objective: :business_objective,
+            all_systems_exposed: -> { true },
+            compliance_threshold: :compliance_threshold,
+            percent_compliant: -> { 50 },
+            assigned_system_count: -> { 2 },
+            reported_system_count: -> { 1 },
+            compliant_system_count: -> { 1 },
+            unsupported_system_count: -> { 0 },
+            never_reported_system_count: -> { 1 }
+          }
+        end
+
+        let(:item) do
+          FactoryBot.create(
+            :v2_report,
+            os_major_version: 8,
+            supports_minors: [0, 1],
+            account: current_user.account,
+            assigned_system_count: 0,
+            compliant_system_count: 0,
+            unsupported_system_count: 0
+          ).tap do |report|
+            system_with_result = FactoryBot.create(
+              :system,
+              account: current_user.account,
+              os_major_version: 8,
+              os_minor_version: 0
+            )
+            system_without_result = FactoryBot.create(
+              :system,
+              account: current_user.account,
+              os_major_version: 8,
+              os_minor_version: 0
+            )
+
+            V2::PolicySystem.create!(policy: report.policy, system: system_with_result)
+            V2::PolicySystem.create!(policy: report.policy, system: system_without_result)
+
+            FactoryBot.create(
+              :v2_test_result,
+              system: system_with_result,
+              account: current_user.account,
+              policy_id: report.id,
+              score: 95.0,
+              supported: true
+            )
+          end
+        end
+
+        it_behaves_like 'individual'
       end
     end
 
@@ -456,7 +523,8 @@ describe V2::ReportsController do
           percent_compliant: -> { 0 },
           reported_system_count: -> { 0 },
           compliant_system_count: -> { 0 },
-          unsupported_system_count: -> { 0 }
+          unsupported_system_count: -> { 0 },
+          never_reported_system_count: -> { 1 }
         }
       end
 
