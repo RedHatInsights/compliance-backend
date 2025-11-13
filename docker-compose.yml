@@ -261,6 +261,7 @@ services:
       - /opt/app-root/src/tmp
     volumes:
       - .:/opt/app-root/src:z
+      - /opt/app-root/src/.bundle
     depends_on:
       db:
         condition: service_healthy
@@ -280,6 +281,7 @@ services:
       - /opt/app-root/src/tmp
     volumes:
       - .:/opt/app-root/src/:z
+      - /opt/app-root/src/.bundle
     depends_on:
       - db
       - compliance-ssg
@@ -321,6 +323,7 @@ services:
       - /opt/app-root/src/tmp
     volumes:
       - .:/opt/app-root/src:z
+      - /opt/app-root/src/.bundle
     depends_on:
       - db
       - redis
@@ -350,6 +353,7 @@ services:
       - /opt/app-root/src/tmp
     volumes:
       - .:/opt/app-root/src:z
+      - /opt/app-root/src/.bundle
     depends_on:
       - db
       - rbac
@@ -367,6 +371,7 @@ services:
       - /opt/app-root/src/tmp
     volumes:
       - .:/opt/app-root/src:z
+      - /opt/app-root/src/.bundle
     depends_on:
       - redis
       - rbac
