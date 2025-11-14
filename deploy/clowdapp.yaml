@@ -306,7 +306,6 @@ objects:
         - name: UNLEASH_TOKEN
           valueFrom:
             secretKeyRef:
-              key: api-key
               name: ${UNLEASH_SECRET_NAME}
               key: CLIENT_ACCESS_TOKEN
               optional: true
