@@ -301,6 +301,23 @@ objects:
               fieldPath: metadata.namespace
         - name: LOGSTREAM
           value: "${LOGSTREAM_SERVICE}"
+        - name: UNLEASH_URL
+          value: ${UNLEASH_URL}
+        - name: UNLEASH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: api-key
+              name: ${UNLEASH_SECRET_NAME}
+              key: CLIENT_ACCESS_TOKEN
+              optional: true
+        - name: UNLEASH_BOOTSTRAP_FILE
+          value: ${UNLEASH_BOOTSTRAP_FILE}
+        - name: UNLEASH_SECRET_NAME
+          value: bypass
+        - name: BYPASS_UNLEASH
+          value: 'false'
+        - name: UNLEASH_REFRESH_INTERVAL
+          value: "15"
         - name: KESSEL_ENABLED
           value: ${KESSEL_ENABLED}
         - name: KESSEL_URL
@@ -791,4 +808,17 @@ parameters:
   value: "FALSE"
 - name: KESSEL_PRINCIPAL_DOMAIN
   value: "redhat"
+- name: UNLEASH_URL
+  description: Unleash feature flag server URL
+  required: false
+- name: UNLEASH_TOKEN
+  description: Unleash API key for authentication
+  required: false
+- name: UNLEASH_SECRET_NAME
+  description: Unleash secret name
+  required: false
+- name: BYPASS_UNLEASH
+  required: false
+- name: UNLEASH_REFRESH_INTERVAL
+  required: false
 
