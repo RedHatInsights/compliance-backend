@@ -12,6 +12,7 @@ objects:
       ${LINT_ANNOTATION}: "minimum three replicas not required"
   spec:
     envName: ${ENV_NAME}
+    featureFlags: true
     testing:
       iqePlugin: compliance
     dependencies:
@@ -324,14 +325,6 @@ objects:
           value: ${KESSEL_INSECURE}
         - name: KESSEL_PRINCIPAL_DOMAIN
           value: ${KESSEL_PRINCIPAL_DOMAIN}
-        - name: UNLEASH_URL
-          value: ${UNLEASH_URL}
-        - name: UNLEASH_TOKEN
-          valueFrom:
-            secretKeyRef:
-              key: api-key
-              name: unleash-secret
-              optional: true
         # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
           httpGet:
@@ -798,10 +791,4 @@ parameters:
   value: "FALSE"
 - name: KESSEL_PRINCIPAL_DOMAIN
   value: "redhat"
-- name: UNLEASH_URL
-  description: Unleash feature flag server URL
-  required: false
-- name: UNLEASH_TOKEN
-  description: Unleash API key for authentication
-  required: false
 
