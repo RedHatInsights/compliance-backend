@@ -309,14 +309,6 @@ objects:
               name: ${UNLEASH_SECRET_NAME}
               key: CLIENT_ACCESS_TOKEN
               optional: true
-        - name: UNLEASH_BOOTSTRAP_FILE
-          value: ${UNLEASH_BOOTSTRAP_FILE}
-        - name: UNLEASH_SECRET_NAME
-          value: bypass
-        - name: BYPASS_UNLEASH
-          value: 'false'
-        - name: UNLEASH_REFRESH_INTERVAL
-          value: "15"
         - name: KESSEL_ENABLED
           value: ${KESSEL_ENABLED}
         - name: KESSEL_URL
