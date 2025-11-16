@@ -28,6 +28,11 @@ module Xccdf
     end
 
     def supported?
+      # FIXME: @host_profile is nil
+
+      puts "\n\u001b[31;1m◉\u001b[0m app/services/concerns/xccdf/test_result.rb"
+      puts "@host_profile.class: #{@host_profile.class}"
+      puts "-" * 40
       SupportedSsg.supported?(
         ssg_version: @host_profile.ssg_version,
         os_major_version: @host.os_major_version,
