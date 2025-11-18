@@ -17,6 +17,3 @@ Unleash.configure do |config|
   config.custom_http_headers = { 'Authorization' => ENV['UNLEASH_TOKEN'] }
   config.bootstrap_config = Unleash::Bootstrap::Configuration.new(data: bootstrap_data)
 end
-
-Rails.configuration.unleash = Unleash::Client.new
-Rails.logger.info "Unleash client initialized: URL=#{ENV['UNLEASH_URL']}, App=#{Rails.application.class.module_parent_name}"
