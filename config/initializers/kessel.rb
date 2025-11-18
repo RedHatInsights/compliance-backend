@@ -6,7 +6,7 @@
 
 Rails.application.configure do
 
-  if Rails.configuration.unleash.is_enabled?("compliance.kessel_enabled")
+  if UNLEASH.is_enabled? 'compliance.kessel_enabled', @unleash_context
     Settings.kessel.enabled = true
     Rails.logger.info "KESSEL_ENABLED set to true (feature flag enabled)"
   else
