@@ -5,13 +5,9 @@
 # and validates the configuration when Kessel is enabled.
 
 Rails.application.configure do
-
-  if Rails.configuration.unleash.is_enabled?("compliance.kessel_enabled")
-    Settings.kessel.enabled = true
-    Rails.logger.info "KESSEL_ENABLED set to true (feature flag enabled)"
-  else
-    Settings.kessel.enabled = false
-    Rails.logger.info "KESSEL_ENABLED set to false (feature flag disabled)"
+  # Override settings from environment variables
+  if ENV['KESSEL_ENABLED'].present?
+    Settings.kessel.enabled = ActiveModel::Type::Boolean.new.cast(ENV['KESSEL_ENABLED'])
   end
 
   if ENV['KESSEL_URL'].present?
