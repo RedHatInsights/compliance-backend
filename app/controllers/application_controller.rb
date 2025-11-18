@@ -16,6 +16,7 @@ class ApplicationController < ActionController::API
   include ErrorHandling
 
   before_action :set_csp_hsts
+  before_action :set_unleash_context
 
   class << self
     def permission_for_action(action, permission)
@@ -42,6 +43,16 @@ class ApplicationController < ActionController::API
     payload[:qe] = OpenshiftEnvironment.qe_account?(identity_header.org_id)
     # payload[:path] = nil
     payload[:source] = nil
+  end
+
+  private
+
+  def set_unleash_context
+    @unleash_context = Unleash::Context.new(
+      session_id: session.id,
+      remote_address: request.remote_ip,
+      user_id: session[:user_id]
+    )
   end
 
   protected
