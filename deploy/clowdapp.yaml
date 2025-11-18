@@ -303,6 +303,8 @@ objects:
           value: "${LOGSTREAM_SERVICE}"
         - name: UNLEASH_URL
           value: ${UNLEASH_URL}
+        - name: UNLEASH_REFRESH_INTERVAL
+          value: "15"
         - name: UNLEASH_TOKEN
           valueFrom:
             secretKeyRef:
