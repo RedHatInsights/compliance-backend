@@ -20,20 +20,7 @@ class KesselRbac
 
   class << self
     def enabled?
-      check_enablement
       ActiveModel::Type::Boolean.new.cast(Settings.kessel.enabled)
-    end
-
-    def check_enablement
-      unleash_ff_enabled = Rails.configuration.unleash.is_enabled?('compliance.kessel_enabled', @unleash_context)
-
-      if !Settings.kessel.enabled && unleash_ff_enabled
-        Settings.kessel.enabled = true
-        Rails.logger.info 'Kessel feature flag has been enabled'
-      elsif Settings.kessel.enabled && !unleash_ff_enabled
-        Settings.kessel.enabled = false
-        Rails.logger.info 'Kessel feature flag has been disabled'
-      end
     end
 
     def client
