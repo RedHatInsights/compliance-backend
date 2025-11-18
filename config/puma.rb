@@ -44,12 +44,16 @@ workers(concurrency)
 preload_app! if concurrency > 0
 
 on_worker_boot do
-  ::UNLEASH = Unleash::Client.new
-  Rails.logger.info "Unleash client initialized: URL=#{ENV['UNLEASH_URL']}, App=#{Rails.application.class.module_parent_name}"
+  if ENV['UNLEASH_URL'].present?
+    ::UNLEASH = Unleash::Client.new
+    Rails.logger.info "Unleash client initialized: URL=#{ENV['UNLEASH_URL']}, App=#{Rails.application.class.module_parent_name}"
+  end
 end
 
 on_worker_shutdown do
-  ::UNLEASH.shutdown
+  if ENV['UNLEASH_URL'].present?
+    ::UNLEASH.shutdown
+  end
 end
 
 # Allow puma to be restarted by `rails restart` command.
