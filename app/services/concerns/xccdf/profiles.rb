@@ -25,7 +25,7 @@ module Xccdf
         ::V2::Profile.import(old_profiles.values,
                              on_duplicate_key_update: {
                                conflict_target: %i[ref_id security_guide_id],
-                               columns: %i[name value_overrides]
+                               columns: %i[title value_overrides]
                              }, validate: false)
       end
 
