@@ -6,9 +6,15 @@ RSpec.describe KesselRbac, type: :service do
   let(:user) { create(:v2_user) }
   let(:org_id) { user.org_id }
 
+  before do
+    stub_const('Kessel::Configuration', Class.new)
+    stub_const('Kessel::ApiClient', Class.new)
+    stub_const('Kessel::KesselInventoryService', Class.new)
+  end
+
   describe '.check_permission' do
     let(:mock_client) { double('kessel_client') }
-    let(:mock_response) { double('response', allowed: Kessel::Inventory::V1beta2::Allowed::ALLOWED_TRUE) }
+    let(:mock_response) { double('response', allowed: true) }
 
     before do
       allow(KesselRbac).to receive(:enabled?).and_return(true)
@@ -55,7 +61,7 @@ RSpec.describe KesselRbac, type: :service do
     end
 
     context 'when permission is denied' do
-      let(:mock_response) { double('response', allowed: Kessel::Inventory::V1beta2::Allowed::ALLOWED_FALSE) }
+      let(:mock_response) { double('response', allowed: false) }
 
       before do
         allow(mock_client).to receive(:check).and_return(mock_response)

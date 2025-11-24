@@ -48,7 +48,7 @@ class KesselRbac
       subject = build_subject_reference(user)
       begin
         response = run_check_permission(object, permission, subject)
-        response.allowed == Allowed::ALLOWED_TRUE
+        response.allowed
       rescue StandardError => e
         Rails.logger.error("Kessel authorization check failed: #{e.message}")
         raise AuthorizationError, "Authorization check failed: #{e.message}"
