@@ -40,17 +40,7 @@ RSpec.describe Xccdf::Fixes do
   end
 
   let(:rules) { [rule_with_existing_fix, rule_with_new_fix] }
-  let!(:stale_fix_record) do
-    FactoryBot.create(
-      :fix,
-      rule: rule_with_existing_fix,
-      system: updated_op_fix.system,
-      strategy: 'legacy',
-      disruption: 'unknown',
-      complexity: 'high',
-      text: 'old content'
-    )
-  end
+  let!(:stale_fix_record) { FactoryBot.create(:fix, rule: rule_with_existing_fix, system: updated_op_fix.system) }
 
   before do
     rule_with_existing_fix.op_source = instance_double('RuleOpSource', fixes: [updated_op_fix])

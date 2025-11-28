@@ -22,10 +22,10 @@ RSpec.describe Xccdf::ProfileRules do
     )
   end
 
-  let(:security_guide) { create(:v2_security_guide) }
-  let(:profiles) { create_list(:v2_profile, 2, security_guide: security_guide) }
+  let(:security_guide) { FactoryBot.create(:v2_security_guide) }
+  let(:profiles) { FactoryBot.create_list(:v2_profile, 2, security_guide: security_guide) }
 
-  let!(:new_rules) { create_list(:v2_rule, 2, security_guide: security_guide) }
+  let!(:new_rules) { FactoryBot.create_list(:v2_rule, 2, security_guide: security_guide) }
   let(:rules) { [new_rules.first, new_rules.last, stale_rule] }
 
   let(:op_profiles) do
@@ -35,8 +35,8 @@ RSpec.describe Xccdf::ProfileRules do
     ]
   end
 
-  let!(:stale_rule) { create(:v2_rule, security_guide: security_guide) }
-  let!(:stale_link) { create(:v2_profile_rule, profile: profiles.first, rule: stale_rule) }
+  let!(:stale_rule) { FactoryBot.create(:v2_rule, security_guide: security_guide) }
+  let!(:stale_link) { FactoryBot.create(:v2_profile_rule, profile: profiles.first, rule: stale_rule) }
 
   describe '#save_profile_rules' do
     let(:expected_pairs) do
