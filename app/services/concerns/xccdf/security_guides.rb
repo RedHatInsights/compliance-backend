@@ -19,8 +19,7 @@ module Xccdf
       end
 
       def security_guide_profiles_saved?
-        # FIXME: clean up after the remodel (remove canonical)
-        security_guide.profiles.canonical.count == @op_security_guide.profiles.count
+        security_guide.profiles.count == @op_security_guide.profiles.count
       end
 
       def security_guide_rules_saved?
