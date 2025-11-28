@@ -8,10 +8,20 @@ module Xccdf
     included do
       def profiles
         @profiles ||= @op_profiles.map do |op_profile|
-          ::Profile.from_openscap_parser(
+          ::V2::Profile.from_parser(
             op_profile,
             existing: old_profiles[op_profile.id],
-            benchmark_id: @benchmark&.id,
+            security_guide_id: @security_guide.id,
+            value_overrides: value_overrides(op_profile)
+          )
+        end
+      end
+
+      def tailorings
+        @tailorings ||= @op_profiles.map do |op_profile|
+          ::V2::Tailoring.from_parser(
+            op_profile,
+            existing: old_tailorings[op_profile.id],
             value_overrides: value_overrides(op_profile)
           )
         end
@@ -19,16 +29,22 @@ module Xccdf
 
       def save_profiles
         # Import the new records first with validation
-        ::Profile.import!(new_profiles, ignore: true)
+        ::V2::Profile.import!(new_profiles, ignore: true)
 
-        # Update the fields on existing profiles, validation is not necessary
-        ::Profile.import(old_profiles.values,
-                         on_duplicate_key_update: {
-                           conflict_target: %i[ref_id benchmark_id],
-                           columns: %i[name value_overrides],
-                           index_predicate: 'parent_profile_id IS NULL'
-                         },
-                         validate: false)
+        # Update the fields on existing profiles and tailorings, validation is not necessary
+        ::V2::Profile.import(old_profiles.values,
+                             on_duplicate_key_update: {
+                               conflict_target: %i[ref_id security_guide_id],
+                               columns: %i[title value_overrides]
+                             },
+                             validate: false)
+
+        ::V2::Tailoring.import(old_tailorings.values,
+                             on_duplicate_key_update: {
+                               conflict_target: %i[profile_id os_minor_version],
+                               columns: %i[title value_overrides]
+                             },
+                             validate: false)
       end
 
       private
@@ -38,9 +54,16 @@ module Xccdf
       end
 
       def old_profiles
-        @old_profiles ||= ::Profile.where(
-          ref_id: @op_profiles.map(&:id), benchmark: @benchmark&.id, parent_profile_id: nil
+        @old_profiles ||= ::V2::Profile.where(
+          ref_id: @op_profiles.map(&:id),
+          security_guide_id: @security_guide.id
         ).index_by(&:ref_id)
+      end
+
+      def old_tailorings
+        @old_tailorings ||= ::V2::Tailoring.where(
+          profile_id: old_profiles.values.map(&:id)
+        ).index_by { |tailoring| tailoring.profile_id + '__' + tailoring.os_minor_version.to_s }
       end
 
       def value_overrides(op_profile)

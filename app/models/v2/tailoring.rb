@@ -110,5 +110,9 @@ module V2
 
       errors.add(:value_overrides, 'Incoherent keys or value types specified')
     end
+
+    def self.from_parser(obj, existing: nil)
+      existing.assign_attributes(title: obj.title, description: obj.description, value_overrides: obj.value_overrides)
+    end
   end
 end
