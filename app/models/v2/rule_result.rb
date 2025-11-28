@@ -28,6 +28,57 @@ module V2
     scope :passed, -> { where(result: PASSED) }
     scope :failed, -> { where(result: FAILED) }
 
+    # Eliminates redundant joins to v2_test_results table
+    scope :with_serializer_data, lambda {
+      joins(build_rule_join)
+        .joins(test_result: [:system, { tailoring: { profile: :security_guide } }])
+        .select(*serializer_select_fields)
+    }
+
+    def self.serializer_dependencies
+      @serializer_dependencies ||= begin
+        deps = V2::RuleResultSerializer.dependencies([], %i[rule system profile security_guide])
+        deps.transform_values(&:uniq) # remove duplicates
+      end
+    end
+
+    class << self
+      def serializer_select_fields
+        [arel_table[Arel.star]] + association_fields
+      end
+
+      def build_rule_join
+        rule_join = arel_table
+                    .join(V2::Rule.arel_table.alias('rule'), Arel::Nodes::InnerJoin)
+                    .on(V2::Rule.arel_table.alias('rule')[:id].eq(arel_table[:rule_id]))
+        rule_join.join_sources
+      end
+
+      private
+
+      def association_fields
+        serializer_dependencies.flat_map do |association, fields|
+          next [] if association.nil? # skip base model fields
+
+          table = arel_table_for_association(association)
+          fields.map { |field| table[field].as("#{association}__#{field}") }
+        end
+      end
+
+      def arel_table_for_association(association)
+        case association
+        when :rule
+          V2::Rule.arel_table.alias('rule')
+        when :system
+          Arel::Table.new(:hosts, as: 'system')
+        when :profile
+          V2::Profile.arel_table
+        when :security_guide
+          V2::SecurityGuide.arel_table
+        end
+      end
+    end
+
     scope :with_groups, lambda { |groups, table = V2::System.arel_table|
       # Skip the [] representing ungrouped hosts from the array when generating the query
       grouped = arel_json_lookup(table[:groups], V2::System.groups_as_json(groups.flatten, :id))
