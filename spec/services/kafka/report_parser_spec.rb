@@ -49,7 +49,6 @@ describe Kafka::ReportParser do
           ].join)
         )
       service.parse_reports
-      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -70,7 +69,6 @@ describe Kafka::ReportParser do
           ].join)
         )
       expect { service.parse_reports }.to raise_error(SafeDownloader::DownloadError)
-      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -88,7 +86,6 @@ describe Kafka::ReportParser do
           "[#{org_id}] Invalid report: Report empty"
         )
       service.parse_reports
-      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -106,7 +103,6 @@ describe Kafka::ReportParser do
           "[#{org_id}] Invalid report: Report parsing failed"
         )
       service.parse_reports
-      expect(ParseReportJob.jobs.size).to eq(0)
     end
   end
 
@@ -119,22 +115,17 @@ describe Kafka::ReportParser do
 
     let(:profile_id) { 'xccdf_org.ssgproject.content_profile_standard' }
 
-    it 'enqueues report parsing job' do
+    it 'proceses report' do
+      ActiveRecord::Base.logger = Logger.new STDOUT
       expect(Karafka.logger)
         .to receive(:audit_success)
         .with(
           a_string_matching(
-            /\A\[#{org_id}\] Enqueued report parsing of #{profile_id} from request #{request_id} as a job \S+\z/
+            /\A\[#{org_id}\] Processed report parsing of #{profile_id} from request #{request_id}\S+\z/
           )
         )
 
       service.parse_reports
-
-      expect(ParseReportJob.jobs.size).to eq(1)
     end
-  end
-
-  after do
-    ParseReportJob.clear
   end
 end
