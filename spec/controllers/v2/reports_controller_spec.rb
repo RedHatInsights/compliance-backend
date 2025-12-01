@@ -386,6 +386,70 @@ describe V2::ReportsController do
 
         it_behaves_like 'individual'
       end
+
+      context 'with system reporting to different reports' do
+        let(:attributes) do
+          {
+            title: :title,
+            os_major_version: :os_major_version,
+            ref_id: :ref_id,
+            description: :description,
+            profile_title: :profile_title,
+            business_objective: :business_objective,
+            all_systems_exposed: -> { true },
+            compliance_threshold: :compliance_threshold,
+            percent_compliant: -> { 0 },
+            assigned_system_count: -> { 1 },
+            reported_system_count: -> { 0 },
+            compliant_system_count: -> { 0 },
+            unsupported_system_count: -> { 0 },
+            never_reported_system_count: -> { 1 }
+          }
+        end
+
+        let(:item) do
+          FactoryBot.create(
+            :v2_report,
+            os_major_version: 8,
+            supports_minors: [0, 1],
+            account: current_user.account,
+            assigned_system_count: 0,
+            compliant_system_count: 0,
+            unsupported_system_count: 0
+          ).tap do |report|
+            other_report = FactoryBot.create(
+              :v2_report,
+              os_major_version: 8,
+              supports_minors: [0, 1],
+              account: current_user.account,
+              assigned_system_count: 0,
+              compliant_system_count: 0,
+              unsupported_system_count: 0
+            )
+
+            system = FactoryBot.create(
+              :system,
+              account: current_user.account,
+              os_major_version: 8,
+              os_minor_version: 0
+            )
+
+            V2::PolicySystem.create!(policy: report.policy, system: system)
+            V2::PolicySystem.create!(policy: other_report.policy, system: system)
+
+            FactoryBot.create(
+              :v2_test_result,
+              system: system,
+              account: current_user.account,
+              policy_id: other_report.id,
+              score: 85.0,
+              supported: true
+            )
+          end
+        end
+
+        it_behaves_like 'individual'
+      end
     end
 
     describe 'GET stats' do
