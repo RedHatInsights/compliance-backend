@@ -58,10 +58,8 @@ class KesselRbac
     def list_workspaces_with_permission(permission:, user:)
       return [] unless enabled?
 
-      request = list_workspaces_request(permission, user)
-
       begin
-        response = client.streamed_list_objects(request)
+        response = list_workspaces(client, build_subject_reference(user), permission)
         response.map(&:object).map(&:resource_id)
       rescue StandardError => e
         Rails.logger.error("Kessel workspace listing failed: #{e.message}")
@@ -97,14 +95,6 @@ class KesselRbac
 
     def update_permission?(permission)
       permission.exclude?('view')
-    end
-
-    def list_workspaces_request(permission, user)
-      StreamedListObjectsRequest.new(
-        object_type: workspace_type,
-        relation: permission,
-        subject: build_subject_reference(user)
-      )
     end
 
     def principal_id(user)

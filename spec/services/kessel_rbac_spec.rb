@@ -135,7 +135,7 @@ RSpec.describe KesselRbac, type: :service do
     before do
       allow(KesselRbac).to receive(:enabled?).and_return(true)
       allow(described_class).to receive(:client).and_return(mock_client)
-      allow(mock_client).to receive(:streamed_list_objects).and_return(mock_response)
+      allow(described_class).to receive(:list_workspaces).and_return(mock_response)
     end
 
     it 'returns workspace IDs' do
