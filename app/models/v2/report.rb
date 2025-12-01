@@ -91,7 +91,11 @@ module V2
       system_test_results = arel_table.join(V2::System.arel_table, AN::InnerJoin)
                                       .on(V2::System.arel_table[:id].eq(V2::ReportSystem.arel_table[:system_id]))
                                       .join(V2::TestResult.arel_table, AN::OuterJoin)
-                                      .on(V2::TestResult.arel_table[:system_id].eq(V2::System.arel_table[:id]))
+                                      .on(
+                                        V2::TestResult.arel_table[:system_id].eq(V2::System.arel_table[:id])
+                                        .and(V2::TestResult.arel_table[:report_id]
+                                        .eq(V2::ReportSystem.arel_table[:report_id]))
+                                      )
                                       .join_sources
 
       # aggregation to prevent optimizer (possibly buggy) filtering out join
