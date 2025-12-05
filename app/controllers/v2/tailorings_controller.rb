@@ -66,6 +66,19 @@ module V2
 
     private
 
+    def expand_resource
+      scope = super
+
+      # preloading associations to prevent N+1
+      scope.includes(
+        :rules,
+        profile: :rules,
+        policy: :profile,
+        rules: :rule_group,
+        security_guide: :value_definitions
+      )
+    end
+
     def tailorings
       @tailorings ||= authorize(fetch_collection)
     end
