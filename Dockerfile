@@ -27,13 +27,12 @@ RUN (microdnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgre
     chmod +t /tmp                                                                                 && \
     gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin                        && \
     gem install bundler                                                                           && \
-    ( [[ $prod != "true" ]] || bundle config set --local --without 'development:test' )           && \
+    ( [[ $prod != "true" ]] || bundle config set --local without 'development test' )             && \
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )                      && \
     ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )                       && \
     bundle config set --local retry '2'                                                           && \
     bundle config set --local build.ffi --enable-system-libffi                                    && \
-    ( [[ $prod != "true" ]] || bundle install --without development test )                        && \
-    ( [[ $prod == "true" ]] || bundle install )                                                   && \
+    bundle install                                                                                && \
     microdnf clean all -y                                                                         && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 

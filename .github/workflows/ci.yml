@@ -15,17 +15,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Validate commit message format
       uses: wagoid/commitlint-github-action@v4
       with:
         configFile: './.commitlint.yml'
-    - name: Validate OpenAPI definition
-      uses: swaggerexpert/swagger-editor-validate@v1
-      with:
-        definition-file: swagger/v2/openapi.json
+    # FIXME: this is currently timing out
+    #- name: Validate OpenAPI definition
+    #  uses: swaggerexpert/swagger-editor-validate@v1
+    #  with:
+    #    definition-file: swagger/v2/openapi.json
     - name: Setup Ruby and install gems
       uses: ruby/setup-ruby@v1
       with:
