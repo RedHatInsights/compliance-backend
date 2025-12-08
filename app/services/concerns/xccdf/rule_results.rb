@@ -41,7 +41,7 @@ module Xccdf
 
     def rule_ids
       @rule_ids ||= Rule.where(
-        benchmark: benchmark, ref_id: selected_op_rule_results.map(&:id)
+        benchmark_id: security_guide.id, ref_id: selected_op_rule_results.map(&:id)
       ).pluck(:ref_id, :id).to_h
     end
   end
