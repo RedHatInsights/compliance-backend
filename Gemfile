@@ -24,9 +24,10 @@ gem 'rack-cors'
 gem 'rswag-api'
 gem 'rswag-ui'
 
-# Database view, function and trigger management
+# Database view, function, trigger and data migration management
 gem 'fx'
 gem 'scenic'
+gem 'data_migrate'
 
 # Config YAML files for all environments
 gem 'config'
