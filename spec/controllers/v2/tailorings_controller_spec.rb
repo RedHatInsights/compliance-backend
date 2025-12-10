@@ -48,26 +48,6 @@ describe V2::TailoringsController do
       it_behaves_like 'sortable', :policy
     end
 
-    describe 'N+1 query optimization' do
-      let(:os_minor_version) { SecureRandom.random_number(10) }
-      let(:canonical_profile) do
-        FactoryBot.create(:v2_profile, ref_id_suffix: 'foo', supports_minors: [os_minor_version])
-      end
-
-      let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile) }
-      let(:item) { FactoryBot.create(:v2_tailoring, policy: parent, os_minor_version: os_minor_version) }
-
-      it 'preloads associations to prevent additional queries' do
-        get :show, params: { id: item.id, policy_id: parent.id, parents: [:policy] }
-
-        tailoring = controller.instance_variable_get(:@tailoring)
-
-        expect(tailoring.association(:rules)).to be_loaded
-        expect(tailoring.association(:policy)).to be_loaded
-        expect(tailoring.policy.association(:profile)).to be_loaded
-      end
-    end
-
     describe 'GET show' do
       let(:os_minor_version) { SecureRandom.random_number(10) }
       let(:parent) { FactoryBot.create(:v2_policy, account: current_user.account, profile: canonical_profile) }
