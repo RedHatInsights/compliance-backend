@@ -32,7 +32,7 @@ RUN (microdnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgre
     ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )                       && \
     bundle config set --local retry '2'                                                           && \
     bundle config set --local build.ffi --enable-system-libffi                                    && \
-    bundle install                                                                                && \
+    bundle install  --jobs 6                                                                      && \
     microdnf clean all -y                                                                         && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 
