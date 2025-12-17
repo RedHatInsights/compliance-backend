@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_17_134946) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
@@ -41,6 +41,18 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["title"], name: "index_business_objectives_on_title"
+  end
+
+  create_table "canonical_profiles_v2", id: false, force: :cascade do |t|
+    t.uuid "id"
+    t.string "title"
+    t.string "ref_id"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.string "description"
+    t.uuid "security_guide_id"
+    t.boolean "upstream"
+    t.jsonb "value_overrides"
   end
 
   create_table "fixes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -174,6 +186,18 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.index ["rule_id"], name: "index_rule_groups_on_rule_id", unique: true
   end
 
+  create_table "rule_groups_v2", id: false, force: :cascade do |t|
+    t.uuid "id"
+    t.string "ref_id"
+    t.string "title"
+    t.text "description"
+    t.text "rationale"
+    t.string "ancestry"
+    t.uuid "security_guide_id"
+    t.uuid "rule_id"
+    t.integer "precedence"
+  end
+
   create_table "rule_references_containers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "rule_id", null: false
     t.jsonb "rule_references"
@@ -219,6 +243,37 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.index ["ref_id"], name: "index_rules_on_ref_id"
     t.index ["slug", "benchmark_id"], name: "index_rules_on_slug_and_benchmark_id", unique: true
     t.index ["upstream"], name: "index_rules_on_upstream"
+  end
+
+  create_table "rules_v2", id: false, force: :cascade do |t|
+    t.uuid "id"
+    t.string "ref_id"
+    t.string "title"
+    t.string "severity"
+    t.text "description"
+    t.text "rationale"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.boolean "remediation_available"
+    t.uuid "security_guide_id"
+    t.boolean "upstream"
+    t.integer "precedence"
+    t.uuid "rule_group_id"
+    t.uuid "value_checks", array: true
+    t.jsonb "identifier"
+    t.jsonb "references"
+  end
+
+  create_table "security_guides_v2", id: false, force: :cascade do |t|
+    t.uuid "id"
+    t.string "ref_id"
+    t.integer "os_major_version"
+    t.string "title"
+    t.text "description"
+    t.string "version"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.string "package_name"
   end
 
   create_table "test_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
