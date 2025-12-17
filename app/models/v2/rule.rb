@@ -5,7 +5,7 @@ module V2
   # Model for Rules
   class Rule < ApplicationRecord
     # FIXME: clean up after the remodel
-    self.table_name = :v2_rules
+    self.table_name = :rules_v2
     self.primary_key = :id
 
     indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.try(:gsub, '-', '.')) }

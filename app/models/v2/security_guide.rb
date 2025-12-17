@@ -7,6 +7,7 @@ module V2
 
     # FIXME: clean up after the remodel
     self.primary_key = :id
+    self.table_name = :security_guides_v2
 
     has_many :profiles, class_name: 'V2::Profile', dependent: :destroy
     has_many :value_definitions, class_name: 'V2::ValueDefinition', dependent: :destroy
