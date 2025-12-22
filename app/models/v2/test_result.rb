@@ -78,7 +78,7 @@ module V2
 
     searchable_by :failed_rule_severity, %i[eq in] do |_key, _op, val|
       ids = ::V2::RuleResult.unscoped.joins(:rule)
-                            .where(v2_rules: { severity: val.split(',') }, rule_results: { result: 'fail' })
+                            .where(rules_v2: { severity: val.split(',') }, rule_results: { result: 'fail' })
                             .select(:test_result_id)
 
       { conditions: "v2_test_results.id IN (#{ids.to_sql})" }
