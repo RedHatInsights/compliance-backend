@@ -3,7 +3,7 @@
 module V2
   # Model for ProfileRules
   class ProfileRule < ApplicationRecord
-    self.table_name = :profile_rules
+    self.table_name = :profile_rules_v2
 
     belongs_to :profile, class_name: 'V2::Profile'
     belongs_to :rule, class_name: 'V2::Rule'

@@ -4,7 +4,7 @@ module V2
   # Required and conflicting relationships between rules and rule groups
   class RuleGroupRelationship < ApplicationRecord
     # FIXME: clean up after the remodel
-    self.table_name = :rule_group_relationships
+    self.table_name = :rule_group_relationships_v2
     self.primary_key = :id
 
     belongs_to :left, polymorphic: true
