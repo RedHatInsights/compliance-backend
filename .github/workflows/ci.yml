@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      ['master', 'hotfix']
   pull_request:
     branches:
-      - master
+      ['master', 'hotfix']
     types: [opened, reopened, synchronize]
 
 jobs:
