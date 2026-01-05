@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_22_120048) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_02_163410) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -376,16 +376,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_22_120048) do
 
   add_foreign_key "policies", "accounts"
   add_foreign_key "policies", "business_objectives"
-  add_foreign_key "policies", "profiles"
+  add_foreign_key "policies", "canonical_profiles_v2", column: "profile_id"
   add_foreign_key "policy_hosts", "policies"
+  add_foreign_key "profiles", "canonical_profiles_v2", column: "parent_profile_id"
   add_foreign_key "profiles", "policies"
-  add_foreign_key "profiles", "profiles", column: "parent_profile_id"
-  add_foreign_key "rule_groups", "benchmarks"
-  add_foreign_key "rule_groups", "rules"
-  add_foreign_key "rule_references_containers", "rules"
-  add_foreign_key "rules", "rule_groups"
-  add_foreign_key "value_definitions", "benchmarks"
-
+  add_foreign_key "rule_groups_v2", "rules_v2", column: "rule_id"
+  add_foreign_key "rule_groups_v2", "security_guides_v2", column: "security_guide_id"
+  add_foreign_key "rules_v2", "rule_groups_v2", column: "rule_group_id"
+  add_foreign_key "value_definitions_v2", "security_guides_v2", column: "security_guide_id"
   create_view "canonical_profiles", sql_definition: <<-SQL
       SELECT profiles.id,
       profiles.name AS title,
