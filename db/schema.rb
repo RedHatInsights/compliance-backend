@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_111350) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_06_135615) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -384,31 +384,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_111350) do
   add_foreign_key "rule_references_containers", "rules_v2", column: "rule_id"
   add_foreign_key "rules_v2", "rule_groups_v2", column: "rule_group_id"
   add_foreign_key "value_definitions_v2", "security_guides_v2", column: "security_guide_id"
-  create_view "canonical_profiles", sql_definition: <<-SQL
-      SELECT profiles.id,
-      profiles.name AS title,
-      profiles.ref_id,
-      profiles.created_at,
-      profiles.updated_at,
-      profiles.description,
-      profiles.benchmark_id AS security_guide_id,
-      profiles.upstream,
-      profiles.value_overrides
-     FROM profiles
-    WHERE (profiles.parent_profile_id IS NULL);
-  SQL
-  create_view "v2_value_definitions", sql_definition: <<-SQL
-      SELECT value_definitions.id,
-      value_definitions.ref_id,
-      value_definitions.title,
-      value_definitions.description,
-      value_definitions.value_type,
-      value_definitions.default_value,
-      value_definitions.lower_bound,
-      value_definitions.upper_bound,
-      value_definitions.benchmark_id AS security_guide_id
-     FROM value_definitions;
-  SQL
   create_view "tailorings", sql_definition: <<-SQL
       SELECT profiles.id,
       profiles.policy_id,
@@ -419,30 +394,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_111350) do
       profiles.updated_at
      FROM profiles
     WHERE (profiles.parent_profile_id IS NOT NULL);
-  SQL
-  create_view "security_guides", sql_definition: <<-SQL
-      SELECT benchmarks.id,
-      benchmarks.ref_id,
-      (regexp_replace((benchmarks.ref_id)::text, '.+RHEL-(\\d+)$'::text, '\\1'::text))::integer AS os_major_version,
-      benchmarks.title,
-      benchmarks.description,
-      benchmarks.version,
-      benchmarks.created_at,
-      benchmarks.updated_at,
-      benchmarks.package_name
-     FROM benchmarks;
-  SQL
-  create_view "v2_rule_groups", sql_definition: <<-SQL
-      SELECT rule_groups.id,
-      rule_groups.ref_id,
-      rule_groups.title,
-      rule_groups.description,
-      rule_groups.rationale,
-      rule_groups.ancestry,
-      rule_groups.benchmark_id AS security_guide_id,
-      rule_groups.rule_id,
-      rule_groups.precedence
-     FROM rule_groups;
   SQL
   create_view "policy_systems", sql_definition: <<-SQL
       SELECT policy_hosts.id,
@@ -471,26 +422,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_111350) do
       profile_rules.profile_id AS tailoring_id,
       profile_rules.rule_id
      FROM profile_rules;
-  SQL
-  create_view "v2_rules", sql_definition: <<-SQL
-      SELECT rules.id,
-      rules.ref_id,
-      rules.title,
-      rules.severity,
-      rules.description,
-      rules.rationale,
-      rules.created_at,
-      rules.updated_at,
-      rules.remediation_available,
-      rules.benchmark_id AS security_guide_id,
-      rules.upstream,
-      rules.precedence,
-      rules.rule_group_id,
-      rules.value_checks,
-      rules.identifier,
-      rule_references_containers.rule_references AS "references"
-     FROM (rules
-       LEFT JOIN rule_references_containers ON ((rule_references_containers.rule_id = rules.id)));
   SQL
   create_view "report_systems", sql_definition: <<-SQL
       SELECT policy_hosts.id,
