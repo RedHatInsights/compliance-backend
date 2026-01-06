@@ -6,9 +6,9 @@ FactoryBot.define do
     description { Faker::Lorem.paragraph }
     ref_id { "xccdf_org.ssgproject.content_benchmark_RHEL-#{os_major_version}" }
     sequence(:version) { |n| "100.#{(n / 50).floor}.#{n % 50}" }
+    os_major_version { 7 }
 
     transient do
-      os_major_version { 7 }
       rule_count { 0 }
       profile_count { 0 }
       profile_refs { profile_count.times.map { SecureRandom.hex } }
