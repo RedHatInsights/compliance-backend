@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_02_163410) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_06_111350) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -498,20 +498,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_02_163410) do
       policy_hosts.host_id AS system_id
      FROM policy_hosts;
   SQL
-  create_view "supported_profiles", sql_definition: <<-SQL
-      SELECT (array_agg(canonical_profiles.id ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS id,
-      (array_agg(canonical_profiles.title ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS title,
-      (array_agg(canonical_profiles.description ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS description,
-      canonical_profiles.ref_id,
-      (array_agg(security_guides.id ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_id,
-      (array_agg(security_guides.version ORDER BY (string_to_array((security_guides.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_version,
-      security_guides.os_major_version,
-      array_agg(DISTINCT profile_os_minor_versions.os_minor_version ORDER BY profile_os_minor_versions.os_minor_version DESC) AS os_minor_versions
-     FROM ((canonical_profiles
-       JOIN security_guides ON ((security_guides.id = canonical_profiles.security_guide_id)))
-       JOIN profile_os_minor_versions ON ((profile_os_minor_versions.profile_id = canonical_profiles.id)))
-    GROUP BY canonical_profiles.ref_id, security_guides.os_major_version;
-  SQL
   create_view "historical_test_results", sql_definition: <<-SQL
       SELECT test_results.id,
       test_results.profile_id AS tailoring_id,
@@ -546,6 +532,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_02_163410) do
               max(test_results_1.end_time) AS end_time
              FROM test_results test_results_1
             GROUP BY test_results_1.profile_id, test_results_1.host_id) tr ON (((test_results.profile_id = tr.profile_id) AND (test_results.host_id = tr.host_id) AND (test_results.end_time = tr.end_time))));
+  SQL
+  create_view "supported_profiles", sql_definition: <<-SQL
+      SELECT (array_agg(canonical_profiles_v2.id ORDER BY (string_to_array((security_guides_v2.version)::text, '.'::text))::integer[] DESC))[1] AS id,
+      (array_agg(canonical_profiles_v2.title ORDER BY (string_to_array((security_guides_v2.version)::text, '.'::text))::integer[] DESC))[1] AS title,
+      (array_agg(canonical_profiles_v2.description ORDER BY (string_to_array((security_guides_v2.version)::text, '.'::text))::integer[] DESC))[1] AS description,
+      canonical_profiles_v2.ref_id,
+      (array_agg(security_guides_v2.id ORDER BY (string_to_array((security_guides_v2.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_id,
+      (array_agg(security_guides_v2.version ORDER BY (string_to_array((security_guides_v2.version)::text, '.'::text))::integer[] DESC))[1] AS security_guide_version,
+      security_guides_v2.os_major_version,
+      array_agg(DISTINCT profile_os_minor_versions.os_minor_version ORDER BY profile_os_minor_versions.os_minor_version DESC) AS os_minor_versions
+     FROM ((canonical_profiles_v2
+       JOIN security_guides_v2 ON ((security_guides_v2.id = canonical_profiles_v2.security_guide_id)))
+       JOIN profile_os_minor_versions ON ((profile_os_minor_versions.profile_id = canonical_profiles_v2.id)))
+    GROUP BY canonical_profiles_v2.ref_id, security_guides_v2.os_major_version;
   SQL
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
@@ -733,54 +733,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_02_163410) do
       END
       $function$
   SQL
-  create_function :tailorings_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.tailorings_insert()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE result_id uuid;
-      DECLARE external boolean;
-      BEGIN
-
-      -- Look up if there's at least one existing profile under this policy
-      -- and set the `external` flag to false or true accordingly
-      SELECT CASE WHEN COUNT("id") = 0 THEN FALSE ELSE TRUE END INTO "external"
-      FROM "profiles" WHERE "profiles"."policy_id" = NEW."policy_id" LIMIT 1;
-
-      INSERT INTO "profiles" (
-        "name",
-        "ref_id",
-        "policy_id",
-        "account_id",
-        "parent_profile_id",
-        "benchmark_id",
-        "os_minor_version",
-        "value_overrides",
-        "external",
-        "created_at",
-        "updated_at"
-      ) SELECT
-        "canonical_profiles"."title",
-        "canonical_profiles"."ref_id",
-        NEW."policy_id",
-        "policies"."account_id",
-        NEW."profile_id",
-        "canonical_profiles"."security_guide_id",
-        CAST(NEW."os_minor_version" AS text),
-        NEW."value_overrides",
-        "external",
-        NEW."created_at",
-        NEW."updated_at"
-      FROM "policies"
-      INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "policies"."profile_id"
-      WHERE "policies"."id" = NEW."policy_id" RETURNING "id" INTO "result_id";
-
-      NEW."id" := "result_id";
-      RETURN NEW;
-
-      END
-      $function$
-  SQL
   create_function :v2_test_results_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_test_results_insert()
        RETURNS trigger
@@ -827,13 +779,58 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_02_163410) do
       END
       $function$
   SQL
+  create_function :tailorings_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.tailorings_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      DECLARE external boolean;
+      BEGIN
+
+      -- Look up if there's at least one existing profile under this policy
+      -- and set the `external` flag to false or true accordingly
+      SELECT CASE WHEN COUNT("id") = 0 THEN FALSE ELSE TRUE END INTO "external"
+      FROM "profiles" WHERE "profiles"."policy_id" = NEW."policy_id" LIMIT 1;
+
+      INSERT INTO "profiles" (
+        "name",
+        "ref_id",
+        "policy_id",
+        "account_id",
+        "parent_profile_id",
+        "benchmark_id",
+        "os_minor_version",
+        "value_overrides",
+        "external",
+        "created_at",
+        "updated_at"
+      ) SELECT
+        "canonical_profiles_v2"."title",
+        "canonical_profiles_v2"."ref_id",
+        NEW."policy_id",
+        "policies"."account_id",
+        NEW."profile_id",
+        "canonical_profiles_v2"."security_guide_id",
+        CAST(NEW."os_minor_version" AS text),
+        NEW."value_overrides",
+        "external",
+        NEW."created_at",
+        NEW."updated_at"
+      FROM "policies"
+      INNER JOIN "canonical_profiles_v2" ON "canonical_profiles_v2"."id" = "policies"."profile_id"
+      WHERE "policies"."id" = NEW."policy_id" RETURNING "id" INTO "result_id";
+
+      NEW."id" := "result_id";
+      RETURN NEW;
+
+      END
+      $function$
+  SQL
 
 
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
-  SQL
-  create_trigger :v2_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
   SQL
   create_trigger :v2_policies_update, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
@@ -841,14 +838,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_02_163410) do
   create_trigger :v2_policies_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
   SQL
-  create_trigger :v2_rules_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v2_rules_delete INSTEAD OF DELETE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_delete()
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
   SQL
   create_trigger :v2_rules_insert, sql_definition: <<-SQL
       CREATE TRIGGER v2_rules_insert INSTEAD OF INSERT ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_insert()
   SQL
   create_trigger :v2_rules_update, sql_definition: <<-SQL
       CREATE TRIGGER v2_rules_update INSTEAD OF UPDATE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_update()
+  SQL
+  create_trigger :v2_rules_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_rules_delete INSTEAD OF DELETE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_delete()
   SQL
   create_trigger :historical_test_results_delete, sql_definition: <<-SQL
       CREATE TRIGGER historical_test_results_delete INSTEAD OF DELETE ON public.historical_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
