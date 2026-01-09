@@ -3,6 +3,7 @@ ARG devDeps="gcc gcc-c++ libstdc++-static gzip libffi-devel libyaml-devel make o
 ARG extras=""
 ARG prod="true"
 ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-9/mmraka-postgresql-16-epel-9.repo"
+ARG BUNDLE_JOBS="4"
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS build
 
@@ -12,10 +13,15 @@ ARG extras
 ARG prod
 ARG pgRepo
 ARG IMAGE_TAG
+ARG BUNDLE_JOBS
 
 USER 0
 
 WORKDIR /opt/app-root/src
+
+# reduce amount of threads for gRPC compilation to prevent CI hangs
+ENV GRPC_RUBY_BUILD_PROCS=4
+ENV MAKEFLAGS="-j4"
 
 COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/

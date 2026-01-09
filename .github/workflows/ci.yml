@@ -29,6 +29,8 @@ jobs:
     #    definition-file: swagger/v2/openapi.json
     - name: Setup Ruby and install gems
       uses: ruby/setup-ruby@v1
+      env:
+        BUNDLE_JOBS: 4
       with:
         bundler-cache: true
         rubygems: latest
