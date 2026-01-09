@@ -1,8 +1,9 @@
 ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tzdata"
-ARG devDeps="gcc gcc-c++ gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel tar which util-linux xz"
+ARG devDeps="gcc gcc-c++ libstdc++-static gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel tar which util-linux xz"
 ARG extras=""
 ARG prod="true"
 ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-9/mmraka-postgresql-16-epel-9.repo"
+ARG BUNDLE_JOBS="4"
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS build
 
@@ -12,10 +13,15 @@ ARG extras
 ARG prod
 ARG pgRepo
 ARG IMAGE_TAG
+ARG BUNDLE_JOBS
 
 USER 0
 
 WORKDIR /opt/app-root/src
+
+# reduce amount of threads for gRPC compilation to prevent CI hangs
+ENV GRPC_RUBY_BUILD_PROCS=4
+ENV MAKEFLAGS="-j4"
 
 COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
@@ -31,8 +37,11 @@ RUN (microdnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgre
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )                      && \
     ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )                       && \
     bundle config set --local retry '2'                                                           && \
+    bundle config set --local force_ruby_platform true                                            && \
     bundle config set --local build.ffi --enable-system-libffi                                    && \
-    bundle install                                                                                && \
+    bundle config list                                                                            && \
+    (env | grep BUNDLE || true)                                                                   && \
+    bundle install --verbose                                                                      && \
     microdnf clean all -y                                                                         && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 
