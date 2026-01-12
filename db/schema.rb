@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_11_150340) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
@@ -41,6 +41,19 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["title"], name: "index_business_objectives_on_title"
+  end
+
+  create_table "canonical_profiles_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title"
+    t.string "ref_id"
+    t.string "description"
+    t.uuid "security_guide_id"
+    t.boolean "upstream"
+    t.jsonb "value_overrides", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ref_id", "security_guide_id"], name: "index_canonical_profiles_v2_on_ref_id_and_security_guide_id", unique: true
+    t.index ["title"], name: "index_canonical_profiles_v2_on_title"
   end
 
   create_table "fixes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -69,6 +82,24 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
+  create_table "historical_test_results_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "tailoring_id"
+    t.uuid "report_id"
+    t.uuid "system_id"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.float "score"
+    t.boolean "supported", default: true
+    t.integer "failed_rule_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["report_id"], name: "index_historical_test_results_v2_on_report_id"
+    t.index ["supported"], name: "index_historical_test_results_v2_on_supported"
+    t.index ["system_id", "tailoring_id", "end_time"], name: "index_hst_test_results_v2_on_system_and_tailoring_and_end_time", unique: true
+    t.index ["system_id"], name: "index_historical_test_results_v2_on_system_id"
+    t.index ["tailoring_id"], name: "index_historical_test_results_v2_on_tailoring_id"
+  end
+
   create_table "policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "business_objective_id"
     t.float "compliance_threshold", default: 100.0
@@ -85,6 +116,21 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.index ["profile_id"], name: "index_policies_on_profile_id"
   end
 
+  create_table "policies_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.integer "compliance_threshold"
+    t.string "business_objective"
+    t.integer "total_system_count"
+    t.uuid "profile_id"
+    t.uuid "account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_policies_v2_on_account_id"
+    t.index ["business_objective"], name: "index_policies_v2_on_business_objective"
+    t.index ["profile_id"], name: "index_policies_v2_on_profile_id"
+  end
+
   create_table "policy_hosts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "policy_id", null: false
     t.uuid "host_id", null: false
@@ -93,6 +139,16 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.index ["host_id"], name: "index_policy_hosts_on_host_id"
     t.index ["policy_id", "host_id"], name: "index_policy_hosts_on_policy_id_and_host_id", unique: true
     t.index ["policy_id"], name: "index_policy_hosts_on_policy_id"
+  end
+
+  create_table "policy_systems_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "policy_id"
+    t.uuid "system_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["policy_id", "system_id"], name: "index_policy_systems_v2_on_policy_id_and_system_id", unique: true
+    t.index ["policy_id"], name: "index_policy_systems_v2_on_policy_id"
+    t.index ["system_id"], name: "index_policy_systems_v2_on_system_id"
   end
 
   create_table "profile_os_minor_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -139,6 +195,16 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.index ["upstream"], name: "index_profiles_on_upstream"
   end
 
+  create_table "report_systems_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "report_id"
+    t.uuid "system_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["report_id", "system_id"], name: "index_report_systems_v2_on_report_id_and_system_id", unique: true
+    t.index ["report_id"], name: "index_report_systems_v2_on_report_id"
+    t.index ["system_id"], name: "index_report_systems_v2_on_system_id"
+  end
+
   create_table "revisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "revision", null: false
@@ -172,6 +238,24 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.index ["precedence"], name: "index_rule_groups_on_precedence"
     t.index ["ref_id", "benchmark_id"], name: "index_rule_groups_on_ref_id_and_benchmark_id", unique: true
     t.index ["rule_id"], name: "index_rule_groups_on_rule_id", unique: true
+  end
+
+  create_table "rule_groups_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "ref_id"
+    t.string "title"
+    t.text "description"
+    t.text "rationale"
+    t.string "ancestry"
+    t.uuid "security_guide_id"
+    t.uuid "rule_id"
+    t.integer "precedence"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ancestry"], name: "index_rule_groups_v2_on_ancestry"
+    t.index ["precedence"], name: "index_rule_groups_v2_on_precedence"
+    t.index ["ref_id", "security_guide_id"], name: "index_rule_groups_v2_on_ref_id_and_security_guide_id", unique: true
+    t.index ["rule_id"], name: "index_rule_groups_v2_on_rule_id", unique: true
+    t.index ["security_guide_id"], name: "index_rule_groups_v2_on_security_guide_id"
   end
 
   create_table "rule_references_containers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -221,6 +305,64 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.index ["upstream"], name: "index_rules_on_upstream"
   end
 
+  create_table "rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "ref_id"
+    t.string "title"
+    t.string "severity"
+    t.text "description"
+    t.text "rationale"
+    t.boolean "remediation_available", default: false, null: false
+    t.uuid "security_guide_id", null: false
+    t.boolean "upstream", default: true, null: false
+    t.integer "precedence"
+    t.uuid "rule_group_id", null: false
+    t.jsonb "value_checks", default: [], array: true
+    t.jsonb "identifier"
+    t.jsonb "references"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "((identifier -> 'label'::text))", name: "index_rules_v2_on_identifier_labels", using: :gin
+    t.index ["precedence"], name: "index_rules_v2_on_precedence"
+    t.index ["ref_id", "security_guide_id"], name: "index_rules_v2_on_ref_id_and_security_guide_id", unique: true
+    t.index ["ref_id"], name: "index_rules_v2_on_ref_id"
+    t.index ["references"], name: "index_rules_v2_on_references", opclass: :jsonb_path_ops, using: :gin
+    t.index ["upstream"], name: "index_rules_v2_on_upstream"
+  end
+
+  create_table "security_guides_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "ref_id"
+    t.integer "os_major_version"
+    t.string "title"
+    t.text "description"
+    t.string "version"
+    t.string "package_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ref_id", "version"], name: "index_security_guides_v2_on_ref_id_and_version", unique: true
+  end
+
+  create_table "tailoring_rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "tailoring_id"
+    t.uuid "rule_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rule_id"], name: "index_tailoring_rules_v2_on_rule_id"
+    t.index ["tailoring_id", "rule_id"], name: "index_tailoring_rules_v2_on_tailoring_id_and_rule_id", unique: true
+    t.index ["tailoring_id"], name: "index_tailoring_rules_v2_on_tailoring_id"
+  end
+
+  create_table "tailorings_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "policy_id"
+    t.uuid "profile_id"
+    t.jsonb "value_overrides"
+    t.integer "os_minor_version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["os_minor_version"], name: "index_tailorings_v2_on_os_minor_version"
+    t.index ["policy_id"], name: "index_tailorings_v2_on_policy_id"
+    t.index ["profile_id"], name: "index_tailorings_v2_on_profile_id"
+  end
+
   create_table "test_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "start_time", precision: nil
     t.datetime "end_time", precision: nil
@@ -266,6 +408,21 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_24_044139) do
     t.uuid "benchmark_id", null: false
     t.index ["benchmark_id"], name: "index_value_definitions_on_benchmark_id"
     t.index ["ref_id", "benchmark_id"], name: "index_value_definitions_on_ref_id_and_benchmark_id", unique: true
+  end
+
+  create_table "value_definitions_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "ref_id"
+    t.string "title"
+    t.text "description"
+    t.string "value_type"
+    t.string "default_value"
+    t.decimal "lower_bound"
+    t.decimal "upper_bound"
+    t.uuid "security_guide_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ref_id", "security_guide_id"], name: "index_value_definitions_v2_on_ref_id_and_security_guide_id", unique: true
+    t.index ["security_guide_id"], name: "index_value_definitions_v2_on_security_guide_id"
   end
 
   add_foreign_key "policies", "accounts"
