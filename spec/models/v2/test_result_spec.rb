@@ -49,7 +49,6 @@ describe V2::TestResult do
       it 'returns true when score equals threshold' do
         test_result = FactoryBot.create(:v2_test_result, policy_id: policy.id,
                                                          account: account, score: 90.0, supported: true)
-        allow(test_result).to receive(:report).and_return(policy)
         expect(test_result.compliant).to eq(true)
       end
     end
@@ -60,7 +59,6 @@ describe V2::TestResult do
       it 'returns true when score > threshold' do
         test_result = FactoryBot.create(:v2_test_result, policy_id: policy.id,
                                                          account: account, score: 90.01, supported: true)
-        allow(test_result).to receive(:report).and_return(policy)
         expect(test_result.compliant).to eq(true)
       end
 
@@ -93,7 +91,6 @@ describe V2::TestResult do
       it 'returns false when score is nil' do
         test_result = FactoryBot.create(:v2_test_result, policy_id: policy.id,
                                                          account: account, score: nil, supported: false)
-        allow(test_result).to receive(:report).and_return(policy)
         expect(test_result.compliant).to eq(false)
       end
     end
