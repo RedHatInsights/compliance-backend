@@ -1,6 +1,3 @@
-spec/models/v2/test_result_spec.rb
-
-
 # frozen_string_literal: true
 
 require 'rails_helper'
