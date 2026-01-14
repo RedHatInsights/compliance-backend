@@ -29,6 +29,8 @@ jobs:
     #    definition-file: swagger/v2/openapi.json
     - name: Setup Ruby and install gems
       uses: ruby/setup-ruby@v1
+      env:
+        BUNDLE_JOBS: 4
       with:
         bundler-cache: true
         rubygems: latest
@@ -42,7 +44,7 @@ jobs:
       with:
         ignore: vendor
         check_together: true
-  development-build:
+  development-build-podman:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -53,8 +55,16 @@ jobs:
         pipx install podman-compose==1.0.6
     - name: Build using podman-compose
       run: podman-compose build
-    - name: Build using docker-compose
-      run: docker compose build
+  development-build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up the environment
+        run: |
+          cp .env.example .env
+      - name: Build using docker-compose
+        run: docker compose build
   unit-tests:
     runs-on: ubuntu-latest
     services:
