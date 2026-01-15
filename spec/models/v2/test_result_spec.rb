@@ -37,10 +37,14 @@ describe V2::TestResult do
   describe '#compliant' do
     let(:account) { FactoryBot.create(:v2_account) }
     let(:policy) do
-      FactoryBot.create(:v2_policy, :for_tailoring, account: account,
-                                                    compliance_threshold: threshold,
-                                                    os_major_version: 7,
-                                                    supports_minors: [0])
+      FactoryBot.create(
+        :v2_policy, 
+        :for_tailoring,
+        account: account,
+        compliance_threshold: threshold,
+        os_major_version: 7,
+        supports_minors: [0]
+      )
     end
 
     context 'score == threshold' do
