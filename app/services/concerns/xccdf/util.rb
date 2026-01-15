@@ -6,7 +6,7 @@ module Xccdf
     extend ActiveSupport::Concern
 
     included do
-      include ::Xccdf::Benchmarks
+      include ::Xccdf::SecurityGuides
       include ::Xccdf::Profiles
       include ::Xccdf::Rules
       include ::Xccdf::Fixes
@@ -14,26 +14,22 @@ module Xccdf
       include ::Xccdf::ValueDefinitions
       include ::Xccdf::ProfileRules
       include ::Xccdf::ProfileOsMinorVersions
-      include ::Xccdf::RuleReferencesContainers
-      include ::Xccdf::RuleGroupRelationships
       include ::Xccdf::Hosts
       include ::Xccdf::RuleResults
       include ::Xccdf::TestResult
 
       # rubocop:disable Metrics/MethodLength
-      def save_all_benchmark_info
-        return if benchmark_contents_equal_to_op?
+      def save_all_security_guide_info
+        return if security_guide_contents_equal_to_op?
 
-        save_benchmark
+        save_security_guide
         save_value_definitions
         save_profiles
         save_rule_groups
         save_rules
         save_fixes
-        save_rule_group_relationships
         save_profile_rules
         save_profile_os_minor_versions
-        save_rule_references_containers
       end
       # rubocop:enable Metrics/MethodLength
 
@@ -58,6 +54,9 @@ module Xccdf
 
       def invalidate_cache
         Rails.cache.delete("#{@new_host_profile&.id}/#{@host&.id}/results")
+        puts "\n\u001b[31;1m◉\u001b[0m app/services/concerns/xccdf/util.rb"
+        puts "@host_profile: #{@host_profile}"
+        puts "-" * 40
         @host_profile.rules.each do |rule|
           Rails.cache.delete("#{rule.id}/#{@host&.id}/compliant")
         end
