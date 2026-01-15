@@ -60,7 +60,7 @@ describe V2::TestResult do
     context 'score comparison' do
       let(:threshold) { 90.0 }
 
-      it 'returns true when score > threshold' do
+      it 'returns true when score >= threshold' do
         test_result = FactoryBot.create(:v2_test_result, policy_id: policy.id,
                                                          account: account, score: 90.01, supported: true)
         expect(test_result.compliant).to eq(true)
