@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# WARNING: this module is already onboarded to APIv2 !!!
-
 module Xccdf
   # Methods related to saving rule fixes
   module Fixes
@@ -9,7 +7,7 @@ module Xccdf
 
     included do
       def fixes
-        @fixes ||= rules.flat_map do |rule|
+        @fixes ||= @rules.flat_map do |rule|
           rule.op_source.fixes.map do |op_fix|
             existing = old_fixes[rule.id + '__' + op_fix.system]
             ::V2::Fix.from_parser(op_fix, existing: existing, rule_id: rule.id, system: op_fix.system)
@@ -38,7 +36,7 @@ module Xccdf
       # :nocov:
       def old_fixes
         @old_fixes ||= ::V2::Fix.where(
-          rule_id: ::V2::Rule.where(security_guide_id: @benchmark&.id)
+          rule_id: ::V2::Rule.where(security_guide_id: @security_guide&.id)
         ).index_by { |fix| fix.rule_id + '__' + fix.system }
       end
       # :nocov:
