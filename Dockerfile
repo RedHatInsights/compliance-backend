@@ -1,5 +1,5 @@
 ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tzdata"
-ARG devDeps="cargo gcc gcc-c++ libstdc++-static gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel rust tar which util-linux xz"
+ARG devDeps="clang llvm-devel cargo gcc gcc-c++ libstdc++-static gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel rust tar which util-linux xz"
 ARG extras=""
 ARG prod="true"
 ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-9/mmraka-postgresql-16-epel-9.repo"
