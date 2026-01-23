@@ -63,10 +63,10 @@ class XccdfReportParser
 
   def check_os_version
     # rubocop:disable Style/GuardClause
-    if benchmark.os_major_version.to_s != @host.os_major_version.to_s
+    if security_guide.os_major_version.to_s != @host.os_major_version.to_s
       raise OSVersionMismatch,
             "OS major version (#{@host.os_major_version}) does not match with " \
-            "benchmark #{benchmark.ref_id} (#{benchmark.os_major_version}). " \
+            "benchmark #{security_guide.ref_id} (#{security_guide.os_major_version}). " \
             "#{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
@@ -76,7 +76,7 @@ class XccdfReportParser
     # rubocop:disable Style/GuardClause
     if external_report?
       raise ExternalReportError,
-            "No policy found matching benchmark #{benchmark.ref_id}. " \
+            "No policy found matching benchmark #{security_guide.ref_id}. " \
             "#{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
@@ -84,10 +84,10 @@ class XccdfReportParser
 
   def check_for_missing_benchmark
     # rubocop:disable Style/GuardClause
-    unless benchmark.persisted?
+    unless security_guide.persisted?
       raise UnknownBenchmarkError,
-            "No benchmark found matching ref_id #{benchmark.ref_id} and " \
-            "SSG #{benchmark.version}. #{parse_failure_message}"
+            "No benchmark found matching ref_id #{security_guide.ref_id} and " \
+            "SSG #{security_guide.version}. #{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
   end
@@ -97,8 +97,8 @@ class XccdfReportParser
     unless test_result_profile.persisted?
       raise UnknownProfileError,
             "No profile found matching ref_id #{test_result_profile.ref_id} " \
-            "in benchmark #{benchmark.ref_id} with SSG " \
-            "#{benchmark.version}. #{parse_failure_message}"
+            "in benchmark #{security_guide.ref_id} with SSG " \
+            "#{security_guide.version}. #{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
   end
@@ -108,8 +108,8 @@ class XccdfReportParser
     if test_result_rules_unknown.any?
       raise UnknownRuleError,
             'The following rules are missing from profile ' \
-            "#{test_result_profile.ref_id} in benchmark #{benchmark.ref_id} " \
-            "with SSG #{benchmark.version}:\n" \
+            "#{test_result_profile.ref_id} in benchmark #{security_guide.ref_id} " \
+            "with SSG #{security_guide.version}:\n" \
             "#{test_result_rules_unknown.join("\n")}\n#{parse_failure_message}"
     end
     # rubocop:enable Style/GuardClause
