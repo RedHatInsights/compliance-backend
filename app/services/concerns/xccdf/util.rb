@@ -43,12 +43,12 @@ module Xccdf
       end
 
       def set_openscap_parser_data
-        @op_benchmark = @test_result_file.benchmark
+        @op_security_guide = @test_result_file.benchmark
         @op_test_result = @test_result_file.test_result
-        @op_rule_groups = @op_benchmark.groups
-        @op_profiles = @op_benchmark.profiles
-        @op_value_definitions = @op_benchmark.values
-        @op_rules = @op_benchmark.rules
+        @op_rule_groups = @op_security_guide.groups
+        @op_profiles = @op_security_guide.profiles
+        @op_value_definitions = @op_security_guide.values
+        @op_rules = @op_security_guide.rules
         @op_rule_results = @op_test_result.rule_results
       end
 
