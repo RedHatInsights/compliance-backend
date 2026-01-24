@@ -3,31 +3,40 @@
 module Xccdf
   # Methods related to saving Hosts from openscap_parser
   module Hosts
-    def host_profile
-      @host_profile ||= test_result_profile.clone_to(
-        policy: Policy.with_hosts(@host)
-                      .with_ref_ids(test_result_profile.ref_id)
-                      .find_by(account: @account),
-        account: @account,
-        os_minor_version: @host.os_minor_version.to_s
-      )
+    def tailoring
+      @tailoring ||= V2::Tailoring.find_or_create_by!(
+        policy: policy,
+        os_minor_version: @system.os_minor_version
+      ) do |t|
+        t.profile = canonical_profile.variant_for_minor(@system.os_minor_version)
+        t.value_overrides = t.profile.value_overrides
+      end
     end
-    alias save_host_profile host_profile
+    # FIXME: V2 compatibility alias - remove after V2 report parsing refactor
+    alias save_host_profile tailoring
 
     def external_report?
-      Policy.with_hosts(@host).with_ref_ids(test_result_profile.ref_id)
-            .find_by(account: @account).nil?
+      policy.nil?
     end
 
     private
 
-    def test_result_profile
-      @test_result_profile ||= ::Profile.canonical.create_with(
-        name: @test_result_file.test_result.profile_id
-      ).find_or_initialize_by(
+    def canonical_profile
+      @canonical_profile ||= V2::Profile.find_by!(
         ref_id: @test_result_file.test_result.profile_id,
-        benchmark: benchmark
+        security_guide_id: security_guide.id
       )
+    end
+    # FIXME: V2 compatibility alias - remove after V2 report parsing refactor
+    alias test_result_profile canonical_profile
+
+    def policy
+      @policy ||= V2::Policy.joins(:profile, :policy_systems)
+                            .find_by(
+                              profile: { ref_id: canonical_profile.ref_id },
+                              policy_systems: { system_id: @host.id },
+                              account: @account
+                            )
     end
   end
 end

@@ -22,9 +22,9 @@ module Xccdf
     end
 
     def failed_rules
-      ::Rule.joins(:rule_results)
-            .where(rule_results: failed_rule_results)
-            .distinct
+      ::V2::Rule.joins(:rule_results)
+                .where(rule_results: failed_rule_results)
+                .distinct
     end
 
     def selected_op_rule_results
@@ -40,8 +40,8 @@ module Xccdf
     private
 
     def rule_ids
-      @rule_ids ||= Rule.where(
-        benchmark: benchmark, ref_id: selected_op_rule_results.map(&:id)
+      @rule_ids ||= ::V2::Rule.where(
+        benchmark_id: security_guide.id, ref_id: selected_op_rule_results.map(&:id)
       ).pluck(:ref_id, :id).to_h
     end
   end
