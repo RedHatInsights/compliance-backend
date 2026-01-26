@@ -131,20 +131,153 @@ RSpec.describe KesselRbac, type: :service do
       [double('object', object: double('object', resource_id: 'workspace-1')),
        double('object', object: double('object', resource_id: 'workspace-2'))]
     end
+    let(:root_workspace_id) { "root-workspace-#{org_id}" }
+    let(:auth) { double('oauth_credentials') }
 
     before do
       allow(KesselRbac).to receive(:enabled?).and_return(true)
       allow(described_class).to receive(:client).and_return(mock_client)
       allow(described_class).to receive(:list_workspaces).and_return(mock_response)
+      allow(described_class).to receive(:auth).and_return(auth)
+      allow(described_class).to receive(:get_root_workspace_id).and_return(root_workspace_id)
     end
 
-    it 'returns workspace IDs' do
-      result = described_class.list_workspaces_with_permission(
-        permission: 'inventory_host_view',
-        user: user
-      )
+    context 'when user has root workspace access (global access)' do
+      before do
+        allow(described_class).to receive(:check_permission).and_return(true)
+      end
 
-      expect(result).to eq(%w[workspace-1 workspace-2])
+      it 'returns Rbac::ANY without listing workspaces' do
+        result = described_class.list_workspaces_with_permission(
+          permission: 'compliance_system_view',
+          user: user
+        )
+
+        expect(result).to eq(Rbac::ANY)
+        expect(described_class).not_to have_received(:list_workspaces)
+      end
+
+      it 'checks permission on root workspace' do
+        described_class.list_workspaces_with_permission(
+          permission: 'compliance_system_view',
+          user: user
+        )
+
+        expect(described_class).to have_received(:check_permission).with(
+          resource_type: 'workspace',
+          resource_id: root_workspace_id,
+          permission: 'compliance_system_view',
+          user: user,
+          reporter_type: 'rbac'
+        )
+      end
+    end
+
+    context 'when user does not have root workspace access' do
+      before do
+        allow(described_class).to receive(:check_permission).and_return(false)
+      end
+
+      it 'lists specific workspaces' do
+        result = described_class.list_workspaces_with_permission(
+          permission: 'compliance_system_view',
+          user: user
+        )
+
+        expect(result).to eq(%w[workspace-1 workspace-2])
+        expect(described_class).to have_received(:list_workspaces)
+      end
+    end
+
+    context 'when root workspace check fails' do
+      before do
+        allow(described_class).to receive(:check_permission).and_raise(StandardError, 'Root check failed')
+        allow(Rails.logger).to receive(:debug)
+      end
+
+      it 'falls back to listing workspaces' do
+        result = described_class.list_workspaces_with_permission(
+          permission: 'compliance_system_view',
+          user: user
+        )
+
+        expect(result).to eq(%w[workspace-1 workspace-2])
+        expect(described_class).to have_received(:list_workspaces)
+      end
+
+      it 'logs the failure' do
+        described_class.list_workspaces_with_permission(
+          permission: 'compliance_system_view',
+          user: user
+        )
+
+        expect(Rails.logger).to have_received(:debug)
+      end
+    end
+
+    context 'when workspace listing fails' do
+      before do
+        allow(described_class).to receive(:check_permission).and_return(false)
+        allow(described_class).to receive(:list_workspaces).and_raise(StandardError, 'Connection timeout')
+        allow(Rails.logger).to receive(:error)
+      end
+
+      it 'raises AuthorizationError' do
+        expect do
+          described_class.list_workspaces_with_permission(
+            permission: 'compliance_system_view',
+            user: user
+          )
+        end.to raise_error(KesselRbac::AuthorizationError, /Workspace listing failed/)
+      end
+
+      it 'logs the error' do
+        expect(Rails.logger).to receive(:error).with(/Kessel workspace listing failed: Connection timeout/)
+
+        expect do
+          described_class.list_workspaces_with_permission(
+            permission: 'compliance_system_view',
+            user: user
+          )
+        end.to raise_error(KesselRbac::AuthorizationError)
+      end
+
+      it 'includes the original error message in the raised exception' do
+        expect do
+          described_class.list_workspaces_with_permission(
+            permission: 'compliance_system_view',
+            user: user
+          )
+        end.to raise_error(KesselRbac::AuthorizationError, /Connection timeout/)
+      end
+    end
+
+    context 'when building subject reference fails' do
+      before do
+        allow(described_class).to receive(:check_permission).and_return(false)
+        allow(described_class).to receive(:build_subject_reference).and_raise(StandardError, 'Invalid principal')
+        allow(Rails.logger).to receive(:error)
+      end
+
+      it 'raises AuthorizationError' do
+        expect do
+          described_class.list_workspaces_with_permission(
+            permission: 'compliance_system_view',
+            user: user
+          )
+        end.to raise_error(KesselRbac::AuthorizationError, /Workspace listing failed/)
+      end
+
+      it 'logs the error with correct message' do
+        expect(Rails.logger).to receive(:error).with(/Kessel workspace listing failed: Invalid principal/)
+
+        expect do
+          described_class.list_workspaces_with_permission(
+            permission: 'compliance_system_view',
+            user: user
+          )
+        end.to raise_error(KesselRbac::AuthorizationError)
+      end
     end
 
     context 'when Kessel is disabled' do

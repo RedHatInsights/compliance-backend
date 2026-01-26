@@ -58,20 +58,38 @@ class KesselRbac
     def list_workspaces_with_permission(permission:, user:)
       return [] unless enabled?
 
-      begin
-        response = list_workspaces(client, build_subject_reference(user), permission)
-        response.map(&:object).map(&:resource_id)
-      rescue StandardError => e
-        Rails.logger.error("Kessel workspace listing failed: #{e.message}")
-        raise AuthorizationError, "Workspace listing failed: #{e.message}"
-      end
+      # Check if user has permission on root workspace (org-level access)
+      # If yes, return Rbac::ANY to avoid expensive JSONB queries
+      return Rbac::ANY if root_workspace_access?(permission, user)
+
+      # Otherwise, list specific workspaces the user has access to
+      response = list_workspaces(client, build_subject_reference(user), permission)
+      response.map(&:object).map(&:resource_id)
+    rescue StandardError => e
+      Rails.logger.error("Kessel workspace listing failed: #{e.message}")
+      raise AuthorizationError, "Workspace listing failed: #{e.message}"
     end
 
     private
 
     delegate :get_default_workspace_id, to: :KesselUtils
+    delegate :get_root_workspace_id, to: :KesselUtils
     delegate :build_client, to: :KesselBuilder
     delegate :auth, to: :KesselBuilder
+
+    # Check if user has root workspace access (falls back to workspace listing on error)
+    def root_workspace_access?(permission, user)
+      check_permission(
+        resource_type: 'workspace',
+        resource_id: get_root_workspace_id(auth, user.account.identity_header.raw),
+        permission: permission,
+        user: user,
+        reporter_type: 'rbac'
+      )
+    rescue StandardError => e
+      Rails.logger.debug { "Root workspace check failed: #{e.message}" }
+      false
+    end
 
     def build_resource_reference(resource_type, resource_id, reporter_type)
       ResourceReference.new(

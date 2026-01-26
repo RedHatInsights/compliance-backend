@@ -22,5 +22,21 @@ class KesselUtils
 
       workspace.id
     end
+
+    def get_root_workspace_id(auth, identity_header)
+      parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
+      org_id = parsed_identity.org_id
+      cache_key = "workspace_root_#{org_id}"
+
+      return @workspace_cache[cache_key] if @workspace_cache&.key?(cache_key)
+
+      workspace = fetch_root_workspace(Settings.endpoints.rbac.url, org_id,
+                                       auth: oauth2_auth_request(auth),
+                                       http_client: nil)
+      @workspace_cache ||= {}
+      @workspace_cache[cache_key] = workspace.id
+
+      workspace.id
+    end
   end
 end
