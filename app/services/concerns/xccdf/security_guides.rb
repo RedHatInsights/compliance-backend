@@ -36,6 +36,12 @@ module Xccdf
         @security_guide ||= ::V2::SecurityGuide.from_parser(@op_security_guide)
       end
 
+      # V1 compatibility - returns the same record but as V1 Benchmark model
+      # The v1_benchmarks view maps security_guides_v2 to V1 format
+      def benchmark
+        @benchmark ||= ::Xccdf::Benchmark.find(security_guide.id)
+      end
+
       def package_name
         @package_name ||= begin
           SupportedSsg.by_os_major[security_guide.os_major_version.to_s].find do |item|
