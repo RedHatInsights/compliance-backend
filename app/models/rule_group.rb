@@ -2,6 +2,10 @@
 
 # OpenSCAP RuleGroup
 class RuleGroup < ApplicationRecord
+  # FIXME: V2 compatibility - clean up after V2 report parsing refactor
+  self.table_name = :v1_rule_groups
+  self.primary_key = :id
+
   # Need to set primary key format to work with uuid primary key column
   has_ancestry(primary_key_format: %r{\A[\w\-]+(\/[\w\-]+)*\z})
 

@@ -6,6 +6,10 @@ module Xccdf
   # for a given set of software in a specific release of the SCAP Security
   # Guide (i.e. RHEL 7, v0.1.43)
   class Benchmark < ApplicationRecord
+    # FIXME: V2 compatibility - clean up after V2 report parsing refactor
+    self.table_name = :v1_benchmarks
+    self.primary_key = :id
+
     include RuleTree
 
     REF_PREFIX = 'xccdf_org.ssgproject.content_benchmark_RHEL'
@@ -27,9 +31,9 @@ module Xccdf
     validates :version, presence: true
 
     scope :including_profile, lambda { |profile|
-      joins(:profiles).where(profiles: { parent_profile_id: nil,
-                                         ref_id: profile.ref_id,
-                                         upstream: false })
+      joins(:profiles).where(v1_profiles: { parent_profile_id: nil,
+                                            ref_id: profile.ref_id,
+                                            upstream: false })
     }
 
     sortable_by :title
