@@ -89,20 +89,22 @@ module Xccdf
     end
 
     test 'return latest benchmarks for all ref_ids' do
-      Xccdf::Benchmark.create(ref_id: 'rhel7', version: '0.1.40',
+      Xccdf::Benchmark.create(ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-7', version: '0.1.40',
                               title: 'foo1', description: 'a')
-      Xccdf::Benchmark.create(ref_id: 'rhel7', version: '0.1.41',
+      Xccdf::Benchmark.create(ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-7', version: '0.1.41',
                               title: 'foo2', description: 'a')
-      Xccdf::Benchmark.create(ref_id: 'rhel7', version: '0.2.0',
+      Xccdf::Benchmark.create(ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-7', version: '0.2.0',
                               title: 'foo3', description: 'a')
-      Xccdf::Benchmark.create(ref_id: 'rhel6', version: '0.1.42',
+      Xccdf::Benchmark.create(ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-6', version: '0.1.42',
                               title: 'foo4', description: 'a')
-      Xccdf::Benchmark.create(ref_id: 'rhel8', version: '0.2.2',
+      Xccdf::Benchmark.create(ref_id: 'xccdf_org.ssgproject.content_benchmark_RHEL-8', version: '0.2.2',
                               title: 'foo5', description: 'a')
 
       latest = Xccdf::Benchmark.latest
       assert latest.count == 3
-      assert_equal %w[rhel6 rhel7 rhel8],
+      assert_equal %w[xccdf_org.ssgproject.content_benchmark_RHEL-6
+                      xccdf_org.ssgproject.content_benchmark_RHEL-7
+                      xccdf_org.ssgproject.content_benchmark_RHEL-8],
                    latest.map(&:ref_id).sort
       assert_equal %w[0.1.42 0.2.0 0.2.2],
                    latest.map(&:version).sort

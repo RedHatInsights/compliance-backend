@@ -2,6 +2,10 @@
 
 # OpenSCAP profile
 class Profile < ApplicationRecord
+  # FIXME: V2 compatibility - clean up after V2 report parsing refactor
+  self.table_name = :v1_profiles
+  self.primary_key = :id
+
   include ProfileCloning
   include ProfileFields
   include ProfileTailoring
@@ -85,7 +89,7 @@ class Profile < ApplicationRecord
   end
 
   def value_uuids
-    keys = value_overrides.keys
+    keys = value_overrides&.keys || []
     return if ValueDefinition.where(id: keys).select(:id).count == keys.count
 
     errors.add(:value_overrides, 'invalid value(s)')

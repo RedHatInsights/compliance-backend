@@ -96,7 +96,7 @@ module BenchmarkSearching
 
         next if ssg_versions.count.zero?
 
-        ['benchmarks.ref_id LIKE ? AND benchmarks.version IN (?)',
+        ['v1_benchmarks.ref_id LIKE ? AND v1_benchmarks.version IN (?)',
          os_major_version_like_condition(major),
          ssg_versions]
       end.compact

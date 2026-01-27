@@ -2,6 +2,10 @@
 
 # Required and conflicting relationships between rules and rule groups
 class RuleGroupRelationship < ApplicationRecord
+  # FIXME: V2 compatibility - clean up after V2 report parsing refactor
+  self.table_name = :v1_rule_group_relationships
+  self.primary_key = :id
+
   belongs_to :left, polymorphic: true
   belongs_to :right, polymorphic: true
 

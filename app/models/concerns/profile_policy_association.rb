@@ -33,7 +33,7 @@ module ProfilePolicyAssociation
 
       profile = ::Profile.includes(:benchmark).find_by(
         ref_id: ref_id, account: account, external: false,
-        benchmarks: { ref_id: benchmark.ref_id }
+        v1_benchmarks: { ref_id: benchmark.ref_id }
       )
 
       errors.add(:policy_type, error_msg) if profile

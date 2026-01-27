@@ -3,6 +3,10 @@
 # Stores information about rules, such as which profiles can it be
 # found in, what hosts are associated with it, etceter
 class Rule < ApplicationRecord
+  # FIXME: V2 compatibility - clean up after V2 report parsing refactor
+  self.table_name = :v1_rules
+  self.primary_key = :id
+
   SORTED_SEVERITIES = Arel.sql(
     AN::Case.new.when(
       Rule.arel_table[:severity].eq(AN::Quoted.new('high'))
@@ -63,7 +67,7 @@ class Rule < ApplicationRecord
   }
 
   scope :canonical, lambda {
-    joins(:profiles).where(profiles: { id: Profile.canonical })
+    joins(:profiles).where(v1_profiles: { id: Profile.canonical })
   }
 
   scope :without_rule_group_parent, -> { where.missing(:rule_group) }

@@ -45,7 +45,7 @@ module ProfileFields
       attributes['bm_versions'] || self.class.canonical.where(
         ref_id: ref_id,
         upstream: false
-      ).joins(:benchmark).pluck('benchmarks.version')
+      ).joins(:benchmark).pluck('v1_benchmarks.version')
     end
   end
 end
