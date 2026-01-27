@@ -290,7 +290,7 @@ class PolicyTest < ActiveSupport::TestCase
           )
 
           assert_equal @profile, child_profile
-          assert_equal @profile.os_minor_version, child_profile.os_minor_version
+          assert_equal @profile.reload.os_minor_version, child_profile.os_minor_version
         end
       end
 
@@ -301,7 +301,7 @@ class PolicyTest < ActiveSupport::TestCase
             policy: @policy
           )
           assert_equal @profile, child_profile
-          assert_equal @profile.os_minor_version, child_profile.os_minor_version
+          assert_equal @profile.reload.os_minor_version, child_profile.os_minor_version
         end
       end
 

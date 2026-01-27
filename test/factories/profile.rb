@@ -23,6 +23,14 @@ FactoryBot.define do
                   description: description
     end
 
+    # Ensure parent_profile always points to a canonical profile, not another tailoring.
+    # The parent chain is automatically followed to find the true canonical.
+    before(:create) do |instance|
+      if instance.parent_profile_id.present? && instance.parent_profile&.parent_profile_id.present?
+        instance.parent_profile = instance.parent_profile.parent_profile
+      end
+    end
+
     factory :canonical_profile do
       parent_profile { nil }
       account { nil }

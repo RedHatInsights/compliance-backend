@@ -2,7 +2,8 @@
 
 # Pseudo-class for retrieving supported OS major versions
 class OsMajorVersion < ApplicationRecord
-  self.table_name = 'benchmarks'
+  # FIXME: V2 compatibility - clean up after V2 report parsing refactor
+  self.table_name = 'v1_benchmarks'
 
   # Helper function that aggregates a column under a grouping and orders them
   # descending based on their benchmark version.
@@ -51,7 +52,7 @@ class OsMajorVersion < ApplicationRecord
                                   .group(:ref_id, 'os_major_version')
 
     canonical.where(upstream: false)
-             .joins("INNER JOIN (#{supported_profiles.to_sql}) t ON t.id = profiles.id")
+             .joins("INNER JOIN (#{supported_profiles.to_sql}) t ON t.id = v1_profiles.id")
              .select('"profiles".*, "t"."bm_versions" AS "bm_versions", "t"."os_major_version" AS "os_major_version"')
   }, through: :benchmarks
 
