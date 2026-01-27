@@ -32,7 +32,7 @@ class Policy < ApplicationRecord
   }
 
   scope :with_ref_ids, lambda { |ref_ids|
-    joins(:profiles).where(profiles: { ref_id: ref_ids }).distinct
+    joins(:profiles).where(v1_profiles: { ref_id: ref_ids }).distinct
   }
 
   def self.attrs_from(profile:)
