@@ -2,6 +2,10 @@
 
 # Stores information about value definitions. This comes from SCAP.
 class ValueDefinition < ApplicationRecord
+  # FIXME: V2 compatibility - clean up after V2 report parsing refactor
+  self.table_name = :v1_value_definitions
+  self.primary_key = :id
+
   include OpenscapParserDerived
 
   belongs_to :benchmark, class_name: 'Xccdf::Benchmark'

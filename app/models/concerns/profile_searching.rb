@@ -38,7 +38,7 @@ module ProfileSearching
                   only_explicit: true, operators: ['=']
 
     scope :ssg_versions, lambda { |ssg_versions|
-      joins(:benchmark).where(benchmarks: { version: ssg_versions })
+      joins(:benchmark).where(v1_benchmarks: { version: ssg_versions })
     }
     scope :canonical, lambda { |canonical = true|
       canonical && where(parent_profile_id: nil) ||

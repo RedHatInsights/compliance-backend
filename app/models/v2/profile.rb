@@ -6,7 +6,7 @@ module V2
     include V2::RuleTree
 
     # FIXME: clean up after the remodel
-    self.table_name = :canonical_profiles
+    self.table_name = :canonical_profiles_v2
     self.primary_key = :id
 
     indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.try(:gsub, '-', '.')) }
@@ -27,6 +27,19 @@ module V2
       return profile if profile
 
       raise ::Exceptions::OSMinorVersionNotSupported.new(security_guide.os_major_version, version)
+    end
+
+    def self.from_parser(obj, existing: nil, security_guide_id: nil, value_overrides: nil)
+      record = existing || new(ref_id: obj.id, security_guide_id: security_guide_id)
+
+      record.assign_attributes(
+        title: obj.title,
+        description: obj.description,
+        value_overrides: value_overrides,
+        upstream: false
+      )
+
+      record
     end
 
     private
