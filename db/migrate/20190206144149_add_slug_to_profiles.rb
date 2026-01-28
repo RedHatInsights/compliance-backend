@@ -3,6 +3,7 @@ class AddSlugToProfiles < ActiveRecord::Migration[5.2]
     add_column :profiles, :slug, :string
     add_index :profiles, :slug, unique: true
 
-    Profile.all.map(&:save)
+    # Removed so we're able to change the table name of Profiles
+    # Profile.all.map(&:save)
   end
 end
