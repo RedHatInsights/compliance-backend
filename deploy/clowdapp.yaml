@@ -40,16 +40,23 @@ objects:
       additionalFilters:
         - name: "insightsOnly"
           type: "com.redhat.insights.kafka.connect.transforms.Filter"
-          if: "!!record.headers().lastWithName('insights_id').value()"
-          where: "canonical_facts ? 'insights_id'"
+          if: "record.headers().lastWithName('insights_id').value() && record.headers().lastWithName('insights_id').value() != '00000000-0000-0000-0000-000000000000'"
+          where: "h.insights_id != '00000000-0000-0000-0000-000000000000'::uuid"
         - name: "nonEdge"
           type: "com.redhat.insights.kafka.connect.transforms.Filter"
           if: "!record.headers().lastWithName('host_type').value()"
-          where: "NOT system_profile_facts ? 'host_type'"
+          join: "LEFT JOIN hbi.system_profiles_static sps ON sps.org_id = h.org_id AND sps.host_id = h.id"
+          where: "sps.host_type IS NULL"
         - name: "nonCentOS"
           type: "com.redhat.insights.kafka.connect.transforms.Filter"
           if: "!record.headers().lastWithName('os_name').value().match(/centos/i)"
-          where: "COALESCE(system_profile_facts->'operating_system'->>'name', '') NOT ILIKE '%centos%'"
+          join: "LEFT JOIN hbi.system_profiles_static sps ON sps.org_id = h.org_id AND sps.host_id = h.id"
+          where: "COALESCE(sps.operating_system->>'name', '') NOT ILIKE '%centos%'"
+        - name: "nonBootc"
+          type: "com.redhat.insights.kafka.connect.transforms.Filter"
+          if: "record.headers().lastWithName('is_bootc').value() == 'False'"
+          join: "LEFT JOIN hbi.system_profiles_static sps ON sps.org_id = h.org_id AND sps.host_id = h.id"
+          where: "sps.bootc_status->'booted'->>'image_digest' IS NULL"
     jobs:
     - name: import-ssg
       schedule: ${IMPORT_SSG_SCHEDULE}
