@@ -21,10 +21,16 @@ SELECT
     stale_timestamp + INTERVAL '1' DAY * 14 AS culled_timestamp,
     stale_timestamp + INTERVAL '1' DAY * 8 AS last_check_in,
     tags,
-    system_profile_facts as system_profile,
+    jsonb_build_object('operating_system', operating_system, 'host_type', host_type, 'owner_id', owner_id) as system_profile,
     groups,
-    canonical_facts->'insights_id' as insights_id
-FROM dblink('dbname=insights user=insights', 'select id, account, org_id, display_name, created_on, modified_on, stale_timestamp, tags, system_profile_facts, groups, canonical_facts from hbi.hosts') as hosts(
+    insights_id
+FROM dblink('dbname=insights user=insights', '
+    SELECT h.id, h.account, h.org_id, h.display_name, h.created_on, h.modified_on,
+           h.stale_timestamp, h.tags, h.groups, h.insights_id,
+           sps.operating_system, sps.host_type, sps.owner_id
+    FROM hbi.hosts h
+    LEFT JOIN hbi.system_profiles_static sps ON sps.org_id = h.org_id AND sps.host_id = h.id
+') as hosts(
     id uuid,
     account character varying(10),
     org_id character varying(10),
@@ -33,7 +39,9 @@ FROM dblink('dbname=insights user=insights', 'select id, account, org_id, displa
     modified_on timestamp with time zone,
     stale_timestamp timestamp with time zone,
     tags jsonb,
-    system_profile_facts jsonb,
     groups jsonb,
-    canonical_facts jsonb
+    insights_id uuid,
+    operating_system jsonb,
+    host_type character varying(12),
+    owner_id character varying(64)
 );

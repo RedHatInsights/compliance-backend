@@ -3,6 +3,7 @@
 FactoryBot.define do
   # This is necessary to convince spring that the class is not defined elsewhere
   Object.send(:remove_const, :WHost) if defined?(WHost)
+  Object.send(:remove_const, :WSystemProfileStatic) if defined?(WSystemProfileStatic)
   Object.send(:remove_const, :SSGS) if defined?(SSGS)
 
   supported_ssg1 = SupportedSsg.new(version: '0.1.50',
@@ -19,6 +20,24 @@ FactoryBot.define do
       self.table_name = 'inventory.hosts_v1_1'
     elsif Rails.env.development?
       self.table_name = 'hbi.hosts'
+
+      establish_connection(
+        Rails.configuration.database_configuration[Rails.env].merge(
+          'database' => 'insights'
+        )
+      )
+    end
+
+    def readonly?
+      false
+    end
+  end
+
+  # Model for system_profiles_static table
+  class WSystemProfileStatic < ApplicationRecord
+    if Rails.env.development?
+      self.table_name = 'hbi.system_profiles_static'
+      self.primary_key = %i[org_id host_id]
 
       establish_connection(
         Rails.configuration.database_configuration[Rails.env].merge(
@@ -52,16 +71,18 @@ FactoryBot.define do
     elsif Rails.env.development?
       reporter { 'puptoo' }
       modified_on { Time.zone.now }
+      created_on { Time.zone.now }
       facts { {} }
-      canonical_facts do
-        {
-          'fqdn' => Faker::Internet.domain_name,
-          'insights_id' => UUID.generate
-        }
-      end
+      fqdn { Faker::Internet.domain_name }
+      insights_id { UUID.generate }
 
-      system_profile_facts do
-        system_profile_data
+      after(:create) do |host, evaluator|
+        WSystemProfileStatic.create!(
+          org_id: host.org_id,
+          host_id: host.id,
+          operating_system: evaluator.system_profile_data['operating_system'],
+          host_type: nil
+        )
       end
     end
 
