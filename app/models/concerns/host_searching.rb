@@ -140,7 +140,7 @@ module HostSearching
       hosts = search_in(
         TestResult.latest.joins(profile: :benchmark).where(profile: profiles).select(:host_id),
         operator,
-        { benchmarks: { version: values } }
+        { v1_benchmarks: { version: values } }
       )
 
       { conditions: "hosts.id IN(#{hosts.to_sql})" }
@@ -176,7 +176,7 @@ module HostSearching
                     .joins(:rule).where(rule_results: { result: RuleResult::FAILED })
                     .distinct.select(:host_id),
         operator,
-        { rules: { severity: value.split(',').map(&:strip) } }
+        { v1_rules: { severity: value.split(',').map(&:strip) } }
       )
       { conditions: "hosts.id IN(#{hosts.to_sql})" }
     end
@@ -234,7 +234,7 @@ module HostSearching
 
     def with_policy_lookup(policy_or_profile_id)
       policy_cond = { policies: { id: policy_or_profile_id } }
-      profile_cond = { policies: { profiles: { id: policy_or_profile_id } } }
+      profile_cond = { policies: { v1_profiles: { id: policy_or_profile_id } } }
 
       search = joins(policies: :profiles)
       search.where(policy_cond).or(search.where(profile_cond))
@@ -243,7 +243,7 @@ module HostSearching
     def with_external_profile_lookup(profile_id)
       joins(test_results: :profile).where(
         test_results: {
-          profiles: {
+          v1_profiles: {
             id: profile_id,
             policy_id: nil
           }

@@ -112,7 +112,7 @@ class Host < ApplicationRecord
     return joins(JOIN_NO_BENCHMARK) if profile.nil?
 
     left_outer_joins(test_result_profiles: :benchmark).where(
-      profiles: { id: profile.pluck(:id) }
+      v1_profiles: { id: profile.pluck(:id) }
     )
   }
 

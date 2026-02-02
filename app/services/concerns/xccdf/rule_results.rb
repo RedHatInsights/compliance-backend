@@ -40,8 +40,8 @@ module Xccdf
     private
 
     def rule_ids
-      @rule_ids ||= Rule.where(
-        benchmark: benchmark, ref_id: selected_op_rule_results.map(&:id)
+      @rule_ids ||= ::Rule.where(
+        benchmark_id: benchmark&.id, ref_id: selected_op_rule_results.map(&:id)
       ).pluck(:ref_id, :id).to_h
     end
   end

@@ -51,7 +51,7 @@ module ProfileTailoring
   end
 
   def update_os_minor_version(version)
-    return unless version && os_minor_version.empty?
+    return unless version && os_minor_version.blank?
 
     Rails.logger.audit_success(%(
       Setting OS minor version #{version} for profile #{id}
