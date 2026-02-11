@@ -1,16 +1,16 @@
 def secrets = [
-    [path: params.VAULT_PATH_SVC_ACCOUNT_EPHEMERAL, secretValues: [
+    [path: 'insights-cicd/ephemeral-bot-svc-account', secretValues: [
         [envVar: 'OC_LOGIN_TOKEN_DEV', vaultKey: 'oc-login-token-dev'],
         [envVar: 'OC_LOGIN_SERVER_DEV', vaultKey: 'oc-login-server-dev'],
         [envVar: 'OC_LOGIN_TOKEN', vaultKey: 'oc-login-token'],
         [envVar: 'OC_LOGIN_SERVER', vaultKey: 'oc-login-server']]],
-    [path: params.VAULT_PATH_QUAY_PUSH, secretValues: [
+    [path: 'app-sre/quay/cloudservices-push', secretValues: [
         [envVar: 'QUAY_USER', vaultKey: 'user'],
         [envVar: 'QUAY_TOKEN', vaultKey: 'token']]],
-    [path: params.VAULT_PATH_INSIGHTSDROID_GITHUB, secretValues: [
+    [path: 'insights-cicd/insightsdroid-github', secretValues: [
         [envVar: 'GITHUB_TOKEN', vaultKey: 'token'],
         [envVar: 'GITHUB_API_URL', vaultKey: 'mirror_url']]],
-    [path: params.VAULT_PATH_RHR_PULL, secretValues: [
+    [path: 'insights-cicd/rh-registry-pull', secretValues: [
         [envVar: 'RH_REGISTRY_USER', vaultKey: 'user'],
         [envVar: 'RH_REGISTRY_TOKEN', vaultKey: 'token']]]
 ]
@@ -18,10 +18,13 @@ def secrets = [
 def configuration = [vaultUrl: params.VAULT_ADDRESS, vaultCredentialId: params.VAULT_CREDS_ID]
 
 pipeline {
-    agent { label 'rhel8' }
+    agent {
+        node {
+            label 'rhel8-spot'
+        }
+    }
     options {
         timestamps()
-        parallelsAlwaysFailFast()
     }
     environment {
         APP_NAME="compliance"
@@ -37,8 +40,7 @@ pipeline {
     }
 
     stages {
-
-        stage('Build the PR commit image') {
+        stage('Build image') {
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh 'bash -x build_deploy.sh'
@@ -46,6 +48,9 @@ pipeline {
             }
         }
         stage('Run smoke tests') {
+            when {
+                not { branch 'master' }
+            }
             steps {
                 withVault([configuration: configuration, vaultSecrets: secrets]) {
                     sh '''
@@ -72,9 +77,10 @@ pipeline {
         }
     }
     post {
-        always{
+        always {
             archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true
             junit skipPublishingChecks: true, testResults: 'artifacts/junit-*.xml'
+            cleanWs()
         }
     }
 }
