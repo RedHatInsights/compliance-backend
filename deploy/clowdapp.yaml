@@ -32,6 +32,8 @@ objects:
         partitions: 1
       - topicName: platform.notifications.ingress
         partitions: 1
+      - topicName: platform.inventory.host-apps
+        partitions: 1
     inMemoryDb: true
     cyndi:
       enabled: true

@@ -41,6 +41,10 @@
                 "name": "platform.remediation-updates.compliance"
             },
             {
+                "requestedName": "platform.inventory.host-apps",
+                "name": "platform.inventory.host-apps"
+            },
+            {
                 "requestedName": "originalName",
                 "name": "someTopic"
             }
