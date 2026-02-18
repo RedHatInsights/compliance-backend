@@ -16,7 +16,7 @@ class InventoryViews < ApplicationProducer
   end
 
   def self.build_headers(request_id)
-    { 'application' => INVENTORY_VIEW_APPLICATION, 'request_id' => request_id }
+    { 'application' => INVENTORY_VIEW_APPLICATION, 'request_id' => request_id.presence || SecureRandom.uuid }
   end
 
   def self.build_payload(system)

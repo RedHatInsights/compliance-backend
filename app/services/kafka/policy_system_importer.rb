@@ -5,17 +5,19 @@ module Kafka
   class PolicySystemImporter
     def initialize(message, logger)
       @logger = logger
+      @message = message
 
       @policy_id = message.dig('host', 'system_profile', 'image_builder', 'compliance_policy_id')
       @system_id = message.dig('host', 'id')
       @org_id = message.dig('host', 'org_id')
       @msg_type = message.dig('type')
+      @request_id = message.dig('platform_metadata', 'request_id')
     end
 
     def import
       return unless sources_exist?
 
-      policy_system = V2::PolicySystem.new(policy_id: @policy_id, system_id: @system_id)
+      policy_system = V2::PolicySystem.new(policy_id: @policy_id, system_id: @system_id, request_id: @request_id)
 
       if policy_system.save
         @logger.audit_success("[#{@org_id}] Imported PolicySystem for System #{@system_id} from #{@msg_type} message")
