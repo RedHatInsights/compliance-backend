@@ -7,6 +7,8 @@ module V2
     self.table_name = :policy_systems
     self.primary_key = :id
 
+    attr_accessor :request_id
+
     belongs_to :policy, class_name: 'V2::Policy'
     belongs_to :system, class_name: 'V2::System'
 
@@ -45,7 +47,7 @@ module V2
       sys = V2::System.find_by(id: system_id)
       return unless sys
 
-      InventoryViews.deliver(request_id: SecureRandom.uuid, system: sys)
+      InventoryViews.deliver(request_id: request_id, system: sys)
     end
   end
 end
