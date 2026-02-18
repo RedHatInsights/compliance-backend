@@ -23,6 +23,8 @@ module V2
       end
     end
 
+    after_commit :publish_inventory_views, on: %i[create update destroy]
+
     def system_supported?
       if policy.os_major_version != system.os_major_version
         errors.add(:system, 'Unsupported OS major version')
@@ -37,6 +39,13 @@ module V2
       ).any?
 
       errors.add(:system, 'System cannot be assigned to multiple policies of the same type')
+    end
+
+    def publish_inventory_views
+      sys = V2::System.find_by(id: system_id)
+      return unless sys
+
+      InventoryViews.deliver(request_id: SecureRandom.uuid, system: sys)
     end
   end
 end
