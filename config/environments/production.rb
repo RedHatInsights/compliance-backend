@@ -65,7 +65,11 @@ Rails.application.configure do
     Rails.cache = ActiveSupport::Cache.lookup_store(*config.cache_store)
 
     # Set up cloudwatch logging if available
-    if Settings.logging.type == "cloudwatch"
+    # FIXME: change this to `Settings.logging.type == "cloudwatch"` once Clowder supports the configuration
+    #
+    # https://github.com/RedHatInsights/clowder/blob
+    #   /9a5b2bea2009911cebbddd0ed440a8b360014e64/controllers/cloud.redhat.com/providers/logging/appinterface.go#L54
+    if Settings.logging&.credentials&.access_key_id.present?
       $cloudwatch_client ||= CloudWatchLogger::Client.new(
         Settings.logging.credentials,
         Settings.logging.log_group,
