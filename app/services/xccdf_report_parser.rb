@@ -122,10 +122,11 @@ class XccdfReportParser
   end
 
   def save_all
+    check_os_version
+    check_for_external_reports
+    check_for_missing_benchmark_info
+
     Host.transaction do
-      check_os_version
-      check_for_external_reports
-      check_for_missing_benchmark_info
       save_all_test_result_info
     end
   end
