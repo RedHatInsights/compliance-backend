@@ -45,5 +45,8 @@ test:
 production:
   <<: *default
 
+foreman:
+  <<: *default
+
 development:
   <<: *default
