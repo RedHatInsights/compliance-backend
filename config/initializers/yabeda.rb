@@ -11,6 +11,9 @@ end
 
 # Start the metrics server for sidekiq and karafka
 if %w[sidekiq karafka].any? { |p| $0.include?(p) }
-  ENV['PROMETHEUS_EXPORTER_PORT'] = ClowderCommonRuby::Config.load.metricsPort.to_s
+  if ClowderCommonRuby::Config.clowder_enabled?
+    ENV['PROMETHEUS_EXPORTER_PORT'] = ClowderCommonRuby::Config.load.metricsPort.to_s
+  end
+
   Yabeda::Prometheus::Exporter.start_metrics_server!
 end
