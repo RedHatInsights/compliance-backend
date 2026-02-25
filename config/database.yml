@@ -1,8 +1,30 @@
-<% 
+<%
   require 'clowder-common-ruby/rails_config'
 
-  config = ClowderCommonRuby::RailsConfig.db_config
- %>
+  if ClowderCommonRuby::Config.clowder_enabled?
+    config = ClowderCommonRuby::RailsConfig.db_config
+  else
+    if ENV.fetch('POSTGRESQL_RDS_CA', '').present?
+      ssl_root_cert = Rails.root.join('tmp', 'rdsCa')
+      content = ENV.fetch('POSTGRESQL_RDS_CA', '')
+
+      File.write(ssl_root_cert, content) unless File.exist?(ssl_root_cert)
+    end
+
+    config = {
+      database:       ENV['POSTGRESQL_DATABASE'],
+      username:       ENV['POSTGRESQL_USER'],
+      password:       ENV['POSTGRESQL_PASSWORD'],
+      host:           ENV['POSTGRESQL_HOST'],
+      port:           ENV['POSTGRESQL_PORT'],
+      admin_username: ENV['POSTGRESQL_ADMIN_USERNAME'],
+      admin_password: ENV['POSTGRESQL_ADMIN_PASSWORD'],
+      rds_ca:         ENV['POSTGRESQL_RDS_CA'],
+      ssl_mode:       ENV['POSTGRESQL_SSLMODE'],
+      ssl_root_cert:  ssl_root_cert
+    }
+  end
+%>
 
 default: &default
   adapter: postgresql
