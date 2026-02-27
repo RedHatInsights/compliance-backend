@@ -45,7 +45,7 @@ module V2
     def unauthorized(error: 'User is not authorized to view this page')
       render(
         json: { error: "Authorization error: #{error}" },
-        status: :unauthorized
+        status: :forbidden
       )
       false
     end
@@ -55,7 +55,7 @@ module V2
     def unauthenticated(error: 'X-RH-IDENTITY header should be provided')
       render(
         json: { error: "Authentication error: #{error}" },
-        status: :forbidden
+        status: :unauthorized
       )
       false
     end
