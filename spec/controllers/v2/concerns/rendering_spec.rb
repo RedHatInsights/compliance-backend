@@ -83,13 +83,13 @@ RSpec.shared_examples 'collection' do |*parents|
     end
   end
 
-  context 'Unathorized' do
+  context 'Unauthorized' do
     let(:rbac_allowed?) { false }
 
-    it 'responds with unauthorized status' do
+    it 'responds with forbidden status' do
       get :index, params: passable_params.merge(parents: parents)
 
-      expect(response).to have_http_status :unauthorized
+      expect(response).to have_http_status :forbidden
     end
   end
 end
