@@ -23,6 +23,10 @@ class KesselRbac
       ActiveModel::Type::Boolean.new.cast(Settings.kessel.enabled)
     end
 
+    def groups_temp_table_threshold
+      Settings.kessel.groups_temp_table_threshold
+    end
+
     def client
       @client ||= build_client
     end
