@@ -16,7 +16,7 @@ module ErrorHandling
     end
 
     rescue_from Rbac::AuthorizationError do |error|
-      render_error error.message, status: :unauthorized
+      render_error error.message, status: :forbidden
     end
 
     rescue_from ActiveRecord::RecordNotFound do |error|
