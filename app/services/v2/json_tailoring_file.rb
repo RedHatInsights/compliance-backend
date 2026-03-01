@@ -32,6 +32,7 @@ module V2
       {
         'id' => @tailoring.policy.ref_id,
         'title' => @tailoring.profile.title,
+        'base_profile_id' => @tailoring.profile.ref_id,
         'groups' => build_groups,
         'rules' => build_rules,
         'variables' => build_variables
