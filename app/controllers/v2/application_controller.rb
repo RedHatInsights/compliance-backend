@@ -27,6 +27,11 @@ module V2
         @kessel_action_permissions ||= {}
         @kessel_action_permissions[action.to_sym] ||= permission
       end
+
+      def kessel_workspace_scoped_for_action(action)
+        @kessel_workspace_scoped_actions ||= {}
+        @kessel_workspace_scoped_actions[action.to_sym] = true
+      end
     end
 
     # This method is being called before any before_action callbacks and it can set
@@ -69,7 +74,13 @@ module V2
 
     def kessel_rbac_allowed?
       permission = self.class.instance_variable_get(:@kessel_action_permissions)[action_name.to_sym]
-      user.kessel_authorized_to?(permission)
+      workspace_scoped = self.class.instance_variable_get(:@kessel_workspace_scoped_actions)&.[](action_name.to_sym)
+
+      if workspace_scoped
+        true
+      else
+        user.kessel_authorized_to?(permission)
+      end
     end
 
     def pundit_scope(res = resource)

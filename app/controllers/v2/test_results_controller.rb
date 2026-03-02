@@ -20,6 +20,7 @@ module V2
     end
     permission_for_action :os_versions, Rbac::SYSTEM_READ
     kessel_permission_for_action :os_versions, KesselRbac::SYSTEM_VIEW
+    kessel_workspace_scoped_for_action :os_versions
     permitted_params_for_action :os_versions, { filter: ParamType.string }
 
     def security_guide_versions

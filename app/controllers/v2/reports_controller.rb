@@ -41,6 +41,7 @@ module V2
     permission_for_action :os_versions, Rbac::SYSTEM_READ
     permitted_params_for_action :os_versions, { filter: ParamType.string }
     kessel_permission_for_action :os_versions, KesselRbac::SYSTEM_VIEW
+    kessel_workspace_scoped_for_action :os_versions
 
     private
 
