@@ -82,7 +82,7 @@ RSpec.describe User, type: :model do
             user.inventory_groups
 
             expect(KesselRbac).to have_received(:list_workspaces_with_permission).with(
-              permission: KesselRbac::SYSTEM_VIEW,
+              permission: KesselRbac::INVENTORY_HOST_VIEW,
               user: user
             )
           end

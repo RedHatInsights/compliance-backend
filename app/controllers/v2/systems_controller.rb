@@ -7,15 +7,13 @@ module V2
       render_json systems
     end
     permission_for_action :index, Rbac::SYSTEM_READ
-    kessel_permission_for_action :index, KesselRbac::SYSTEM_VIEW
-    kessel_workspace_scoped_for_action :index
+    kessel_permission_for_action :index, KesselRbac::INVENTORY_HOST_VIEW
 
     def show
       render_json system
     end
     permission_for_action :show, Rbac::SYSTEM_READ
-    kessel_permission_for_action :show, KesselRbac::SYSTEM_VIEW
-    kessel_workspace_scoped_for_action :show
+    kessel_permission_for_action :show, KesselRbac::INVENTORY_HOST_VIEW
 
     def create
       inserts, deletes = V2::PolicySystem.bulk_assign(new_policy_systems, old_policy_systems)
@@ -61,8 +59,7 @@ module V2
       render json: systems.os_versions, status: :ok
     end
     permission_for_action :os_versions, Rbac::SYSTEM_READ
-    kessel_permission_for_action :os_versions, KesselRbac::SYSTEM_VIEW
-    kessel_workspace_scoped_for_action :os_versions
+    kessel_permission_for_action :os_versions, KesselRbac::INVENTORY_HOST_VIEW
     permitted_params_for_action :os_versions, { filter: ParamType.string }
 
     private

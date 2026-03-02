@@ -15,6 +15,12 @@ class User < ApplicationRecord
     KesselRbac.default_permission_allowed?(permission, self)
   end
 
+  def kessel_authorized_to_any_workspace?(permission)
+    return true unless KesselRbac.enabled?
+
+    KesselRbac.list_workspaces_with_permission(permission: permission, user: self).any?
+  end
+
   def authorized_to?(access_request)
     return true if rbac_disabled?
 
@@ -29,7 +35,7 @@ class User < ApplicationRecord
 
     @inventory_groups ||= if KesselRbac.enabled?
                             KesselRbac.list_workspaces_with_permission(
-                              permission: KesselRbac::SYSTEM_VIEW,
+                              permission: KesselRbac::INVENTORY_HOST_VIEW,
                               user: self
                             )
                           else

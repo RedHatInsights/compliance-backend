@@ -12,8 +12,8 @@ class KesselRbac
   POLICY_NEW = 'compliance_policy_new'
   POLICY_EDIT = 'compliance_policy_edit'
   POLICY_REMOVE = 'compliance_policy_remove'
-  SYSTEM_VIEW = 'compliance_system_view'
   REPORT_VIEW = 'compliance_report_view'
+  INVENTORY_HOST_VIEW = 'inventory_host_view'
 
   USER_IDENTITY = 'User'
   SERVICE_IDENTITY = 'ServiceAccount'

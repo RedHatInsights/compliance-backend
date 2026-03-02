@@ -19,8 +19,7 @@ module V2
       render json: test_results.os_versions, status: :ok
     end
     permission_for_action :os_versions, Rbac::SYSTEM_READ
-    kessel_permission_for_action :os_versions, KesselRbac::SYSTEM_VIEW
-    kessel_workspace_scoped_for_action :os_versions
+    kessel_permission_for_action :os_versions, KesselRbac::INVENTORY_HOST_VIEW
     permitted_params_for_action :os_versions, { filter: ParamType.string }
 
     def security_guide_versions
