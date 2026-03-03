@@ -31,7 +31,7 @@ class KesselRbac
     include Kessel::RBAC::V2
 
     def default_permission_allowed?(permission, user)
-      return false unless permission
+      return true unless permission
 
       check_permission(
         resource_type: 'workspace',
