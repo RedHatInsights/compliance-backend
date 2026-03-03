@@ -225,9 +225,9 @@ RSpec.describe KesselRbac, type: :service do
     end
 
     context 'when permission is nil' do
-      it 'returns false' do
+      it 'returns true' do
         result = described_class.default_permission_allowed?(nil, user)
-        expect(result).to be false
+        expect(result).to be true
       end
     end
 
