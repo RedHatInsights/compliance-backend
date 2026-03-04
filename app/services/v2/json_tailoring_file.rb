@@ -31,6 +31,7 @@ module V2
     def build_profile
       {
         'id' => @tailoring.policy.ref_id,
+        'base_profile_id' => @tailoring.policy.ref_id,
         'title' => @tailoring.profile.title,
         'groups' => build_groups,
         'rules' => build_rules,
