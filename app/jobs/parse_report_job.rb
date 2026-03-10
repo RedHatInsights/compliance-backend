@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 # Saves all of the information we can parse from a Xccdf report into db
-class ParseReportJob
-  include Sidekiq::Worker
+class ParseReportJob < ApplicationJob
   include Notifications
 
   # https://github.com/yabeda-rb/yabeda-sidekiq#custom-tags
@@ -10,11 +9,16 @@ class ParseReportJob
     { qe: OpenshiftEnvironment.qe_account?(message['org_id']) }
   end
 
+  # FIXME: compatibility method between Sidekiq and ActiveJob, remove after migration to GoodJob
+  def jid
+    provider_job_id || job_id
+  end
+
   def perform(idx, message)
     return if cancelled?
 
     @msg_value = message
-    Sidekiq.logger.info(
+    Rails.logger.info(
       "Parsing report for account #{@msg_value['org_id']}, " \
       "system #{@msg_value['id']}"
     )
