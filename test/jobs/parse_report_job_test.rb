@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'sidekiq/testing'
-Sidekiq::Testing.fake!
 
-class ParseReportJobTest < ActiveSupport::TestCase
+class ParseReportJobTest < ActiveJob::TestCase
   include Karafka::Testing::Minitest::Helpers
 
   setup do
