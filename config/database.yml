@@ -12,15 +12,12 @@
     end
 
     config = {
-      database:       ENV['POSTGRESQL_DATABASE'],
-      username:       ENV['POSTGRESQL_USER'],
+      database:       ENV.fetch('POSTGRESQL_DATABASE', 'compliance_db'),
+      username:       ENV.fetch('POSTGRESQL_USER', 'compliance_admin'),
       password:       ENV['POSTGRESQL_PASSWORD'],
-      host:           ENV['POSTGRESQL_HOST'],
-      port:           ENV['POSTGRESQL_PORT'],
-      admin_username: ENV['POSTGRESQL_ADMIN_USERNAME'],
-      admin_password: ENV['POSTGRESQL_ADMIN_PASSWORD'],
-      rds_ca:         ENV['POSTGRESQL_RDS_CA'],
-      ssl_mode:       ENV['POSTGRESQL_SSLMODE'],
+      host:           ENV.fetch('POSTGRESQL_HOST', '/var/run/postgresql'),
+      port:           ENV.fetch('POSTGRESQL_PORT', '5432'),
+      ssl_mode:       ENV.fetch('POSTGRESQL_SSLMODE', 'disable'),
       ssl_root_cert:  ssl_root_cert
     }
   end
