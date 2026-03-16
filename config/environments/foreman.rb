@@ -49,27 +49,6 @@ Rails.application.configure do
   # Use in memory cache store in foreman.
   config.cache_store = :memory_store, { size: 64.megabytes }
 
-  # Logging configuration might be coming from env variables that are only available after initialization
-  config.after_initialize do
-    # Set up cloudwatch logging if available
-    # FIXME: change this to `Settings.logging.type == "cloudwatch"` once Clowder supports the configuration
-    #
-    # https://github.com/RedHatInsights/clowder/blob
-    #   /9a5b2bea2009911cebbddd0ed440a8b360014e64/controllers/cloud.redhat.com/providers/logging/appinterface.go#L54
-    if Settings.logging&.credentials&.access_key_id.present?
-      $cloudwatch_client ||= CloudWatchLogger::Client.new(
-        Settings.logging.credentials,
-        Settings.logging.log_group,
-        ENV.fetch('LOGSTREAM').presence || Socket.gethostname, # logstream name falls back to hostname if unset in ENV
-        region: Settings.logging.region
-      )
-      cloudwatch_logger = Insights::Api::Common::LoggerWithAudit.new($cloudwatch_client)
-      cloudwatch_logger.formatter = $cloudwatch_client.formatter(:json)
-      config.logger.broadcast_to(cloudwatch_logger)
-      cloudwatch_logger.level = Logger::WARN # Different logging level for CloudWatch
-    end
-  end
-
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "compliance-backend_#{Rails.env}"

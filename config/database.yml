@@ -17,9 +17,6 @@
       password:       ENV['POSTGRESQL_PASSWORD'],
       host:           ENV.fetch('POSTGRESQL_HOST', '/var/run/postgresql'),
       port:           ENV.fetch('POSTGRESQL_PORT', '5432'),
-      admin_username: ENV['POSTGRESQL_ADMIN_USERNAME'],
-      admin_password: ENV['POSTGRESQL_ADMIN_PASSWORD'],
-      rds_ca:         ENV['POSTGRESQL_RDS_CA'],
       ssl_mode:       ENV.fetch('POSTGRESQL_SSLMODE', 'prefer'),
       ssl_root_cert:  ssl_root_cert
     }
