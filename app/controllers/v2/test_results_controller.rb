@@ -16,7 +16,7 @@ module V2
     kessel_permission_for_action :show, KesselRbac::REPORT_VIEW
 
     def os_versions
-      render json: test_results.os_versions, status: :ok
+      render json: authorize(filtered_base_scope).os_versions, status: :ok
     end
     permission_for_action :os_versions, Rbac::SYSTEM_READ
     permitted_params_for_action :os_versions, { filter: ParamType.string }
