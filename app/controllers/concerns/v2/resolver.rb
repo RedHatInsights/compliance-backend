@@ -7,13 +7,17 @@ module V2
 
     private
 
+    # Parent joins and 1:1 association joins applied. Foundation for both `expand_resource` and `filtered_base_scope`.
+    def base_scope
+      # Join with the route parents
+      scope = join_parents(pundit_scope, permitted_params[:parents])
+      # Join with 1:1 relationships required by the serializer
+      join_associated(scope)
+    end
+
     # Building the query that returns all the required data for serialization
     def expand_resource
-      # Join with the parents assumed from the route
-      scope = join_parents(pundit_scope, permitted_params[:parents])
-      # Join with the additional 1:1 relationships required by the serializer, select only the
-      # dependencies that are really necessary for the rendering.
-      join_aggregated(join_associated(scope)).select(*select_fields)
+      join_aggregated(base_scope).select(*select_fields)
     end
 
     # Reduce through all the associations of the `relation` and join+scope them or return the
