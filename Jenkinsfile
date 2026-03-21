@@ -78,8 +78,8 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true
-            junit skipPublishingChecks: true, testResults: 'artifacts/junit-*.xml'
+            archiveArtifacts artifacts: 'artifacts/**/*', fingerprint: true, allowEmptyArchive: true
+            junit allowEmptyResults: true, skipPublishingChecks: true, testResults: 'artifacts/junit-*.xml'
             cleanWs()
         }
     }
