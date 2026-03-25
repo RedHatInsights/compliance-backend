@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
   create_schema "inventory"
 
   # These are extensions that must be enabled in order to support this database
@@ -20,51 +20,51 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
 
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.string "org_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["org_id"], name: "index_accounts_on_org_id", unique: true
   end
 
   create_table "benchmarks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: nil, null: false
+    t.text "description", null: false
+    t.string "package_name"
     t.string "ref_id", null: false
     t.string "title", null: false
-    t.text "description", null: false
-    t.string "version", null: false
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.string "package_name"
+    t.string "version", null: false
     t.index ["ref_id", "version"], name: "index_benchmarks_on_ref_id_and_version", unique: true
   end
 
   create_table "business_objectives", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "title"
     t.datetime "created_at", precision: nil, null: false
+    t.string "title"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["title"], name: "index_business_objectives_on_title"
   end
 
   create_table "canonical_profiles_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "title"
-    t.string "ref_id"
+    t.datetime "created_at", precision: nil, null: false
     t.string "description"
+    t.string "ref_id"
     t.uuid "security_guide_id", null: false
+    t.string "title"
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "upstream"
     t.jsonb "value_overrides", default: {}
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.index ["ref_id", "security_guide_id"], name: "index_canonical_profiles_v2_on_ref_id_and_security_guide_id", unique: true
     t.index ["title"], name: "index_canonical_profiles_v2_on_title"
     t.index ["upstream"], name: "index_canonical_profiles_v2_on_upstream"
   end
 
   create_table "fixes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "strategy"
-    t.string "disruption"
     t.string "complexity"
+    t.datetime "created_at"
+    t.string "disruption"
+    t.uuid "rule_id", null: false
+    t.string "strategy"
     t.string "system"
     t.text "text"
-    t.uuid "rule_id", null: false
-    t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["rule_id", "system"], name: "index_fixes_on_rule_id_and_system", unique: true
     t.index ["rule_id"], name: "index_fixes_on_rule_id"
@@ -72,11 +72,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "friendly_id_slugs", id: :serial, force: :cascade do |t|
+    t.datetime "created_at", precision: nil
+    t.string "scope"
     t.string "slug", null: false
     t.integer "sluggable_id", null: false
     t.string "sluggable_type", limit: 50
-    t.string "scope"
-    t.datetime "created_at", precision: nil
     t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
@@ -84,25 +84,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
     t.uuid "business_objective_id"
     t.float "compliance_threshold", default: 100.0
-    t.string "name"
-    t.string "description"
-    t.uuid "account_id"
-    t.integer "total_host_count", default: 0, null: false
-    t.integer "test_result_host_count", default: 0, null: false
     t.integer "compliant_host_count", default: 0, null: false
-    t.integer "unsupported_host_count", default: 0, null: false
+    t.string "description"
+    t.string "name"
     t.uuid "profile_id"
+    t.integer "test_result_host_count", default: 0, null: false
+    t.integer "total_host_count", default: 0, null: false
+    t.integer "unsupported_host_count", default: 0, null: false
     t.index ["account_id"], name: "index_policies_on_account_id"
     t.index ["business_objective_id"], name: "index_policies_on_business_objective_id"
     t.index ["profile_id"], name: "index_policies_on_profile_id"
   end
 
   create_table "policy_hosts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "policy_id", null: false
-    t.uuid "host_id", null: false
     t.datetime "created_at", precision: nil
+    t.uuid "host_id", null: false
+    t.uuid "policy_id", null: false
     t.datetime "updated_at", precision: nil
     t.index ["host_id"], name: "index_policy_hosts_on_host_id"
     t.index ["policy_id", "host_id"], name: "index_policy_hosts_on_policy_id_and_host_id", unique: true
@@ -110,17 +110,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "profile_os_minor_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "profile_id"
-    t.integer "os_minor_version"
     t.datetime "created_at", null: false
+    t.integer "os_minor_version"
+    t.uuid "profile_id"
     t.datetime "updated_at", null: false
     t.index ["profile_id"], name: "index_profile_os_minor_versions_on_profile_id"
   end
 
   create_table "profile_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: nil
     t.uuid "profile_id", null: false
     t.uuid "rule_id", null: false
-    t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.index ["profile_id", "rule_id"], name: "index_profile_rules_on_profile_id_and_rule_id", unique: true
     t.index ["profile_id"], name: "index_profile_rules_on_profile_id"
@@ -128,9 +128,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "profile_rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: nil, null: false
     t.uuid "profile_id", null: false
     t.uuid "rule_id", null: false
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["profile_id", "rule_id"], name: "index_profile_rules_v2_on_profile_id_and_rule_id", unique: true
     t.index ["profile_id"], name: "index_profile_rules_v2_on_profile_id"
@@ -138,18 +138,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
-    t.string "ref_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "description"
     t.uuid "account_id"
     t.uuid "benchmark_id", null: false
-    t.uuid "parent_profile_id"
+    t.datetime "created_at", precision: nil, null: false
+    t.string "description"
     t.boolean "external", default: false, null: false
-    t.uuid "policy_id"
+    t.string "name"
     t.string "os_minor_version", default: "", null: false
+    t.uuid "parent_profile_id"
+    t.uuid "policy_id"
+    t.string "ref_id"
     t.decimal "score"
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "upstream"
     t.jsonb "value_overrides", default: {}
     t.index ["account_id"], name: "index_profiles_on_account_id"
@@ -164,31 +164,31 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "revisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: nil, null: false
     t.string "name", null: false
     t.string "revision", null: false
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["name"], name: "index_revisions_on_name", unique: true
   end
 
   create_table "rule_group_relationships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "left_type"
     t.uuid "left_id"
-    t.string "right_type"
-    t.uuid "right_id"
+    t.string "left_type"
     t.string "relationship"
+    t.uuid "right_id"
+    t.string "right_type"
     t.index ["left_id", "right_id", "right_type", "left_type", "relationship"], name: "index_rule_group_relationships_unique", unique: true
     t.index ["left_type", "left_id"], name: "index_rule_group_relationships_on_left"
     t.index ["right_type", "right_id"], name: "index_rule_group_relationships_on_right"
   end
 
   create_table "rule_group_relationships_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "left_type"
-    t.uuid "left_id", null: false
-    t.string "right_type"
-    t.uuid "right_id", null: false
-    t.string "relationship", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.uuid "left_id", null: false
+    t.string "left_type"
+    t.string "relationship", null: false
+    t.uuid "right_id", null: false
+    t.string "right_type"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["left_id", "right_id", "right_type", "left_type", "relationship"], name: "unique_index_rule_group_relationships_v2", unique: true
     t.index ["left_type", "left_id"], name: "index_rule_group_relationships_v2_on_left"
@@ -196,14 +196,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "rule_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "ref_id"
-    t.string "title"
-    t.text "description"
-    t.text "rationale"
     t.string "ancestry"
     t.uuid "benchmark_id", null: false
-    t.uuid "rule_id"
+    t.text "description"
     t.integer "precedence"
+    t.text "rationale"
+    t.string "ref_id"
+    t.uuid "rule_id"
+    t.string "title"
     t.index ["ancestry"], name: "index_rule_groups_on_ancestry"
     t.index ["benchmark_id"], name: "index_rule_groups_on_benchmark_id"
     t.index ["precedence"], name: "index_rule_groups_on_precedence"
@@ -212,15 +212,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "rule_groups_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "ref_id"
-    t.string "title"
-    t.text "description"
-    t.text "rationale"
     t.string "ancestry"
-    t.uuid "security_guide_id", null: false
-    t.uuid "rule_id"
-    t.integer "precedence"
     t.datetime "created_at", precision: nil, null: false
+    t.text "description"
+    t.integer "precedence"
+    t.text "rationale"
+    t.string "ref_id"
+    t.uuid "rule_id"
+    t.uuid "security_guide_id", null: false
+    t.string "title"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["ancestry"], name: "index_rule_groups_v2_on_ancestry"
     t.index ["precedence"], name: "index_rule_groups_v2_on_precedence"
@@ -230,21 +230,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "rule_references_containers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.uuid "rule_id", null: false
     t.jsonb "rule_references"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["rule_id"], name: "index_rule_references_containers_on_rule_id", unique: true
     t.index ["rule_references"], name: "index_rule_references_containers_on_rule_references", opclass: :jsonb_path_ops, using: :gin
   end
 
   create_table "rule_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "host_id"
-    t.uuid "rule_id"
-    t.string "result"
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.uuid "host_id"
+    t.string "result"
+    t.uuid "rule_id"
     t.uuid "test_result_id"
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["host_id", "rule_id", "test_result_id"], name: "index_rule_results_on_host_id_and_rule_id_and_test_result_id", unique: true
     t.index ["host_id"], name: "index_rule_results_on_host_id"
     t.index ["rule_id"], name: "index_rule_results_on_rule_id"
@@ -252,22 +252,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "benchmark_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.text "description"
+    t.jsonb "identifier"
+    t.integer "precedence"
+    t.text "rationale"
     t.string "ref_id"
+    t.boolean "remediation_available", default: false, null: false
+    t.uuid "rule_group_id"
+    t.string "severity"
+    t.string "slug"
     t.boolean "supported"
     t.string "title"
-    t.string "severity"
-    t.text "description"
-    t.text "rationale"
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.string "slug"
-    t.boolean "remediation_available", default: false, null: false
-    t.uuid "benchmark_id", null: false
     t.boolean "upstream", default: true, null: false
-    t.integer "precedence"
-    t.uuid "rule_group_id"
     t.uuid "value_checks", default: [], array: true
-    t.jsonb "identifier"
     t.index "((identifier -> 'label'::text))", name: "index_rules_on_identifier_labels", using: :gin
     t.index ["precedence"], name: "index_rules_on_precedence"
     t.index ["ref_id", "benchmark_id"], name: "index_rules_on_ref_id_and_benchmark_id", unique: true
@@ -277,21 +277,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "ref_id"
-    t.string "title"
-    t.string "severity"
-    t.text "description"
-    t.text "rationale"
-    t.boolean "remediation_available", default: false, null: false
-    t.uuid "security_guide_id", null: false
-    t.boolean "upstream", default: false, null: false
-    t.integer "precedence"
-    t.uuid "rule_group_id"
-    t.uuid "value_checks", default: [], array: true
-    t.jsonb "identifier"
-    t.jsonb "references"
     t.datetime "created_at", precision: nil, null: false
+    t.text "description"
+    t.jsonb "identifier"
+    t.integer "precedence"
+    t.text "rationale"
+    t.string "ref_id"
+    t.jsonb "references"
+    t.boolean "remediation_available", default: false, null: false
+    t.uuid "rule_group_id"
+    t.uuid "security_guide_id", null: false
+    t.string "severity"
+    t.string "title"
     t.datetime "updated_at", precision: nil, null: false
+    t.boolean "upstream", default: false, null: false
+    t.uuid "value_checks", default: [], array: true
     t.index "((identifier -> 'label'::text))", name: "index_rules_v2_on_identifier_labels", using: :gin
     t.index ["precedence"], name: "index_rules_v2_on_precedence"
     t.index ["ref_id", "security_guide_id"], name: "index_rules_v2_on_ref_id_and_security_guide_id", unique: true
@@ -301,27 +301,27 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "security_guides_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "ref_id", null: false
-    t.integer "os_major_version", null: false
-    t.string "title", null: false
-    t.text "description", null: false
-    t.string "version", null: false
-    t.string "package_name"
     t.datetime "created_at", precision: nil, null: false
+    t.text "description", null: false
+    t.integer "os_major_version", null: false
+    t.string "package_name"
+    t.string "ref_id", null: false
+    t.string "title", null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "version", null: false
     t.index ["ref_id", "version"], name: "index_security_guides_v2_on_ref_id_and_version", unique: true
   end
 
   create_table "test_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "start_time", precision: nil
-    t.datetime "end_time", precision: nil
-    t.decimal "score"
-    t.uuid "profile_id"
-    t.uuid "host_id"
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.boolean "supported", default: true
+    t.datetime "end_time", precision: nil
     t.integer "failed_rule_count", default: 0, null: false
+    t.uuid "host_id"
+    t.uuid "profile_id"
+    t.decimal "score"
+    t.datetime "start_time", precision: nil
+    t.boolean "supported", default: true
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["host_id", "profile_id", "end_time"], name: "index_test_results_on_host_id_and_profile_id_and_end_time", unique: true
     t.index ["host_id"], name: "index_test_results_on_host_id"
     t.index ["profile_id"], name: "index_test_results_on_profile_id"
@@ -329,47 +329,47 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.boolean "active"
+    t.datetime "created_at", precision: nil, null: false
     t.string "email"
     t.string "first_name"
+    t.boolean "internal"
+    t.string "lang"
     t.string "last_name"
+    t.string "locale"
+    t.boolean "org_admin"
     t.string "redhat_id"
     t.string "redhat_org_id"
-    t.string "lang"
-    t.string "locale"
-    t.string "username"
-    t.boolean "internal"
-    t.boolean "active"
-    t.boolean "org_admin"
-    t.uuid "account_id"
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "username"
     t.index ["account_id"], name: "index_users_on_account_id"
   end
 
   create_table "value_definitions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "benchmark_id", null: false
+    t.string "default_value"
+    t.text "description"
+    t.decimal "lower_bound"
     t.string "ref_id"
     t.string "title"
-    t.text "description"
-    t.string "value_type"
-    t.string "default_value"
-    t.decimal "lower_bound"
     t.decimal "upper_bound"
-    t.uuid "benchmark_id", null: false
+    t.string "value_type"
     t.index ["benchmark_id"], name: "index_value_definitions_on_benchmark_id"
     t.index ["ref_id", "benchmark_id"], name: "index_value_definitions_on_ref_id_and_benchmark_id", unique: true
   end
 
   create_table "value_definitions_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "ref_id"
-    t.string "title"
-    t.text "description"
-    t.string "value_type"
-    t.string "default_value"
-    t.decimal "lower_bound"
-    t.decimal "upper_bound"
-    t.uuid "security_guide_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.string "default_value"
+    t.text "description"
+    t.decimal "lower_bound"
+    t.string "ref_id"
+    t.uuid "security_guide_id", null: false
+    t.string "title"
     t.datetime "updated_at", precision: nil, null: false
+    t.decimal "upper_bound"
+    t.string "value_type"
     t.index ["ref_id", "security_guide_id"], name: "index_value_definitions_v2_on_ref_id_and_security_guide_id", unique: true
     t.index ["security_guide_id"], name: "index_value_definitions_v2_on_security_guide_id"
   end
@@ -384,6 +384,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
   add_foreign_key "rule_groups_v2", "security_guides_v2", column: "security_guide_id"
   add_foreign_key "rules_v2", "rule_groups_v2", column: "rule_group_id"
   add_foreign_key "value_definitions_v2", "security_guides_v2", column: "security_guide_id"
+
   create_view "canonical_profiles", sql_definition: <<-SQL
       SELECT profiles.id,
       profiles.name AS title,
@@ -670,6 +671,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       rule_group_relationships_v2.updated_at
      FROM rule_group_relationships_v2;
   SQL
+
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_insert()
        RETURNS trigger
@@ -705,6 +707,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v2_policies_delete, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_delete()
        RETURNS trigger
@@ -719,6 +722,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v2_policies_update, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_policies_update()
        RETURNS trigger
@@ -763,6 +767,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v2_rules_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_rules_insert()
        RETURNS trigger
@@ -813,6 +818,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v2_rules_update, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_rules_update()
        RETURNS trigger
@@ -843,6 +849,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v2_rules_delete, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_rules_delete()
        RETURNS trigger
@@ -856,6 +863,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v2_test_results_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_test_results_insert()
        RETURNS trigger
@@ -890,6 +898,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v2_test_results_delete, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_test_results_delete()
        RETURNS trigger
@@ -902,6 +911,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :tailorings_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.tailorings_insert()
        RETURNS trigger
@@ -950,6 +960,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_profiles_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_profiles_insert()
        RETURNS trigger
@@ -1016,6 +1027,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_profiles_update, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_profiles_update()
        RETURNS trigger
@@ -1054,6 +1066,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_profiles_delete, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_profiles_delete()
        RETURNS trigger
@@ -1068,6 +1081,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_benchmarks_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_benchmarks_insert()
        RETURNS trigger
@@ -1100,6 +1114,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_benchmarks_update, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_benchmarks_update()
        RETURNS trigger
@@ -1120,6 +1135,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_rules_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_rules_insert()
        RETURNS trigger
@@ -1164,6 +1180,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_rules_update, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_rules_update()
        RETURNS trigger
@@ -1190,6 +1207,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_value_definitions_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_value_definitions_insert()
        RETURNS trigger
@@ -1226,6 +1244,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_rule_groups_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_rule_groups_insert()
        RETURNS trigger
@@ -1262,6 +1281,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_rule_groups_update, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_rule_groups_update()
        RETURNS trigger
@@ -1284,6 +1304,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_rule_group_relationships_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_rule_group_relationships_insert()
        RETURNS trigger
@@ -1314,6 +1335,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_rule_group_relationships_update, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_rule_group_relationships_update()
        RETURNS trigger
@@ -1333,6 +1355,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_profile_rules_delete, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_profile_rules_delete()
        RETURNS trigger
@@ -1357,6 +1380,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_profile_rules_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_profile_rules_insert()
        RETURNS trigger
@@ -1403,6 +1427,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       END
       $function$
   SQL
+
   create_function :v1_profile_rules_update, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v1_profile_rules_update()
        RETURNS trigger
@@ -1436,80 +1461,103 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_11_120320) do
       $function$
   SQL
 
-
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
-  create_trigger :v2_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
-  SQL
+
   create_trigger :v2_policies_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
   SQL
+
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
+  SQL
+
   create_trigger :v2_policies_update, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
   SQL
-  create_trigger :v2_rules_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_rules_insert INSTEAD OF INSERT ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_insert()
-  SQL
+
   create_trigger :v2_rules_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_rules_delete INSTEAD OF DELETE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_delete()
   SQL
+
+  create_trigger :v2_rules_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_rules_insert INSTEAD OF INSERT ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_insert()
+  SQL
+
   create_trigger :v2_rules_update, sql_definition: <<-SQL
       CREATE TRIGGER v2_rules_update INSTEAD OF UPDATE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_update()
   SQL
+
   create_trigger :historical_test_results_delete, sql_definition: <<-SQL
       CREATE TRIGGER historical_test_results_delete INSTEAD OF DELETE ON public.historical_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
   SQL
+
   create_trigger :v2_test_results_insert, sql_definition: <<-SQL
       CREATE TRIGGER v2_test_results_insert INSTEAD OF INSERT ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_insert()
   SQL
+
   create_trigger :v2_test_results_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
   SQL
-  create_trigger :v1_profiles_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_profiles_insert INSTEAD OF INSERT ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_insert()
-  SQL
-  create_trigger :v1_profiles_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v1_profiles_delete INSTEAD OF DELETE ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_delete()
-  SQL
+
   create_trigger :v1_profiles_update, sql_definition: <<-SQL
       CREATE TRIGGER v1_profiles_update INSTEAD OF UPDATE ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_update()
   SQL
-  create_trigger :v1_benchmarks_update, sql_definition: <<-SQL
-      CREATE TRIGGER v1_benchmarks_update INSTEAD OF UPDATE ON public.v1_benchmarks FOR EACH ROW EXECUTE FUNCTION v1_benchmarks_update()
+
+  create_trigger :v1_profiles_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_profiles_insert INSTEAD OF INSERT ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_insert()
   SQL
+
+  create_trigger :v1_profiles_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v1_profiles_delete INSTEAD OF DELETE ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_delete()
+  SQL
+
   create_trigger :v1_benchmarks_insert, sql_definition: <<-SQL
       CREATE TRIGGER v1_benchmarks_insert INSTEAD OF INSERT ON public.v1_benchmarks FOR EACH ROW EXECUTE FUNCTION v1_benchmarks_insert()
   SQL
+
+  create_trigger :v1_benchmarks_update, sql_definition: <<-SQL
+      CREATE TRIGGER v1_benchmarks_update INSTEAD OF UPDATE ON public.v1_benchmarks FOR EACH ROW EXECUTE FUNCTION v1_benchmarks_update()
+  SQL
+
   create_trigger :v1_rules_update, sql_definition: <<-SQL
       CREATE TRIGGER v1_rules_update INSTEAD OF UPDATE ON public.v1_rules FOR EACH ROW EXECUTE FUNCTION v1_rules_update()
   SQL
+
   create_trigger :v1_rules_insert, sql_definition: <<-SQL
       CREATE TRIGGER v1_rules_insert INSTEAD OF INSERT ON public.v1_rules FOR EACH ROW EXECUTE FUNCTION v1_rules_insert()
   SQL
+
   create_trigger :v1_value_definitions_insert, sql_definition: <<-SQL
       CREATE TRIGGER v1_value_definitions_insert INSTEAD OF INSERT ON public.v1_value_definitions FOR EACH ROW EXECUTE FUNCTION v1_value_definitions_insert()
   SQL
-  create_trigger :v1_rule_groups_update, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rule_groups_update INSTEAD OF UPDATE ON public.v1_rule_groups FOR EACH ROW EXECUTE FUNCTION v1_rule_groups_update()
-  SQL
+
   create_trigger :v1_rule_groups_insert, sql_definition: <<-SQL
       CREATE TRIGGER v1_rule_groups_insert INSTEAD OF INSERT ON public.v1_rule_groups FOR EACH ROW EXECUTE FUNCTION v1_rule_groups_insert()
   SQL
-  create_trigger :v1_rule_group_relationships_update, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rule_group_relationships_update INSTEAD OF UPDATE ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_update()
+
+  create_trigger :v1_rule_groups_update, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rule_groups_update INSTEAD OF UPDATE ON public.v1_rule_groups FOR EACH ROW EXECUTE FUNCTION v1_rule_groups_update()
   SQL
-  create_trigger :v1_rule_group_relationships_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rule_group_relationships_insert INSTEAD OF INSERT ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_insert()
-  SQL
+
   create_trigger :v1_profile_rules_delete, sql_definition: <<-SQL
       CREATE TRIGGER v1_profile_rules_delete INSTEAD OF DELETE ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_delete()
   SQL
+
   create_trigger :v1_profile_rules_insert, sql_definition: <<-SQL
       CREATE TRIGGER v1_profile_rules_insert INSTEAD OF INSERT ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_insert()
   SQL
+
   create_trigger :v1_profile_rules_update, sql_definition: <<-SQL
       CREATE TRIGGER v1_profile_rules_update INSTEAD OF UPDATE ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_update()
+  SQL
+
+  create_trigger :v1_rule_group_relationships_update, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rule_group_relationships_update INSTEAD OF UPDATE ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_update()
+  SQL
+
+  create_trigger :v1_rule_group_relationships_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rule_group_relationships_insert INSTEAD OF INSERT ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_insert()
   SQL
 end
