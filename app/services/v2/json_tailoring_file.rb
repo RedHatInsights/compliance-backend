@@ -40,14 +40,14 @@ module V2
     end
 
     def build_groups
-      @rule_group_ref_ids.each_with_object({}) do |ref_id, obj|
-        obj[ref_id] = { 'evaluate' => true }
+      @rule_group_ref_ids.to_h do |ref_id|
+        [ref_id, { 'evaluate' => true }]
       end
     end
 
     def build_rules
-      @rules.each_with_object({}) do |rule, obj|
-        obj[rule.ref_id] = { 'evaluate' => rule.selected }
+      @rules.to_h do |rule|
+        [rule.ref_id, { 'evaluate' => rule.selected }]
       end
     end
 

@@ -48,8 +48,8 @@ FactoryBot.define do
 
       after(:create) do |profile, evaluator|
         create_list(:value_definition, evaluator.value_count, benchmark: profile.benchmark)
-        values = profile.benchmark.value_definitions.each_with_object({}) do |value, object|
-          object[value.id] = Faker::Alphanumeric.alpha(number: 6)
+        values = profile.benchmark.value_definitions.to_h do |value|
+          [value.id, Faker::Alphanumeric.alpha(number: 6)]
         end
         profile.update!(values: values)
       end

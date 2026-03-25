@@ -9,7 +9,7 @@ module Notifications
 
     def compliance_notification_wrapper
       # Store the notification preconditions before saving the report
-      preconditions = build_notify_preconditions
+      preconditions = policy_previously_compliant? || policy_untested?
 
       yield
 
@@ -21,8 +21,12 @@ module Notifications
     end
 
     # Notifications should be only allowed if there are no test results or the policy was previously compliant
-    def build_notify_preconditions
-      parser.policy&.compliant?(parser.host) || parser.policy&.test_result_hosts&.where(id: parser.host.id)&.empty?
+    def policy_previously_compliant?
+      parser.policy&.compliant?(parser.host)
+    end
+
+    def policy_untested?
+      parser.policy&.test_result_hosts&.where(id: parser.host.id)&.empty?
     end
 
     def notify_non_compliant!

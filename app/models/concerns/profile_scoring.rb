@@ -5,7 +5,7 @@ module ProfileScoring
   include ProfilePolicyScoring
 
   def total_host_count
-    policy&.total_host_count.to_i || ::Host.where(id: hosts).count
+    policy&.total_host_count || ::Host.where(id: hosts).count
   end
 
   def test_result_host_count
@@ -21,9 +21,9 @@ module ProfileScoring
   end
 
   def compliance_score(host)
-    return 1 if results(host).count.zero?
+    return 1 if results(host).none?
 
-    (results(host).count { |result| result == true }) / results(host).count
+    results(host).count { |result| result == true } / results(host).count
   end
 
   def compliant?(host)
@@ -35,7 +35,7 @@ module ProfileScoring
   def results(host)
     ::Rails.cache.fetch("#{id}/#{host.id}/results") do
       rule_results = ::TestResult.where(profile: self, host: host)
-                                 .order('created_at DESC')&.first&.rule_results
+                                 .order(created_at: :desc)&.first&.rule_results
       return [] if rule_results.blank?
 
       rule_results.map do |rule_result|

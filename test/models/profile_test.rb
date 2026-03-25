@@ -770,7 +770,7 @@ class ProfileTest < ActiveSupport::TestCase
         cloned_profile = dupe.clone_to(
           account: @account,
           policy: Policy.with_hosts(host)
-                        .find_by(account: @account)
+                  .find_by(account: @account)
         )
 
         assert_equal cloned_profile.reload.policy_id, @policy.id
@@ -786,7 +786,7 @@ class ProfileTest < ActiveSupport::TestCase
         cloned_profile = @profile.clone_to(
           account: @account,
           policy: Policy.with_hosts(host)
-                        .find_by(account: @account)
+                  .find_by(account: @account)
         )
 
         assert_equal @profile, cloned_profile.parent_profile
@@ -799,7 +799,7 @@ class ProfileTest < ActiveSupport::TestCase
         cloned_profile = @profile.clone_to(
           account: @account,
           policy: Policy.with_hosts(host)
-                        .find_by(account: @account)
+                  .find_by(account: @account)
         )
         assert_not host.assigned_profiles.include?(cloned_profile)
         assert_nil cloned_profile.policy
@@ -823,7 +823,7 @@ class ProfileTest < ActiveSupport::TestCase
         cloned_profile = @profile.clone_to(
           account: @account,
           policy: Policy.with_hosts(host)
-                        .find_by(account: @account)
+                  .find_by(account: @account)
         )
 
         assert host.assigned_profiles.include?(cloned_profile)

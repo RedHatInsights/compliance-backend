@@ -118,7 +118,7 @@ module V2
       cached || try(:system).try(:system_profile)&.dig('operating_system', 'minor')
     end
 
-    def compliant
+    def compliant # rubocop:disable Naming/PredicateMethod
       threshold = attributes['report__compliance_threshold'] || try(:report)&.compliance_threshold
       !score.nil? && score >= threshold.to_f
     end

@@ -39,7 +39,7 @@ class Rbac
 
     def load_inventory_groups(permissions)
       permissions.each_with_object([]) do |permission, ids|
-        next unless verify(permission.permission, INVENTORY_HOSTS_READ)
+        next unless permission_matches?(permission.permission, INVENTORY_HOSTS_READ)
         # Empty array on 'resource_definitions' symbolizes a global access to the permitted resource.
         # In such case, the method returns Rbac::ANY and skips parsing of attribute_filter.
         return ANY if permission.resource_definitions == []
@@ -52,7 +52,7 @@ class Rbac
       end
     end
 
-    def verify(permitted, requested)
+    def permission_matches?(permitted, requested)
       permitted_access = structurize(permitted)
       requested_access = structurize(requested)
 

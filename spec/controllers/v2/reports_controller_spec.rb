@@ -34,8 +34,8 @@ describe V2::ReportsController do
 
   context '/reports' do
     let(:rhels) do
-      [7, 8, 9].each_with_object({}) do |i, obj|
-        obj["rhel_#{i}".to_sym] = pw(i)
+      [7, 8, 9].to_h do |i|
+        ["rhel_#{i}".to_sym, pw(i)]
       end
     end
 

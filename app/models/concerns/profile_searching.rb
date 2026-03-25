@@ -17,12 +17,12 @@ module ProfileSearching
                   rename: :test_result_system_ids
     scoped_search relation: :test_result_hosts, on: :display_name,
                   rename: :test_result_system_names
-    scoped_search on: :has_test_results, ext_method: 'test_results?',
+    scoped_search on: :has_test_results, ext_method: 'filter_by_test_results',
                   only_explicit: true, operators: ['=']
     scoped_search on: :has_policy_test_results,
-                  ext_method: 'policy_test_results?',
+                  ext_method: 'filter_by_policy_test_results',
                   only_explicit: true, operators: ['=']
-    scoped_search on: :canonical, ext_method: 'canonical?', only_explicit: true,
+    scoped_search on: :canonical, ext_method: 'filter_by_canonical', only_explicit: true,
                   operators: ['=']
     scoped_search on: :has_policy, ext_method: 'policy_search',
                   only_explicit: true, operators: ['=']
@@ -108,20 +108,20 @@ module ProfileSearching
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 
-    def canonical?(_filter, _operator, value)
+    def filter_by_canonical(_filter, _operator, value)
       profiles = ::Profile.canonical(
         ::ActiveModel::Type::Boolean.new.cast(value)
       )
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 
-    def test_results?(_filter, _operator, value)
+    def filter_by_test_results(_filter, _operator, value)
       has_test_results = ::ActiveModel::Type::Boolean.new.cast(value)
       profiles = ::Profile.has_test_results(has_test_results)
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
     end
 
-    def policy_test_results?(_filter, _operator, value)
+    def filter_by_policy_test_results(_filter, _operator, value)
       has_test_results = ::ActiveModel::Type::Boolean.new.cast(value)
       profiles = ::Profile.has_policy_test_results(has_test_results)
       { conditions: profiles.arel.where_sql.gsub(/^where /i, '') }
