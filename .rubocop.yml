@@ -7,7 +7,7 @@ inherit_from:
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3.3
-  TargetRailsVersion: 8.0
+  TargetRailsVersion: 8.1
   Exclude:
     - 'db/**/*'
     - 'bin/**/*'
@@ -76,6 +76,11 @@ Lint/MissingSuper:
 Lint/EmptyFile:
   Enabled: false
 
+Naming/PredicateMethod:
+  AllowedMethods:
+    - unauthorized
+    - unauthenticated
+
 Naming/VariableNumber:
   Enabled: false
 
@@ -125,6 +130,14 @@ Style/RedundantAssignment:
   Enabled: false
 
 Style/RedundantRegexpEscape:
+  Enabled: false
+
+Style/OneClassPerFile:
+  Exclude:
+    - 'test/**/*'
+    - 'spec/**/*'
+
+Style/RedundantStructKeywordInit:
   Enabled: false
 
 Rails/IndexWith:

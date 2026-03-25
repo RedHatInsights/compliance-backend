@@ -83,6 +83,7 @@ module V2
         node.relation = relation if @copy
       end
 
+      # rubocop:disable Naming/MethodName
       alias visit_Arel_Nodes_Equality binary
       alias visit_Arel_Nodes_InfixOperation binary
       alias visit_Arel_Nodes_NotEqual binary
@@ -98,6 +99,7 @@ module V2
       alias visit_Arel_Nodes_TableAlias nop
       alias visit_Arel_Nodes_SqlLiteral nop
       alias visit_Arel_Table nop
+      # rubocop:enable Naming/MethodName
     end
   end
 end

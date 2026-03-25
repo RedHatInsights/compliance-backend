@@ -368,8 +368,8 @@ describe V2::TailoringsController do
       end
 
       let(:values) do
-        tailoring_file.xpath('//Profile/set-value').each_with_object({}) do |value, obj|
-          obj[value.attributes['idref'].value] = value.children.text
+        tailoring_file.xpath('//Profile/set-value').to_h do |value|
+          [value.attributes['idref'].value, value.children.text]
         end
       end
 

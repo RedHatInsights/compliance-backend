@@ -149,7 +149,7 @@ module V2
       attributes['profile__title'] || try(:profile)&.title
     end
 
-    def all_systems_exposed
+    def all_systems_exposed # rubocop:disable Naming/PredicateMethod
       total_system_count == try(:aggregate_assigned_system_count)
     end
 

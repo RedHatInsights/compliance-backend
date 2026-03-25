@@ -106,7 +106,7 @@ module V2
     searchable_by :os_major_version, %i[eq neq in notin], except_parents: %i[policies reports] do |_key, op, val|
       {
         conditions: unscoped.os_major_versions(val.split(',').map(&:to_i), %w[IN =].include?(op))
-                            .arel.where_sql.sub(/^where /i, '')
+                    .arel.where_sql.sub(/^where /i, '')
       }
     end
 

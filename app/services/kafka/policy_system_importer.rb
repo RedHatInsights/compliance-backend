@@ -29,11 +29,11 @@ module Kafka
     private
 
     def sources_exist?
-      validate_resource(V2::System, @system_id, 'System', raise_on_missing: true) &&
-        validate_resource(V2::Policy, @policy_id, 'Policy')
+      valid_resource_exists?(V2::System, @system_id, 'System', raise_on_missing: true) &&
+        valid_resource_exists?(V2::Policy, @policy_id, 'Policy')
     end
 
-    def validate_resource(model_class, id, resource_name, raise_on_missing: false)
+    def valid_resource_exists?(model_class, id, resource_name, raise_on_missing: false)
       return true if model_class.exists?(id: id)
 
       audit_fail("#{resource_name} not found with ID #{id}")
