@@ -57,7 +57,12 @@ pipeline {
                         AVAILABLE_CLUSTERS=('ephemeral' 'crcd')
                         curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                         source ./.cicd_bootstrap.sh
-                        source "${CICD_ROOT}/deploy_ephemeral_env.sh"
+                        git clone https://github.com/romanblanco/insights-service-deployer.git
+                        cd insights-service-deployer
+                        git checkout RHINENG-23964-deploy-kessel-to-ephemeral
+                        EPHEMERAL_TOKEN=$OC_LOGIN_TOKEN_DEV EPHEMERAL_SERVER=$OC_LOGIN_SERVER_DEV ./deploy.sh compliance
+                        cd ..
+                        export NAMESPACE=$(oc project -q)
                         source "${CICD_ROOT}/cji_smoke_test.sh"
 
                         # Update IQE plugin config to run floorist plugin tests.
