@@ -32,7 +32,7 @@ RUN (microdnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgre
     microdnf install --nodocs -y $deps $devDeps $extras                                           && \
     chmod +t /tmp                                                                                 && \
     gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin                        && \
-    gem install bundler                                                                           && \
+    gem install --silent bundler                                                                  && \
     ( [[ $prod != "true" ]] || bundle config set --local without 'development test' )             && \
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )                      && \
     ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )                       && \
