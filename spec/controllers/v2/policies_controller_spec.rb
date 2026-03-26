@@ -26,8 +26,8 @@ describe V2::PoliciesController do
 
   context '/policies' do
     let(:rhels) do
-      [7, 8, 9].each_with_object({}) do |i, obj|
-        obj["rhel_#{i}".to_sym] = pw(i)
+      [7, 8, 9].to_h do |i|
+        ["rhel_#{i}".to_sym, pw(i)]
       end
     end
 
@@ -189,7 +189,7 @@ describe V2::PoliciesController do
       let(:description) { 'Policy Description' }
       let(:business_objective) { 'Business Objective' }
 
-      (1..described_class::UPDATE_ATTRIBUTES.length + 1).each do |elements|
+      (1..(described_class::UPDATE_ATTRIBUTES.length + 1)).each do |elements|
         described_class::UPDATE_ATTRIBUTES.keys.combination(elements).each do |arr|
           context "using the #{arr.join(', ')} parameters" do
             it 'updates the record' do

@@ -27,7 +27,7 @@ module HostSearching
     scoped_search on: :failed_rules_with_severity,
                   ext_method: 'filter_by_failed_rules_severity',
                   only_explicit: true
-    scoped_search on: :has_test_results, ext_method: 'test_results?',
+    scoped_search on: :has_test_results, ext_method: 'filter_by_test_results',
                   only_explicit: true, operators: ['=']
     scoped_search relation: :test_results, on: :profile_id
     scoped_search on: :policy_id, ext_method: 'filter_by_policy',
@@ -200,10 +200,10 @@ module HostSearching
       hosts = ::TestResult.where(profile: profiles)
                           .latest.select('test_results.host_id')
 
-      { conditions: "hosts.id #{value == 'false' ? 'NOT' : ''} IN(#{hosts.to_sql})" }
+      { conditions: "hosts.id #{'NOT' if value == 'false'} IN(#{hosts.to_sql})" }
     end
 
-    def test_results?(_filter, _operator, value)
+    def filter_by_test_results(_filter, _operator, value)
       hosts = ::Host.with_test_results(
         ::ActiveModel::Type::Boolean.new.cast(value)
       )

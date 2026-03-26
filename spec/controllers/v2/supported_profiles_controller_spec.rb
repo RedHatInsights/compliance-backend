@@ -66,7 +66,7 @@ describe V2::SupportedProfilesController do
         version: '1.0.0',
         profile_refs: %w[
           c2s hipaa standard cui ospp cis_server_l1 pci-dss stig stig-gui e8 cjis ncp ism_o server rhelh-vpp
-        ].each_with_object({}) { |item, obj| obj[item] = %w[0] }
+        ].to_h { |item| [item, %w[0]] }
       ).profiles
     end
 

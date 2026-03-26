@@ -6,7 +6,8 @@ require 'net/http'
 # Service used to download reports or anything else. It includes
 # protection against the infamous open('| ls')
 class SafeDownloader
-  DownloadError = Class.new(StandardError)
+  class DownloadError < StandardError
+  end
   # Exception class to handle empty reports
   class EmptyFileError < StandardError
     def initialize(message = 'file is empty')

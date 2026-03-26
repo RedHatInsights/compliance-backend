@@ -34,7 +34,7 @@ module BenchmarkSearching
       SupportedSsg.by_os_major.inject(none) do |union, (os_major_version, ssgs)|
         ssg_versions = ssgs.map(&:version)
         union.or(where(id: order_by_version.os_major_version(os_major_version)
-                                           .where(version: ssg_versions)
+                           .where(version: ssg_versions)
                                            .limit(1)))
       end
     }
@@ -94,7 +94,7 @@ module BenchmarkSearching
           major_ssgs[minor_version]&.version
         end.compact.uniq
 
-        next if ssg_versions.count.zero?
+        next if ssg_versions.none?
 
         ['v1_benchmarks.ref_id LIKE ? AND v1_benchmarks.version IN (?)',
          os_major_version_like_condition(major),
@@ -112,7 +112,7 @@ module BenchmarkSearching
         parameters.append(*clause[1..-1])
       end
 
-      conditions << '1=0' if conditions.count.zero?
+      conditions << '1=0' if conditions.none?
       { conditions: "(#{conditions.join(') OR (')})",
         parameter: parameters }
     end

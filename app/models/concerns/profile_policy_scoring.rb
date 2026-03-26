@@ -18,7 +18,7 @@ module ProfilePolicyScoring
       total_host_count: hosts.count,
       test_result_host_count: latest_supported_policy_test_result_hosts.count,
       compliant_host_count: latest_supported_policy_test_result_hosts
-        .count { |host| compliant?(host) },
+                            .count { |host| compliant?(host) },
       unsupported_host_count: latest_unsupported_policy_test_result_hosts.count
     )
     # rubocop:enable Rails/SkipsModelValidations

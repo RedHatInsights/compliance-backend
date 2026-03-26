@@ -17,7 +17,6 @@ if Rails.env.test?
   require 'rails/test_help'
 
   require 'minitest/reporters'
-  require 'minitest/mock'
   require 'mocha/minitest'
   require 'karafka/testing/minitest/helpers'
 

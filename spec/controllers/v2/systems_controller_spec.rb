@@ -35,13 +35,13 @@ describe V2::SystemsController do
   context '/systems' do
     describe 'GET index' do
       let(:policies) do
-        [7, 8, 9].each_with_object({}) do |i, obj|
-          obj["policy_#{i}".to_sym] = FactoryBot.create(
+        [7, 8, 9].to_h do |i|
+          ["policy_#{i}".to_sym, FactoryBot.create(
             :v2_policy,
             account: current_user.account,
             os_major_version: i,
             supports_minors: [1, 2, 8]
-          )
+          )]
         end
       end
 

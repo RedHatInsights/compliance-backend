@@ -4,6 +4,7 @@ module Xccdf
   # Methods related to saving RuleGroupRelationships
   module RuleGroupRelationships
     extend ActiveSupport::Concern
+
     included do
       def save_rule_group_relationships
         @op_rules_and_rule_groups = @op_rule_groups + @op_rules

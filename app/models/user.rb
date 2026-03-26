@@ -19,7 +19,7 @@ class User < ApplicationRecord
     return true if rbac_disabled?
 
     rbac_permissions.any? do |access|
-      Rbac.verify(access.permission, access_request)
+      Rbac.permission_matches?(access.permission, access_request)
     end
   end
 

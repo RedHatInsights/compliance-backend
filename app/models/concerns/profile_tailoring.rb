@@ -61,8 +61,8 @@ module ProfileTailoring
   end
 
   def value_overrides_by_ref_id
-    ValueDefinition.where(id: value_overrides.keys).each_with_object({}) do |value_definition, overrides|
-      overrides[value_definition.ref_id] = value_overrides[value_definition.id]
+    ValueDefinition.where(id: value_overrides.keys).to_h do |value_definition|
+      [value_definition.ref_id, value_overrides[value_definition.id]]
     end
   end
 end
