@@ -13,7 +13,7 @@ set_default_host '0.0.0.0'
 if ClowderCommonRuby::Config.clowder_enabled?
   port ClowderCommonRuby::Config.load.webPort
 else
-  port ENV.fetch('WEB_PORT', 3000)
+  port ENV.fetch('WEB_PORT', 8000)
 end
 
 # Specifies the `environment` that Puma will run in.
@@ -52,6 +52,8 @@ preload_app! if concurrency > 0
 # Metrics collection
 if ClowderCommonRuby::Config.clowder_enabled?
   ENV['PROMETHEUS_EXPORTER_PORT'] = ClowderCommonRuby::Config.load.metricsPort.to_s
+else
+  ENV['PROMETHEUS_EXPORTER_PORT'] ||= '9090'
 end
 activate_control_app("unix://#{File.expand_path(File.join(File.dirname(__FILE__), '../tmp/puma.sock'))}")
 plugin :yabeda
