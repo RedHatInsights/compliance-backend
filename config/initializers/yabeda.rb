@@ -15,5 +15,6 @@ if %w[sidekiq karafka].any? { |p| $0.include?(p) }
     ENV['PROMETHEUS_EXPORTER_PORT'] = ClowderCommonRuby::Config.load.metricsPort.to_s
   end
 
+  Yabeda::ActiveJob.install!
   Yabeda::Prometheus::Exporter.start_metrics_server!
 end
