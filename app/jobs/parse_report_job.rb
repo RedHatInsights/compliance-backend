@@ -4,8 +4,8 @@
 class ParseReportJob < ApplicationJob
   include Notifications
 
-  # https://github.com/yabeda-rb/yabeda-sidekiq#custom-tags
-  def yabeda_tags(_idx, message, *_args)
+  # https://github.com/RoamingNoMaD/yabeda-activejob#custom-tags
+  def yabeda_tags(_idx, message)
     { qe: OpenshiftEnvironment.qe_account?(message['org_id']) }
   end
 
