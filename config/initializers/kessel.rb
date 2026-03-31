@@ -15,6 +15,7 @@ Rails.application.configure do
   end
 
   if ENV['KESSEL_AUTH_ENABLED'].present?
+    #
     Settings.kessel.auth.enabled = ActiveModel::Type::Boolean.new.cast(ENV['KESSEL_AUTH_ENABLED'])
   end
 
