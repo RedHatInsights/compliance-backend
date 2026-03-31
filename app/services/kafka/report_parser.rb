@@ -21,8 +21,8 @@ module Kafka
       end
       # Evaluate each report individually and notify about the result
       parsed_reports.each_with_index do |(profile_id, _report), idx|
-        job = ParseReportJob.perform_async(idx, metadata)
-        notify_report_success(profile_id, job)
+        job = enqueue_parsing(profile_id, idx)
+        notify_report_success(profile_id, job.jid)
       end
       produce_validation_message('success')
     rescue EntitlementError, ReportParseError => e
@@ -34,6 +34,11 @@ module Kafka
     # rubocop:enable Metrics/MethodLength
 
     private
+
+    def enqueue_parsing(profile_id, idx)
+      ParseReportJob.perform_later(idx, metadata) or
+        raise ReportParseError, "Failed to enqueue parsing of #{profile_id}"
+    end
 
     def downloaded_reports
       raise EntitlementError unless identity.valid?
