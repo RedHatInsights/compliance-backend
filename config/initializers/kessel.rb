@@ -47,23 +47,23 @@ Rails.application.configure do
       raise 'KESSEL_URL must be set when Kessel is enabled'
     end
 
-    # unless Settings.kessel.auth.enabled
-    #   raise 'KESSEL_AUTH_ENABLED must be set when Kessel is enabled'
-    # end
+    unless Settings.kessel.auth.enabled
+      raise 'KESSEL_AUTH_ENABLED must be set when Kessel is enabled'
+    end
 
-    # if Settings.kessel.auth.enabled
-    #   if Settings.kessel.auth.client_id.blank?
-    #     raise 'KESSEL_AUTH_CLIENT_ID must be set when Kessel auth is enabled'
-    #   end
+    if Settings.kessel.auth.enabled
+      if Settings.kessel.auth.client_id.blank?
+        raise 'KESSEL_AUTH_CLIENT_ID must be set when Kessel auth is enabled'
+      end
 
-    #   if Settings.kessel.auth.client_secret.blank?
-    #     raise 'KESSEL_AUTH_CLIENT_SECRET must be set when Kessel auth is enabled'
-    #   end
+      if Settings.kessel.auth.client_secret.blank?
+        raise 'KESSEL_AUTH_CLIENT_SECRET must be set when Kessel auth is enabled'
+      end
 
-    #   if Settings.kessel.auth.oidc_issuer.blank?
-    #     raise 'KESSEL_AUTH_OIDC_ISSUER must be set when Kessel auth is enabled'
-    #   end
-    # end
+      if Settings.kessel.auth.oidc_issuer.blank?
+        raise 'KESSEL_AUTH_OIDC_ISSUER must be set when Kessel auth is enabled'
+      end
+    end
 
     Rails.logger.info "Kessel configured: URL=#{Settings.kessel.url}, Auth=#{Settings.kessel.auth.enabled}"
   else

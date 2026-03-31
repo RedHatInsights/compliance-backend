@@ -64,7 +64,7 @@ pipeline {
                         git checkout improve-compliance-deployment
                         EPHEMERAL_TOKEN=$OC_LOGIN_TOKEN_DEV EPHEMERAL_SERVER=$OC_LOGIN_SERVER_DEV ./deploy.sh compliance
                         cd ..
-                        export NAMESPACE=$(oc project -q)
+                        # export NAMESPACE=$(oc project -q)
                         source "${CICD_ROOT}/cji_smoke_test.sh"
 
                         # Update IQE plugin config to run floorist plugin tests.
