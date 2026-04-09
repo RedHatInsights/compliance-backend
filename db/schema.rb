@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
-  create_schema "inventory"
+  create_schema "inventory", if_not_exists: true
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
