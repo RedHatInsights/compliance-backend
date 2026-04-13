@@ -107,6 +107,12 @@ class KesselRbac
       elsif identity_type == USER_IDENTITY
         identity&.dig('user', 'user_id')
       else
+        Rails.logger.error(
+          "Kessel unsupported identity type: '#{identity_type}', " \
+          "auth_type: '#{identity&.dig('auth_type')}', " \
+          "org_id: '#{identity&.dig('org_id')}', " \
+          "identity keys: #{identity&.keys}"
+        )
         raise 'unsupported identity type'
       end
     end
