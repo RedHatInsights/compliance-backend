@@ -24,17 +24,9 @@ describe V2::Rule do
     end
 
     subject do
-      # As this method is intended to be used from a nested profiles/rule route only, we need
-      # trick the model to believe that we are in a controller's context where the required
-      # two extra fields are available.
-      V2::Rule.joins(:security_guide, :profiles)
-              .where(security_guide: { id: rule.security_guide.id }, profiles: { id: profile.id })
-              .select(
-                described_class.arel_table[Arel.star],
-                'security_guide.ref_id AS security_guide__ref_id',
-                'security_guide.version AS security_guide__version',
-                'profiles.ref_id AS profiles__ref_id'
-              ).find(rule.id)
+      V2::Rule.with_remediation_context
+              .for_profile(profile)
+              .find(rule.id)
     end
 
     it 'builds the id' do

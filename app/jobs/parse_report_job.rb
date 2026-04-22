@@ -105,19 +105,11 @@ class ParseReportJob < ApplicationJob
     )
   end
 
-  # TODO: make this easier by changing the method in V2::Rule to be more generic
   def remediation_issue_ids
     parser.failed_rules
-          .joins(:security_guide, :profiles)
-          .where(profiles: { id: parser.tailored_profile.id })
-          .select(
-            V2::Rule.arel_table[Arel.star],
-            V2::SecurityGuide.arel_table[:ref_id].as('security_guide__ref_id'),
-            V2::SecurityGuide.arel_table[:version].as('security_guide__version'),
-            V2::Profile.arel_table[:ref_id].as('profiles__ref_id')
-          )
-          .collect(&:remediation_issue_id)
-          .compact
+          .with_remediation_context
+          .for_profile(parser.tailored_profile)
+          .filter_map(&:remediation_issue_id)
   end
 
   def audit_success

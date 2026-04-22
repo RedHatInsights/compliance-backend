@@ -43,6 +43,17 @@ module V2
     has_many :policies, class_name: 'V2::Policy', through: :tailorings
     has_many :fixes, class_name: 'V2::Fix', dependent: :destroy
 
+    scope :with_remediation_context, lambda {
+      joins(:security_guide, :profiles).select(
+        arel_table[Arel.star],
+        V2::SecurityGuide.arel_table[:ref_id].as('security_guide__ref_id'),
+        V2::SecurityGuide.arel_table[:version].as('security_guide__version'),
+        V2::Profile.arel_table[:ref_id].as('profiles__ref_id')
+      )
+    }
+
+    scope :for_profile, ->(profile) { where(profiles: { id: profile.id }) }
+
     sortable_by :title
     sortable_by :severity, sorted_severities
     sortable_by :precedence
