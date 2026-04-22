@@ -15,7 +15,7 @@ module Xccdf
       include ::Xccdf::ProfileRules
       include ::Xccdf::ProfileOsMinorVersions
       include ::Xccdf::RuleGroupRelationships
-      include ::Xccdf::Hosts
+      include ::Xccdf::Tailorings
       include ::Xccdf::RuleResults
       include ::Xccdf::TestResult
 
@@ -36,7 +36,7 @@ module Xccdf
       # rubocop:enable Metrics/MethodLength
 
       def save_all_test_result_info
-        save_host_profile
+        tailoring
         save_test_result
         save_rule_results
         invalidate_cache
@@ -54,10 +54,10 @@ module Xccdf
 
       private
 
+      # TODO: do we cache the same way in V2?
       def invalidate_cache
-        Rails.cache.delete("#{@new_host_profile&.id}/#{@host&.id}/results")
-        @host_profile.rules.each do |rule|
-          Rails.cache.delete("#{rule.id}/#{@host&.id}/compliant")
+        @tailoring.rules.each do |rule|
+          Rails.cache.delete("#{rule.id}/#{@system&.id}/compliant")
         end
       end
     end

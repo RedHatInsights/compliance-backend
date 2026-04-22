@@ -195,6 +195,14 @@ module V2
       raise ArgumentError, 'Missing security guide or profile on the ActiveRecord result'
     end
     # :nocov:
+
+    def self.from_parser(obj, test_result_id: nil, rule_id: nil)
+      new(
+        test_result_id: test_result_id,
+        rule_id: rule_id,
+        result: obj.result
+      )
+    end
   end
   # rubocop:enable Metrics/ClassLength
 end

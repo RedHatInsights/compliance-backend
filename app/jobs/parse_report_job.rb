@@ -65,7 +65,7 @@ class ParseReportJob < ApplicationJob
     msg = error_message(exc)
     msg_with_values = "#{msg} \n #{JSON.pretty_generate(@msg_value)}"
     notify_payload_tracker(:error, msg_with_values)
-    ReportUploadFailed.deliver(system: Host.find_by(id: @msg_value['id'], account: @msg_value['account']),
+    ReportUploadFailed.deliver(system: V2::System.find_by(id: @msg_value['id'], account: @msg_value['account']),
                                request_id: @msg_value['request_id'], error: notification_message(exc),
                                org_id: @msg_value['org_id'])
     Sidekiq.logger.error(msg_with_values)
@@ -105,9 +105,17 @@ class ParseReportJob < ApplicationJob
     )
   end
 
+  # TODO: make this easier by changing the method in V2::Rule to be more generic
   def remediation_issue_ids
     parser.failed_rules
-          .includes(profiles: :benchmark)
+          .joins(:security_guide, :profiles)
+          .where(profiles: { id: parser.tailored_profile.id })
+          .select(
+            V2::Rule.arel_table[Arel.star],
+            V2::SecurityGuide.arel_table[:ref_id].as('security_guide__ref_id'),
+            V2::SecurityGuide.arel_table[:version].as('security_guide__version'),
+            V2::Profile.arel_table[:ref_id].as('profiles__ref_id')
+          )
           .collect(&:remediation_issue_id)
           .compact
   end
@@ -115,8 +123,8 @@ class ParseReportJob < ApplicationJob
   def audit_success
     Rails.logger.audit_success(
       "[#{@msg_value['org_id']}] Successful report of #{report_profile_id} " \
-      "policy #{parser.host_profile.policy_id} " \
-      "from host #{@msg_value['id']}"
+      "policy #{parser.policy.id} " \
+      "from system #{@msg_value['id']}"
     )
   end
 end
