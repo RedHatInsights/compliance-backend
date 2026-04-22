@@ -25,10 +25,11 @@ class XccdfReportParser
 
   include ::Xccdf::Util
 
-  attr_reader :report_path, :test_result_file, :policy, :host
+  attr_reader :report_path, :test_result_file, :policy, :system
 
   BENCHMARK_PREFIX = 'xccdf_org.ssgproject.content_benchmark_'
 
+  # rubocop:disable Metrics/MethodLength
   def initialize(report_contents, message)
     @id = message['id']
     @b64_identity = message['b64_identity']
@@ -36,15 +37,18 @@ class XccdfReportParser
     validate_message_format!
 
     @account = Account.from_identity_header(Insights::Api::Common::IdentityHeader.new(@b64_identity))
-    @host = Host.find(message['id'])
+    @system = V2::System.find(message['id'])
     @test_result_file = OpenscapParser::TestResultFile.new(report_contents)
     set_openscap_parser_data
 
-    @policy = Policy.with_hosts(@host).with_ref_ids(@test_result_file.test_result.profile_id)
-                    .find_by(account: @account)
+    @policy = V2::Policy.joins(:systems, :profile)
+                        .find_by(systems: { id: @system.id },
+                                 profile: { ref_id: @test_result_file.test_result.profile_id },
+                                 account: @account)
 
     check_report_format
   end
+  # rubocop:enable Metrics/MethodLength
 
   def check_report_format
     return if @test_result_file.benchmark.id.match?(BENCHMARK_PREFIX)
@@ -63,9 +67,9 @@ class XccdfReportParser
 
   def check_os_version
     # rubocop:disable Style/GuardClause
-    if security_guide.os_major_version.to_s != @host.os_major_version.to_s
+    if security_guide.os_major_version.to_s != @system.os_major_version.to_s
       raise OSVersionMismatch,
-            "OS major version (#{@host.os_major_version}) does not match with " \
+            "OS major version (#{@system.os_major_version}) does not match with " \
             "benchmark #{security_guide.ref_id} (#{security_guide.os_major_version}). " \
             "#{parse_failure_message}"
     end
@@ -82,7 +86,7 @@ class XccdfReportParser
     # rubocop:enable Style/GuardClause
   end
 
-  def check_for_missing_benchmark
+  def check_for_missing_security_guide
     # rubocop:disable Style/GuardClause
     unless security_guide.persisted?
       raise UnknownBenchmarkError,
@@ -92,11 +96,11 @@ class XccdfReportParser
     # rubocop:enable Style/GuardClause
   end
 
-  def check_for_missing_test_result_profile
+  def check_for_missing_tailored_profile
     # rubocop:disable Style/GuardClause
-    unless test_result_profile.persisted?
+    unless tailored_profile.persisted?
       raise UnknownProfileError,
-            "No profile found matching ref_id #{test_result_profile.ref_id} " \
+            "No profile found matching ref_id #{tailored_profile.ref_id} " \
             "in benchmark #{security_guide.ref_id} with SSG " \
             "#{security_guide.version}. #{parse_failure_message}"
     end
@@ -108,7 +112,7 @@ class XccdfReportParser
     if test_result_rules_unknown.any?
       raise UnknownRuleError,
             'The following rules are missing from profile ' \
-            "#{test_result_profile.ref_id} in benchmark #{security_guide.ref_id} " \
+            "#{tailored_profile.ref_id} in benchmark #{security_guide.ref_id} " \
             "with SSG #{security_guide.version}:\n" \
             "#{test_result_rules_unknown.join("\n")}\n#{parse_failure_message}"
     end
@@ -116,8 +120,8 @@ class XccdfReportParser
   end
 
   def check_for_missing_benchmark_info
-    check_for_missing_benchmark
-    check_for_missing_test_result_profile
+    check_for_missing_security_guide
+    check_for_missing_tailored_profile
     check_for_missing_rules
   end
 
@@ -126,7 +130,7 @@ class XccdfReportParser
     check_for_external_reports
     check_for_missing_benchmark_info
 
-    Host.transaction do
+    V2::System.transaction do
       save_all_test_result_info
     end
   end
@@ -135,6 +139,6 @@ class XccdfReportParser
 
   def parse_failure_message
     "Report for profile #{@test_result_file.test_result.profile_id} against " \
-      "#{@host.name} of account #{@account.org_id} could not be parsed."
+      "#{@system.display_name} of account #{@account.org_id} could not be parsed."
   end
 end
