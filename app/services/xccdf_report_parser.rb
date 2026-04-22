@@ -25,7 +25,7 @@ class XccdfReportParser
 
   include ::Xccdf::Util
 
-  attr_reader :report_path, :test_result_file, :policy, :system
+  attr_reader :test_result_file, :policy, :system
 
   BENCHMARK_PREFIX = 'xccdf_org.ssgproject.content_benchmark_'
 
