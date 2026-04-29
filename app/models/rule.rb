@@ -60,7 +60,7 @@ class Rule < ApplicationRecord
   alias_attribute :values, :value_checks
 
   scope :with_profiles, lambda {
-    joins(:profile_rules).where.not(profile_rules: { profile_id: nil }).distinct
+    joins(:profile_rules).where.not(v1_profile_rules: { profile_id: nil }).distinct
   }
 
   scope :latest, lambda {

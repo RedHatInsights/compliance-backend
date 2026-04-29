@@ -3,6 +3,9 @@
 # Representation of the TestResult XML property in an OpenSCAP report. Holds the
 # basic report properties, such as dates, host, and results.
 class TestResult < ApplicationRecord
+  self.table_name = :v1_test_results
+  self.primary_key = :id
+
   belongs_to :profile
   belongs_to :host, optional: true
   has_one :benchmark, through: :profile
@@ -51,9 +54,9 @@ class TestResult < ApplicationRecord
 
     <<-SQL
       JOIN (#{latest_without_ids.to_sql}) as tr ON
-      test_results.profile_id = tr.profile_id AND
-      test_results.host_id = tr.host_id AND
-      test_results.end_time = tr.end_time
+      v1_test_results.profile_id = tr.profile_id AND
+      v1_test_results.host_id = tr.host_id AND
+      v1_test_results.end_time = tr.end_time
     SQL
   end
 end
