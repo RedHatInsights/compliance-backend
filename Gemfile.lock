@@ -154,7 +154,7 @@ GEM
     dry-initializer (3.2.0)
     email_validator (2.2.4)
       activemodel
-    erb (6.0.2)
+    erb (6.0.4)
     erubi (1.13.1)
     ethon (0.18.0)
       ffi (>= 1.15.0)
