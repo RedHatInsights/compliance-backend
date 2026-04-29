@@ -24,7 +24,7 @@ module V2
     )
 
     # FIXME: clean up after the remodel
-    self.table_name = :tailorings
+    self.table_name = :tailorings_v2
     self.primary_key = :id
 
     indexable_by :os_minor_version, &->(scope, value) { scope.find_by!(os_minor_version: value) }
