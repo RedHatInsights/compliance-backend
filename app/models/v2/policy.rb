@@ -6,7 +6,7 @@ module V2
     include V2::RuleTree
 
     # FIXME: clean up after the remodel
-    self.table_name = :v2_policies
+    self.table_name = :policies_v2
     self.primary_key = :id
 
     belongs_to :account, class_name: 'Account'
@@ -14,6 +14,10 @@ module V2
     belongs_to :report, class_name: 'V2::Report', foreign_key: :id, optional: true # rubocop:disable Rails/InverseOf
 
     has_one :security_guide, through: :profile, class_name: 'V2::SecurityGuide'
+
+    TOTAL_SYSTEM_COUNT = lambda do
+      AN::NamedFunction.new('COUNT', [V2::PolicySystem.arel_table[:id]])
+    end
 
     has_many :tailorings, class_name: 'V2::Tailoring', dependent: :destroy
     has_many :tailoring_rules, through: :tailorings, class_name: 'V2::TailoringRule', dependent: :destroy
@@ -31,7 +35,7 @@ module V2
 
     sortable_by :title
     sortable_by :os_major_version, 'security_guide.os_major_version'
-    sortable_by :total_system_count
+    sortable_by :total_system_count, 'aggregate_total_system_count'
     sortable_by :business_objective
     sortable_by :compliance_threshold
 
@@ -63,7 +67,7 @@ module V2
                       .where(Arel::Nodes.build_quoted(val).eq(match_os_minors))
                       .select(arel_table[:id])
 
-      { conditions: "v2_policies.id IN (#{ids.to_sql})" }
+      { conditions: "policies_v2.id IN (#{ids.to_sql})" }
     end
 
     before_validation :ensure_default_values
@@ -85,6 +89,12 @@ module V2
     def ref_id
       attributes['profile__ref_id'] || try(:profile)&.ref_id
     end
+
+    # Fallback for when the object is rendered without the SQL aggregate (e.g. after create).
+    def total_system_count
+      attributes['aggregate_total_system_count'] || policy_systems.count
+    end
+    alias aggregate_total_system_count total_system_count
 
     def os_minor_versions
       V2::SupportedProfile.find_by!(ref_id: ref_id, os_major_version: os_major_version).os_minor_versions

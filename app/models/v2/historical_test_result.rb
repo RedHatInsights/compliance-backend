@@ -4,7 +4,7 @@ module V2
   # Database model representing historical results of compliance scans
   class HistoricalTestResult < ApplicationRecord
     # FIXME: clean up after the remodel
-    self.table_name = :historical_test_results
+    self.table_name = :historical_test_results_v2
     self.primary_key = :id
 
     belongs_to :system, class_name: 'V2::System', optional: true
