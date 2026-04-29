@@ -99,7 +99,6 @@ module V2
     private
 
     def ensure_default_values
-      self.title ||= profile&.title
       self.description ||= profile&.description
       self.compliance_threshold ||= 100.0
     end
