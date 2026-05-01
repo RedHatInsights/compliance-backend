@@ -58,8 +58,20 @@ pipeline {
                         AVAILABLE_CLUSTERS=('ephemeral' 'crcd')
                         curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                         source ./.cicd_bootstrap.sh
-                        source "${CICD_ROOT}/deploy_ephemeral_env.sh"
-                        source "${CICD_ROOT}/cji_smoke_test.sh"
+
+                        # Reserve namespace here so the check_bonfire_namespace in insights-service-deployer
+                        # sees a non-default project and skips its own reservation attempt
+                        NAMESPACE=$(bonfire namespace reserve --duration 10h)
+                        oc project $NAMESPACE
+
+                        git clone https://github.com/romanblanco/insights-service-deployer.git # TODO: project-kessel/insights-service-deployer
+                        cd insights-service-deployer
+                        git checkout RHINENG-23964-deploy-kessel-to-ephemeral # TODO: remove once patch is upstreamed
+                        EPHEMERAL_TOKEN=$OC_LOGIN_TOKEN_DEV EPHEMERAL_SERVER=$OC_LOGIN_SERVER_DEV ./deploy.sh compliance
+                        cd ..
+
+                        export NAMESPACE=$(oc project -q)
+                        source "${CICD_ROOT}/cji_smoke_test.sh" # Compliance smoke tests
 
                         # Update IQE plugin config to run floorist plugin tests.
                         export COMPONENT_NAME="compliance"
@@ -71,7 +83,7 @@ pipeline {
                         export IQE_IMAGE_TAG="floorist"
 
                         # Run smoke tests with ClowdJobInvocation
-                        source "${CICD_ROOT}/cji_smoke_test.sh"
+                        source "${CICD_ROOT}/cji_smoke_test.sh" # Floorist smoke tests
                     '''
                 }
             }
