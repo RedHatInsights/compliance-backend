@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_28_153335) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_28_153533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -397,10 +397,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_153335) do
      FROM policy_hosts;
   SQL
   create_view "report_systems", sql_definition: <<-SQL
-      SELECT policy_hosts.id,
-      policy_hosts.policy_id AS report_id,
-      policy_hosts.host_id AS system_id
-     FROM policy_hosts;
+      SELECT policy_systems_v2.id,
+      policy_systems_v2.policy_id AS report_id,
+      policy_systems_v2.system_id
+     FROM policy_systems_v2;
   SQL
   create_view "supported_profiles", sql_definition: <<-SQL
       SELECT (array_agg(canonical_profiles_v2.id ORDER BY (string_to_array((security_guides_v2.version)::text, '.'::text))::integer[] DESC))[1] AS id,
