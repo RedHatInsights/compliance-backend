@@ -2,6 +2,9 @@
 
 # Compliance policy
 class Policy < ApplicationRecord
+  self.table_name = :v1_policies
+  self.primary_key = :id
+
   include ProfilePolicyScoring
 
   DEFAULT_COMPLIANCE_THRESHOLD = 100.0

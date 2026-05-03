@@ -158,7 +158,7 @@ module HostSearching
       hosts = ::TestResult.where("score #{operator} ?", score.to_f)
                           .where(profile: profiles)
                           .latest
-                          .select('test_results.host_id')
+                          .select('v1_test_results.host_id')
 
       { conditions: "hosts.id IN(#{hosts.to_sql})" }
     end
@@ -173,7 +173,7 @@ module HostSearching
 
       hosts = search_in(
         ::RuleResult.latest(profiles.compact.first.policy_id)
-                    .joins(:rule).where(rule_results: { result: RuleResult::FAILED })
+                    .joins(:rule).where(v1_rule_results: { result: RuleResult::FAILED })
                     .distinct.select(:host_id),
         operator,
         { v1_rules: { severity: value.split(',').map(&:strip) } }
@@ -187,7 +187,7 @@ module HostSearching
       raise ScopedSearch::QueryNotSupported if profiles.nil?
 
       hosts = ::TestResult.where(supported: value, profile: profiles)
-                          .latest.select('test_results.host_id')
+                          .latest.select('v1_test_results.host_id')
 
       { conditions: "hosts.id IN(#{hosts.to_sql})" }
     end
@@ -198,7 +198,7 @@ module HostSearching
       raise ScopedSearch::QueryNotSupported if profiles.nil?
 
       hosts = ::TestResult.where(profile: profiles)
-                          .latest.select('test_results.host_id')
+                          .latest.select('v1_test_results.host_id')
 
       { conditions: "hosts.id #{'NOT' if value == 'false'} IN(#{hosts.to_sql})" }
     end
@@ -233,8 +233,8 @@ module HostSearching
     end
 
     def with_policy_lookup(policy_or_profile_id)
-      policy_cond = { policies: { id: policy_or_profile_id } }
-      profile_cond = { policies: { v1_profiles: { id: policy_or_profile_id } } }
+      policy_cond = { v1_policies: { id: policy_or_profile_id } }
+      profile_cond = { v1_policies: { v1_profiles: { id: policy_or_profile_id } } }
 
       search = joins(policies: :profiles)
       search.where(policy_cond).or(search.where(profile_cond))
@@ -242,7 +242,7 @@ module HostSearching
 
     def with_external_profile_lookup(profile_id)
       joins(test_results: :profile).where(
-        test_results: {
+        v1_test_results: {
           v1_profiles: {
             id: profile_id,
             policy_id: nil

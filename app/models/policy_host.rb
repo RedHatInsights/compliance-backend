@@ -2,6 +2,9 @@
 
 # Join table between Policy and Host
 class PolicyHost < ApplicationRecord
+  self.table_name = :v1_policy_hosts
+  self.primary_key = :id
+
   belongs_to :policy
   belongs_to :host, optional: true
 

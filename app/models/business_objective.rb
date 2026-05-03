@@ -17,7 +17,7 @@ class BusinessObjective < ApplicationRecord
   }
 
   scope :without_policies, lambda {
-    includes(:policies).where(policies: { id: nil })
+    includes(:policies).where(v1_policies: { id: nil })
   }
 
   def self.from_title(title, &)

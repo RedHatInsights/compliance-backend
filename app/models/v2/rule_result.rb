@@ -5,8 +5,7 @@ module V2
   # rubocop:disable Metrics/ClassLength
   class RuleResult < ApplicationRecord
     # FIXME: clean up after the remodel
-    self.table_name = :rule_results
-    self.ignored_columns += %w[account host_id]
+    self.table_name = :rule_results_v2
 
     belongs_to :test_result, class_name: 'V2::TestResult'
     belongs_to :historical_test_result, class_name: 'V2::HistoricalTestResult', foreign_key: :test_result_id,

@@ -4,6 +4,9 @@
 # did they have at which time. This model would allow us to generate
 # reports of compliance at any point in time
 class RuleResult < ApplicationRecord
+  self.table_name = :v1_rule_results
+  self.primary_key = :id
+
   scoped_search on: %i[id rule_id host_id result], only_explicit: true
   scoped_search on: :result
   belongs_to :host, optional: true
