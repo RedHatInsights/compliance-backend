@@ -5,12 +5,12 @@
       - :factory: :v2_test_result
         :display_name: searched name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
     :not_found:
       - :factory: :v2_test_result
         :display_name: not this name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
   :query: (display_name = "searched name")
 - :name: "non-equality search by display_name"
   :entities:
@@ -18,12 +18,12 @@
       - :factory: :v2_test_result
         :display_name: not this name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
     :not_found:
       - :factory: :v2_test_result
         :display_name: searched name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
   :query: (display_name != "searched name")
 - :name: "like search by display_name"
   :entities:
@@ -31,12 +31,12 @@
       - :factory: :v2_test_result
         :display_name: searched display_name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
     :not_found:
       - :factory: :v2_test_result
         :display_name: not this display_name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
   :query: (display_name ~ "searched")
 - :name: "unlike search by display_name"
   :entities:
@@ -44,12 +44,12 @@
       - :factory: :v2_test_result
         :display_name: not this display_name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
     :not_found:
       - :factory: :v2_test_result
         :display_name: searched display_name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
   :query: (display_name !~ "searched")
 
 - :name: "equality search by os_minor_version"
@@ -57,12 +57,12 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
   :query: (os_minor_version = 1)
 - :name: "non-equality search by os_minor_version"
@@ -70,12 +70,12 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
   :query: (os_minor_version != 2)
 - :name: "in search by os_minor_version"
@@ -84,16 +84,16 @@
       - :factory: :v2_test_result
         :os_minor_version: 0
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
       - :factory: :v2_test_result
         :os_minor_version: 2
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
     :not_found:
       - :factory: :v2_test_result
         :display_name: not this display_name
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
   :query: (os_minor_version ^ (0 2))
 - :name: "not-in search by os_minor_version"
@@ -101,17 +101,17 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 0
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
       - :factory: :v2_test_result
         :os_minor_version: 2
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
   :query: (os_minor_version !^ (0 2))
 
 
@@ -120,12 +120,12 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
   :query: (security_guide_version = "0.0.1")
 - :name: "non-equality search by security_guide_version"
@@ -133,12 +133,12 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
   :query: (security_guide_version != "0.0.2")
 - :name: "in search by security_guide_version"
@@ -146,16 +146,16 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 3
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
   :query: (security_guide_version ^ (0.0.1 0.0.2))
 - :name: "not-in search by security_guide_version"
@@ -163,16 +163,16 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 3
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
   :query: (security_guide_version !^ (0.0.1 0.0.2))
 
@@ -181,13 +181,13 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
         :supported: true
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
         :supported: false
   :query: (supported = true)
@@ -197,13 +197,13 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
         :supported: false
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
         :supported: true
   :query: (supported = false)
@@ -213,13 +213,13 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
         :score: 100
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
         :score: 0
   :query: (compliant = true)
@@ -229,13 +229,13 @@
     :found:
       - :factory: :v2_test_result
         :os_minor_version: 1
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
         :score: 0
     :not_found:
       - :factory: :v2_test_result
         :os_minor_version: 2
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :account: ${account}
         :score: 100
   :query: (compliant = false)
@@ -246,12 +246,12 @@
       - :factory: :v2_test_result
         :account: ${account}
         :system_id: ${system_1.id}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
     :not_found:
       - :factory: :v2_test_result
         :account: ${account}
         :system_id: ${system_2.id}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
   :query: (system_id = ${system_1.id})
 
 - :name: "equality search by group_name"
@@ -261,18 +261,18 @@
         :groups:
           - name: searched name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
       - :factory: :v2_test_result
         :groups:
           - name: searched name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
     :not_found:
       - :factory: :v2_test_result
         :groups:
           - name: not this name
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
   :query: (group_name = "searched name")
 - :name: "in search by group_name"
   :entities:
@@ -281,18 +281,18 @@
         :groups:
           - name: one
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
       - :factory: :v2_test_result
         :groups:
           - name: two
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
     :not_found:
       - :factory: :v2_test_result
         :groups:
           - name: three
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
   :query: (group_name ^ (one two))
 
 - :name: "in search by failed_rule_severity"
@@ -300,7 +300,7 @@
     :found:
       - :factory: :v2_test_result
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :additional_rule_results:
           - :severity: 'high'
             :result: 'fail'
@@ -310,7 +310,7 @@
             :result: 'fail'
       - :factory: :v2_test_result
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :additional_rule_results:
           - :severity: 'medium'
             :result: 'fail'
@@ -321,13 +321,13 @@
     :not_found:
       - :factory: :v2_test_result
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :additional_rule_results:
           - :severity: 'low'
             :result: 'fail'
       - :factory: :v2_test_result
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :additional_rule_results:
           - :severity: 'high'
             :result: 'pass'
@@ -339,7 +339,7 @@
     :found:
       - :factory: :v2_test_result
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :additional_rule_results:
           - :severity: 'high'
             :result: 'fail'
@@ -349,14 +349,14 @@
             :result: 'fail'
       - :factory: :v2_test_result
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :additional_rule_results:
           - :severity: 'low'
             :result: 'fail'
     :not_found:
       - :factory: :v2_test_result
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :additional_rule_results:
           - :severity: 'medium'
             :result: 'fail'
@@ -366,7 +366,7 @@
             :result: 'pass'
       - :factory: :v2_test_result
         :account: ${account}
-        :policy_id: ${policy.id}
+        :report_id: ${policy.id}
         :additional_rule_results:
           - :severity: 'high'
             :result: 'pass'
