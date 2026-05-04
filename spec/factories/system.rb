@@ -50,7 +50,7 @@ FactoryBot.define do
 
       next if ev.with_test_result.nil?
 
-      FactoryBot.create(:v2_test_result, system: sys, policy_id: ev.policy_id)
+      FactoryBot.create(:v2_test_result, system: sys, report_id: ev.policy_id)
     end
   end
 end

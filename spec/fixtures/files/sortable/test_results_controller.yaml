@@ -16,7 +16,7 @@
       - :result: 'fail'
         :severity: 'high'
     :account: ${account}
-    :policy_id: ${policy.id}
+    :report_id: ${policy.id}
 
   - :factory: :v2_test_result
     :display_name: 'bac'
@@ -41,7 +41,7 @@
       - :result: 'fail'
         :severity: 'high'
     :account: ${account}
-    :policy_id: ${policy.id}
+    :report_id: ${policy.id}
 
   - :factory: :v2_test_result
     :display_name: 'aab'
@@ -66,7 +66,7 @@
       - :result: 'fail'
         :severity: 'high'
     :account: ${account}
-    :policy_id: ${policy.id}
+    :report_id: ${policy.id}
 
   - :factory: :v2_test_result
     :display_name: 'aaa'
@@ -91,7 +91,7 @@
       - :result: 'fail'
         :severity: 'high'
     :account: ${account}
-    :policy_id: ${policy.id}
+    :report_id: ${policy.id}
 
   - :factory: :v2_test_result
     :display_name: 'caa'
@@ -116,7 +116,7 @@
         :severity: 'low'
       - :result: 'pass'
         :severity: 'high'
-    :policy_id: ${policy.id}
+    :report_id: ${policy.id}
 
   - :factory: :v2_test_result
     :display_name: 'aaa'
@@ -141,7 +141,7 @@
       - :result: 'pass'
         :severity: 'high'
     :account: ${account}
-    :policy_id: ${policy.id}
+    :report_id: ${policy.id}
 
 :queries:
   - :sort_by:

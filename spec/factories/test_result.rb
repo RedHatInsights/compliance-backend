@@ -3,8 +3,8 @@
 FactoryBot.define do
   factory :v2_test_result, class: 'V2::TestResult' do
     tailoring do
-      if policy_id
-        V2::Tailoring.find_by!(policy_id: policy_id, os_minor_version: system.os_minor_version)
+      if report_id
+        V2::Tailoring.find_by!(policy_id: report_id, os_minor_version: system.os_minor_version)
       else
         association :v2_tailoring
       end
@@ -13,7 +13,7 @@ FactoryBot.define do
     system do
       args = {
         display_name: display_name,
-        policy_id: policy_id,
+        policy_id: report_id,
         os_major_version: os_major_version,
         os_minor_version: os_minor_version,
         groups: groups
@@ -21,6 +21,7 @@ FactoryBot.define do
       association(:system, account: account, **args)
     end
 
+    report_id { nil }
     start_time { 5.minutes.ago }
     end_time { 1.minute.ago }
     score { SecureRandom.rand(score_above.to_f..score_below.to_f) }
@@ -30,7 +31,6 @@ FactoryBot.define do
       account { FactoryBot.create(:v2_account) }
       score_below { 100 }
       score_above { 0 }
-      policy_id { nil }
       display_name { nil }
       os_major_version { nil }
       os_minor_version { nil }

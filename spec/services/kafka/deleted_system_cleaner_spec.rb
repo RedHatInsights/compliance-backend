@@ -10,7 +10,7 @@ describe Kafka::DeletedSystemCleaner do
   let(:org_id) { user.org_id }
   let(:policy) { FactoryBot.create(:v2_policy, account: user.account, supports_minors: [0]) }
   let(:system) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
-  let!(:test_result) { FactoryBot.create(:v2_test_result, system: system, policy_id: policy.id) }
+  let!(:test_result) { FactoryBot.create(:v2_test_result, system: system, report_id: policy.id) }
   let(:message) do
     {
       'type' => type,
@@ -32,7 +32,7 @@ describe Kafka::DeletedSystemCleaner do
 
   context 'with multiple systems under a policy' do
     let(:extra_system) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
-    let!(:extra_test_result) { FactoryBot.create(:v2_test_result, system: extra_system, policy_id: policy.id) }
+    let!(:extra_test_result) { FactoryBot.create(:v2_test_result, system: extra_system, report_id: policy.id) }
 
     it 'performs and logs cleanup for the specific system' do
       expect(Karafka.logger).to receive(:audit_success).with(
