@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_04_132837) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_04_153823) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -445,6 +445,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_04_132837) do
       rule_groups_v2.created_at,
       rule_groups_v2.updated_at
      FROM rule_groups_v2;
+  SQL
+  create_view "v1_rule_references_containers", sql_definition: <<-SQL
+      SELECT id,
+      id AS rule_id,
+      "references" AS rule_references,
+      created_at,
+      updated_at
+     FROM rules_v2;
   SQL
   create_view "v1_rules", sql_definition: <<-SQL
       SELECT rules_v2.id,
