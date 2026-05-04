@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_04_122645) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_04_132837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -56,18 +56,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_04_122645) do
     t.index ["rule_id", "system"], name: "index_fixes_on_rule_id_and_system", unique: true
     t.index ["rule_id"], name: "index_fixes_on_rule_id"
     t.index ["system"], name: "index_fixes_on_system"
-  end
-
-  create_table "friendly_id_slugs", id: :serial, force: :cascade do |t|
-    t.datetime "created_at", precision: nil
-    t.string "scope"
-    t.string "slug", null: false
-    t.integer "sluggable_id", null: false
-    t.string "sluggable_type", limit: 50
-    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
-    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
-    t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
-    t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
   create_table "policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
