@@ -10,9 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
-  create_schema "inventory"
-
+ActiveRecord::Schema[8.1].define(version: 2026_05_04_122645) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -23,17 +21,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
     t.string "org_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["org_id"], name: "index_accounts_on_org_id", unique: true
-  end
-
-  create_table "benchmarks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.text "description", null: false
-    t.string "package_name"
-    t.string "ref_id", null: false
-    t.string "title", null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "version", null: false
-    t.index ["ref_id", "version"], name: "index_benchmarks_on_ref_id_and_version", unique: true
   end
 
   create_table "business_objectives", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -171,17 +158,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
     t.index ["name"], name: "index_revisions_on_name", unique: true
   end
 
-  create_table "rule_group_relationships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "left_id"
-    t.string "left_type"
-    t.string "relationship"
-    t.uuid "right_id"
-    t.string "right_type"
-    t.index ["left_id", "right_id", "right_type", "left_type", "relationship"], name: "index_rule_group_relationships_unique", unique: true
-    t.index ["left_type", "left_id"], name: "index_rule_group_relationships_on_left"
-    t.index ["right_type", "right_id"], name: "index_rule_group_relationships_on_right"
-  end
-
   create_table "rule_group_relationships_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.uuid "left_id", null: false
@@ -193,22 +169,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
     t.index ["left_id", "right_id", "right_type", "left_type", "relationship"], name: "unique_index_rule_group_relationships_v2", unique: true
     t.index ["left_type", "left_id"], name: "index_rule_group_relationships_v2_on_left"
     t.index ["right_type", "right_id"], name: "index_rule_group_relationships_v2_on_right"
-  end
-
-  create_table "rule_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "ancestry"
-    t.uuid "benchmark_id", null: false
-    t.text "description"
-    t.integer "precedence"
-    t.text "rationale"
-    t.string "ref_id"
-    t.uuid "rule_id"
-    t.string "title"
-    t.index ["ancestry"], name: "index_rule_groups_on_ancestry"
-    t.index ["benchmark_id"], name: "index_rule_groups_on_benchmark_id"
-    t.index ["precedence"], name: "index_rule_groups_on_precedence"
-    t.index ["ref_id", "benchmark_id"], name: "index_rule_groups_on_ref_id_and_benchmark_id", unique: true
-    t.index ["rule_id"], name: "index_rule_groups_on_rule_id", unique: true
   end
 
   create_table "rule_groups_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -229,15 +189,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
     t.index ["security_guide_id"], name: "index_rule_groups_v2_on_security_guide_id"
   end
 
-  create_table "rule_references_containers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.uuid "rule_id", null: false
-    t.jsonb "rule_references"
-    t.datetime "updated_at", null: false
-    t.index ["rule_id"], name: "index_rule_references_containers_on_rule_id", unique: true
-    t.index ["rule_references"], name: "index_rule_references_containers_on_rule_references", opclass: :jsonb_path_ops, using: :gin
-  end
-
   create_table "rule_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.uuid "host_id"
@@ -249,31 +200,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
     t.index ["host_id"], name: "index_rule_results_on_host_id"
     t.index ["rule_id"], name: "index_rule_results_on_rule_id"
     t.index ["test_result_id"], name: "index_rule_results_on_test_result_id"
-  end
-
-  create_table "rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "benchmark_id", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.text "description"
-    t.jsonb "identifier"
-    t.integer "precedence"
-    t.text "rationale"
-    t.string "ref_id"
-    t.boolean "remediation_available", default: false, null: false
-    t.uuid "rule_group_id"
-    t.string "severity"
-    t.string "slug"
-    t.boolean "supported"
-    t.string "title"
-    t.datetime "updated_at", precision: nil, null: false
-    t.boolean "upstream", default: true, null: false
-    t.uuid "value_checks", default: [], array: true
-    t.index "((identifier -> 'label'::text))", name: "index_rules_on_identifier_labels", using: :gin
-    t.index ["precedence"], name: "index_rules_on_precedence"
-    t.index ["ref_id", "benchmark_id"], name: "index_rules_on_ref_id_and_benchmark_id", unique: true
-    t.index ["ref_id"], name: "index_rules_on_ref_id"
-    t.index ["slug", "benchmark_id"], name: "index_rules_on_slug_and_benchmark_id", unique: true
-    t.index ["upstream"], name: "index_rules_on_upstream"
   end
 
   create_table "rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -346,19 +272,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
     t.index ["account_id"], name: "index_users_on_account_id"
   end
 
-  create_table "value_definitions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "benchmark_id", null: false
-    t.string "default_value"
-    t.text "description"
-    t.decimal "lower_bound"
-    t.string "ref_id"
-    t.string "title"
-    t.decimal "upper_bound"
-    t.string "value_type"
-    t.index ["benchmark_id"], name: "index_value_definitions_on_benchmark_id"
-    t.index ["ref_id", "benchmark_id"], name: "index_value_definitions_on_ref_id_and_benchmark_id", unique: true
-  end
-
   create_table "value_definitions_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.string "default_value"
@@ -398,107 +311,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
      FROM profiles
     WHERE (profiles.parent_profile_id IS NULL);
   SQL
-  create_view "v2_value_definitions", sql_definition: <<-SQL
-      SELECT value_definitions.id,
-      value_definitions.ref_id,
-      value_definitions.title,
-      value_definitions.description,
-      value_definitions.value_type,
-      value_definitions.default_value,
-      value_definitions.lower_bound,
-      value_definitions.upper_bound,
-      value_definitions.benchmark_id AS security_guide_id
-     FROM value_definitions;
-  SQL
-  create_view "tailorings", sql_definition: <<-SQL
-      SELECT profiles.id,
-      profiles.policy_id,
-      profiles.parent_profile_id AS profile_id,
-      profiles.value_overrides,
-      (NULLIF((profiles.os_minor_version)::text, ''::text))::integer AS os_minor_version,
-      profiles.created_at,
-      profiles.updated_at
-     FROM profiles
-    WHERE (parent_profile_id IS NOT NULL);
-  SQL
-  create_view "security_guides", sql_definition: <<-SQL
-      SELECT benchmarks.id,
-      benchmarks.ref_id,
-      (regexp_replace((benchmarks.ref_id)::text, '.+RHEL-(\\d+)$'::text, '\\1'::text))::integer AS os_major_version,
-      benchmarks.title,
-      benchmarks.description,
-      benchmarks.version,
-      benchmarks.created_at,
-      benchmarks.updated_at,
-      benchmarks.package_name
-     FROM benchmarks;
-  SQL
-  create_view "v2_rule_groups", sql_definition: <<-SQL
-      SELECT rule_groups.id,
-      rule_groups.ref_id,
-      rule_groups.title,
-      rule_groups.description,
-      rule_groups.rationale,
-      rule_groups.ancestry,
-      rule_groups.benchmark_id AS security_guide_id,
-      rule_groups.rule_id,
-      rule_groups.precedence
-     FROM rule_groups;
-  SQL
-  create_view "policy_systems", sql_definition: <<-SQL
-      SELECT policy_hosts.id,
-      policy_hosts.policy_id,
-      policy_hosts.host_id AS system_id
-     FROM policy_hosts;
-  SQL
-  create_view "v2_policies", sql_definition: <<-SQL
-      SELECT policies.id,
-      policies.name AS title,
-      policies.description,
-      policies.compliance_threshold,
-      business_objectives.title AS business_objective,
-      COALESCE(sq.total_system_count, (0)::bigint) AS total_system_count,
-      policies.profile_id,
-      policies.account_id
-     FROM ((policies
-       LEFT JOIN business_objectives ON ((business_objectives.id = policies.business_objective_id)))
-       LEFT JOIN ( SELECT count(policy_hosts.host_id) AS total_system_count,
-              policy_hosts.policy_id
-             FROM policy_hosts
-            GROUP BY policy_hosts.policy_id) sq ON ((sq.policy_id = policies.id)));
-  SQL
-  create_view "tailoring_rules", sql_definition: <<-SQL
-      SELECT profile_rules.id,
-      profile_rules.profile_id AS tailoring_id,
-      profile_rules.rule_id
-     FROM profile_rules;
-  SQL
-  create_view "v2_rules", sql_definition: <<-SQL
-      SELECT rules.id,
-      rules.ref_id,
-      rules.title,
-      rules.severity,
-      rules.description,
-      rules.rationale,
-      rules.created_at,
-      rules.updated_at,
-      rules.remediation_available,
-      rules.benchmark_id AS security_guide_id,
-      rules.upstream,
-      rules.precedence,
-      rules.rule_group_id,
-      rules.value_checks,
-      rules.identifier,
-      rule_references_containers.rule_references AS "references"
-     FROM (rules
-       LEFT JOIN rule_references_containers ON ((rule_references_containers.rule_id = rules.id)));
-  SQL
-  create_view "report_systems", sql_definition: <<-SQL
-      SELECT policy_hosts.id,
-      policy_hosts.policy_id AS report_id,
-      policy_hosts.host_id AS system_id
-     FROM policy_hosts;
-  SQL
   create_view "historical_test_results", sql_definition: <<-SQL
       SELECT test_results.id,
       test_results.profile_id AS tailoring_id,
@@ -514,25 +326,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
      FROM (test_results
        JOIN profiles ON ((profiles.id = test_results.profile_id)));
   SQL
-  create_view "v2_test_results", sql_definition: <<-SQL
-      SELECT test_results.id,
-      test_results.profile_id AS tailoring_id,
-      profiles.policy_id AS report_id,
-      test_results.host_id AS system_id,
-      test_results.start_time,
-      test_results.end_time,
-      test_results.score,
-      test_results.supported,
-      test_results.failed_rule_count,
-      test_results.created_at,
-      test_results.updated_at
-     FROM ((test_results
-       JOIN profiles ON ((profiles.id = test_results.profile_id)))
-       JOIN ( SELECT test_results_1.profile_id,
-              test_results_1.host_id,
-              max(test_results_1.end_time) AS end_time
-             FROM test_results test_results_1
-            GROUP BY test_results_1.profile_id, test_results_1.host_id) tr ON (((test_results.profile_id = tr.profile_id) AND (test_results.host_id = tr.host_id) AND (test_results.end_time = tr.end_time))));
+  create_view "policy_systems", sql_definition: <<-SQL
+      SELECT policy_hosts.id,
+      policy_hosts.policy_id,
+      policy_hosts.host_id AS system_id
+     FROM policy_hosts;
+  SQL
+  create_view "report_systems", sql_definition: <<-SQL
+      SELECT policy_hosts.id,
+      policy_hosts.policy_id AS report_id,
+      policy_hosts.host_id AS system_id
+     FROM policy_hosts;
   SQL
   create_view "supported_profiles", sql_definition: <<-SQL
       SELECT (array_agg(canonical_profiles_v2.id ORDER BY (string_to_array((security_guides_v2.version)::text, '.'::text))::integer[] DESC))[1] AS id,
@@ -547,6 +351,51 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
        JOIN security_guides_v2 ON ((security_guides_v2.id = canonical_profiles_v2.security_guide_id)))
        JOIN profile_os_minor_versions ON ((profile_os_minor_versions.profile_id = canonical_profiles_v2.id)))
     GROUP BY canonical_profiles_v2.ref_id, security_guides_v2.os_major_version;
+  SQL
+  create_view "tailoring_rules", sql_definition: <<-SQL
+      SELECT profile_rules.id,
+      profile_rules.profile_id AS tailoring_id,
+      profile_rules.rule_id
+     FROM profile_rules;
+  SQL
+  create_view "tailorings", sql_definition: <<-SQL
+      SELECT profiles.id,
+      profiles.policy_id,
+      profiles.parent_profile_id AS profile_id,
+      profiles.value_overrides,
+      (NULLIF((profiles.os_minor_version)::text, ''::text))::integer AS os_minor_version,
+      profiles.created_at,
+      profiles.updated_at
+     FROM profiles
+    WHERE (parent_profile_id IS NOT NULL);
+  SQL
+  create_view "v1_benchmarks", sql_definition: <<-SQL
+      SELECT security_guides_v2.id,
+      security_guides_v2.ref_id,
+      security_guides_v2.title,
+      security_guides_v2.description,
+      security_guides_v2.version,
+      security_guides_v2.created_at,
+      security_guides_v2.updated_at,
+      security_guides_v2.package_name
+     FROM security_guides_v2;
+  SQL
+  create_view "v1_profile_rules", sql_definition: <<-SQL
+      SELECT profile_rules_v2.id,
+      profile_rules_v2.profile_id,
+      profile_rules_v2.rule_id,
+      profile_rules_v2.created_at,
+      profile_rules_v2.updated_at
+     FROM profile_rules_v2
+  UNION ALL
+   SELECT profile_rules.id,
+      profile_rules.profile_id,
+      profile_rules.rule_id,
+      profile_rules.created_at,
+      profile_rules.updated_at
+     FROM (profile_rules
+       JOIN profiles ON ((profile_rules.profile_id = profiles.id)))
+    WHERE (profiles.parent_profile_id IS NOT NULL);
   SQL
   create_view "v1_profiles", sql_definition: <<-SQL
       SELECT canonical_profiles_v2.id,
@@ -584,16 +433,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
      FROM profiles
     WHERE (profiles.parent_profile_id IS NOT NULL);
   SQL
-  create_view "v1_benchmarks", sql_definition: <<-SQL
-      SELECT security_guides_v2.id,
-      security_guides_v2.ref_id,
-      security_guides_v2.title,
-      security_guides_v2.description,
-      security_guides_v2.version,
-      security_guides_v2.created_at,
-      security_guides_v2.updated_at,
-      security_guides_v2.package_name
-     FROM security_guides_v2;
+  create_view "v1_rule_group_relationships", sql_definition: <<-SQL
+      SELECT rule_group_relationships_v2.id,
+      rule_group_relationships_v2.left_type,
+      rule_group_relationships_v2.left_id,
+      rule_group_relationships_v2.right_type,
+      rule_group_relationships_v2.right_id,
+      rule_group_relationships_v2.relationship,
+      rule_group_relationships_v2.created_at,
+      rule_group_relationships_v2.updated_at
+     FROM rule_group_relationships_v2;
+  SQL
+  create_view "v1_rule_groups", sql_definition: <<-SQL
+      SELECT rule_groups_v2.id,
+      rule_groups_v2.ref_id,
+      rule_groups_v2.title,
+      rule_groups_v2.description,
+      rule_groups_v2.rationale,
+      rule_groups_v2.ancestry,
+      rule_groups_v2.security_guide_id AS benchmark_id,
+      rule_groups_v2.rule_id,
+      rule_groups_v2.precedence,
+      rule_groups_v2.created_at,
+      rule_groups_v2.updated_at
+     FROM rule_groups_v2;
   SQL
   create_view "v1_rules", sql_definition: <<-SQL
       SELECT rules_v2.id,
@@ -629,47 +492,41 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
       value_definitions_v2.updated_at
      FROM value_definitions_v2;
   SQL
-  create_view "v1_rule_groups", sql_definition: <<-SQL
-      SELECT rule_groups_v2.id,
-      rule_groups_v2.ref_id,
-      rule_groups_v2.title,
-      rule_groups_v2.description,
-      rule_groups_v2.rationale,
-      rule_groups_v2.ancestry,
-      rule_groups_v2.security_guide_id AS benchmark_id,
-      rule_groups_v2.rule_id,
-      rule_groups_v2.precedence,
-      rule_groups_v2.created_at,
-      rule_groups_v2.updated_at
-     FROM rule_groups_v2;
+  create_view "v2_policies", sql_definition: <<-SQL
+      SELECT policies.id,
+      policies.name AS title,
+      policies.description,
+      policies.compliance_threshold,
+      business_objectives.title AS business_objective,
+      COALESCE(sq.total_system_count, (0)::bigint) AS total_system_count,
+      policies.profile_id,
+      policies.account_id
+     FROM ((policies
+       LEFT JOIN business_objectives ON ((business_objectives.id = policies.business_objective_id)))
+       LEFT JOIN ( SELECT count(policy_hosts.host_id) AS total_system_count,
+              policy_hosts.policy_id
+             FROM policy_hosts
+            GROUP BY policy_hosts.policy_id) sq ON ((sq.policy_id = policies.id)));
   SQL
-  create_view "v1_profile_rules", sql_definition: <<-SQL
-      SELECT profile_rules_v2.id,
-      profile_rules_v2.profile_id,
-      profile_rules_v2.rule_id,
-      profile_rules_v2.created_at,
-      profile_rules_v2.updated_at
-     FROM profile_rules_v2
-  UNION ALL
-   SELECT profile_rules.id,
-      profile_rules.profile_id,
-      profile_rules.rule_id,
-      profile_rules.created_at,
-      profile_rules.updated_at
-     FROM (profile_rules
-       JOIN profiles ON ((profile_rules.profile_id = profiles.id)))
-    WHERE (profiles.parent_profile_id IS NOT NULL);
-  SQL
-  create_view "v1_rule_group_relationships", sql_definition: <<-SQL
-      SELECT rule_group_relationships_v2.id,
-      rule_group_relationships_v2.left_type,
-      rule_group_relationships_v2.left_id,
-      rule_group_relationships_v2.right_type,
-      rule_group_relationships_v2.right_id,
-      rule_group_relationships_v2.relationship,
-      rule_group_relationships_v2.created_at,
-      rule_group_relationships_v2.updated_at
-     FROM rule_group_relationships_v2;
+  create_view "v2_test_results", sql_definition: <<-SQL
+      SELECT test_results.id,
+      test_results.profile_id AS tailoring_id,
+      profiles.policy_id AS report_id,
+      test_results.host_id AS system_id,
+      test_results.start_time,
+      test_results.end_time,
+      test_results.score,
+      test_results.supported,
+      test_results.failed_rule_count,
+      test_results.created_at,
+      test_results.updated_at
+     FROM ((test_results
+       JOIN profiles ON ((profiles.id = test_results.profile_id)))
+       JOIN ( SELECT test_results_1.profile_id,
+              test_results_1.host_id,
+              max(test_results_1.end_time) AS end_time
+             FROM test_results test_results_1
+            GROUP BY test_results_1.profile_id, test_results_1.host_id) tr ON (((test_results.profile_id = tr.profile_id) AND (test_results.host_id = tr.host_id) AND (test_results.end_time = tr.end_time))));
   SQL
 
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
@@ -764,102 +621,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
           WHERE NEW."business_objective" IS NULL AND "business_objectives"."id" = "bo_id";
 
           RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v2_rules_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v2_rules_insert()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE result_id uuid;
-      BEGIN
-          INSERT INTO "rules" (
-            "ref_id",
-            "slug",
-            "title",
-            "severity",
-            "description",
-            "rationale",
-            "created_at",
-            "updated_at",
-            "remediation_available",
-            "benchmark_id",
-            "upstream",
-            "precedence",
-            "rule_group_id",
-            "value_checks",
-            "identifier"
-          ) VALUES (
-            NEW."ref_id",
-            LOWER(REGEXP_REPLACE(NEW."ref_id", '\.', '-', 'g')),
-            NEW."title",
-            NEW."severity",
-            NEW."description",
-            NEW."rationale",
-            NEW."created_at",
-            NEW."updated_at",
-            NEW."remediation_available",
-            NEW."security_guide_id",
-            NEW."upstream",
-            NEW."precedence",
-            NEW."rule_group_id",
-            NEW."value_checks",
-            NEW."identifier"
-          ) RETURNING "id" INTO "result_id";
-
-          -- Insert a new rule reference record separately
-          INSERT INTO "rule_references_containers" ("rule_references", "rule_id", "created_at", "updated_at")
-          SELECT NEW."references", "result_id", NOW(), NOW();
-
-          NEW."id" := "result_id";
-          RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v2_rules_update, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v2_rules_update()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-          -- Update the rule reference record separately
-          UPDATE "rule_references_containers" SET "rule_references" = NEW."references" WHERE "rule_id" = OLD."id";
-
-          UPDATE "rules" SET
-            "ref_id" = NEW."ref_id",
-            "title" = NEW."title",
-            "severity" = NEW."severity",
-            "description" = NEW."description",
-            "rationale" = NEW."rationale",
-            "created_at" = NEW."created_at",
-            "updated_at" = NEW."updated_at",
-            "remediation_available" = NEW."remediation_available",
-            "benchmark_id" = NEW."security_guide_id",
-            "upstream" = NEW."upstream",
-            "precedence" = NEW."precedence",
-            "rule_group_id" = NEW."rule_group_id",
-            "value_checks" = NEW."value_checks",
-            "identifier" = NEW."identifier"
-          WHERE "id" = OLD."id";
-
-          RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v2_rules_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v2_rules_delete()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-        -- Delete the rule reference record separately
-        DELETE FROM "rule_references_containers" WHERE "rule_id" = OLD."id";
-        DELETE FROM "rules" WHERE "id" = OLD."id";
-      RETURN OLD;
       END
       $function$
   SQL
@@ -1475,18 +1236,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_120320) do
 
   create_trigger :v2_policies_update, sql_definition: <<-SQL
       CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
-  SQL
-
-  create_trigger :v2_rules_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v2_rules_delete INSTEAD OF DELETE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_delete()
-  SQL
-
-  create_trigger :v2_rules_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_rules_insert INSTEAD OF INSERT ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_insert()
-  SQL
-
-  create_trigger :v2_rules_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_rules_update INSTEAD OF UPDATE ON public.v2_rules FOR EACH ROW EXECUTE FUNCTION v2_rules_update()
   SQL
 
   create_trigger :historical_test_results_delete, sql_definition: <<-SQL
