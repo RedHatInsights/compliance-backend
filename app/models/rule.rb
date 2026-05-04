@@ -129,7 +129,7 @@ class Rule < ApplicationRecord
   end
 
   def self.filter_by_identifier(_filter, operator, value)
-    { conditions: sanitize_sql_for_conditions(["rules.identifier ->> 'label' #{operator} ?", value]) }
+    { conditions: sanitize_sql_for_conditions(["v1_rules.identifier ->> 'label' #{operator} ?", value]) }
   end
 
   def self.filter_by_references(_filter, operator, value)
@@ -139,6 +139,6 @@ class Rule < ApplicationRecord
 
     operator = operator == '!=' ? 'NOT' : ''
 
-    { conditions: "rules.id #{operator} IN (#{rules.to_sql})" }
+    { conditions: "v1_rules.id #{operator} IN (#{rules.to_sql})" }
   end
 end
