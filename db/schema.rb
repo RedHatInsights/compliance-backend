@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_04_153823) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_06_210001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -188,6 +188,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_04_153823) do
     t.index ["host_id"], name: "index_rule_results_on_host_id"
     t.index ["rule_id"], name: "index_rule_results_on_rule_id"
     t.index ["test_result_id"], name: "index_rule_results_on_test_result_id"
+    t.index ["test_result_id", "result"], name: "index_rule_results_on_test_result_id_and_result"
   end
 
   create_table "rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -211,6 +212,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_04_153823) do
     t.index ["ref_id", "security_guide_id"], name: "index_rules_v2_on_ref_id_and_security_guide_id", unique: true
     t.index ["ref_id"], name: "index_rules_v2_on_ref_id"
     t.index ["references"], name: "index_rules_v2_on_references", opclass: :jsonb_path_ops, using: :gin
+    t.index ["severity"], name: "index_rules_v2_on_severity"
     t.index ["upstream"], name: "index_rules_v2_on_upstream"
   end
 

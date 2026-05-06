@@ -254,6 +254,8 @@ objects:
           value: "${PUMA_MIN_THREADS}"
         - name: PUMA_MAX_THREADS
           value: "${PUMA_MAX_THREADS}"
+        - name: POSTGRESQL_MAX_CONNECTIONS
+          value: "${POSTGRESQL_MAX_CONNECTIONS}"
         - name: MALLOC_ARENA_MAX
           value: '2'
         - name: RUBY_YJIT_ENABLE
@@ -335,8 +337,7 @@ objects:
           value: ${KESSEL_PRINCIPAL_DOMAIN}
         # If we can configure the metrics endpoint to listen to 9000 this definitions should go away
         livenessProbe:
-          httpGet:
-            path: /api/compliance/v2/openapi.json
+          tcpSocket:
             port: web
           initialDelaySeconds: 10
           periodSeconds: 30
@@ -486,6 +487,8 @@ objects:
           value: "${APP_NAME}"
         - name: SIDEKIQ_CONCURRENCY
           value: "${SIDEKIQ_CONCURRENCY}"
+        - name: POSTGRESQL_MAX_CONNECTIONS
+          value: "${POSTGRESQL_MAX_CONNECTIONS}"
         - name: MALLOC_ARENA_MAX
           value: '2'
         - name: RUBY_YJIT_ENABLE
@@ -741,6 +744,9 @@ parameters:
   value: "1"
 - name: PUMA_MAX_THREADS
   value: "3"
+- name: POSTGRESQL_MAX_CONNECTIONS
+  description: 'ActiveRecord connection pool size per process'
+  value: "5"
 - name: OLD_PATH_PREFIX
   value: /r/insights/platform
 - name: SETTINGS__FORCE_IMPORT_SSGS

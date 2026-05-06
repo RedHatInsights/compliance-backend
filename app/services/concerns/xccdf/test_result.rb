@@ -20,11 +20,24 @@ module Xccdf
     end
 
     def delete_old_test_results
-      ::TestResult.left_outer_joins(profile: :policy)
-                  .where(v1_profiles: { policy: @host_profile.policy_id },
-                         host: @host)
-                  .where.not(id: @test_result.id)
-                  .destroy_all
+      old_test_results = ::TestResult.left_outer_joins(profile: :policy)
+                                     .where(v1_profiles: { policy: @host_profile.policy_id },
+                                            host: @host)
+                                     .where.not(id: @test_result.id)
+
+      affected_profile_ids = old_test_results.pluck(:profile_id).uniq
+      old_ids = old_test_results.pluck(:id)
+      return if old_ids.empty?
+
+      ::RuleResult.where(test_result_id: old_ids).delete_all
+      ::TestResult.where(id: old_ids).delete_all
+      refresh_cached_scores(affected_profile_ids)
+    end
+
+    def refresh_cached_scores(affected_profile_ids)
+      @test_result.update_cached_fields!
+      ::Profile.where(id: affected_profile_ids - [@test_result.profile_id])
+               .find_each(&:calculate_score!)
     end
 
     def supported?
