@@ -23,10 +23,19 @@
   end
 %>
 
+<%
+  # Pool size must cover all threads within a single OS process.
+  # In worker mode each Puma worker forks its own pool, so the per-process
+  # pool only needs to match the thread count -- not threads * workers.
+  max_threads   = ENV.fetch('PUMA_MAX_THREADS', 5).to_i
+  explicit_pool = ENV['POSTGRESQL_MAX_CONNECTIONS']
+  pool_size     = explicit_pool ? explicit_pool.to_i : [max_threads, 5].max
+%>
+
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV['POSTGRESQL_MAX_CONNECTIONS'] || 5 %>
+  pool: <%= pool_size %>
   username: <%= config[:username] %>
   password: <%= config[:password] %>
   host: <%= config[:host] %>
