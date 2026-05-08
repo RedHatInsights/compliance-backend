@@ -24,7 +24,7 @@ jobs:
           git add .ruby-version
           git commit -m "chore(devel): update .ruby-version" || echo "No new changes"
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           title: 'chore(devel): update .ruby-version'
           branch: automation/ruby-version
@@ -50,7 +50,7 @@ jobs:
           git add Gemfile.lock
           git commit -m "chore(deps): update bundler version" || echo "No new changes"
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           title: 'chore(deps): update bundler version'
           branch: automation/bundler-version
