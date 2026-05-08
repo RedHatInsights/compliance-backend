@@ -149,7 +149,7 @@ jobs:
         RUBY_YJIT_ENABLE: 1
       run: bin/rake spec
     - name: Upload code coverage from RSpec
-      uses: codecov/codecov-action@v5.3.1
+      uses: codecov/codecov-action@v5.5.4
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -167,7 +167,7 @@ jobs:
         RUBY_YJIT_ENABLE: 1
       run: bin/rake test
     - name: Upload code coverage from minitest
-      uses: codecov/codecov-action@v5.3.1
+      uses: codecov/codecov-action@v5.5.4
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
