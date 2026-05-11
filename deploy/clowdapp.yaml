@@ -598,12 +598,12 @@ objects:
           "v2_test_results"."start_time" AS "start_time",
           "v2_test_results"."end_time" AS "end_time",
           "v2_test_results"."system_id"::TEXT AS "system_id",
-          "canonical_profiles"."ref_id" AS "canonical_profile_ref_id",
+          "canonical_profiles_v2"."ref_id" AS "canonical_profile_ref_id",
           "accounts"."org_id" AS "org_id"
           FROM "v2_test_results"
           INNER JOIN "tailorings" ON "tailorings"."id" = "v2_test_results"."tailoring_id"
           INNER JOIN "v2_policies" ON "v2_policies"."id" = "tailorings"."policy_id"
-          INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "tailorings"."profile_id"
+          INNER JOIN "canonical_profiles_v2" ON "canonical_profiles_v2"."id" = "tailorings"."profile_id"
           INNER JOIN "accounts" ON "accounts"."id" = "v2_policies"."account_id";
 
 - apiVersion: metrics.console.redhat.com/v1alpha1
