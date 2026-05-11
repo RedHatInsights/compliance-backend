@@ -72,3 +72,8 @@ Gemfile.local
 scap-security-guide*
 
 deploy/clowder-config-main
+
+# helper files needed for hermetic builds maintenance
+redhat-uep.pem
+entitlement/
+redhat.repo
