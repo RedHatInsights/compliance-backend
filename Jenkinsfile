@@ -59,19 +59,38 @@ pipeline {
                         curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                         source ./.cicd_bootstrap.sh
 
-                        # Reserve namespace here so the check_bonfire_namespace in insights-service-deployer
-                        # sees a non-default project and skips its own reservation attempt
+                        COMPLIANCE_SHA=$(git ls-remote https://github.com/RedHatInsights/compliance-backend.git HEAD | cut -f1)
+                        COMPLIANCE_SHORT_SHA=${COMPLIANCE_SHA:0:7}
+
+                        RBAC_SHA=$(git ls-remote https://github.com/RedHatInsights/insights-rbac.git HEAD | cut -f1)
+                        RBAC_SHORT_SHA=${RBAC_SHA:0:7}
+
                         NAMESPACE=$(bonfire namespace reserve --duration 10h)
                         oc project $NAMESPACE
 
-                        git clone https://github.com/romanblanco/insights-service-deployer.git # TODO: project-kessel/insights-service-deployer
-                        cd insights-service-deployer
-                        git checkout RHINENG-23964-deploy-kessel-to-ephemeral # TODO: remove once patch is upstreamed
-                        EPHEMERAL_TOKEN=$OC_LOGIN_TOKEN_DEV EPHEMERAL_SERVER=$OC_LOGIN_SERVER_DEV ./deploy.sh compliance
-                        cd ..
+                        bonfire deploy compliance \
+                            --source appsre \
+                            --ref-env insights-production \
+                            --timeout 900 \
+                            --optional-deps-method all \
+                            --frontends false \
+                            --set-image-tag quay.io/cloudservices/compliance-backend=${COMPLIANCE_SHORT_SHA} \
+                            --set-template-ref compliance=${COMPLIANCE_SHA} \
+                            --set-image-tag quay.io/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac=${RBAC_SHORT_SHA} \
+                            --set-template-ref rbac=${RBAC_SHA} \
+                            -p rbac/NOTIFICATIONS_RH_ENABLED=False \
+                            -p rbac/V2_MIGRATION_APP_EXCLUDE_LIST="approval" \
+                            -p rbac/ROLE_CREATE_ALLOW_LIST="remediations,inventory,policies,advisor,vulnerability,compliance,automation-analytics,notifications,patch,integrations,ros,staleness,config-manager,idmsvc" \
+                            -p rbac/REPLICATION_TO_RELATION_ENABLED=True \
+                            -p rbac/PARITY_CHECK_INTERVAL_SECONDS=300 \
+                            -p kessel-relations/SPICEDB_QUANTIZATION_INTERVAL=2.5s \
+                            -p kessel-relations/SPICEDB_QUANTIZATION_STALENESS_PERCENT=0 \
+                            -p host-inventory/BYPASS_RBAC=false \
+                            -p host-inventory/BYPASS_KESSEL=false \
+                            -n $NAMESPACE
 
-                        export NAMESPACE=$(oc project -q)
-                        source "${CICD_ROOT}/cji_smoke_test.sh" # Compliance smoke tests
+                        export NAMESPACE
+                        source "${CICD_ROOT}/cji_smoke_test.sh"
 
                         # Update IQE plugin config to run floorist plugin tests.
                         export COMPONENT_NAME="compliance"
