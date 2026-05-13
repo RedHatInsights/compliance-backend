@@ -583,7 +583,7 @@ describe V2::ReportsController do
           profile_title: :profile_title,
           business_objective: :business_objective,
           compliance_threshold: :compliance_threshold,
-          all_systems_exposed: -> { false }, # this is inconcistent but we don't care
+          all_systems_exposed: -> { true },
           percent_compliant: -> { 0 },
           reported_system_count: -> { 0 },
           compliant_system_count: -> { 0 },
