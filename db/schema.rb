@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_06_210001) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_13_140100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -240,6 +240,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_210001) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["host_id", "profile_id", "end_time"], name: "index_test_results_on_host_id_and_profile_id_and_end_time", unique: true
     t.index ["host_id"], name: "index_test_results_on_host_id"
+    t.index ["profile_id", "host_id", "end_time"], name: "index_test_results_for_latest_lookup", order: { end_time: :desc }, include: ["id"]
     t.index ["profile_id"], name: "index_test_results_on_profile_id"
     t.index ["supported"], name: "index_test_results_on_supported"
   end
