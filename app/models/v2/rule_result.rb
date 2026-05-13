@@ -35,6 +35,14 @@ module V2
         .select(*serializer_select_fields)
     }
 
+    # Lighter scope for COUNT queries: only rule (for searchable_by filters)
+    # and test_result + system (for Pundit org_id scoping). Skips the
+    # tailoring → profile → security_guide chain that serialization needs.
+    scope :with_count_data, lambda {
+      joins(build_rule_join)
+        .joins(test_result: :system)
+    }
+
     def self.serializer_dependencies
       @serializer_dependencies ||= begin
         deps = V2::RuleResultSerializer.dependencies([], %i[rule system profile security_guide])
