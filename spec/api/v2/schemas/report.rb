@@ -69,37 +69,34 @@ module Api
               type: :number,
               minium: 1,
               examples: [42],
-              description: 'The number of Systems assigned to this Report. Not visible under the Systems endpoint.',
+              description: 'The number of Systems assigned to this Report',
               readOnly: true
             },
             compliant_system_count: {
               type: :number,
               minium: 0,
               examples: [21],
-              description: 'The number of compliant Systems in this Report. Inconsistent under the Systems endpoint.',
+              description: 'The number of compliant Systems in this Report',
               readOnly: true
             },
             all_systems_exposed: {
               type: :boolean,
-              description: 'Informs if the user has access to all the Systems under the Report. \
-                            Inconsistent under the Systems endpoint.',
-              examples: [false],
+              description: 'Informs if the user has access to all the Systems under the Report',
+              examples: [true],
               readOnly: true
             },
             unsupported_system_count: {
               type: :number,
               minium: 0,
               examples: [3],
-              description: 'The number of unsupported Systems in this Report. \
-                            Inconsistent under the Systems endpoint.',
+              description: 'The number of unsupported Systems in this Report',
               readOnly: true
             },
             reported_system_count: {
               type: :number,
               minium: 0,
               examples: [3],
-              description: 'The number of Systems in this Report that have Test Results available. \
-                            Inconsistent under the Systems endpoint.',
+              description: 'The number of Systems in this Report that have Test Results available',
               readOnly: true
             }
           }
