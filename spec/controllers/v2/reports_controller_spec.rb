@@ -585,6 +585,7 @@ describe V2::ReportsController do
           compliance_threshold: :compliance_threshold,
           all_systems_exposed: -> { true },
           percent_compliant: -> { 0 },
+          assigned_system_count: -> { 1 },
           reported_system_count: -> { 0 },
           compliant_system_count: -> { 0 },
           unsupported_system_count: -> { 0 },
