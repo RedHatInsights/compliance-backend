@@ -37,43 +37,32 @@ module V2
       )
     end
 
-    # rubocop:disable Metrics/BlockLength
     PERCENT_COMPLIANT = lambda do
-      AN::NamedFunction.new(
-        'CAST',
-        [
-          AN::NamedFunction.new(
-            'FLOOR',
-            [
-              AN::Multiplication.new(
-                AN::NamedFunction.new(
-                  'COALESCE',
-                  [
-                    AN::Division.new(
-                      AN::NamedFunction.new(
-                        'CAST',
-                        [
-                          COMPLIANT_SYSTEM_COUNT.call.as('FLOAT')
-                        ]
-                      ),
-                      AN::NamedFunction.new(
-                        'NULLIF',
-                        [
-                          AN::NamedFunction.new('CAST', [SYSTEM_COUNT.call.as('FLOAT')]),
-                          Arel.sql('0')
-                        ]
-                      )
-                    ), Arel.sql('0')
-                  ]
-                ),
-                Arel.sql('100')
+      AN::Multiplication.new(
+        AN::NamedFunction.new(
+          'COALESCE',
+          [
+            AN::Division.new(
+              AN::NamedFunction.new(
+                'CAST',
+                [
+                  COMPLIANT_SYSTEM_COUNT.call.as('NUMERIC')
+                ]
+              ),
+              AN::NamedFunction.new(
+                'NULLIF',
+                [
+                  SYSTEM_COUNT.call,
+                  Arel.sql('0')
+                ]
               )
-            ]
-          ).as('INTEGER')
-        ]
+            ),
+            Arel.sql('0')
+          ]
+        ),
+        Arel.sql('100')
       )
     end
-    # rubocop:enable Metrics/BlockLength
 
     # To prevent an autojoin with itself, there should not be an inverse relationship specified
     belongs_to :policy, class_name: 'V2::Policy', foreign_key: :id # rubocop:disable Rails/InverseOf
