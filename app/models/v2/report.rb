@@ -46,29 +46,15 @@ module V2
     end
 
     PERCENT_COMPLIANT = lambda do
-      AN::Multiplication.new(
-        AN::NamedFunction.new(
-          'COALESCE',
-          [
-            AN::Division.new(
-              AN::NamedFunction.new(
-                'CAST',
-                [
-                  COMPLIANT_SYSTEM_COUNT.call.as('NUMERIC')
-                ]
-              ),
-              AN::NamedFunction.new(
-                'NULLIF',
-                [
-                  SYSTEM_COUNT.call,
-                  Arel.sql('0')
-                ]
-              )
-            ),
-            Arel.sql('0')
-          ]
-        ),
-        Arel.sql('100')
+      AN::NamedFunction.new(
+        'COALESCE',
+        [
+          AN::Division.new(
+            AN::Multiplication.new(COMPLIANT_SYSTEM_COUNT.call, Arel.sql('100')),
+            AN::NamedFunction.new('NULLIF', [SYSTEM_COUNT.call, Arel.sql('0')])
+          ),
+          Arel.sql('0')
+        ]
       )
     end
 
