@@ -11,10 +11,12 @@ module V2
     derived_attribute :all_systems_exposed, :total_system_count
 
     aggregated_attribute :percent_compliant, :reporting_and_non_reporting_systems, V2::Report::PERCENT_COMPLIANT
-    aggregated_attribute :assigned_system_count, :systems, V2::Report::SYSTEM_COUNT
-    aggregated_attribute :compliant_system_count, :reported_systems, V2::Report::COMPLIANT_SYSTEM_COUNT
-    aggregated_attribute :unsupported_system_count, :reported_systems, V2::Report::UNSUPPORTED_SYSTEM_COUNT
-    aggregated_attribute :reported_system_count, :reported_systems, V2::Report::SYSTEM_COUNT
+    aggregated_attribute :assigned_system_count, :reporting_and_non_reporting_systems, V2::Report::SYSTEM_COUNT
+    aggregated_attribute :compliant_system_count, :reporting_and_non_reporting_systems, V2::Report::COMPLIANT_SYSTEM_COUNT
+    aggregated_attribute :unsupported_system_count, :reporting_and_non_reporting_systems,
+                         V2::Report::UNSUPPORTED_SYSTEM_COUNT
+    aggregated_attribute :reported_system_count, :reporting_and_non_reporting_systems,
+                         V2::Report::REPORTED_SYSTEM_COUNT
     aggregated_attribute :never_reported_system_count, :reporting_and_non_reporting_systems,
                          V2::Report::NEVER_REPORTED_SYSTEM_COUNT
   end
