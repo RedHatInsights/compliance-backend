@@ -6,6 +6,7 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
   setup do
     @account = FactoryBot.create(:account)
     @parent = FactoryBot.create(:canonical_profile, :with_rules)
+    @policy = FactoryBot.create(:policy, account: @account)
   end
 
   test 'builds a valid tailoring file' do
@@ -29,7 +30,8 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
       ref_id: 'test',
       name: 'test profile',
       benchmark_id: @parent.benchmark.id,
-      parent_profile_id: @parent.id
+      parent_profile_id: @parent.id,
+      policy_id: @policy.id
     )
     tailoring_file = XccdfTailoringFile.new(profile: profile)
     op_tailoring = OpenscapParser::TailoringFile.new(tailoring_file.to_xml)
@@ -44,7 +46,8 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
         ref_id: 'test',
         name: 'test profile',
         benchmark_id: @parent.benchmark.id,
-        parent_profile_id: @parent.id
+        parent_profile_id: @parent.id,
+        policy_id: @policy.id
       )
       @rules = @parent.rules.take(2)
 
@@ -179,7 +182,8 @@ class XccdfTailoringFileTest < ActiveSupport::TestCase
       ref_id: 'test',
       name: 'test profile',
       benchmark_id: @parent.benchmark.id,
-      parent_profile_id: @parent.id
+      parent_profile_id: @parent.id,
+      policy_id: @policy.id
     )
     assert_raises(ArgumentError) do
       XccdfTailoringFile.new(profile: profile,

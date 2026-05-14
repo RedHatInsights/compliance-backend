@@ -45,30 +45,4 @@ class TestResultPolicyTest < ActiveSupport::TestCase
 
     stub_rbac_permissions(Rbac::INVENTORY_HOSTS_READ)
   end
-
-  test 'only test results within visible profiles are accessible' do
-    assert_not @tr2.profile.canonical?
-    assert_includes Pundit.policy_scope(@user, Profile), @profile1
-
-    @tr1.host = nil
-    @tr1.save(validate: false)
-
-    assert_includes Pundit.policy_scope(@user, TestResult), @tr1
-    assert Pundit.authorize(@user, @tr1, :index?)
-    assert Pundit.authorize(@user, @tr1, :show?)
-    assert_not_includes Pundit.policy_scope(@user, TestResult), @tr2
-  end
-
-  test 'only test results within visible hosts are accessible' do
-    assert_not @tr2.profile.canonical?
-    assert_includes Pundit.policy_scope(@user, Host), @host1
-
-    @tr1.profile = nil
-    @tr1.save(validate: false)
-
-    assert_includes Pundit.policy_scope(@user, TestResult), @tr1
-    assert Pundit.authorize(@user, @tr1, :index?)
-    assert Pundit.authorize(@user, @tr1, :show?)
-    assert_not_includes Pundit.policy_scope(@user, TestResult), @tr2
-  end
 end

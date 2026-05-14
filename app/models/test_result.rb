@@ -16,11 +16,11 @@ class TestResult < ApplicationRecord
                                                 dependent: :delete_all
   has_many :counters, lambda {
     group(:result, :test_result_id).select(:result, 'COUNT(result)', :test_result_id)
-  }, class_name: 'RuleResult', dependent: :nullify, inverse_of: :test_result
+  }, class_name: 'RuleResult', dependent: false, inverse_of: :test_result
 
   has_one :has_rule_results, lambda {
     select(1, :test_result_id)
-  }, class_name: 'RuleResult', dependent: :nullify, inverse_of: :test_result
+  }, class_name: 'RuleResult', dependent: false, inverse_of: :test_result
 
   validates :host, presence: true, on: :create
   validates :host_id, presence: true,

@@ -20,7 +20,8 @@ FactoryBot.define do
       association :policy,
                   account: account,
                   name: name,
-                  description: description
+                  description: description,
+                  profile_id: parent_profile.id
     end
 
     # Ensure parent_profile always points to a canonical profile, not another tailoring.
