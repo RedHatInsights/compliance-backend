@@ -8,8 +8,6 @@ class RuleReferencesContainer < ApplicationRecord
 
   belongs_to :rule
 
-  validates :rule_id, uniqueness: true
-
   def self.from_openscap_parser(op_rule, rule_id:, existing: nil)
     container = existing || new(rule_id: rule_id)
 
