@@ -22,7 +22,7 @@ describe V2::TestResult do
           policy_id: policy.id,
           account: account
         ).each do |sys|
-          FactoryBot.create(:v2_test_result, system: sys, policy_id: policy.id)
+          FactoryBot.create(:v2_test_result, system: sys, report_id: policy.id)
         end
       end
     end
@@ -49,7 +49,7 @@ describe V2::TestResult do
     let(:test_result) do
       FactoryBot.create(
         :v2_test_result,
-        policy_id: policy.id,
+        report_id: policy.id,
         account: account,
         score: score
       )

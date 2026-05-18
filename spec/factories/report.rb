@@ -28,7 +28,7 @@ FactoryBot.define do
             account: context.account,
             supported: false,
             score: nil,
-            policy_id: policy.id
+            report_id: policy.id
           )
         end
 
@@ -39,7 +39,7 @@ FactoryBot.define do
             account: context.account,
             supported: true,
             score_above: context.compliance_threshold,
-            policy_id: policy.id
+            report_id: policy.id
           )
         end
 
@@ -50,7 +50,7 @@ FactoryBot.define do
             account: context.account,
             supported: true,
             score_below: context.compliance_threshold,
-            policy_id: policy.id
+            report_id: policy.id
           )
         end
       end

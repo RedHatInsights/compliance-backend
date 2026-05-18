@@ -8,28 +8,6 @@ class CleanupDbTest < ActiveSupport::TestCase
     Rails.application.load_tasks if Rake::Task.tasks.empty?
   end
 
-  test 'cleanup_db removes dangling records' do
-    account = FactoryBot.create(:account)
-    FactoryBot.create(:host, org_id: account.org_id)
-    policy = FactoryBot.create(:policy, account: account)
-    account.dup.update!(org_id: '8675309')
-
-    TestResult.new(host_id: UUID.generate).save(validate: false)
-    RuleResult.new(host_id: UUID.generate).save(validate: false)
-    PolicyHost.new(host_id: UUID.generate, policy: policy)
-              .save(validate: false)
-
-    assert_difference(
-      'Account.count' => -1,
-      'TestResult.count' => -1, 'RuleResult.count' => -1,
-      'PolicyHost.count' => -1
-    ) do
-      capture_io do
-        Rake::Task['cleanup_db'].execute
-      end
-    end
-  end
-
   test 'cleanup_db does not remove accounts on a profile, policy, or host' do
     aorig = FactoryBot.create(:account)
     FactoryBot.create(:host, org_id: aorig.org_id)

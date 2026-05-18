@@ -553,31 +553,32 @@ objects:
     - prefix: insights/compliance/policies
       query: >-
         SELECT DISTINCT
-          "policies"."id",
-          "profiles"."ref_id",
-          "profiles"."name",
+          "policies_v2"."id",
+          "canonical_profiles_v2"."ref_id",
+          "canonical_profiles_v2"."title" AS "name",
           "accounts"."org_id",
-          REGEXP_REPLACE("benchmarks"."ref_id", '.*RHEL-(\d)$', '\1') AS "os_major_version"
-          FROM "policies"
-          INNER JOIN "profiles" ON "profiles"."policy_id" = "policies"."id"
-          INNER JOIN "accounts" ON "accounts"."id" = "policies"."account_id"
-          INNER JOIN "benchmarks" ON "benchmarks"."id" = "profiles"."benchmark_id";
+          "security_guides_v2"."os_major_version"
+          FROM "policies_v2"
+          INNER JOIN "canonical_profiles_v2" ON "canonical_profiles_v2"."id" = "policies_v2"."profile_id"
+          INNER JOIN "security_guides_v2" ON "security_guides_v2"."id" = "canonical_profiles_v2"."security_guide_id"
+          INNER JOIN "accounts" ON "accounts"."id" = "policies_v2"."account_id";
     - prefix: insights/compliance/policy_hosts
       query: >-
-        SELECT "policy_hosts"."host_id", "policy_hosts"."policy_id" FROM "policy_hosts";
+        SELECT "policy_systems_v2"."system_id" AS "host_id", "policy_systems_v2"."policy_id" FROM "policy_systems_v2";
     - prefix: insights/compliance/failed_rules
       query: >-
-        SELECT "rules"."ref_id", "accounts"."org_id", COUNT("rule_results"."id") as "failed_count" FROM "rule_results"
-        INNER JOIN "rules" ON "rules"."id" = "rule_results"."rule_id"
-        INNER JOIN "test_results" ON "test_results"."id" = "rule_results"."test_result_id"
-        INNER JOIN "profiles" ON "profiles"."id" = "test_results"."profile_id"
-        INNER JOIN "accounts" ON "accounts"."id" = "profiles"."account_id"
+        SELECT "rules_v2"."ref_id", "accounts"."org_id", COUNT("rule_results_v2"."id") as "failed_count" FROM "rule_results_v2"
+        INNER JOIN "rules_v2" ON "rules_v2"."id" = "rule_results_v2"."rule_id"
+        INNER JOIN "historical_test_results_v2" ON "historical_test_results_v2"."id" = "rule_results_v2"."test_result_id"
+        INNER JOIN "tailorings_v2" ON "tailorings_v2"."id" = "historical_test_results_v2"."tailoring_id"
+        INNER JOIN "policies_v2" ON "policies_v2"."id" = "tailorings_v2"."policy_id"
+        INNER JOIN "accounts" ON "accounts"."id" = "policies_v2"."account_id"
         INNER JOIN (
-          SELECT "test_results"."profile_id", "test_results"."host_id", MAX("test_results"."end_time") AS "end_time" FROM "test_results"
-          GROUP BY "test_results"."profile_id", "test_results"."host_id"
-        ) AS "tr" ON ("test_results"."profile_id" = "tr"."profile_id" AND "test_results"."host_id" = "tr"."host_id" AND "test_results"."end_time" = "tr"."end_time")
-        WHERE rule_results.result IN ('fail', 'error', 'unknown', 'fixed')
-        GROUP BY "rules"."ref_id", "accounts"."org_id";
+          SELECT "historical_test_results_v2"."tailoring_id", "historical_test_results_v2"."system_id", MAX("historical_test_results_v2"."end_time") AS "end_time" FROM "historical_test_results_v2"
+          GROUP BY "historical_test_results_v2"."tailoring_id", "historical_test_results_v2"."system_id"
+        ) AS "tr" ON ("historical_test_results_v2"."tailoring_id" = "tr"."tailoring_id" AND "historical_test_results_v2"."system_id" = "tr"."system_id" AND "historical_test_results_v2"."end_time" = "tr"."end_time")
+        WHERE rule_results_v2.result IN ('fail', 'error', 'unknown', 'fixed')
+        GROUP BY "rules_v2"."ref_id", "accounts"."org_id";
 
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
@@ -595,16 +596,16 @@ objects:
       chunksize: 200000
       query: >-
         SELECT
-          "v2_test_results"."start_time" AS "start_time",
-          "v2_test_results"."end_time" AS "end_time",
-          "v2_test_results"."system_id"::TEXT AS "system_id",
-          "canonical_profiles"."ref_id" AS "canonical_profile_ref_id",
+          "historical_test_results_v2"."start_time" AS "start_time",
+          "historical_test_results_v2"."end_time" AS "end_time",
+          "historical_test_results_v2"."system_id"::TEXT AS "system_id",
+          "canonical_profiles_v2"."ref_id" AS "canonical_profile_ref_id",
           "accounts"."org_id" AS "org_id"
-          FROM "v2_test_results"
-          INNER JOIN "tailorings" ON "tailorings"."id" = "v2_test_results"."tailoring_id"
-          INNER JOIN "v2_policies" ON "v2_policies"."id" = "tailorings"."policy_id"
-          INNER JOIN "canonical_profiles" ON "canonical_profiles"."id" = "tailorings"."profile_id"
-          INNER JOIN "accounts" ON "accounts"."id" = "v2_policies"."account_id";
+          FROM "historical_test_results_v2"
+          INNER JOIN "tailorings_v2" ON "tailorings_v2"."id" = "historical_test_results_v2"."tailoring_id"
+          INNER JOIN "policies_v2" ON "policies_v2"."id" = "tailorings_v2"."policy_id"
+          INNER JOIN "canonical_profiles_v2" ON "canonical_profiles_v2"."id" = "tailorings_v2"."profile_id"
+          INNER JOIN "accounts" ON "accounts"."id" = "policies_v2"."account_id";
 
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
@@ -623,10 +624,10 @@ objects:
       query: >-
         SELECT DISTINCT
           "accounts"."org_id"
-        FROM "v2_policies"
-        INNER JOIN "accounts" ON "accounts"."id" = "v2_policies"."account_id"
-        WHERE "v2_policies"."id" IN (
-          SELECT "policy_systems"."policy_id" FROM "policy_systems" GROUP BY "policy_systems"."policy_id" HAVING COUNT("policy_systems"."system_id") > 0);
+        FROM "policies_v2"
+        INNER JOIN "accounts" ON "accounts"."id" = "policies_v2"."account_id"
+        WHERE "policies_v2"."id" IN (
+          SELECT "policy_systems_v2"."policy_id" FROM "policy_systems_v2" GROUP BY "policy_systems_v2"."policy_id" HAVING COUNT("policy_systems_v2"."system_id") > 0);
 
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
@@ -644,13 +645,13 @@ objects:
       chunksize: 200000
       query: >-
         SELECT
-          "v2_policies"."account_id" AS "org_id",
-          "policy_systems"."system_id"::TEXT AS "system_id",
-          MAX("v2_test_results"."updated_at") AS "updated_at"
-        FROM "v2_policies"
-        INNER JOIN "policy_systems" ON "policy_systems"."policy_id" = "v2_policies"."id"
-        INNER JOIN "v2_test_results" ON "v2_test_results"."system_id" = "policy_systems"."system_id"
-        GROUP BY "v2_policies"."account_id", "policy_systems"."system_id";
+          "policies_v2"."account_id" AS "org_id",
+          "policy_systems_v2"."system_id"::TEXT AS "system_id",
+          MAX("historical_test_results_v2"."updated_at") AS "updated_at"
+        FROM "policies_v2"
+        INNER JOIN "policy_systems_v2" ON "policy_systems_v2"."policy_id" = "policies_v2"."id"
+        INNER JOIN "historical_test_results_v2" ON "historical_test_results_v2"."system_id" = "policy_systems_v2"."system_id"
+        GROUP BY "policies_v2"."account_id", "policy_systems_v2"."system_id";
 
 - apiVersion: v1
   kind: Secret

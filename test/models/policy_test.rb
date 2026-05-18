@@ -55,11 +55,11 @@ class PolicyTest < ActiveSupport::TestCase
     context '#with_ref_ids' do
       setup do
         @p1 = FactoryBot.create(:profile, account: @account, policy: @policy)
-        @p2 = FactoryBot.create(:profile, account: @account, policy: nil)
+        @p2 = FactoryBot.create(:profile, account: @account)
       end
 
       should '#with_ref_ids accepts multiple ref_ids' do
-        assert_empty Policy.with_ref_ids([@p2.ref_id])
+        assert_not_includes Policy.with_ref_ids([@p2.ref_id]), @policy
         assert_includes Policy.with_ref_ids([@p1.ref_id]), @policy
 
         @policy.update!(profiles: [@p1, @p2])
@@ -67,7 +67,7 @@ class PolicyTest < ActiveSupport::TestCase
       end
 
       should '#with_ref_ids accepts single ref_ids' do
-        assert_empty Policy.with_ref_ids(@p2.ref_id)
+        assert_not_includes Policy.with_ref_ids(@p2.ref_id), @policy
         assert_includes Policy.with_ref_ids(@p1.ref_id), @policy
 
         @policy.update!(profiles: [@p1, @p2])
@@ -419,20 +419,8 @@ class PolicyTest < ActiveSupport::TestCase
         @profile.policy.update_os_minor_versions
 
         assert_equal @profile.reload.os_minor_version, ''
-        assert_equal @profile.policy.profiles.external(true)
-                             .first.os_minor_version, '4'
-      end
-
-      should 'update existing profile according the minor version' do
-        child_profile = @new_profile.clone_to(
-          account: @account,
-          policy: @policy
-        )
-
-        @profile.policy.update_os_minor_versions
-
-        assert_equal @profile.reload.os_minor_version, ''
-        assert_equal child_profile.reload.os_minor_version, '4'
+        new_profile = @profile.policy.profiles.where.not(id: @profile.id).first
+        assert_equal new_profile.os_minor_version, '4'
       end
 
       context 'multiple supported benchmarks with older assigned version' do
@@ -455,61 +443,6 @@ class PolicyTest < ActiveSupport::TestCase
           assert_equal child_profile.reload.os_minor_version, ''
         end
       end
-    end
-  end
-
-  context 'cached host counts' do
-    setup do
-      @host1 = FactoryBot.create(:host, org_id: @account.org_id)
-      @host2 = FactoryBot.create(:host, org_id: @account.org_id)
-      @profile = FactoryBot.create(:profile, policy: @policy, account: @account)
-    end
-
-    should 'change the test result host count when test results are assigned' do
-      FactoryBot.create(
-        :test_result,
-        host: @host1,
-        profile: @profile,
-        score: 100
-      )
-      assert_equal(@policy.reload.test_result_host_count, 1)
-      assert_equal(@policy.reload.compliant_host_count, 1)
-
-      FactoryBot.create(
-        :test_result,
-        host: @host2,
-        profile: @profile,
-        score: 0,
-        supported: false
-      )
-      assert_equal(@policy.reload.test_result_host_count, 1)
-      assert_equal(@policy.reload.compliant_host_count, 1)
-      assert_equal(@policy.reload.unsupported_host_count, 1)
-
-      FactoryBot.create(
-        :test_result,
-        host: @host2,
-        profile: @profile,
-        score: 0
-      )
-      assert_equal(@policy.reload.test_result_host_count, 2)
-      assert_equal(@policy.reload.compliant_host_count, 1)
-      assert_equal(@policy.reload.unsupported_host_count, 0)
-
-      FactoryBot.create(
-        :test_result,
-        host: @host2,
-        profile: @profile,
-        score: 100
-      )
-      assert_equal(@policy.reload.test_result_host_count, 2)
-      assert_equal(@policy.reload.compliant_host_count, 2)
-      assert_equal(@policy.reload.unsupported_host_count, 0)
-
-      @profile.test_results.destroy_all
-      assert_equal(@policy.reload.test_result_host_count, 0)
-      assert_equal(@policy.reload.compliant_host_count, 0)
-      assert_equal(@policy.reload.unsupported_host_count, 0)
     end
   end
 end

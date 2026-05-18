@@ -120,7 +120,7 @@ class Host < ApplicationRecord
     profiles ||= RequestStore.store['scoped_search_context_profiles']
 
     left_outer_joins(:test_result_profiles).where(
-      test_results: { profile: profiles }
+      v1_test_results: { profile: profiles }
     )
   }
 
@@ -130,8 +130,8 @@ class Host < ApplicationRecord
 
     sq = Host.joins(test_results: :rule_results)
              .merge(TestResult.latest)
-             .where(test_results: { profile_id: profile_ids }, rule_results: { result: RuleResult::FAILED })
-             .or(Host.where(test_results: { profile_id: profile_ids }, rule_results: { id: nil }))
+             .where(v1_test_results: { profile_id: profile_ids }, v1_rule_results: { result: RuleResult::FAILED })
+             .or(Host.where(v1_test_results: { profile_id: profile_ids }, v1_rule_results: { id: nil }))
              .select(arel_table[:id].as('id'), RuleResult.arel_table[:result].count.as('rules_failed'))
              .group('hosts.id')
 

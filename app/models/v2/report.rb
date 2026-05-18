@@ -4,7 +4,7 @@ module V2
   # Model for reports
   class Report < ApplicationRecord
     # FIXME: clean up after the remodel
-    self.table_name = :v2_policies
+    self.table_name = :policies_v2
     self.primary_key = :id
 
     SYSTEM_COUNT = lambda do
@@ -126,7 +126,7 @@ module V2
                       .merge_with_alias(Pundit.policy_scope(User.current, V2::System))
                       .select(:id)
 
-      { conditions: "v2_policies.id IN (#{ids.to_sql})" }
+      { conditions: "policies_v2.id IN (#{ids.to_sql})" }
     end
     searchable_by :percent_compliant, %i[eq gt lt gte lte], except_parents: %i[systems] do |_key, op, val|
       {
@@ -150,7 +150,7 @@ module V2
     end
 
     def all_systems_exposed # rubocop:disable Naming/PredicateMethod
-      total_system_count == try(:aggregate_assigned_system_count)
+      policy.total_system_count == try(:aggregate_assigned_system_count)
     end
 
     def delete_associated
