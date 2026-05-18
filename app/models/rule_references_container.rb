@@ -2,9 +2,11 @@
 
 # Model that is holding the additional rule_references field for each Rule
 class RuleReferencesContainer < ApplicationRecord
-  belongs_to :rule
+  # FIXME: V2 compatibility - clean up after V2 report parsing refactor
+  self.table_name = :v1_rule_references_containers
+  self.primary_key = :id
 
-  validates :rule_id, uniqueness: true
+  belongs_to :rule
 
   def self.from_openscap_parser(op_rule, rule_id:, existing: nil)
     container = existing || new(rule_id: rule_id)

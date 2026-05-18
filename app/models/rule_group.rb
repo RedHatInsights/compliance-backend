@@ -17,7 +17,7 @@ class RuleGroup < ApplicationRecord
 
   has_many :rules_with_references, lambda {
     left_outer_joins(:rule_references_container).select(
-      'rules.*', 'rule_references_containers.rule_references AS references'
+      'v1_rules.*', 'v1_rule_references_containers.rule_references AS references'
     )
   }, inverse_of: :rule_group, dependent: :nullify, class_name: 'Rule'
 

@@ -18,7 +18,10 @@ FactoryBot.define do
       end
 
       after(:create) do |rule, evaluator|
-        FactoryBot.create(:rule_references_container, rule_id: rule.id, reference_count: evaluator.reference_count)
+        references = evaluator.reference_count.times.map do
+          { href: Faker::Internet.url, label: Faker::Lorem.sentence }
+        end
+        rule.rule_references_container.update!(rule_references: references)
       end
     end
   end
