@@ -65,7 +65,7 @@ class ParseReportJob < ApplicationJob
     msg = error_message(exc)
     msg_with_values = "#{msg} \n #{JSON.pretty_generate(@msg_value)}"
     notify_payload_tracker(:error, msg_with_values)
-    ReportUploadFailed.deliver(system: Host.find_by(id: @msg_value['id'], account: @msg_value['account']),
+    ReportUploadFailed.deliver(system: V2::System.find_by(id: @msg_value['id'], account: @msg_value['account']),
                                request_id: @msg_value['request_id'], error: notification_message(exc),
                                org_id: @msg_value['org_id'])
     Sidekiq.logger.error(msg_with_values)
@@ -107,16 +107,16 @@ class ParseReportJob < ApplicationJob
 
   def remediation_issue_ids
     parser.failed_rules
-          .includes(profiles: :benchmark)
-          .collect(&:remediation_issue_id)
-          .compact
+          .with_remediation_context
+          .for_profile(parser.tailored_profile)
+          .filter_map(&:remediation_issue_id)
   end
 
   def audit_success
     Rails.logger.audit_success(
       "[#{@msg_value['org_id']}] Successful report of #{report_profile_id} " \
-      "policy #{parser.host_profile.policy_id} " \
-      "from host #{@msg_value['id']}"
+      "policy #{parser.policy.id} " \
+      "from system #{@msg_value['id']}"
     )
   end
 end

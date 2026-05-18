@@ -6,10 +6,10 @@ module Xccdf
     delegate :score, to: :@op_test_result
 
     def save_test_result
-      @test_result = ::TestResult.create!(
-        host: @host, profile: @host_profile,
+      @test_result = ::V2::TestResult.create!(
+        system: @system, tailoring: tailoring,
         supported: supported?, score: score,
-        failed_rule_count: selected_op_rule_results&.count { |rr| ::RuleResult::FAILED.include?(rr.result) }.to_i,
+        failed_rule_count: selected_op_rule_results&.count { |rr| ::V2::RuleResult::FAILED.include?(rr.result) }.to_i,
         start_time: @op_test_result.start_time.in_time_zone,
         end_time: @op_test_result.end_time.in_time_zone
       )
@@ -20,18 +20,16 @@ module Xccdf
     end
 
     def delete_old_test_results
-      ::TestResult.left_outer_joins(profile: :policy)
-                  .where(v1_profiles: { policy: @host_profile.policy_id },
-                         host: @host)
-                  .where.not(id: @test_result.id)
-                  .destroy_all
+      ::V2::TestResult.where(tailoring: @tailoring, system: @system)
+                      .where.not(id: @test_result.id)
+                      .destroy_all
     end
 
     def supported?
       SupportedSsg.supported?(
-        ssg_version: @host_profile.ssg_version,
-        os_major_version: @host.os_major_version,
-        os_minor_version: @host.os_minor_version
+        ssg_version: security_guide.version,
+        os_major_version: @system.os_major_version,
+        os_minor_version: @system.os_minor_version
       )
     end
   end
