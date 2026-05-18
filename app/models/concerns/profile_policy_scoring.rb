@@ -17,14 +17,22 @@ module ProfilePolicyScoring
     update_columns(
       total_host_count: hosts.count,
       test_result_host_count: latest_supported_policy_test_result_hosts.count,
-      compliant_host_count: latest_supported_policy_test_result_hosts
-                            .count { |host| compliant?(host) },
+      compliant_host_count: compliant_host_count_sql,
       unsupported_host_count: latest_unsupported_policy_test_result_hosts.count
     )
     # rubocop:enable Rails/SkipsModelValidations
   end
 
   private
+
+  # Single SQL query to count hosts whose latest supported test result score
+  # meets the compliance threshold, replacing the previous N+1 pattern that
+  # loaded all hosts and checked compliance individually.
+  def compliant_host_count_sql
+    latest_test_results.supported.where(
+      ::TestResult.arel_table[:score].gteq(compliance_threshold)
+    ).select(:host_id).distinct.count
+  end
 
   def latest_supported_policy_test_result_hosts
     ::Host.where(id: latest_test_results.supported.select(:host_id))
