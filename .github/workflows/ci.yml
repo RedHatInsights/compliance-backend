@@ -19,7 +19,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Validate commit message format
-      uses: wagoid/commitlint-github-action@v4
+      uses: wagoid/commitlint-github-action@v6
       with:
         configFile: './.commitlint.yml'
     # FIXME: this is currently timing out
