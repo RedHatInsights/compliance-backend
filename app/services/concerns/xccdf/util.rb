@@ -55,10 +55,9 @@ module Xccdf
       private
 
       def invalidate_cache
-        Rails.cache.delete("#{@new_host_profile&.id}/#{@host&.id}/results")
-        @host_profile.rules.each do |rule|
-          Rails.cache.delete("#{rule.id}/#{@host&.id}/compliant")
-        end
+        keys = ["#{@host_profile&.id}/#{@host&.id}/results"]
+        keys.concat(@host_profile.rules.pluck(:id).map { |id| "#{id}/#{@host&.id}/compliant" })
+        Rails.cache.delete_multi(keys)
       end
     end
   end
