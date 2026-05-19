@@ -35,7 +35,7 @@ module V2
 
     # :nocov:
     def os_versions
-      render json: authorize(filtered_base_scope).os_versions, status: :ok
+      render json: authorize(resolve_collection(base_scope)).os_versions, status: :ok
     end
     # :nocov:
     permission_for_action :os_versions, Rbac::SYSTEM_READ
