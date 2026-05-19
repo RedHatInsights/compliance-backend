@@ -16,7 +16,7 @@ module V2
     kessel_permission_for_action :show, KesselRbac::REPORT_VIEW
 
     def os_versions
-      render json: authorize(resolve_collection(base_scope)).os_versions, status: :ok
+      render json: authorize(fetch_collection(base_scope)).os_versions, status: :ok
     end
     permission_for_action :os_versions, Rbac::SYSTEM_READ
     permitted_params_for_action :os_versions, { filter: ParamType.string }
@@ -31,7 +31,7 @@ module V2
     private
 
     def test_results
-      @test_results ||= authorize(fetch_collection)
+      @test_results ||= authorize(resolve_collection)
     end
 
     def test_result
