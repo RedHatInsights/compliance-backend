@@ -346,6 +346,53 @@
         :policy_id: ${policy.id}
   :query: (group_name ^ (one two))
 
+- :name: "equality search by group_id"
+  :entities:
+    :found:
+      - :factory: :system
+        :groups:
+          - id: searched-id
+            name: searched name
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :system
+        :groups:
+          - id: searched-id
+            name: other name
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :system
+        :groups:
+          - id: other-id
+            name: not this id
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (group_id = "searched-id")
+- :name: "in search by group_id"
+  :entities:
+    :found:
+      - :factory: :system
+        :groups:
+          - id: one-id
+            name: one
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :system
+        :groups:
+          - id: two-id
+            name: two
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :system
+        :groups:
+          - id: three-id
+            name: three
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (group_id ^ (one-id two-id))
+
 - :name: "equality search by policies"
   :entities:
     :found:

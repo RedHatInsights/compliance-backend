@@ -2,6 +2,7 @@
 
 module V2
   # Database model representing latest results of compliance scans
+  # rubocop:disable Metrics/ClassLength
   class TestResult < ApplicationRecord
     # FIXME: clean up after the remodel
     self.table_name = :v2_test_results
@@ -70,10 +71,12 @@ module V2
       }
     end
 
-    searchable_by :group_name, %i[eq in] do |_key, _op, val|
-      values = val.split(',').map(&:strip)
-      systems = ::V2::TestResult.unscoped.with_groups(values, V2::System.arel_table.alias(:system), :name)
-      { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
+    [%i[group_name name], %i[group_id id]].each do |field, key|
+      searchable_by field, %i[eq in] do |_key, _op, val|
+        values = val.split(',').map(&:strip)
+        systems = ::V2::TestResult.unscoped.with_groups(values, V2::System.arel_table.alias(:system), key)
+        { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
+      end
     end
 
     searchable_by :failed_rule_severity, %i[eq in] do |_key, _op, val|
@@ -143,4 +146,5 @@ module V2
         .uniq # using this instead of `.distinct` to properly handle sorting of versions. It should still perform fine.
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
