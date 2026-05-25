@@ -2,6 +2,7 @@
 
 module V2
   # Class representing read-only systems syndicated from the host-based inventory
+  # rubocop:disable Metrics/ClassLength
   class System < ApplicationRecord
     self.table_name = 'inventory.hosts'
     self.primary_key = 'id'
@@ -130,10 +131,12 @@ module V2
       { conditions: "(inventory.hosts.id, reports.id) NOT IN (#{ids.to_sql})" }
     end
 
-    searchable_by :group_name, %i[eq in] do |_key, _op, val|
-      values = val.split(',').map(&:strip)
-      systems = ::V2::System.unscoped.with_groups(values, :name)
-      { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
+    [%i[group_name name], %i[group_id id]].each do |field, key|
+      searchable_by field, %i[eq in] do |_key, _op, val|
+        values = val.split(',').map(&:strip)
+        systems = ::V2::System.unscoped.with_groups(values, key)
+        { conditions: systems.arel.where_sql.gsub(/^where /i, '') }
+      end
     end
 
     searchable_by :policies, %i[eq in], except_parents: %i[policies reports] do |_key, _op, val|
@@ -190,4 +193,5 @@ module V2
       groups.map { |group| [{ key => group }].to_json.dump }
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

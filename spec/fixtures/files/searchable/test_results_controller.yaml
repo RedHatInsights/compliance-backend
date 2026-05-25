@@ -295,6 +295,53 @@
         :policy_id: ${policy.id}
   :query: (group_name ^ (one two))
 
+- :name: "equality search by group_id"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :groups:
+          - id: searched-id
+            name: searched name
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :v2_test_result
+        :groups:
+          - id: searched-id
+            name: other name
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :groups:
+          - id: other-id
+            name: not this id
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (group_id = "searched-id")
+- :name: "in search by group_id"
+  :entities:
+    :found:
+      - :factory: :v2_test_result
+        :groups:
+          - id: one-id
+            name: one
+        :account: ${account}
+        :policy_id: ${policy.id}
+      - :factory: :v2_test_result
+        :groups:
+          - id: two-id
+            name: two
+        :account: ${account}
+        :policy_id: ${policy.id}
+    :not_found:
+      - :factory: :v2_test_result
+        :groups:
+          - id: three-id
+            name: three
+        :account: ${account}
+        :policy_id: ${policy.id}
+  :query: (group_id ^ (one-id two-id))
+
 - :name: "in search by failed_rule_severity"
   :entities:
     :found:
