@@ -9,7 +9,8 @@ module Xccdf
                 .with_ref_ids(test_result_profile.ref_id)
                       .find_by(account: @account),
         account: @account,
-        os_minor_version: @host.os_minor_version.to_s
+        os_minor_version: @host.os_minor_version.to_s,
+        set_os_minor_version: @host.os_minor_version.to_s
       )
     end
     alias save_host_profile host_profile

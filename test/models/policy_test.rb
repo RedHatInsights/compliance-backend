@@ -366,6 +366,42 @@ class PolicyTest < ActiveSupport::TestCase
         assert_equal @os_minor_version, child_profile.os_minor_version
       end
     end
+
+    should 'always set os_minor_version when both lookup and set params are provided' do
+      assert_difference('Profile.count', 1) do
+        child_profile = @canonical.clone_to(
+          account: @account,
+          policy: @policy,
+          os_minor_version: @os_minor_version,
+          set_os_minor_version: @os_minor_version
+        )
+
+        assert child_profile
+        assert_equal @os_minor_version, child_profile.os_minor_version
+        assert child_profile.os_minor_version.present?
+      end
+    end
+
+    should 'not create duplicate profile when os_minor_version already taken' do
+      @canonical.clone_to(
+        account: @account,
+        policy: @policy,
+        set_os_minor_version: @os_minor_version
+      )
+
+      different_benchmark = FactoryBot.create(:benchmark)
+      different_canonical = FactoryBot.create(
+        :canonical_profile, benchmark: different_benchmark
+      )
+
+      assert_raises(ActiveRecord::RecordInvalid) do
+        different_canonical.clone_to(
+          account: @account,
+          policy: @policy,
+          set_os_minor_version: @os_minor_version
+        )
+      end
+    end
   end
 
   context 'update_os_minor_versions' do

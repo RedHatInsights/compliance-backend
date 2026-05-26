@@ -189,6 +189,29 @@ class ParseReportJobTest < ActiveJob::TestCase
     @parse_report_job.perform(0, @msg_value)
   end
 
+  test 'SSG version mismatch is handled as a parse failure' do
+    XccdfReportParser.stubs(:new).returns(@parser)
+    @parser.stubs(:save_all).raises(
+      XccdfReportParser::SSGVersionMismatch.new('SSG version mismatch')
+    )
+    profile_stub = OpenStruct.new(
+      test_result: OpenStruct.new(profile_id: 'profileid')
+    )
+    @parser.stubs(:test_result_file).returns(profile_stub)
+    Sidekiq.stubs(:redis).returns(false)
+    @parse_report_job.stubs(:jid).returns('1')
+
+    Host.stubs(:find_by).returns(@host)
+
+    ReportUploadFailed.expects(:deliver)
+
+    SafeDownloader.expects(:download_reports)
+                  .with('', ssl_only: Settings.report_download_ssl_only)
+                  .returns(ActiveSupport::Gzip.decompress(@file))
+    assert_audited_fail 'Failed to parse report profileid'
+    @parse_report_job.perform(0, @msg_value)
+  end
+
   test 'emits notification non compliant without a report' do
     XccdfReportParser.stubs(:new).returns(@parser)
     Sidekiq.stubs(:redis).returns(false)

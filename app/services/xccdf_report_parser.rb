@@ -17,9 +17,11 @@ class XccdfReportParser
   class UnknownProfileError < StandardError; end
   # Error to raise if the incoming report contains an unknown rule
   class UnknownRuleError < StandardError; end
+  # Error to raise if the report's SSG version does not match the policy
+  class SSGVersionMismatch < StandardError; end
 
   ERRORS = [
-    MissingIdError, WrongFormatError, OSVersionMismatch, UnknownProfileError,
+    MissingIdError, WrongFormatError, OSVersionMismatch, SSGVersionMismatch, UnknownProfileError,
     ActiveRecord::RecordInvalid, ExternalReportError, UnknownBenchmarkError, UnknownRuleError
   ].freeze
 
@@ -82,6 +84,18 @@ class XccdfReportParser
     # rubocop:enable Style/GuardClause
   end
 
+  def check_ssg_version
+    return unless @policy
+
+    policy_benchmark_ids = @policy.profiles.select(:benchmark_id).distinct.pluck(:benchmark_id)
+    return if policy_benchmark_ids.include?(benchmark.id)
+
+    raise SSGVersionMismatch,
+          "SSG version mismatch for policy #{@policy.id}: report was generated with " \
+          "scap-security-guide #{security_guide.version} but the policy expects " \
+          "#{policy_ssg_versions.join(', ')}. #{parse_failure_message}"
+  end
+
   def check_for_missing_benchmark
     # rubocop:disable Style/GuardClause
     unless security_guide.persisted?
@@ -124,6 +138,7 @@ class XccdfReportParser
   def save_all
     check_os_version
     check_for_external_reports
+    check_ssg_version
     check_for_missing_benchmark_info
 
     Host.transaction do
@@ -132,6 +147,10 @@ class XccdfReportParser
   end
 
   private
+
+  def policy_ssg_versions
+    @policy.benchmarks.distinct.pluck(:version)
+  end
 
   def parse_failure_message
     "Report for profile #{@test_result_file.test_result.profile_id} against " \
