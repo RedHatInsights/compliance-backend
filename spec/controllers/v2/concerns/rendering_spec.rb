@@ -157,3 +157,13 @@ RSpec.shared_examples 'individual' do |*parents|
     end
   end
 end
+
+RSpec.shared_examples 'create with broken parent hierarchy' do |*parents|
+  context 'broken parent hierarchy on create', if: parents.present? do
+    it 'returns not_found when the parent is out of scope' do
+      post :create, params: notfound_params.merge(parents: parents)
+
+      expect(response).to have_http_status :not_found
+    end
+  end
+end
