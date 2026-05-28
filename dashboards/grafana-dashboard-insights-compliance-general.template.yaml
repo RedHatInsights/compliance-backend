@@ -100,7 +100,7 @@ objects:
         "editable": true,
         "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
-        "id": 1203718,
+        "id": 1267873,
         "links": [],
         "panels": [
           {
@@ -181,7 +181,7 @@ objects:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -265,7 +265,7 @@ objects:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -346,7 +346,7 @@ objects:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -427,7 +427,7 @@ objects:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -507,7 +507,7 @@ objects:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -587,7 +587,7 @@ objects:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -667,7 +667,7 @@ objects:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -747,7 +747,7 @@ objects:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -932,7 +932,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1040,7 +1040,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1148,7 +1148,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1244,7 +1244,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1353,7 +1353,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1451,7 +1451,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1551,7 +1551,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1662,7 +1662,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1775,7 +1775,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1886,7 +1886,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -1999,7 +1999,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -2112,7 +2112,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -2301,7 +2301,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -2331,7 +2331,7 @@ objects:
           {
             "datasource": {
               "type": "prometheus",
-              "uid": "$datasource"
+              "uid": "${datasource}"
             },
             "fieldConfig": {
               "defaults": {
@@ -2361,7 +2361,7 @@ objects:
                   "scaleDistribution": {
                     "type": "linear"
                   },
-                  "showPoints": "never",
+                  "showPoints": "auto",
                   "spanNulls": false,
                   "stacking": {
                     "group": "A",
@@ -2371,7 +2371,6 @@ objects:
                     "mode": "off"
                   }
                 },
-                "links": [],
                 "mappings": [],
                 "thresholds": {
                   "mode": "absolute",
@@ -2385,85 +2384,9 @@ objects:
                     }
                   ]
                 },
-                "unit": "short"
+                "unit": "deckbytes"
               },
-              "overrides": [
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "all"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#ba43a9",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "bugfix"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#ef843c",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "enhancement"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#9ac48a",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "security"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#e24d42",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "unknown"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#fce2de",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                }
-              ]
+              "overrides": []
             },
             "gridPos": {
               "h": 6,
@@ -2471,7 +2394,7 @@ objects:
               "x": 12,
               "y": 46
             },
-            "id": 58,
+            "id": 23763572016,
             "options": {
               "legend": {
                 "calcs": [],
@@ -2481,33 +2404,25 @@ objects:
               },
               "tooltip": {
                 "hideZeros": false,
-                "mode": "multi",
+                "mode": "single",
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
-                  "uid": "$datasource"
-                },
-                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\"}[$interval])) by (worker)/$qe",
-                "format": "time_series",
-                "intervalFactor": 1,
-                "legendFormat": "{{worker}}",
-                "refId": "Total"
-              },
-              {
-                "datasource": {
                   "type": "prometheus",
-                  "uid": "$datasource"
+                  "uid": "${datasource}"
                 },
-                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",qe!=\"1\"}[$interval])) by (worker)/(-($qe - 1))",
-                "hide": false,
-                "refId": "Excluding QE"
+                "editorMode": "code",
+                "expr": "max by (table) (compliance_db_table_size_bytes{application=\"compliance\"})",
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "Get DB table sizes"
               }
             ],
-            "title": "Sidekiq Job Count",
+            "title": "DB table sizes ",
             "type": "timeseries"
           },
           {
@@ -2681,7 +2596,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -2697,7 +2612,8 @@ objects:
           },
           {
             "datasource": {
-              "uid": "$rds_datasource"
+              "type": "prometheus",
+              "uid": "$datasource"
             },
             "fieldConfig": {
               "defaults": {
@@ -2751,7 +2667,7 @@ objects:
                     }
                   ]
                 },
-                "unit": "none"
+                "unit": "short"
               },
               "overrides": [
                 {
@@ -2817,21 +2733,6 @@ objects:
                 {
                   "matcher": {
                     "id": "byName",
-                    "options": "sum"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#ba43a9",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
                     "options": "unknown"
                   },
                   "properties": [
@@ -2852,7 +2753,7 @@ objects:
               "x": 12,
               "y": 52
             },
-            "id": 52,
+            "id": 58,
             "options": {
               "legend": {
                 "calcs": [],
@@ -2866,30 +2767,29 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
-                  "uid": "$rds_datasource"
+                  "uid": "$datasource"
                 },
-                "expr": "sum(label_replace(rdsosmetrics_processList_cpuUsedPc{exported_instance=~\"compliance-(stage|prod)\"}, \"db_user\", \"$1\", \"name\", \"postgres: ([^ ]+) .+\")) by (db_user)",
+                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\"}[$interval])) by (worker)/$qe",
                 "format": "time_series",
                 "intervalFactor": 1,
-                "legendFormat": "{{db_user}}",
-                "refId": "B"
+                "legendFormat": "{{worker}}",
+                "refId": "Total"
               },
               {
                 "datasource": {
-                  "uid": "$rds_datasource"
+                  "type": "prometheus",
+                  "uid": "$datasource"
                 },
-                "expr": "sum(rdsosmetrics_processList_cpuUsedPc{exported_instance=~\"compliance-(stage|prod)\"})",
-                "format": "time_series",
-                "intervalFactor": 1,
-                "legendFormat": "sum",
-                "refId": "A"
+                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",qe!=\"1\"}[$interval])) by (worker)/(-($qe - 1))",
+                "hide": false,
+                "refId": "Excluding QE"
               }
             ],
-            "title": "RDS CPU usage",
+            "title": "Sidekiq Job Count",
             "type": "timeseries"
           },
           {
@@ -3063,7 +2963,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -3099,6 +2999,376 @@ objects:
               }
             ],
             "title": "RDS memory",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "uid": "$rds_datasource"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "none"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "all"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#ba43a9",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "bugfix"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#ef843c",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "enhancement"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#9ac48a",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "security"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#e24d42",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "sum"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#ba43a9",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "unknown"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#fce2de",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 12,
+              "y": 58
+            },
+            "id": 52,
+            "options": {
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$rds_datasource"
+                },
+                "expr": "sum(label_replace(rdsosmetrics_processList_cpuUsedPc{exported_instance=~\"compliance-(stage|prod)\"}, \"db_user\", \"$1\", \"name\", \"postgres: ([^ ]+) .+\")) by (db_user)",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "{{db_user}}",
+                "refId": "B"
+              },
+              {
+                "datasource": {
+                  "uid": "$rds_datasource"
+                },
+                "expr": "sum(rdsosmetrics_processList_cpuUsedPc{exported_instance=~\"compliance-(stage|prod)\"})",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "sum",
+                "refId": "A"
+              }
+            ],
+            "title": "RDS CPU usage",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "Reports",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "never",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "all"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#ba43a9",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "bugfix"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#ef843c",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "enhancement"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#9ac48a",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "security"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#e24d42",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "unknown"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#fce2de",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 0,
+              "y": 64
+            },
+            "id": 23763571993,
+            "options": {
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "multi",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "(sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)) - (sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0))",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{job_name}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Successfully parsed reports",
             "type": "timeseries"
           },
           {
@@ -3256,7 +3526,7 @@ objects:
               "h": 6,
               "w": 12,
               "x": 12,
-              "y": 58
+              "y": 64
             },
             "id": 61,
             "options": {
@@ -3272,7 +3542,7 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
@@ -3441,10 +3711,10 @@ objects:
             "gridPos": {
               "h": 6,
               "w": 12,
-              "x": 0,
-              "y": 64
+              "x": 12,
+              "y": 70
             },
-            "id": 23763571993,
+            "id": 23763571992,
             "options": {
               "legend": {
                 "calcs": [],
@@ -3458,13 +3728,13 @@ objects:
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "(sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)) - (sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0))",
+                "expr": "sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)",
                 "format": "time_series",
                 "interval": "",
                 "intervalFactor": 1,
@@ -3472,8 +3742,21 @@ objects:
                 "refId": "A"
               }
             ],
-            "title": "Successfully parsed reports",
+            "title": "Reports failed to upload",
             "type": "timeseries"
+          },
+          {
+            "collapsed": false,
+            "gridPos": {
+              "h": 1,
+              "w": 24,
+              "x": 0,
+              "y": 76
+            },
+            "id": 34,
+            "panels": [],
+            "title": "Business metrics",
+            "type": "row"
           },
           {
             "datasource": {
@@ -3488,12 +3771,12 @@ objects:
                   "axisBorderShow": false,
                   "axisCenteredZero": false,
                   "axisColorMode": "text",
-                  "axisLabel": "Reports",
+                  "axisLabel": "",
                   "axisPlacement": "auto",
                   "barAlignment": 0,
                   "barWidthFactor": 0.6,
                   "drawStyle": "line",
-                  "fillOpacity": 10,
+                  "fillOpacity": 0,
                   "gradientMode": "none",
                   "hideFrom": {
                     "legend": false,
@@ -3507,7 +3790,7 @@ objects:
                   "scaleDistribution": {
                     "type": "linear"
                   },
-                  "showPoints": "never",
+                  "showPoints": "auto",
                   "spanNulls": false,
                   "stacking": {
                     "group": "A",
@@ -3530,95 +3813,19 @@ objects:
                       "value": 80
                     }
                   ]
-                },
-                "unit": "short"
-              },
-              "overrides": [
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "all"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#ba43a9",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "bugfix"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#ef843c",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "enhancement"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#9ac48a",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "security"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#e24d42",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "matcher": {
-                    "id": "byName",
-                    "options": "unknown"
-                  },
-                  "properties": [
-                    {
-                      "id": "color",
-                      "value": {
-                        "fixedColor": "#fce2de",
-                        "mode": "fixed"
-                      }
-                    }
-                  ]
                 }
-              ]
+              },
+              "overrides": []
             },
             "gridPos": {
               "h": 6,
               "w": 12,
-              "x": 12,
-              "y": 64
+              "x": 0,
+              "y": 77
             },
-            "id": 23763571992,
+            "id": 51,
             "options": {
+              "alertThreshold": true,
               "legend": {
                 "calcs": [],
                 "displayMode": "list",
@@ -3627,820 +3834,1013 @@ objects:
               },
               "tooltip": {
                 "hideZeros": false,
-                "mode": "multi",
+                "mode": "single",
                 "sort": "none"
               }
             },
-            "pluginVersion": "11.6.3",
+            "pluginVersion": "11.6.11",
             "targets": [
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)",
+                "expr": "sum(compliance_total_systems)",
                 "format": "time_series",
-                "interval": "",
                 "intervalFactor": 1,
-                "legendFormat": "{{job_name}}",
+                "legendFormat": "systems",
                 "refId": "A"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_total_accounts)",
+                "format": "time_series",
+                "hide": false,
+                "intervalFactor": 1,
+                "legendFormat": "accounts",
+                "refId": "B"
               }
             ],
-            "title": "Reports failed to upload",
+            "title": "Database items (1)",
             "type": "timeseries"
           },
           {
-            "collapsed": true,
-            "gridPos": {
-              "h": 1,
-              "w": 24,
-              "x": 0,
-              "y": 70
+            "datasource": {
+              "uid": "$datasource"
             },
-            "id": 34,
-            "panels": [
-              {
-                "datasource": {
-                  "uid": "$datasource"
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
                 },
-                "fieldConfig": {
-                  "defaults": {
-                    "links": []
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
                   },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 0,
-                  "y": 77
-                },
-                "id": 51,
-                "options": {
-                  "alertThreshold": true
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_total_systems)",
-                    "format": "time_series",
-                    "intervalFactor": 1,
-                    "legendFormat": "systems",
-                    "refId": "A"
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
                   },
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_total_accounts)",
-                    "format": "time_series",
-                    "hide": false,
-                    "intervalFactor": 1,
-                    "legendFormat": "accounts",
-                    "refId": "B"
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
                   }
-                ],
-                "title": "Database items (1)",
-                "type": "timeseries"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
                 },
-                "fieldConfig": {
-                  "defaults": {
-                    "links": []
-                  },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 12,
-                  "y": 77
-                },
-                "id": 59,
-                "options": {
-                  "alertThreshold": true
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_total_policies)",
-                    "format": "time_series",
-                    "intervalFactor": 1,
-                    "legendFormat": "policies",
-                    "refId": "A"
-                  }
-                ],
-                "title": "Database items (2)",
-                "type": "timeseries"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {},
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 0,
-                  "y": 83
-                },
-                "id": 23763571994,
-                "options": {},
-                "pluginVersion": "7.2.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_total_systems_by_os) by (version)",
-                    "format": "time_series",
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "{{version}}",
-                    "refId": "A"
-                  }
-                ],
-                "title": "Total number of systems reporting by OS version",
-                "type": "piechart"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {},
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 12,
-                  "y": 83
-                },
-                "id": 23763571995,
-                "options": {},
-                "pluginVersion": "7.2.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_client_systems_by_os) by (version)",
-                    "format": "time_series",
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "{{version}}",
-                    "refId": "A"
-                  }
-                ],
-                "title": "Number of client systems reporting by OS version",
-                "type": "piechart"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {},
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 0,
-                  "y": 89
-                },
-                "id": 23763571998,
-                "options": {},
-                "pluginVersion": "7.2.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_total_policies_by_os_major) by (version)",
-                    "format": "time_series",
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "RHEL {{ version }}",
-                    "refId": "A"
-                  }
-                ],
-                "title": "Total number of policies by OS major version",
-                "type": "piechart"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {},
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 12,
-                  "y": 89
-                },
-                "id": 23763571999,
-                "options": {},
-                "pluginVersion": "7.2.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_client_policies_by_os_major) by (version)",
-                    "format": "time_series",
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "RHEL {{ version }}",
-                    "refId": "A"
-                  }
-                ],
-                "title": "Number of client policies by OS major version",
-                "type": "piechart"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {
-                    "links": [],
-                    "mappings": [],
-                    "thresholds": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "green"
-                        },
-                        {
-                          "color": "red",
-                          "value": 80
-                        }
-                      ]
-                    }
-                  },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 0,
-                  "y": 95
-                },
-                "id": 23763571996,
-                "options": {
-                  "minVizHeight": 75,
-                  "minVizWidth": 75,
-                  "orientation": "auto",
-                  "reduceOptions": {
-                    "calcs": [
-                      "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                  },
-                  "showThresholdLabels": false,
-                  "showThresholdMarkers": true,
-                  "sizing": "auto"
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_total_50plus_policies)",
-                    "format": "time_series",
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "Total",
-                    "refId": "A"
-                  },
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_client_50plus_policies)",
-                    "interval": "",
-                    "legendFormat": "Client",
-                    "refId": "B"
-                  }
-                ],
-                "title": "Number of policies with 50 or more systems",
-                "type": "gauge"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {
-                    "links": [],
-                    "mappings": [],
-                    "thresholds": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "green"
-                        },
-                        {
-                          "color": "red",
-                          "value": 80
-                        }
-                      ]
-                    }
-                  },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 12,
-                  "y": 95
-                },
-                "id": 23763571997,
-                "options": {
-                  "minVizHeight": 75,
-                  "minVizWidth": 75,
-                  "orientation": "auto",
-                  "reduceOptions": {
-                    "calcs": [
-                      "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                  },
-                  "showThresholdLabels": false,
-                  "showThresholdMarkers": true,
-                  "sizing": "auto"
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_total_accounts_with_50plus_hosts_per_policy)",
-                    "format": "time_series",
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "Total",
-                    "refId": "A"
-                  },
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_client_accounts_with_50plus_hosts_per_policy)",
-                    "interval": "",
-                    "legendFormat": "Client",
-                    "refId": "B"
-                  }
-                ],
-                "title": "Number of accounts with one or more policies having 50 or more systems",
-                "type": "gauge"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "fieldConfig": {
-                  "defaults": {
-                    "links": [],
-                    "mappings": [],
-                    "thresholds": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "green"
-                        },
-                        {
-                          "color": "red",
-                          "value": 80
-                        }
-                      ]
-                    }
-                  },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 0,
-                  "y": 101
-                },
-                "id": 23763572000,
-                "options": {
-                  "minVizHeight": 75,
-                  "minVizWidth": 75,
-                  "orientation": "auto",
-                  "reduceOptions": {
-                    "calcs": [
-                      "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                  },
-                  "showThresholdLabels": false,
-                  "showThresholdMarkers": true,
-                  "sizing": "auto"
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_total_systems)",
-                    "format": "time_series",
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "Total",
-                    "refId": "A"
-                  },
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_client_systems)",
-                    "interval": "",
-                    "legendFormat": "Client",
-                    "refId": "B"
-                  }
-                ],
-                "title": "Systems covered by at least one policy (current)",
-                "type": "gauge"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "fieldConfig": {
-                  "defaults": {
-                    "links": []
-                  },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 12,
-                  "y": 101
-                },
-                "id": 23763572001,
-                "options": {
-                  "alertThreshold": true
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_total_systems)",
-                    "format": "time_series",
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "Total",
-                    "refId": "A"
-                  },
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "sum(compliance_client_systems)",
-                    "interval": "",
-                    "legendFormat": "Client",
-                    "refId": "B"
-                  }
-                ],
-                "title": "Systems covered by at least one policy (trend)",
-                "type": "timeseries"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {
-                    "custom": {
-                      "align": "auto",
-                      "cellOptions": {
-                        "type": "auto"
-                      },
-                      "filterable": false,
-                      "inspect": false
-                    },
-                    "links": [],
-                    "mappings": [],
-                    "thresholds": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "green"
-                        },
-                        {
-                          "color": "red",
-                          "value": 80
-                        }
-                      ]
-                    }
-                  },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 0,
-                  "y": 107
-                },
-                "id": 23763572002,
-                "options": {
-                  "cellHeight": "sm",
-                  "footer": {
-                    "countRows": false,
-                    "fields": "",
-                    "reducer": [
-                      "sum"
-                    ],
-                    "show": false
-                  },
-                  "showHeader": true,
-                  "sortBy": [
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
                     {
-                      "desc": true,
-                      "displayName": "Value"
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
                     }
                   ]
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "topk(4, sum(compliance_total_policies_by_account) by (ref_id))",
-                    "format": "table",
-                    "instant": true,
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "{{ ref_id }}",
-                    "refId": "A"
-                  }
-                ],
-                "title": "Top 4 most used profiles by accounts",
-                "type": "table"
+                }
               },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 12,
+              "y": 77
+            },
+            "id": 59,
+            "options": {
+              "alertThreshold": true,
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {
-                    "custom": {
-                      "align": "auto",
-                      "cellOptions": {
-                        "type": "auto"
-                      },
-                      "filterable": false,
-                      "inspect": false
-                    },
-                    "links": [],
-                    "mappings": [],
-                    "thresholds": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "green"
-                        },
-                        {
-                          "color": "red",
-                          "value": 80
-                        }
-                      ]
-                    }
-                  },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 12,
-                  "y": 107
-                },
-                "id": 23763572003,
-                "options": {
-                  "cellHeight": "sm",
-                  "footer": {
-                    "countRows": false,
-                    "fields": "",
-                    "reducer": [
-                      "sum"
-                    ],
-                    "show": false
-                  },
-                  "showHeader": true,
-                  "sortBy": [
-                    {
-                      "desc": true,
-                      "displayName": "Value"
-                    }
-                  ]
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "topk(4, sum(compliance_client_policies_by_account) by (ref_id))",
-                    "format": "table",
-                    "instant": true,
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "{{ ref_id }}",
-                    "refId": "A"
-                  }
-                ],
-                "title": "Top 4 most used profiles by client accounts",
-                "type": "table"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {
-                    "custom": {
-                      "align": "auto",
-                      "cellOptions": {
-                        "type": "auto"
-                      },
-                      "filterable": false,
-                      "inspect": false
-                    },
-                    "links": [],
-                    "mappings": [],
-                    "thresholds": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "green"
-                        },
-                        {
-                          "color": "red",
-                          "value": 80
-                        }
-                      ]
-                    }
-                  },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 0,
-                  "y": 113
-                },
-                "id": 23763572004,
-                "options": {
-                  "cellHeight": "sm",
-                  "footer": {
-                    "countRows": false,
-                    "fields": "",
-                    "reducer": [
-                      "sum"
-                    ],
-                    "show": false
-                  },
-                  "showHeader": true,
-                  "sortBy": [
-                    {
-                      "desc": true,
-                      "displayName": "Value"
-                    }
-                  ]
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "topk(4, sum(compliance_total_policies_by_host) by (ref_id))",
-                    "format": "table",
-                    "instant": true,
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "{{ ref_id }}",
-                    "refId": "A"
-                  }
-                ],
-                "title": "Top 4 most used profiles by hosts",
-                "type": "table"
-              },
-              {
-                "datasource": {
-                  "uid": "$datasource"
-                },
-                "description": "",
-                "fieldConfig": {
-                  "defaults": {
-                    "custom": {
-                      "align": "auto",
-                      "cellOptions": {
-                        "type": "auto"
-                      },
-                      "filterable": false,
-                      "inspect": false
-                    },
-                    "links": [],
-                    "mappings": [],
-                    "thresholds": {
-                      "mode": "absolute",
-                      "steps": [
-                        {
-                          "color": "green"
-                        },
-                        {
-                          "color": "red",
-                          "value": 80
-                        }
-                      ]
-                    }
-                  },
-                  "overrides": []
-                },
-                "gridPos": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 12,
-                  "y": 113
-                },
-                "id": 23763572005,
-                "options": {
-                  "cellHeight": "sm",
-                  "footer": {
-                    "countRows": false,
-                    "fields": "",
-                    "reducer": [
-                      "sum"
-                    ],
-                    "show": false
-                  },
-                  "showHeader": true,
-                  "sortBy": [
-                    {
-                      "desc": true,
-                      "displayName": "Value"
-                    }
-                  ]
-                },
-                "pluginVersion": "10.4.1",
-                "targets": [
-                  {
-                    "datasource": {
-                      "uid": "$datasource"
-                    },
-                    "expr": "topk(4, sum(compliance_client_policies_by_host) by (ref_id))",
-                    "format": "table",
-                    "instant": true,
-                    "interval": "",
-                    "intervalFactor": 1,
-                    "legendFormat": "{{ ref_id }}",
-                    "refId": "A"
-                  }
-                ],
-                "title": "Top 4 most used profiles by client hosts",
-                "type": "table"
+                "expr": "sum(compliance_total_policies)",
+                "format": "time_series",
+                "intervalFactor": 1,
+                "legendFormat": "policies",
+                "refId": "A"
               }
             ],
-            "title": "Business metrics",
-            "type": "row"
+            "title": "Database items (2)",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  }
+                },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 0,
+              "y": 83
+            },
+            "id": 23763571994,
+            "options": {
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "pieType": "pie",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_total_systems_by_os) by (version)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{version}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Total number of systems reporting by OS version",
+            "type": "piechart"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  }
+                },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 12,
+              "y": 83
+            },
+            "id": 23763571995,
+            "options": {
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "pieType": "pie",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_client_systems_by_os) by (version)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{version}}",
+                "refId": "A"
+              }
+            ],
+            "title": "Number of client systems reporting by OS version",
+            "type": "piechart"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  }
+                },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 0,
+              "y": 89
+            },
+            "id": 23763571998,
+            "options": {
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "pieType": "pie",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_total_policies_by_os_major) by (version)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "RHEL {{ version }}",
+                "refId": "A"
+              }
+            ],
+            "title": "Total number of policies by OS major version",
+            "type": "piechart"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  }
+                },
+                "mappings": []
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 12,
+              "y": 89
+            },
+            "id": 23763571999,
+            "options": {
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "pieType": "pie",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_client_policies_by_os_major) by (version)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "RHEL {{ version }}",
+                "refId": "A"
+              }
+            ],
+            "title": "Number of client policies by OS major version",
+            "type": "piechart"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 0,
+              "y": 95
+            },
+            "id": 23763571996,
+            "options": {
+              "minVizHeight": 75,
+              "minVizWidth": 75,
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "mean"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true,
+              "sizing": "auto"
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_total_50plus_policies)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Total",
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_client_50plus_policies)",
+                "interval": "",
+                "legendFormat": "Client",
+                "refId": "B"
+              }
+            ],
+            "title": "Number of policies with 50 or more systems",
+            "type": "gauge"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 12,
+              "y": 95
+            },
+            "id": 23763571997,
+            "options": {
+              "minVizHeight": 75,
+              "minVizWidth": 75,
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "mean"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true,
+              "sizing": "auto"
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_total_accounts_with_50plus_hosts_per_policy)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Total",
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_client_accounts_with_50plus_hosts_per_policy)",
+                "interval": "",
+                "legendFormat": "Client",
+                "refId": "B"
+              }
+            ],
+            "title": "Number of accounts with one or more policies having 50 or more systems",
+            "type": "gauge"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 0,
+              "y": 101
+            },
+            "id": 23763572000,
+            "options": {
+              "minVizHeight": 75,
+              "minVizWidth": 75,
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "mean"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true,
+              "sizing": "auto"
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_total_systems)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Total",
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_client_systems)",
+                "interval": "",
+                "legendFormat": "Client",
+                "refId": "B"
+              }
+            ],
+            "title": "Systems covered by at least one policy (current)",
+            "type": "gauge"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 12,
+              "y": 101
+            },
+            "id": 23763572001,
+            "options": {
+              "alertThreshold": true,
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_total_systems)",
+                "format": "time_series",
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "Total",
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "sum(compliance_client_systems)",
+                "interval": "",
+                "legendFormat": "Client",
+                "refId": "B"
+              }
+            ],
+            "title": "Systems covered by at least one policy (trend)",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": false,
+                  "inspect": false
+                },
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 0,
+              "y": 107
+            },
+            "id": 23763572002,
+            "options": {
+              "cellHeight": "sm",
+              "footer": {
+                "countRows": false,
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true,
+              "sortBy": [
+                {
+                  "desc": true,
+                  "displayName": "Value"
+                }
+              ]
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "topk(4, sum(compliance_total_policies_by_account) by (ref_id))",
+                "format": "table",
+                "instant": true,
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{ ref_id }}",
+                "refId": "A"
+              }
+            ],
+            "title": "Top 4 most used profiles by accounts",
+            "type": "table"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": false,
+                  "inspect": false
+                },
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 12,
+              "y": 107
+            },
+            "id": 23763572003,
+            "options": {
+              "cellHeight": "sm",
+              "footer": {
+                "countRows": false,
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true,
+              "sortBy": [
+                {
+                  "desc": true,
+                  "displayName": "Value"
+                }
+              ]
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "topk(4, sum(compliance_client_policies_by_account) by (ref_id))",
+                "format": "table",
+                "instant": true,
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{ ref_id }}",
+                "refId": "A"
+              }
+            ],
+            "title": "Top 4 most used profiles by client accounts",
+            "type": "table"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": false,
+                  "inspect": false
+                },
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 0,
+              "y": 113
+            },
+            "id": 23763572004,
+            "options": {
+              "cellHeight": "sm",
+              "footer": {
+                "countRows": false,
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true,
+              "sortBy": [
+                {
+                  "desc": true,
+                  "displayName": "Value"
+                }
+              ]
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "topk(4, sum(compliance_total_policies_by_host) by (ref_id))",
+                "format": "table",
+                "instant": true,
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{ ref_id }}",
+                "refId": "A"
+              }
+            ],
+            "title": "Top 4 most used profiles by hosts",
+            "type": "table"
+          },
+          {
+            "datasource": {
+              "uid": "$datasource"
+            },
+            "description": "",
+            "fieldConfig": {
+              "defaults": {
+                "custom": {
+                  "align": "auto",
+                  "cellOptions": {
+                    "type": "auto"
+                  },
+                  "filterable": false,
+                  "inspect": false
+                },
+                "links": [],
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 12,
+              "y": 113
+            },
+            "id": 23763572005,
+            "options": {
+              "cellHeight": "sm",
+              "footer": {
+                "countRows": false,
+                "fields": "",
+                "reducer": [
+                  "sum"
+                ],
+                "show": false
+              },
+              "showHeader": true,
+              "sortBy": [
+                {
+                  "desc": true,
+                  "displayName": "Value"
+                }
+              ]
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "uid": "$datasource"
+                },
+                "expr": "topk(4, sum(compliance_client_policies_by_host) by (ref_id))",
+                "format": "table",
+                "instant": true,
+                "interval": "",
+                "intervalFactor": 1,
+                "legendFormat": "{{ ref_id }}",
+                "refId": "A"
+              }
+            ],
+            "title": "Top 4 most used profiles by client hosts",
+            "type": "table"
           }
         ],
         "preload": false,
@@ -4454,8 +4854,8 @@ objects:
               "auto_count": 30,
               "auto_min": "10s",
               "current": {
-                "text": "12h",
-                "value": "12h"
+                "text": "1h",
+                "value": "1h"
               },
               "name": "interval",
               "options": [
@@ -4480,7 +4880,7 @@ objects:
                   "value": "30m"
                 },
                 {
-                  "selected": false,
+                  "selected": true,
                   "text": "1h",
                   "value": "1h"
                 },
@@ -4490,7 +4890,7 @@ objects:
                   "value": "6h"
                 },
                 {
-                  "selected": true,
+                  "selected": false,
                   "text": "12h",
                   "value": "12h"
                 },
@@ -4586,14 +4986,14 @@ objects:
           ]
         },
         "time": {
-          "from": "now-14d",
+          "from": "now-7d",
           "to": "now"
         },
         "timepicker": {},
         "timezone": "",
         "title": "Compliance",
         "uid": "compliance",
-        "version": 1
+        "version": 14096
       }
   kind: ConfigMap
   metadata:
