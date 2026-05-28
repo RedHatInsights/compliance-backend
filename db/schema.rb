@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_28_153335) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -631,24 +631,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
             GROUP BY policy_hosts.policy_id) sq ON ((sq.policy_id = policies.id)));
   SQL
   create_view "v2_test_results", sql_definition: <<-SQL
-      SELECT test_results.id,
-      test_results.profile_id AS tailoring_id,
-      profiles.policy_id AS report_id,
-      test_results.host_id AS system_id,
-      test_results.start_time,
-      test_results.end_time,
-      test_results.score,
-      test_results.supported,
-      test_results.failed_rule_count,
-      test_results.created_at,
-      test_results.updated_at
-     FROM ((test_results
-       JOIN profiles ON ((profiles.id = test_results.profile_id)))
-       JOIN ( SELECT test_results_1.profile_id,
-              test_results_1.host_id,
-              max(test_results_1.end_time) AS end_time
-             FROM test_results test_results_1
-            GROUP BY test_results_1.profile_id, test_results_1.host_id) tr ON (((test_results.profile_id = tr.profile_id) AND (test_results.host_id = tr.host_id) AND (test_results.end_time = tr.end_time))));
+      SELECT historical_test_results_v2.id,
+      historical_test_results_v2.tailoring_id,
+      historical_test_results_v2.report_id,
+      historical_test_results_v2.system_id,
+      historical_test_results_v2.start_time,
+      historical_test_results_v2.end_time,
+      historical_test_results_v2.score,
+      historical_test_results_v2.supported,
+      historical_test_results_v2.failed_rule_count,
+      historical_test_results_v2.created_at,
+      historical_test_results_v2.updated_at
+     FROM (historical_test_results_v2
+       JOIN ( SELECT historical_test_results_v2_1.tailoring_id,
+              historical_test_results_v2_1.system_id,
+              max(historical_test_results_v2_1.end_time) AS end_time
+             FROM historical_test_results_v2 historical_test_results_v2_1
+            GROUP BY historical_test_results_v2_1.tailoring_id, historical_test_results_v2_1.system_id) tr ON (((historical_test_results_v2.tailoring_id = tr.tailoring_id) AND (historical_test_results_v2.system_id = tr.system_id) AND (historical_test_results_v2.end_time = tr.end_time))));
   SQL
 
   create_function :v2_policies_insert, sql_definition: <<-'SQL'
@@ -743,54 +742,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
           WHERE NEW."business_objective" IS NULL AND "business_objectives"."id" = "bo_id";
 
           RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v2_test_results_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v2_test_results_insert()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE result_id uuid;
-      BEGIN
-          INSERT INTO "test_results" (
-            "profile_id",
-            "host_id",
-            "start_time",
-            "end_time",
-            "score",
-            "supported",
-            "failed_rule_count",
-            "created_at",
-            "updated_at"
-          ) VALUES (
-            NEW."tailoring_id",
-            NEW."system_id",
-            NEW."start_time",
-            NEW."end_time",
-            NEW."score",
-            NEW."supported",
-            COALESCE(NEW."failed_rule_count", 0),
-            NEW."created_at",
-            NEW."updated_at"
-          ) RETURNING "id" INTO "result_id";
-
-          NEW."id" := "result_id";
-          RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v2_test_results_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v2_test_results_delete()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-        -- Delete the v2_test_result records belonging to report
-        DELETE FROM "test_results" WHERE "id" = OLD."id";
-      RETURN OLD;
       END
       $function$
   SQL
@@ -1524,8 +1475,61 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
       $function$
   SQL
 
+  create_function :v2_test_results_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_test_results_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+          INSERT INTO "historical_test_results_v2" (
+            "tailoring_id",
+            "report_id",
+            "system_id",
+            "start_time",
+            "end_time",
+            "score",
+            "supported",
+            "failed_rule_count",
+            "created_at",
+            "updated_at"
+          ) VALUES (
+            NEW."tailoring_id",
+            NEW."report_id",
+            NEW."system_id",
+            NEW."start_time",
+            NEW."end_time",
+            NEW."score",
+            NEW."supported",
+            COALESCE(NEW."failed_rule_count", 0),
+            COALESCE(NEW."created_at", NOW()),
+            COALESCE(NEW."updated_at", NOW())
+          ) RETURNING "id" INTO "result_id";
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v2_test_results_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_test_results_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          DELETE FROM "historical_test_results_v2" WHERE "id" = OLD."id";
+          RETURN OLD;
+      END
+      $function$
+  SQL
+
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
+  SQL
+
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
   SQL
 
   create_trigger :v2_policies_update, sql_definition: <<-SQL
@@ -1536,20 +1540,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
       CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
   SQL
 
-  create_trigger :v2_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
-  SQL
-
   create_trigger :historical_test_results_delete, sql_definition: <<-SQL
       CREATE TRIGGER historical_test_results_delete INSTEAD OF DELETE ON public.historical_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
-  SQL
-
-  create_trigger :v2_test_results_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
-  SQL
-
-  create_trigger :v2_test_results_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_test_results_insert INSTEAD OF INSERT ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_insert()
   SQL
 
   create_trigger :v1_benchmarks_update, sql_definition: <<-SQL
@@ -1560,12 +1552,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
       CREATE TRIGGER v1_benchmarks_insert INSTEAD OF INSERT ON public.v1_benchmarks FOR EACH ROW EXECUTE FUNCTION v1_benchmarks_insert()
   SQL
 
-  create_trigger :v1_rules_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rules_insert INSTEAD OF INSERT ON public.v1_rules FOR EACH ROW EXECUTE FUNCTION v1_rules_insert()
-  SQL
-
   create_trigger :v1_rules_update, sql_definition: <<-SQL
       CREATE TRIGGER v1_rules_update INSTEAD OF UPDATE ON public.v1_rules FOR EACH ROW EXECUTE FUNCTION v1_rules_update()
+  SQL
+
+  create_trigger :v1_rules_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rules_insert INSTEAD OF INSERT ON public.v1_rules FOR EACH ROW EXECUTE FUNCTION v1_rules_insert()
   SQL
 
   create_trigger :v1_value_definitions_insert, sql_definition: <<-SQL
@@ -1580,12 +1572,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
       CREATE TRIGGER v1_rule_groups_insert INSTEAD OF INSERT ON public.v1_rule_groups FOR EACH ROW EXECUTE FUNCTION v1_rule_groups_insert()
   SQL
 
+  create_trigger :v1_rule_group_relationships_update, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rule_group_relationships_update INSTEAD OF UPDATE ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_update()
+  SQL
+
   create_trigger :v1_rule_group_relationships_insert, sql_definition: <<-SQL
       CREATE TRIGGER v1_rule_group_relationships_insert INSTEAD OF INSERT ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_insert()
   SQL
 
-  create_trigger :v1_rule_group_relationships_update, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rule_group_relationships_update INSTEAD OF UPDATE ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_update()
+  create_trigger :v1_profile_rules_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_profile_rules_insert INSTEAD OF INSERT ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_insert()
   SQL
 
   create_trigger :v1_profile_rules_delete, sql_definition: <<-SQL
@@ -1596,8 +1592,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
       CREATE TRIGGER v1_profile_rules_update INSTEAD OF UPDATE ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_update()
   SQL
 
-  create_trigger :v1_profile_rules_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_profile_rules_insert INSTEAD OF INSERT ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_insert()
+  create_trigger :v1_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_policies_insert INSTEAD OF INSERT ON public.v1_policies FOR EACH ROW EXECUTE FUNCTION v1_policies_insert()
   SQL
 
   create_trigger :v1_policies_delete, sql_definition: <<-SQL
@@ -1608,10 +1604,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
       CREATE TRIGGER v1_policies_update INSTEAD OF UPDATE ON public.v1_policies FOR EACH ROW EXECUTE FUNCTION v1_policies_update()
   SQL
 
-  create_trigger :v1_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_policies_insert INSTEAD OF INSERT ON public.v1_policies FOR EACH ROW EXECUTE FUNCTION v1_policies_insert()
-  SQL
-
   create_trigger :v1_test_results_delete, sql_definition: <<-SQL
       CREATE TRIGGER v1_test_results_delete INSTEAD OF DELETE ON public.v1_test_results FOR EACH ROW EXECUTE FUNCTION v1_test_results_delete()
   SQL
@@ -1620,12 +1612,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
       CREATE TRIGGER v1_test_results_insert INSTEAD OF INSERT ON public.v1_test_results FOR EACH ROW EXECUTE FUNCTION v1_test_results_insert()
   SQL
 
+  create_trigger :v1_policy_hosts_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_policy_hosts_insert INSTEAD OF INSERT ON public.v1_policy_hosts FOR EACH ROW EXECUTE FUNCTION v1_policy_hosts_insert()
+  SQL
+
   create_trigger :v1_policy_hosts_delete, sql_definition: <<-SQL
       CREATE TRIGGER v1_policy_hosts_delete INSTEAD OF DELETE ON public.v1_policy_hosts FOR EACH ROW EXECUTE FUNCTION v1_policy_hosts_delete()
   SQL
 
-  create_trigger :v1_policy_hosts_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_policy_hosts_insert INSTEAD OF INSERT ON public.v1_policy_hosts FOR EACH ROW EXECUTE FUNCTION v1_policy_hosts_insert()
+  create_trigger :v1_profiles_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_profiles_insert INSTEAD OF INSERT ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_insert()
   SQL
 
   create_trigger :v1_profiles_delete, sql_definition: <<-SQL
@@ -1636,15 +1632,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_152045) do
       CREATE TRIGGER v1_profiles_update INSTEAD OF UPDATE ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_update()
   SQL
 
-  create_trigger :v1_profiles_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_profiles_insert INSTEAD OF INSERT ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_insert()
-  SQL
-
   create_trigger :v1_rule_results_delete, sql_definition: <<-SQL
       CREATE TRIGGER v1_rule_results_delete INSTEAD OF DELETE ON public.v1_rule_results FOR EACH ROW EXECUTE FUNCTION v1_rule_results_delete()
   SQL
 
   create_trigger :v1_rule_results_insert, sql_definition: <<-SQL
       CREATE TRIGGER v1_rule_results_insert INSTEAD OF INSERT ON public.v1_rule_results FOR EACH ROW EXECUTE FUNCTION v1_rule_results_insert()
+  SQL
+
+  create_trigger :v2_test_results_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_test_results_insert INSTEAD OF INSERT ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_insert()
+  SQL
+
+  create_trigger :v2_test_results_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
   SQL
 end
