@@ -82,7 +82,7 @@ gem 'openscap_parser', '~> 1.6.0'
 gem 'insights-rbac-api-client', '~> 2.0.0'
 
 # Kessel SDK for RBAC v2 migration
-gem 'kessel-sdk', '~> 1.4.1'
+gem 'kessel-sdk', '~> 1.9.1'
 gem 'openid_connect', '~> 2.0'  # Required for Kessel OAuth authentication
 
 # REST API parameter type checking
