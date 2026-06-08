@@ -69,7 +69,7 @@ describe V2::TestResultsController do
       let(:items) do
         item_count.times.map do
           FactoryBot.create(
-            :v2_test_result, system: FactoryBot.create(:system, **sysparams), policy_id: parent.id
+            :v2_test_result, system: FactoryBot.create(:system, **sysparams), report_id: parent.id
           ).reload
         end.sort_by(&:id)
       end
@@ -105,7 +105,7 @@ describe V2::TestResultsController do
               policy_id: parent.id,
               groups: [{ id: 'a_group' }]
             ),
-            policy_id: parent.id
+            report_id: parent.id
           )
         end
 
@@ -123,7 +123,7 @@ describe V2::TestResultsController do
         FactoryBot.create(
           :v2_test_result,
           system: FactoryBot.create(:system, **sysparams),
-          policy_id: parent.id
+          report_id: parent.id
         ).reload
       end
 
@@ -149,7 +149,7 @@ describe V2::TestResultsController do
           FactoryBot.create(
             :v2_test_result,
             system: FactoryBot.create(:system, **sysparams, groups: [{ id: 'a_group' }]),
-            policy_id: parent.id
+            report_id: parent.id
           )
         end
 

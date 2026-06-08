@@ -27,6 +27,7 @@ RSpec.describe 'cleanup_db task' do
       V2::TestResult.new(
         system_id: SecureRandom.uuid,
         tailoring_id: tailoring.id,
+        report_id: policy.id,
         score: 0,
         supported: true,
         start_time: Time.zone.now,

@@ -136,7 +136,7 @@ describe V2::ReportsController do
                 account: current_user.account,
                 score: SecureRandom.rand(100),
                 supported: true,
-                policy_id: report.id
+                report_id: report.id
               )
             end
           end
@@ -261,7 +261,7 @@ describe V2::ReportsController do
                 account: current_user.account,
                 score: SecureRandom.rand(100),
                 supported: true,
-                policy_id: item.id
+                report_id: item.id
               )
             end
           end
@@ -377,7 +377,7 @@ describe V2::ReportsController do
               :v2_test_result,
               system: system_with_result,
               account: current_user.account,
-              policy_id: report.id,
+              report_id: report.id,
               score: 95.0,
               supported: true
             )
@@ -441,7 +441,7 @@ describe V2::ReportsController do
               :v2_test_result,
               system: system,
               account: current_user.account,
-              policy_id: other_report.id,
+              report_id: other_report.id,
               score: 85.0,
               supported: true
             )

@@ -21,7 +21,7 @@ describe 'Rule Results', swagger_doc: 'v2/openapi.json' do
       FactoryBot.create(
         :v2_test_result,
         system: system,
-        policy_id: report_id,
+        report_id: report_id,
         additional_rule_results: [{ severity: 'medium', result: 'fail' }]
       )
 
