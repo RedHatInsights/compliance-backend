@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_28_153533) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_08_090600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -279,6 +279,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_153533) do
     t.datetime "updated_at", precision: nil, null: false
     t.string "version", null: false
     t.index ["ref_id", "version"], name: "index_security_guides_v2_on_ref_id_and_version", unique: true
+  end
+
+  create_table "systems", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "account", limit: 10
+    t.datetime "created", null: false
+    t.datetime "deleted_at"
+    t.string "display_name", limit: 200, null: false
+    t.jsonb "groups", default: []
+    t.uuid "insights_id"
+    t.string "org_id", limit: 10, null: false
+    t.datetime "stale_timestamp", null: false
+    t.jsonb "system_profile", default: {}, null: false
+    t.jsonb "tags", default: {}, null: false
+    t.datetime "updated", null: false
+    t.index ["insights_id"], name: "index_systems_on_insights_id", unique: true
   end
 
   create_table "tailoring_rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
