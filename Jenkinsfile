@@ -89,6 +89,45 @@ pipeline {
                             -p host-inventory/BYPASS_KESSEL=false \
                             -n $NAMESPACE
 
+                        # Deploy the RBAC Debezium outbox connector (required when BYPASS_KESSEL=false).
+                        # Debezium captures RBAC workspace creation events from management_outbox and
+                        # publishes them to outbox.event.workspace so HBI mq-workspaces can populate
+                        # hbi.groups, unblocking HBI p1's wait_for_workspace_event() call.
+                        oc wait kafkaconnect/kessel-kafka-connect -n $NAMESPACE \
+                            --for=condition=Ready --timeout=300s
+                        oc apply -n $NAMESPACE -f - <<'CONNECTOR_EOF'
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: rbac-outbox-connector
+  labels:
+    strimzi.io/cluster: kessel-kafka-connect
+spec:
+  class: io.debezium.connector.postgresql.PostgresConnector
+  tasksMax: 1
+  state: running
+  config:
+    database.hostname: "${secrets:rbac-db:db.host}"
+    database.port: "${secrets:rbac-db:db.port}"
+    database.user: "${secrets:rbac-db:db.user}"
+    database.password: "${secrets:rbac-db:db.password}"
+    database.dbname: "${secrets:rbac-db:db.name}"
+    database.server.name: "rbac-db"
+    topic.prefix: "rbac"
+    table.include.list: "public.management_outbox"
+    publication.name: "rbac_outbox_pub"
+    publication.autocreate.mode: "filtered"
+    plugin.name: "pgoutput"
+    slot.name: "debezium_rbac_outbox"
+    snapshot.mode: "no_data"
+    poll.interval.ms: "250"
+    transforms: "outbox"
+    transforms.outbox.type: "io.debezium.transforms.outbox.EventRouter"
+    value.converter: "org.apache.kafka.connect.json.JsonConverter"
+    heartbeat.interval.ms: "300000"
+    topic.heartbeat.prefix: "debezium-heartbeat"
+CONNECTOR_EOF
+
                         export NAMESPACE
                         source "${CICD_ROOT}/cji_smoke_test.sh"
 
