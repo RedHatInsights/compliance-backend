@@ -34,11 +34,7 @@ threads min_threads, max_threads
 # processes).
 workers(concurrency)
 
-# Use the `preload_app!` method when specifying a `workers` number.
-# This directive tells Puma to first boot the application and load code
-# before forking the application. This takes advantage of Copy On Write
-# process behavior so workers use less memory.
-preload_app! if concurrency > 0
+
 
 # Disconnect AR connections before forking so each worker establishes
 # its own pool -- avoids sharing sockets across processes.
@@ -46,7 +42,7 @@ before_fork do
   ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord)
 end
 
-on_worker_boot do
+before_worker_boot do
   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
 end
 
