@@ -11,10 +11,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
       - name: Fetch latest Ruby version from base image
+        timeout-minutes: 10
         run: |
           base=$(grep -Po '(?<=FROM )([^\s]*)(?= AS build)' Dockerfile)
           docker run --rm -u 0 "${base}":latest sh -c "
-            microdnf module enable ruby:3.3 > /dev/null;
+            microdnf module enable -y ruby:3.3 > /dev/null;
             microdnf repoquery ruby --info | grep Version | awk '{ print \$3 }' | head -1 > .ruby-version;
             cat .ruby-version" > .ruby-version
       - name: Open or update pull request if Ruby version changed
