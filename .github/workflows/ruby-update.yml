@@ -10,24 +10,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Extract the version of ruby
+      - name: Fetch latest Ruby version from base image
         run: |
           base=$(grep -Po '(?<=FROM )([^\s]*)(?= AS build)' Dockerfile)
           docker run --rm -u 0 "${base}":latest sh -c "
             microdnf module enable ruby:3.3 > /dev/null;
             microdnf repoquery ruby --info | grep Version | awk '{ print \$3 }' | head -1 > .ruby-version;
             cat .ruby-version" > .ruby-version
-      - name: Commit if the version has changed
-        run: |
-          git config user.name 'Update-a-Bot'
-          git config user.email 'insights@redhat.com'
-          git add .ruby-version
-          git commit -m "chore(devel): update .ruby-version" || echo "No new changes"
-      - name: Create pull request
+      - name: Open or update pull request if Ruby version changed
         uses: peter-evans/create-pull-request@v8
         with:
           title: 'chore(devel): update .ruby-version'
           branch: automation/ruby-version
+          commit-message: 'chore(devel): update .ruby-version'
+          committer: 'Update-a-Bot <insights@redhat.com>'
+          author: 'Update-a-Bot <insights@redhat.com>'
+          sign-commits: true
   update-bundler:
     runs-on: ubuntu-latest
     env:
@@ -41,16 +39,14 @@ jobs:
         with:
           bundler-cache: true
           bundler: latest
-      - name: Update bundler
+      - name: Update Bundler to latest version
         run: bundle config set frozen false && bundle update --bundler
-      - name: Commit if the version changed
-        run: |
-          git config user.name 'Update-a-Bot'
-          git config user.email 'insights@redhat.com'
-          git add Gemfile.lock
-          git commit -m "chore(deps): update bundler version" || echo "No new changes"
-      - name: Create pull request
+      - name: Open or update pull request if Bundler version changed
         uses: peter-evans/create-pull-request@v8
         with:
           title: 'chore(deps): update bundler version'
           branch: automation/bundler-version
+          commit-message: 'chore(deps): update bundler version'
+          committer: 'Update-a-Bot <insights@redhat.com>'
+          author: 'Update-a-Bot <insights@redhat.com>'
+          sign-commits: true

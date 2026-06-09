@@ -12,21 +12,19 @@ jobs:
         uses: actions/checkout@v6
       - name: Install skopeo
         run: sudo apt-get install -y skopeo
-      - name: Check change
+      - name: Fetch latest base image digest
         run: |
           base=$(grep -Po '(?<=FROM )([^\s]*)(?= AS build)' Dockerfile)
           skopeo inspect "docker://$base" | jq .Digest --raw-output > .baseimagedigest
           docker run --rm -u 0 quay.io/cloudservices/compliance-backend:latest sh -c \
             'microdnf update -y $(cat /opt/installedpackages) > /dev/null; rpm -q $(cat /opt/installedpackages) | sort | sha256sum | cut -d " " -f 1' \
             >> .baseimagedigest
-      - name: Do change if the digest changed
-        run: |
-          git config user.name 'Update-a-Bot'
-          git config user.email 'insights@redhat.com'
-          git add .baseimagedigest
-          git commit -m "chore(image): update and rebuild image" || echo "No new changes"
-      - name: Create pull request
+      - name: Open or update pull request if digest changed
         uses: peter-evans/create-pull-request@v8
         with:
           title: 'chore(image): update base image'
           branch: automation/base-image
+          commit-message: 'chore(image): update and rebuild image'
+          committer: 'Update-a-Bot <insights@redhat.com>'
+          author: 'Update-a-Bot <insights@redhat.com>'
+          sign-commits: true
