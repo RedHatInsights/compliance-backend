@@ -20,6 +20,11 @@
   ],
   "packageRules": [
     {
+      "description": "Pin postgres Docker image to v16",
+      "matchPackageNames": ["postgres"],
+      "allowedVersions": "<=16"
+    },
+    {
       "matchPackageNames": [
         "RedHatInsights/konflux-pipelines"
       ],
