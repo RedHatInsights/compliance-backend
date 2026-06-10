@@ -75,7 +75,7 @@ module V2
     end
 
     def policy
-      V2::Policy.find(permitted_params[:policy_id])
+      pundit_scope(V2::Policy).find(permitted_params[:policy_id])
     end
 
     def file_builder(format)

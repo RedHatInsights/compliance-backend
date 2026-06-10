@@ -99,6 +99,17 @@ describe V2::TailoringsController do
         FactoryBot.create(:v2_profile, ref_id_suffix: 'foo', supports_minors: [os_minor_version])
       end
 
+      let(:notfound_params) do
+        other_policy = FactoryBot.create(
+          :v2_policy,
+          account: FactoryBot.create(:v2_account),
+          profile: canonical_profile
+        )
+        { policy_id: other_policy.id, os_minor_version: os_minor_version }
+      end
+
+      it_behaves_like 'create with broken parent hierarchy', :policy
+
       it 'creates a tailoring according to the OS minor version' do
         post :create, params: params
 
