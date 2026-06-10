@@ -59,7 +59,7 @@ pipeline {
                         curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                         source ./.cicd_bootstrap.sh
 
-                        COMPLIANCE_SHA=$(git ls-remote https://github.com/RedHatInsights/compliance-backend.git HEAD | cut -f1)
+                        COMPLIANCE_SHA=$(git rev-parse HEAD | cut -f1)
                         COMPLIANCE_SHORT_SHA=${COMPLIANCE_SHA:0:7}
 
                         RBAC_SHA=$(git ls-remote https://github.com/RedHatInsights/insights-rbac.git HEAD | cut -f1)
