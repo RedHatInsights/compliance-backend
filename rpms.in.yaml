@@ -1,0 +1,39 @@
+contentOrigin:
+  repofiles:
+  - ./ubi.repo
+arches:
+- x86_64
+moduleEnable:
+- ruby:3.3
+packages:
+- cargo
+- clang
+- findutils
+- gcc
+- gcc-c++
+- git
+- gzip
+- hostname
+- jq
+- libffi-devel
+- libpq
+- libstdc++-static
+- libyaml-devel
+- llvm-devel
+- make
+- openssl
+- openssl-devel
+- patch
+- postgresql
+- postgresql-devel
+- procps-ng
+- redhat-rpm-config
+- ruby
+- ruby-devel
+- rust
+- shared-mime-info
+- tar
+- tzdata
+- util-linux
+- which
+- xz
