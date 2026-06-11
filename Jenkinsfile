@@ -65,7 +65,7 @@ pipeline {
                         RBAC_SHA=$(git ls-remote https://github.com/RedHatInsights/insights-rbac.git HEAD | cut -f1)
                         RBAC_SHORT_SHA=${RBAC_SHA:0:7}
 
-                        NAMESPACE=$(bonfire namespace reserve --duration 10h)
+                        NAMESPACE=$(bonfire namespace reserve --duration 1h)
                         oc project $NAMESPACE
 
                         bonfire deploy host-inventory kessel rbac compliance \
