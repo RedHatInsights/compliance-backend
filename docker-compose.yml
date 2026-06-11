@@ -241,7 +241,7 @@ services:
   # Feel free to comment them out for subsequent use
   #
   build-rails-db:
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     platform: linux/amd64
     entrypoint: ''
     command: sh -c '
@@ -270,7 +270,7 @@ services:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - ACG_CONFIG=/opt/app-root/src/devel.json
   import-ssg:
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     platform: linux/amd64
     entrypoint: ''
     command: 'bundle exec rake ssg:import_rhel_supported'
@@ -301,7 +301,7 @@ services:
       args:
         - prod=false
         - extras=$EXTRA_PACKAGES
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     entrypoint: '/opt/app-root/src/devel.entrypoint.sh'
     command: 'bundle exec rails s -b 0.0.0.0'
     tty: true
@@ -333,7 +333,7 @@ services:
       - rbac
       - compliance-ssg
   inventory-consumer:
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     platform: linux/amd64
     restart: on-failure
     entrypoint: ''
@@ -359,7 +359,7 @@ services:
       - rbac
       - kafka
   sidekiq:
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     platform: linux/amd64
     restart: on-failure
     tmpfs:
