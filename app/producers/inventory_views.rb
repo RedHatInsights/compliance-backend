@@ -29,8 +29,7 @@ class InventoryViews < ApplicationProducer
 
   def self.host_data(system)
     {
-      policies: system.policies.map { |p| { id: p.id, name: p.title } },
-      last_scan: system.last_check_in
+      policies: system.policies.map { |p| { id: p.id, name: p.title } }
     }
   end
 end
