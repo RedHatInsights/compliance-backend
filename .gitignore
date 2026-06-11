@@ -52,6 +52,8 @@ bower.json
 # Ignore node_modules
 node_modules/
 
+# Ignore cursor folder
+.cursor/
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
