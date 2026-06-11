@@ -45,6 +45,14 @@ module V2
       )
     end
 
+    ALL_SYSTEMS_EXPOSED = lambda do
+      AN::NamedFunction.new('COUNT', [V2::System.arel_table[:id]]).eq(
+        AN::NamedFunction.new('COUNT', [V2::System.arel_table[:id]]).filter(
+          Pundit.policy_scope(User.current, V2::System).where_clause.ast
+        )
+      )
+    end
+
     PERCENT_COMPLIANT = lambda do
       AN::NamedFunction.new(
         'COALESCE',
@@ -130,10 +138,6 @@ module V2
 
     def profile_title
       attributes['profile__title'] || try(:profile)&.title
-    end
-
-    def all_systems_exposed # rubocop:disable Naming/PredicateMethod
-      policy.total_system_count == try(:aggregate_assigned_system_count)
     end
 
     def delete_associated
