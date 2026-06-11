@@ -67,7 +67,7 @@ module V2
     private
 
     def tailorings
-      @tailorings ||= authorize(fetch_collection)
+      @tailorings ||= authorize(resolve_collection)
     end
 
     def tailoring

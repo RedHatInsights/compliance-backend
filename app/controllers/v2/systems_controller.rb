@@ -54,7 +54,7 @@ module V2
     permitted_params_for_action :destroy, { id: ID_TYPE }
 
     def os_versions
-      render json: authorize(filtered_base_scope).os_versions, status: :ok
+      render json: authorize(fetch_collection(base_scope)).os_versions, status: :ok
     end
     permission_for_action :os_versions, Rbac::SYSTEM_READ
     permitted_params_for_action :os_versions, { filter: ParamType.string }
@@ -62,7 +62,7 @@ module V2
     private
 
     def systems
-      @systems ||= authorize(fetch_collection)
+      @systems ||= authorize(resolve_collection)
     end
 
     def system
