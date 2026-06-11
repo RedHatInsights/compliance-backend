@@ -113,4 +113,144 @@ describe V2::SystemPolicy do
       end
     end
   end
+
+  context 'temporary table optimization for large group lists' do
+    let(:group1) { Faker::Internet.uuid }
+    let(:group2) { Faker::Internet.uuid }
+    let(:group3) { Faker::Internet.uuid }
+    let(:large_group_list) { (1..60).map { Faker::Internet.uuid } }
+
+    before do
+      # Create systems with specific groups
+      FactoryBot.create_list(:system, 5, account: user.account, groups: [{ id: group1 }])
+      FactoryBot.create_list(:system, 5, account: user.account, groups: [{ id: group2 }])
+      FactoryBot.create_list(:system, 5, account: user.account, groups: [{ id: group3 }])
+    end
+
+    context 'when Kessel is enabled and groups exceed threshold' do
+      before do
+        allow(Settings.kessel).to receive(:enabled).and_return(true)
+        allow(Settings.kessel).to receive(:groups_temp_table_threshold).and_return(50)
+        stub_rbac_permissions(
+          Rbac::INVENTORY_HOSTS_READ => [{
+            attribute_filter: {
+              key: 'group.id',
+              operation: 'in',
+              value: large_group_list
+            }
+          }]
+        )
+      end
+
+      it 'uses the temporary table approach' do
+        scope = V2::SystemPolicy::Scope.new(user, V2::System)
+        expect(scope.send(:requires_temp_table, large_group_list)).to be true
+      end
+
+      it 'returns correct results' do
+        # Add one of our test groups to the large list
+        large_group_list[0] = group1
+        stub_rbac_permissions(
+          Rbac::INVENTORY_HOSTS_READ => [{
+            attribute_filter: {
+              key: 'group.id',
+              operation: 'in',
+              value: large_group_list
+            }
+          }]
+        )
+
+        result = Pundit.policy_scope(user, V2::System)
+        expect(result.count).to eq(5)
+        expect(result.pluck(:groups).flatten.map { |g| g['id'] }.uniq).to eq([group1])
+      end
+
+      it 'creates and drops temporary table' do
+        scope = V2::SystemPolicy::Scope.new(user, V2::System)
+        conn = V2::System.connection
+
+        expect(conn).to receive(:execute).with(/CREATE TEMP TABLE/).and_call_original
+        expect(conn).to receive(:execute).with(/INSERT INTO/).and_call_original
+
+        Pundit.policy_scope(user, V2::System).to_a
+      end
+    end
+
+    context 'when Kessel is enabled but groups are below threshold' do
+      let(:small_group_list) { [group1, group2] }
+
+      before do
+        allow(Settings.kessel).to receive(:enabled).and_return(true)
+        allow(Settings.kessel).to receive(:groups_temp_table_threshold).and_return(50)
+        stub_rbac_permissions(
+          Rbac::INVENTORY_HOSTS_READ => [{
+            attribute_filter: {
+              key: 'group.id',
+              operation: 'in',
+              value: small_group_list
+            }
+          }]
+        )
+      end
+
+      it 'does not use the temporary table approach' do
+        scope = V2::SystemPolicy::Scope.new(user, V2::System)
+        expect(scope.send(:requires_temp_table, small_group_list)).to be false
+      end
+
+      it 'returns correct results using standard approach' do
+        result = Pundit.policy_scope(user, V2::System)
+        expect(result.count).to eq(10)
+        group_ids = result.pluck(:groups).flatten.map { |g| g['id'] }.uniq.sort
+        expect(group_ids).to eq([group1, group2].sort)
+      end
+    end
+
+    context 'when Kessel is disabled' do
+      before do
+        allow(Settings.kessel).to receive(:enabled).and_return(false)
+        stub_rbac_permissions(
+          Rbac::INVENTORY_HOSTS_READ => [{
+            attribute_filter: {
+              key: 'group.id',
+              operation: 'in',
+              value: large_group_list
+            }
+          }]
+        )
+      end
+
+      it 'does not use the temporary table approach' do
+        scope = V2::SystemPolicy::Scope.new(user, V2::System)
+        expect(scope.send(:requires_temp_table, large_group_list)).to be false
+      end
+    end
+
+    context 'when temporary table creation fails' do
+      before do
+        allow(Settings.kessel).to receive(:enabled).and_return(true)
+        allow(Settings.kessel).to receive(:groups_temp_table_threshold).and_return(50)
+        stub_rbac_permissions(
+          Rbac::INVENTORY_HOSTS_READ => [{
+            attribute_filter: {
+              key: 'group.id',
+              operation: 'in',
+              value: large_group_list + [group1]
+            }
+          }]
+        )
+      end
+
+      it 'falls back to standard approach and logs error' do
+        scope = V2::SystemPolicy::Scope.new(user, V2::System)
+        allow(scope).to receive(:create_temp_table).and_raise(ActiveRecord::StatementInvalid, 'Table creation failed')
+
+        expect(Rails.logger).to receive(:error).with(/Temp table optimization failed/)
+
+        result = Pundit.policy_scope(user, V2::System)
+        # Should still return results using fallback
+        expect(result.count).to eq(5)
+      end
+    end
+  end
 end
