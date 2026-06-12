@@ -25,8 +25,6 @@ services:
     depends_on:
       kafka:
         condition: service_started
-    links:
-      - kafka
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                        sleep 10 && \
                        kafka-topics --create --if-not-exists --topic platform.upload.announce --bootstrap-server kafka:29092 && \
@@ -44,8 +42,6 @@ services:
         condition: service_started
       createtopics:
         condition: service_completed_successfully
-    links:
-      - kafka
   minio:
     image: docker.io/minio/minio
     platform: linux/amd64
@@ -67,8 +63,6 @@ services:
     depends_on:
       minio:
         condition: service_healthy
-    links:
-      - minio
     entrypoint: /bin/sh
     command: -c '
       /usr/bin/mc alias set myminio http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD >/dev/null;
@@ -108,8 +102,6 @@ services:
         condition: service_started
       createbuckets:
         condition: service_completed_successfully
-    links:
-      - kafka
   db:
     image: docker.io/library/postgres:16-alpine
     platform: linux/amd64
@@ -176,9 +168,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    links:
-      - db
-      - redis
     volumes:
       - ./config/devel/rbac/definitions:/opt/rbac/rbac/management/role/definitions
       - ./config/devel/rbac/permissions:/opt/rbac/rbac/management/role/permissions
@@ -211,8 +200,6 @@ services:
     depends_on:
       inventory-migrator:
         condition: service_completed_successfully
-    links:
-      - inventory-migrator
     restart: on-failure
   inventory-web:
     image: quay.io/cloudservices/insights-inventory:latest
@@ -232,8 +219,6 @@ services:
     depends_on:
       inventory-migrator:
         condition: service_completed_successfully
-    links:
-      - inventory-migrator
   compliance-ssg:
     image: quay.io/cloudservices/compliance-ssg
     platform: linux/amd64
@@ -270,8 +255,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    links:
-      - db
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - ACG_CONFIG=/opt/app-root/src/devel.json
@@ -361,10 +344,6 @@ services:
         condition: service_started
       kafka:
         condition: service_started
-    links:
-      - db
-      - rbac
-      - kafka
   sidekiq:
     image: localhost/compliance-backend-rails
     platform: linux/amd64
@@ -379,9 +358,6 @@ services:
         condition: service_started
       rbac:
         condition: service_started
-    links:
-      - redis
-      - rbac
     command: bundle exec sidekiq
     environment:
       - MALLOC_ARENA_MAX=2
