@@ -22,23 +22,28 @@ module Notifications
 
     # Notifications should be only allowed if there are no test results or the policy was previously compliant
     def policy_previously_compliant?
-      parser.policy&.compliant?(parser.host)
+      tr = last_test_result
+      tr && tr.score >= parser.policy.compliance_threshold
     end
 
     def policy_untested?
-      parser.policy&.test_result_hosts&.where(id: parser.host.id)&.empty?
+      last_test_result.nil?
     end
 
     def notify_non_compliant!
-      # FIXME: after rewriting the parser to use V2::Policy, the additional lookup can be removed
-      v2_policy = V2::Policy.find_by(id: parser.policy.id)
-
       SystemNonCompliant.deliver(
-        system: parser.host,
+        system: parser.system,
         org_id: @msg_value['org_id'],
-        policy: v2_policy,
+        policy: parser.policy,
         compliance_score: parser.score
       )
+    end
+
+    def last_test_result
+      @last_test_result ||= V2::TestResult
+                            .where(system: parser.system, tailoring: parser.tailoring)
+                            .order(end_time: :desc)
+                            .first
     end
   end
 end
