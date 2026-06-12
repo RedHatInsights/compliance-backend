@@ -125,11 +125,13 @@ RSpec.describe 'systems:backfill', type: :task do
 
           count_after = ActiveRecord::Base.connection.select_value('SELECT COUNT(*) FROM systems').to_i
           expect(count_after).to eq(5)
-          
+
           # Verify counts per org
-          org1_count = ActiveRecord::Base.connection.select_value("SELECT COUNT(*) FROM systems WHERE org_id = '#{org_id}'").to_i
-          org2_count = ActiveRecord::Base.connection.select_value("SELECT COUNT(*) FROM systems WHERE org_id = '#{org_2}'").to_i
-          
+          org1_count = ActiveRecord::Base.connection
+                                         .select_value("SELECT COUNT(*) FROM systems WHERE org_id = '#{org_id}'").to_i
+          org2_count = ActiveRecord::Base.connection
+                                         .select_value("SELECT COUNT(*) FROM systems WHERE org_id = '#{org_2}'").to_i
+
           expect(org1_count).to eq(3)
           expect(org2_count).to eq(2)
         ensure
