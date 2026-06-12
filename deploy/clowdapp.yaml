@@ -138,6 +138,51 @@ objects:
         livenessProbe:
           exec:
             command: ["pgrep" ,"-f", "rake"]
+    - name: backfill-systems
+      schedule: ${BACKFILL_SYSTEMS_SCHEDULE}
+      concurrencyPolicy: Forbid
+      podSpec:
+        image: ${IMAGE}:${IMAGE_TAG}
+        initContainers:
+        - command: ["/bin/sh"]
+          args: ["-c", "$HOME/scripts/abort_if_pending_migrations.sh"]
+          inheritEnv: true
+        resources:
+          limits:
+            cpu: ${CPU_LIMIT_SERVICE}
+            memory: ${MEMORY_LIMIT_SERVICE}
+          requests:
+            cpu: ${CPU_REQUEST_SERVICE}
+            memory: ${MEMORY_REQUEST_SERVICE}
+        env:
+        - name: APPLICATION_TYPE
+          value: compliance-backfill-systems
+        - name: COMMAND
+          value: "bundle exec rake systems:backfill"
+        - name: RAILS_ENV
+          value: "${RAILS_ENV}"
+        - name: RAILS_LOG_TO_STDOUT
+          value: "${RAILS_LOG_TO_STDOUT}"
+        - name: PATH_PREFIX
+          value: "${PATH_PREFIX}"
+        - name: BATCH_SIZE
+          value: "${BACKFILL_BATCH_SIZE}"
+        - name: MAX_ROWS_PER_RUN
+          value: "${BACKFILL_MAX_ROWS_PER_RUN}"
+        - name: SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: secret_key_base
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: LOGSTREAM
+          value: "${LOGSTREAM_BACKFILL_SYSTEMS}"
+        livenessProbe:
+          exec:
+            command: ["pgrep" ,"-f", "rake"]
     - name: reindex-db
       schedule: ${REINDEX_DB_SCHEDULE}
       concurrencyPolicy: Forbid
@@ -777,6 +822,15 @@ parameters:
 - name: REINDEX_DB_SCHEDULE
   description: Cronjob schedule for DB reindex
   value: "0 5 * * *" # every day at 5 AM
+- name: BACKFILL_SYSTEMS_SCHEDULE
+  description: Cronjob schedule for systems backfill
+  value: "*/15 * * * *" # every 15 minutes
+- name: BACKFILL_BATCH_SIZE
+  description: Number of rows per batch for systems backfill
+  value: "1000"
+- name: BACKFILL_MAX_ROWS_PER_RUN
+  description: Max rows to process per cron execution for systems backfill
+  value: "50000"
 - name: MAX_INIT_TIMEOUT_SECONDS
   description: Number of seconds for timeout init container operation
   value: "120"
@@ -793,6 +847,8 @@ parameters:
   value: 'compliance-import-ssg'
 - name: LOGSTREAM_REINDEX_DB
   value: 'compliance-reindex-db'
+- name: LOGSTREAM_BACKFILL_SYSTEMS
+  value: 'compliance-backfill-systems'
 - name: RUBY_YJIT_ENABLE
   value: '0'
 - name: KESSEL_ENABLED
