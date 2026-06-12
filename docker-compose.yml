@@ -23,7 +23,8 @@ services:
     image: docker.io/confluentinc/cp-kafka
     platform: linux/amd64
     depends_on:
-      - kafka
+      kafka:
+        condition: service_started
     links:
       - kafka
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
@@ -39,8 +40,10 @@ services:
       - LOGLEVEL=INFO
       - PROMETHEUS_PORT=8001
     depends_on:
-      - kafka
-      - createtopics
+      kafka:
+        condition: service_started
+      createtopics:
+        condition: service_completed_successfully
     links:
       - kafka
   minio:
@@ -101,7 +104,10 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - kafka
+      kafka:
+        condition: service_started
+      createbuckets:
+        condition: service_completed_successfully
     links:
       - kafka
   db:
@@ -139,12 +145,12 @@ services:
       - BYPASS_BOP_VERIFICATION=True
       - IT_BYPASS_TOKEN_VALIDATION=True
     depends_on:
-      - build-rbac-db
-      - db
-      - redis
-    links:
-      - db
-      - redis
+      build-rbac-db:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     ports:
       - 9002:8080
     volumes:
@@ -281,12 +287,12 @@ services:
     volumes:
       - .:/opt/app-root/src/:z
     depends_on:
-      - db
-      - compliance-ssg
-      - build-rails-db
-    links:
-      - db
-      - compliance-ssg
+      db:
+        condition: service_healthy
+      compliance-ssg:
+        condition: service_started
+      build-rails-db:
+        condition: service_completed_successfully
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - RAILS_LOG_TO_STDOUT=true
@@ -322,16 +328,14 @@ services:
     volumes:
       - .:/opt/app-root/src:z
     depends_on:
-      - db
-      - redis
-      - rbac
-      - compliance-ssg
-      - import-ssg
-    links:
-      - db
-      - redis
-      - rbac
-      - compliance-ssg
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rbac:
+        condition: service_started
+      compliance-ssg:
+        condition: service_started
   inventory-consumer:
     image: localhost/compliance-backend-rails
     platform: linux/amd64
@@ -351,9 +355,12 @@ services:
     volumes:
       - .:/opt/app-root/src:z
     depends_on:
-      - db
-      - rbac
-      - kafka
+      db:
+        condition: service_healthy
+      rbac:
+        condition: service_started
+      kafka:
+        condition: service_started
     links:
       - db
       - rbac
@@ -368,8 +375,10 @@ services:
     volumes:
       - .:/opt/app-root/src:z
     depends_on:
-      - redis
-      - rbac
+      redis:
+        condition: service_started
+      rbac:
+        condition: service_started
     links:
       - redis
       - rbac
