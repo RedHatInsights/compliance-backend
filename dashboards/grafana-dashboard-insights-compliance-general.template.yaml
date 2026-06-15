@@ -100,7 +100,7 @@ objects:
         "editable": true,
         "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
-        "id": 1267873,
+        "id": 1025982,
         "links": [],
         "panels": [
           {
@@ -2384,7 +2384,7 @@ objects:
                     }
                   ]
                 },
-                "unit": "deckbytes"
+                "unit": "bytes"
               },
               "overrides": []
             },
@@ -4993,7 +4993,7 @@ objects:
         "timezone": "",
         "title": "Compliance",
         "uid": "compliance",
-        "version": 14096
+        "version": 4
       }
   kind: ConfigMap
   metadata:
