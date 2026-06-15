@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_08_090600) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -293,7 +293,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_08_090600) do
     t.jsonb "system_profile", default: {}, null: false
     t.jsonb "tags", default: {}, null: false
     t.datetime "updated", null: false
-    t.index ["insights_id"], name: "index_systems_on_insights_id", unique: true
+    t.index ["insights_id"], name: "index_systems_on_insights_id"
   end
 
   create_table "tailoring_rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
