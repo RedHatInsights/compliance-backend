@@ -1,5 +1,5 @@
 ---
-revision: '2026-05-26'
+revision: '2026-06-08'
 supported:
   RHEL-6.6:
   - package: scap-security-guide-0.1.18-3.el6
@@ -1071,6 +1071,25 @@ supported:
       pci-dss:
       stig:
       stig_gui:
+  - package: scap-security-guide-0.1.81-1.el8_10
+    version: 0.1.81
+    profiles:
+      anssi_bp28_enhanced:
+      anssi_bp28_high:
+      anssi_bp28_intermediary:
+      anssi_bp28_minimal:
+      cis:
+      cis_server_l1:
+      cis_workstation_l1:
+      cis_workstation_l2:
+      cui:
+      e8:
+      hipaa:
+      ism_o:
+      ospp:
+      pci-dss:
+      stig:
+      stig_gui:
   RHEL-9.0:
   - package: scap-security-guide-0.1.60-6.el9_0
     version: 0.1.60
@@ -1634,6 +1653,29 @@ supported:
       pci-dss:
       stig:
       stig_gui:
+  - package: scap-security-guide-0.1.81-1.el9_2
+    version: 0.1.81
+    profiles:
+      anssi_bp28_enhanced:
+      anssi_bp28_high:
+      anssi_bp28_intermediary:
+      anssi_bp28_minimal:
+      bsi:
+      ccn_advanced:
+      ccn_basic:
+      ccn_intermediate:
+      cis:
+      cis_server_l1:
+      cis_workstation_l1:
+      cis_workstation_l2:
+      cui:
+      e8:
+      hipaa:
+      ism_o:
+      ospp:
+      pci-dss:
+      stig:
+      stig_gui:
   RHEL-9.3:
   - package: scap-security-guide-0.1.69-3.el9_3
     version: 0.1.69
@@ -1881,6 +1923,29 @@ supported:
       pci-dss:
       stig:
       stig_gui:
+  - package: scap-security-guide-0.1.81-1.el9_4
+    version: 0.1.81
+    profiles:
+      anssi_bp28_enhanced:
+      anssi_bp28_high:
+      anssi_bp28_intermediary:
+      anssi_bp28_minimal:
+      bsi:
+      ccn_advanced:
+      ccn_basic:
+      ccn_intermediate:
+      cis:
+      cis_server_l1:
+      cis_workstation_l1:
+      cis_workstation_l2:
+      cui:
+      e8:
+      hipaa:
+      ism_o:
+      ospp:
+      pci-dss:
+      stig:
+      stig_gui:
   RHEL-9.5:
   - package: scap-security-guide-0.1.74-1.el9_4
     version: 0.1.74
@@ -2062,6 +2127,29 @@ supported:
       pci-dss:
       stig:
       stig_gui:
+  - package: scap-security-guide-0.1.81-1.el9_6
+    version: 0.1.81
+    profiles:
+      anssi_bp28_enhanced:
+      anssi_bp28_high:
+      anssi_bp28_intermediary:
+      anssi_bp28_minimal:
+      bsi:
+      ccn_advanced:
+      ccn_basic:
+      ccn_intermediate:
+      cis:
+      cis_server_l1:
+      cis_workstation_l1:
+      cis_workstation_l2:
+      cui:
+      e8:
+      hipaa:
+      ism_o:
+      ospp:
+      pci-dss:
+      stig:
+      stig_gui:
   RHEL-9.7:
   - package: scap-security-guide-0.1.77-3.el9
     version: 0.1.77
@@ -2157,6 +2245,29 @@ supported:
   RHEL-9.8:
   - package: scap-security-guide-0.1.80-1.el9_7
     version: 0.1.80
+    profiles:
+      anssi_bp28_enhanced:
+      anssi_bp28_high:
+      anssi_bp28_intermediary:
+      anssi_bp28_minimal:
+      bsi:
+      ccn_advanced:
+      ccn_basic:
+      ccn_intermediate:
+      cis:
+      cis_server_l1:
+      cis_workstation_l1:
+      cis_workstation_l2:
+      cui:
+      e8:
+      hipaa:
+      ism_o:
+      ospp:
+      pci-dss:
+      stig:
+      stig_gui:
+  - package: scap-security-guide-0.1.81-1.el9_8
+    version: 0.1.81
     profiles:
       anssi_bp28_enhanced:
       anssi_bp28_high:
@@ -2276,6 +2387,26 @@ supported:
       pci-dss:
       stig:
       stig_gui:
+  - package: scap-security-guide-0.1.81-1.el10_0
+    version: 0.1.81
+    profiles:
+      anssi_bp28_enhanced:
+      anssi_bp28_high:
+      anssi_bp28_intermediary:
+      anssi_bp28_minimal:
+      bsi:
+      cis:
+      cis_server_l1:
+      cis_workstation_l1:
+      cis_workstation_l2:
+      e8:
+      hipaa:
+      ism_o:
+      ism_o_secret:
+      ism_o_top_secret:
+      pci-dss:
+      stig:
+      stig_gui:
   RHEL-10.1:
   - package: scap-security-guide-0.1.77-2.el10
     version: 0.1.77
@@ -2357,6 +2488,26 @@ supported:
   RHEL-10.2:
   - package: scap-security-guide-0.1.80-1.el10_1
     version: 0.1.80
+    profiles:
+      anssi_bp28_enhanced:
+      anssi_bp28_high:
+      anssi_bp28_intermediary:
+      anssi_bp28_minimal:
+      bsi:
+      cis:
+      cis_server_l1:
+      cis_workstation_l1:
+      cis_workstation_l2:
+      e8:
+      hipaa:
+      ism_o:
+      ism_o_secret:
+      ism_o_top_secret:
+      pci-dss:
+      stig:
+      stig_gui:
+  - package: scap-security-guide-0.1.81-1.el10_2
+    version: 0.1.81
     profiles:
       anssi_bp28_enhanced:
       anssi_bp28_high:
