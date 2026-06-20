@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         fetch-depth: 0
     - name: Validate commit message format
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Set up the environment
       run: |
         cp .env.example .env
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up the environment
         run: |
           cp .env.example .env
@@ -77,7 +77,7 @@ jobs:
         ports: ["5432:5432"]
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Setup Ruby and install gems
       uses: ruby/setup-ruby@v1
       with:
@@ -184,7 +184,7 @@ jobs:
         ports: ["5432:5432"]
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Setup Ruby and install gems
       uses: ruby/setup-ruby@v1
       with:

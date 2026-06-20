@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Fetch latest Ruby version from base image
         timeout-minutes: 10
         run: |
@@ -34,7 +34,7 @@ jobs:
       BUNDLE_BUILD__FFI: "--enable-system-libffi"
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Ruby and install gems
         uses: ruby/setup-ruby@v1
         with:
