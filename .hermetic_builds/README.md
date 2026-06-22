@@ -72,15 +72,16 @@ Do not edit `rpms.in.yaml` by hand. Commit `ubi.repo`, `rpms.in.yaml`, and
 
 ## Updating the Rust crate lockfile
 
-If `prometheus-client-mmap` is upgraded in `Gemfile.lock`, copy the updated
-Cargo files from the extracted gem source into `.hermetic_builds/cargo/`:
+If `prometheus-client-mmap` is upgraded in `Gemfile.lock`, run:
 
 ```bash
-# Find the gem in your local bundle cache
-GEM=$(find ~/.bundle ~/.local/share/gem -path "*/prometheus-client-mmap-*/ext/fast_mmaped_file_rs" 2>/dev/null | head -1)
-cp "$GEM/Cargo.toml" .hermetic_builds/cargo/
-cp "$GEM/Cargo.lock" .hermetic_builds/cargo/
+bundle install
+make update-cargo-lockfile
 ```
+
+This copies `Cargo.toml` and `Cargo.lock` from the installed gem's
+`ext/fast_mmaped_file_rs/` directory into `.hermetic_builds/cargo/`.
+Commit the updated files alongside `Gemfile.lock`.
 
 ## Notes
 
