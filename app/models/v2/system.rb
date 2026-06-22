@@ -8,8 +8,7 @@ module V2
     self.primary_key = 'id'
     self.ignored_columns += %w[account]
 
-    # FIXME: after the full remodel and V1 cleanup, inverse_of can be specified
-    belongs_to :account, class_name: 'Account', primary_key: :org_id, foreign_key: :org_id # rubocop:disable Rails/InverseOf
+    belongs_to :account, class_name: 'Account', primary_key: :org_id, foreign_key: :org_id, inverse_of: :systems
 
     has_many :policy_systems, class_name: 'V2::PolicySystem', dependent: nil
     has_many :report_systems, class_name: 'V2::ReportSystem', dependent: nil

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe V2::ApplicationController do
   describe 'rbac_allowed?' do
-    let(:user) { FactoryBot.build(:user) }
+    let(:user) { FactoryBot.build(:v2_user) }
     let(:header) { OpenStruct.new(cert_based?: false, raw: nil) }
     let(:action_name) { 'index' }
 
