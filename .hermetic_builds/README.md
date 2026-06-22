@@ -39,9 +39,11 @@ replace-with = "vendored-sources"
 directory = "/cachi2/output/deps/cargo"
 ```
 
-This file is written inline by a `printf` call inside the Dockerfile `RUN`
-instruction when `HERMETIC == "true"`. It is not a file stored in the repository
-or copied from `.hermetic_builds/`.
+This file is stored at `.hermetic_builds/cargo/config.toml` and copied
+unconditionally into the build stage. When `HERMETIC == "true"`, the `RUN`
+instruction copies it to `.cargo/config.toml` where cargo reads it.
+Non-hermetic builds carry the file in the image but cargo never sees it at
+that path.
 
 ## Regenerating the RPM lock file
 

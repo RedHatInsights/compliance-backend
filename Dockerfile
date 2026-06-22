@@ -27,13 +27,14 @@ ENV MAKEFLAGS="-j4"
 
 COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
+COPY ./.hermetic_builds/cargo/config.toml .hermetic_builds/cargo/config.toml
 
 RUN ( [[ $HERMETIC == "true" ]] || microdnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgresql.repo $pgRepo ) && \
     ( [[ $HERMETIC == "true" ]] || rpm -e --nodeps tzdata &>/dev/null )                                                             && \
     microdnf module enable -y ruby:3.3                                                                    && \
     microdnf install --nodocs -y $deps $devDeps $extras                                                   && \
     chmod +t /tmp                                                                                         && \
-    ( [[ $HERMETIC != "true" ]] || (mkdir -p .cargo && printf '[source.crates-io]\nreplace-with = "vendored-sources"\n\n[source.vendored-sources]\ndirectory = "/cachi2/output/deps/cargo"\n' > .cargo/config.toml) ) && \
+    ( [[ $HERMETIC != "true" ]] || (mkdir -p .cargo && cp .hermetic_builds/cargo/config.toml .cargo/config.toml) ) && \
     ( [[ $prod != "true" ]] || bundle config set --local without 'development test' )                     && \
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )                              && \
     ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )                               && \
