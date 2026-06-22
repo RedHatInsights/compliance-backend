@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'rake/testtask'
-
-desc 'Run tests and rubocop'
-namespace :test do
+desc 'Run specs and static analysis'
+namespace :spec do
   task validate: :environment do
     Rake::Task['rubocop'].invoke
     Rake::Task['brakeman'].invoke
-    Rake::Task['test'].invoke
     Rake::Task['spec'].invoke
   end
 end

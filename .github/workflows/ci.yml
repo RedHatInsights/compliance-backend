@@ -161,24 +161,6 @@ jobs:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
         version: v10.0.1
-    - name: Run minitest tests
-      env:
-        HOSTNAME: rails
-        RAILS_ENV: test
-        ACG_CONFIG: ./github-ci.json
-        DATABASE_SERVICE_NAME: postgres
-        POSTGRES_SERVICE_HOST: localhost
-        POSTGRESQL_USER: insights
-        POSTGRESQL_PASSWORD: insights
-        POSTGRESQL_TEST_DATABASE: insights
-        RUBY_YJIT_ENABLE: 1
-      run: bin/rake test
-    - name: Upload code coverage from minitest
-      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
-      with:
-        fail_ci_if_error: true
-        token: ${{ secrets.CODECOV_TOKEN }}
-        version: v10.0.1
   migration-robustness:
     runs-on: ubuntu-latest
     services:

@@ -158,7 +158,7 @@ echo '===================================='
 echo '===     Running Unit Tests      ===='
 echo '===================================='
 set +e
-cicd::container::cmd exec "$TEST_CONTAINER_ID" /bin/bash -c 'ACG_CONFIG=/opt/app-root/src/test.json bundle exec rake test:validate'
+cicd::container::cmd exec "$TEST_CONTAINER_ID" /bin/bash -c 'ACG_CONFIG=/opt/app-root/src/test.json bundle exec rake spec:validate'
 TEST_RESULT=$?
 set -e
 # Copy test reports
