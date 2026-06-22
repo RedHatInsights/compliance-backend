@@ -1,4 +1,4 @@
-BASE_IMAGE ?= registry.access.redhat.com/ubi9/ubi-minimal@$(shell head -1 .baseimagedigest)
+BASE_IMAGE ?= $(shell grep -m1 'FROM registry.access.redhat.com/ubi9/ubi-minimal' Dockerfile | awk '{print $$2}')
 
 .PHONY: ubi.repo rpms.in.yaml generate-rpm-lockfile update-cargo-lockfile
 

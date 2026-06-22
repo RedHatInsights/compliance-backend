@@ -59,13 +59,11 @@ make generate-rpm-lockfile
 so those targets run automatically in the correct order — there is no need to
 invoke them separately.
 
-**Base image pinning** — `BASE_IMAGE` defaults to
-`registry.access.redhat.com/ubi9/ubi-minimal@` concatenated with the first line
-of `.baseimagedigest`, which contains a `sha256:…` digest. Pinning to a digest
-rather than a mutable tag ensures the lockfile is generated against the exact
-same image content that the Tekton pipeline will use. `.baseimagedigest` is kept
-up to date by the weekly automation PR; override `BASE_IMAGE` in the environment
-if you need to regenerate against a different image.
+**Base image pinning** — the `FROM` lines in `Dockerfile` reference the base
+image by sha256 digest rather than a mutable tag. `BASE_IMAGE` in the Makefile
+is derived from that digest automatically. The weekly automation PR updates the
+digest in `Dockerfile` via `checkimage.yaml`. Override `BASE_IMAGE` in the
+environment if you need to regenerate against a different image.
 
 Do not edit `rpms.in.yaml` by hand. Commit `ubi.repo`, `rpms.in.yaml`, and
 `rpms.lock.yaml` together after regenerating.
