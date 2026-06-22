@@ -23,9 +23,8 @@ services:
     image: docker.io/confluentinc/cp-kafka
     platform: linux/amd64
     depends_on:
-      - kafka
-    links:
-      - kafka
+      kafka:
+        condition: service_started
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                        sleep 10 && \
                        kafka-topics --create --if-not-exists --topic platform.upload.announce --bootstrap-server kafka:29092 && \
@@ -39,10 +38,10 @@ services:
       - LOGLEVEL=INFO
       - PROMETHEUS_PORT=8001
     depends_on:
-      - kafka
-      - createtopics
-    links:
-      - kafka
+      kafka:
+        condition: service_started
+      createtopics:
+        condition: service_completed_successfully
   minio:
     image: docker.io/minio/minio
     platform: linux/amd64
@@ -64,8 +63,6 @@ services:
     depends_on:
       minio:
         condition: service_healthy
-    links:
-      - minio
     entrypoint: /bin/sh
     command: -c '
       /usr/bin/mc alias set myminio http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD >/dev/null;
@@ -101,9 +98,10 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - kafka
-    links:
-      - kafka
+      kafka:
+        condition: service_started
+      createbuckets:
+        condition: service_completed_successfully
   db:
     image: docker.io/library/postgres:16-alpine
     platform: linux/amd64
@@ -139,12 +137,12 @@ services:
       - BYPASS_BOP_VERIFICATION=True
       - IT_BYPASS_TOKEN_VALIDATION=True
     depends_on:
-      - build-rbac-db
-      - db
-      - redis
-    links:
-      - db
-      - redis
+      build-rbac-db:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     ports:
       - 9002:8080
     volumes:
@@ -170,9 +168,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    links:
-      - db
-      - redis
     volumes:
       - ./config/devel/rbac/definitions:/opt/rbac/rbac/management/role/definitions
       - ./config/devel/rbac/permissions:/opt/rbac/rbac/management/role/permissions
@@ -205,8 +200,6 @@ services:
     depends_on:
       inventory-migrator:
         condition: service_completed_successfully
-    links:
-      - inventory-migrator
     restart: on-failure
   inventory-web:
     image: quay.io/cloudservices/insights-inventory:latest
@@ -226,8 +219,6 @@ services:
     depends_on:
       inventory-migrator:
         condition: service_completed_successfully
-    links:
-      - inventory-migrator
   compliance-ssg:
     image: quay.io/cloudservices/compliance-ssg
     platform: linux/amd64
@@ -241,7 +232,7 @@ services:
   # Feel free to comment them out for subsequent use
   #
   build-rails-db:
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     platform: linux/amd64
     entrypoint: ''
     command: sh -c '
@@ -264,13 +255,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    links:
-      - db
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - ACG_CONFIG=/opt/app-root/src/devel.json
   import-ssg:
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     platform: linux/amd64
     entrypoint: ''
     command: 'bundle exec rake ssg:import_rhel_supported'
@@ -281,12 +270,12 @@ services:
     volumes:
       - .:/opt/app-root/src/:z
     depends_on:
-      - db
-      - compliance-ssg
-      - build-rails-db
-    links:
-      - db
-      - compliance-ssg
+      db:
+        condition: service_healthy
+      compliance-ssg:
+        condition: service_started
+      build-rails-db:
+        condition: service_completed_successfully
     environment:
       - POSTGRESQL_TEST_DATABASE=compliance_test
       - RAILS_LOG_TO_STDOUT=true
@@ -301,7 +290,7 @@ services:
       args:
         - prod=false
         - extras=$EXTRA_PACKAGES
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     entrypoint: '/opt/app-root/src/devel.entrypoint.sh'
     command: 'bundle exec rails s -b 0.0.0.0'
     tty: true
@@ -322,18 +311,16 @@ services:
     volumes:
       - .:/opt/app-root/src:z
     depends_on:
-      - db
-      - redis
-      - rbac
-      - compliance-ssg
-      - import-ssg
-    links:
-      - db
-      - redis
-      - rbac
-      - compliance-ssg
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rbac:
+        condition: service_started
+      compliance-ssg:
+        condition: service_started
   inventory-consumer:
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     platform: linux/amd64
     restart: on-failure
     entrypoint: ''
@@ -351,15 +338,14 @@ services:
     volumes:
       - .:/opt/app-root/src:z
     depends_on:
-      - db
-      - rbac
-      - kafka
-    links:
-      - db
-      - rbac
-      - kafka
+      db:
+        condition: service_healthy
+      rbac:
+        condition: service_started
+      kafka:
+        condition: service_started
   sidekiq:
-    image: compliance-backend-rails
+    image: localhost/compliance-backend-rails
     platform: linux/amd64
     restart: on-failure
     tmpfs:
@@ -368,11 +354,10 @@ services:
     volumes:
       - .:/opt/app-root/src:z
     depends_on:
-      - redis
-      - rbac
-    links:
-      - redis
-      - rbac
+      redis:
+        condition: service_started
+      rbac:
+        condition: service_started
     command: bundle exec sidekiq
     environment:
       - MALLOC_ARENA_MAX=2
