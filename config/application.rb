@@ -34,7 +34,14 @@ module ComplianceBackend
     # Partial inserts are necessary for writing into views with read-only fields
     config.active_record.partial_inserts = true # FIXME: clean up after the remodel
 
-    # Load platform modules
+    # Autoload lib/ (excluding Rake tasks) so Exceptions and other lib/
+    # constants are available without manual require calls.
+    # Note: Insights is also required explicitly below because it is
+    # referenced during application class evaluation, before Zeitwerk activates.
+    config.autoload_lib(ignore: %w[tasks])
+
+    # Required eagerly because Insights::* constants are referenced in this
+    # file during class body evaluation, before Zeitwerk is active.
     require 'insights'
 
     # Settings in config/environments/* take precedence over those specified here.
