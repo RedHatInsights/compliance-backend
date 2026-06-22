@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - name: Fetch latest Ruby version from base image
         timeout-minutes: 10
         run: |
@@ -19,7 +19,7 @@ jobs:
             microdnf repoquery ruby --info | grep Version | awk '{ print \$3 }' | head -1 > .ruby-version;
             cat .ruby-version" > .ruby-version
       - name: Open or update pull request if Ruby version changed
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
         with:
           title: 'chore(devel): update .ruby-version'
           branch: automation/ruby-version
@@ -34,16 +34,16 @@ jobs:
       BUNDLE_BUILD__FFI: "--enable-system-libffi"
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - name: Setup Ruby and install gems
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74
         with:
           bundler-cache: true
           bundler: latest
       - name: Update Bundler to latest version
         run: bundle config set frozen false && bundle update --bundler
       - name: Open or update pull request if Bundler version changed
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
         with:
           title: 'chore(deps): update bundler version'
           branch: automation/bundler-version

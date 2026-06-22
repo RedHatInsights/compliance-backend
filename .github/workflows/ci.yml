@@ -15,11 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       with:
         fetch-depth: 0
     - name: Validate commit message format
-      uses: wagoid/commitlint-github-action@v6
+      uses: wagoid/commitlint-github-action@b948419dd99f3fd78a6548d48f94e3df7f6bf3ed
       with:
         configFile: './.commitlint.yml'
     # FIXME: this is currently timing out
@@ -28,7 +28,7 @@ jobs:
     #  with:
     #    definition-file: swagger/v2/openapi.json
     - name: Setup Ruby and install gems
-      uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74
       env:
         BUNDLE_JOBS: 4
       with:
@@ -40,7 +40,7 @@ jobs:
     - name: Brakeman
       run: bundle exec brakeman
     - name: ShellCheck
-      uses: ludeeus/action-shellcheck@2.0.0
+      uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38
       with:
         ignore: vendor
         check_together: true
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
     - name: Set up the environment
       run: |
         cp .env.example .env
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
       - name: Set up the environment
         run: |
           cp .env.example .env
@@ -77,9 +77,9 @@ jobs:
         ports: ["5432:5432"]
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
     - name: Setup Ruby and install gems
-      uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74
       with:
         bundler-cache: true
         rubygems: latest
@@ -149,7 +149,7 @@ jobs:
         RUBY_YJIT_ENABLE: 1
       run: bin/rake spec
     - name: Upload code coverage from RSpec
-      uses: codecov/codecov-action@v7.0.0
+      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -167,7 +167,7 @@ jobs:
         RUBY_YJIT_ENABLE: 1
       run: bin/rake test
     - name: Upload code coverage from minitest
-      uses: codecov/codecov-action@v7.0.0
+      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -184,9 +184,9 @@ jobs:
         ports: ["5432:5432"]
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
     - name: Setup Ruby and install gems
-      uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74
       with:
         bundler-cache: true
         rubygems: latest
