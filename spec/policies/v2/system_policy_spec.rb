@@ -113,4 +113,18 @@ describe V2::SystemPolicy do
       end
     end
   end
+
+  context 'no permissions' do
+    before do
+      allow(user).to receive(:inventory_groups).and_return([])
+    end
+
+    it 'denies access to index' do
+      expect { Pundit.authorize(user, V2::System, :index?) }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it 'allows scoping (returns empty scope)' do
+      expect(Pundit.policy_scope(user, V2::System).to_a).to be_empty
+    end
+  end
 end
