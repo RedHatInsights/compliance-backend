@@ -19,8 +19,8 @@ starts and network access is blocked during the build itself.
 ## Dependency sets
 
 Three dependency sets are locked and must be kept up to date:
-- RPM packages (`rpms.lock.yaml` managed by `make generate-rpm-lockfile`
-- Ruby gems (`Gemfile.lock` managed by bundler
+- RPM packages (`rpms.lock.yaml` managed by `make generate-rpm-lockfile`)
+- Ruby gems (`Gemfile.lock` managed by bundler)
 - Rust crates (prometheus-client-mmap) (`.hermetic_builds/cargo/Cargo.lock`) copied from gem source
 
 `prometheus-client-mmap` (a transitive dependency via `yabeda-prometheus-mmap`)
