@@ -8,8 +8,9 @@ class InventoryEventsConsumer < ApplicationConsumer
       Kafka::DeletedSystemCleaner.new(payload, logger).cleanup_system
     elsif service == 'compliance'
       Kafka::ReportParser.new(payload, logger).parse_reports
-    elsif policy_id && %w[created updated].include?(message_type)
-      Kafka::PolicySystemImporter.new(payload, logger).import
+    elsif %w[created updated].include?(message_type)
+      Kafka::SystemImporter.new(payload, logger).import
+      Kafka::PolicySystemImporter.new(payload, logger).import if policy_id
     else
       logger.debug "Skipped message of type '#{message_type}'"
     end
