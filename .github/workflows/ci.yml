@@ -41,7 +41,7 @@ jobs:
     - name: Brakeman
       run: bundle exec brakeman
     - name: ShellCheck
-      uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38
+      uses: ludeeus/action-shellcheck@00b27aa7cb85167568cb48a3838b75f4265f2bca
       with:
         ignore: vendor
         check_together: true
