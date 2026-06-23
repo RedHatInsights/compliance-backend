@@ -51,19 +51,33 @@ describe InventoryEventsConsumer do
       )
     end
 
-    it 'logs a debug message and skips processing' do
-      expect(Karafka.logger).to receive(:debug).with("Skipped message of type '#{type}'")
+    before do
+      @system_importer_service = instance_double(Kafka::SystemImporter)
+      allow(Kafka::SystemImporter).to receive(:new).and_return(@system_importer_service)
+      allow(@system_importer_service).to receive(:import)
+    end
+
+    it 'delegates to SystemImporter service and skips PolicySystemImporter' do
+      expect(@system_importer_service).to receive(:import)
+      expect(Kafka::PolicySystemImporter).not_to receive(:new)
 
       consumer.consume
     end
   end
 
   describe 'handling messages without policy ID' do
+    before do
+      @system_importer_service = instance_double(Kafka::SystemImporter)
+      allow(Kafka::SystemImporter).to receive(:new).and_return(@system_importer_service)
+      allow(@system_importer_service).to receive(:import)
+    end
+
     context 'message is created' do
       let(:type) { 'created' }
 
-      it 'logs a debug message and skips processing' do
-        expect(Karafka.logger).to receive(:debug).with("Skipped message of type '#{type}'")
+      it 'delegates to SystemImporter service but not PolicySystemImporter' do
+        expect(@system_importer_service).to receive(:import)
+        expect(Kafka::PolicySystemImporter).not_to receive(:new)
 
         consumer.consume
       end
@@ -72,8 +86,9 @@ describe InventoryEventsConsumer do
     context 'message is updated' do
       let(:type) { 'updated' }
 
-      it 'logs a debug message and skips processing' do
-        expect(Karafka.logger).to receive(:debug).with("Skipped message of type '#{type}'")
+      it 'delegates to SystemImporter service but not PolicySystemImporter' do
+        expect(@system_importer_service).to receive(:import)
+        expect(Kafka::PolicySystemImporter).not_to receive(:new)
 
         consumer.consume
       end
@@ -137,13 +152,19 @@ describe InventoryEventsConsumer do
         )
       end
 
+      before do
+        @system_importer_service = instance_double(Kafka::SystemImporter)
+        allow(Kafka::SystemImporter).to receive(:new).and_return(@system_importer_service)
+        allow(@system_importer_service).to receive(:import)
+        allow(@service).to receive(:import)
+      end
+
       context 'message is created' do
         let(:type) { 'created' }
 
-        it 'delegates to PolicySystemImporter service' do
-          allow(@service).to receive(:import)
-
+        it 'delegates to both PolicySystemImporter and SystemImporter services' do
           expect(@service).to receive(:import)
+          expect(@system_importer_service).to receive(:import)
 
           consumer.consume
         end
@@ -152,10 +173,9 @@ describe InventoryEventsConsumer do
       context 'message is updated' do
         let(:type) { 'updated' }
 
-        it 'delegates to PolicySystemImporter service' do
-          allow(@service).to receive(:import)
-
+        it 'delegates to both PolicySystemImporter and SystemImporter services' do
           expect(@service).to receive(:import)
+          expect(@system_importer_service).to receive(:import)
 
           consumer.consume
         end

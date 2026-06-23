@@ -3,17 +3,21 @@
 # Receives messages from the Kafka topic, dispatches them to the appropriate service
 class InventoryEventsConsumer < ApplicationConsumer
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def consume_one
     if message_type == 'delete'
       Kafka::DeletedSystemCleaner.new(payload, logger).cleanup_system
+    elsif %w[created updated].include?(message_type)
+      Kafka::SystemImporter.new(payload, logger).import
+      Kafka::PolicySystemImporter.new(payload, logger).import if policy_id
+      Kafka::ReportParser.new(payload, logger).parse_reports if service == 'compliance'
     elsif service == 'compliance'
       Kafka::ReportParser.new(payload, logger).parse_reports
-    elsif policy_id && %w[created updated].include?(message_type)
-      Kafka::PolicySystemImporter.new(payload, logger).import
     else
       logger.debug "Skipped message of type '#{message_type}'"
     end
   end
+  # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
 
   private
