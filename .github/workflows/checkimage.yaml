@@ -16,11 +16,9 @@ jobs:
         run: sudo apt-get install -y skopeo
       - name: Fetch latest base image digest
         run: |
-          base=$(grep -Po '(?<=FROM )([^\s]*)(?= AS build)' Dockerfile)
-          skopeo inspect "docker://$base" | jq .Digest --raw-output > .baseimagedigest
-          docker run --rm -u 0 quay.io/cloudservices/compliance-backend:latest sh -c \
-            'microdnf update -y $(cat /opt/installedpackages) > /dev/null; rpm -q $(cat /opt/installedpackages) | sort | sha256sum | cut -d " " -f 1' \
-            >> .baseimagedigest
+          base_name=$(grep -Po '(?<=FROM )[^\s@]+(?=@)' Dockerfile | head -1)
+          new_digest=$(skopeo inspect "docker://$base_name" | jq .Digest --raw-output)
+          sed -i "s|FROM ${base_name}@sha256:[a-f0-9]*|FROM ${base_name}@${new_digest}|g" Dockerfile
       - name: Open or update pull request if digest changed
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
         with:

@@ -1,0 +1,35 @@
+[package]
+name = "fast_mmaped_file_rs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+hashbrown = "0.15.3"
+libc = "0.2.172"
+magnus = { version = "0.8.2", features = ["rb-sys"] }
+memmap2 = "0.9.5"
+# v0.26 cannot be built on CentOS 7 https://github.com/nix-rust/nix/issues/1972
+nix = { version = "0.25", features = ["mman"] } # mman used for MsFlags
+rb-sys = { version = "0.9.117", features = ["stable-api-compiled-fallback"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = { version = "1.0.140", features = ["raw_value"] }
+smallvec = { version = "1.15", features = ["serde"] }
+thiserror = "2.0.12"
+
+[dev-dependencies]
+bstr = "1.12"
+indoc = "2.0.6"
+# We need the `embed` feature to run tests, but this triggers failures when building as a Gem.
+magnus = { version = "0.8.2", features = ["rb-sys","embed"] }
+rand = "0.9.1"
+sha2 = "0.10.9"
+tempfile = "3.19.1"
+
+[build-dependencies]
+rb-sys-env = "0.2.2"
+
+[lib]
+# Integration tests won't work if crate is only `cdylib`.
+crate-type = ["cdylib","lib"]
