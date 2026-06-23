@@ -21,7 +21,7 @@ jobs:
             microdnf repoquery ruby --info | grep Version | awk '{ print \$3 }' | head -1 > .ruby-version;
             cat .ruby-version" > .ruby-version
       - name: Open or update pull request if Ruby version changed
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
+        uses: peter-evans/create-pull-request@aa523f9db61947bd5e06efd77870ef065eae32cc
         with:
           title: 'chore(devel): update .ruby-version'
           branch: automation/ruby-version
@@ -47,7 +47,7 @@ jobs:
       - name: Update Bundler to latest version
         run: bundle config set frozen false && bundle update --bundler
       - name: Open or update pull request if Bundler version changed
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
+        uses: peter-evans/create-pull-request@aa523f9db61947bd5e06efd77870ef065eae32cc
         with:
           title: 'chore(deps): update bundler version'
           branch: automation/bundler-version

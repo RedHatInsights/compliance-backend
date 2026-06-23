@@ -20,7 +20,7 @@ jobs:
           new_digest=$(skopeo inspect "docker://$base_name" | jq .Digest --raw-output)
           sed -i "s|FROM ${base_name}@sha256:[a-f0-9]*|FROM ${base_name}@${new_digest}|g" Dockerfile
       - name: Open or update pull request if digest changed
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
+        uses: peter-evans/create-pull-request@aa523f9db61947bd5e06efd77870ef065eae32cc
         with:
           title: 'chore(image): update base image'
           branch: automation/base-image
