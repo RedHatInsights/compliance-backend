@@ -619,6 +619,7 @@ DEPENDENCIES
   rack (>= 2.1.4)
   rack-cors
   rails (~> 8.0)
+  rake
   redis (~> 4.5)
   request_store
   rexml
