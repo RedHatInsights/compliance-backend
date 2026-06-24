@@ -20,10 +20,14 @@
   ],
   "packageRules": [
     {
-      "description": "Group docker GitHub Actions updates",
+      "description": "Group all GitHub Actions updates into one PR",
       "matchManagers": ["github-actions"],
-      "matchPackagePrefixes": ["docker/"],
-      "groupName": "docker GitHub Actions"
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "Group all Rust (hermetic lockfile) updates into one PR",
+      "matchManagers": ["cargo"],
+      "groupName": "Rust dependencies"
     },
     {
       "description": "Pin postgres Docker image to v16",
