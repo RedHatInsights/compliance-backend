@@ -13,30 +13,35 @@ module Kafka
       @logger = logger
     end
 
-    # rubocop:disable Metrics/MethodLength
     def parse_reports
-      # Map successfuly parsed (validated) reports by scanned profile
-      parsed_reports = downloaded_reports.map do |xml|
-        [parse(xml).test_result_file.test_result.profile_id, xml]
-      end
-      # Evaluate each report individually and notify about the result
-      parsed_reports.each_with_index do |(profile_id, _report), idx|
-        job = enqueue_parsing(profile_id, idx)
-        notify_report_success(profile_id, job.jid)
-      end
-      produce_validation_message('success')
+      @enqueued = []
+      @failed = false
+      downloaded_reports.each { |xml| validate_and_enqueue(xml) }
+      notify_enqueued_reports
+      produce_validation_message('success') unless @failed
     rescue EntitlementError, ReportParseError => e
       parse_error(e)
     rescue SafeDownloader::DownloadError => e
       parse_error(e)
       raise
     end
-    # rubocop:enable Metrics/MethodLength
 
     private
 
-    def enqueue_parsing(profile_id, idx)
-      ParseReportJob.perform_later(idx, metadata) or
+    def validate_and_enqueue(xml)
+      parser = XccdfReportParser.new(xml, metadata)
+      parser.validate!
+      profile_id = parser.test_result_file.test_result.profile_id
+      job = enqueue_parsing(profile_id, xml)
+      @enqueued << "#{profile_id}:#{job.jid}"
+      notify_payload_tracker(:received, "File of #{profile_id} is valid. Job #{job.jid} enqueued")
+    rescue *XccdfReportParser::ERRORS => e
+      @failed = true
+      parse_error(e, notify_tracker: true)
+    end
+
+    def enqueue_parsing(profile_id, xml)
+      ParseReportJob.perform_later(ReportArtifact.pack(xml), metadata) or
         raise ReportParseError, "Failed to enqueue parsing of #{profile_id}"
     end
 
@@ -47,10 +52,11 @@ module Kafka
       reports
     end
 
-    def notify_report_success(profile_id, job)
-      msg = "Enqueued report parsing of #{profile_id} from request #{request_id} as a job #{job}"
+    def notify_enqueued_reports
+      return if @enqueued.empty?
+
+      msg = "Enqueued #{@enqueued.size} report(s) from request #{request_id}: #{@enqueued.join(', ')}"
       @logger.audit_success("[#{org_id}] #{msg}")
-      notify_payload_tracker(:received, "File of #{profile_id} is valid. Job #{job} enqueued")
     end
 
     def notify_payload_tracker(status, status_msg = '')
@@ -73,7 +79,6 @@ module Kafka
       (@message.dig('platform_metadata', 'metadata') || {}).merge(
         'id' => id,
         'b64_identity' => b64_identity,
-        'url' => url,
         'request_id' => request_id,
         'org_id' => org_id
       )
@@ -103,14 +108,6 @@ module Kafka
       @message.dig('platform_metadata', 'url')
     end
 
-    def parse(xml)
-      XccdfReportParser.new(xml, metadata)
-    rescue PG::Error, ActiveRecord::StatementInvalid => e
-      parse_error(e)
-    rescue StandardError
-      raise ReportParseError, 'Report parsing failed'
-    end
-
     def produce_validation_message(result)
       return if Settings.kafka.topics.upload_compliance.blank?
 
@@ -121,17 +118,15 @@ module Kafka
       )
     end
 
-    def parse_error(exception)
+    def parse_error(exception, notify_tracker: false)
       msg = "[#{org_id}] #{exception_message(exception)}"
-      @logger.error msg
-      @logger.audit_fail msg
-
+      @logger.error(msg)
+      @logger.audit_fail(msg)
       ReportUploadFailed.deliver(
         system: V2::System.find_by(id: id, org_id: org_id),
-        request_id: request_id,
-        error: exception_message(exception),
-        org_id: org_id
+        request_id: request_id, error: exception_message(exception), org_id: org_id
       )
+      notify_payload_tracker(:error, msg) if notify_tracker
       produce_validation_message('failure')
     end
 
@@ -144,7 +139,7 @@ module Kafka
       when 'Kafka::ReportParser::ReportParseError'
         "Invalid report: #{exception.message}"
       else
-        "Error parsing report: #{request_id} - #{exception.message}"
+        "Error parsing report: #{request_id} - #{exception.class.to_s.demodulize}"
       end
     end
   end

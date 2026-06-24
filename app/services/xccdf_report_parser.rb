@@ -125,11 +125,13 @@ class XccdfReportParser
     check_for_missing_rules
   end
 
-  def save_all
+  def validate!
     check_os_version
     check_for_external_reports
     check_for_missing_benchmark_info
+  end
 
+  def persist!
     V2::System.transaction do
       save_all_test_result_info
     end

@@ -26,11 +26,9 @@ describe ParseReportJob, type: :job do
     double(:test_result_file, test_result: double(:test_result, profile_id: profile_ref_id))
   end
   let(:sidekiq_logger) { instance_double(Logger, error: nil, info: nil) }
+  let(:report_blob) { ReportArtifact.pack('<xml/>') }
 
   before do
-    allow(SafeDownloader).to receive(:download_reports)
-      .with('', ssl_only: Settings.report_download_ssl_only)
-      .and_return([Faker::Lorem.word])
     allow(Sidekiq).to receive(:redis).and_return(false)
     allow(job).to receive(:jid).and_return('1')
     allow(Sidekiq).to receive(:logger).and_return(sidekiq_logger)
@@ -50,7 +48,7 @@ describe ParseReportJob, type: :job do
   describe '#perform' do
     context 'when parsing succeeds' do
       before do
-        allow(parser).to receive(:save_all)
+        allow(parser).to receive(:persist!)
         allow(job).to receive(:remediation_issue_ids).and_return([issue_id])
         allow(PayloadTracker).to receive(:deliver)
         allow(RemediationUpdates).to receive(:deliver)
@@ -68,7 +66,7 @@ describe ParseReportJob, type: :job do
           status_msg: 'Job 1 has completed successfully', org_id: user.org_id
         )
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
 
       it 'audits the successful report' do
@@ -78,7 +76,7 @@ describe ParseReportJob, type: :job do
           )
         )
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
 
       it 'notifies the remediation service with failed issue ids' do
@@ -87,13 +85,13 @@ describe ParseReportJob, type: :job do
           issue_ids: [issue_id]
         )
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
     end
 
     context 'when parsing fails with a known XccdfReportParser error' do
       before do
-        allow(parser).to receive(:save_all).and_raise(
+        allow(parser).to receive(:persist!).and_raise(
           XccdfReportParser::WrongFormatError, 'Wrong format or benchmark'
         )
         allow(PayloadTracker).to receive(:deliver)
@@ -114,7 +112,7 @@ describe ParseReportJob, type: :job do
           ), org_id: user.org_id
         )
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
 
       it 'audits the failure' do
@@ -122,7 +120,7 @@ describe ParseReportJob, type: :job do
           a_string_matching(/\[#{user.org_id}\] Failed to parse report #{profile_ref_id} from system #{system.id}/)
         )
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
 
       context 'when the system is found' do
@@ -136,7 +134,7 @@ describe ParseReportJob, type: :job do
             org_id: user.org_id
           )
 
-          job.perform(0, msg_value)
+          job.perform(report_blob, msg_value)
         end
       end
 
@@ -154,7 +152,7 @@ describe ParseReportJob, type: :job do
             org_id: user.org_id
           )
 
-          job.perform(0, msg_value)
+          job.perform(report_blob, msg_value)
         end
       end
     end
@@ -171,6 +169,30 @@ describe ParseReportJob, type: :job do
           a_string_matching(/\[#{user.org_id}\] Failed to parse report\s+from system #{system.id}/)
         )
 
+        job.perform(report_blob, msg_value)
+      end
+    end
+
+    context 'with a legacy report_blob' do
+      let(:xml) { '<xml/>' }
+      let(:legacy_url) { 'https://example.com/report.tar' }
+      let(:msg_value) { super().merge('url' => legacy_url) }
+
+      before do
+        allow(SafeDownloader).to receive(:download_reports)
+          .with(legacy_url, ssl_only: Settings.report_download_ssl_only)
+          .and_return([xml])
+        allow(parser).to receive(:persist!)
+        allow(job).to receive(:remediation_issue_ids).and_return([])
+        allow(PayloadTracker).to receive(:deliver)
+        allow(RemediationUpdates).to receive(:deliver)
+      end
+
+      it 'falls back to downloading by index' do
+        expect(XccdfReportParser).to receive(:new).with(xml, msg_value).and_return(parser)
+        expect(parser).to receive(:persist!)
+        expect(Rails.logger).to receive(:audit_success)
+
         job.perform(0, msg_value)
       end
     end
@@ -178,7 +200,7 @@ describe ParseReportJob, type: :job do
 
   describe 'non-compliance notifications' do
     before do
-      allow(parser).to receive(:save_all)
+      allow(parser).to receive(:persist!)
       allow(parser).to receive(:score).and_return(70) # below threshold of 80
       allow(job).to receive(:notify_payload_tracker)
       allow(job).to receive(:notify_remediation)
@@ -189,7 +211,7 @@ describe ParseReportJob, type: :job do
       it 'emits a non-compliance notification' do
         expect(SystemNonCompliant).to receive(:deliver)
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
     end
 
@@ -201,7 +223,7 @@ describe ParseReportJob, type: :job do
       it 'emits a non-compliance notification' do
         expect(SystemNonCompliant).to receive(:deliver)
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
     end
 
@@ -211,7 +233,7 @@ describe ParseReportJob, type: :job do
       it 'does not emit a non-compliance notification' do
         expect(SystemNonCompliant).not_to receive(:deliver)
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
     end
 
@@ -223,7 +245,7 @@ describe ParseReportJob, type: :job do
       it 'does not emit a non-compliance notification' do
         expect(SystemNonCompliant).not_to receive(:deliver)
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
     end
 
@@ -237,7 +259,7 @@ describe ParseReportJob, type: :job do
       it 'does not emit a non-compliance notification' do
         expect(SystemNonCompliant).not_to receive(:deliver)
 
-        job.perform(0, msg_value)
+        job.perform(report_blob, msg_value)
       end
     end
   end
