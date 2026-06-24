@@ -1,4 +1,7 @@
 {
+  "extends": [
+    "github>konflux-ci/mintmaker-presets:refresh-rpm-lockfiles"
+  ],
   "ignorePaths": [
     ".pre-commit-config.yaml"
   ],
