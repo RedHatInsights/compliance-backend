@@ -23,7 +23,7 @@ bstr = "1.12"
 indoc = "2.0.6"
 # We need the `embed` feature to run tests, but this triggers failures when building as a Gem.
 magnus = { version = "0.8.2", features = ["rb-sys","embed"] }
-rand = "0.9.1"
+rand = "0.10.0"
 sha2 = "0.10.9"
 tempfile = "3.19.1"
 
