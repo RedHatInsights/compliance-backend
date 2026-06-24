@@ -125,11 +125,18 @@ class XccdfReportParser
     check_for_missing_rules
   end
 
-  def save_all
+  # Validation that must pass before a report is accepted. Runs in the Kafka
+  # consumer (Kafka::ReportParser) so invalid reports are rejected before a
+  # job is enqueued — the job no longer re-validates.
+  def validate!
     check_os_version
     check_for_external_reports
     check_for_missing_benchmark_info
+  end
 
+  # Persistence only. Runs in ParseReportJob; trusts the consumer's
+  # validation and just writes the results inside a transaction.
+  def persist!
     V2::System.transaction do
       save_all_test_result_info
     end

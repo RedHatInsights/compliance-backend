@@ -4,8 +4,10 @@
 class ParseReportJob < ApplicationJob
   include Notifications
 
+  self.log_arguments = false
+
   # https://github.com/RoamingNoMaD/yabeda-activejob#custom-tags
-  def yabeda_tags(_idx, message)
+  def yabeda_tags(_report_blob, message)
     { qe: OpenshiftEnvironment.qe_account?(message['org_id']) }
   end
 
@@ -14,7 +16,9 @@ class ParseReportJob < ApplicationJob
     provider_job_id || job_id
   end
 
-  def perform(idx, message)
+  # `report_blob` is the validated report packed by Kafka::ReportParser
+  # (see ReportArtifact) — no second download.
+  def perform(report_blob, message)
     return if cancelled?
 
     @msg_value = message
@@ -23,9 +27,10 @@ class ParseReportJob < ApplicationJob
       "system #{@msg_value['id']}"
     )
 
-    @file = retrieve_file(idx)
-
+    @file = ReportArtifact.unpack(report_blob)
     parse_and_save_report
+  rescue ArgumentError, NoMethodError, Zlib::GzipFile::Error => e
+    handle_error(e)
   end
 
   def cancelled?
@@ -38,18 +43,9 @@ class ParseReportJob < ApplicationJob
 
   private
 
-  def retrieve_file(idx)
-    @file = SafeDownloader.download_reports(
-      @msg_value['url'],
-      ssl_only: Settings.report_download_ssl_only
-    )[idx]
-  rescue SafeDownloader::DownloadError => e
-    handle_error(e)
-  end
-
   def parse_and_save_report
     notify_payload_tracker(:processing, "Job #{jid} is now processing")
-    compliance_notification_wrapper { parser.save_all }
+    compliance_notification_wrapper { parser.persist! }
     notify_remediation
     audit_success
     notify_payload_tracker(:success, "Job #{jid} has completed successfully")
