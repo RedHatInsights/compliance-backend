@@ -25,15 +25,11 @@ describe ParseReportJob, type: :job do
   let(:test_result_file) do
     double(:test_result_file, test_result: double(:test_result, profile_id: profile_ref_id))
   end
-  let(:sidekiq_logger) { instance_double(Logger, error: nil, info: nil) }
-
   before do
     allow(SafeDownloader).to receive(:download_reports)
       .with('', ssl_only: Settings.report_download_ssl_only)
       .and_return([Faker::Lorem.word])
-    allow(Sidekiq).to receive(:redis).and_return(false)
-    allow(job).to receive(:jid).and_return('1')
-    allow(Sidekiq).to receive(:logger).and_return(sidekiq_logger)
+    allow(job).to receive(:job_id).and_return('1')
     allow(XccdfReportParser).to receive(:new).and_return(parser)
     allow(parser).to receive(:test_result_file).and_return(test_result_file)
     allow(parser).to receive(:policy).and_return(policy)
