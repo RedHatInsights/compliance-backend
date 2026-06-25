@@ -68,7 +68,7 @@ gem 'yabeda-prometheus-mmap'
 gem 'yabeda-puma-plugin'
 gem 'yabeda-rails'
 gem 'yabeda-sidekiq'
-gem 'yabeda-activejob', github: 'RoamingNoMaD/yabeda-activejob', branch: 'add-custom-tagging'
+gem 'yabeda-activejob', '= 0.6.0'
 
 # Nokogiri
 gem 'nokogiri', force_ruby_platform: true

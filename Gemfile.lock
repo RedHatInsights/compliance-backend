@@ -1,12 +1,3 @@
-GIT
-  remote: https://github.com/RoamingNoMaD/yabeda-activejob.git
-  revision: 1894d97a925dacdb930e9cfec1846a27234f4159
-  branch: add-custom-tagging
-  specs:
-    yabeda-activejob (0.6.0)
-      rails (>= 6.1)
-      yabeda (~> 0.6)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -552,6 +543,9 @@ GEM
       anyway_config (>= 1.0, < 3)
       concurrent-ruby
       dry-initializer
+    yabeda-activejob (0.6.0)
+      rails (>= 6.1)
+      yabeda (~> 0.6)
     yabeda-prometheus-mmap (0.4.0)
       prometheus-client-mmap
       yabeda (~> 0.10)
@@ -650,7 +644,7 @@ DEPENDENCIES
   webrick
   will_paginate
   yabeda
-  yabeda-activejob!
+  yabeda-activejob (= 0.6.0)
   yabeda-prometheus-mmap
   yabeda-puma-plugin
   yabeda-rails
