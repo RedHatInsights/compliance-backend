@@ -24,9 +24,12 @@ fi
 echo "Using project: $CURRENT_PROJECT"
 
 # Ask user for source/context
-read -p "Enter source/context for these logs (e.g., jenkins, local-bonfire, no-sidekiq): " SOURCE
-if [[ -z "$SOURCE" ]]; then
+read -p "Enter source/context for these logs (e.g., jenkins, local-bonfire, no-sidekiq): " RAW_SOURCE
+if [[ -z "$RAW_SOURCE" ]]; then
     SOURCE="unknown"
+else
+    # Slugify the input: convert to lowercase, replace non-alphanumeric chars with dashes, squeeze multiple dashes
+    SOURCE=$(echo "$RAW_SOURCE" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+|-+$//g')
 fi
 
 # Create directory
