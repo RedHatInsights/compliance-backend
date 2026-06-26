@@ -54,12 +54,14 @@ for POD in $PODS; do
         LOG_FILE="$OUT_DIR/${POD_NAME}_${CONTAINER}.log"
         echo "  -> Container: $CONTAINER"
         
-        # Try fetching logs. If container hasn't started yet, oc logs might fail, so we ignore errors
-        oc logs "$POD_NAME" -c "$CONTAINER" -n "$CURRENT_PROJECT" > "$LOG_FILE" 2>/dev/null || echo "     (No logs available or container not started)"
+        # Try fetching logs with strict timestamps
+        # We pipe to awk to inject the pod_name right after the timestamp so we know who logged it when we merge
+        # Format: 2026-06-26T14:50:42.123456Z [pod-name] original log line
+        oc logs "$POD_NAME" -c "$CONTAINER" -n "$CURRENT_PROJECT" --timestamps 2>/dev/null | awk -v pod="[$POD_NAME]" '{timestamp=$1; $1=""; print timestamp " " pod $0}' > "$LOG_FILE" || echo "     (No logs available or container not started)"
         
         # Also grab previous logs if container restarted
         PREV_LOG_FILE="$OUT_DIR/${POD_NAME}_${CONTAINER}_previous.log"
-        oc logs "$POD_NAME" -c "$CONTAINER" -n "$CURRENT_PROJECT" --previous > "$PREV_LOG_FILE" 2>/dev/null || rm -f "$PREV_LOG_FILE"
+        oc logs "$POD_NAME" -c "$CONTAINER" -n "$CURRENT_PROJECT" --previous --timestamps 2>/dev/null | awk -v pod="[$POD_NAME]" '{timestamp=$1; $1=""; print timestamp " " pod $0}' > "$PREV_LOG_FILE" || rm -f "$PREV_LOG_FILE"
     done
 done
 
@@ -67,10 +69,10 @@ echo ""
 echo "Done! All logs saved to $OUT_DIR"
 
 TIMELINE_FILE="$OUT_DIR/00-merged-timeline.txt"
-echo "Creating merged timeline of init events..."
-# Extract our custom bash timestamp lines, which start with [2026- (or current year)
-# -h hides the filename prefix from grep so sort works strictly on the timestamp
-grep -h "^\[$(date +'%Y')" "$OUT_DIR"/*init.log | sort > "$TIMELINE_FILE"
+echo "Creating merged timeline of all init events..."
+# Because all lines now start with the standard ISO8601 timestamp (e.g. 2026-06-26T...),
+# we can just cat all init logs and sort them. We use -h in grep (or just cat) to avoid filename prefixes.
+cat "$OUT_DIR"/*init.log 2>/dev/null | sort > "$TIMELINE_FILE"
 
 echo "Timeline saved to: $TIMELINE_FILE"
 ls -lh "$OUT_DIR"
