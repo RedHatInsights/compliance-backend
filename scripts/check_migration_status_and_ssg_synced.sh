@@ -4,10 +4,8 @@ MAX_INIT_TIMEOUT_SECONDS=${MAX_INIT_TIMEOUT_SECONDS:-120}
 
 for ((i=1;i<=MAX_INIT_TIMEOUT_SECONDS;i++)); do
     # Check if DB is pre-populated by verifying schema_migrations table
-    DB_STATE=$(bundle exec ruby -e "
+    DB_STATE=$(bundle exec rails runner "
       begin
-        require 'active_record'
-        ActiveRecord::Base.establish_connection
         if ActiveRecord::Base.connection.table_exists?('schema_migrations')
           puts '[DB_STATE_CHECK] PRE_POPULATED_DB'
         else
