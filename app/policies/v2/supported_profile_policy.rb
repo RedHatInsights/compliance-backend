@@ -8,7 +8,7 @@ module V2
     end
 
     # All users should see all supported profiles
-    class Scope < ::ApplicationPolicy::Scope
+    class Scope < V2::ApplicationPolicy::Scope
     end
   end
 end

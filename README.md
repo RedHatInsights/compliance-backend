@@ -149,20 +149,14 @@ docker compose exec rails pry-remote -w
 Run the tests:
 
 ```shell
-# run all tests (same thing run on PRs to master)
-docker compose exec rails bundle exec rake test:validate
+# run all specs and static analysis (same thing run on PRs to master)
+docker compose exec rails bundle exec rake spec:validate
 
-# run a single test file
-docker compose exec -e TEST=$TEST rails bundle exec rake test TEST=test/models/host_test.rb
-
-# run a specific Rspec test
+# run a specific spec
 podman-compose exec -e SPEC_OPTS="-e 'V2::ReportsController /reports GET index' --color --tty --format documentation" rails bundle exec rake spec
 
-# run Rspec tests in a specific directory (doesn't work with tests including shared_examples)
+# run specs in a specific directory (doesn't work with tests including shared_examples)
 podman-compose exec -e SPEC_OPTS="-P 'spec/policies/v2/*.rb' --color --tty --format documentation" rails bundle exec rake spec
-
-# run a single test case
-docker compose exec rails bundle exec rake test TEST=test/path/to_test.rb TESTOPTS="-n '/matching test description/'"
 ```
 
 Access logs:

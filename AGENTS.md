@@ -103,17 +103,14 @@ docker-compose exec rails {command}
 
 ### Running Tests
 
-The project uses both RSpec (spec/) for V2 related models and Minitest (test/) for legacy V1 related models.
+The project uses RSpec (spec/) for testing.
 
 ```bash
-# Run all tests and static analysis (CI validation suite)
-bundle exec rake test:validate
+# Run all specs and static analysis (CI validation suite)
+bundle exec rake spec:validate
 
-# Run RSpec tests (V2)
+# Run RSpec tests
 bundle exec rake spec
-
-# Run minitest tests (V1)
-bundle exec rake test
 ```
 
 ### OpenAPI Documentation
@@ -154,19 +151,17 @@ Producers in `app/producers/` extend `ApplicationProducer`. Use Karafka for publ
 
 ## Testing Conventions
 
-- [RSpec](https://github.com/rspec/rspec) for API spec generation tests (`spec/integration/`) and model, API, Rake task and Kafka-related unit tests (spec/*)
-- [Minitest](https://github.com/minitest/minitest) for V1 unit tests (`test/models/`, `test/jobs/`, `test/services/`)
-- [FactoryBot](https://github.com/thoughtbot/factory_bot) factories defined in spec/factories/ and test/factories/
-- Use `shoulda-context` and `shoulda-matchers` for Minitest
+- [RSpec](https://github.com/rspec/rspec) for API spec generation tests (`spec/integration/`) and model, API, Rake task and Kafka-related unit tests (`spec/*`)
+- [FactoryBot](https://github.com/thoughtbot/factory_bot) factories defined in `spec/factories/`
 - Mock external services with WebMock
 - Kafka testing via [karafka-testing](https://github.com/karafka/karafka-testing) gem
 - Never hardcode arbitrary test strings, use the [Faker](https://github.com/faker-ruby/faker) gem.
 
 ## Common Patterns
 
-### V1 vs V2
+### Models
 
-V2 is the current implementation: models live in the `V2` namespace and are backed by real database tables. V1 models are backed by database views and are on track to be removed from the codebase — do not prioritize V1 in any new work.
+Models live in the `V2` namespace and are backed by real database tables. `V2::System` is an exception — it is a view over the `inventory.hosts` table and is read-only.
 
 ### Tags Convention
 

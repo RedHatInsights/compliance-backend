@@ -6,7 +6,7 @@ describe V2::TestResult do
   describe '.os_versions' do
     let(:versions) { ['7.1', '7.2', '7.3'] }
 
-    let(:account) { FactoryBot.create(:account) }
+    let(:account) { FactoryBot.create(:v2_account) }
 
     let(:policy) do
       FactoryBot.create(:v2_policy, os_major_version: 7, supports_minors: [1, 2, 3], account: account)

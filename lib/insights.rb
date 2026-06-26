@@ -8,5 +8,5 @@ require 'insights/api/common/host_inventory'
 require 'insights/api/common/identity_header'
 
 # Module to hold every platform-related code
-module Insigths
+module Insights
 end

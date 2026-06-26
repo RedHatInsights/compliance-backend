@@ -2,12 +2,10 @@
 
 require 'rails_helper'
 require 'webmock/rspec'
-require './spec/api/v1/openapi'
-require './spec/api/v1/schemas/util'
 require './spec/api/v2/openapi'
-# require './spec/api/v2/schemas/util'
+require './spec/api/v2/schemas/util'
 
-include Api::V1::Schemas::Util # rubocop:disable Style/MixinUsage
+include Api::V2::Schemas::Util # rubocop:disable Style/MixinUsage
 
 RSpec.configure do |config|
   config.openapi_root = Rails.root.to_s + '/swagger'

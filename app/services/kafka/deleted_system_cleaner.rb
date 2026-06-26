@@ -37,15 +37,7 @@ module Kafka
     end
 
     def remove_related_policy_systems
-      to_remove = V2::PolicySystem.where(system_id: @id)
-      policies_to_adjust = V2::Policy.where(id: to_remove.pluck(:policy_id).uniq)
-
-      num_removed = to_remove.delete_all
-
-      # FIXME: V1 model compatiblity method - remove after remodel
-      policies_to_adjust.find_each(&:__v1_update_total_system_count)
-
-      num_removed
+      V2::PolicySystem.where(system_id: @id).delete_all
     end
 
     def audit_fail(error)
