@@ -3,15 +3,25 @@
 # Exit on error
 set -e
 
-# Ensure we are logged into oc and have a project selected
-if ! oc project &>/dev/null; then
-    echo "Error: Not logged into OpenShift or no project selected."
-    echo "Please run 'oc login' and 'oc project <project>' first."
+# Ensure we are logged into oc
+if ! oc whoami &>/dev/null; then
+    echo "Error: Not logged into OpenShift."
+    echo "Please run 'oc login' first."
     exit 1
 fi
 
-CURRENT_PROJECT=$(oc project -q)
-echo "Current project: $CURRENT_PROJECT"
+if [ -n "$1" ]; then
+    CURRENT_PROJECT="$1"
+else
+    if ! oc project &>/dev/null; then
+        echo "Error: No project selected and no project provided."
+        echo "Usage: $0 [project_name]"
+        exit 1
+    fi
+    CURRENT_PROJECT=$(oc project -q)
+fi
+
+echo "Using project: $CURRENT_PROJECT"
 
 # Ask user for source/context
 read -p "Enter source/context for these logs (e.g., jenkins, local-bonfire, no-sidekiq): " SOURCE
