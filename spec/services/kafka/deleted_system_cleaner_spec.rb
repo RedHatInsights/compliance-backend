@@ -35,7 +35,8 @@ describe Kafka::DeletedSystemCleaner do
   context 'with multiple systems under a policy' do
     let(:extra_system) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
     let!(:extra_kafka_system) do
-      FactoryBot.create(:kafka_system, id: extra_system.id, account: '12345', org_id: org_id)
+      FactoryBot.create(:kafka_system, id: extra_system.id, account: Faker::Number.number(digits: 5).to_s,
+                                       org_id: org_id)
     end
     let!(:extra_test_result) { FactoryBot.create(:v2_test_result, system: extra_system, report_id: policy.id) }
 

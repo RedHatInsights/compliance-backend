@@ -44,9 +44,8 @@ describe InventoryEventsConsumer do
       let(:type) { 'delete' }
 
       it 'delegates to DeletedSystemCleaner service' do
-        service = instance_double(Kafka::DeletedSystemCleaner)
-        allow(Kafka::DeletedSystemCleaner).to receive(:new).and_return(service)
-        expect(service).to receive(:cleanup_system)
+        expect(Kafka::DeletedSystemCleaner).to receive(:new).with(message, anything).and_call_original
+        expect_any_instance_of(Kafka::DeletedSystemCleaner).to receive(:cleanup_system)
 
         consumer.consume
       end
@@ -54,9 +53,7 @@ describe InventoryEventsConsumer do
 
     context 'when message is created or updated' do
       before do
-        @system_importer_service = instance_double(Kafka::SystemImporter)
-        allow(Kafka::SystemImporter).to receive(:new).and_return(@system_importer_service)
-        allow(@system_importer_service).to receive(:import)
+        allow_any_instance_of(Kafka::SystemImporter).to receive(:import)
       end
 
       %w[created updated].each do |msg_type|
@@ -65,7 +62,9 @@ describe InventoryEventsConsumer do
 
           context 'without policy_id and not compliance service' do
             it 'delegates to SystemImporter service only' do
-              expect(@system_importer_service).to receive(:import)
+              expect(Kafka::SystemImporter).to receive(:new).with(message, anything).and_call_original
+              expect_any_instance_of(Kafka::SystemImporter).to receive(:import)
+
               expect(Kafka::PolicySystemImporter).not_to receive(:new)
               expect(Kafka::ReportParser).not_to receive(:new)
 
@@ -89,11 +88,12 @@ describe InventoryEventsConsumer do
             end
 
             it 'delegates to SystemImporter and PolicySystemImporter' do
-              policy_importer_service = instance_double(Kafka::PolicySystemImporter)
-              allow(Kafka::PolicySystemImporter).to receive(:new).and_return(policy_importer_service)
+              expect(Kafka::SystemImporter).to receive(:new).with(message, anything).and_call_original
+              expect_any_instance_of(Kafka::SystemImporter).to receive(:import)
 
-              expect(@system_importer_service).to receive(:import)
-              expect(policy_importer_service).to receive(:import)
+              expect(Kafka::PolicySystemImporter).to receive(:new).with(message, anything).and_call_original
+              expect_any_instance_of(Kafka::PolicySystemImporter).to receive(:import)
+
               expect(Kafka::ReportParser).not_to receive(:new)
 
               consumer.consume
@@ -112,11 +112,12 @@ describe InventoryEventsConsumer do
             end
 
             it 'delegates to SystemImporter and ReportParser' do
-              report_parser_service = instance_double(Kafka::ReportParser)
-              allow(Kafka::ReportParser).to receive(:new).and_return(report_parser_service)
+              expect(Kafka::SystemImporter).to receive(:new).with(message, anything).and_call_original
+              expect_any_instance_of(Kafka::SystemImporter).to receive(:import)
 
-              expect(@system_importer_service).to receive(:import)
-              expect(report_parser_service).to receive(:parse_reports)
+              expect(Kafka::ReportParser).to receive(:new).with(message, anything).and_call_original
+              expect_any_instance_of(Kafka::ReportParser).to receive(:parse_reports)
+
               expect(Kafka::PolicySystemImporter).not_to receive(:new)
 
               consumer.consume
@@ -139,10 +140,9 @@ describe InventoryEventsConsumer do
       end
 
       it 'delegates to ReportParser and skips SystemImporter' do
-        report_parser_service = instance_double(Kafka::ReportParser)
-        allow(Kafka::ReportParser).to receive(:new).and_return(report_parser_service)
+        expect(Kafka::ReportParser).to receive(:new).with(message, anything).and_call_original
+        expect_any_instance_of(Kafka::ReportParser).to receive(:parse_reports)
 
-        expect(report_parser_service).to receive(:parse_reports)
         expect(Kafka::SystemImporter).not_to receive(:new)
 
         consumer.consume
