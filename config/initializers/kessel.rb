@@ -38,6 +38,12 @@ Rails.application.configure do
     Settings.kessel.principal_domain = ENV['KESSEL_PRINCIPAL_DOMAIN']
   end
 
+  if ENV['KESSEL_GROUPS_TEMP_TABLE_THRESHOLD'].present?
+    Settings.kessel.groups_temp_table_threshold = ENV['KESSEL_GROUPS_TEMP_TABLE_THRESHOLD'].to_i
+  elsif Settings.kessel.groups_temp_table_threshold.nil?
+    Settings.kessel.groups_temp_table_threshold = 50
+  end
+
   # Validate Kessel configuration when enabled
   if Settings.kessel.enabled
     Rails.logger.info 'Kessel is enabled, validating configuration...'

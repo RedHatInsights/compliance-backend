@@ -22,3 +22,4 @@ kessel:
     client_secret: ''
     oidc_issuer: ''
   insecure: true
+  groups_temp_table_threshold: 50
