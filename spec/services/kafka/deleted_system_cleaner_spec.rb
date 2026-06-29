@@ -25,13 +25,11 @@ describe Kafka::DeletedSystemCleaner do
       "[#{org_id}] Deleted related records for System #{system.id}"
     )
 
-    # rubocop:disable Layout/MultilineMethodCallIndentation
-    expect do
-      service.cleanup_system
-    end.to change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
-       .and(change { policy.systems.count }.from(1).to(0))
-       .and(change { KafkaSystem.where(id: system.id).count }.from(1).to(0))
-    # rubocop:enable Layout/MultilineMethodCallIndentation
+    expect { service.cleanup_system }.to(
+      change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
+      .and(change { policy.systems.count }.from(1).to(0))
+      .and(change { KafkaSystem.where(id: system.id).count }.from(1).to(0))
+    )
   end
 
   context 'with multiple systems under a policy' do
@@ -46,13 +44,11 @@ describe Kafka::DeletedSystemCleaner do
         "[#{org_id}] Deleted related records for System #{system.id}"
       )
 
-      # rubocop:disable Layout/MultilineMethodCallIndentation
-      expect do
-        service.cleanup_system
-      end.to change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
-         .and(change { policy.systems.count }.from(2).to(1))
-         .and(change { KafkaSystem.where(id: system.id).count }.from(1).to(0))
-      # rubocop:enable Layout/MultilineMethodCallIndentation
+      expect { service.cleanup_system }.to(
+        change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
+        .and(change { policy.systems.count }.from(2).to(1))
+        .and(change { KafkaSystem.where(id: system.id).count }.from(1).to(0))
+      )
 
       expect(V2::HistoricalTestResult.where(system_id: extra_system.id).count).to eql(1)
       expect(KafkaSystem.where(id: extra_system.id).count).to eql(1)

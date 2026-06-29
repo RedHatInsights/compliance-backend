@@ -31,26 +31,18 @@ module Kafka
       true
     end
 
-    # rubocop:disable Metrics/MethodLength
-    def system_attributes(id, payload, updated)
+    def extract_system_attrs(id, payload, updated)
       {
-        id: id,
-        account: payload.dig('account'),
-        org_id: payload.dig('org_id'),
-        display_name: payload.dig('display_name'),
-        groups: payload.dig('groups') || [],
-        tags: payload.dig('tags') || [],
-        system_profile: payload.dig('system_profile'),
-        stale_timestamp: payload.dig('stale_timestamp'),
-        created: payload.dig('created'),
-        updated: updated,
-        insights_id: payload.dig('insights_id')
+        id: id, account: payload.dig('account'), org_id: payload.dig('org_id'),
+        display_name: payload.dig('display_name'), groups: payload.dig('groups') || [],
+        tags: payload.dig('tags') || [], system_profile: payload.dig('system_profile'),
+        stale_timestamp: payload.dig('stale_timestamp'), created: payload.dig('created'),
+        updated: updated, insights_id: payload.dig('insights_id')
       }
     end
-    # rubocop:enable Metrics/MethodLength
 
     def upsert_system(id, payload, updated)
-      attrs = system_attributes(id, payload, updated)
+      attrs = extract_system_attrs(id, payload, updated)
 
       # rubocop:disable Rails/SkipsModelValidations
       # rubocop:disable Layout/LineLength
@@ -63,6 +55,10 @@ module Kafka
       # rubocop:enable Layout/LineLength
       # rubocop:enable Rails/SkipsModelValidations
 
+      log_upsert_result(result, id)
+    end
+
+    def log_upsert_result(result, id)
       if result.rows.empty?
         @logger.info("[Kafka::SystemImporter] Ignored stale message for system #{id}")
       else
