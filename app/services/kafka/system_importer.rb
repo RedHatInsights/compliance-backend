@@ -14,8 +14,6 @@ module Kafka
 
       id, updated = payload.values_at('id', 'updated')
 
-      return if existing_message_stale?(id, updated)
-
       upsert_system(id, payload, updated)
     rescue StandardError => e
       failed_id = id || payload&.dig('id') || 'unknown'
@@ -31,15 +29,6 @@ module Kafka
         return false
       end
       true
-    end
-
-    def existing_message_stale?(id, updated)
-      existing = KafkaSystem.find_by(id: id)
-      if existing && stale_message?(existing, updated)
-        @logger.info("[Kafka::SystemImporter] Ignored stale message for system #{id}")
-        return true
-      end
-      false
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -65,14 +54,20 @@ module Kafka
 
       # rubocop:disable Rails/SkipsModelValidations
       # rubocop:disable Layout/LineLength
-      KafkaSystem.upsert(
+      result = KafkaSystem.upsert(
         attrs,
         unique_by: :id,
+        returning: %w[id],
         on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, system_profile = EXCLUDED.system_profile, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id WHERE systems.updated IS NULL OR systems.updated < EXCLUDED.updated')
       )
       # rubocop:enable Layout/LineLength
       # rubocop:enable Rails/SkipsModelValidations
-      @logger.audit_success("[Kafka::SystemImporter] Imported system #{id}")
+
+      if result.rows.empty?
+        @logger.info("[Kafka::SystemImporter] Ignored stale message for system #{id}")
+      else
+        @logger.audit_success("[Kafka::SystemImporter] Imported system #{id}")
+      end
     end
 
     def valid_payload?(payload)
@@ -85,10 +80,6 @@ module Kafka
       return true if tags.blank?
 
       tags.is_a?(Array) && tags.all?(Hash)
-    end
-
-    def stale_message?(existing, updated)
-      existing.updated.present? && updated.present? && existing.updated.to_time >= updated.to_time
     end
   end
 end
