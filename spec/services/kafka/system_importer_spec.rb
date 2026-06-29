@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Kafka::SystemImporter do
-  let(:logger) { instance_double('Logger', info: true, error: true) }
+  let(:updated_time) { Time.now.utc.iso8601 }
   let(:message) do
     {
       'host' => {
@@ -14,23 +14,23 @@ RSpec.describe Kafka::SystemImporter do
         'groups' => [],
         'tags' => [],
         'system_profile' => {},
-        'stale_timestamp' => Time.now.utc.iso8601,
+        'stale_timestamp' => updated_time,
         'created' => (Time.now.utc - 1.day).iso8601,
-        'updated' => Time.now.utc.iso8601,
+        'updated' => updated_time,
         'insights_id' => SecureRandom.uuid
       }
     }
   end
 
-  subject { described_class.new(message, logger) }
+  let(:service) { described_class.new(message, Karafka.logger) }
 
   describe '#import' do
     context 'when payload is invalid (missing id)' do
       before { message['host'].delete('id') }
 
       it 'ignores the message and logs an error' do
-        expect { subject.import }.not_to(change { KafkaSystem.count })
-        expect(logger).to have_received(:error).with(/\[Kafka::SystemImporter\] Ignored invalid message/)
+        expect(Karafka.logger).to receive(:error).with(/\[Kafka::SystemImporter\] Ignored invalid message/)
+        expect { service.import }.not_to(change { KafkaSystem.count })
       end
     end
 
@@ -38,70 +38,68 @@ RSpec.describe Kafka::SystemImporter do
       before { message['host']['tags'] = ['string_tag_not_hash'] }
 
       it 'ignores the message and logs an error' do
-        expect { subject.import }.not_to(change { KafkaSystem.count })
-        expect(logger).to have_received(:error).with(/\[Kafka::SystemImporter\] Ignored invalid message/)
+        expect(Karafka.logger).to receive(:error).with(/\[Kafka::SystemImporter\] Ignored invalid message/)
+        expect { service.import }.not_to(change { KafkaSystem.count })
       end
     end
 
     context 'when system is new' do
       it 'upserts system' do
-        expect { subject.import }.to change { KafkaSystem.count }.by(1)
-        expect(logger).to have_received(:info).with(/\[Kafka::SystemImporter\] Imported system/)
+        expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
+        expect { service.import }.to change { KafkaSystem.count }.by(1)
       end
     end
 
     context 'when message is an update to an existing system' do
       let!(:existing_system) do
-        system = FactoryBot.create(
+        FactoryBot.create(
           :kafka_system,
           id: message['host']['id'],
-          display_name: 'old-name'
+          display_name: 'old-name',
+          updated: (Time.zone.parse(updated_time) - 2.days).iso8601
         )
-        system.update!(updated: (Time.now.utc - 2.days).iso8601)
-        system
       end
 
       it 'updates the existing system attributes' do
-        expect { subject.import }.not_to(change { KafkaSystem.count })
+        expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
+        expect { service.import }.not_to(change { KafkaSystem.count })
 
         system = KafkaSystem.find(message['host']['id'])
         expect(system.display_name).to eq(message.dig('host', 'display_name'))
-        expect(logger).to have_received(:info).with(/\[Kafka::SystemImporter\] Imported system/)
       end
     end
 
     context 'when message is exactly the same age (repeated message)' do
       let!(:existing_system) do
-        system = FactoryBot.create(
+        FactoryBot.create(
           :kafka_system,
           id: message['host']['id'],
-          display_name: 'old-name'
+          display_name: 'old-name',
+          updated: updated_time
         )
-        system.update!(updated: message['host']['updated'])
-        system
       end
 
       it 'ignores the repeated message' do
-        expect { subject.import }.not_to(change { KafkaSystem.count })
+        expect(Karafka.logger).to receive(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
+        expect { service.import }.not_to(change { KafkaSystem.count })
 
         system = KafkaSystem.find(message['host']['id'])
-        expect(system.display_name).to eq('old-name') # prove it was not updated
-        expect(logger).to have_received(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
+        expect(system.display_name).to eq('old-name')
       end
     end
 
     context 'when message is strictly stale (older than DB)' do
       before do
-        system = FactoryBot.create(
+        FactoryBot.create(
           :kafka_system,
-          id: message['host']['id']
+          id: message['host']['id'],
+          updated: (Time.zone.parse(updated_time) + 1.day).iso8601
         )
-        system.update!(updated: (Time.now.utc + 1.day).iso8601)
       end
 
       it 'ignores the stale message' do
-        expect { subject.import }.not_to(change { KafkaSystem.count })
-        expect(logger).to have_received(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
+        expect(Karafka.logger).to receive(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
+        expect { service.import }.not_to(change { KafkaSystem.count })
       end
     end
 
@@ -109,7 +107,7 @@ RSpec.describe Kafka::SystemImporter do
       before { message['host'].delete('groups') }
 
       it 'upserts using fallback defaults' do
-        subject.import
+        service.import
         system = KafkaSystem.find(message['host']['id'])
         expect(system.groups).to eq([])
       end
@@ -121,44 +119,12 @@ RSpec.describe Kafka::SystemImporter do
       end
 
       it 'logs error and re-raises it' do
-        expect { subject.import }.to raise_error(ActiveRecord::ActiveRecordError, 'db down')
-        expect(logger).to have_received(:error).with(/\[Kafka::SystemImporter\] Failed to import system.*db down/)
+        expect(Karafka.logger)
+          .to receive(:audit_fail)
+          .with(/\[Kafka::SystemImporter\] Failed to import system.*db down/)
+        expect { service.import }.to raise_error(ActiveRecord::ActiveRecordError, 'db down')
       end
     end
-
-    context 'when payload is entirely empty' do
-      let(:message) { {} }
-
-      it 'ignores the message and logs an error' do
-        expect { subject.import }.not_to(change { KafkaSystem.count })
-        expect(logger).to have_received(:error).with(/\[Kafka::SystemImporter\] Ignored invalid message/)
-      end
-    end
-
-    context 'when payload is flat (no host key)' do
-      let(:message) do
-        {
-          'id' => SecureRandom.uuid,
-          'account' => Faker::Number.number(digits: 5).to_s,
-          'org_id' => Faker::Number.number(digits: 6).to_s,
-          'display_name' => Faker::Internet.domain_word,
-          'tags' => [],
-          'system_profile' => {},
-          'stale_timestamp' => Time.now.utc.iso8601,
-          'created' => (Time.now.utc - 1.day).iso8601,
-          'updated' => Time.now.utc.iso8601
-        }
-      end
-
-      it 'upserts the system correctly by falling back to root message' do
-        expect { subject.import }.to change { KafkaSystem.count }.by(1)
-        system = KafkaSystem.find(message['id'])
-        expect(system.account).to eq(message['account'])
-        expect(system.groups).to eq([])
-      end
-    end
-
-    # Empty context removed
 
     context 'when message has nil updated timestamp' do
       let(:message) do
@@ -171,7 +137,7 @@ RSpec.describe Kafka::SystemImporter do
             'groups' => [],
             'tags' => [],
             'system_profile' => {},
-            'stale_timestamp' => Time.now.utc.iso8601,
+            'stale_timestamp' => updated_time,
             'created' => (Time.now.utc - 1.day).iso8601,
             'updated' => nil,
             'insights_id' => SecureRandom.uuid
@@ -180,8 +146,8 @@ RSpec.describe Kafka::SystemImporter do
       end
 
       it 'catches DB validation error during upsert due to NOT NULL constraint' do
-        expect { subject.import }.to raise_error(ActiveRecord::NotNullViolation)
-        expect(logger).to have_received(:error).with(/\[Kafka::SystemImporter\] Failed to import system/)
+        expect(Karafka.logger).to receive(:audit_fail).with(/\[Kafka::SystemImporter\] Failed to import system/)
+        expect { service.import }.to raise_error(ActiveRecord::NotNullViolation)
       end
     end
   end

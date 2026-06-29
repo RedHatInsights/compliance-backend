@@ -39,71 +39,95 @@ describe InventoryEventsConsumer do
     end
   end
 
-  describe 'handling updated messages for different service' do
-    let(:type) { 'updated' }
-    let(:message) do
-      super().deep_merge(
-        {
-          'platform_metadata' => {
-            'service' => 'non-compliance'
-          }
-        }
-      )
-    end
+  describe 'handling messages by type' do
+    context 'when message is delete' do
+      let(:type) { 'delete' }
 
-    before do
-      @system_importer_service = instance_double(Kafka::SystemImporter)
-      allow(Kafka::SystemImporter).to receive(:new).and_return(@system_importer_service)
-      allow(@system_importer_service).to receive(:import)
-    end
-
-    it 'delegates to SystemImporter service and skips PolicySystemImporter' do
-      expect(@system_importer_service).to receive(:import)
-      expect(Kafka::PolicySystemImporter).not_to receive(:new)
-
-      consumer.consume
-    end
-  end
-
-  describe 'handling messages without policy ID' do
-    before do
-      @system_importer_service = instance_double(Kafka::SystemImporter)
-      allow(Kafka::SystemImporter).to receive(:new).and_return(@system_importer_service)
-      allow(@system_importer_service).to receive(:import)
-    end
-
-    context 'message is created' do
-      let(:type) { 'created' }
-
-      it 'delegates to SystemImporter service but not PolicySystemImporter' do
-        expect(@system_importer_service).to receive(:import)
-        expect(Kafka::PolicySystemImporter).not_to receive(:new)
+      it 'delegates to DeletedSystemCleaner service' do
+        service = instance_double(Kafka::DeletedSystemCleaner)
+        allow(Kafka::DeletedSystemCleaner).to receive(:new).and_return(service)
+        expect(service).to receive(:cleanup_system)
 
         consumer.consume
       end
     end
 
-    context 'message is updated' do
-      let(:type) { 'updated' }
+    context 'when message is created or updated' do
+      before do
+        @system_importer_service = instance_double(Kafka::SystemImporter)
+        allow(Kafka::SystemImporter).to receive(:new).and_return(@system_importer_service)
+        allow(@system_importer_service).to receive(:import)
+      end
 
-      it 'delegates to SystemImporter service but not PolicySystemImporter' do
-        expect(@system_importer_service).to receive(:import)
-        expect(Kafka::PolicySystemImporter).not_to receive(:new)
+      %w[created updated].each do |msg_type|
+        context "with #{msg_type} message" do
+          let(:type) { msg_type }
 
-        consumer.consume
+          context 'without policy_id and not compliance service' do
+            it 'delegates to SystemImporter service only' do
+              expect(@system_importer_service).to receive(:import)
+              expect(Kafka::PolicySystemImporter).not_to receive(:new)
+              expect(Kafka::ReportParser).not_to receive(:new)
+
+              consumer.consume
+            end
+          end
+
+          context 'with policy_id' do
+            let(:message) do
+              super().deep_merge(
+                {
+                  'host' => {
+                    'system_profile' => {
+                      'image_builder' => {
+                        'compliance_policy_id' => 'policy_id'
+                      }
+                    }
+                  }
+                }
+              )
+            end
+
+            it 'delegates to SystemImporter and PolicySystemImporter' do
+              policy_importer_service = instance_double(Kafka::PolicySystemImporter)
+              allow(Kafka::PolicySystemImporter).to receive(:new).and_return(policy_importer_service)
+
+              expect(@system_importer_service).to receive(:import)
+              expect(policy_importer_service).to receive(:import)
+              expect(Kafka::ReportParser).not_to receive(:new)
+
+              consumer.consume
+            end
+          end
+
+          context 'with compliance service' do
+            let(:message) do
+              super().deep_merge(
+                {
+                  'platform_metadata' => {
+                    'service' => 'compliance'
+                  }
+                }
+              )
+            end
+
+            it 'delegates to SystemImporter and ReportParser' do
+              report_parser_service = instance_double(Kafka::ReportParser)
+              allow(Kafka::ReportParser).to receive(:new).and_return(report_parser_service)
+
+              expect(@system_importer_service).to receive(:import)
+              expect(report_parser_service).to receive(:parse_reports)
+              expect(Kafka::PolicySystemImporter).not_to receive(:new)
+
+              consumer.consume
+            end
+          end
+        end
       end
     end
-  end
 
-  describe 'routing to the appropriate service' do
-    before do
-      @service = instance_double(service_class)
-      allow(service_class).to receive(:new).and_return(@service)
-    end
-
-    context 'received compliance message' do
-      let(:service_class) { Kafka::ReportParser }
-      let(:type) { 'updated' }
+    context 'when message is for compliance service but unknown type' do
+      let(:type) { 'unknown_type' }
       let(:message) do
         super().deep_merge(
           {
@@ -114,71 +138,14 @@ describe InventoryEventsConsumer do
         )
       end
 
-      it 'delegates to ReportParser service' do
-        allow(@service).to receive(:parse_reports)
+      it 'delegates to ReportParser and skips SystemImporter' do
+        report_parser_service = instance_double(Kafka::ReportParser)
+        allow(Kafka::ReportParser).to receive(:new).and_return(report_parser_service)
 
-        expect(@service).to receive(:parse_reports)
-
-        consumer.consume
-      end
-    end
-
-    context 'received delete message' do
-      let(:service_class) { Kafka::DeletedSystemCleaner }
-      let(:type) { 'delete' }
-
-      it 'delegates to DeletedSystemCleaner service' do
-        allow(@service).to receive(:cleanup_system)
-
-        expect(@service).to receive(:cleanup_system)
+        expect(report_parser_service).to receive(:parse_reports)
+        expect(Kafka::SystemImporter).not_to receive(:new)
 
         consumer.consume
-      end
-    end
-
-    context 'receives message with a policy ID' do
-      let(:service_class) { Kafka::PolicySystemImporter }
-      let(:message) do
-        super().deep_merge(
-          {
-            'host' => {
-              'system_profile' => {
-                'image_builder' => {
-                  'compliance_policy_id' => 'policy_id'
-                }
-              }
-            }
-          }
-        )
-      end
-
-      before do
-        @system_importer_service = instance_double(Kafka::SystemImporter)
-        allow(Kafka::SystemImporter).to receive(:new).and_return(@system_importer_service)
-        allow(@system_importer_service).to receive(:import)
-        allow(@service).to receive(:import)
-      end
-
-      context 'message is created' do
-        let(:type) { 'created' }
-
-        it 'delegates to both PolicySystemImporter and SystemImporter services' do
-          expect(@service).to receive(:import)
-          expect(@system_importer_service).to receive(:import)
-
-          consumer.consume
-        end
-      end
-
-      context 'message is updated' do
-        let(:type) { 'updated' }
-
-        it 'delegates to both PolicySystemImporter and SystemImporter services' do
-          expect(@service).to receive(:import)
-          expect(@system_importer_service).to receive(:import)
-
-          consumer.consume
-        end
       end
     end
   end

@@ -75,6 +75,11 @@ describe Kafka::DeletedSystemCleaner do
       expect do
         service.cleanup_system
       end.not_to(change { KafkaSystem.count })
+
+      # Ensure it doesn't try to delete the view either
+      expect do
+        service.cleanup_system
+      end.not_to(change { V2::System.count })
     end
   end
 

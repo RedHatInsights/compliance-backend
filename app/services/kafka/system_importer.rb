@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Kafka
-  # Imports host events from Inventory into the temporary KafkaSystem table
+  # Imports host events from Inventory into the systems table
   class SystemImporter
     def initialize(message, logger = Rails.logger)
       @message = message
@@ -9,7 +9,7 @@ module Kafka
     end
 
     def import
-      payload = @message.dig('host') || @message
+      payload = @message.dig('host')
       return unless payload_valid_for_import?(payload)
 
       id, updated = payload.values_at('id', 'updated')
@@ -18,8 +18,8 @@ module Kafka
 
       upsert_system(id, payload, updated)
     rescue StandardError => e
-      failed_id = payload&.dig('id') || 'unknown'
-      @logger.error("[Kafka::SystemImporter] Failed to import system #{failed_id}: #{e.message}")
+      failed_id = id || payload&.dig('id') || 'unknown'
+      @logger.audit_fail("[Kafka::SystemImporter] Failed to import system #{failed_id}: #{e.message}")
       raise e
     end
 
@@ -72,7 +72,7 @@ module Kafka
       )
       # rubocop:enable Layout/LineLength
       # rubocop:enable Rails/SkipsModelValidations
-      @logger.info("[Kafka::SystemImporter] Imported system #{id}")
+      @logger.audit_success("[Kafka::SystemImporter] Imported system #{id}")
     end
 
     def valid_payload?(payload)
