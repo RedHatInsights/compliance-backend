@@ -22,10 +22,13 @@ module Kafka
     private
 
     def remove_related
-      [
-        remove_related_test_results,
-        remove_related_policy_systems
-      ].sum
+      ActiveRecord::Base.transaction do
+        [
+          remove_related_test_results,
+          remove_related_policy_systems,
+          remove_kafka_system
+        ].sum
+      end
     end
 
     def remove_related_test_results
@@ -38,6 +41,10 @@ module Kafka
 
     def remove_related_policy_systems
       V2::PolicySystem.where(system_id: @id).delete_all
+    end
+
+    def remove_kafka_system
+      KafkaSystem.where(id: @id).delete_all
     end
 
     def audit_fail(error)
