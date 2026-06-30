@@ -6,12 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hashbrown = "0.15.3"
+hashbrown = "0.17.0"
 libc = "0.2.186"
 magnus = { version = "0.8.2", features = ["rb-sys"] }
 memmap2 = "0.9.10"
 # v0.26 cannot be built on CentOS 7 https://github.com/nix-rust/nix/issues/1972
-nix = { version = "0.25", features = ["mman"] } # mman used for MsFlags
+nix = { version = "0.31", features = ["mman"] } # mman used for MsFlags
 rb-sys = { version = "0.9.128", features = ["stable-api-compiled-fallback"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = { version = "1.0.150", features = ["raw_value"] }
@@ -23,8 +23,8 @@ bstr = "1.12"
 indoc = "2.0.7"
 # We need the `embed` feature to run tests, but this triggers failures when building as a Gem.
 magnus = { version = "0.8.2", features = ["rb-sys","embed"] }
-rand = "0.9.1"
-sha2 = "0.10.9"
+rand = "0.10.0"
+sha2 = "0.11.0"
 tempfile = "3.19.1"
 
 [build-dependencies]
