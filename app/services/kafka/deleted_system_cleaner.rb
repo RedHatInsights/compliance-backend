@@ -44,7 +44,10 @@ module Kafka
     end
 
     def remove_kafka_system
-      KafkaSystem.where(id: @id).delete_all
+      timestamp = @message.dig('timestamp') || Time.current
+      # rubocop:disable Rails/SkipsModelValidations
+      KafkaSystem.where(id: @id).update_all(deleted_at: timestamp)
+      # rubocop:enable Rails/SkipsModelValidations
     end
 
     def audit_fail(error)

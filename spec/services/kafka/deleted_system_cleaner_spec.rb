@@ -16,7 +16,8 @@ describe Kafka::DeletedSystemCleaner do
     {
       'type' => type,
       'id' => system.id,
-      'org_id' => org_id
+      'org_id' => org_id,
+      'timestamp' => Time.current.to_s
     }
   end
 
@@ -28,7 +29,7 @@ describe Kafka::DeletedSystemCleaner do
     expect { service.cleanup_system }.to(
       change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
       .and(change { policy.systems.count }.from(1).to(0))
-      .and(change { KafkaSystem.where(id: system.id).count }.from(1).to(0))
+      .and(change { KafkaSystem.unscoped.find(system.id).deleted_at }.from(nil))
     )
   end
 
@@ -48,11 +49,11 @@ describe Kafka::DeletedSystemCleaner do
       expect { service.cleanup_system }.to(
         change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
         .and(change { policy.systems.count }.from(2).to(1))
-        .and(change { KafkaSystem.where(id: system.id).count }.from(1).to(0))
+        .and(change { KafkaSystem.unscoped.find(system.id).deleted_at }.from(nil))
       )
 
       expect(V2::HistoricalTestResult.where(system_id: extra_system.id).count).to eql(1)
-      expect(KafkaSystem.where(id: extra_system.id).count).to eql(1)
+      expect(KafkaSystem.unscoped.find(extra_system.id).deleted_at).to be_nil
     end
   end
 
