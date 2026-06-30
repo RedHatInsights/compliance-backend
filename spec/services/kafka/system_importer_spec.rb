@@ -103,6 +103,46 @@ RSpec.describe Kafka::SystemImporter do
       end
     end
 
+    context 'when system is deleted and new create message arrives' do
+      let!(:existing_system) do
+        FactoryBot.create(
+          :kafka_system,
+          id: message['host']['id'],
+          updated: (Time.zone.parse(updated_time) - 2.days).iso8601,
+          deleted_at: (Time.zone.parse(updated_time) - 1.day).iso8601
+        )
+      end
+
+      it 'recreates the system and clears deleted_at' do
+        expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
+        expect { service.import }.not_to(change { KafkaSystem.unscoped.count })
+
+        system = KafkaSystem.find(message['host']['id'])
+        expect(system.deleted_at).to be_nil
+        expect(system.display_name).to eq(message.dig('host', 'display_name'))
+      end
+    end
+
+    context 'when system is deleted and update message is older' do
+      let!(:existing_system) do
+        FactoryBot.create(
+          :kafka_system,
+          id: message['host']['id'],
+          updated: (Time.zone.parse(updated_time) - 2.days).iso8601,
+          deleted_at: (Time.zone.parse(updated_time) + 1.day).iso8601
+        )
+      end
+
+      it 'ignores the update and leaves system deleted' do
+        expect(Karafka.logger).to receive(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
+        expect { service.import }.not_to(change { KafkaSystem.unscoped.count })
+
+        system = KafkaSystem.unscoped.find(message['host']['id'])
+        expect(system.deleted_at).not_to be_nil
+        expect(system.display_name).to eq(existing_system.display_name)
+      end
+    end
+
     context 'when payload lacks optional fields like groups' do
       before { message['host'].delete('groups') }
 
