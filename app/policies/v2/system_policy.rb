@@ -4,7 +4,7 @@ module V2
   # Policies for accessing Systems
   class SystemPolicy < V2::ApplicationPolicy
     def index?
-      true # FIXME: this is handled in scoping
+      user.inventory_groups.present?
     end
 
     def show?
