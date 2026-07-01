@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -228,8 +228,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
     t.index ["host_id", "rule_id", "test_result_id"], name: "index_rule_results_on_host_id_and_rule_id_and_test_result_id", unique: true
     t.index ["host_id"], name: "index_rule_results_on_host_id"
     t.index ["rule_id"], name: "index_rule_results_on_rule_id"
-    t.index ["test_result_id"], name: "index_rule_results_on_test_result_id"
     t.index ["test_result_id", "result"], name: "index_rule_results_on_test_result_id_and_result"
+    t.index ["test_result_id"], name: "index_rule_results_on_test_result_id"
   end
 
   create_table "rule_results_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -864,43 +864,48 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
       $function$
   SQL
 
-  create_function :v1_rules_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_rules_insert()
+  create_function :v1_policies_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_policies_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          DELETE FROM "policies_v2" WHERE "id" = OLD."id";
+          RETURN OLD;
+      END
+      $function$
+  SQL
+
+  create_function :v1_policies_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_policies_insert()
        RETURNS trigger
        LANGUAGE plpgsql
       AS $function$
       DECLARE result_id uuid;
+      DECLARE bo_title varchar;
       BEGIN
-          INSERT INTO "rules_v2" (
-            "ref_id",
+          SELECT "business_objectives"."title" INTO bo_title
+          FROM "business_objectives"
+          WHERE "business_objectives"."id" = NEW."business_objective_id";
+
+          INSERT INTO "policies_v2" (
             "title",
-            "severity",
             "description",
-            "rationale",
-            "remediation_available",
-            "security_guide_id",
-            "upstream",
-            "precedence",
-            "rule_group_id",
-            "value_checks",
-            "identifier",
+            "compliance_threshold",
+            "business_objective",
+            "profile_id",
+            "account_id",
             "created_at",
             "updated_at"
           ) VALUES (
-            NEW."ref_id",
-            NEW."title",
-            NEW."severity",
+            NEW."name",
             NEW."description",
-            NEW."rationale",
-            COALESCE(NEW."remediation_available", FALSE),
-            NEW."benchmark_id",
-            COALESCE(NEW."upstream", FALSE),
-            NEW."precedence",
-            NEW."rule_group_id",
-            COALESCE(NEW."value_checks", '{}'),
-            NEW."identifier",
-            COALESCE(NEW."created_at", NOW()),
-            COALESCE(NEW."updated_at", NOW())
+            COALESCE(NEW."compliance_threshold", 100.0),
+            bo_title,
+            NEW."profile_id",
+            NEW."account_id",
+            NOW(),
+            NOW()
           ) RETURNING "id" INTO "result_id";
 
           NEW."id" := "result_id";
@@ -909,26 +914,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
       $function$
   SQL
 
-  create_function :v1_rules_update, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_rules_update()
+  create_function :v1_policies_update, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_policies_update()
        RETURNS trigger
        LANGUAGE plpgsql
       AS $function$
+      DECLARE bo_title varchar;
       BEGIN
-          UPDATE "rules_v2" SET
-            "ref_id" = NEW."ref_id",
-            "title" = NEW."title",
-            "severity" = NEW."severity",
+          SELECT "business_objectives"."title" INTO bo_title
+          FROM "business_objectives"
+          WHERE "business_objectives"."id" = NEW."business_objective_id";
+
+          UPDATE "policies_v2" SET
+            "title" = NEW."name",
             "description" = NEW."description",
-            "rationale" = NEW."rationale",
-            "remediation_available" = COALESCE(NEW."remediation_available", FALSE),
-            "security_guide_id" = NEW."benchmark_id",
-            "upstream" = COALESCE(NEW."upstream", FALSE),
-            "precedence" = NEW."precedence",
-            "rule_group_id" = NEW."rule_group_id",
-            "value_checks" = COALESCE(NEW."value_checks", '{}'),
-            "identifier" = NEW."identifier",
-            "updated_at" = COALESCE(NEW."updated_at", NOW())
+            "compliance_threshold" = COALESCE(NEW."compliance_threshold", 100.0),
+            "business_objective" = bo_title,
+            "profile_id" = NEW."profile_id",
+            "account_id" = NEW."account_id",
+            "updated_at" = NOW()
           WHERE "id" = OLD."id";
 
           RETURN NEW;
@@ -936,33 +940,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
       $function$
   SQL
 
-  create_function :v1_value_definitions_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_value_definitions_insert()
+  create_function :v1_policy_hosts_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_policy_hosts_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          DELETE FROM "policy_systems_v2" WHERE "id" = OLD."id";
+          RETURN OLD;
+      END
+      $function$
+  SQL
+
+  create_function :v1_policy_hosts_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_policy_hosts_insert()
        RETURNS trigger
        LANGUAGE plpgsql
       AS $function$
       DECLARE result_id uuid;
       BEGIN
-          INSERT INTO "value_definitions_v2" (
-            "ref_id",
-            "title",
-            "description",
-            "value_type",
-            "default_value",
-            "lower_bound",
-            "upper_bound",
-            "security_guide_id",
+          INSERT INTO "policy_systems_v2" (
+            "policy_id",
+            "system_id",
             "created_at",
             "updated_at"
           ) VALUES (
-            NEW."ref_id",
-            NEW."title",
-            NEW."description",
-            NEW."value_type",
-            NEW."default_value",
-            NEW."lower_bound",
-            NEW."upper_bound",
-            NEW."benchmark_id",
+            NEW."policy_id",
+            NEW."host_id",
             COALESCE(NEW."created_at", NOW()),
             COALESCE(NEW."updated_at", NOW())
           ) RETURNING "id" INTO "result_id";
@@ -973,113 +977,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
       $function$
   SQL
 
-  create_function :v1_rule_groups_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_rule_groups_insert()
+  create_function :v1_profile_rules_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_profile_rules_delete()
        RETURNS trigger
        LANGUAGE plpgsql
       AS $function$
-      DECLARE result_id uuid;
+      DECLARE
+          is_tailoring boolean;
       BEGIN
-          INSERT INTO "rule_groups_v2" (
-            "ref_id",
-            "title",
-            "description",
-            "rationale",
-            "ancestry",
-            "security_guide_id",
-            "rule_id",
-            "precedence",
-            "created_at",
-            "updated_at"
-          ) VALUES (
-            NEW."ref_id",
-            NEW."title",
-            NEW."description",
-            NEW."rationale",
-            NEW."ancestry",
-            NEW."benchmark_id",
-            NEW."rule_id",
-            NEW."precedence",
-            COALESCE(NEW."created_at", NOW()),
-            COALESCE(NEW."updated_at", NOW())
-          ) RETURNING "id" INTO "result_id";
+          SELECT EXISTS(
+              SELECT 1 FROM "tailorings_v2"
+              WHERE "id" = OLD."profile_id"
+          ) INTO is_tailoring;
 
-          NEW."id" := "result_id";
-          RETURN NEW;
-      END
-      $function$
-  SQL
+          IF is_tailoring THEN
+              DELETE FROM "tailoring_rules_v2" WHERE "id" = OLD."id";
+          ELSE
+              DELETE FROM "profile_rules_v2" WHERE "id" = OLD."id";
+          END IF;
 
-  create_function :v1_rule_groups_update, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_rule_groups_update()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-          UPDATE "rule_groups_v2" SET
-            "ref_id" = NEW."ref_id",
-            "title" = NEW."title",
-            "description" = NEW."description",
-            "rationale" = NEW."rationale",
-            "ancestry" = NEW."ancestry",
-            "security_guide_id" = NEW."benchmark_id",
-            "rule_id" = NEW."rule_id",
-            "precedence" = NEW."precedence",
-            "updated_at" = COALESCE(NEW."updated_at", NOW())
-          WHERE "id" = OLD."id";
-
-          RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v1_rule_group_relationships_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_rule_group_relationships_insert()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE result_id uuid;
-      BEGIN
-          INSERT INTO "rule_group_relationships_v2" (
-            "left_type",
-            "left_id",
-            "right_type",
-            "right_id",
-            "relationship",
-            "created_at",
-            "updated_at"
-          ) VALUES (
-            NEW."left_type",
-            NEW."left_id",
-            NEW."right_type",
-            NEW."right_id",
-            NEW."relationship",
-            COALESCE(NEW."created_at", NOW()),
-            COALESCE(NEW."updated_at", NOW())
-          ) RETURNING "id" INTO "result_id";
-
-          NEW."id" := "result_id";
-          RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v1_rule_group_relationships_update, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_rule_group_relationships_update()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-          UPDATE "rule_group_relationships_v2" SET
-            "left_type" = NEW."left_type",
-            "left_id" = NEW."left_id",
-            "right_type" = NEW."right_type",
-            "right_id" = NEW."right_id",
-            "relationship" = NEW."relationship",
-            "updated_at" = COALESCE(NEW."updated_at", NOW())
-          WHERE "id" = OLD."id";
-
-          RETURN NEW;
+          RETURN OLD;
       END
       $function$
   SQL
@@ -1162,193 +1079,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
       $function$
   SQL
 
-  create_function :v1_profile_rules_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_profile_rules_delete()
+  create_function :v1_profiles_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_profiles_delete()
        RETURNS trigger
        LANGUAGE plpgsql
       AS $function$
-      DECLARE
-          is_tailoring boolean;
       BEGIN
-          SELECT EXISTS(
-              SELECT 1 FROM "tailorings_v2"
-              WHERE "id" = OLD."profile_id"
-          ) INTO is_tailoring;
-
-          IF is_tailoring THEN
-              DELETE FROM "tailoring_rules_v2" WHERE "id" = OLD."id";
-          ELSE
-              DELETE FROM "profile_rules_v2" WHERE "id" = OLD."id";
+          IF OLD."parent_profile_id" IS NOT NULL THEN
+              DELETE FROM "tailorings_v2" WHERE "id" = OLD."id";
           END IF;
 
-          RETURN OLD;
-      END
-      $function$
-  SQL
-
-  create_function :v1_policies_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_policies_insert()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE result_id uuid;
-      DECLARE bo_title varchar;
-      BEGIN
-          SELECT "business_objectives"."title" INTO bo_title
-          FROM "business_objectives"
-          WHERE "business_objectives"."id" = NEW."business_objective_id";
-
-          INSERT INTO "policies_v2" (
-            "title",
-            "description",
-            "compliance_threshold",
-            "business_objective",
-            "profile_id",
-            "account_id",
-            "created_at",
-            "updated_at"
-          ) VALUES (
-            NEW."name",
-            NEW."description",
-            COALESCE(NEW."compliance_threshold", 100.0),
-            bo_title,
-            NEW."profile_id",
-            NEW."account_id",
-            NOW(),
-            NOW()
-          ) RETURNING "id" INTO "result_id";
-
-          NEW."id" := "result_id";
-          RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v1_policies_update, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_policies_update()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE bo_title varchar;
-      BEGIN
-          SELECT "business_objectives"."title" INTO bo_title
-          FROM "business_objectives"
-          WHERE "business_objectives"."id" = NEW."business_objective_id";
-
-          UPDATE "policies_v2" SET
-            "title" = NEW."name",
-            "description" = NEW."description",
-            "compliance_threshold" = COALESCE(NEW."compliance_threshold", 100.0),
-            "business_objective" = bo_title,
-            "profile_id" = NEW."profile_id",
-            "account_id" = NEW."account_id",
-            "updated_at" = NOW()
-          WHERE "id" = OLD."id";
-
-          RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v1_policies_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_policies_delete()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-          DELETE FROM "policies_v2" WHERE "id" = OLD."id";
-          RETURN OLD;
-      END
-      $function$
-  SQL
-
-  create_function :v1_test_results_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_test_results_insert()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE
-          result_id uuid;
-          v_report_id uuid;
-      BEGIN
-          SELECT "tailorings_v2"."policy_id" INTO v_report_id
-          FROM "tailorings_v2"
-          WHERE "tailorings_v2"."id" = NEW."profile_id";
-
-          INSERT INTO "historical_test_results_v2" (
-            "tailoring_id",
-            "report_id",
-            "system_id",
-            "start_time",
-            "end_time",
-            "score",
-            "supported",
-            "failed_rule_count",
-            "created_at",
-            "updated_at"
-          ) VALUES (
-            NEW."profile_id",
-            v_report_id,
-            NEW."host_id",
-            NEW."start_time",
-            NEW."end_time",
-            NEW."score",
-            COALESCE(NEW."supported", TRUE),
-            COALESCE(NEW."failed_rule_count", 0),
-            COALESCE(NEW."created_at", NOW()),
-            COALESCE(NEW."updated_at", NOW())
-          ) RETURNING "id" INTO "result_id";
-
-          NEW."id" := "result_id";
-          RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v1_test_results_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_test_results_delete()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-          DELETE FROM "historical_test_results_v2" WHERE "id" = OLD."id";
-          RETURN OLD;
-      END
-      $function$
-  SQL
-
-  create_function :v1_policy_hosts_insert, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_policy_hosts_insert()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      DECLARE result_id uuid;
-      BEGIN
-          INSERT INTO "policy_systems_v2" (
-            "policy_id",
-            "system_id",
-            "created_at",
-            "updated_at"
-          ) VALUES (
-            NEW."policy_id",
-            NEW."host_id",
-            COALESCE(NEW."created_at", NOW()),
-            COALESCE(NEW."updated_at", NOW())
-          ) RETURNING "id" INTO "result_id";
-
-          NEW."id" := "result_id";
-          RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :v1_policy_hosts_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_policy_hosts_delete()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-          DELETE FROM "policy_systems_v2" WHERE "id" = OLD."id";
           RETURN OLD;
       END
       $function$
@@ -1436,16 +1176,124 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
       $function$
   SQL
 
-  create_function :v1_profiles_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_profiles_delete()
+  create_function :v1_rule_group_relationships_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_rule_group_relationships_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+          INSERT INTO "rule_group_relationships_v2" (
+            "left_type",
+            "left_id",
+            "right_type",
+            "right_id",
+            "relationship",
+            "created_at",
+            "updated_at"
+          ) VALUES (
+            NEW."left_type",
+            NEW."left_id",
+            NEW."right_type",
+            NEW."right_id",
+            NEW."relationship",
+            COALESCE(NEW."created_at", NOW()),
+            COALESCE(NEW."updated_at", NOW())
+          ) RETURNING "id" INTO "result_id";
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v1_rule_group_relationships_update, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_rule_group_relationships_update()
        RETURNS trigger
        LANGUAGE plpgsql
       AS $function$
       BEGIN
-          IF OLD."parent_profile_id" IS NOT NULL THEN
-              DELETE FROM "tailorings_v2" WHERE "id" = OLD."id";
-          END IF;
+          UPDATE "rule_group_relationships_v2" SET
+            "left_type" = NEW."left_type",
+            "left_id" = NEW."left_id",
+            "right_type" = NEW."right_type",
+            "right_id" = NEW."right_id",
+            "relationship" = NEW."relationship",
+            "updated_at" = COALESCE(NEW."updated_at", NOW())
+          WHERE "id" = OLD."id";
 
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v1_rule_groups_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_rule_groups_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+          INSERT INTO "rule_groups_v2" (
+            "ref_id",
+            "title",
+            "description",
+            "rationale",
+            "ancestry",
+            "security_guide_id",
+            "rule_id",
+            "precedence",
+            "created_at",
+            "updated_at"
+          ) VALUES (
+            NEW."ref_id",
+            NEW."title",
+            NEW."description",
+            NEW."rationale",
+            NEW."ancestry",
+            NEW."benchmark_id",
+            NEW."rule_id",
+            NEW."precedence",
+            COALESCE(NEW."created_at", NOW()),
+            COALESCE(NEW."updated_at", NOW())
+          ) RETURNING "id" INTO "result_id";
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v1_rule_groups_update, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_rule_groups_update()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          UPDATE "rule_groups_v2" SET
+            "ref_id" = NEW."ref_id",
+            "title" = NEW."title",
+            "description" = NEW."description",
+            "rationale" = NEW."rationale",
+            "ancestry" = NEW."ancestry",
+            "security_guide_id" = NEW."benchmark_id",
+            "rule_id" = NEW."rule_id",
+            "precedence" = NEW."precedence",
+            "updated_at" = COALESCE(NEW."updated_at", NOW())
+          WHERE "id" = OLD."id";
+
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v1_rule_results_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_rule_results_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          DELETE FROM "rule_results_v2" WHERE "id" = OLD."id";
           RETURN OLD;
       END
       $function$
@@ -1478,13 +1326,273 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
       $function$
   SQL
 
-  create_function :v1_rule_results_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v1_rule_results_delete()
+  create_function :v1_rules_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_rules_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+          INSERT INTO "rules_v2" (
+            "ref_id",
+            "title",
+            "severity",
+            "description",
+            "rationale",
+            "remediation_available",
+            "security_guide_id",
+            "upstream",
+            "precedence",
+            "rule_group_id",
+            "value_checks",
+            "identifier",
+            "created_at",
+            "updated_at"
+          ) VALUES (
+            NEW."ref_id",
+            NEW."title",
+            NEW."severity",
+            NEW."description",
+            NEW."rationale",
+            COALESCE(NEW."remediation_available", FALSE),
+            NEW."benchmark_id",
+            COALESCE(NEW."upstream", FALSE),
+            NEW."precedence",
+            NEW."rule_group_id",
+            COALESCE(NEW."value_checks", '{}'),
+            NEW."identifier",
+            COALESCE(NEW."created_at", NOW()),
+            COALESCE(NEW."updated_at", NOW())
+          ) RETURNING "id" INTO "result_id";
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v1_rules_update, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_rules_update()
        RETURNS trigger
        LANGUAGE plpgsql
       AS $function$
       BEGIN
-          DELETE FROM "rule_results_v2" WHERE "id" = OLD."id";
+          UPDATE "rules_v2" SET
+            "ref_id" = NEW."ref_id",
+            "title" = NEW."title",
+            "severity" = NEW."severity",
+            "description" = NEW."description",
+            "rationale" = NEW."rationale",
+            "remediation_available" = COALESCE(NEW."remediation_available", FALSE),
+            "security_guide_id" = NEW."benchmark_id",
+            "upstream" = COALESCE(NEW."upstream", FALSE),
+            "precedence" = NEW."precedence",
+            "rule_group_id" = NEW."rule_group_id",
+            "value_checks" = COALESCE(NEW."value_checks", '{}'),
+            "identifier" = NEW."identifier",
+            "updated_at" = COALESCE(NEW."updated_at", NOW())
+          WHERE "id" = OLD."id";
+
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v1_test_results_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_test_results_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          DELETE FROM "historical_test_results_v2" WHERE "id" = OLD."id";
+          RETURN OLD;
+      END
+      $function$
+  SQL
+
+  create_function :v1_test_results_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_test_results_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE
+          result_id uuid;
+          v_report_id uuid;
+      BEGIN
+          SELECT "tailorings_v2"."policy_id" INTO v_report_id
+          FROM "tailorings_v2"
+          WHERE "tailorings_v2"."id" = NEW."profile_id";
+
+          INSERT INTO "historical_test_results_v2" (
+            "tailoring_id",
+            "report_id",
+            "system_id",
+            "start_time",
+            "end_time",
+            "score",
+            "supported",
+            "failed_rule_count",
+            "created_at",
+            "updated_at"
+          ) VALUES (
+            NEW."profile_id",
+            v_report_id,
+            NEW."host_id",
+            NEW."start_time",
+            NEW."end_time",
+            NEW."score",
+            COALESCE(NEW."supported", TRUE),
+            COALESCE(NEW."failed_rule_count", 0),
+            COALESCE(NEW."created_at", NOW()),
+            COALESCE(NEW."updated_at", NOW())
+          ) RETURNING "id" INTO "result_id";
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v1_value_definitions_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v1_value_definitions_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE result_id uuid;
+      BEGIN
+          INSERT INTO "value_definitions_v2" (
+            "ref_id",
+            "title",
+            "description",
+            "value_type",
+            "default_value",
+            "lower_bound",
+            "upper_bound",
+            "security_guide_id",
+            "created_at",
+            "updated_at"
+          ) VALUES (
+            NEW."ref_id",
+            NEW."title",
+            NEW."description",
+            NEW."value_type",
+            NEW."default_value",
+            NEW."lower_bound",
+            NEW."upper_bound",
+            NEW."benchmark_id",
+            COALESCE(NEW."created_at", NOW()),
+            COALESCE(NEW."updated_at", NOW())
+          ) RETURNING "id" INTO "result_id";
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v2_policies_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_policies_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE bo_id uuid;
+      BEGIN
+        DELETE FROM "policies" WHERE "id" = OLD."id" RETURNING "business_objective_id" INTO "bo_id";
+        -- Delete any remaining business objectives associated with the policy of no other policies use it
+        DELETE FROM "business_objectives" WHERE "id" = "bo_id" AND (SELECT COUNT("id") FROM "policies" WHERE "business_objectives"."id" = "bo_id") = 0;
+      RETURN OLD;
+      END
+      $function$
+  SQL
+
+  create_function :v2_policies_insert, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_policies_insert()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE bo_id uuid;
+      DECLARE result_id uuid;
+      BEGIN
+          -- Insert a new business objective record if the business_objective field is
+          -- set to a value and return with its ID.
+          INSERT INTO "business_objectives" ("title", "created_at", "updated_at")
+          SELECT NEW."business_objective", NOW(), NOW()
+          WHERE NEW."business_objective" IS NOT NULL RETURNING "id" INTO "bo_id";
+
+          INSERT INTO "policies" (
+            "name",
+            "description",
+            "compliance_threshold",
+            "business_objective_id",
+            "profile_id",
+            "account_id"
+          ) VALUES (
+            NEW."title",
+            NEW."description",
+            NEW."compliance_threshold",
+            "bo_id",
+            NEW."profile_id",
+            NEW."account_id"
+          ) RETURNING "id" INTO "result_id";
+
+          NEW."id" := "result_id";
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v2_policies_update, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_policies_update()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      DECLARE "bo_id" uuid;
+      BEGIN
+          -- Create a new business objective record if the apropriate field is set and there is no
+          -- existing business objective already assigned to the policy and return with its ID.
+          INSERT INTO "business_objectives" ("title", "created_at", "updated_at")
+          SELECT NEW."business_objective", NOW(), NOW() FROM "policies" WHERE
+            NEW."business_objective" IS NOT NULL AND
+            "policies"."business_objective_id" IS NULL AND
+            "policies"."id" = OLD."id"
+          RETURNING "id" INTO "bo_id";
+
+          -- If the previous insertion was successful, there is nothing to update, otherwise try to
+          -- update any existing business objective assigned to the policy and return with its ID.
+          IF "bo_id" IS NULL THEN
+            UPDATE "business_objectives" SET "title" = NEW."business_objective", "updated_at" = NOW()
+            FROM "policies" WHERE
+              "policies"."business_objective_id" = "business_objectives"."id" AND
+              "policies"."id" = OLD."id"
+            RETURNING "business_objectives"."id" INTO "bo_id";
+          END IF;
+
+          -- Update the policy itself, use the ID of the business objective from the previous two queries,
+          -- if the business_objective field is set to NULL, remove the link between the two tables.
+          UPDATE "policies" SET
+            "name" = NEW."title",
+            "description" = NEW."description",
+            "compliance_threshold" = NEW."compliance_threshold",
+            "business_objective_id" = CASE WHEN NEW."business_objective" IS NULL THEN NULL ELSE "bo_id" END
+          WHERE "id" = OLD."id";
+
+          -- If the business_objective field is set to NULL, delete its record in the business objectives
+          -- table using the ID retrieved during the second query.
+          DELETE FROM "business_objectives" USING "policies"
+          WHERE NEW."business_objective" IS NULL AND "business_objectives"."id" = "bo_id";
+
+          RETURN NEW;
+      END
+      $function$
+  SQL
+
+  create_function :v2_test_results_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_test_results_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          DELETE FROM "historical_test_results_v2" WHERE "id" = OLD."id";
           RETURN OLD;
       END
       $function$
@@ -1527,124 +1635,80 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
       $function$
   SQL
 
-  create_function :v2_test_results_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v2_test_results_delete()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-          DELETE FROM "historical_test_results_v2" WHERE "id" = OLD."id";
-          RETURN OLD;
-      END
-      $function$
+  create_trigger :historical_test_results_delete, sql_definition: <<-SQL
+      CREATE TRIGGER historical_test_results_delete INSTEAD OF DELETE ON public.historical_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
   SQL
 
   create_trigger :tailorings_insert, sql_definition: <<-SQL
       CREATE TRIGGER tailorings_insert INSTEAD OF INSERT ON public.tailorings FOR EACH ROW EXECUTE FUNCTION tailorings_insert()
   SQL
 
-  create_trigger :v2_policies_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
-  SQL
-
-  create_trigger :v2_policies_update, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
-  SQL
-
-  create_trigger :v2_policies_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
-  SQL
-
-  create_trigger :historical_test_results_delete, sql_definition: <<-SQL
-      CREATE TRIGGER historical_test_results_delete INSTEAD OF DELETE ON public.historical_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
+  create_trigger :v1_benchmarks_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_benchmarks_insert INSTEAD OF INSERT ON public.v1_benchmarks FOR EACH ROW EXECUTE FUNCTION v1_benchmarks_insert()
   SQL
 
   create_trigger :v1_benchmarks_update, sql_definition: <<-SQL
       CREATE TRIGGER v1_benchmarks_update INSTEAD OF UPDATE ON public.v1_benchmarks FOR EACH ROW EXECUTE FUNCTION v1_benchmarks_update()
   SQL
 
-  create_trigger :v1_benchmarks_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_benchmarks_insert INSTEAD OF INSERT ON public.v1_benchmarks FOR EACH ROW EXECUTE FUNCTION v1_benchmarks_insert()
-  SQL
-
-  create_trigger :v1_rules_update, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rules_update INSTEAD OF UPDATE ON public.v1_rules FOR EACH ROW EXECUTE FUNCTION v1_rules_update()
-  SQL
-
-  create_trigger :v1_rules_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rules_insert INSTEAD OF INSERT ON public.v1_rules FOR EACH ROW EXECUTE FUNCTION v1_rules_insert()
-  SQL
-
-  create_trigger :v1_value_definitions_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_value_definitions_insert INSTEAD OF INSERT ON public.v1_value_definitions FOR EACH ROW EXECUTE FUNCTION v1_value_definitions_insert()
-  SQL
-
-  create_trigger :v1_rule_groups_update, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rule_groups_update INSTEAD OF UPDATE ON public.v1_rule_groups FOR EACH ROW EXECUTE FUNCTION v1_rule_groups_update()
-  SQL
-
-  create_trigger :v1_rule_groups_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rule_groups_insert INSTEAD OF INSERT ON public.v1_rule_groups FOR EACH ROW EXECUTE FUNCTION v1_rule_groups_insert()
-  SQL
-
-  create_trigger :v1_rule_group_relationships_update, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rule_group_relationships_update INSTEAD OF UPDATE ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_update()
-  SQL
-
-  create_trigger :v1_rule_group_relationships_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_rule_group_relationships_insert INSTEAD OF INSERT ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_insert()
-  SQL
-
-  create_trigger :v1_profile_rules_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_profile_rules_insert INSTEAD OF INSERT ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_insert()
-  SQL
-
-  create_trigger :v1_profile_rules_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v1_profile_rules_delete INSTEAD OF DELETE ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_delete()
-  SQL
-
-  create_trigger :v1_profile_rules_update, sql_definition: <<-SQL
-      CREATE TRIGGER v1_profile_rules_update INSTEAD OF UPDATE ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_update()
+  create_trigger :v1_policies_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v1_policies_delete INSTEAD OF DELETE ON public.v1_policies FOR EACH ROW EXECUTE FUNCTION v1_policies_delete()
   SQL
 
   create_trigger :v1_policies_insert, sql_definition: <<-SQL
       CREATE TRIGGER v1_policies_insert INSTEAD OF INSERT ON public.v1_policies FOR EACH ROW EXECUTE FUNCTION v1_policies_insert()
   SQL
 
-  create_trigger :v1_policies_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v1_policies_delete INSTEAD OF DELETE ON public.v1_policies FOR EACH ROW EXECUTE FUNCTION v1_policies_delete()
-  SQL
-
   create_trigger :v1_policies_update, sql_definition: <<-SQL
       CREATE TRIGGER v1_policies_update INSTEAD OF UPDATE ON public.v1_policies FOR EACH ROW EXECUTE FUNCTION v1_policies_update()
-  SQL
-
-  create_trigger :v1_test_results_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v1_test_results_delete INSTEAD OF DELETE ON public.v1_test_results FOR EACH ROW EXECUTE FUNCTION v1_test_results_delete()
-  SQL
-
-  create_trigger :v1_test_results_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_test_results_insert INSTEAD OF INSERT ON public.v1_test_results FOR EACH ROW EXECUTE FUNCTION v1_test_results_insert()
-  SQL
-
-  create_trigger :v1_policy_hosts_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_policy_hosts_insert INSTEAD OF INSERT ON public.v1_policy_hosts FOR EACH ROW EXECUTE FUNCTION v1_policy_hosts_insert()
   SQL
 
   create_trigger :v1_policy_hosts_delete, sql_definition: <<-SQL
       CREATE TRIGGER v1_policy_hosts_delete INSTEAD OF DELETE ON public.v1_policy_hosts FOR EACH ROW EXECUTE FUNCTION v1_policy_hosts_delete()
   SQL
 
-  create_trigger :v1_profiles_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v1_profiles_insert INSTEAD OF INSERT ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_insert()
+  create_trigger :v1_policy_hosts_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_policy_hosts_insert INSTEAD OF INSERT ON public.v1_policy_hosts FOR EACH ROW EXECUTE FUNCTION v1_policy_hosts_insert()
+  SQL
+
+  create_trigger :v1_profile_rules_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v1_profile_rules_delete INSTEAD OF DELETE ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_delete()
+  SQL
+
+  create_trigger :v1_profile_rules_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_profile_rules_insert INSTEAD OF INSERT ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_insert()
+  SQL
+
+  create_trigger :v1_profile_rules_update, sql_definition: <<-SQL
+      CREATE TRIGGER v1_profile_rules_update INSTEAD OF UPDATE ON public.v1_profile_rules FOR EACH ROW EXECUTE FUNCTION v1_profile_rules_update()
   SQL
 
   create_trigger :v1_profiles_delete, sql_definition: <<-SQL
       CREATE TRIGGER v1_profiles_delete INSTEAD OF DELETE ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_delete()
   SQL
 
+  create_trigger :v1_profiles_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_profiles_insert INSTEAD OF INSERT ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_insert()
+  SQL
+
   create_trigger :v1_profiles_update, sql_definition: <<-SQL
       CREATE TRIGGER v1_profiles_update INSTEAD OF UPDATE ON public.v1_profiles FOR EACH ROW EXECUTE FUNCTION v1_profiles_update()
+  SQL
+
+  create_trigger :v1_rule_group_relationships_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rule_group_relationships_insert INSTEAD OF INSERT ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_insert()
+  SQL
+
+  create_trigger :v1_rule_group_relationships_update, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rule_group_relationships_update INSTEAD OF UPDATE ON public.v1_rule_group_relationships FOR EACH ROW EXECUTE FUNCTION v1_rule_group_relationships_update()
+  SQL
+
+  create_trigger :v1_rule_groups_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rule_groups_insert INSTEAD OF INSERT ON public.v1_rule_groups FOR EACH ROW EXECUTE FUNCTION v1_rule_groups_insert()
+  SQL
+
+  create_trigger :v1_rule_groups_update, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rule_groups_update INSTEAD OF UPDATE ON public.v1_rule_groups FOR EACH ROW EXECUTE FUNCTION v1_rule_groups_update()
   SQL
 
   create_trigger :v1_rule_results_delete, sql_definition: <<-SQL
@@ -1655,11 +1719,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_170354) do
       CREATE TRIGGER v1_rule_results_insert INSTEAD OF INSERT ON public.v1_rule_results FOR EACH ROW EXECUTE FUNCTION v1_rule_results_insert()
   SQL
 
-  create_trigger :v2_test_results_insert, sql_definition: <<-SQL
-      CREATE TRIGGER v2_test_results_insert INSTEAD OF INSERT ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_insert()
+  create_trigger :v1_rules_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rules_insert INSTEAD OF INSERT ON public.v1_rules FOR EACH ROW EXECUTE FUNCTION v1_rules_insert()
+  SQL
+
+  create_trigger :v1_rules_update, sql_definition: <<-SQL
+      CREATE TRIGGER v1_rules_update INSTEAD OF UPDATE ON public.v1_rules FOR EACH ROW EXECUTE FUNCTION v1_rules_update()
+  SQL
+
+  create_trigger :v1_test_results_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v1_test_results_delete INSTEAD OF DELETE ON public.v1_test_results FOR EACH ROW EXECUTE FUNCTION v1_test_results_delete()
+  SQL
+
+  create_trigger :v1_test_results_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_test_results_insert INSTEAD OF INSERT ON public.v1_test_results FOR EACH ROW EXECUTE FUNCTION v1_test_results_insert()
+  SQL
+
+  create_trigger :v1_value_definitions_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v1_value_definitions_insert INSTEAD OF INSERT ON public.v1_value_definitions FOR EACH ROW EXECUTE FUNCTION v1_value_definitions_insert()
+  SQL
+
+  create_trigger :v2_policies_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_delete INSTEAD OF DELETE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_delete()
+  SQL
+
+  create_trigger :v2_policies_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_insert INSTEAD OF INSERT ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_insert()
+  SQL
+
+  create_trigger :v2_policies_update, sql_definition: <<-SQL
+      CREATE TRIGGER v2_policies_update INSTEAD OF UPDATE ON public.v2_policies FOR EACH ROW EXECUTE FUNCTION v2_policies_update()
   SQL
 
   create_trigger :v2_test_results_delete, sql_definition: <<-SQL
       CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
+  SQL
+
+  create_trigger :v2_test_results_insert, sql_definition: <<-SQL
+      CREATE TRIGGER v2_test_results_insert INSTEAD OF INSERT ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_insert()
   SQL
 end
