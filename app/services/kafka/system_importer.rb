@@ -35,10 +35,17 @@ module Kafka
       {
         id: id, account: payload.dig('account'), org_id: payload.dig('org_id'),
         display_name: payload.dig('display_name'), groups: payload.dig('groups') || [],
-        tags: payload.dig('tags') || [], system_profile: payload.dig('system_profile'),
+        tags: payload.dig('tags') || [], system_profile: relevant_system_profile(payload),
         stale_timestamp: payload.dig('stale_timestamp'), created: payload.dig('created'),
         updated: updated, insights_id: payload.dig('insights_id')
       }
+    end
+
+    def relevant_system_profile(payload)
+      full_profile = payload.dig('system_profile')
+      return {} unless full_profile.is_a?(Hash)
+
+      full_profile.slice('operating_system', 'owner_id')
     end
 
     def upsert_system(id, payload, updated)

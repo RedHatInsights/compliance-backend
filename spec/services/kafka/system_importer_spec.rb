@@ -103,6 +103,26 @@ RSpec.describe Kafka::SystemImporter do
       end
     end
 
+    context 'when system_profile contains extra fields' do
+      before do
+        message['host']['system_profile'] = {
+          'operating_system' => { 'major' => 9, 'minor' => 4 },
+          'owner_id' => SecureRandom.uuid,
+          'arch' => 'x86_64',
+          'bios_vendor' => 'SeaBIOS',
+          'cpu_model' => 'Intel Xeon',
+          'network_interfaces' => [{ 'name' => 'eth0' }]
+        }
+      end
+
+      it 'stores only operating_system and owner_id' do
+        service.import
+        system = KafkaSystem.find(message['host']['id'])
+        expect(system.system_profile.keys).to match_array(%w[operating_system owner_id])
+        expect(system.system_profile['operating_system']).to eq({ 'major' => 9, 'minor' => 4 })
+      end
+    end
+
     context 'when payload lacks optional fields like groups' do
       before { message['host'].delete('groups') }
 
