@@ -67,8 +67,12 @@ class SystemsBackfiller
     <<-SQL
       WITH batch AS (
         SELECT h.id, h.account, h.org_id, h.display_name, h.tags, h.updated,
-               h.created, h.stale_timestamp, h.system_profile, h.groups,
-               h.insights_id
+               h.created, h.stale_timestamp,
+               jsonb_strip_nulls(jsonb_build_object(
+                 'operating_system', h.system_profile->'operating_system',
+                 'owner_id', h.system_profile->'owner_id'
+               )) AS system_profile,
+               h.groups, h.insights_id
         FROM inventory.hosts h
         LEFT JOIN systems s ON h.id = s.id
         WHERE h.org_id = '#{safe_org_id}'
