@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: quay.io
-  IMAGE_NAME: "iop/compliance"
+  IMAGE_NAME: "iop/compliance-backend"
 
 jobs:
   build:
