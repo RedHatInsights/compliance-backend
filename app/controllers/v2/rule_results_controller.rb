@@ -12,7 +12,7 @@ module V2
     private
 
     def rule_results
-      @rule_results ||= authorize(fetch_collection)
+      @rule_results ||= authorize(resolve_collection)
     end
 
     def resource
