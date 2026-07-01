@@ -22,7 +22,7 @@ module Kafka
       # Evaluate each report individually and notify about the result
       parsed_reports.each_with_index do |(profile_id, _report), idx|
         job = enqueue_parsing(profile_id, idx)
-        notify_report_success(profile_id, job.jid)
+        notify_report_success(profile_id, job.job_id)
       end
       produce_validation_message('success')
     rescue EntitlementError, ReportParseError => e

@@ -44,7 +44,10 @@ gem 'pundit'
 gem 'exception_notification'
 gem 'slack-notifier'
 
-# Sidekiq - use reliable-fetch by Gitlab
+# Background jobs — GoodJob (PostgreSQL-backed) replaces Sidekiq
+gem 'good_job', '~> 4'
+
+# Sidekiq retained temporarily to drain jobs from Redis
 gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 gem 'sidekiq', '< 8'
 

@@ -497,6 +497,101 @@ objects:
           requests:
             cpu: ${CPU_REQUEST_CONSUMER}
             memory: ${MEMORY_REQUEST_CONSUMER}
+    - name: goodjob
+      minReplicas: ${{REPLICAS_GOODJOB}}
+      deploymentStrategy:
+        privateStrategy: Recreate
+      podSpec:
+        image: ${IMAGE}:${IMAGE_TAG}
+        initContainers:
+        - command: ["/bin/sh"]
+          args: ["-c", "$HOME/scripts/abort_if_pending_migrations.sh"]
+          inheritEnv: true
+        resources:
+          limits:
+            cpu: ${CPU_LIMIT_GOODJOB}
+            memory: ${MEMORY_LIMIT_GOODJOB}
+          requests:
+            cpu: ${CPU_REQUEST_GOODJOB}
+            memory: ${MEMORY_REQUEST_GOODJOB}
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 7001
+          timeoutSeconds: 5
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: 7001
+          timeoutSeconds: 5
+          periodSeconds: 30
+        env:
+        - name: APPLICATION_TYPE
+          value: compliance-goodjob
+        - name: RAILS_ENV
+          value: "${RAILS_ENV}"
+        - name: RAILS_LOG_TO_STDOUT
+          value: "${RAILS_LOG_TO_STDOUT}"
+        - name: PATH_PREFIX
+          value: "${PATH_PREFIX}"
+        - name: APP_NAME
+          value: "${APP_NAME}"
+        - name: GOOD_JOB_MAX_THREADS
+          value: "${GOOD_JOB_MAX_THREADS}"
+        - name: POSTGRESQL_MAX_CONNECTIONS
+          value: "${POSTGRESQL_MAX_CONNECTIONS}"
+        - name: MALLOC_ARENA_MAX
+          value: '2'
+        - name: RUBY_YJIT_ENABLE
+          value: "${RUBY_YJIT_ENABLE}"
+        - name: SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: secret_key_base
+        - name: SETTINGS__SLACK_WEBHOOK
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: slack_webhook
+              optional: true
+        - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
+          value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
+        - name: MAX_INIT_TIMEOUT_SECONDS
+          value: "${MAX_INIT_TIMEOUT_SECONDS}"
+        - name: PRIMARY_REDIS_AS_CACHE
+          value: "${PRIMARY_REDIS_AS_CACHE}"
+        - name: SETTINGS__REDIS__SSL
+          value: "${REDIS_SSL}"
+        - name: SETTINGS__REDIS__CACHE_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.endpoint
+              optional: true
+        - name: SETTINGS__REDIS__CACHE_PORT
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.port
+              optional: true
+        - name: SETTINGS__REDIS__CACHE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: compliance-rails-cache
+              key: db.auth_token
+              optional: true
+        - name: IMAGE_TAG
+          value: "${IMAGE}:${IMAGE_TAG}"
+        - name: QE_ACCOUNTS
+          value: "${QE_ACCOUNTS}"
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: LOGSTREAM
+          value: "${LOGSTREAM_GOODJOB}"
     - name: sidekiq
       minReplicas: ${{REPLICAS_SIDEKIQ}}
       deploymentStrategy:
@@ -733,8 +828,11 @@ parameters:
 - name: REPLICAS_CONSUMER
   description: Replica count for consumer
   value: "1"
+- name: REPLICAS_GOODJOB
+  description: Replica count for GoodJob worker
+  value: "1"
 - name: REPLICAS_SIDEKIQ
-  description: Replica count for sidekiq
+  description: Replica count for sidekiq (drain only)
   value: "1"
 - name: LINT_ANNOTATION
   value: 'default-lint-annotation-value'
@@ -767,6 +865,14 @@ parameters:
   value: 500m
 - name: CPU_REQUEST_CONSUMER
   value: 50m
+- name: MEMORY_LIMIT_GOODJOB
+  value: 1000Mi
+- name: MEMORY_REQUEST_GOODJOB
+  value: 500Mi
+- name: CPU_LIMIT_GOODJOB
+  value: 1000m
+- name: CPU_REQUEST_GOODJOB
+  value: 100m
 - name: MEMORY_LIMIT_SIDEKIQ
   value: 1000Mi
 - name: MEMORY_REQUEST_SIDEKIQ
@@ -786,6 +892,8 @@ parameters:
 - name: REDIS_SSL
   description: 'Whether to use secured connection to Redis. Use string values of true or false'
   value: "true"
+- name: GOOD_JOB_MAX_THREADS
+  value: "5"
 - name: SIDEKIQ_CONCURRENCY
   value: "1"
 - name: DISABLE_RBAC
@@ -847,6 +955,7 @@ parameters:
   description: Pipe-separated list of numerical identifiers
   required: false
 - name: LOGSTREAM_SERVICE
+- name: LOGSTREAM_GOODJOB
 - name: LOGSTREAM_SIDEKIQ
 - name: LOGSTREAM_CONSUMER
 - name: LOGSTREAM_IMPORT_SSG
