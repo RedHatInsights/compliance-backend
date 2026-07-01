@@ -144,42 +144,59 @@ describe InventoryEventsConsumer do
         }
       end
 
-      shared_examples 'skips SystemImporter' do
+      shared_examples 'skips importers' do
         before { allow_any_instance_of(Kafka::SystemImporter).to receive(:import) }
 
         it 'does not call SystemImporter' do
           expect(Kafka::SystemImporter).not_to receive(:new)
           consumer.consume
         end
+
+        it 'does not call PolicySystemImporter' do
+          expect(Kafka::PolicySystemImporter).not_to receive(:new)
+          consumer.consume
+        end
       end
 
       context 'with blank insights_id' do
         let(:host_overrides) { { 'insights_id' => nil } }
-        include_examples 'skips SystemImporter'
+        include_examples 'skips importers'
       end
 
       context 'with null UUID insights_id' do
         let(:host_overrides) { { 'insights_id' => described_class::NON_INSIGHTS_ID } }
-        include_examples 'skips SystemImporter'
+        include_examples 'skips importers'
       end
 
       context 'with edge host_type' do
         let(:host_overrides) { { 'system_profile' => { 'host_type' => 'edge' } } }
-        include_examples 'skips SystemImporter'
+        include_examples 'skips importers'
       end
 
       context 'with CentOS operating_system' do
         let(:host_overrides) do
           { 'system_profile' => { 'operating_system' => { 'name' => 'CentOS Linux' } } }
         end
-        include_examples 'skips SystemImporter'
+        include_examples 'skips importers'
       end
 
       context 'with bootc image digest' do
         let(:host_overrides) do
           { 'system_profile' => { 'bootc_status' => { 'booted' => { 'image_digest' => 'sha256:abc' } } } }
         end
-        include_examples 'skips SystemImporter'
+        include_examples 'skips importers'
+      end
+
+      context 'with edge host_type and compliance_policy_id' do
+        let(:host_overrides) do
+          {
+            'system_profile' => {
+              'host_type' => 'edge',
+              'image_builder' => { 'compliance_policy_id' => SecureRandom.uuid }
+            }
+          }
+        end
+        include_examples 'skips importers'
       end
     end
 

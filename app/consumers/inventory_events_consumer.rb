@@ -18,8 +18,10 @@ class InventoryEventsConsumer < ApplicationConsumer
   private
 
   def handle_created_updated
-    Kafka::SystemImporter.new(payload, logger).import if importable_host?
-    Kafka::PolicySystemImporter.new(payload, logger).import if policy_id
+    if importable_host?
+      Kafka::SystemImporter.new(payload, logger).import
+      Kafka::PolicySystemImporter.new(payload, logger).import if policy_id
+    end
     Kafka::ReportParser.new(payload, logger).parse_reports if service == 'compliance'
   end
 
