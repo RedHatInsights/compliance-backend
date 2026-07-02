@@ -7,6 +7,7 @@ class SystemsCleaner
     @logger = logger
   end
 
+  # rubocop:disable Metrics/MethodLength
   def run(subtasks)
     start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
@@ -16,9 +17,16 @@ class SystemsCleaner
       delete_systems_in_batches(deleted_ids, 'deleted') if deleted_ids.any?
     end
 
+    if subtasks.include?('stale')
+      @logger.info("Running subtask 'stale'...")
+      stale_ids = stale_system_ids
+      delete_systems_in_batches(stale_ids, 'stale') if stale_ids.any?
+    end
+
     elapsed = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time).round(2)
     @logger.info("systems:cleanup completed in #{elapsed}s.")
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 
@@ -35,6 +43,26 @@ class SystemsCleaner
     SQL
     ActiveRecord::Base.connection.select_values(sql)
   end
+
+  # Subtask: Stale
+  # Clean up stale systems based on stale_timestamp threshold if enabled.
+  # rubocop:disable Metrics/MethodLength
+  def stale_system_ids
+    unless ENV['STALE_CLEANUP_ENABLED'] == 'true'
+      @logger.info("Subtask 'stale': STALE_CLEANUP_ENABLED is not set to 'true'. Skipping stale systems cleanup.")
+      return []
+    end
+
+    retention_days = ENV.fetch('STALE_RETENTION_DAYS', 30).to_i
+    cutoff_time = retention_days.days.ago
+
+    sql = <<~SQL
+      SELECT id FROM systems
+      WHERE stale_timestamp < '#{cutoff_time.iso8601}'
+    SQL
+    ActiveRecord::Base.connection.select_values(sql)
+  end
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable Metrics/MethodLength
   # Batch deletion of identified systems and their related records
@@ -63,7 +91,7 @@ end
 namespace :systems do
   desc 'Cleanup stale, soft-deleted, and ineligible systems'
   task cleanup: :environment do
-    subtasks = ENV.fetch('SUBTASKS', 'deleted').split(',')
+    subtasks = ENV.fetch('SUBTASKS', 'deleted,stale').split(',')
     batch_size = ENV.fetch('BATCH_SIZE', 1000).to_i
 
     logger = Logger.new($stdout)

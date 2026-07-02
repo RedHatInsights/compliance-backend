@@ -67,4 +67,59 @@ RSpec.describe 'systems:cleanup task' do
       expect(KafkaSystem.unscoped.find_by(id: stale_tombstone.id)).to be_nil
     end
   end
+
+  describe 'subtask: stale' do
+    let(:user) { FactoryBot.create(:v2_user) }
+    let(:policy) { FactoryBot.create(:v2_policy, account: user.account, supports_minors: [0]) }
+    let(:system1) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
+    let(:system2) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
+
+    let!(:stale_system) do
+      FactoryBot.create(
+        :kafka_system,
+        id: system1.id,
+        account: '12345',
+        org_id: user.org_id,
+        stale_timestamp: 35.days.ago
+      )
+    end
+
+    let!(:fresh_system) do
+      FactoryBot.create(
+        :kafka_system,
+        id: system2.id,
+        account: '12345',
+        org_id: user.org_id,
+        stale_timestamp: 10.days.ago
+      )
+    end
+
+    context 'when stale cleanup is disabled (default)' do
+      it 'does not purge any systems' do
+        expect do
+          suppress_stdout do
+            ENV['SUBTASKS'] = 'stale'
+            ENV['STALE_CLEANUP_ENABLED'] = 'false'
+            Rake::Task['systems:cleanup'].invoke
+          end
+        end.not_to(change { KafkaSystem.count })
+      end
+    end
+
+    context 'when stale cleanup is enabled' do
+      it 'purges stale systems older than retention threshold' do
+        expect do
+          suppress_stdout do
+            ENV['SUBTASKS'] = 'stale'
+            ENV['STALE_CLEANUP_ENABLED'] = 'true'
+            ENV['STALE_RETENTION_DAYS'] = '30'
+            Rake::Task['systems:cleanup'].invoke
+          end
+        end.to change { KafkaSystem.count }.by(-1)
+
+        expect(KafkaSystem.find_by(id: fresh_system.id)).not_to be_nil
+        expect(KafkaSystem.find_by(id: stale_system.id)).to be_nil
+      end
+    end
+  end
 end
