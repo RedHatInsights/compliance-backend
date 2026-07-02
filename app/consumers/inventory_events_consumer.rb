@@ -7,6 +7,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   def consume_one
     case message_type
     when 'delete'
+      Kafka::SystemRemover.new(payload, logger).remove_system
       Kafka::DeletedSystemCleaner.new(payload, logger).cleanup_system
     when 'created', 'updated'
       handle_created_updated
