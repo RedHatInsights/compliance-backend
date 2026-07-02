@@ -99,15 +99,14 @@ RSpec.describe XccdfReportParser do
     end
   end
 
-  describe '#save_all' do
-    context 'when a validation check raises' do
+  describe '#validate!' do
+    context 'when a validation check fails' do
       let(:system) { create(:system, account: user.account, os_major_version: unsupported_os_major_version) }
 
-      it 'aborts before saving the test result info' do
+      it 'raises and does not persist anything' do
         allow(parser).to receive(:save_all_test_result_info)
-        allow(V2::System).to receive(:transaction).and_yield
 
-        expect { parser.save_all }.to raise_error(described_class::OSVersionMismatch)
+        expect { parser.validate! }.to raise_error(described_class::OSVersionMismatch)
         expect(parser).not_to have_received(:save_all_test_result_info)
       end
     end
@@ -117,19 +116,29 @@ RSpec.describe XccdfReportParser do
         allow(parser).to receive(:check_os_version)
         allow(parser).to receive(:check_for_external_reports)
         allow(parser).to receive(:check_for_missing_benchmark_info)
-        allow(parser).to receive(:save_all_test_result_info)
-        allow(V2::System).to receive(:transaction).and_yield
       end
 
-      it 'runs all validation checks and saves the test result info inside a transaction' do
-        parser.save_all
+      it 'runs all validation checks' do
+        parser.validate!
 
         expect(parser).to have_received(:check_os_version)
         expect(parser).to have_received(:check_for_external_reports)
         expect(parser).to have_received(:check_for_missing_benchmark_info)
-        expect(V2::System).to have_received(:transaction)
-        expect(parser).to have_received(:save_all_test_result_info)
       end
+    end
+  end
+
+  describe '#persist!' do
+    before do
+      allow(parser).to receive(:save_all_test_result_info)
+      allow(V2::System).to receive(:transaction).and_yield
+    end
+
+    it 'saves the test result info inside a transaction' do
+      parser.persist!
+
+      expect(V2::System).to have_received(:transaction)
+      expect(parser).to have_received(:save_all_test_result_info)
     end
   end
 end
