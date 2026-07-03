@@ -85,7 +85,7 @@ RSpec.describe 'systems:cleanup task' do
           Rake::Task['systems:cleanup'].invoke
         end
       end.to change { KafkaSystem.unscoped.count }.by(-1)
-         .and(change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0))
+         .and(change { HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0))
                                                   .and(change { policy.systems.count }.from(1).to(0))
 
       expect(KafkaSystem.unscoped.find_by(id: fresh_tombstone.id)).not_to be_nil

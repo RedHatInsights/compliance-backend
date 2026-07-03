@@ -9,11 +9,11 @@ module Xccdf
       def save_rule_group_relationships
         @op_rules_and_rule_groups = @op_rule_groups + @op_rules
 
-        ::V2::RuleGroupRelationship.import!(
+        ::RuleGroupRelationship.import!(
           rule_group_relationships.select(&:new_record?), ignore: true
         )
 
-        rgr_links_to_remove(::V2::RuleGroupRelationship).delete_all
+        rgr_links_to_remove(::RuleGroupRelationship).delete_all
       end
 
       private
@@ -30,7 +30,7 @@ module Xccdf
           right = rule_or_rule_group_for(ref_id: relationship_ref_id)
           next unless right
 
-          ::V2::RuleGroupRelationship.find_or_initialize_by(
+          ::RuleGroupRelationship.find_or_initialize_by(
             left: left, right: right, relationship: type
           )
         end
@@ -38,7 +38,7 @@ module Xccdf
 
       def rgr_links_to_remove(base)
         grouped_by_rgr = rule_group_relationships&.group_by(&:left_id)
-        grouped_by_rgr&.reduce(::V2::RuleGroupRelationship.none) do |query, (left_id, rgr)|
+        grouped_by_rgr&.reduce(::RuleGroupRelationship.none) do |query, (left_id, rgr)|
           query.or(
             base.where(left_id: left_id)
                 .where.not(right_id: rgr.map(&:right_id))

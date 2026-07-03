@@ -5,7 +5,7 @@ module Xccdf
   module Tailorings
     # rubocop:disable Rails/FindByOrAssignmentMemoization
     def tailoring
-      @tailoring ||= ::V2::Tailoring.find_by(
+      @tailoring ||= ::Tailoring.find_by(
         policy: @policy,
         os_minor_version: @system.os_minor_version.to_i
       )

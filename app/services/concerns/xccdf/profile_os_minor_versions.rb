@@ -7,11 +7,11 @@ module Xccdf
 
     included do
       def save_profile_os_minor_versions
-        ::V2::ProfileOsMinorVersion.transaction do
+        ::ProfileOsMinorVersion.transaction do
           # Delete all existing mappings for the given benchmark
           old_profile_os_minor_versions.delete_all
           # Import the new mappings
-          ::V2::ProfileOsMinorVersion.import!(new_profile_os_minor_versions)
+          ::ProfileOsMinorVersion.import!(new_profile_os_minor_versions)
         end
       end
 
@@ -20,13 +20,13 @@ module Xccdf
       def new_profile_os_minor_versions
         @profiles.flat_map do |profile|
           os_minor_versions.map do |os_minor_version|
-            ::V2::ProfileOsMinorVersion.new(profile: profile, os_minor_version: os_minor_version)
+            ::ProfileOsMinorVersion.new(profile: profile, os_minor_version: os_minor_version)
           end
         end
       end
 
       def old_profile_os_minor_versions
-        @old_profile_os_minor_versions ||= ::V2::ProfileOsMinorVersion.where(profile: profiles.map(&:id))
+        @old_profile_os_minor_versions ||= ::ProfileOsMinorVersion.where(profile: profiles.map(&:id))
       end
 
       def os_minor_versions

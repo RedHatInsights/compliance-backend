@@ -197,8 +197,8 @@ class SystemsCleaner
       return 0 if eligible_ids.empty?
 
       # Purge related records
-      results_count = V2::HistoricalTestResult.where(system_id: eligible_ids).delete_all
-      policy_systems_count = V2::PolicySystem.where(system_id: eligible_ids).delete_all
+      results_count = HistoricalTestResult.where(system_id: eligible_ids).delete_all
+      policy_systems_count = PolicySystem.where(system_id: eligible_ids).delete_all
 
       # Purge the systems (bypassing default_scope deleted_at: nil)
       systems_count = KafkaSystem.unscoped.where(id: eligible_ids).delete_all

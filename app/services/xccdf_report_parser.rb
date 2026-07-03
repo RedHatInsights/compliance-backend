@@ -37,14 +37,14 @@ class XccdfReportParser
     validate_message_format!
 
     @account = Account.from_identity_header(Insights::Api::Common::IdentityHeader.new(@b64_identity))
-    @system = V2::System.find(message['id'])
+    @system = System.find(message['id'])
     @test_result_file = OpenscapParser::TestResultFile.new(report_contents)
     set_openscap_parser_data
 
-    @policy = V2::Policy.joins(:systems, :profile)
-                        .find_by(systems: { id: @system.id },
-                                 profile: { ref_id: @test_result_file.test_result.profile_id },
-                                 account: @account)
+    @policy = Policy.joins(:systems, :profile)
+                    .find_by(systems: { id: @system.id },
+                             profile: { ref_id: @test_result_file.test_result.profile_id },
+                             account: @account)
 
     check_report_format
   end
@@ -132,7 +132,7 @@ class XccdfReportParser
   end
 
   def persist!
-    V2::System.transaction do
+    System.transaction do
       save_all_test_result_info
     end
   end

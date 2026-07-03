@@ -40,7 +40,7 @@ module Notifications
     end
 
     def last_test_result
-      @last_test_result ||= V2::TestResult
+      @last_test_result ||= TestResult
                             .where(system: parser.system, tailoring: parser.tailoring)
                             .order(end_time: :desc)
                             .first

@@ -17,7 +17,7 @@ module Kafka
     def import
       return unless sources_exist?
 
-      policy_system = V2::PolicySystem.new(policy_id: @policy_id, system_id: @system_id, request_id: @request_id)
+      policy_system = PolicySystem.new(policy_id: @policy_id, system_id: @system_id, request_id: @request_id)
 
       if policy_system.save
         @logger.audit_success("[#{@org_id}] Imported PolicySystem for System #{@system_id} from #{@msg_type} message")
@@ -29,8 +29,8 @@ module Kafka
     private
 
     def sources_exist?
-      valid_resource_exists?(V2::System, @system_id, 'System', raise_on_missing: true) &&
-        valid_resource_exists?(V2::Policy, @policy_id, 'Policy')
+      valid_resource_exists?(System, @system_id, 'System', raise_on_missing: true) &&
+        valid_resource_exists?(Policy, @policy_id, 'Policy')
     end
 
     def valid_resource_exists?(model_class, id, resource_name, raise_on_missing: false)

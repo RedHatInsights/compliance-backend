@@ -10,21 +10,21 @@ module Xccdf
         @fixes ||= rules.flat_map do |rule|
           rule.op_source.fixes.map do |op_fix|
             existing = old_fixes[rule.id + '__' + op_fix.system]
-            ::V2::Fix.from_parser(op_fix, existing: existing, rule_id: rule.id, system: op_fix.system)
+            ::Fix.from_parser(op_fix, existing: existing, rule_id: rule.id, system: op_fix.system)
           end
         end
       end
 
       def save_fixes
         # Import the new records first with validation
-        ::V2::Fix.import!(new_fixes, ignore: true)
+        ::Fix.import!(new_fixes, ignore: true)
 
         # Update the fields on existing fixes, validation is not necessary
-        ::V2::Fix.import(old_fixes.values,
-                         on_duplicate_key_update: {
-                           conflict_target: %i[rule_id system],
-                           columns: %i[strategy disruption complexity text]
-                         }, validate: false)
+        ::Fix.import(old_fixes.values,
+                     on_duplicate_key_update: {
+                       conflict_target: %i[rule_id system],
+                       columns: %i[strategy disruption complexity text]
+                     }, validate: false)
       end
 
       private
@@ -35,8 +35,8 @@ module Xccdf
 
       # :nocov:
       def old_fixes
-        @old_fixes ||= ::V2::Fix.where(
-          rule_id: ::V2::Rule.where(security_guide_id: security_guide&.id)
+        @old_fixes ||= ::Fix.where(
+          rule_id: ::Rule.where(security_guide_id: security_guide&.id)
         ).index_by { |fix| fix.rule_id + '__' + fix.system }
       end
       # :nocov:

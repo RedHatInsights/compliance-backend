@@ -7,21 +7,21 @@ module Xccdf
 
     included do
       def save_rule_groups
-        ::V2::RuleGroup.import!(new_rule_groups, ignore: true)
+        ::RuleGroup.import!(new_rule_groups, ignore: true)
 
         # Overwite a superset of old_rule_groups because the IDs of the ancestors are not
         # available in the first import! above
-        ::V2::RuleGroup.import(rule_groups_with_ancestry, on_duplicate_key_update: {
-                                 conflict_target: %i[ref_id security_guide_id],
-                                 columns: %i[description rationale precedence ancestry]
-                               }, validate: false)
+        ::RuleGroup.import(rule_groups_with_ancestry, on_duplicate_key_update: {
+                             conflict_target: %i[ref_id security_guide_id],
+                             columns: %i[description rationale precedence ancestry]
+                           }, validate: false)
       end
 
       private
 
       def rule_groups
         @rule_groups ||= @op_rule_groups.each_with_index.map do |op_rule_group, idx|
-          ::V2::RuleGroup.from_parser(
+          ::RuleGroup.from_parser(
             op_rule_group,
             existing: old_rule_groups[op_rule_group.id], precedence: idx,
             security_guide_id: security_guide&.id
@@ -34,7 +34,7 @@ module Xccdf
       end
 
       def old_rule_groups
-        @old_rule_groups ||= ::V2::RuleGroup.where(
+        @old_rule_groups ||= ::RuleGroup.where(
           ref_id: @op_rule_groups.map(&:id), security_guide_id: security_guide&.id
         ).index_by(&:ref_id)
       end

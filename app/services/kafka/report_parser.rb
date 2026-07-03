@@ -123,7 +123,7 @@ module Kafka
       @logger.error(msg)
       @logger.audit_fail(msg)
       ReportUploadFailed.deliver(
-        system: V2::System.find_by(id: id, org_id: org_id),
+        system: System.find_by(id: id, org_id: org_id),
         request_id: request_id, error: exception_message(exception), org_id: org_id
       )
       notify_payload_tracker(:error, msg) if notify_tracker

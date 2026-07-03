@@ -25,10 +25,10 @@ task import_remediations: :environment do
     ).dig('revision')
 
     if Revision.remediations != ansible_tasks_revision
-      playbook_status_by_rule_id = PlaybookDownloader.playbooks_exist?(V2::Rule.distinct)
+      playbook_status_by_rule_id = PlaybookDownloader.playbooks_exist?(Rule.distinct)
 
       # HACK: Exclude the remediation for rsyslog_remote_loghost
-      V2::Rule.where(ref_id: EXCLUDE).pluck(:id).each do |id|
+      Rule.where(ref_id: EXCLUDE).pluck(:id).each do |id|
         playbook_status_by_rule_id[id] = false
       end
 
@@ -36,8 +36,8 @@ task import_remediations: :environment do
       ids_sans_playbooks = playbook_status_by_rule_id.filter { |_, v| !v }.keys
 
       # rubocop:disable Rails/SkipsModelValidations
-      V2::Rule.where(id: ids_sans_playbooks).update_all(remediation_available: false)
-      V2::Rule.where(id: ids_with_playbooks).update_all(remediation_available: true)
+      Rule.where(id: ids_sans_playbooks).update_all(remediation_available: false)
+      Rule.where(id: ids_with_playbooks).update_all(remediation_available: true)
       # rubocop:enable Rails/SkipsModelValidations
 
       Rails.logger.info "Updated #{ids_with_playbooks.count} rules with remediations"
