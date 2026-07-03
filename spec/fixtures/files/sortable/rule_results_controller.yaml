@@ -1,5 +1,5 @@
 :entities:
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'abdd'
     :severity: 'high'
     :precedence: 1234
@@ -8,7 +8,7 @@
     :remediation_available: false
     :rule_id: ${rule_1.id}
 
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'abda'
     :severity: 'medium'
     :precedence: 567
@@ -17,7 +17,7 @@
     :remediation_available: true
     :rule_id: ${rule_2.id}
 
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'aaaa'
     :severity: 'low'
     :precedence: 8765
@@ -26,7 +26,7 @@
     :remediation_available: false
     :rule_id: ${rule_3.id}
 
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'adac'
     :severity: 'high'
     :precedence: 987
@@ -35,7 +35,7 @@
     :remediation_available: true
     :rule_id: ${rule_4.id}
 
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'bbbb'
     :severity: 'medium'
     :precedence: 4562
@@ -44,7 +44,7 @@
     :remediation_available: false
     :rule_id: ${rule_5.id}
 
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'cccd'
     :severity: 'low'
     :precedence: 2341
@@ -53,7 +53,7 @@
     :remediation_available: false
     :rule_id: ${rule_6.id}
 
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'aaaa'
     :severity: 'high'
     :precedence: 954
@@ -62,7 +62,7 @@
     :remediation_available: false
     :rule_id: ${rule_7.id}
 
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'bacc'
     :severity: 'medium'
     :precedence: 1854
@@ -71,7 +71,7 @@
     :remediation_available: true
     :rule_id: ${rule_8.id}
 
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'zzab'
     :severity: 'low'
     :precedence: 5321
@@ -80,7 +80,7 @@
     :remediation_available: false
     :rule_id: ${rule_9.id}
 
-  - :factory: :v2_rule_result
+  - :factory: :rule_result
     :title: 'edfa'
     :severity: 'high'
     :precedence: 954

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :v2_policy, class: 'V2::Policy' do
-    account { association :v2_account }
+  factory :policy, class: 'Policy' do
+    account { association :account }
     title { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
-    profile { association :v2_profile, os_major_version: os_major_version, supports_minors: supports_minors }
+    profile { association :profile, os_major_version: os_major_version, supports_minors: supports_minors }
     compliance_threshold { SecureRandom.random_number(100) }
 
     transient do
@@ -19,7 +19,7 @@ FactoryBot.define do
     trait :for_tailoring do
       profile do
         association(
-          :v2_profile,
+          :profile,
           os_major_version: os_major_version,
           supports_minors: supports_minors,
           value_count: 5,
@@ -30,7 +30,7 @@ FactoryBot.define do
 
     after(:create) do |policy, ev|
       if ev.system_id # If system_id is specified, do not generate any assigned systems
-        policy.policy_systems << FactoryBot.create(:v2_policy_system, system_id: ev.system_id, policy_id: policy.id)
+        policy.policy_systems << FactoryBot.create(:policy_system, system_id: ev.system_id, policy_id: policy.id)
       elsif ev.supports_minors.any? && !ev.empty_policy
         ev.system_count.times do
           FactoryBot.create(

@@ -39,14 +39,14 @@ RSpec.describe Xccdf::SecurityGuides do
     it 'persists the parsed security guide with the resolved package name' do
       expect do
         service.save_security_guide
-      end.to change(V2::SecurityGuide, :count).by(1)
+      end.to change(SecurityGuide, :count).by(1)
 
-      record = V2::SecurityGuide.find_by(ref_id: op_security_guide.id, version: op_security_guide.version)
+      record = SecurityGuide.find_by(ref_id: op_security_guide.id, version: op_security_guide.version)
       expect(record.package_name).to eq('ssg-rhel7')
     end
 
     it 'does not touch an already up-to-date record' do
-      existing = FactoryBot.create(:v2_security_guide,
+      existing = FactoryBot.create(:security_guide,
                                    ref_id: op_security_guide.id,
                                    version: op_security_guide.version,
                                    os_major_version: '7',
@@ -61,7 +61,7 @@ RSpec.describe Xccdf::SecurityGuides do
 
   describe '#security_guide_contents_equal_to_op?' do
     let(:guide_record) do
-      FactoryBot.create(:v2_security_guide,
+      FactoryBot.create(:security_guide,
                         ref_id: op_security_guide.id,
                         version: op_security_guide.version,
                         os_major_version: '7',
@@ -75,8 +75,8 @@ RSpec.describe Xccdf::SecurityGuides do
 
     context 'when profile and rule counts match the parser data' do
       before do
-        FactoryBot.create_list(:v2_profile, op_security_guide.profiles.count, security_guide: guide_record)
-        FactoryBot.create_list(:v2_rule, op_security_guide.rules.count, security_guide: guide_record)
+        FactoryBot.create_list(:profile, op_security_guide.profiles.count, security_guide: guide_record)
+        FactoryBot.create_list(:rule, op_security_guide.rules.count, security_guide: guide_record)
       end
 
       it 'returns true' do
@@ -86,8 +86,8 @@ RSpec.describe Xccdf::SecurityGuides do
 
     context 'when the stored data diverges from the parser feed' do
       before do
-        FactoryBot.create_list(:v2_profile, 1, security_guide: guide_record)
-        FactoryBot.create_list(:v2_rule, op_security_guide.rules.count, security_guide: guide_record)
+        FactoryBot.create_list(:profile, 1, security_guide: guide_record)
+        FactoryBot.create_list(:rule, op_security_guide.rules.count, security_guide: guide_record)
       end
 
       it 'requires a refresh' do

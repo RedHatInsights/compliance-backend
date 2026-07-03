@@ -34,15 +34,15 @@ RSpec.describe Xccdf::RuleGroupRelationships do
     )
   end
 
-  let(:security_guide) { FactoryBot.create(:v2_security_guide) }
+  let(:security_guide) { FactoryBot.create(:security_guide) }
 
-  let(:rules) { FactoryBot.create_list(:v2_rule, 3, security_guide: security_guide) }
-  let(:rule_groups) { FactoryBot.create_list(:v2_rule_group, 3, security_guide: security_guide) }
+  let(:rules) { FactoryBot.create_list(:rule, 3, security_guide: security_guide) }
+  let(:rule_groups) { FactoryBot.create_list(:rule_group, 3, security_guide: security_guide) }
 
   describe '#save_rule_group_relationships' do
     let!(:existing_relationship) do
       FactoryBot.create(
-        :v2_rule_group_relationship,
+        :rule_group_relationship,
         :for_rule_and_rule_requires,
         left: rules[0],
         right: rules[1]
@@ -77,10 +77,10 @@ RSpec.describe Xccdf::RuleGroupRelationships do
       let(:op_rules) { [op_rule1, op_rule3] }
       let(:op_rule_groups) { [op_rule_group2] }
 
-      let(:stale_rule) { FactoryBot.create(:v2_rule, security_guide: security_guide) }
+      let(:stale_rule) { FactoryBot.create(:rule, security_guide: security_guide) }
       let!(:stale_relationship) do
         FactoryBot.create(
-          :v2_rule_group_relationship,
+          :rule_group_relationship,
           :for_rule_and_rule_requires,
           left: rules[0],
           right: stale_rule
@@ -88,7 +88,7 @@ RSpec.describe Xccdf::RuleGroupRelationships do
       end
 
       it 'saves relationships between rules and rule groups' do
-        expect { service.save_rule_group_relationships }.to change { V2::RuleGroupRelationship.count }.by(4)
+        expect { service.save_rule_group_relationships }.to change { RuleGroupRelationship.count }.by(4)
       end
 
       it 'does not delete valid relationships' do
@@ -112,7 +112,7 @@ RSpec.describe Xccdf::RuleGroupRelationships do
       it 'saves records only once' do
         expect do
           service.save_rule_group_relationships
-        end.not_to(change { V2::RuleGroupRelationship.count })
+        end.not_to(change { RuleGroupRelationship.count })
       end
     end
 
@@ -139,7 +139,7 @@ RSpec.describe Xccdf::RuleGroupRelationships do
       it 'does not create any rule group relationships' do
         expect do
           service.save_rule_group_relationships
-        end.not_to(change { V2::RuleGroupRelationship.count })
+        end.not_to(change { RuleGroupRelationship.count })
       end
     end
   end

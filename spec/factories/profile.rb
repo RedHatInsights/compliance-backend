@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :v2_profile, class: 'V2::Profile' do
+  factory :profile, class: 'Profile' do
     id { SecureRandom.uuid }
     title { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
     ref_id { "xccdf_org.ssgproject.content_profile_#{ref_id_suffix}" }
-    security_guide { association :v2_security_guide, os_major_version: os_major_version }
+    security_guide { association :security_guide, os_major_version: os_major_version }
     upstream { false }
 
     transient do
@@ -18,7 +18,7 @@ FactoryBot.define do
     end
 
     value_overrides do
-      create_list(:v2_value_definition, value_count, security_guide: security_guide) if value_count.positive?
+      create_list(:value_definition, value_count, security_guide: security_guide) if value_count.positive?
       security_guide.value_definitions.to_h do |value|
         [value.id, SecureRandom.random_number(10_000).to_s]
       end
@@ -29,7 +29,7 @@ FactoryBot.define do
         create(:profile_os_minor_version, os_minor_version: os_minor_version, profile: profile)
       end
 
-      create_list(:v2_rule, ev.rule_count, profiles: [profile], security_guide: profile.security_guide)
+      create_list(:rule, ev.rule_count, profiles: [profile], security_guide: profile.security_guide)
     end
   end
 end

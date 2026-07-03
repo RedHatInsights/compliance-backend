@@ -48,7 +48,7 @@ RSpec.describe DatastreamImporter, type: :service do
     end
 
     it 'runs save_all_security_guide_info inside a transaction' do
-      expect(V2::SecurityGuide).to receive(:transaction).and_yield
+      expect(SecurityGuide).to receive(:transaction).and_yield
       expect(importer).to receive(:save_all_security_guide_info)
       importer.import!
     end

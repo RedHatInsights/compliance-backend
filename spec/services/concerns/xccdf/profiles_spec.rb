@@ -29,7 +29,7 @@ RSpec.describe Xccdf::Profiles do
     )
   end
 
-  let(:security_guide) { FactoryBot.create(:v2_security_guide) }
+  let(:security_guide) { FactoryBot.create(:security_guide) }
 
   # NOTE: This method originates from the openscap-parser gem. (see GitHub)
   # OpenSCAP/openscap_parser/blob/62de6ab7cd670b1ad54702b34dc4e459958112eb/lib/openscap_parser/value.rb#L45C4-L47C8
@@ -54,7 +54,7 @@ RSpec.describe Xccdf::Profiles do
 
   let!(:value_definition) do
     FactoryBot.create(
-      :v2_value_definition,
+      :value_definition,
       security_guide: security_guide,
       ref_id: op_value_definition.id
     ).tap do |record|
@@ -66,7 +66,7 @@ RSpec.describe Xccdf::Profiles do
 
   let!(:stale_profile_record) do
     FactoryBot.create(
-      :v2_profile,
+      :profile,
       security_guide: security_guide,
       value_count: 2,
       supports_minors: [0]
@@ -100,10 +100,10 @@ RSpec.describe Xccdf::Profiles do
       expect do
         service.save_profiles
       end.to change {
-        V2::Profile.where(security_guide: security_guide).count
+        Profile.where(security_guide: security_guide).count
       }.from(1).to(op_profiles.count)
 
-      created = V2::Profile.find_by(ref_id: op_new_profile.id, security_guide: security_guide)
+      created = Profile.find_by(ref_id: op_new_profile.id, security_guide: security_guide)
       expect(created).not_to be_nil
       expect(created.attributes.slice('title', 'description', 'value_overrides')).to eq(
         'title' => op_new_profile.title,

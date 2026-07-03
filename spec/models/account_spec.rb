@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Account do
-  subject(:account) { build(:v2_account) }
+  subject(:account) { build(:account) }
 
   describe '.from_identity_header' do
     subject(:result) { described_class.from_identity_header(identity_header) }
@@ -30,7 +30,7 @@ RSpec.describe Account do
   end
 
   describe '#b64_identity' do
-    subject(:account) { build(:v2_account, org_id: Faker::Number.number(digits: 7).to_s) }
+    subject(:account) { build(:account, org_id: Faker::Number.number(digits: 7).to_s) }
 
     it 'returns a base64-encoded JSON identity' do
       decoded = JSON.parse(Base64.strict_decode64(account.b64_identity))

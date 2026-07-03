@@ -12,7 +12,7 @@ module Api
               type: 'array',
               items: {
                 type: :string,
-                examples: ['V2::SecurityGuide not found with ID a4708198-9d00-4035-bf57-1e7aaad217c5']
+                examples: ['SecurityGuide not found with ID a4708198-9d00-4035-bf57-1e7aaad217c5']
               }
             }
           }

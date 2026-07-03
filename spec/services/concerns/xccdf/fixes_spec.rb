@@ -17,12 +17,12 @@ RSpec.describe Xccdf::Fixes do
     end.new(security_guide: security_guide, rules: rules)
   end
 
-  let(:security_guide) { FactoryBot.create(:v2_security_guide) }
+  let(:security_guide) { FactoryBot.create(:security_guide) }
 
-  let(:rule_with_existing_fix) { FactoryBot.create(:v2_rule, security_guide: security_guide) }
+  let(:rule_with_existing_fix) { FactoryBot.create(:rule, security_guide: security_guide) }
   let(:op_fix_to_update) do
     OpenStruct.new(
-      system: V2::Fix::ANSIBLE,
+      system: Fix::ANSIBLE,
       strategy: 'configure',
       disruption: 'low',
       complexity: 'low',
@@ -30,10 +30,10 @@ RSpec.describe Xccdf::Fixes do
     )
   end
 
-  let(:rule_with_new_fix) { FactoryBot.create(:v2_rule, security_guide: security_guide) }
+  let(:rule_with_new_fix) { FactoryBot.create(:rule, security_guide: security_guide) }
   let(:new_op_fix) do
     OpenStruct.new(
-      system: V2::Fix::SHELL,
+      system: Fix::SHELL,
       strategy: 'script',
       disruption: 'medium',
       complexity: 'medium',
@@ -50,14 +50,14 @@ RSpec.describe Xccdf::Fixes do
   end
 
   describe '#save_fixes' do
-    let(:refreshed_fix) { V2::Fix.find_by(rule: rule_with_existing_fix, system: op_fix_to_update.system) }
-    let(:created_fix) { V2::Fix.find_by(rule: rule_with_new_fix, system: new_op_fix.system) }
+    let(:refreshed_fix) { Fix.find_by(rule: rule_with_existing_fix, system: op_fix_to_update.system) }
+    let(:created_fix) { Fix.find_by(rule: rule_with_new_fix, system: new_op_fix.system) }
 
     it 'upserts parsed fixes' do
       expect do
         service.save_fixes
       end.to change {
-        V2::Fix.where(rule_id: rules.map(&:id)).count
+        Fix.where(rule_id: rules.map(&:id)).count
       }.from(1).to(2)
 
       expect(created_fix).not_to be_nil

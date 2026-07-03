@@ -1,25 +1,25 @@
 :entities:
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'aba'
     :security_guide_id: ${security_guide_id}
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'bac'
     :security_guide_id: ${security_guide_id}
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'aab'
     :security_guide_id: ${security_guide_id}
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'aaa'
     :security_guide_id: ${security_guide_id}
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'caa'
     :security_guide_id: ${security_guide_id}
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'aaa'
     :security_guide_id: ${security_guide_id}
 

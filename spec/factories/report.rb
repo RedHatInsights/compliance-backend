@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :v2_report, class: 'V2::Report' do
+  factory :report, class: 'Report' do
     to_create do |instance, context|
       policy = FactoryBot.create(
-        :v2_policy,
+        :policy,
         :for_tailoring,
         title: context.title,
         system_id: context.system_id,
@@ -23,7 +23,7 @@ FactoryBot.define do
 
         unsupported_systems.each do |system|
           FactoryBot.create(
-            :v2_test_result,
+            :test_result,
             system: system,
             account: context.account,
             supported: false,
@@ -34,7 +34,7 @@ FactoryBot.define do
 
         compliant_systems.each do |system|
           FactoryBot.create(
-            :v2_test_result,
+            :test_result,
             system: system,
             account: context.account,
             supported: true,
@@ -45,7 +45,7 @@ FactoryBot.define do
 
         other_systems.each do |system|
           FactoryBot.create(
-            :v2_test_result,
+            :test_result,
             system: system,
             account: context.account,
             supported: true,
@@ -56,12 +56,12 @@ FactoryBot.define do
       end
 
       instance.id = policy.id
-      instance.attributes = V2::Policy.find(instance.id).attributes
+      instance.attributes = Policy.find(instance.id).attributes
       instance.reload
     end
 
     transient do
-      account { association :v2_account }
+      account { association :account }
       os_major_version { 7 }
       business_objective { Faker::Hacker.noun }
       compliance_threshold { 90 }

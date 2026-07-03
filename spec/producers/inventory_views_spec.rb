@@ -8,7 +8,7 @@ describe InventoryViews do
   end
 
   let!(:system) { FactoryBot.create(:system, policy_id: policy.id) }
-  let(:policy) { FactoryBot.create(:v2_policy, os_major_version: 8, supports_minors: [0]) }
+  let(:policy) { FactoryBot.create(:policy, os_major_version: 8, supports_minors: [0]) }
 
   describe 'provided a payload' do
     before do

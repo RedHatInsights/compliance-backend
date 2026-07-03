@@ -17,11 +17,11 @@ RSpec.describe Xccdf::RuleGroups do
     end.new(security_guide: security_guide, op_rule_groups: op_rule_groups)
   end
 
-  let(:security_guide) { FactoryBot.create(:v2_security_guide) }
+  let(:security_guide) { FactoryBot.create(:security_guide) }
 
   let!(:parent_rg) do
     FactoryBot.create(
-      :v2_rule_group,
+      :rule_group,
       security_guide: security_guide,
       ref_id: 'xccdf_parent_rule_group',
       precedence: 1
@@ -61,7 +61,7 @@ RSpec.describe Xccdf::RuleGroups do
         'ancestry' => ''
       )
 
-      created = V2::RuleGroup.find_by(ref_id: op_child_rg.id, security_guide: security_guide)
+      created = RuleGroup.find_by(ref_id: op_child_rg.id, security_guide: security_guide)
 
       expect(created).not_to be_nil
       expect(created.attributes.slice('title', 'description', 'rationale', 'precedence', 'ancestry')).to eq(
@@ -76,7 +76,7 @@ RSpec.describe Xccdf::RuleGroups do
     context 'having multiple levels of ancestry' do
       let(:grandparent_rg) do
         FactoryBot.create(
-          :v2_rule_group,
+          :rule_group,
           security_guide: security_guide,
           ref_id: 'xccdf_grandparent_rule_group',
           description: Faker::Lorem.paragraph,
@@ -105,7 +105,7 @@ RSpec.describe Xccdf::RuleGroups do
       it 'constructs the ancestry column of children correctly' do
         service.save_rule_groups
 
-        child_group = V2::RuleGroup.find_by(ref_id: op_child_rg.id, security_guide: security_guide)
+        child_group = RuleGroup.find_by(ref_id: op_child_rg.id, security_guide: security_guide)
 
         expect(child_group.ancestry).to eq([grandparent_rg.id, parent_rg.id].join('/'))
         expect(parent_rg.reload.ancestry).to eq(grandparent_rg.id.to_s)
@@ -125,7 +125,7 @@ RSpec.describe Xccdf::RuleGroups do
         it 'removes the stale ancestry entry' do
           service.save_rule_groups
 
-          child_group = V2::RuleGroup.find_by(ref_id: op_child_rg.id, security_guide: security_guide)
+          child_group = RuleGroup.find_by(ref_id: op_child_rg.id, security_guide: security_guide)
 
           expect(child_group.ancestry).to be_blank
         end
@@ -145,7 +145,7 @@ RSpec.describe Xccdf::RuleGroups do
 
       let!(:preceding_rg) do
         FactoryBot.create(
-          :v2_rule_group,
+          :rule_group,
           security_guide: security_guide,
           ref_id: 'xccdf_preceding_rule_group',
           title: Faker::Lorem.sentence,
@@ -173,11 +173,11 @@ RSpec.describe Xccdf::RuleGroups do
       it 'does not create duplicate rule groups' do
         expect do
           service.save_rule_groups
-        end.not_to change(V2::RuleGroup.where(security_guide: security_guide), :count).from(2)
+        end.not_to change(RuleGroup.where(security_guide: security_guide), :count).from(2)
       end
 
       it 'keeps existing ancestry relationships intact' do
-        child_ancestry = V2::RuleGroup.find_by(ref_id: op_child_rg.id, security_guide: security_guide).ancestry
+        child_ancestry = RuleGroup.find_by(ref_id: op_child_rg.id, security_guide: security_guide).ancestry
 
         expect do
           service.save_rule_groups

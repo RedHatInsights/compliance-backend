@@ -147,7 +147,7 @@ def search_params_v2(model = nil, except: [])
               'Compliant with <a href="https://github.com/wvanbergen/scoped_search/wiki/Query-language" ' \
               'target="_blank" title="github.com/wvanbergen/scoped_search">scoped_search query language</a>. ' \
               'However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>' \
-              "#{model.name.split('::').second.gsub(/([A-Z])/) { " #{Regexp.last_match(1)}" }.strip.pluralize} " \
+              "#{model.name.split('::').first.gsub(/([A-Z])/) { " #{Regexp.last_match(1)}" }.strip.pluralize} " \
               "are searchable using attributes #{keys.map { |k| "`#{k}`" }.to_sentence}" \
               '<br><br>(e.g.: `(field_1=something AND field_2!="something else") OR field_3>40`)',
             schema: { type: :string }

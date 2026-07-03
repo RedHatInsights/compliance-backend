@@ -1,5 +1,5 @@
 :entities:
-  - :factory: :v2_test_result
+  - :factory: :test_result
     :display_name: 'aba'
     :os_minor_version: 2
     :score: 0.7
@@ -18,7 +18,7 @@
     :account: ${account}
     :report_id: ${policy.id}
 
-  - :factory: :v2_test_result
+  - :factory: :test_result
     :display_name: 'bac'
     :os_minor_version: 2
     :score: 0.2
@@ -43,7 +43,7 @@
     :account: ${account}
     :report_id: ${policy.id}
 
-  - :factory: :v2_test_result
+  - :factory: :test_result
     :display_name: 'aab'
     :os_minor_version: 1
     :score: 0.7
@@ -68,7 +68,7 @@
     :account: ${account}
     :report_id: ${policy.id}
 
-  - :factory: :v2_test_result
+  - :factory: :test_result
     :display_name: 'aaa'
     :os_minor_version: 3
     :end_time: "2024-06-17 08:11:03 UTC"
@@ -93,7 +93,7 @@
     :account: ${account}
     :report_id: ${policy.id}
 
-  - :factory: :v2_test_result
+  - :factory: :test_result
     :display_name: 'caa'
     :os_minor_version: 4
     :end_time: "2024-06-12 08:11:03 UTC"
@@ -118,7 +118,7 @@
         :severity: 'high'
     :report_id: ${policy.id}
 
-  - :factory: :v2_test_result
+  - :factory: :test_result
     :display_name: 'aaa'
     :os_minor_version: 4
     :end_time: "2024-06-12 08:11:03 UTC"

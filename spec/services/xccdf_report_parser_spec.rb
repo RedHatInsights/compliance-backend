@@ -5,7 +5,7 @@ require 'rails_helper'
 # xccdf_report.xml uses benchmark xccdf_org.ssgproject.content_benchmark_RHEL-8 v0.1.40
 # and profile xccdf_org.ssgproject.content_profile_standard
 RSpec.describe XccdfReportParser do
-  let(:user) { create(:v2_user, :with_cert_auth) }
+  let(:user) { create(:user, :with_cert_auth) }
   let(:os_major_version) { 8 }
   let(:unsupported_os_major_version) { os_major_version - 1 }
   let(:system) { create(:system, account: user.account, os_major_version: os_major_version) }
@@ -75,7 +75,7 @@ RSpec.describe XccdfReportParser do
   end
 
   describe '#check_for_missing_tailored_profile' do
-    before { allow(parser).to receive(:tailored_profile).and_return(build(:v2_profile)) }
+    before { allow(parser).to receive(:tailored_profile).and_return(build(:profile)) }
 
     context 'when no matching profile exists in the database' do
       it 'raises UnknownProfileError' do
@@ -89,7 +89,7 @@ RSpec.describe XccdfReportParser do
     before do
       allow(parser).to receive(:test_result_rules_unknown)
         .and_return([Faker::Alphanumeric.alphanumeric(number: 20)])
-      allow(parser).to receive(:tailored_profile).and_return(build(:v2_profile))
+      allow(parser).to receive(:tailored_profile).and_return(build(:profile))
     end
 
     context 'when the report contains rules not in the security guide' do
@@ -131,13 +131,13 @@ RSpec.describe XccdfReportParser do
   describe '#persist!' do
     before do
       allow(parser).to receive(:save_all_test_result_info)
-      allow(V2::System).to receive(:transaction).and_yield
+      allow(System).to receive(:transaction).and_yield
     end
 
     it 'saves the test result info inside a transaction' do
       parser.persist!
 
-      expect(V2::System).to have_received(:transaction)
+      expect(System).to have_received(:transaction)
       expect(parser).to have_received(:save_all_test_result_info)
     end
   end

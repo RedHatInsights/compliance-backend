@@ -1,14 +1,14 @@
 :entities:
-  - :factory: :v2_rule_group
+  - :factory: :rule_group
     :precedence: 2
     :security_guide_id: ${security_guide_id}
-  - :factory: :v2_rule_group
+  - :factory: :rule_group
     :precedence: 1
     :security_guide_id: ${security_guide_id}
-  - :factory: :v2_rule_group
+  - :factory: :rule_group
     :precedence: 4
     :security_guide_id: ${security_guide_id}
-  - :factory: :v2_rule_group
+  - :factory: :rule_group
     :precedence: 3
     :security_guide_id: ${security_guide_id}
 

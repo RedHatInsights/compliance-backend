@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :system, class: 'V2::System' do
+  factory :system, class: 'System' do
     id { Faker::Internet.uuid }
-    account { association(:v2_account) }
+    account { association(:account) }
     display_name { Faker::Internet.domain_name }
     stale_timestamp { 10.years.since(Time.zone.now) }
     updated { Time.zone.now }
@@ -34,7 +34,7 @@ FactoryBot.define do
     end
 
     transient do
-      os_major_version { policy_id ? V2::Policy.find(policy_id).os_major_version : 8 }
+      os_major_version { policy_id ? Policy.find(policy_id).os_major_version : 8 }
       os_minor_version { 0 }
       group_count { 0 }
       tag_count { 5 }
@@ -46,11 +46,11 @@ FactoryBot.define do
     after(:create) do |sys, ev|
       next if ev.policy_id.nil?
 
-      sys.policy_systems << FactoryBot.create(:v2_policy_system, system_id: sys.id, policy_id: ev.policy_id)
+      sys.policy_systems << FactoryBot.create(:policy_system, system_id: sys.id, policy_id: ev.policy_id)
 
       next if ev.with_test_result.nil?
 
-      FactoryBot.create(:v2_test_result, system: sys, report_id: ev.policy_id)
+      FactoryBot.create(:test_result, system: sys, report_id: ev.policy_id)
     end
   end
 end

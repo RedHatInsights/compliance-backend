@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe KesselRbac, type: :service do
-  let(:user) { create(:v2_user) }
+  let(:user) { create(:user) }
   let(:org_id) { user.org_id }
 
   describe '.check_permission' do
@@ -21,7 +21,7 @@ RSpec.describe KesselRbac, type: :service do
           resource_type: 'workspace',
           resource_id: 'test-workspace',
           permission: 'compliance_policy_view',
-          user: create(:v2_user, :with_invalid_identity_type)
+          user: create(:user, :with_invalid_identity_type)
         )
       end.to raise_error('unsupported identity type')
     end

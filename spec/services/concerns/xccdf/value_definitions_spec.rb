@@ -16,7 +16,7 @@ RSpec.describe Xccdf::ValueDefinitions do
     end.new(security_guide: security_guide, op_value_definitions: op_value_definitions)
   end
 
-  let(:security_guide) { FactoryBot.create(:v2_security_guide) }
+  let(:security_guide) { FactoryBot.create(:security_guide) }
 
   let(:op_value_to_update) do
     OpenStruct.new(
@@ -51,7 +51,7 @@ RSpec.describe Xccdf::ValueDefinitions do
   let(:op_value_definitions) { [op_value_to_update, new_op_value] }
 
   let!(:existing_definition) do
-    FactoryBot.create(:v2_value_definition,
+    FactoryBot.create(:value_definition,
                       security_guide: security_guide,
                       ref_id: op_value_to_update.id,
                       description: 'stale description',
@@ -67,7 +67,7 @@ RSpec.describe Xccdf::ValueDefinitions do
     end
 
     it 'creates missing definitions for the guide' do
-      created = V2::ValueDefinition.find_by(ref_id: new_op_value.id, security_guide: security_guide)
+      created = ValueDefinition.find_by(ref_id: new_op_value.id, security_guide: security_guide)
 
       expect(created).not_to be_nil
       expect(created.title).to eq(new_op_value.title)

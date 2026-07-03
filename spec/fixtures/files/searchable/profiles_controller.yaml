@@ -3,44 +3,44 @@
 - :name: "equality search by title"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :title: searched title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :title: not this title
         :security_guide_id: ${security_guide_id}
   :query: (title = "searched title")
 - :name: "non-equality search by title"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :title: not this title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :title: searched title
         :security_guide_id: ${security_guide_id}
   :query: (title != "searched title")
 - :name: "like search by title"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :title: searched title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :title: not this title
         :security_guide_id: ${security_guide_id}
   :query: (title ~ "searched title")
 - :name: "unlike search by title"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :title: not this title
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :title: searched title
         :security_guide_id: ${security_guide_id}
   :query: (title !~ "searched title")
@@ -48,50 +48,50 @@
 - :name: "equality search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: searched ref_id
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: not this ref_id
         :security_guide_id: ${security_guide_id}
   :query: (ref_id = "searched ref_id")
 - :name: "non-equality search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: not this ref_id
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: searched ref_id
         :security_guide_id: ${security_guide_id}
   :query: (ref_id != "searched ref_id")
 - :name: "in search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: ref_id_1
         :security_guide_id: ${security_guide_id}
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: ref_id_2
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: ref_id_3
         :security_guide_id: ${security_guide_id}
   :query: (ref_id ^ (ref_id_1 ref_id_2))
 - :name: "not-in search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: ref_id_1
         :security_guide_id: ${security_guide_id}
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: ref_id_2
         :security_guide_id: ${security_guide_id}
-      - :factory: :v2_profile
+      - :factory: :profile
         :ref_id: ref_id_3
         :security_guide_id: ${security_guide_id}
   :query: (ref_id !^ (ref_id_2 ref_id_3))

@@ -22,12 +22,12 @@ RSpec.describe Xccdf::RuleResults do
     )
   end
 
-  let(:user) { create(:v2_user) }
-  let(:policy) { create(:v2_policy, account: user.account, supports_minors: [0]) }
+  let(:user) { create(:user) }
+  let(:policy) { create(:policy, account: user.account, supports_minors: [0]) }
   let(:system) { create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
-  let(:test_result) { create(:v2_test_result, system: system, report_id: policy.id) }
+  let(:test_result) { create(:test_result, system: system, report_id: policy.id) }
   let(:security_guide) { test_result.tailoring.security_guide }
-  let(:rule) { create(:v2_rule, security_guide: security_guide) }
+  let(:rule) { create(:rule, security_guide: security_guide) }
 
   let(:op_rule_results) do
     [
@@ -38,7 +38,7 @@ RSpec.describe Xccdf::RuleResults do
 
   describe '#selected_op_rule_results' do
     let(:op_rule_results) do
-      not_selected = V2::RuleResult::NOT_SELECTED.map do |result|
+      not_selected = RuleResult::NOT_SELECTED.map do |result|
         OpenStruct.new(id: Faker::Alphanumeric.alphanumeric, result: result)
       end
       not_selected + [
@@ -69,11 +69,11 @@ RSpec.describe Xccdf::RuleResults do
   end
 
   describe '#rule_results' do
-    it 'builds a V2::RuleResult for each selected op rule result' do
+    it 'builds a RuleResult for each selected op rule result' do
       results = service.rule_results
 
       expect(results.length).to eq(op_rule_results.length)
-      expect(results).to all(be_a(V2::RuleResult))
+      expect(results).to all(be_a(RuleResult))
       expect(results).to all(have_attributes(test_result_id: test_result.id))
     end
 
@@ -87,13 +87,13 @@ RSpec.describe Xccdf::RuleResults do
   describe '#save_rule_results' do
     it 'persists only results whose rule ID is known, skipping unknown entries' do
       expect { service.save_rule_results }
-        .to change(V2::RuleResult, :count).by(1)
+        .to change(RuleResult, :count).by(1)
     end
   end
 
   describe '#failed_rules' do
     let!(:failed_rule_result) do
-      create(:v2_rule_result, test_result: test_result, rule: rule, result: 'fail')
+      create(:rule_result, test_result: test_result, rule: rule, result: 'fail')
     end
 
     it 'returns rules whose results are failed' do

@@ -8,7 +8,7 @@ describe Kafka::ReportParser do
   before { ActiveJob::Base.queue_adapter = :test }
 
   let(:service) { Kafka::ReportParser.new(message, Karafka.logger) }
-  let(:current_user) { FactoryBot.create(:v2_user, :with_cert_auth) }
+  let(:current_user) { FactoryBot.create(:user, :with_cert_auth) }
   let(:org_id) { current_user.org_id }
   let(:request_id) { Faker::Alphanumeric.alphanumeric(number: 32) }
   let(:message) do
@@ -25,7 +25,7 @@ describe Kafka::ReportParser do
     }
   end
   let(:system) { FactoryBot.create(:system, account: current_user.account) }
-  let(:policy) { FactoryBot.create(:v2_policy, account: current_user.account) }
+  let(:policy) { FactoryBot.create(:policy, account: current_user.account) }
 
   context 'with invalid identity' do
     let(:message) do

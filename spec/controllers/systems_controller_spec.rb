@@ -16,7 +16,7 @@ describe SystemsController do
       updated: -> { updated.as_json },
       insights_id: :insights_id,
       tags: :tags,
-      policies: -> { policies.map { |policy| { id: policy.id, title: policy.title } } },
+      policies: -> { policies.map { |policy| { 'id' => policy.id, 'title' => policy.title } } },
       os_major_version: -> { system_profile&.dig('operating_system', 'major') },
       os_minor_version: -> { system_profile&.dig('operating_system', 'minor') }
     }
@@ -677,7 +677,7 @@ describe SystemsController do
         updated: -> { updated.as_json },
         insights_id: :insights_id,
         tags: :tags,
-        policies: -> { policies.map { |policy| { id: policy.id, title: policy.title } } },
+        policies: -> { policies.map { |policy| { 'id' => policy.id, 'title' => policy.title } } },
         os_major_version: -> { system_profile&.dig('operating_system', 'major') },
         os_minor_version: -> { system_profile&.dig('operating_system', 'minor') }
       }

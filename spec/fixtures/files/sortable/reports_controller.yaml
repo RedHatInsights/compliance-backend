@@ -1,5 +1,5 @@
 :entities:
-  - :factory: :v2_report
+  - :factory: :report
     :title: 'aba'
     :business_objective: 'aba'
     :compliance_threshold: 90
@@ -11,7 +11,7 @@
     :unsupported_system_count: 2
     :supports_minors: [0, 1, 2]
 
-  - :factory: :v2_report
+  - :factory: :report
     :title: 'bac'
     :business_objective: 'bac'
     :compliance_threshold: 85
@@ -23,7 +23,7 @@
     :unsupported_system_count: 2
     :supports_minors: [0, 1, 2]
 
-  - :factory: :v2_report
+  - :factory: :report
     :title: 'abc'
     :business_objective: 'abc'
     :compliance_threshold: 85
@@ -35,7 +35,7 @@
     :unsupported_system_count: 2
     :supports_minors: [0, 1, 2]
 
-  - :factory: :v2_report
+  - :factory: :report
     :title: 'bca'
     :business_objective: 'bca'
     :compliance_threshold: 80
@@ -47,7 +47,7 @@
     :unsupported_system_count: 2
     :supports_minors: [0, 1, 2]
 
-  - :factory: :v2_report
+  - :factory: :report
     :title: 'aab'
     :business_objective: 'aab'
     :compliance_threshold: 60

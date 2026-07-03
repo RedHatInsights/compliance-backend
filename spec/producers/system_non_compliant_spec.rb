@@ -5,7 +5,7 @@ require 'rails_helper'
 describe SystemNonCompliant do
   let(:system) { FactoryBot.create(:system) }
   let(:org_id) { '001' }
-  let(:policy) { FactoryBot.create(:v2_policy, account: system.account) }
+  let(:policy) { FactoryBot.create(:policy, account: system.account) }
   let(:compliance_score) { policy.compliance_threshold - 5.0 }
   let(:event) do
     [{

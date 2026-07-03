@@ -6,12 +6,12 @@ describe Kafka::DeletedSystemCleaner do
   let(:service) { Kafka::DeletedSystemCleaner.new(message, Karafka.logger) }
 
   let(:type) { 'delete' }
-  let(:user) { FactoryBot.create(:v2_user) }
+  let(:user) { FactoryBot.create(:user) }
   let(:org_id) { user.org_id }
-  let(:policy) { FactoryBot.create(:v2_policy, account: user.account, supports_minors: [0]) }
+  let(:policy) { FactoryBot.create(:policy, account: user.account, supports_minors: [0]) }
   let(:system) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
   let!(:kafka_system) { FactoryBot.create(:kafka_system, id: system.id, account: '12345', org_id: org_id) }
-  let!(:test_result) { FactoryBot.create(:v2_test_result, system: system, report_id: policy.id) }
+  let!(:test_result) { FactoryBot.create(:test_result, system: system, report_id: policy.id) }
   let(:message) do
     {
       'type' => type,
@@ -26,7 +26,7 @@ describe Kafka::DeletedSystemCleaner do
     )
 
     expect { service.cleanup_system }.to(
-      change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
+      change { HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
       .and(change { policy.systems.count }.from(1).to(0))
     )
   end
@@ -37,7 +37,7 @@ describe Kafka::DeletedSystemCleaner do
       FactoryBot.create(:kafka_system, id: extra_system.id, account: Faker::Number.number(digits: 5).to_s,
                                        org_id: org_id)
     end
-    let!(:extra_test_result) { FactoryBot.create(:v2_test_result, system: extra_system, report_id: policy.id) }
+    let!(:extra_test_result) { FactoryBot.create(:test_result, system: extra_system, report_id: policy.id) }
 
     it 'performs and logs cleanup for the specific system' do
       expect(Karafka.logger).to receive(:audit_success).with(
@@ -45,11 +45,11 @@ describe Kafka::DeletedSystemCleaner do
       )
 
       expect { service.cleanup_system }.to(
-        change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
+        change { HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
         .and(change { policy.systems.count }.from(2).to(1))
       )
 
-      expect(V2::HistoricalTestResult.where(system_id: extra_system.id).count).to eql(1)
+      expect(HistoricalTestResult.where(system_id: extra_system.id).count).to eql(1)
       expect(KafkaSystem.where(id: extra_system.id).count).to eql(1)
     end
   end
@@ -74,7 +74,7 @@ describe Kafka::DeletedSystemCleaner do
       # Ensure it doesn't try to delete the view either
       expect do
         service.cleanup_system
-      end.not_to(change { V2::System.count })
+      end.not_to(change { System.count })
     end
   end
 

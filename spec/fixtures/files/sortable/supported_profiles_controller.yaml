@@ -1,40 +1,40 @@
 :entities:
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'aba'
     :os_major_version: 7
     :supports_minors:
       - 1
       - 2
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'bac'
     :os_major_version: 7
     :supports_minors:
       - 3
       - 4
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'aab'
     :os_major_version: 7
     :supports_minors:
       - 4
       - 5
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'aaa'
     :os_major_version: 8
     :supports_minors:
       - 1
       - 2
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'caa'
     :os_major_version: 8
     :supports_minors:
       - 2
       - 3
 
-  - :factory: :v2_profile
+  - :factory: :profile
     :title: 'aaa'
     :os_major_version: 9
     :supports_minors:

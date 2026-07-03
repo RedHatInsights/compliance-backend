@@ -1,5 +1,5 @@
 :entities:
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'abdd'
     :severity: 'high'
     :precedence: 1234
@@ -7,7 +7,7 @@
     :profile_id: ${profile_id}
     :tailoring_id: ${tailoring_id}
 
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'abda'
     :severity: 'medium'
     :precedence: 567
@@ -15,7 +15,7 @@
     :profile_id: ${profile_id}
     :tailoring_id: ${tailoring_id}
 
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'aaaa'
     :severity: 'low'
     :precedence: 8765
@@ -23,7 +23,7 @@
     :profile_id: ${profile_id}
     :tailoring_id: ${tailoring_id}
 
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'adac'
     :severity: 'high'
     :precedence: 987
@@ -31,7 +31,7 @@
     :profile_id: ${profile_id}
     :tailoring_id: ${tailoring_id}
 
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'bbbb'
     :severity: 'medium'
     :precedence: 4562
@@ -39,7 +39,7 @@
     :profile_id: ${profile_id}
     :tailoring_id: ${tailoring_id}
 
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'cccd'
     :severity: 'low'
     :precedence: 2341
@@ -47,7 +47,7 @@
     :profile_id: ${profile_id}
     :tailoring_id: ${tailoring_id}
 
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'aaaa'
     :severity: 'high'
     :precedence: 954
@@ -55,7 +55,7 @@
     :profile_id: ${profile_id}
     :tailoring_id: ${tailoring_id}
 
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'bacc'
     :severity: 'medium'
     :precedence: 1854
@@ -63,7 +63,7 @@
     :profile_id: ${profile_id}
     :tailoring_id: ${tailoring_id}
 
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'zzab'
     :severity: 'low'
     :precedence: 5321
@@ -71,7 +71,7 @@
     :profile_id: ${profile_id}
     :tailoring_id: ${tailoring_id}
 
-  - :factory: :v2_rule
+  - :factory: :rule
     :title: 'edfa'
     :severity: 'high'
     :precedence: 954
