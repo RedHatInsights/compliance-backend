@@ -58,7 +58,7 @@ module Kafka
         attrs,
         unique_by: :id,
         returning: %w[id],
-        on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, system_profile = EXCLUDED.system_profile, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id, deleted_at = EXCLUDED.deleted_at WHERE (systems.deleted_at IS NULL AND (systems.updated IS NULL OR systems.updated < EXCLUDED.updated)) OR (systems.deleted_at IS NOT NULL AND systems.deleted_at < EXCLUDED.updated)')
+        on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, system_profile = EXCLUDED.system_profile, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id, deleted_at = EXCLUDED.deleted_at WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated')
       )
       # rubocop:enable Layout/LineLength
       # rubocop:enable Rails/SkipsModelValidations
