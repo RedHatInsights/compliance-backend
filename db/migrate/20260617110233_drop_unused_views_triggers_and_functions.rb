@@ -4,7 +4,6 @@ class DropUnusedViewsTriggersAndFunctions < ActiveRecord::Migration[8.1]
     drop_trigger :v2_policies_insert,             on: :v2_policies,             revert_to_version: 1
     drop_trigger :v2_policies_update,             on: :v2_policies,             revert_to_version: 1
     drop_trigger :v2_policies_delete,             on: :v2_policies,             revert_to_version: 1
-    drop_trigger :historical_test_results_delete, on: :historical_test_results, revert_to_version: 1
 
     drop_trigger :v1_benchmarks_insert,                on: :v1_benchmarks,                revert_to_version: 1
     drop_trigger :v1_benchmarks_update,                on: :v1_benchmarks,                revert_to_version: 1
