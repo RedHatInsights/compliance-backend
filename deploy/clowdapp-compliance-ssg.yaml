@@ -1,0 +1,75 @@
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: compliance-ssg
+objects:
+- apiVersion: cloud.redhat.com/v1alpha1
+  kind: ClowdApp
+  metadata:
+    name: compliance-ssg
+  spec:
+    envName: ${ENV_NAME}
+    deployments:
+    - name: service
+      minReplicas: ${{MIN_REPLICAS}}
+      deploymentStrategy:
+        privateStrategy: RollingUpdate
+      webServices:
+        private:
+          enabled: true
+      podSpec:
+        imagePullPolicy: Always
+        image: ${IMAGE}:${IMAGE_TAG}
+        metadata:
+          annotations:
+            ignore-check.kube-linter.io/minimum-three-replicas : "minimum three replicas not required"
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: private
+            scheme: HTTP
+          initialDelaySeconds: 35
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 120
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: private
+            scheme: HTTP
+          initialDelaySeconds: 35
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 120
+        resources:
+          limits:
+            cpu: "${CPU_LIMIT}"
+            memory: "${MEMORY_LIMIT}"
+          requests:
+            cpu: "${CPU_REQUEST}"
+            memory: "${MEMORY_REQUEST}"
+
+parameters:
+- name: MIN_REPLICAS
+  value: '1'
+- description: Image tag
+  name: IMAGE_TAG
+  required: true
+  value: latest
+- description: Image name
+  name: IMAGE
+  required: true
+  value: quay.io/redhat-services-prod/insights-management-tenant/insights-compliance/compliance-ssg
+- description: ClowdEnv Name
+  name: ENV_NAME
+- name: MEMORY_LIMIT
+  value: 100Mi
+- name: MEMORY_REQUEST
+  value: 50Mi
+- name: CPU_LIMIT
+  value: 100m
+- name: CPU_REQUEST
+  value: 20m
