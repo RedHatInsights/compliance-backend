@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_24_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -21,13 +21,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
     t.string "org_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["org_id"], name: "index_accounts_on_org_id", unique: true
-  end
-
-  create_table "business_objectives", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.string "title"
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["title"], name: "index_business_objectives_on_title"
   end
 
   create_table "canonical_profiles_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -76,22 +69,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
     t.index ["tailoring_id"], name: "index_historical_test_results_v2_on_tailoring_id"
   end
 
-  create_table "policies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id"
-    t.uuid "business_objective_id"
-    t.float "compliance_threshold", default: 100.0
-    t.integer "compliant_host_count", default: 0, null: false
-    t.string "description"
-    t.string "name"
-    t.uuid "profile_id"
-    t.integer "test_result_host_count", default: 0, null: false
-    t.integer "total_host_count", default: 0, null: false
-    t.integer "unsupported_host_count", default: 0, null: false
-    t.index ["account_id"], name: "index_policies_on_account_id"
-    t.index ["business_objective_id"], name: "index_policies_on_business_objective_id"
-    t.index ["profile_id"], name: "index_policies_on_profile_id"
-  end
-
   create_table "policies_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.string "business_objective"
@@ -103,16 +80,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_policies_v2_on_account_id"
     t.index ["profile_id"], name: "index_policies_v2_on_profile_id"
-  end
-
-  create_table "policy_hosts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", precision: nil
-    t.uuid "host_id", null: false
-    t.uuid "policy_id", null: false
-    t.datetime "updated_at", precision: nil
-    t.index ["host_id"], name: "index_policy_hosts_on_host_id"
-    t.index ["policy_id", "host_id"], name: "index_policy_hosts_on_policy_id_and_host_id", unique: true
-    t.index ["policy_id"], name: "index_policy_hosts_on_policy_id"
   end
 
   create_table "policy_systems_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -133,16 +100,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
     t.index ["profile_id"], name: "index_profile_os_minor_versions_on_profile_id"
   end
 
-  create_table "profile_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", precision: nil
-    t.uuid "profile_id", null: false
-    t.uuid "rule_id", null: false
-    t.datetime "updated_at", precision: nil
-    t.index ["profile_id", "rule_id"], name: "index_profile_rules_on_profile_id_and_rule_id", unique: true
-    t.index ["profile_id"], name: "index_profile_rules_on_profile_id"
-    t.index ["rule_id"], name: "index_profile_rules_on_rule_id"
-  end
-
   create_table "profile_rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.uuid "profile_id", null: false
@@ -151,32 +108,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
     t.index ["profile_id", "rule_id"], name: "index_profile_rules_v2_on_profile_id_and_rule_id", unique: true
     t.index ["profile_id"], name: "index_profile_rules_v2_on_profile_id"
     t.index ["rule_id"], name: "index_profile_rules_v2_on_rule_id"
-  end
-
-  create_table "profiles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "account_id"
-    t.uuid "benchmark_id", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.string "description"
-    t.boolean "external", default: false, null: false
-    t.string "name"
-    t.string "os_minor_version", default: "", null: false
-    t.uuid "parent_profile_id"
-    t.uuid "policy_id"
-    t.string "ref_id"
-    t.decimal "score"
-    t.datetime "updated_at", precision: nil, null: false
-    t.boolean "upstream"
-    t.jsonb "value_overrides", default: {}
-    t.index ["account_id"], name: "index_profiles_on_account_id"
-    t.index ["external"], name: "index_profiles_on_external"
-    t.index ["name"], name: "index_profiles_on_name"
-    t.index ["os_minor_version"], name: "index_profiles_on_os_minor_version"
-    t.index ["parent_profile_id"], name: "index_profiles_on_parent_profile_id"
-    t.index ["policy_id"], name: "index_profiles_on_policy_id"
-    t.index ["ref_id", "account_id", "benchmark_id", "os_minor_version", "policy_id"], name: "uniqueness", unique: true
-    t.index ["ref_id", "benchmark_id"], name: "index_profiles_on_ref_id_and_benchmark_id", unique: true, where: "(parent_profile_id IS NULL)"
-    t.index ["upstream"], name: "index_profiles_on_upstream"
   end
 
   create_table "revisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -216,20 +147,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
     t.index ["ref_id", "security_guide_id"], name: "index_rule_groups_v2_on_ref_id_and_security_guide_id", unique: true
     t.index ["rule_id"], name: "index_rule_groups_v2_on_rule_id", unique: true
     t.index ["security_guide_id"], name: "index_rule_groups_v2_on_security_guide_id"
-  end
-
-  create_table "rule_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.uuid "host_id"
-    t.string "result"
-    t.uuid "rule_id"
-    t.uuid "test_result_id"
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["host_id", "rule_id", "test_result_id"], name: "index_rule_results_on_host_id_and_rule_id_and_test_result_id", unique: true
-    t.index ["host_id"], name: "index_rule_results_on_host_id"
-    t.index ["rule_id"], name: "index_rule_results_on_rule_id"
-    t.index ["test_result_id", "result"], name: "index_rule_results_on_test_result_id_and_result"
-    t.index ["test_result_id"], name: "index_rule_results_on_test_result_id"
   end
 
   create_table "rule_results_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -315,23 +232,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
     t.jsonb "value_overrides", default: {}
     t.index ["policy_id"], name: "index_tailorings_v2_on_policy_id"
     t.index ["profile_id"], name: "index_tailorings_v2_on_profile_id"
-  end
-
-  create_table "test_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "end_time", precision: nil
-    t.integer "failed_rule_count", default: 0, null: false
-    t.uuid "host_id"
-    t.uuid "profile_id"
-    t.decimal "score"
-    t.datetime "start_time", precision: nil
-    t.boolean "supported", default: true
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["host_id", "profile_id", "end_time"], name: "index_test_results_on_host_id_and_profile_id_and_end_time", unique: true
-    t.index ["host_id"], name: "index_test_results_on_host_id"
-    t.index ["profile_id", "host_id", "end_time"], name: "index_test_results_for_latest_lookup", order: { end_time: :desc }, include: ["id"]
-    t.index ["profile_id"], name: "index_test_results_on_profile_id"
-    t.index ["supported"], name: "index_test_results_on_supported"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -466,11 +366,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_110233) do
       $function$
   SQL
 
-  create_trigger :v2_test_results_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
-  SQL
-
   create_trigger :v2_test_results_insert, sql_definition: <<-SQL
       CREATE TRIGGER v2_test_results_insert INSTEAD OF INSERT ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_insert()
+  SQL
+
+  create_trigger :v2_test_results_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
   SQL
 end
