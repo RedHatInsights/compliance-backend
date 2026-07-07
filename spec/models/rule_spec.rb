@@ -25,8 +25,8 @@ describe Rule do
 
     subject do
       Rule.with_remediation_context
-              .for_profile(profile)
-              .find(rule.id)
+          .for_profile(profile)
+          .find(rule.id)
     end
 
     it 'builds the id' do
