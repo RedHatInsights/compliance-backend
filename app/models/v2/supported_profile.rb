@@ -3,7 +3,6 @@
 module V2
   # Model for the SupportedProfiles view
   class SupportedProfile < ApplicationRecord
-    # FIXME: clean up after the remodel
     self.table_name = :supported_profiles
     self.primary_key = :id
 

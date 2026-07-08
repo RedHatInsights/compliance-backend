@@ -3,8 +3,7 @@
 module V2
   # Stores information about Rule Groups. This (eventually) comes from SCAP import.
   class RuleGroup < ApplicationRecord
-    # FIXME: clean up after the remodel
-    self.table_name = :rule_groups_v2
+    self.table_name = :rule_groups
     self.primary_key = :id
 
     belongs_to :security_guide

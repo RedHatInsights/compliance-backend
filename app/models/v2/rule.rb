@@ -4,8 +4,7 @@
 module V2
   # Model for Rules
   class Rule < ApplicationRecord
-    # FIXME: clean up after the remodel
-    self.table_name = :rules_v2
+    self.table_name = :rules
     self.primary_key = :id
 
     indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.try(:gsub, '-', '.')) }
@@ -44,12 +43,11 @@ module V2
     has_many :fixes, class_name: 'V2::Fix', dependent: :destroy
 
     scope :with_remediation_context, lambda {
-      # FIXME: cleanup `Arel::Table.new` after renaming the V2 tables
       joins(:security_guide, :profiles).select(
         arel_table[Arel.star],
         V2::SecurityGuide.arel_table[:ref_id].as('security_guide__ref_id'),
         V2::SecurityGuide.arel_table[:version].as('security_guide__version'),
-        Arel::Table.new('profiles')[:ref_id].as('profiles__ref_id')
+        V2::Profile.arel_table[:ref_id].as('profiles__ref_id')
       )
     }
 
@@ -68,7 +66,7 @@ module V2
       val = "%#{val}%" if ['ILIKE', 'NOT ILIKE'].include?(op)
 
       {
-        conditions: "rules_v2.identifier->>'label' #{op} ?",
+        conditions: "rules.identifier->>'label' #{op} ?",
         parameter: [val]
       }
     end

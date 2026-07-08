@@ -4,7 +4,6 @@
 module V2
   # Model for Rules
   class Fix < ApplicationRecord
-    # FIXME: clean up after the remodel
     self.table_name = :fixes
 
     ANACONDA = 'urn:redhat:anaconda:pre'

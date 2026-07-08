@@ -3,8 +3,7 @@
 module V2
   # Model for reports
   class Report < ApplicationRecord
-    # FIXME: clean up after the remodel
-    self.table_name = :policies_v2
+    self.table_name = :policies
     self.primary_key = :id
 
     SYSTEM_COUNT = lambda do
@@ -117,7 +116,7 @@ module V2
                       .merge_with_alias(Pundit.policy_scope(User.current, V2::System))
                       .select(:id)
 
-      { conditions: "policies_v2.id IN (#{ids.to_sql})" }
+      { conditions: "policies.id IN (#{ids.to_sql})" }
     end
     searchable_by :percent_compliant, %i[eq gt lt gte lte], except_parents: %i[systems] do |_key, op, val|
       {
@@ -156,7 +155,7 @@ module V2
 
       V2::RuleResult.joins(:system, :rule) # Because joins(test_results: :system, rule: []) is not that pretty
                     .merge_with_alias(Pundit.policy_scope(User.current, V2::System))
-                    .where(result: V2::RuleResult::FAILED, v2_test_results: { report_id: id }) # FIXME: aliasing
+                    .where(result: V2::RuleResult::FAILED, test_results: { report_id: id })
                     .group(rule_fields).select(rule_fields, V2::RuleResult.arel_table[:result].count.as('count'))
                     .order(V2::Rule.sorted_severities => :desc, count: :desc).limit(10)
     end
