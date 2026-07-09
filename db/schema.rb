@@ -317,6 +317,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_142129) do
             GROUP BY historical_test_results_1.tailoring_id, historical_test_results_1.system_id) tr ON (((historical_test_results.tailoring_id = tr.tailoring_id) AND (historical_test_results.system_id = tr.system_id) AND (historical_test_results.end_time = tr.end_time))));
   SQL
 
+  create_function :test_results_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.test_results_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          DELETE FROM "historical_test_results" WHERE "id" = OLD."id";
+          RETURN OLD;
+      END
+      $function$
+  SQL
+
   create_function :test_results_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.test_results_insert()
        RETURNS trigger
@@ -350,18 +362,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_142129) do
 
           NEW."id" := "result_id";
           RETURN NEW;
-      END
-      $function$
-  SQL
-
-  create_function :test_results_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.test_results_delete()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-          DELETE FROM "historical_test_results" WHERE "id" = OLD."id";
-          RETURN OLD;
       END
       $function$
   SQL
