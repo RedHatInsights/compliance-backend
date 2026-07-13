@@ -106,7 +106,7 @@ describe Kafka::ReportParser do
       expect(Karafka.logger)
         .to receive(:audit_fail)
         .with(
-          "[#{org_id}] Invalid report: Report parsing failed"
+          "[#{org_id}] Error parsing report: #{request_id} - WrongFormatError"
         )
       service.parse_reports
       expect(enqueued_jobs.size).to eq(0)
@@ -114,26 +114,38 @@ describe Kafka::ReportParser do
   end
 
   context 'with valid reports' do
+    let(:profile_id) { 'xccdf_org.ssgproject.content_profile_standard' }
+    let(:xml) { file_fixture('xccdf_report.xml').read }
+    let(:parser) do
+      instance_double(
+        XccdfReportParser,
+        validate!: nil,
+        test_result_file: double(test_result: double(profile_id: profile_id))
+      )
+    end
+
     before do
       allow(SafeDownloader).to receive(:download_reports)
         .with(nil, ssl_only: Settings.report_download_ssl_only)
-        .and_return([file_fixture('xccdf_report.xml').read])
+        .and_return([xml])
+      allow(XccdfReportParser).to receive(:new).and_return(parser)
     end
 
-    let(:profile_id) { 'xccdf_org.ssgproject.content_profile_standard' }
+    it 'validates each report and enqueues it as a packed payload' do
+      expect(parser).to receive(:validate!).once
 
-    it 'enqueues report parsing job' do
       expect(Karafka.logger)
         .to receive(:audit_success)
         .with(
           a_string_matching(
-            /\A\[#{org_id}\] Enqueued report parsing of #{profile_id} from request #{request_id} as a job \S+\z/
+            /\A\[#{org_id}\] Enqueued 1 report\(s\) from request #{request_id}: #{profile_id}:\S+\z/
           )
         )
 
       service.parse_reports
 
       expect(enqueued_jobs.size).to eq(1)
+      expect(ReportArtifact.unpack(enqueued_jobs.first[:args].first)).to eq(xml)
     end
   end
 end
