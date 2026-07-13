@@ -22,7 +22,7 @@ module Xccdf
 
     def delete_old_test_results
       old_test_results = ::V2::TestResult.left_outer_joins(tailoring: :policy)
-                                         .where(tailorings_v2: { policy_id: @tailoring.policy_id },
+                                         .where(tailorings: { policy_id: @tailoring.policy_id },
                                                 system: @system)
                                          .where.not(id: @test_result.id)
 

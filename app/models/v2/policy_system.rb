@@ -3,8 +3,7 @@
 module V2
   # Model link between Policy and System
   class PolicySystem < ApplicationRecord
-    # FIXME: clean up after the remodel
-    self.table_name = :policy_systems_v2
+    self.table_name = :policy_systems
     self.primary_key = :id
 
     attr_accessor :request_id

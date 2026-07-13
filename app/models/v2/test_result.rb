@@ -4,8 +4,7 @@ module V2
   # Database model representing latest results of compliance scans
   # rubocop:disable Metrics/ClassLength
   class TestResult < ApplicationRecord
-    # FIXME: clean up after the remodel
-    self.table_name = :v2_test_results
+    self.table_name = :test_results
     self.primary_key = :id
 
     if Rails.env.test? # For testing taggable
@@ -81,10 +80,10 @@ module V2
 
     searchable_by :failed_rule_severity, %i[eq in] do |_key, _op, val|
       ids = ::V2::RuleResult.unscoped.joins(:rule)
-                            .where(rules_v2: { severity: val.split(',') }, rule_results_v2: { result: 'fail' })
+                            .where(rules: { severity: val.split(',') }, rule_results: { result: 'fail' })
                             .select(:test_result_id)
 
-      { conditions: "v2_test_results.id IN (#{ids.to_sql})" }
+      { conditions: "test_results.id IN (#{ids.to_sql})" }
     end
 
     scope :with_groups, lambda { |groups, table = V2::System.arel_table, key = :id|

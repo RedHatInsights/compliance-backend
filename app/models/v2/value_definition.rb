@@ -4,9 +4,8 @@
 module V2
   # Model for Value Definitions
   class ValueDefinition < ApplicationRecord
-    # FIXME: clean up after the remodel
     self.primary_key = :id
-    self.table_name = :value_definitions_v2
+    self.table_name = :value_definitions
 
     belongs_to :security_guide
 

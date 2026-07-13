@@ -5,8 +5,7 @@ module V2
   class Policy < ApplicationRecord
     include V2::RuleTree
 
-    # FIXME: clean up after the remodel
-    self.table_name = :policies_v2
+    self.table_name = :policies
     self.primary_key = :id
 
     belongs_to :account, class_name: 'Account'
@@ -67,7 +66,7 @@ module V2
                       .where(Arel::Nodes.build_quoted(val).eq(match_os_minors))
                       .select(arel_table[:id])
 
-      { conditions: "policies_v2.id IN (#{ids.to_sql})" }
+      { conditions: "policies.id IN (#{ids.to_sql})" }
     end
 
     before_validation :ensure_default_values

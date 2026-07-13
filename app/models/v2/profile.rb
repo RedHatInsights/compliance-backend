@@ -5,8 +5,7 @@ module V2
   class Profile < ApplicationRecord
     include V2::RuleTree
 
-    # FIXME: clean up after the remodel
-    self.table_name = :canonical_profiles_v2
+    self.table_name = :profiles
     self.primary_key = :id
 
     indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.try(:gsub, '-', '.')) }

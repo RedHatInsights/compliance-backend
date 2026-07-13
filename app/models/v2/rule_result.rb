@@ -4,8 +4,7 @@ module V2
   # Class representing individual rule results unter a test result
   # rubocop:disable Metrics/ClassLength
   class RuleResult < ApplicationRecord
-    # FIXME: clean up after the remodel
-    self.table_name = :rule_results_v2
+    self.table_name = :rule_results
 
     belongs_to :test_result, class_name: 'V2::TestResult'
     belongs_to :historical_test_result, class_name: 'V2::HistoricalTestResult', foreign_key: :test_result_id,
@@ -27,7 +26,7 @@ module V2
     scope :passed, -> { where(result: PASSED) }
     scope :failed, -> { where(result: FAILED) }
 
-    # Eliminates redundant joins to v2_test_results table
+    # Eliminates redundant joins to test_results table
     scope :with_serializer_data, lambda {
       joins(build_rule_join)
         .joins(test_result: [:system, { tailoring: { profile: :security_guide } }])
