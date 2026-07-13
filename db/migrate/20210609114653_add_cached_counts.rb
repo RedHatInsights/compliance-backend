@@ -5,7 +5,7 @@ class AddCachedCounts < ActiveRecord::Migration[5.2]
     add_column :policies, :compliant_host_count, :integer, null: false, default: 0
     add_column :policies, :unsupported_host_count, :integer, null: false, default: 0
 
-    Policy.find_each(&:update_counters!)
+    # Policy.find_each(&:update_counters!)
   end
 
   def down
