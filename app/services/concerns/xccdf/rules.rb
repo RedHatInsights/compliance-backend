@@ -4,12 +4,13 @@ module Xccdf
   # Methods related to parsing rules
   module Rules
     extend ActiveSupport::Concern
+    include BannerValueMappings
 
     included do
       def rules
         @rules ||= @op_rules.each_with_index.map do |op_rule, idx|
           rule_group = rule_group_for(ref_id: op_rule.parent_id)
-          value_checks = op_rule.values.map { |value_ref_id| value_definition_for(ref_id: value_ref_id).id }
+          value_checks = value_checks_for(op_rule)
 
           ::V2::Rule.from_parser(
             op_rule,
@@ -34,6 +35,19 @@ module Xccdf
       end
 
       private
+
+      def value_checks_for(op_rule)
+        op_rule.values.map do |value_ref_id|
+          value_definition_for(ref_id: remediable_banner_value_ref_id(value_ref_id)).id
+        end.uniq
+      end
+
+      def remediable_banner_value_ref_id(value_ref_id)
+        contents_ref_id = BANNER_TEXT_TO_CONTENTS[value_ref_id]
+        return value_ref_id unless contents_ref_id
+
+        value_definition_for(ref_id: contents_ref_id)&.ref_id || value_ref_id
+      end
 
       def new_rules
         @new_rules ||= rules.select(&:new_record?)
