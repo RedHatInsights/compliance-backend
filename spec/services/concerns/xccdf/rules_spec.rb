@@ -26,7 +26,7 @@ RSpec.describe Xccdf::Rules do
 
       # NOTE: taken from `app/services/concerns/xccdf/value_definitions.rb`
       def value_definition_for(ref_id:)
-        @value_lookup.fetch(ref_id)
+        @value_lookup[ref_id]
       end
     end.new(
       security_guide: security_guide,
@@ -140,6 +140,51 @@ RSpec.describe Xccdf::Rules do
 
       expect(results.length).to eq(2)
       expect(results.map(&:ref_id)).to contain_exactly(*op_rules.map(&:id))
+    end
+
+    context 'when a rule references a regex banner value' do
+      let!(:banner_text_definition) do
+        FactoryBot.create(
+          :value_definition,
+          security_guide: security_guide,
+          ref_id: 'xccdf_org.ssgproject.content_value_login_banner_text'
+        )
+      end
+
+      let(:banner_values) { [banner_text_definition.ref_id] }
+      let(:op_rule_to_update) { super().tap { |rule| rule.values = banner_values } }
+      let(:value_lookup) { super().merge(banner_text_definition.ref_id => banner_text_definition) }
+      let(:banner_rule) { service.rules.find { |rule| rule.ref_id == op_rule_to_update.id } }
+
+      context 'when plaintext banner contents exist in the security guide' do
+        let!(:banner_contents_definition) do
+          FactoryBot.create(
+            :value_definition,
+            security_guide: security_guide,
+            ref_id: 'xccdf_org.ssgproject.content_value_login_banner_contents'
+          )
+        end
+
+        let(:value_lookup) { super().merge(banner_contents_definition.ref_id => banner_contents_definition) }
+
+        it 'maps regex banner values to plaintext banner contents for remediation' do
+          expect(banner_rule.value_checks).to eq([banner_contents_definition.id])
+        end
+
+        context 'and the rule also references the plaintext banner value' do
+          let(:banner_values) { [banner_text_definition.ref_id, banner_contents_definition.ref_id] }
+
+          it 'deduplicates mapped and legacy banner values to a single contents id' do
+            expect(banner_rule.value_checks).to eq([banner_contents_definition.id])
+          end
+        end
+      end
+
+      context 'when plaintext banner contents are unavailable in the security guide' do
+        it 'keeps the regex banner value as a fallback' do
+          expect(banner_rule.value_checks).to eq([banner_text_definition.id])
+        end
+      end
     end
   end
 end
