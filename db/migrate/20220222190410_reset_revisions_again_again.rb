@@ -1,6 +1,6 @@
 class ResetRevisionsAgainAgain < ActiveRecord::Migration[7.0]
   def up
-    Revision.find_by(name: 'datastreams')&.delete
+    # Revision.find_by(name: 'datastreams')&.delete
   end
 
   def down
