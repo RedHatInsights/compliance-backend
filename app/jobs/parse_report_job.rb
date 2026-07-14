@@ -4,6 +4,7 @@
 class ParseReportJob < ApplicationJob
   include Notifications
 
+  self.queue_adapter = :good_job
   self.log_arguments = false
 
   # https://github.com/RoamingNoMaD/yabeda-activejob#custom-tags
@@ -32,6 +33,8 @@ class ParseReportJob < ApplicationJob
   end
 
   def cancelled?
+    return false unless self.class.queue_adapter_name == 'sidekiq'
+
     Sidekiq.redis { |c| c.exists?("cancelled-#{jid}") }
   end
 
