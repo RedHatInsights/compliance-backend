@@ -18,11 +18,21 @@ module Compliance
       end
 
       # Remove metrics for tables that no longer exist (best-effort for in-memory adapters)
-      # Note: In production with yabeda-prometheus-mmap, stale labels are completely purged
-      # only upon container/process restart when the shared mmap .db files are cleared.
+      #
+      # LIMITATION NOTE (Multi-Process / mmap-backed environment):
+      # In production, we use `yabeda-prometheus-mmap` which stores values in shared memory-mapped
+      # files (under `/tmp/*.db`). The underlying `prometheus-client-mmap` gem does not natively
+      # support deleting specific label sets/keys from these .db files while the application is running.
+      # Calling `metric.values.delete` only removes the key from the local worker's in-memory hash.
+      # To prevent dropped tables from continuing to report their last-known non-zero size in Grafana
+      # indefinitely, we explicitly set their value to 0 first. This forces the metric in scrapes to 0
+      # until the shared mmap files are fully wiped/regenerated on the next pod restart (during deployment).
       metric = Yabeda.compliance_db_table_size_bytes
       metric.values.keys.each do |tags|
-        metric.values.delete(tags) unless current_tables.include?(tags[:table])
+        unless current_tables.include?(tags[:table])
+          metric.set(tags, 0)
+          metric.values.delete(tags)
+        end
       end
     rescue StandardError => e
       Rails.logger.error("Failed to collect DB table size metrics: #{e.full_message}")

@@ -31,13 +31,22 @@ RSpec.describe Compliance::TableSizeCollector do
     ]
     allow(@mock_connection).to receive(:execute).and_return(mock_result)
 
+    # Spy on .set calls during the collection
+    allow(Yabeda.compliance_db_table_size_bytes).to receive(:set).and_call_original
+
     # Trigger only the specific collector block
     described_class.collect
+
+    # Verify that the dropped table was set to 0 before deletion
+    expect(Yabeda.compliance_db_table_size_bytes).to have_received(:set).with(
+      { application: 'compliance', qe: 0, source: 'basic', table: dropped_table_name },
+      0
+    )
 
     # Verify Yabeda memory
     metric = Yabeda.compliance_db_table_size_bytes
 
-    # dropped_table should be purged
+    # dropped_table should be purged from memory
     expect(metric.values.keys.map { |tags| tags[:table] }).to include(existing_table_name)
     expect(metric.values.keys.map { |tags| tags[:table] }).not_to include(dropped_table_name)
 
