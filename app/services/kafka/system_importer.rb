@@ -18,6 +18,7 @@ module Kafka
     rescue StandardError => e
       failed_id = id || payload&.dig('id') || 'unknown'
       @logger.audit_fail("[Kafka::SystemImporter] Failed to import system #{failed_id}: #{e.message}")
+      Yabeda.compliance_system_import_failures_total.increment({})
       raise e
     end
 
@@ -26,6 +27,7 @@ module Kafka
     def payload_valid_for_import?(payload)
       unless valid_payload?(payload)
         @logger.error('[Kafka::SystemImporter] Ignored invalid message: missing host id or malformed tags')
+        Yabeda.compliance_system_import_invalid_total.increment({})
         return false
       end
       true
@@ -69,6 +71,7 @@ module Kafka
     def log_upsert_result(result, id)
       if result.rows.empty?
         @logger.info("[Kafka::SystemImporter] Ignored stale message for system #{id}")
+        Yabeda.compliance_system_import_stale_total.increment({})
       else
         @logger.audit_success("[Kafka::SystemImporter] Imported system #{id}")
       end

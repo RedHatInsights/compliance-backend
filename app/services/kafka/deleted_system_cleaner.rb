@@ -13,7 +13,11 @@ module Kafka
 
     def cleanup_system
       num_removed = remove_related
-      audit_success if num_removed.positive?
+      if num_removed.positive?
+        audit_success
+      else
+        Yabeda.compliance_system_delete_noop_total.increment({})
+      end
     rescue StandardError => e
       audit_fail(e)
       raise
