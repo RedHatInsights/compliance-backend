@@ -2,6 +2,34 @@
 
 require 'clowder-common-ruby'
 
+module Compliance
+  class TableSizeCollector
+    def self.collect
+      current_tables = []
+
+      ActiveRecord::Base.connection.execute(<<~SQL).each do |row|
+        SELECT relname AS table_name, pg_total_relation_size(relid) AS size_bytes
+        FROM pg_catalog.pg_statio_user_tables
+        ORDER BY size_bytes DESC
+      SQL
+        table_name = row['table_name']
+        current_tables << table_name
+        Yabeda.compliance_db_table_size_bytes.set({ table: table_name }, row['size_bytes'].to_i)
+      end
+
+      # Remove metrics for tables that no longer exist (best-effort for in-memory adapters)
+      # Note: In production with yabeda-prometheus-mmap, stale labels are completely purged
+      # only upon container/process restart when the shared mmap .db files are cleared.
+      metric = Yabeda.compliance_db_table_size_bytes
+      metric.values.keys.each do |tags|
+        metric.values.delete(tags) unless current_tables.include?(tags[:table])
+      end
+    rescue StandardError => e
+      Rails.logger.error("Failed to collect DB table size metrics: #{e.full_message}")
+    end
+  end
+end
+
 # Metrics configuration
 Yabeda.configure do
   default_tag :application, 'compliance'
@@ -15,27 +43,7 @@ Yabeda.configure do
         tags: %i[table]
 
   collect do
-    current_tables = []
-
-    ActiveRecord::Base.connection.execute(<<~SQL).each do |row|
-      SELECT relname AS table_name, pg_total_relation_size(relid) AS size_bytes
-      FROM pg_catalog.pg_statio_user_tables
-      ORDER BY size_bytes DESC
-    SQL
-      table_name = row['table_name']
-      current_tables << table_name
-      compliance_db_table_size_bytes.set({ table: table_name }, row['size_bytes'].to_i)
-    end
-
-    # Remove metrics for tables that no longer exist
-    metric = Yabeda.compliance_db_table_size_bytes
-    existing_tags = metric.values.keys.map { |tags| tags[:table] }
-
-    (existing_tags - current_tables).each do |dropped_table|
-      metric.values.delete({ table: dropped_table, application: 'compliance', qe: 0, source: 'basic' })
-    end
-  rescue StandardError => e
-    Rails.logger.error("Failed to collect DB table size metrics: #{e.message}")
+    Compliance::TableSizeCollector.collect
   end
 end
 
