@@ -51,7 +51,7 @@ RSpec.describe Xccdf::SecurityGuides do
                                    version: op_security_guide.version,
                                    os_major_version: '7',
                                    package_name: 'ssg-rhel7')
-      previous_timestamp = existing.updated_at
+      previous_timestamp = existing.reload.updated_at
 
       service.save_security_guide
 
