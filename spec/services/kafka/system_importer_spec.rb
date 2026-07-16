@@ -103,6 +103,52 @@ RSpec.describe Kafka::SystemImporter do
       end
     end
 
+    context 'when existing system is soft-deleted (has deleted_at set)' do
+      let(:system_id) { message['host']['id'] }
+
+      context 'and incoming message has a newer updated timestamp' do
+        before do
+          FactoryBot.create(
+            :kafka_system,
+            id: system_id,
+            display_name: 'old-name',
+            updated: (Time.zone.parse(updated_time) - 2.hours).iso8601,
+            deleted_at: (Time.zone.parse(updated_time) - 1.hour).iso8601
+          )
+        end
+
+        it 'resurrects the system by setting deleted_at to nil' do
+          expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
+          expect { service.import }.to change { KafkaSystem.count }.by(1)
+
+          system = KafkaSystem.find(system_id)
+          expect(system.deleted_at).to be_nil
+          expect(system.display_name).to eq(message.dig('host', 'display_name'))
+        end
+      end
+
+      context 'and incoming message has an older updated timestamp than deleted_at' do
+        before do
+          FactoryBot.create(
+            :kafka_system,
+            id: system_id,
+            display_name: 'old-name',
+            updated: (Time.zone.parse(updated_time) - 2.hours).iso8601,
+            deleted_at: (Time.zone.parse(updated_time) + 1.hour).iso8601
+          )
+        end
+
+        it 'ignores the message as stale' do
+          expect(Karafka.logger).to receive(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
+          expect { service.import }.not_to(change { KafkaSystem.count })
+
+          system = KafkaSystem.unscoped.find(system_id)
+          expect(system.deleted_at).not_to be_nil
+          expect(system.display_name).to eq('old-name')
+        end
+      end
+    end
+
     context 'when system_profile contains extra fields' do
       before do
         message['host']['system_profile'] = {

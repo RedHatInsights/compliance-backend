@@ -63,6 +63,39 @@ RSpec.describe 'systems:backfill', type: :task do
         expect(name).to eq(live_name) # Ignored the backfill
       end
     end
+
+    context 'when existing system is soft-deleted (has deleted_at set)' do
+      let(:live_name) { Faker::Lorem.word }
+      let!(:backfill_host) { FactoryBot.create(:system, id: host_id, account: account, updated: 2.days.ago) }
+
+      it 'resurrects the system if the backfill record is newer than the tombstone' do
+        ActiveRecord::Base.connection.execute(<<-SQL)
+          INSERT INTO systems (id, org_id, display_name, tags, updated, created, stale_timestamp, system_profile, deleted_at)
+          VALUES ('#{host_id}', '#{org_id}', '#{live_name}', '{}', '#{4.days.ago.iso8601}', '#{4.days.ago.iso8601}', '#{4.days.ago.iso8601}', '{}', '#{3.days.ago.iso8601}')
+        SQL
+
+        Rake::Task['systems:backfill'].execute
+
+        deleted_at = ActiveRecord::Base.connection.select_value(
+          "SELECT deleted_at FROM systems WHERE id = '#{host_id}'"
+        )
+        expect(deleted_at).to be_nil # Resurrected!
+      end
+
+      it 'ignores backfill and preserves tombstone if the tombstone is newer than the backfill record' do
+        ActiveRecord::Base.connection.execute(<<-SQL)
+          INSERT INTO systems (id, org_id, display_name, tags, updated, created, stale_timestamp, system_profile, deleted_at)
+          VALUES ('#{host_id}', '#{org_id}', '#{live_name}', '{}', '#{4.days.ago.iso8601}', '#{4.days.ago.iso8601}', '#{4.days.ago.iso8601}', '{}', '#{1.day.ago.iso8601}')
+        SQL
+
+        Rake::Task['systems:backfill'].execute
+
+        deleted_at = ActiveRecord::Base.connection.select_value(
+          "SELECT deleted_at FROM systems WHERE id = '#{host_id}'"
+        )
+        expect(deleted_at).not_to be_nil # Preserved tombstone!
+      end
+    end
   end
 
   describe 'batching and limits' do

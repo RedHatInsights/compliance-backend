@@ -101,7 +101,7 @@ class SystemsBackfiller
         groups = EXCLUDED.groups,
         insights_id = EXCLUDED.insights_id,
         deleted_at = EXCLUDED.deleted_at
-      WHERE systems.updated < EXCLUDED.updated;
+      WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated;
     SQL
   end
   # rubocop:enable Metrics/MethodLength

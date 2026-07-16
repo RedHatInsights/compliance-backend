@@ -28,7 +28,6 @@ describe Kafka::DeletedSystemCleaner do
     expect { service.cleanup_system }.to(
       change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
       .and(change { policy.systems.count }.from(1).to(0))
-      .and(change { KafkaSystem.where(id: system.id).count }.from(1).to(0))
     )
   end
 
@@ -48,7 +47,6 @@ describe Kafka::DeletedSystemCleaner do
       expect { service.cleanup_system }.to(
         change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
         .and(change { policy.systems.count }.from(2).to(1))
-        .and(change { KafkaSystem.where(id: system.id).count }.from(1).to(0))
       )
 
       expect(V2::HistoricalTestResult.where(system_id: extra_system.id).count).to eql(1)

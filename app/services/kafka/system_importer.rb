@@ -37,7 +37,8 @@ module Kafka
         display_name: payload.dig('display_name'), groups: payload.dig('groups') || [],
         tags: payload.dig('tags') || [], system_profile: relevant_system_profile(payload),
         stale_timestamp: payload.dig('stale_timestamp'), created: payload.dig('created'),
-        updated: updated, insights_id: payload.dig('insights_id')
+        updated: updated, insights_id: payload.dig('insights_id'),
+        deleted_at: nil
       }
     end
 
@@ -57,7 +58,7 @@ module Kafka
         attrs,
         unique_by: :id,
         returning: %w[id],
-        on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, system_profile = EXCLUDED.system_profile, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id WHERE systems.updated IS NULL OR systems.updated < EXCLUDED.updated')
+        on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, system_profile = EXCLUDED.system_profile, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id, deleted_at = EXCLUDED.deleted_at WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated')
       )
       # rubocop:enable Layout/LineLength
       # rubocop:enable Rails/SkipsModelValidations
