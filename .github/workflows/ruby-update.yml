@@ -15,7 +15,7 @@ jobs:
       - name: Fetch latest Ruby version from base image
         timeout-minutes: 10
         run: |
-          base=$(grep -Po '(?<=FROM )([^\s]*)(?= AS build)' Dockerfile)
+          base=$(grep -Po '(?<=FROM )[^\s]+(?= AS build)' Dockerfile | cut -d@ -f1)
           docker run --rm -u 0 "${base}":latest sh -c "
             microdnf module enable -y ruby:3.3 > /dev/null;
             microdnf repoquery ruby --info | grep Version | awk '{ print \$3 }' | head -1 > .ruby-version;
