@@ -63,6 +63,7 @@ pipeline {
                         export IMAGE_TAG="${GIT_COMMIT:0:7}"
                         export OPTIONAL_DEPS_METHOD="all"
                         export EXTRA_DEPLOY_ARGS="
+                            --set-image-tag quay.io/redhat-services-prod/insights-management-tenant/insights-compliance/compliance-ssg=latest
                             --set-image-tag quay.io/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac=latest
                             --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer=latest
                             --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api=latest
