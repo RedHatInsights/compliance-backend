@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_24_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_14_140729) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -205,7 +205,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_24_120000) do
     t.string "display_name", limit: 200, null: false
     t.jsonb "groups", default: []
     t.uuid "insights_id"
-    t.string "org_id", limit: 10, null: false
+    t.string "org_id", limit: 36, null: false
     t.datetime "stale_timestamp", null: false
     t.jsonb "system_profile", default: {}, null: false
     t.jsonb "tags", default: {}, null: false
