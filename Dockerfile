@@ -68,7 +68,6 @@ RUN ( [[ $HERMETIC == "true" ]] || rpm -e --nodeps tzdata &>/dev/null )         
     microdnf install --nodocs -y $deps                                                 && \
     chmod +t /tmp                                                                      && \
     ( [[ $HERMETIC == "true" ]] || gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin ) && \
-    ( [[ $HERMETIC == "true" ]] || gem install bundler )                               && \
     microdnf clean all -y                                                              && \
     chown 1001:root ./                                                                 && \
     install -v -d -m 1777 -o 1001 ./tmp ./log
