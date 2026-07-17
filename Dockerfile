@@ -34,6 +34,8 @@ RUN ( [[ $HERMETIC == "true" ]] || microdnf module enable -y postgresql:16 || cu
     microdnf module enable -y ruby:3.3                                                                    && \
     microdnf install --nodocs -y $deps $devDeps $extras                                                   && \
     chmod +t /tmp                                                                                         && \
+    ( [[ $HERMETIC == "true" ]] || gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin ) && \
+    ( [[ $HERMETIC == "true" ]] || gem install bundler )                                                    && \
     ( [[ $HERMETIC != "true" ]] || (mkdir -p .cargo && cp .hermetic_builds/cargo/config.toml .cargo/config.toml) ) && \
     ( [[ $prod != "true" ]] || bundle config set --local without 'development test' )                     && \
     ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )                              && \
