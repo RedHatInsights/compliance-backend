@@ -48,6 +48,7 @@ class KarafkaApp < Karafka::App
     consumer_group :'complianceinventory-events-consumer' do
       topic Settings.kafka.topics.inventory_events do
         consumer InventoryEventsConsumer
+        max_messages 1
       end
     end
   end
