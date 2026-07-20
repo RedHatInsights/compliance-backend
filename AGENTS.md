@@ -16,17 +16,17 @@ compliance-backend is a Ruby on Rails 8.1 backend. It provides a REST API for co
 
 The application consists of three main processes:
 
-1. **Rails API Server** (Puma, port 3000) - REST API serving V2 endpoints
+1. **Rails API Server** (Puma, port 3000) - REST API
 2. **Karafka Consumer** - Kafka message processor for inventory events (including report parsing)
 3. **Sidekiq Worker** - Background job processor (requires Redis)
 
 ### API
 
-- **V2 API** (`/api/compliance/v2/`) - Current API using `panko_serializer`, models in `app/models/v2/`
+- **API** (`/api/compliance/v2/`) - Current API using `panko_serializer`
 
-V2 models are backed by real database tables. The `V2::System` model is an exception — it is a view over the `inventory.hosts` table in a different schema that is read-only.
+Models are backed by real database tables. The `System` model is an exception — it is a view over the `inventory.hosts` table in a different schema that is read-only.
 
-#### V2 auto-join
+#### Auto-join
 
 Controllers never write explicit `joins` or `select` calls. Instead, serializers declare their data dependencies using two class-level DSL methods:
 
@@ -56,16 +56,16 @@ XccdfReportParser.parse() → TestResult + RuleResults replaced with the newer o
 Notifications sent to Kafka, Remediations service updated
 ```
 
-### Important Models (V2)
+### Important Models
 
-- **V2::SecurityGuide** - SCAP benchmark metadata (XCCDF datastreams)
-- **V2::Profile** - Canonical security profile from upstream SSG
-- **V2::Policy** - Compliance policy (references V2::Profile, has many V2::Tailoring)
-- **V2::Tailoring** - Profile customization per OS minor version
-- **V2::TestResult** - Scan result of a system for a policy
-- **V2::RuleResult** - Individual rule compliance outcome (pass/fail/error/notchecked/notselected)
-- **V2::Report** - Stores aggregated policy statistics
-- **V2::System** - View over `inventory.hosts` in the `inventory` schema (read-only)
+- **SecurityGuide** - SCAP benchmark metadata (XCCDF datastreams)
+- **Profile** - Canonical security profile from upstream SSG
+- **Policy** - Compliance policy (references Profile, has many Tailoring)
+- **Tailoring** - Profile customization per OS minor version
+- **TestResult** - Scan result of a system for a policy
+- **RuleResult** - Individual rule compliance outcome (pass/fail/error/notchecked/notselected)
+- **Report** - Stores aggregated policy statistics
+- **System** - View over `inventory.hosts` in the `inventory` schema (read-only)
 
 ### DB migrations
 
@@ -74,7 +74,7 @@ No AI model should in any case generate or run migrations. This task is potentia
 ### Database Views & Functions
 
 The app uses the `fx` and `scenic` gems for managing PostgreSQL views, functions, and triggers. Views are in `db/views/`, functions in `db/functions/`, triggers in `db/triggers/`.
-V1 models are backed by database views. `V2::System` is also view-backed (read-only alias of `inventory.hosts`).
+Legacy v1 data models are backed by database views. `System` is also view-backed (read-only alias of `inventory.hosts`).
 
 ### Authorization
 
@@ -82,7 +82,7 @@ Two RBAC systems coexist:
 - **V1 RBAC** - `insights-rbac-api-client` gem, service at Settings.rbac_url
 - **V2 RBAC (Kessel)** - `kessel-sdk` gem, gRPC service with OAuth2 auth
 
-Controllers use Pundit policies (`app/policies/` and `app/policies/v2/`) for authorization. User context set via `User.current` from identity header middleware.
+Controllers use Pundit policies (`app/policies/`) for authorization. User context set via `User.current` from identity header middleware.
 
 ## Development Setup
 
@@ -145,7 +145,7 @@ Producers in `app/producers/` extend `ApplicationProducer`. Use Karafka for publ
 
 ### External Services
 
-- **Inventory** - Read systems from `inventory.hosts` table (via V2::System model)
+- **Inventory** - Read systems from `inventory.hosts` table (via `System` model)
 - **RBAC** - `Rbac` service (V1) or `KesselRbac` service (V2)
 - **Object Storage** - Reports downloaded via `SafeDownloader` from signed URLs
 
@@ -161,7 +161,7 @@ Producers in `app/producers/` extend `ApplicationProducer`. Use Karafka for publ
 
 ### Models
 
-Models live in the `V2` namespace and are backed by real database tables. `V2::System` is an exception — it is a view over the `inventory.hosts` table and is read-only.
+Models are backed by real database tables. `System` is an exception — it is a view over the `inventory.hosts` table and is read-only.
 
 ### Tags Convention
 
@@ -177,7 +177,7 @@ system_profile['operating_system']['minor']
 
 ### Scoped Search
 
-Most V2 models use `scoped_search` gem for filtering. Define searchable fields in model, reference in serializer.
+Models use `scoped_search` gem for filtering. Define searchable fields in model, reference in serializer.
 
 ### Audit Logging
 
