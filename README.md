@@ -153,10 +153,10 @@ Run the tests:
 docker compose exec rails bundle exec rake spec:validate
 
 # run a specific spec
-podman-compose exec -e SPEC_OPTS="-e 'V2::ReportsController /reports GET index' --color --tty --format documentation" rails bundle exec rake spec
+podman-compose exec -e SPEC_OPTS="-e 'ReportsController /reports GET index' --color --tty --format documentation" rails bundle exec rake spec
 
 # run specs in a specific directory (doesn't work with tests including shared_examples)
-podman-compose exec -e SPEC_OPTS="-P 'spec/policies/v2/*.rb' --color --tty --format documentation" rails bundle exec rake spec
+podman-compose exec -e SPEC_OPTS="-P 'spec/policies/*.rb' --color --tty --format documentation" rails bundle exec rake spec
 ```
 
 Access logs:

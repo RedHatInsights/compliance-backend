@@ -72,7 +72,7 @@ class ParseReportJob < ApplicationJob
     msg = error_message(exc)
     msg_with_values = "#{msg} \n #{JSON.pretty_generate(@msg_value)}"
     notify_payload_tracker(:error, msg_with_values)
-    ReportUploadFailed.deliver(system: V2::System.find_by(id: @msg_value['id'], org_id: @msg_value['org_id']),
+    ReportUploadFailed.deliver(system: System.find_by(id: @msg_value['id'], org_id: @msg_value['org_id']),
                                request_id: @msg_value['request_id'], error: notification_message(exc),
                                org_id: @msg_value['org_id'])
     Sidekiq.logger.error(msg_with_values)

@@ -33,7 +33,7 @@ module Xccdf
       end
 
       def security_guide
-        @security_guide ||= ::V2::SecurityGuide.from_parser(@op_security_guide)
+        @security_guide ||= ::SecurityGuide.from_parser(@op_security_guide)
       end
 
       def package_name

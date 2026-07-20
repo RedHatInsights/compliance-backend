@@ -21,8 +21,8 @@ RSpec.describe 'import_remediations task' do
     end
 
     context 'when remediations are not synced' do
-      let!(:rules_with_playbooks) { FactoryBot.create_list(:v2_rule, 5, remediation_available: false) }
-      let!(:rules_without_playbooks) { FactoryBot.create_list(:v2_rule, 5, remediation_available: true) }
+      let!(:rules_with_playbooks) { FactoryBot.create_list(:rule, 5, remediation_available: false) }
+      let!(:rules_without_playbooks) { FactoryBot.create_list(:rule, 5, remediation_available: true) }
       let(:playbook_status_by_rule_id) do
         result = {}
         rules_with_playbooks.each { |rule| result[rule.id] = true }
@@ -55,7 +55,7 @@ RSpec.describe 'import_remediations task' do
 
       context 'when rsyslog_remote_loghost is in the list of rules' do
         let!(:excluded_rule) do
-          FactoryBot.create(:v2_rule,
+          FactoryBot.create(:rule,
                             ref_id: 'xccdf_org.ssgproject.content_rule_rsyslog_remote_loghost',
                             remediation_available: true)
         end

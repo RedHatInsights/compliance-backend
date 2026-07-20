@@ -2,12 +2,12 @@
 - :name: "equality search by os_major_version"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 7
         :supports_minors:
           - 0
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 8
         :supports_minors:
           - 0
@@ -15,12 +15,12 @@
 - :name: "non-equality search by os_major_version"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 8
         :supports_minors:
           - 0
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 7
         :supports_minors:
           - 0
@@ -28,13 +28,13 @@
 - :name: "equality search by title"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 7
         :title: 'foo'
         :supports_minors:
           - 0
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 8
         :title: 'bar'
         :supports_minors:
@@ -43,13 +43,13 @@
 - :name: "like search by title"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 7
         :title: 'foo'
         :supports_minors:
           - 0
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 8
         :title: 'bar'
         :supports_minors:
@@ -58,13 +58,13 @@
 - :name: "equality search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 7
         :ref_id: 'foo'
         :supports_minors:
           - 0
     :not_found:
-      - :factory: :v2_profile
+      - :factory: :profile
         :os_major_version: 8
         :ref_id: 'bar'
         :supports_minors:

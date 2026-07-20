@@ -29,10 +29,10 @@ RSpec.describe Xccdf::TestResult do
     )
   end
 
-  let(:user) { create(:v2_user) }
-  let(:policy) { create(:v2_policy, account: user.account, supports_minors: [0]) }
+  let(:user) { create(:user) }
+  let(:policy) { create(:policy, account: user.account, supports_minors: [0]) }
   let(:system) { create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
-  let(:tailoring) { V2::Tailoring.find_by!(policy_id: policy.id, os_minor_version: 0) }
+  let(:tailoring) { Tailoring.find_by!(policy_id: policy.id, os_minor_version: 0) }
   let(:security_guide) { tailoring.security_guide }
   let(:op_rule_results) { [] }
   let(:op_test_result) do
@@ -58,11 +58,11 @@ RSpec.describe Xccdf::TestResult do
     end
 
     context 'when a previous test result already exists for the same policy and system' do
-      let!(:old_test_result) { create(:v2_test_result, system: system, report_id: policy.id) }
+      let!(:old_test_result) { create(:test_result, system: system, report_id: policy.id) }
 
       it 'replaces it with the new one' do
-        expect { service.save_test_result }.not_to change(V2::TestResult, :count)
-        expect(V2::TestResult.exists?(old_test_result.id)).to be false
+        expect { service.save_test_result }.not_to change(TestResult, :count)
+        expect(TestResult.exists?(old_test_result.id)).to be false
       end
     end
   end

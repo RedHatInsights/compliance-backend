@@ -4,10 +4,10 @@
 class Account < ApplicationRecord
   has_many :users, dependent: :nullify
   # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :systems, class_name: 'V2::System', foreign_key: :org_id, primary_key: :org_id,
+  has_many :systems, class_name: 'System', foreign_key: :org_id, primary_key: :org_id,
                      inverse_of: :account
   # rubocop:enable Rails/HasManyOrHasOneDependent
-  has_many :policies, class_name: 'V2::Policy', dependent: :destroy
+  has_many :policies, class_name: 'Policy', dependent: :destroy
 
   validates :org_id, presence: true, allow_blank: false
 

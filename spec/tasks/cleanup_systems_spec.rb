@@ -48,8 +48,8 @@ RSpec.describe 'systems:cleanup task' do
   end
 
   describe 'subtask: deleted' do
-    let(:user) { FactoryBot.create(:v2_user) }
-    let(:policy) { FactoryBot.create(:v2_policy, account: user.account, supports_minors: [0]) }
+    let(:user) { FactoryBot.create(:user) }
+    let(:policy) { FactoryBot.create(:policy, account: user.account, supports_minors: [0]) }
     let(:system) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
 
     let!(:stale_tombstone) do
@@ -72,7 +72,7 @@ RSpec.describe 'systems:cleanup task' do
       )
     end
 
-    let!(:test_result) { FactoryBot.create(:v2_test_result, system: system, report_id: policy.id) }
+    let!(:test_result) { FactoryBot.create(:test_result, system: system, report_id: policy.id) }
 
     it 'purges old soft-deleted tombstones and related records but preserves fresh ones' do
       expect(KafkaSystem.unscoped.count).to eq(2)
@@ -85,7 +85,7 @@ RSpec.describe 'systems:cleanup task' do
           Rake::Task['systems:cleanup'].invoke
         end
       end.to change { KafkaSystem.unscoped.count }.by(-1)
-         .and(change { V2::HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0))
+         .and(change { HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0))
                                                   .and(change { policy.systems.count }.from(1).to(0))
 
       expect(KafkaSystem.unscoped.find_by(id: fresh_tombstone.id)).not_to be_nil
@@ -94,8 +94,8 @@ RSpec.describe 'systems:cleanup task' do
   end
 
   describe 'subtask: stale' do
-    let(:user) { FactoryBot.create(:v2_user) }
-    let(:policy) { FactoryBot.create(:v2_policy, account: user.account, supports_minors: [0]) }
+    let(:user) { FactoryBot.create(:user) }
+    let(:policy) { FactoryBot.create(:policy, account: user.account, supports_minors: [0]) }
     let(:system1) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
     let(:system2) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
 
@@ -149,7 +149,7 @@ RSpec.describe 'systems:cleanup task' do
   end
 
   describe 'subtask: filter' do
-    let(:user) { FactoryBot.create(:v2_user) }
+    let(:user) { FactoryBot.create(:user) }
 
     # 1. Valid/eligible system
     let(:eligible_sys) { FactoryBot.create(:system, account: user.account, os_minor_version: 0) }

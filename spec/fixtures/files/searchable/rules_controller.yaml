@@ -3,13 +3,13 @@
 - :name: "equality search by title"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
@@ -18,13 +18,13 @@
 - :name: "non-equality search by title"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
@@ -33,13 +33,13 @@
 - :name: "like search by title"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
@@ -48,13 +48,13 @@
 - :name: "unlike search by title"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: not this title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: searched title
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
@@ -64,14 +64,14 @@
 - :name: "equality search by severity"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: searched title
         :severity: searched severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: not this title
         :severity: not this severity
         :security_guide_id: ${security_guide_id}
@@ -81,14 +81,14 @@
 - :name: "non-equality search by severity"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: not this title
         :severity: not this severity
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: searched title
         :severity: searched severity
         :security_guide_id: ${security_guide_id}
@@ -98,18 +98,18 @@
 - :name: "in search by severity"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :severity: low
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
-      - :factory: :v2_rule
+      - :factory: :rule
         :severity: high
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :severity: medium
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
@@ -118,18 +118,18 @@
 - :name: "not-in search by severity"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :severity: high
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :severity: medium
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
-      - :factory: :v2_rule
+      - :factory: :rule
         :severity: low
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
@@ -138,23 +138,23 @@
 - :name: "equality search by remediation_available"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
         :remediation_available: true
-      - :factory: :v2_rule
+      - :factory: :rule
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
         :remediation_available: true
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
         :remediation_available: false
-      - :factory: :v2_rule
+      - :factory: :rule
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
@@ -164,14 +164,14 @@
 - :name: "equality search by rule_group_id"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :security_guide_id: ${security_guide_id}
         :parent_count: 0
         :rule_group: ${rule_group}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :security_guide_id: ${security_guide_id}
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
@@ -180,7 +180,7 @@
 - :name: "equality search by identifier_label"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: just title
         :identifier:
           :label: "CEE-XYZ-1234"
@@ -189,7 +189,7 @@
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: just title
         :identifier:
           :label: "CEE-ABC-1234"
@@ -201,7 +201,7 @@
 - :name: "non-equality search by identifier_label"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: just title
         :identifier:
           :label: "CEE-ABC-1234"
@@ -210,7 +210,7 @@
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: just title
         :identifier:
           :label: "CEE-XYZ-1234"
@@ -222,7 +222,7 @@
 - :name: "like search by identifier_label"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: just title
         :identifier:
           :label: "CEE-XYZ-1234"
@@ -231,7 +231,7 @@
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: just title
         :identifier:
           :label: "CEE-ABC-1234"
@@ -243,7 +243,7 @@
 - :name: "unlike search by identifier_label"
   :entities:
     :found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: just title
         :identifier:
           :label: "CEE-ABC-1234"
@@ -252,7 +252,7 @@
         :profile_id: ${profile_id}
         :tailoring_id: ${tailoring_id}
     :not_found:
-      - :factory: :v2_rule
+      - :factory: :rule
         :title: just title
         :identifier:
           :label: "CEE-XYZ-1234"

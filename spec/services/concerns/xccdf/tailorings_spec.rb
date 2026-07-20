@@ -16,13 +16,13 @@ RSpec.describe Xccdf::Tailorings do
 
   let(:os_minor_version) { 0 }
   let(:unsupported_os_minor_version) { os_minor_version + 1 }
-  let(:user) { create(:v2_user) }
-  let(:policy) { create(:v2_policy, account: user.account, supports_minors: [os_minor_version]) }
+  let(:user) { create(:user) }
+  let(:policy) { create(:policy, account: user.account, supports_minors: [os_minor_version]) }
   let!(:system) { create(:system, account: user.account, policy_id: policy.id, os_minor_version: os_minor_version) }
 
   describe '#tailoring' do
     it 'finds the tailoring matching the policy and system OS minor version' do
-      expected = V2::Tailoring.find_by!(policy_id: policy.id, os_minor_version: os_minor_version)
+      expected = Tailoring.find_by!(policy_id: policy.id, os_minor_version: os_minor_version)
 
       expect(service.tailoring).to eq(expected)
     end
@@ -53,7 +53,7 @@ RSpec.describe Xccdf::Tailorings do
 
   describe '#tailored_profile' do
     it 'returns the profile associated with the tailoring' do
-      expected = V2::Tailoring.find_by!(policy_id: policy.id, os_minor_version: os_minor_version).profile
+      expected = Tailoring.find_by!(policy_id: policy.id, os_minor_version: os_minor_version).profile
 
       expect(service.tailored_profile).to eq(expected)
     end

@@ -4,12 +4,12 @@ module Xccdf
   # Methods related to saving RuleResults from openscap_parser
   module RuleResults
     def save_rule_results
-      ::V2::RuleResult.import!(rule_results.select { |rr| rr.new_record? && rr.rule_id.present? }, ignore: true)
+      ::RuleResult.import!(rule_results.select { |rr| rr.new_record? && rr.rule_id.present? }, ignore: true)
     end
 
     def rule_results
       @rule_results ||= selected_op_rule_results.map do |op_rule_result|
-        ::V2::RuleResult.from_parser(
+        ::RuleResult.from_parser(
           op_rule_result,
           test_result_id: @test_result.id,
           rule_id: rule_ids[op_rule_result.id]
@@ -18,16 +18,16 @@ module Xccdf
     end
 
     def failed_rule_results
-      ::V2::RuleResult.where(test_result_id: @test_result.id, rule_id: rule_ids.values).failed
+      ::RuleResult.where(test_result_id: @test_result.id, rule_id: rule_ids.values).failed
     end
 
     def failed_rules
-      ::V2::Rule.where(id: failed_rule_results.select(:rule_id))
+      ::Rule.where(id: failed_rule_results.select(:rule_id))
     end
 
     def selected_op_rule_results
       @op_rule_results&.reject do |rule_result|
-        ::V2::RuleResult::NOT_SELECTED.include? rule_result.result
+        ::RuleResult::NOT_SELECTED.include? rule_result.result
       end
     end
 
@@ -38,7 +38,7 @@ module Xccdf
     private
 
     def rule_ids
-      @rule_ids ||= ::V2::Rule.where(
+      @rule_ids ||= ::Rule.where(
         security_guide_id: security_guide.id, ref_id: selected_op_rule_results.map(&:id)
       ).pluck(:ref_id, :id).to_h
     end

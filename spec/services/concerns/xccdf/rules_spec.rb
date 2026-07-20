@@ -36,11 +36,11 @@ RSpec.describe Xccdf::Rules do
     )
   end
 
-  let(:security_guide) { FactoryBot.create(:v2_security_guide) }
-  let(:rule_groups) { FactoryBot.create_list(:v2_rule_group, 2, security_guide: security_guide) }
+  let(:security_guide) { FactoryBot.create(:security_guide) }
+  let(:rule_groups) { FactoryBot.create_list(:rule_group, 2, security_guide: security_guide) }
 
   let!(:value_definition) do
-    FactoryBot.create(:v2_value_definition, security_guide: security_guide, ref_id: 'xccdf_value_password_complexity')
+    FactoryBot.create(:value_definition, security_guide: security_guide, ref_id: 'xccdf_value_password_complexity')
   end
 
   let(:rule_group_lookup) do
@@ -84,7 +84,7 @@ RSpec.describe Xccdf::Rules do
 
   let!(:existing_rule) do
     FactoryBot.create(
-      :v2_rule,
+      :rule,
       security_guide: security_guide,
       rule_group: rule_groups[1],
       ref_id: op_rule_to_update.id,
@@ -98,14 +98,14 @@ RSpec.describe Xccdf::Rules do
     )
   end
 
-  let!(:unrelated_rule) { FactoryBot.create(:v2_rule) }
+  let!(:unrelated_rule) { FactoryBot.create(:rule) }
 
   describe '#save_rules' do
     it 'updates all parsed rules that changed' do
       expect do
         service.save_rules
       end.to change {
-        V2::Rule.where(security_guide: security_guide).count
+        Rule.where(security_guide: security_guide).count
       }.from(1).to(op_rules.count)
 
       expect(existing_rule.reload.attributes.slice(
@@ -126,7 +126,7 @@ RSpec.describe Xccdf::Rules do
     it 'imports all parsed rules that are new' do
       service.save_rules
 
-      created = V2::Rule.find_by(ref_id: op_new_rule.id, security_guide: security_guide)
+      created = Rule.find_by(ref_id: op_new_rule.id, security_guide: security_guide)
 
       expect(created).not_to be_nil
       expect(created.rule_group_id).to eq(rule_groups[1].id)

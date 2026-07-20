@@ -8,7 +8,7 @@ module Xccdf
     included do
       def profiles
         @profiles ||= @op_profiles.map do |op_profile|
-          ::V2::Profile.from_parser(
+          ::Profile.from_parser(
             op_profile,
             existing: old_profiles[op_profile.id],
             security_guide_id: security_guide&.id,
@@ -19,14 +19,14 @@ module Xccdf
 
       def save_profiles
         # Import the new records first with validation
-        ::V2::Profile.import!(new_profiles, ignore: true)
+        ::Profile.import!(new_profiles, ignore: true)
 
         # Update the fields on existing profiles, validation is not necessary
-        ::V2::Profile.import(old_profiles.values,
-                             on_duplicate_key_update: {
-                               conflict_target: %i[ref_id security_guide_id],
-                               columns: %i[title value_overrides]
-                             }, validate: false)
+        ::Profile.import(old_profiles.values,
+                         on_duplicate_key_update: {
+                           conflict_target: %i[ref_id security_guide_id],
+                           columns: %i[title value_overrides]
+                         }, validate: false)
       end
 
       private
@@ -36,7 +36,7 @@ module Xccdf
       end
 
       def old_profiles
-        @old_profiles ||= ::V2::Profile.where(
+        @old_profiles ||= ::Profile.where(
           ref_id: @op_profiles.map(&:id),
           security_guide_id: security_guide&.id
         ).index_by(&:ref_id)

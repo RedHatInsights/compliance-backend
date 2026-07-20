@@ -1,0 +1,51 @@
+# frozen_string_literal: true
+
+# Model link between Policy and System
+class PolicySystem < ApplicationRecord
+  # FIXME: clean up after the remodel
+  self.table_name = :policy_systems_v2
+  self.primary_key = :id
+
+  attr_accessor :request_id
+
+  belongs_to :policy, class_name: 'Policy'
+  belongs_to :system, class_name: 'System'
+
+  validates :policy_id, presence: true
+  validates :system_id, presence: true, uniqueness: { scope: :policy_id }
+  validate :system_supported?, on: :create
+  validate :system_unique?, on: :create
+
+  after_create do
+    Tailoring.find_or_create_by!(policy_id: policy_id, os_minor_version: system.os_minor_version) do |tailoring|
+      # Look up the latest Profile supporting the given OS minor version
+      tailoring.profile = policy.profile.variant_for_minor(system.os_minor_version)
+      tailoring.value_overrides = tailoring.profile.value_overrides
+    end
+  end
+
+  after_commit :publish_inventory_views, on: %i[create update destroy]
+
+  def system_supported?
+    if policy.os_major_version != system.os_major_version
+      errors.add(:system, 'Unsupported OS major version')
+    elsif policy.os_minor_versions.exclude?(system.os_minor_version)
+      errors.add(:system, 'Unsupported OS minor version')
+    end
+  end
+
+  def system_unique?
+    return false unless self.class.joins(policy: :profile).where(
+      system_id: system_id, profile: { ref_id: policy.ref_id }
+    ).any?
+
+    errors.add(:system, 'System cannot be assigned to multiple policies of the same type')
+  end
+
+  def publish_inventory_views
+    sys = System.find_by(id: system_id)
+    return unless sys
+
+    InventoryViews.deliver(request_id: request_id, system: sys)
+  end
+end

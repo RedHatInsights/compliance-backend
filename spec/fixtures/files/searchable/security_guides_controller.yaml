@@ -3,131 +3,131 @@
 - :name: "equality search by title"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: searched title
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: not this title
   :query: (title = "searched title")
 - :name: "non-equality search by title"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: not this title
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: searched title
   :query: (title != "searched title")
 - :name: "like search by title"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: searched title
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: searched something
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: not this title
   :query: (title ~ "searched")
 - :name: "unlike search by title"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: not this title
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: searched title
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :title: searched something
   :query: (title !~ "searched")
 
 - :name: "equality search by version"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :version: searched version
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :version: not this version
   :query: (version = "searched version")
 - :name: "non-equality search by version"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :version: not this version
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :version: searched version
   :query: (version != "searched version")
 - :name: "equality search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: searched ref_id RHEL-8
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: not this ref_id RHEL-8
   :query: (ref_id = "searched ref_id RHEL-8")
 - :name: "non-equality search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: not this ref_id RHEL-8
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: searched ref_id RHEL-8
   :query: (ref_id != "searched ref_id RHEL-8")
 - :name: "in search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: first-RHEL-8
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: second-RHEL-8
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: not found RHEL-8
   :query: (ref_id ^ (first-RHEL-8 second-RHEL-8))
 - :name: "not-in search by ref_id"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: not found RHEL-8
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: first-RHEL-8
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :ref_id: second-RHEL-8
   :query: (ref_id !^ (first-RHEL-8 second-RHEL-8))
 
 - :name: "equality search by os_major_version"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :os_major_version: 7
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :os_major_version: 8
   :query: (os_major_version = 7)
 - :name: "non-equality search by os_major_version"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :os_major_version: 8
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :os_major_version: 7
   :query: (os_major_version != 7)
 
 - :name: "equality search by profile_ref_id"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :profile_refs:
           foo: []
           bar: []
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :profile_refs:
           baz: []
   :query: (profile_ref_id = xccdf_org.ssgproject.content_profile_foo)
@@ -135,11 +135,11 @@
 - :name: "equality searcy by supported_profile"
   :entities:
     :found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :profile_refs:
           foo: [1]
     :not_found:
-      - :factory: :v2_security_guide
+      - :factory: :security_guide
         :profile_refs:
           foo: [2]
           bar: [1]

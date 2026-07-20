@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :v2_tailoring, class: 'V2::Tailoring' do
+  factory :tailoring, class: 'Tailoring' do
     profile do
-      V2::Profile
+      Profile
         .joins(:os_minor_versions)
         .find_by!(
           ref_id: ref_id,

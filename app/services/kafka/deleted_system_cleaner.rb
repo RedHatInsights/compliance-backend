@@ -31,7 +31,7 @@ module Kafka
     end
 
     def remove_related_test_results
-      to_remove = V2::HistoricalTestResult.where(system_id: @id)
+      to_remove = HistoricalTestResult.where(system_id: @id)
 
       num_removed = to_remove.delete_all
 
@@ -39,7 +39,7 @@ module Kafka
     end
 
     def remove_related_policy_systems
-      V2::PolicySystem.where(system_id: @id).delete_all
+      PolicySystem.where(system_id: @id).delete_all
     end
 
     def audit_fail(error)

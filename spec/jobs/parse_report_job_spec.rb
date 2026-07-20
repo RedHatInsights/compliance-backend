@@ -5,10 +5,10 @@ require 'rails_helper'
 describe ParseReportJob, type: :job do
   subject(:job) { described_class.new }
 
-  let(:user) { create(:v2_user) }
-  let(:policy) { create(:v2_policy, account: user.account, supports_minors: [0], compliance_threshold: 80) }
+  let(:user) { create(:user) }
+  let(:policy) { create(:policy, account: user.account, supports_minors: [0], compliance_threshold: 80) }
   let(:system) { create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
-  let(:tailoring) { V2::Tailoring.find_by!(policy_id: policy.id, os_minor_version: 0) }
+  let(:tailoring) { Tailoring.find_by!(policy_id: policy.id, os_minor_version: 0) }
   let(:request_id) { Faker::Alphanumeric.alphanumeric(number: 32) }
   let(:issue_id) { Faker::Alphanumeric.alphanumeric(number: 32) }
   let(:msg_value) do
@@ -217,7 +217,7 @@ describe ParseReportJob, type: :job do
 
     context 'when compliance drops below the threshold' do
       let!(:previous_test_result) do
-        create(:v2_test_result, system: system, report_id: policy.id, score_above: 80, score_below: 100)
+        create(:test_result, system: system, report_id: policy.id, score_above: 80, score_below: 100)
       end
 
       it 'emits a non-compliance notification' do
@@ -239,7 +239,7 @@ describe ParseReportJob, type: :job do
 
     context 'when compliance was already below the threshold before the scan' do
       let!(:previous_test_result) do
-        create(:v2_test_result, system: system, report_id: policy.id, score_above: 0, score_below: 79)
+        create(:test_result, system: system, report_id: policy.id, score_above: 0, score_below: 79)
       end
 
       it 'does not emit a non-compliance notification' do
@@ -251,7 +251,7 @@ describe ParseReportJob, type: :job do
 
     context 'when the new score remains at or above the threshold' do
       let!(:previous_test_result) do
-        create(:v2_test_result, system: system, report_id: policy.id, score_above: 90, score_below: 100)
+        create(:test_result, system: system, report_id: policy.id, score_above: 90, score_below: 100)
       end
 
       before { allow(parser).to receive(:score).and_return(85) }

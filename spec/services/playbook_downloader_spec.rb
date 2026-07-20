@@ -6,7 +6,7 @@ RSpec.describe PlaybookDownloader do
   let(:os_major_version) { '7' }
   let(:short_ref_id) { 'xccdf_org.ssgproject.content_rule_foo' }
   let(:security_guide) { instance_double('SecurityGuide', os_major_version: os_major_version) }
-  let(:rule) { instance_double('V2::Rule', id: 1, short_ref_id: short_ref_id, security_guide: security_guide) }
+  let(:rule) { instance_double('Rule', id: 1, short_ref_id: short_ref_id, security_guide: security_guide) }
   let(:downloaded_file) { StringIO.new([{ 'name' => "#{short_ref_id}.yml" }].to_json) }
 
   before do
@@ -23,7 +23,7 @@ RSpec.describe PlaybookDownloader do
 
     context 'when the playbook does not exist' do
       let(:other_rule) do
-        instance_double('V2::Rule', id: 2, short_ref_id: 'other_rule', security_guide: security_guide)
+        instance_double('Rule', id: 2, short_ref_id: 'other_rule', security_guide: security_guide)
       end
 
       it 'returns false' do
@@ -35,7 +35,7 @@ RSpec.describe PlaybookDownloader do
   describe '#playbooks_exist?' do
     let(:rule1) { rule }
     let(:rule2) do
-      instance_double('V2::Rule', id: 2, short_ref_id: 'missing_rule', security_guide: security_guide)
+      instance_double('Rule', id: 2, short_ref_id: 'missing_rule', security_guide: security_guide)
     end
     let(:rules) { [rule1, rule2] }
 

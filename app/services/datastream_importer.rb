@@ -15,7 +15,7 @@ class DatastreamImporter
   end
 
   def import!
-    ::V2::SecurityGuide.transaction do
+    ::SecurityGuide.transaction do
       save_all_security_guide_info
     end
   end

@@ -10,37 +10,33 @@ module Sortable
     def build_order_by(*fields)
       order = build_fields_order_by(fields)
       # Additional sorting if @default_sort is set
-      order[:h][@default_sort] = :asc if @default_sort
+      order[@default_sort] = :asc if @default_sort
       # Add ID for deterministic pagination
-      order[:h][:id] = :asc unless order.include?(:id)
+      order[:id] = :asc unless order.include?(:id)
 
-      order.values
+      order
     end
 
     private
 
     # Declares the field to be used for the basis of deterministic sorting
-    # when retrieving records via the REST APIs.
+    # when retrieving records.
     def default_sort(column)
       @default_sort = column
     end
 
-    def sortable_by(column, statement = column, scope: nil)
+    def sortable_by(column, statement = column)
       @sortable_by ||= {}
-      @sortable_by[column] = {
-        statement: statement,
-        scope: scope
-      }
+      @sortable_by[column] = statement
     end
 
     def build_fields_order_by(fields)
-      fields.compact.flatten.each_with_object(h: {}, s: []) do |field, obj|
+      fields.compact.flatten.each_with_object({}) do |field, obj|
         column, direction = field.underscore.split(':')
         assert_sortable_by!(column, direction)
 
         rule = @sortable_by[column.to_sym]
-        obj[:h][rule[:statement]] = direction || 'asc'
-        obj[:s] << rule[:scope] if rule[:scope]
+        obj[rule] = direction || 'asc'
       end
     end
 

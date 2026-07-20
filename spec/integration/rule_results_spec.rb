@@ -1,0 +1,99 @@
+# frozen_string_literal: true
+
+require 'swagger_helper'
+
+describe 'Rule Results', swagger_doc: 'v2/openapi.json' do
+  let(:user) { FactoryBot.create(:user) }
+  let(:'X-RH-IDENTITY') { user.account.identity_header.raw }
+
+  before { stub_rbac_permissions(Rbac::COMPLIANCE_ADMIN, Rbac::INVENTORY_HOSTS_READ) }
+
+  path '/reports/{report_id}/test_results/{test_result_id}/rule_results' do
+    let(:test_result_id) do
+      system = FactoryBot.create(
+        :system,
+        policy_id: report_id,
+        os_major_version: 8,
+        os_minor_version: 0,
+        account: user.account,
+        with_test_result: true
+      )
+      FactoryBot.create(
+        :test_result,
+        system: system,
+        report_id: report_id,
+        additional_rule_results: [{ severity: 'medium', result: 'fail' }]
+      )
+
+      system.test_results.first.id
+    end
+
+    let(:report_id) do
+      FactoryBot.create(
+        :report,
+        account: user.account,
+        os_major_version: 8,
+        supports_minors: [0]
+      ).id
+    end
+
+    get 'Request Rule Results under a Report' do
+      v2_auth_header
+      tags 'Reports'
+      description 'Retrieve all of the rule results for a specific report.'
+      operationId 'ReportRuleResults'
+      content_types
+      pagination_params_v2
+      ids_only_param
+      sort_params_v2(RuleResult)
+      search_params_v2(RuleResult, except: %i[remediation_available])
+
+      parameter name: :test_result_id, in: :path, type: :string, required: true
+      parameter name: :report_id, in: :path, type: :string, required: true
+
+      response '200', 'Lists RuleResults' do
+        v2_collection_schema 'rule_result'
+
+        after { |e| autogenerate_examples(e, 'List of Rule Results') }
+
+        run_test!
+      end
+
+      response '200', 'Lists Rule Results under a Report' do
+        let(:sort_by) { ['result'] }
+        v2_collection_schema 'rule_result'
+
+        after { |e| autogenerate_examples(e, 'List of Rule Results sorted by "result:asc"') }
+
+        run_test!
+      end
+
+      response '200', 'Lists Rule Results under a Report' do
+        let(:filter) { '(title=foo)' }
+        v2_collection_schema 'rule_result'
+
+        after { |e| autogenerate_examples(e, 'List of Rule Results filtered by "(title=foo)"') }
+
+        run_test!
+      end
+
+      response '422', 'Returns with Unprocessable Content' do
+        let(:sort_by) { ['description'] }
+        schema ref_schema('errors')
+
+        after { |e| autogenerate_examples(e, 'Description of an error when sorting by incorrect parameter') }
+
+        run_test!
+      end
+
+      response '422', 'Returns with Unprocessable Content' do
+        let(:limit) { 103 }
+        schema ref_schema('errors')
+
+        after { |e| autogenerate_examples(e, 'Description of an error when requesting higher limit than supported') }
+
+        run_test!
+      end
+    end
+  end
+end

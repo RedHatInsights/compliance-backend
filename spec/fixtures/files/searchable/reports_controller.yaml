@@ -3,13 +3,13 @@
 - :name: "equality search by title"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 8
         :system_id: ${system_id}
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -18,13 +18,13 @@
 - :name: "non-equality search by title"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -33,13 +33,13 @@
 - :name: "like search by title"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 8
         :system_id: ${system_id}
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -48,13 +48,13 @@
 - :name: "unlike search by title"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -63,13 +63,13 @@
 - :name: "equality search by os_major_version"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 7
         :system_id: ${system_id}
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -80,13 +80,13 @@
 - :name: "non-equality search by os_major_version"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 7
         :system_id: ${system_id}
@@ -97,18 +97,18 @@
 - :name: "in search by os_major_version"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 7
         :system_id: ${system_id}
         :account: ${account}
-      - :factory: :v2_report
+      - :factory: :report
         :title: also searched title
         :os_major_version: 9
         :system_id: ${system_id}
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -119,18 +119,18 @@
 - :name: "not-in search by os_major_version"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 7
         :system_id: ${system_id}
         :account: ${account}
-      - :factory: :v2_report
+      - :factory: :report
         :title: also searched title
         :os_major_version: 9
         :system_id: ${system_id}
@@ -141,10 +141,10 @@
 - :name: "search by having systems with test results"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :account: ${account}
     :not_found:
-      - :factory: v2_report
+      - :factory: report
         :assigned_system_count: 0
         :account: ${account}
   :query: (with_reported_systems = true)
@@ -153,7 +153,7 @@
 - :name: "equality search by percent_compliant"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -162,7 +162,7 @@
         :unsupported_system_count: 3
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -176,7 +176,7 @@
 - :name: "greater search by percent_compliant"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -185,7 +185,7 @@
         :unsupported_system_count: 2
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -199,7 +199,7 @@
 - :name: "greater or equal search by percent_compliant"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -208,7 +208,7 @@
         :unsupported_system_count: 2
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -222,7 +222,7 @@
 - :name: "less search by percent_compliant"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -231,7 +231,7 @@
         :unsupported_system_count: 3
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -245,7 +245,7 @@
 - :name: "less or equal search by percent_compliant"
   :entities:
     :found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: searched title
         :os_major_version: 8
         :system_id: ${system_id}
@@ -254,7 +254,7 @@
         :unsupported_system_count: 3
         :account: ${account}
     :not_found:
-      - :factory: :v2_report
+      - :factory: :report
         :title: not this title
         :os_major_version: 8
         :system_id: ${system_id}

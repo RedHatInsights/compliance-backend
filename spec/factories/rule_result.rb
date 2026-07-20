@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :v2_rule_result, class: 'V2::RuleResult' do
+  factory :rule_result, class: 'RuleResult' do
     result { %w[fail pass].sample }
 
     transient do

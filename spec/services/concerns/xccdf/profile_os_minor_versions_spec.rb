@@ -16,8 +16,8 @@ RSpec.describe Xccdf::ProfileOsMinorVersions do
     end.new(profiles: profiles, security_guide: security_guide)
   end
 
-  let(:security_guide) { FactoryBot.create(:v2_security_guide, version: '0.1.57', os_major_version: 7) }
-  let(:profiles) { FactoryBot.create_list(:v2_profile, 2, security_guide: security_guide) }
+  let(:security_guide) { FactoryBot.create(:security_guide, version: '0.1.57', os_major_version: 7) }
+  let(:profiles) { FactoryBot.create_list(:profile, 2, security_guide: security_guide) }
   let(:supported_entries) do
     [
       SupportedSsg.new(
@@ -53,13 +53,13 @@ RSpec.describe Xccdf::ProfileOsMinorVersions do
       expect do
         service.save_profile_os_minor_versions
       end.to change {
-        V2::ProfileOsMinorVersion.where(profile_id: profiles.map(&:id)).count
+        ProfileOsMinorVersion.where(profile_id: profiles.map(&:id)).count
       }.from(1).to(profiles.count * supported_entries.count)
 
       expect { stale_mapping.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect { unrelated_mapping.reload }.not_to raise_error
 
-      resulting_matrix = V2::ProfileOsMinorVersion.where(profile: profiles).pluck(:profile_id, :os_minor_version)
+      resulting_matrix = ProfileOsMinorVersion.where(profile: profiles).pluck(:profile_id, :os_minor_version)
       expected_matrix = profiles.flat_map do |profile|
         supported_entries.map { |entry| [profile.id, entry.os_minor_version.to_i] }
       end

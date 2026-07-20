@@ -1,5 +1,5 @@
 :entities:
-  - :factory: :v2_policy
+  - :factory: :policy
     :title: 'aba'
     :business_objective: 'aba'
     :compliance_threshold: 90
@@ -10,7 +10,7 @@
     :account: ${account}
     :system_id: ${system_id}
 
-  - :factory: :v2_policy
+  - :factory: :policy
     :title: 'bac'
     :business_objective: 'bac'
     :compliance_threshold: 85
@@ -21,7 +21,7 @@
     :account: ${account}
     :system_id: ${system_id}
 
-  - :factory: :v2_policy
+  - :factory: :policy
     :title: 'aac'
     :business_objective: 'aab'
     :compliance_threshold: 90
@@ -32,7 +32,7 @@
     :account: ${account}
     :system_id: ${system_id}
 
-  - :factory: :v2_policy
+  - :factory: :policy
     :title: 'aaa'
     :business_objective: 'aaa'
     :compliance_threshold: 85
@@ -43,7 +43,7 @@
     :account: ${account}
     :system_id: ${system_id}
 
-  - :factory: :v2_policy
+  - :factory: :policy
     :title: 'caa'
     :business_objective: 'caa'
     :compliance_threshold: 100
@@ -54,7 +54,7 @@
     :account: ${account}
     :system_id: ${system_id}
 
-  - :factory: :v2_policy
+  - :factory: :policy
     :title: 'aab'
     :business_objective: 'aaa'
     :compliance_threshold: 80
