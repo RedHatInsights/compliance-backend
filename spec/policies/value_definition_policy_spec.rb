@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe RulePolicy do
+describe ValueDefinitionPolicy do
   let(:user) { FactoryBot.create(:user) }
   let(:items) { FactoryBot.create_list(:value_definition, 20) }
 
