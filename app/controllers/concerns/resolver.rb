@@ -6,7 +6,7 @@ module Resolver
 
   private
 
-  # Parent joins and 1:1 association joins applied. Foundation for both `expand_resource` and `filtered_base_scope`.
+  # Parent joins and 1:1 association joins applied. Foundation for both `expand_resource` and `resolve_collection`.
   def base_scope
     # Join with the route parents
     scope = join_parents(pundit_scope, permitted_params[:parents])
