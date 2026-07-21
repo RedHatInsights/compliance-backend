@@ -9,12 +9,14 @@ module Collection
   included do
     private
 
+    def apply_filters(scope)
+      filter_by_tags(search(scope))
+    end
+
     # Apply search, tag filtering, count, and parent validation to the given scope.
     def resolve_collection(scope)
-      scope = filter_by_tags(search(scope))
-      count = count_collection(scope)
-      # If the count of records equals zero, make sure that the parents are not accessible
-      validate_parents! if count.zero? && permitted_params[:parents]&.any?
+      scope = apply_filters(scope)
+      validate_parents! if collection_count.zero? && permitted_params[:parents]&.any?
       scope
     end
 
@@ -23,12 +25,11 @@ module Collection
       sort(resolve_collection(expand_resource)).limit(pagination_limit).offset(pagination_offset)
     end
 
-    def count_collection(scope)
+    def collection_count
       # Count the whole collection using a single column and not the whole table. This column
       # by default is the primary key of the table, however, in certain cases using a different
       # indexed column might produce faster results without even accessing the table.
-      # Pagination is disabled when counting collection so that all returned entities are counted.
-      @count_collection ||= scope.except(:limit, :offset).reselect(resource.base_class.count_by).count
+      @collection_count ||= apply_filters(count_scope).reselect(resource.base_class.count_by).count
     end
 
     def validate_parents!
