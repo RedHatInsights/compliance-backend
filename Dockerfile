@@ -5,7 +5,7 @@ ARG prod="true"
 ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-9/mmraka-postgresql-16-epel-9.repo"
 ARG BUNDLE_JOBS="4"
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:062c52ff973065752b0965787649db2bcf551a6c727a00e95a3eb42cebadbdab AS build
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:6c79f4fb38a20d496c859025d57e4074835e849d5d14819c4e021ad78446bce8 AS build
 
 ARG deps
 ARG devDeps
@@ -50,7 +50,7 @@ ENV prometheus_multiproc_dir=/opt/app-root/src/tmp prometheus_rust_mmaped_file=f
 
 #############################################################
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:062c52ff973065752b0965787649db2bcf551a6c727a00e95a3eb42cebadbdab
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:6c79f4fb38a20d496c859025d57e4074835e849d5d14819c4e021ad78446bce8
 
 ARG deps
 ARG devDeps
