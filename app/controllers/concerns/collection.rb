@@ -9,10 +9,9 @@ module Collection
   included do
     private
 
-    # Scope for metadata endpoints (e.g. os_versions) that need search and tag filtering
-    # but not the aggregation subqueries added by expand_resource for serialization.
-    def filtered_base_scope
-      scope = filter_by_tags(search(base_scope))
+    # Apply search, tag filtering, count, and parent validation to the given scope.
+    def resolve_collection(scope)
+      scope = filter_by_tags(search(scope))
       count = count_collection(scope)
       # If the count of records equals zero, make sure that the parents are not accessible
       validate_parents! if count.zero? && permitted_params[:parents]&.any?
@@ -21,12 +20,7 @@ module Collection
 
     # This is the method where you probably want to put a breakpoint to debug SQL
     def fetch_collection
-      scope = filter_by_tags(search(expand_resource))
-      count = count_collection(scope)
-      # If the count of records equals zero, make sure that the parents are not accessible
-      validate_parents! if count.zero? && permitted_params[:parents]&.any?
-
-      sort(scope).limit(pagination_limit).offset(pagination_offset)
+      sort(resolve_collection(expand_resource)).limit(pagination_limit).offset(pagination_offset)
     end
 
     def count_collection(scope)

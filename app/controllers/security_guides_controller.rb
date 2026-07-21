@@ -22,7 +22,7 @@ class SecurityGuidesController < ApplicationController
   permitted_params_for_action :rule_tree, id: ID_TYPE.required
 
   def os_versions
-    render json: authorize(filtered_base_scope).os_versions, status: :ok
+    render json: authorize(resolve_collection(base_scope)).os_versions, status: :ok
   end
   permission_for_action :os_versions, Rbac::COMPLIANCE_VIEWER
   kessel_permission_for_action :os_versions, KesselRbac::POLICY_VIEW
