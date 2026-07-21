@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_21_150939) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_21_151037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -313,9 +313,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_150939) do
     t.index "((system_profile ->> 'owner_id'::text))", name: "index_systems_on_owner_id_partial", where: "(deleted_at IS NULL)"
     t.index "org_id, ((((system_profile -> 'operating_system'::text) ->> 'major'::text))::integer), ((((system_profile -> 'operating_system'::text) ->> 'minor'::text))::integer)", name: "index_systems_on_org_id_and_os_version_partial", where: "(deleted_at IS NULL)"
     t.index ["deleted_at"], name: "index_systems_on_deleted_at_partial", where: "(deleted_at IS NOT NULL)"
+    t.index ["groups"], name: "index_systems_on_empty_groups_partial", where: "((deleted_at IS NULL) AND (groups = '[]'::jsonb))"
+    t.index ["groups"], name: "index_systems_on_groups_gin_partial", opclass: :jsonb_path_ops, where: "(deleted_at IS NULL)", using: :gin
     t.index ["insights_id"], name: "index_systems_on_insights_id"
     t.index ["org_id", "display_name"], name: "index_systems_on_org_id_and_display_name_partial", where: "(deleted_at IS NULL)"
     t.index ["org_id", "id"], name: "index_systems_on_org_id_and_id_partial", where: "(deleted_at IS NULL)"
+    t.index ["tags"], name: "index_systems_on_tags_gin_partial", opclass: :jsonb_path_ops, where: "(deleted_at IS NULL)", using: :gin
   end
 
   create_table "tailoring_rules_v2", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
