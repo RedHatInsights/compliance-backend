@@ -5,7 +5,10 @@ require 'rails_helper'
 describe Kafka::ReportParser do
   include ActiveJob::TestHelper
 
-  before { ActiveJob::Base.queue_adapter = :test }
+  before do
+    ActiveJob::Base.queue_adapter = :test
+    ParseReportJob.queue_adapter = ActiveJob::Base.queue_adapter
+  end
 
   let(:service) { Kafka::ReportParser.new(message, Karafka.logger) }
   let(:current_user) { FactoryBot.create(:user, :with_cert_auth) }
