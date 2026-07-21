@@ -24,7 +24,7 @@ class ProfilesController < ApplicationController
   private
 
   def profiles
-    @profiles ||= authorize(fetch_collection)
+    @profiles ||= authorize(resolve_collection)
   end
 
   def profile

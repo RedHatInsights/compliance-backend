@@ -53,7 +53,7 @@ class RulesController < ApplicationController
   private
 
   def rules
-    @rules ||= authorize(fetch_collection)
+    @rules ||= authorize(resolve_collection)
   end
 
   def rule

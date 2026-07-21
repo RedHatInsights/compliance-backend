@@ -34,7 +34,7 @@ class ReportsController < ApplicationController
 
   # :nocov:
   def os_versions
-    render json: authorize(resolve_collection(base_scope)).os_versions, status: :ok
+    render json: authorize(fetch_collection(base_scope)).os_versions, status: :ok
   end
   # :nocov:
   permission_for_action :os_versions, Rbac::SYSTEM_READ
@@ -43,7 +43,7 @@ class ReportsController < ApplicationController
   private
 
   def reports
-    @reports ||= authorize(fetch_collection)
+    @reports ||= authorize(resolve_collection)
   end
 
   def report

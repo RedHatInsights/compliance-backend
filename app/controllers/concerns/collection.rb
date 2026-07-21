@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Generic methods to be used when calling fetch_collection on our models
+# Generic methods to be used when calling resolve_collection on our models
 module Collection
   extend ActiveSupport::Concern
 
@@ -14,15 +14,15 @@ module Collection
     end
 
     # Apply search, tag filtering, count, and parent validation to the given scope.
-    def resolve_collection(scope)
+    def fetch_collection(scope)
       scope = apply_filters(scope)
       validate_parents! if collection_count.zero? && permitted_params[:parents]&.any?
       scope
     end
 
     # This is the method where you probably want to put a breakpoint to debug SQL
-    def fetch_collection
-      sort(resolve_collection(expand_resource)).limit(pagination_limit).offset(pagination_offset)
+    def resolve_collection
+      sort(fetch_collection(expand_resource)).limit(pagination_limit).offset(pagination_offset)
     end
 
     def collection_count
