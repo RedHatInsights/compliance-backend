@@ -55,3 +55,64 @@ RSpec.describe Compliance::TableSizeCollector do
     expect(metric.values[existing_tags].value).to eq(updated_existing_size)
   end
 end
+
+RSpec.describe Compliance::GoodJobQueueDepthCollector do
+  let(:active_queue_name) { "queue_#{Faker::Lorem.unique.word}" }
+  let(:stale_queue_name) { "queue_#{Faker::Lorem.unique.word}" }
+  let(:initial_active_count) { Faker::Number.between(from: 1, to: 10) }
+  let(:initial_stale_count) { Faker::Number.between(from: 1, to: 10) }
+  let(:updated_active_count) { Faker::Number.between(from: 11, to: 20) }
+
+  before do
+    metric = Yabeda.good_job_queue_depth
+    metric.set({ queue: active_queue_name }, initial_active_count)
+    metric.set({ queue: stale_queue_name }, initial_stale_count)
+  end
+
+  after do
+    Yabeda.good_job_queue_depth.values.clear
+  end
+
+  it 'removes metrics for queues with no unfinished jobs' do
+    relation = instance_double(ActiveRecord::Relation)
+    allow(GoodJob::Job).to receive(:where).with(finished_at: nil).and_return(relation)
+    allow(relation).to receive(:group).with(:queue_name).and_return(relation)
+    allow(relation).to receive(:count).and_return({ active_queue_name => updated_active_count })
+
+    allow(Yabeda.good_job_queue_depth).to receive(:set).and_call_original
+
+    described_class.collect
+
+    expect(Yabeda.good_job_queue_depth).to have_received(:set).with(
+      { application: 'compliance', qe: 0, source: 'basic', queue: stale_queue_name },
+      0
+    )
+
+    metric = Yabeda.good_job_queue_depth
+
+    expect(metric.values.keys.map { |tags| tags[:queue] }).to include(active_queue_name)
+    expect(metric.values.keys.map { |tags| tags[:queue] }).not_to include(stale_queue_name)
+
+    active_tags = { application: 'compliance', qe: 0, source: 'basic', queue: active_queue_name }
+    expect(metric.values[active_tags].value).to eq(updated_active_count)
+  end
+
+  it 'uses "default" for the nil queue name' do
+    relation = instance_double(ActiveRecord::Relation)
+    allow(GoodJob::Job).to receive(:where).with(finished_at: nil).and_return(relation)
+    allow(relation).to receive(:group).with(:queue_name).and_return(relation)
+    allow(relation).to receive(:count).and_return({ nil => 3 })
+
+    described_class.collect
+
+    default_tags = { application: 'compliance', qe: 0, source: 'basic', queue: 'default' }
+    expect(Yabeda.good_job_queue_depth.values[default_tags].value).to eq(3)
+  end
+
+  it 'rescues and logs errors instead of raising' do
+    allow(GoodJob::Job).to receive(:where).and_raise(ActiveRecord::ConnectionNotEstablished)
+    expect(Rails.logger).to receive(:error).with(/Failed to collect GoodJob queue depth metrics/)
+
+    expect { described_class.collect }.not_to raise_error
+  end
+end

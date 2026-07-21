@@ -593,13 +593,13 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-sidekiq-.*\"}))",
+                "expr": "max(sum(kube_pod_container_status_restarts_total{pod=~\"compliance-goodjob-.*\"}))",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "refId": "A"
               }
             ],
-            "title": "Sidekiq restarts",
+            "title": "GoodJob restarts",
             "type": "stat"
           },
           {
@@ -2307,25 +2307,25 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "(sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (worker))/$qe",
+                "expr": "(sum(rate(activejob_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (activejob))/$qe",
                 "format": "time_series",
                 "intervalFactor": 1,
-                "legendFormat": "{{worker}}",
+                "legendFormat": "{{activejob}}",
                 "refId": "Total"
               },
               {
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "(sum(rate(sidekiq_job_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (worker))/(-($qe - 1))",
+                "expr": "(sum(rate(activejob_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (activejob))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 1,
-                "legendFormat": "{{worker}}",
+                "legendFormat": "{{activejob}}",
                 "refId": "Excluding QE"
               }
             ],
-            "title": "Sidekiq Job Duration",
+            "title": "Job Duration",
             "type": "timeseries"
           },
           {
@@ -2773,10 +2773,10 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\"}[$interval])) by (worker)/$qe",
+                "expr": "sum(increase(activejob_executed_total{application=\"compliance\"}[$interval])) by (activejob)/$qe",
                 "format": "time_series",
                 "intervalFactor": 1,
-                "legendFormat": "{{worker}}",
+                "legendFormat": "{{activejob}}",
                 "refId": "Total"
               },
               {
@@ -2784,12 +2784,12 @@ objects:
                   "type": "prometheus",
                   "uid": "$datasource"
                 },
-                "expr": "sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",qe!=\"1\"}[$interval])) by (worker)/(-($qe - 1))",
+                "expr": "sum(increase(activejob_executed_total{application=\"compliance\",qe!=\"1\"}[$interval])) by (activejob)/(-($qe - 1))",
                 "hide": false,
                 "refId": "Excluding QE"
               }
             ],
-            "title": "Sidekiq Job Count",
+            "title": "Job Count",
             "type": "timeseries"
           },
           {
@@ -3360,11 +3360,11 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "(sum(increase(sidekiq_jobs_executed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)) - (sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0))",
+                "expr": "sum(increase(activejob_success_total{application=\"compliance\",activejob=\"ParseReportJob\"}[$interval])) OR on() vector(0)",
                 "format": "time_series",
                 "interval": "",
                 "intervalFactor": 1,
-                "legendFormat": "{{job_name}}",
+                "legendFormat": "{{activejob}}",
                 "refId": "A"
               }
             ],
@@ -3574,6 +3574,103 @@ objects:
           },
           {
             "datasource": {
+              "type": "prometheus",
+              "uid": "${datasource}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 12,
+              "x": 0,
+              "y": 70
+            },
+            "id": 23763572017,
+            "options": {
+              "legend": {
+                "calcs": [],
+                "displayMode": "list",
+                "placement": "bottom",
+                "showLegend": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.6.11",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${datasource}"
+                },
+                "editorMode": "code",
+                "expr": "max by (queue) (good_job_queue_depth{application=\"compliance\"})",
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "Get GoodJob Queue Depth"
+              }
+            ],
+            "title": "GoodJob Queue Depth",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
               "uid": "$datasource"
             },
             "fieldConfig": {
@@ -3734,11 +3831,11 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "sum(increase(sidekiq_jobs_failed_total{application=\"compliance\",worker=\"ParseReportJob\"}[$interval])) OR on() vector(0)",
+                "expr": "sum(increase(activejob_failed_total{application=\"compliance\",activejob=\"ParseReportJob\"}[$interval])) OR on() vector(0)",
                 "format": "time_series",
                 "interval": "",
                 "intervalFactor": 1,
-                "legendFormat": "{{job_name}}",
+                "legendFormat": "{{activejob}}",
                 "refId": "A"
               }
             ],
