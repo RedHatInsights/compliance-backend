@@ -3,10 +3,6 @@
 # Stores information about rules. This comes from SCAP.
 # Model for Rules
 class Rule < ApplicationRecord
-  # FIXME: clean up after the remodel
-  self.table_name = :rules_v2
-  self.primary_key = :id
-
   indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.try(:gsub, '-', '.')) }
 
   attr_accessor :op_source
@@ -43,12 +39,11 @@ class Rule < ApplicationRecord
   has_many :fixes, class_name: 'Fix', dependent: :destroy
 
   scope :with_remediation_context, lambda {
-    # FIXME: cleanup `Arel::Table.new` after renaming the V2 tables
     joins(:security_guide, :profiles).select(
       arel_table[Arel.star],
       SecurityGuide.arel_table[:ref_id].as('security_guide__ref_id'),
       SecurityGuide.arel_table[:version].as('security_guide__version'),
-      Arel::Table.new('profiles')[:ref_id].as('profiles__ref_id')
+      Profile.arel_table[:ref_id].as('profiles__ref_id')
     )
   }
 
@@ -67,7 +62,7 @@ class Rule < ApplicationRecord
     val = "%#{val}%" if ['ILIKE', 'NOT ILIKE'].include?(op)
 
     {
-      conditions: "rules_v2.identifier->>'label' #{op} ?",
+      conditions: "rules.identifier->>'label' #{op} ?",
       parameter: [val]
     }
   end

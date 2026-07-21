@@ -4,10 +4,6 @@
 class SecurityGuide < ApplicationRecord
   include RuleTree
 
-  # FIXME: clean up after the remodel
-  self.primary_key = :id
-  self.table_name = :security_guides_v2
-
   has_many :profiles, class_name: 'Profile', dependent: :destroy
   has_many :value_definitions, class_name: 'ValueDefinition', dependent: :destroy
   has_many :rules, class_name: 'Rule', dependent: :destroy
@@ -21,7 +17,7 @@ class SecurityGuide < ApplicationRecord
   searchable_by :profile_ref_id, %i[eq] do |_key, _op, val|
     ids = ::Profile.unscoped.where(ref_id: val).select(:security_guide_id)
 
-    { conditions: "security_guides_v2.id IN (#{ids.to_sql})" }
+    { conditions: "security_guides.id IN (#{ids.to_sql})" }
   end
 
   searchable_by :supported_profile, %i[eq] do |_key, _op, val|
@@ -31,7 +27,7 @@ class SecurityGuide < ApplicationRecord
       ref_id: ref_id, os_minor_versions: { os_minor_version: os_minor.to_i }
     ).select(:security_guide_id)
 
-    { conditions: "security_guides_v2.id IN (#{ids.to_sql})" }
+    { conditions: "security_guides.id IN (#{ids.to_sql})" }
   end
 
   sortable_by :title

@@ -3,9 +3,6 @@
 # Stores information about rules. This comes from SCAP.
 # Model for Rules
 class Fix < ApplicationRecord
-  # FIXME: clean up after the remodel
-  self.table_name = :fixes
-
   ANACONDA = 'urn:redhat:anaconda:pre'
   BLUEPRINT = 'urn:redhat:osbuild:blueprint'
   ANSIBLE = 'urn:xccdf:fix:script:ansible'
