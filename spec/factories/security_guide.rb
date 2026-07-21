@@ -20,8 +20,6 @@ FactoryBot.define do
       end
 
       create_list(:rule, ev.rule_count, security_guide: security_guide)
-
-      security_guide.reload # FIXME: remove this after the full remodel
     end
   end
 end

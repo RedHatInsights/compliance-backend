@@ -2,7 +2,7 @@
 
 # Model link between Report and System
 class ReportSystem < ApplicationRecord
-  self.table_name = :report_systems
+  # Necessary explicit primary key, since ReportSystem is backed by a view
   self.primary_key = :id
 
   belongs_to :report, class_name: 'Report'

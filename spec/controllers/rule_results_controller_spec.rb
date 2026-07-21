@@ -96,7 +96,7 @@ describe RuleResultsController do
         # Verify the optimized query includes the required rule table with proper alias
         expect(query).to include('"rule"')
 
-        join_clauses = query.scan(/JOIN "v2_test_results"/i).count
+        join_clauses = query.scan(/JOIN "test_results"/i).count
         expect(join_clauses).to eq(1)
       end
     end

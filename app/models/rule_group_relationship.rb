@@ -2,7 +2,7 @@
 
 # Required and conflicting relationships between rules and rule groups
 class RuleGroupRelationship < ApplicationRecord
-  # FIXME: clean up after the remodel
+  # FIXME: no-op model, needs to be removed
   self.table_name = :rule_group_relationships_v2
   self.primary_key = :id
 

@@ -4,10 +4,6 @@
 class Policy < ApplicationRecord
   include RuleTree
 
-  # FIXME: clean up after the remodel
-  self.table_name = :policies_v2
-  self.primary_key = :id
-
   belongs_to :account, class_name: 'Account'
   belongs_to :profile, class_name: 'Profile'
   belongs_to :report, class_name: 'Report', foreign_key: :id, optional: true # rubocop:disable Rails/InverseOf
@@ -66,7 +62,7 @@ class Policy < ApplicationRecord
                 .where(Arel::Nodes.build_quoted(val).eq(match_os_minors))
                 .select(arel_table[:id])
 
-    { conditions: "policies_v2.id IN (#{ids.to_sql})" }
+    { conditions: "policies.id IN (#{ids.to_sql})" }
   end
 
   before_validation :ensure_default_values
