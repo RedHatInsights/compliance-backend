@@ -310,6 +310,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_122250) do
     t.jsonb "system_profile", default: {}, null: false
     t.jsonb "tags", default: {}, null: false
     t.datetime "updated", null: false
+    t.index ["deleted_at"], name: "index_systems_on_deleted_at_partial", where: "(deleted_at IS NOT NULL)"
     t.index ["insights_id"], name: "index_systems_on_insights_id"
   end
 
