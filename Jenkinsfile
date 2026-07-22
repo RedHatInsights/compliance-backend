@@ -59,8 +59,17 @@ pipeline {
                         curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                         source ./.cicd_bootstrap.sh
 
-                        RBAC_SHA=$(git ls-remote https://github.com/RedHatInsights/insights-rbac.git HEAD | cut -f1)
-                        RBAC_SHORT_SHA=${RBAC_SHA:0:7}
+                        QUAY_TAGS=$(curl -sL "https://quay.io/api/v1/repository/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac/tag?onlyActiveTags=true&limit=50")
+                        LATEST_MANIFEST=$(echo "$QUAY_TAGS" | jq -r '.tags[] | select(.name == "latest") | .manifest_digest' 2>/dev/null)
+                        RBAC_SHORT_SHA=$(echo "$QUAY_TAGS" | jq -r --arg manifest "$LATEST_MANIFEST" '.tags[] | select(.manifest_digest == $manifest) | .name | select(test("^[0-9a-f]{7}$"))' 2>/dev/null | head -n 1)
+
+                        if [ -z "$RBAC_SHORT_SHA" ] || [ "$RBAC_SHORT_SHA" = "null" ]; then
+                            echo "Warning: Could not resolve short git SHA from Quay 'latest' tag. Falling back to git ls-remote..."
+                            RBAC_SHA=$(git ls-remote https://github.com/RedHatInsights/insights-rbac.git HEAD | cut -f1)
+                            RBAC_SHORT_SHA=${RBAC_SHA:0:7}
+                        else
+                            RBAC_SHA="$RBAC_SHORT_SHA"
+                        fi
 
                         export APP_NAME="host-inventory kessel rbac compliance"
                         export IMAGE_TAG="${GIT_COMMIT:0:7}"
