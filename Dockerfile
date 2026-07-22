@@ -12,7 +12,6 @@ ARG devDeps
 ARG extras
 ARG prod
 ARG pgRepo
-ARG IMAGE_TAG
 ARG BUNDLE_JOBS
 
 USER 0
@@ -44,6 +43,7 @@ RUN (microdnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgre
     microdnf clean all -y                                                                         && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 
+ARG IMAGE_TAG
 LABEL BUILD_STAGE_OF=$IMAGE_TAG
 
 ENV prometheus_multiproc_dir=/opt/app-root/src/tmp prometheus_rust_mmaped_file=false

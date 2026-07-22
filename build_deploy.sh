@@ -33,6 +33,11 @@ image_exists_in_quay() {
     fi
 }
 
+IS_MASTER_BRANCH=false
+if [[ "$GIT_BRANCH" == "origin/master" ]] || [[ "$GIT_BRANCH" == "master" ]]; then
+    IS_MASTER_BRANCH=true
+fi
+
 # Check if the current Git branch is 'origin/security-compliance'.
 if [[ "$GIT_BRANCH" == "origin/security-compliance" ]]; then
     # Generate a tag for the container image based on the current date and Git commit short hash.
@@ -43,7 +48,11 @@ else
     # If the current Git branch is not 'origin/security-compliance':
     TARGET_TAG="$(cicd::image_builder::get_image_tag)"
     export CICD_IMAGE_BUILDER_BUILD_ARGS=("IMAGE_TAG=${TARGET_TAG}")
-    export CICD_IMAGE_BUILDER_ADDITIONAL_TAGS=("latest")
+    if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
+        export CICD_IMAGE_BUILDER_ADDITIONAL_TAGS=("latest")
+    else
+        export CICD_IMAGE_BUILDER_ADDITIONAL_TAGS=()
+    fi
 fi
 
 if image_exists_in_quay "$TARGET_TAG"; then
@@ -51,4 +60,24 @@ if image_exists_in_quay "$TARGET_TAG"; then
     exit 0
 fi
 
-cicd::image_builder::build_and_push
+# ==============================================================================
+# OUTER CACHE MANAGEMENT
+# ==============================================================================
+
+CACHE_REPO="quay.io/cloudservices/compliance-backend"
+
+if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
+    echo "Master branch build detected. Building fresh image and populating cache in Quay..."
+
+    # On master: build fresh layers without using older cache, and populate remote cache in Quay
+    cicd::image_builder::build_and_push --layers --no-cache \
+        --cache-to "$CACHE_REPO" \
+        --label "quay.expires-after=30d"
+else
+    echo "PR build detected. Using outer layer cache from Quay..."
+
+    # On PRs: build using remote layer cache from Quay
+    cicd::image_builder::build_and_push --layers \
+        --cache-from "$CACHE_REPO" \
+        --label "quay.expires-after=30d"
+fi
