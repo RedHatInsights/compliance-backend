@@ -473,13 +473,13 @@ objects:
         livenessProbe:
           tcpSocket:
             port: web
-          initialDelaySeconds: 10
+          initialDelaySeconds: 180
           periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /api/compliance/v2/status
             port: web
-          initialDelaySeconds: 10
+          initialDelaySeconds: 180
           periodSeconds: 30
         resources:
           limits:
