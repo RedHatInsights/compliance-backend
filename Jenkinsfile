@@ -88,41 +88,25 @@ pipeline {
                             echo "$resolved_sha"
                         }
 
-                        USE_QUAY_LATEST_TAG_ONLY="false"
+                        RBAC_SHA=$(get_quay_sha "redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac" "https://github.com/RedHatInsights/insights-rbac.git")
+                        RBAC_SHORT_SHA=${RBAC_SHA:0:7}
 
-                        if [ "$USE_QUAY_LATEST_TAG_ONLY" = "true" ]; then
-                            echo "Option A: Using 'latest' image tag directly for dependency images..."
-                            EXTRA_OVERRIDE_ARGS="
-                                --set-image-tag quay.io/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac=latest
-                                --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer=latest
-                                --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api=latest
-                            "
-                        else
-                            echo "Option B: Resolving exact Quay commit SHAs for dependency images..."
-                            RBAC_SHA=$(get_quay_sha "redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac" "https://github.com/RedHatInsights/insights-rbac.git")
-                            RBAC_SHORT_SHA=${RBAC_SHA:0:7}
+                        KESSEL_CONSUMER_SHA=$(get_quay_sha "redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer" "https://github.com/project-kessel/kessel-inventory-consumer.git")
+                        KESSEL_CONSUMER_SHORT_SHA=${KESSEL_CONSUMER_SHA:0:7}
 
-                            KESSEL_CONSUMER_SHA=$(get_quay_sha "redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer" "https://github.com/project-kessel/kessel-inventory-consumer.git")
-                            KESSEL_CONSUMER_SHORT_SHA=${KESSEL_CONSUMER_SHA:0:7}
-
-                            KESSEL_INVENTORY_SHA=$(get_quay_sha "redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api" "https://github.com/project-kessel/kessel-inventory.git")
-                            KESSEL_INVENTORY_SHORT_SHA=${KESSEL_INVENTORY_SHA:0:7}
-
-                            EXTRA_OVERRIDE_ARGS="
-                                --set-image-tag quay.io/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac=${RBAC_SHORT_SHA}
-                                --set-template-ref rbac=${RBAC_SHA}
-                                --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer=${KESSEL_CONSUMER_SHORT_SHA}
-                                --set-template-ref kessel-inventory-consumer=${KESSEL_CONSUMER_SHA}
-                                --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api=${KESSEL_INVENTORY_SHORT_SHA}
-                                --set-template-ref kessel-inventory=${KESSEL_INVENTORY_SHA}
-                            "
-                        fi
+                        KESSEL_INVENTORY_SHA=$(get_quay_sha "redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api" "https://github.com/project-kessel/kessel-inventory.git")
+                        KESSEL_INVENTORY_SHORT_SHA=${KESSEL_INVENTORY_SHA:0:7}
 
                         export APP_NAME="host-inventory kessel rbac compliance"
                         export IMAGE_TAG="${GIT_COMMIT:0:7}"
                         export OPTIONAL_DEPS_METHOD="all"
                         export EXTRA_DEPLOY_ARGS="
-                            ${EXTRA_OVERRIDE_ARGS}
+                            --set-image-tag quay.io/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac=${RBAC_SHORT_SHA}
+                            --set-template-ref rbac=${RBAC_SHA}
+                            --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer=${KESSEL_CONSUMER_SHORT_SHA}
+                            --set-template-ref kessel-inventory-consumer=${KESSEL_CONSUMER_SHA}
+                            --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api=${KESSEL_INVENTORY_SHORT_SHA}
+                            --set-template-ref kessel-inventory=${KESSEL_INVENTORY_SHA}
                             -p rbac/NOTIFICATIONS_RH_ENABLED=False
                             -p rbac/V2_MIGRATION_APP_EXCLUDE_LIST=approval
                             -p rbac/ROLE_CREATE_ALLOW_LIST=remediations,inventory,policies,advisor,vulnerability,compliance,automation-analytics,notifications,patch,integrations,ros,staleness,config-manager,idmsvc
