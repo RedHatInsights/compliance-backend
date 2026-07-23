@@ -565,10 +565,11 @@ objects:
           httpGet:
             path: /
             port: 3000
-          initialDelaySeconds: 30
+          initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
         readinessProbe:
+          initialDelaySeconds: 180
           timeoutSeconds: 15
           periodSeconds: 30
           exec:
@@ -601,12 +602,14 @@ objects:
           httpGet:
             path: /status
             port: ${{GOOD_JOB_PROBE_PORT}}
+          initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /status
             port: ${{GOOD_JOB_PROBE_PORT}}
+          initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
         env:
@@ -698,9 +701,11 @@ objects:
           httpGet:
             path: /metrics
             port: metrics
+          initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
         readinessProbe:
+          initialDelaySeconds: 180
           timeoutSeconds: 15
           periodSeconds: 30
           exec:
