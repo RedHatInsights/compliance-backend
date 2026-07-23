@@ -38,6 +38,32 @@ module Compliance
       Rails.logger.error("Failed to collect DB table size metrics: #{e.full_message}")
     end
   end
+
+  class GoodJobQueueDepthCollector
+    def self.collect
+      return unless defined?(GoodJob::Job)
+
+      current_queues = []
+
+      GoodJob::Job.where(finished_at: nil).group(:queue_name).count.each do |queue, count|
+        queue_name = queue || 'default'
+        current_queues << queue_name
+        Yabeda.good_job_queue_depth.set({ queue: queue_name }, count)
+      end
+
+      # See the LIMITATION NOTE on TableSizeCollector for why stale entries are
+      # zeroed before being purged from the local in-memory hash.
+      metric = Yabeda.good_job_queue_depth
+      metric.values.keys.each do |tags|
+        unless current_queues.include?(tags[:queue])
+          metric.set(tags, 0)
+          metric.values.delete(tags)
+        end
+      end
+    rescue StandardError => e
+      Rails.logger.error("Failed to collect GoodJob queue depth metrics: #{e.message}")
+    end
+  end
 end
 
 # Metrics configuration
@@ -52,13 +78,18 @@ Yabeda.configure do
         comment: 'Total disk space used by each database table, including indexes and TOAST',
         tags: %i[table]
 
+  gauge :good_job_queue_depth,
+        comment: 'Number of unfinished jobs in the GoodJob queue',
+        tags: %i[queue]
+
   collect do
     Compliance::TableSizeCollector.collect
+    Compliance::GoodJobQueueDepthCollector.collect
   end
 end
 
-# Start the metrics server for sidekiq and karafka
-if %w[sidekiq karafka].any? { |p| $PROGRAM_NAME.include?(p) }
+# Start the metrics server for sidekiq, karafka, and good_job
+if %w[sidekiq karafka good_job].any? { |p| $PROGRAM_NAME.include?(p) }
   if ClowderCommonRuby::Config.clowder_enabled?
     ENV['PROMETHEUS_EXPORTER_PORT'] = ClowderCommonRuby::Config.load.metricsPort.to_s
   else
