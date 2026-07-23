@@ -6,6 +6,7 @@ CICD_TOOLS_URL="https://raw.githubusercontent.com/RedHatInsights/cicd-tools/main
 # shellcheck source=/dev/null
 source <(curl -sSL "$CICD_TOOLS_URL") image_builder
 
+export CICD_LOG_DEBUG=true
 export CICD_IMAGE_BUILDER_IMAGE_NAME='quay.io/cloudservices/compliance-backend'
 
 image_exists_in_quay() {
@@ -71,12 +72,14 @@ if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
 
     # On master: build fresh layers without using older cache, and populate remote cache in Quay
     cicd::image_builder::build_and_push --layers --no-cache \
-        --cache-to "$CACHE_REPO"
+        --cache-to "$CACHE_REPO" \
+        --log-level=debug
 else
     echo "PR build detected. Using outer layer cache from Quay..."
 
     # On PRs: build using remote layer cache from Quay
     cicd::image_builder::build_and_push --layers \
         --cache-from "$CACHE_REPO" \
-        --label "quay.expires-after=30d"
+        --label "quay.expires-after=30d" \
+        --log-level=debug
 fi
