@@ -7,13 +7,15 @@ ARG BUNDLE_JOBS="4"
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:6c79f4fb38a20d496c859025d57e4074835e849d5d14819c4e021ad78446bce8 AS base
 
-ARG deps
-ARG devDeps
-
 #############################################################
 
 FROM base AS build
 
+# Diverge stage 1 immediately to prevent cache tag collisions with final stage
+ENV IS_BUILD_STAGE=true
+
+ARG deps
+ARG devDeps
 ARG extras
 ARG prod
 ARG pgRepo
@@ -56,6 +58,9 @@ ENV prometheus_multiproc_dir=/opt/app-root/src/tmp prometheus_rust_mmaped_file=f
 #############################################################
 
 FROM base
+
+ARG deps
+ARG devDeps
 
 WORKDIR /opt/app-root/src
 
