@@ -71,8 +71,7 @@ if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
 
     # On master: build fresh layers without using older cache, and populate remote cache in Quay
     cicd::image_builder::build_and_push --layers --no-cache \
-        --cache-to "$CACHE_REPO" \
-        --label "quay.expires-after=30d"
+        --cache-to "$CACHE_REPO"
 else
     echo "PR build detected. Using outer layer cache from Quay..."
 
