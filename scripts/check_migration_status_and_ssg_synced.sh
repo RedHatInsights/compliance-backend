@@ -11,17 +11,18 @@ bundle exec ruby -r clowder-common-ruby -r socket -e '
     [ENV.fetch("POSTGRESQL_HOST", "localhost"), ENV.fetch("POSTGRESQL_PORT", "5432").to_i]
   end
 
-  puts "Waiting for database socket at #{host}:#{port}..."
-  120.times do
+  max_timeout = ENV.fetch("MAX_INIT_TIMEOUT_SECONDS", "120").to_i
+  puts "Waiting for database socket at #{host}:#{port} (max #{max_timeout}s)..."
+  max_timeout.times do
     begin
       if host.start_with?("/")
         UNIXSocket.new("#{host}/.s.PGSQL.#{port}").close
       else
-        TCPSocket.new(host, port).close
+        TCPSocket.new(host, port, connect_timeout: 5).close
       end
       puts "Database socket is open!"
       exit 0
-    rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, Errno::EHOSTUNREACH, Errno::ENOENT, SocketError
+    rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, Errno::EHOSTUNREACH, Errno::ENOENT, SocketError, IO::TimeoutError
       sleep 1
     end
   end
