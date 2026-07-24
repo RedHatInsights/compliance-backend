@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_14_140729) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_20_092250) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -417,6 +417,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_14_140729) do
             GROUP BY historical_test_results_v2_1.tailoring_id, historical_test_results_v2_1.system_id) tr ON (((historical_test_results_v2.tailoring_id = tr.tailoring_id) AND (historical_test_results_v2.system_id = tr.system_id) AND (historical_test_results_v2.end_time = tr.end_time))));
   SQL
 
+  create_function :v2_test_results_delete, sql_definition: <<-'SQL'
+      CREATE OR REPLACE FUNCTION public.v2_test_results_delete()
+       RETURNS trigger
+       LANGUAGE plpgsql
+      AS $function$
+      BEGIN
+          DELETE FROM "historical_test_results_v2" WHERE "id" = OLD."id";
+          RETURN OLD;
+      END
+      $function$
+  SQL
+
   create_function :v2_test_results_insert, sql_definition: <<-'SQL'
       CREATE OR REPLACE FUNCTION public.v2_test_results_insert()
        RETURNS trigger
@@ -442,7 +454,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_14_140729) do
             NEW."start_time",
             NEW."end_time",
             NEW."score",
-            NEW."supported",
+            COALESCE(NEW."supported", TRUE),
             COALESCE(NEW."failed_rule_count", 0),
             COALESCE(NEW."created_at", NOW()),
             COALESCE(NEW."updated_at", NOW())
@@ -454,23 +466,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_14_140729) do
       $function$
   SQL
 
-  create_function :v2_test_results_delete, sql_definition: <<-'SQL'
-      CREATE OR REPLACE FUNCTION public.v2_test_results_delete()
-       RETURNS trigger
-       LANGUAGE plpgsql
-      AS $function$
-      BEGIN
-          DELETE FROM "historical_test_results_v2" WHERE "id" = OLD."id";
-          RETURN OLD;
-      END
-      $function$
+  create_trigger :v2_test_results_delete, sql_definition: <<-SQL
+      CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
   SQL
 
   create_trigger :v2_test_results_insert, sql_definition: <<-SQL
       CREATE TRIGGER v2_test_results_insert INSTEAD OF INSERT ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_insert()
-  SQL
-
-  create_trigger :v2_test_results_delete, sql_definition: <<-SQL
-      CREATE TRIGGER v2_test_results_delete INSTEAD OF DELETE ON public.v2_test_results FOR EACH ROW EXECUTE FUNCTION v2_test_results_delete()
   SQL
 end
