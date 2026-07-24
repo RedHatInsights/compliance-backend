@@ -59,15 +59,13 @@ pipeline {
                         curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                         source ./.cicd_bootstrap.sh
 
-                        RBAC_SHA=$(git ls-remote https://github.com/RedHatInsights/insights-rbac.git HEAD | cut -f1)
-                        RBAC_SHORT_SHA=${RBAC_SHA:0:7}
-
                         export APP_NAME="host-inventory kessel rbac compliance"
                         export IMAGE_TAG="${GIT_COMMIT:0:7}"
                         export OPTIONAL_DEPS_METHOD="all"
                         export EXTRA_DEPLOY_ARGS="
-                            --set-image-tag quay.io/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac=${RBAC_SHORT_SHA}
-                            --set-template-ref rbac=${RBAC_SHA}
+                            --set-image-tag quay.io/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac=latest
+                            --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer=latest
+                            --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api=latest
                             -p rbac/NOTIFICATIONS_RH_ENABLED=False
                             -p rbac/V2_MIGRATION_APP_EXCLUDE_LIST=approval
                             -p rbac/ROLE_CREATE_ALLOW_LIST=remediations,inventory,policies,advisor,vulnerability,compliance,automation-analytics,notifications,patch,integrations,ros,staleness,config-manager,idmsvc
