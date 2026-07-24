@@ -76,6 +76,10 @@ describe Kafka::DeletedSystemCleaner do
         service.cleanup_system
       end.not_to(change { System.count })
     end
+
+    it 'increments the noop delete counter' do
+      expect { service.cleanup_system }.to increment_yabeda_counter(Yabeda.compliance_system_delete_noop_total).by(1)
+    end
   end
 
   context 'when deletion is not possible' do
