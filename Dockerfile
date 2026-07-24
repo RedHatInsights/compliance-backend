@@ -4,6 +4,7 @@ ARG extras=""
 ARG prod="true"
 ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-9/mmraka-postgresql-16-epel-9.repo"
 ARG BUNDLE_JOBS="4"
+ARG HERMETIC="false"
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:6c79f4fb38a20d496c859025d57e4074835e849d5d14819c4e021ad78446bce8 AS base
 
@@ -20,6 +21,7 @@ ARG extras
 ARG prod
 ARG pgRepo
 ARG BUNDLE_JOBS
+ARG HERMETIC
 
 USER 0
 
@@ -33,21 +35,22 @@ COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
 COPY ./.hermetic_builds/cargo/config.toml .hermetic_builds/cargo/config.toml
 
-RUN (microdnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgresql.repo $pgRepo) && \
-    rpm -e --nodeps tzdata &>/dev/null                                                            && \
-    microdnf module enable -y ruby:3.3                                                            && \
-    microdnf install --nodocs -y $deps $devDeps $extras                                           && \
-    chmod +t /tmp                                                                                 && \
-    gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin                        && \
-    gem install bundler                                                                           && \
-    ( [[ $prod != "true" ]] || bundle config set --local without 'development test' )             && \
-    ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )                      && \
-    ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )                       && \
-    bundle config set --local retry '2'                                                           && \
-    bundle config set --local force_ruby_platform true                                            && \
-    bundle config set --local build.ffi --enable-system-libffi                                    && \
-    bundle install --jobs 6                                                                       && \
-    microdnf clean all -y                                                                         && \
+RUN ( [[ $HERMETIC == "true" ]] || microdnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgresql.repo $pgRepo ) && \
+    ( [[ $HERMETIC == "true" ]] || rpm -e --nodeps tzdata &>/dev/null )                                                             && \
+    microdnf module enable -y ruby:3.3                                                                    && \
+    microdnf install --nodocs -y $deps $devDeps $extras                                                   && \
+    chmod +t /tmp                                                                                         && \
+    ( [[ $HERMETIC == "true" ]] || gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin ) && \
+    ( [[ $HERMETIC == "true" ]] || gem install bundler )                                                    && \
+    ( [[ $HERMETIC != "true" ]] || (mkdir -p .cargo && cp .hermetic_builds/cargo/config.toml .cargo/config.toml) ) && \
+    ( [[ $prod != "true" ]] || bundle config set --local without 'development test' )                     && \
+    ( [[ $prod != "true" ]] || bundle config set --local deployment 'true' )                              && \
+    ( [[ $prod != "true" ]] || bundle config set --local path './.bundle' )                               && \
+    bundle config set --local retry '2'                                                                   && \
+    bundle config set --local force_ruby_platform true                                                    && \
+    bundle config set --local build.ffi --enable-system-libffi                                            && \
+    bundle install --jobs 6                                                                               && \
+    microdnf clean all -y                                                                                 && \
     ( [[ $prod != "true" ]] || bundle clean -V )
 
 ARG IMAGE_TAG
@@ -61,18 +64,19 @@ FROM base
 
 ARG deps
 ARG devDeps
+ARG HERMETIC
 
 WORKDIR /opt/app-root/src
 
 USER 0
 
-RUN rpm -e --nodeps tzdata &>/dev/null                                     && \
-    microdnf module enable -y ruby:3.3                                     && \
-    microdnf install --nodocs -y $deps                                     && \
-    chmod +t /tmp                                                          && \
-    gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin && \
-    microdnf clean all -y                                                  && \
-    chown 1001:root ./                                                     && \
+RUN ( [[ $HERMETIC == "true" ]] || rpm -e --nodeps tzdata &>/dev/null )                && \
+    microdnf module enable -y ruby:3.3                                                 && \
+    microdnf install --nodocs -y $deps                                                 && \
+    chmod +t /tmp                                                                      && \
+    ( [[ $HERMETIC == "true" ]] || gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin ) && \
+    microdnf clean all -y                                                              && \
+    chown 1001:root ./                                                                 && \
     install -v -d -m 1777 -o 1001 ./tmp ./log
 
 USER 1001
