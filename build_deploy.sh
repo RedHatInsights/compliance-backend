@@ -67,13 +67,23 @@ fi
 
 CACHE_REPO="quay.io/cloudservices/compliance-backend"
 
+# Determine merge-base with master to extract a consistent commit timestamp for reproducible layer caching
+MERGE_BASE=$(git merge-base HEAD origin/master 2>/dev/null || git merge-base HEAD master 2>/dev/null || echo "HEAD")
+BUILD_TIMESTAMP=$(git log --no-show-signature -1 --format=%ct "$MERGE_BASE" 2>/dev/null)
+
+if [ -z "$BUILD_TIMESTAMP" ]; then
+    BUILD_TIMESTAMP=$(git log --no-show-signature -1 --format=%ct HEAD 2>/dev/null || echo "0")
+fi
+
+echo "Build timestamp resolved to: $BUILD_TIMESTAMP (from commit: $MERGE_BASE)"
+
 if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
     echo "Master branch build detected. Building fresh image and populating cache in Quay..."
 
     # On master: build fresh layers without using older cache, and populate remote cache in Quay
     cicd::image_builder::build_and_push --layers --no-cache \
         --format oci \
-        --timestamp 0 \
+        --timestamp "$BUILD_TIMESTAMP" \
         --cache-to "$CACHE_REPO" \
         --log-level=debug
 else
@@ -82,7 +92,7 @@ else
     # On PRs: build using remote layer cache from Quay
     cicd::image_builder::build_and_push --layers \
         --format oci \
-        --timestamp 0 \
+        --timestamp "$BUILD_TIMESTAMP" \
         --cache-from "$CACHE_REPO" \
         --cache-to "$CACHE_REPO" \
         --label "quay.expires-after=30d" \
