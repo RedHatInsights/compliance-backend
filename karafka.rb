@@ -31,6 +31,7 @@ class KarafkaApp < Karafka::App
     config.client_id = self::CLIENT_ID
     config.consumer_persistence = !Rails.env.development?
     config.pause_with_exponential_backoff = false
+    config.concurrency = ENV.fetch('KARAFKA_CONCURRENCY', 4).to_i
   end
 
   Karafka.monitor.subscribe(

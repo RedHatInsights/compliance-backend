@@ -561,6 +561,10 @@ objects:
               fieldPath: metadata.namespace
         - name: LOGSTREAM
           value: "${LOGSTREAM_CONSUMER}"
+        - name: POSTGRESQL_MAX_CONNECTIONS
+          value: "${POSTGRESQL_MAX_CONNECTIONS}"
+        - name: KARAFKA_CONCURRENCY
+          value: "${KARAFKA_CONCURRENCY}"
         livenessProbe:
           httpGet:
             path: /
@@ -999,6 +1003,9 @@ parameters:
 - name: POSTGRESQL_MAX_CONNECTIONS
   description: 'ActiveRecord connection pool size per process'
   value: "5"
+- name: KARAFKA_CONCURRENCY
+  description: 'Number of Karafka worker threads in the inventory-consumer process; must be less than POSTGRESQL_MAX_CONNECTIONS'
+  value: "4"
 - name: OLD_PATH_PREFIX
   value: /r/insights/platform
 - name: SETTINGS__FORCE_IMPORT_SSGS
