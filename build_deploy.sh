@@ -82,6 +82,7 @@ else
     cicd::image_builder::build_and_push --layers \
         --format oci \
         --cache-from "$CACHE_REPO" \
+        --cache-to "$CACHE_REPO" \
         --label "quay.expires-after=30d" \
         --log-level=debug
 fi
