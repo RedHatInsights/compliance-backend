@@ -26,7 +26,7 @@ RSpec.describe Xccdf::Rules do
 
       # NOTE: taken from `app/services/concerns/xccdf/value_definitions.rb`
       def value_definition_for(ref_id:)
-        @value_lookup.fetch(ref_id)
+        @value_lookup[ref_id]
       end
     end.new(
       security_guide: security_guide,
@@ -140,6 +140,93 @@ RSpec.describe Xccdf::Rules do
 
       expect(results.length).to eq(2)
       expect(results.map(&:ref_id)).to contain_exactly(*op_rules.map(&:id))
+    end
+
+    context 'when a rule references a regex banner value' do
+      let!(:banner_contents_definition) do
+        FactoryBot.create(
+          :v2_value_definition,
+          security_guide: security_guide,
+          ref_id: 'xccdf_org.ssgproject.content_value_login_banner_contents'
+        )
+      end
+
+      let!(:banner_text_definition) do
+        FactoryBot.create(
+          :v2_value_definition,
+          security_guide: security_guide,
+          ref_id: 'xccdf_org.ssgproject.content_value_login_banner_text'
+        )
+      end
+
+      let(:value_lookup) do
+        {
+          value_definition.ref_id => value_definition,
+          banner_text_definition.ref_id => banner_text_definition,
+          banner_contents_definition.ref_id => banner_contents_definition
+        }
+      end
+
+      let(:op_rules) do
+        [
+          OpenStruct.new(
+            id: 'xccdf_org.ssgproject.content_rule_banner_etc_issue',
+            title: Faker::Lorem.sentence,
+            description: Faker::Lorem.paragraph,
+            rationale: Faker::Lorem.paragraph,
+            severity: 'medium',
+            parent_id: rule_groups[0].ref_id,
+            values: [banner_text_definition.ref_id],
+            identifier: OpenStruct.new(label: Faker::Fantasy::Tolkien.character),
+            references: []
+          )
+        ]
+      end
+
+      it 'maps regex banner values to plaintext banner contents for remediation' do
+        rule = service.rules.first
+
+        expect(rule.value_checks).to eq([banner_contents_definition.id])
+      end
+    end
+
+    context 'when plaintext banner contents are unavailable in the security guide' do
+      let!(:banner_text_definition) do
+        FactoryBot.create(
+          :v2_value_definition,
+          security_guide: security_guide,
+          ref_id: 'xccdf_org.ssgproject.content_value_login_banner_text'
+        )
+      end
+
+      let(:value_lookup) do
+        {
+          value_definition.ref_id => value_definition,
+          banner_text_definition.ref_id => banner_text_definition
+        }
+      end
+
+      let(:op_rules) do
+        [
+          OpenStruct.new(
+            id: 'xccdf_org.ssgproject.content_rule_banner_etc_issue',
+            title: Faker::Lorem.sentence,
+            description: Faker::Lorem.paragraph,
+            rationale: Faker::Lorem.paragraph,
+            severity: 'medium',
+            parent_id: rule_groups[0].ref_id,
+            values: [banner_text_definition.ref_id],
+            identifier: OpenStruct.new(label: Faker::Fantasy::Tolkien.character),
+            references: []
+          )
+        ]
+      end
+
+      it 'keeps the regex banner value as a fallback' do
+        rule = service.rules.first
+
+        expect(rule.value_checks).to eq([banner_text_definition.id])
+      end
     end
   end
 end
