@@ -473,13 +473,13 @@ objects:
         livenessProbe:
           tcpSocket:
             port: web
-          initialDelaySeconds: 10
+          initialDelaySeconds: 180
           periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /api/compliance/v2/status
             port: web
-          initialDelaySeconds: 10
+          initialDelaySeconds: 180
           periodSeconds: 30
         resources:
           limits:
@@ -565,10 +565,11 @@ objects:
           httpGet:
             path: /
             port: 3000
-          initialDelaySeconds: 30
+          initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
         readinessProbe:
+          initialDelaySeconds: 180
           timeoutSeconds: 15
           periodSeconds: 30
           exec:
@@ -601,12 +602,14 @@ objects:
           httpGet:
             path: /status
             port: ${{GOOD_JOB_PROBE_PORT}}
+          initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
         readinessProbe:
           httpGet:
             path: /status
             port: ${{GOOD_JOB_PROBE_PORT}}
+          initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
         env:
@@ -698,9 +701,11 @@ objects:
           httpGet:
             path: /metrics
             port: metrics
+          initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
         readinessProbe:
+          initialDelaySeconds: 180
           timeoutSeconds: 15
           periodSeconds: 30
           exec:
