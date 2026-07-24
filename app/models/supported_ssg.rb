@@ -22,7 +22,7 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
 
   def version_with_revision
     Gem::Version.new(
-      package.sub(/^scap-security-guide-(.*)\.el.*$/, '\1')
+      package.sub(/^scap-security-guide-/, '').sub(/\.el.*$/, '')
     )
   end
 
