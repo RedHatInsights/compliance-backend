@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Generic methods to be used when calling fetch_collection on our models
+# Generic methods to be used when calling resolve_collection on our models
 module Collection
   extend ActiveSupport::Concern
 
@@ -9,32 +9,27 @@ module Collection
   included do
     private
 
-    # Scope for metadata endpoints (e.g. os_versions) that need search and tag filtering
-    # but not the aggregation subqueries added by expand_resource for serialization.
-    def filtered_base_scope
-      scope = filter_by_tags(search(base_scope))
-      count = count_collection(scope)
-      # If the count of records equals zero, make sure that the parents are not accessible
-      validate_parents! if count.zero? && permitted_params[:parents]&.any?
+    def apply_filters(scope)
+      filter_by_tags(search(scope))
+    end
+
+    # Apply search, tag filtering, count, and parent validation to the given scope.
+    def fetch_collection(scope)
+      scope = apply_filters(scope)
+      validate_parents! if collection_count.zero? && permitted_params[:parents]&.any?
       scope
     end
 
     # This is the method where you probably want to put a breakpoint to debug SQL
-    def fetch_collection
-      scope = filter_by_tags(search(expand_resource))
-      count = count_collection(scope)
-      # If the count of records equals zero, make sure that the parents are not accessible
-      validate_parents! if count.zero? && permitted_params[:parents]&.any?
-
-      sort(scope).limit(pagination_limit).offset(pagination_offset)
+    def resolve_collection
+      sort(fetch_collection(expand_resource)).limit(pagination_limit).offset(pagination_offset)
     end
 
-    def count_collection(scope)
+    def collection_count
       # Count the whole collection using a single column and not the whole table. This column
       # by default is the primary key of the table, however, in certain cases using a different
       # indexed column might produce faster results without even accessing the table.
-      # Pagination is disabled when counting collection so that all returned entities are counted.
-      @count_collection ||= scope.except(:limit, :offset).reselect(resource.base_class.count_by).count
+      @collection_count ||= apply_filters(count_scope).reselect(resource.base_class.count_by).count
     end
 
     def validate_parents!

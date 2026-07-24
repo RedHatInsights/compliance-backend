@@ -6,7 +6,7 @@ module Resolver
 
   private
 
-  # Parent joins and 1:1 association joins applied. Foundation for both `expand_resource` and `filtered_base_scope`.
+  # Parent joins and 1:1 association joins applied. Foundation for both `expand_resource` and `fetch_collection`.
   def base_scope
     # Join with the route parents
     scope = join_parents(pundit_scope, permitted_params[:parents])
@@ -17,6 +17,18 @@ module Resolver
   # Building the query that returns all the required data for serialization
   def expand_resource
     join_aggregated(base_scope).select(*select_fields)
+  end
+
+  # Minimal scope for counting: base_scope plus only the aggregation subqueries whose fields
+  # are referenced by the current filter. Skips all other aggregations to keep the count query fast.
+  def count_scope
+    needed = filter_required_aggregations
+    return base_scope if needed.empty?
+
+    needed.reduce(base_scope) do |scope, (association, fields)|
+      aliases = fields.map { |aggregation, column| aggregation.call.as(column) }
+      scope.joins(subquery_fragment(association, aliases)).select(fields.map(&:second))
+    end
   end
 
   # Reduce through all the associations of the `relation` and join+scope them or return the
@@ -109,6 +121,17 @@ module Resolver
   # Retrieve the list of aggregations on any one-to-many associations specified by the serializer
   def aggregations
     @aggregations ||= serializer.aggregations(permitted_params[:parents], resource.one_to_many)
+  end
+
+  # Returns the subset of aggregations whose field names appear in the current filter string,
+  # so that count_scope can join only what is necessary for the count query to succeed.
+  def filter_required_aggregations
+    return {} if permitted_params[:filter].blank?
+
+    filter_fields = permitted_params[:filter].scan(/[a-z_]+/).to_set
+    aggregations.select do |_assoc, fields|
+      fields.any? { |_fn, column| filter_fields.include?(column.delete_prefix('aggregate_')) }
+    end
   end
 
   # List all the joined (direct and indirect) associations of a given scope

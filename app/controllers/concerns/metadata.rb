@@ -15,8 +15,8 @@ module Metadata
     # This is part of a JSON schema, no need for strict metrics
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
-    def metadata(model)
-      total ||= count_collection(model)
+    def metadata
+      total ||= collection_count
 
       {
         meta: {

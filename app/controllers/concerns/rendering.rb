@@ -36,7 +36,7 @@ module Rendering
         data: Panko::ArraySerializer.new(
           model, only: only, each_serializer: serializer, context: serialization_context
         ),
-        **metadata(model)
+        **metadata
       )
     end
 
