@@ -59,6 +59,35 @@ objects:
           join: "LEFT JOIN hbi.system_profiles_static sps ON sps.org_id = h.org_id AND sps.host_id = h.id"
           where: "sps.bootc_status->'booted'->>'image_digest' IS NULL"
     jobs:
+    - name: db-migrate
+      restartPolicy: OnFailure
+      podSpec:
+        image: ${IMAGE}:${IMAGE_TAG}
+        command: ["/bin/sh", "-c"]
+        args: ["for i in {1..30}; do bundle exec rake db:migrate && exit 0; echo 'DB not ready, waiting...'; sleep 2; done; exit 1"]
+        resources:
+          limits:
+            cpu: ${CPU_LIMIT_SERVICE}
+            memory: ${MEMORY_LIMIT_SERVICE}
+          requests:
+            cpu: ${CPU_REQUEST_SERVICE}
+            memory: ${MEMORY_REQUEST_SERVICE}
+        env:
+        - name: APPLICATION_TYPE
+          value: compliance-db-migrate
+        - name: RAILS_ENV
+          value: "${RAILS_ENV}"
+        - name: RAILS_LOG_TO_STDOUT
+          value: "${RAILS_LOG_TO_STDOUT}"
+        - name: RUBY_YJIT_ENABLE
+          value: "${RUBY_YJIT_ENABLE}"
+        - name: APP_NAME
+          value: "${APP_NAME}"
+        - name: SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: compliance-backend
+              key: secret_key_base
     - name: import-ssg
       schedule: ${IMPORT_SSG_SCHEDULE}
       concurrencyPolicy: Forbid
@@ -776,6 +805,18 @@ objects:
               fieldPath: metadata.namespace
         - name: LOGSTREAM
           value: "${LOGSTREAM_SIDEKIQ}"
+
+- apiVersion: cloud.redhat.com/v1alpha1
+  kind: ClowdJobInvocation
+  metadata:
+    annotations:
+      clowder.redhat.com/expected-image-tag: ${IMAGE_TAG}
+    name: db-migrate-${IMAGE_TAG}
+  spec:
+    appName: "${APP_NAME}"
+    jobs:
+      - db-migrate
+    runOnNotReady: true
 
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
