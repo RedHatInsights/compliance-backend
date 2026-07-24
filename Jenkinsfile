@@ -59,8 +59,43 @@ pipeline {
                         curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                         source ./.cicd_bootstrap.sh
 
-                        RBAC_SHA=$(git ls-remote https://github.com/RedHatInsights/insights-rbac.git HEAD | cut -f1)
+                        get_quay_sha() {
+                            local quay_repo="$1"
+                            local git_repo="$2"
+                            local quay_url="https://quay.io/api/v1/repository/${quay_repo}/tag?onlyActiveTags=true&limit=50"
+                            local quay_tags=""
+
+                            if ! quay_tags=$(curl -sL --fail --connect-timeout 10 --max-time 30 "$quay_url" 2>/dev/null); then
+                                quay_tags=""
+                            fi
+
+                            local latest_manifest
+                            latest_manifest=$(echo "$quay_tags" | jq -r '.tags[] | select(.name == "latest") | .manifest_digest' 2>/dev/null)
+
+                            local resolved_sha
+                            resolved_sha=$(echo "$quay_tags" | jq -r --arg manifest "$latest_manifest" '.tags[] | select(.manifest_digest == $manifest) | .name | select(test("^[0-9a-f]{40}$"))' 2>/dev/null | head -n 1)
+
+                            if [ -z "$resolved_sha" ] || [ "$resolved_sha" = "null" ]; then
+                                echo "Warning: Could not resolve full git SHA from Quay 'latest' tag for ${quay_repo}. Falling back to git ls-remote..." >&2
+                                resolved_sha=$(git ls-remote "$git_repo" HEAD | cut -f1)
+                            fi
+
+                            if ! printf '%s' "$resolved_sha" | grep -Eq '^[0-9a-f]{40}$'; then
+                                echo "Error: Could not resolve a valid 40-character commit SHA for ${quay_repo}." >&2
+                                exit 1
+                            fi
+
+                            echo "$resolved_sha"
+                        }
+
+                        RBAC_SHA=$(get_quay_sha "redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac" "https://github.com/RedHatInsights/insights-rbac.git")
                         RBAC_SHORT_SHA=${RBAC_SHA:0:7}
+
+                        KESSEL_CONSUMER_SHA=$(get_quay_sha "redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer" "https://github.com/project-kessel/kessel-inventory-consumer.git")
+                        KESSEL_CONSUMER_SHORT_SHA=${KESSEL_CONSUMER_SHA:0:7}
+
+                        KESSEL_INVENTORY_SHA=$(get_quay_sha "redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api" "https://github.com/project-kessel/kessel-inventory.git")
+                        KESSEL_INVENTORY_SHORT_SHA=${KESSEL_INVENTORY_SHA:0:7}
 
                         export APP_NAME="host-inventory kessel rbac compliance"
                         export IMAGE_TAG="${GIT_COMMIT:0:7}"
@@ -68,6 +103,10 @@ pipeline {
                         export EXTRA_DEPLOY_ARGS="
                             --set-image-tag quay.io/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac=${RBAC_SHORT_SHA}
                             --set-template-ref rbac=${RBAC_SHA}
+                            --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer=${KESSEL_CONSUMER_SHORT_SHA}
+                            --set-template-ref kessel-inventory-consumer=${KESSEL_CONSUMER_SHA}
+                            --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api=${KESSEL_INVENTORY_SHORT_SHA}
+                            --set-template-ref kessel-inventory=${KESSEL_INVENTORY_SHA}
                             -p rbac/NOTIFICATIONS_RH_ENABLED=False
                             -p rbac/V2_MIGRATION_APP_EXCLUDE_LIST=approval
                             -p rbac/ROLE_CREATE_ALLOW_LIST=remediations,inventory,policies,advisor,vulnerability,compliance,automation-analytics,notifications,patch,integrations,ros,staleness,config-manager,idmsvc
