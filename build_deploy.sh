@@ -72,6 +72,7 @@ if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
 
     # On master: build fresh layers without using older cache, and populate remote cache in Quay
     cicd::image_builder::build_and_push --layers --no-cache \
+        --format oci \
         --timestamp 0 \
         --cache-to "$CACHE_REPO" \
         --log-level=debug
@@ -80,6 +81,7 @@ else
 
     # On PRs: build using remote layer cache from Quay
     cicd::image_builder::build_and_push --layers \
+        --format oci \
         --timestamp 0 \
         --cache-from "$CACHE_REPO" \
         --cache-to "$CACHE_REPO" \
