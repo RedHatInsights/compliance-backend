@@ -232,6 +232,6 @@ Format for git commit message is described in `.commitlint.yml`.
 
 ## Licensing
 
-<!-- Dummy line 3 to test build cache -->
+<!-- TEST build cache node test 5 -->
 
 The code in this project is licensed under GPL v3 license.
