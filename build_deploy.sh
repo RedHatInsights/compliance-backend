@@ -68,14 +68,15 @@ fi
 CACHE_REPO="quay.io/cloudservices/compliance-backend"
 
 # Determine merge-base with master to extract a consistent commit timestamp for reproducible layer caching
-MERGE_BASE=$(git merge-base HEAD origin/master 2>/dev/null || git merge-base HEAD master 2>/dev/null || echo "HEAD")
-BUILD_TIMESTAMP=$(git log --no-show-signature -1 --format=%ct "$MERGE_BASE" 2>/dev/null)
+MERGE_BASE=$(git merge-base HEAD origin/master 2>/dev/null || git merge-base HEAD master 2>/dev/null || echo "")
 
-if [ -z "$BUILD_TIMESTAMP" ]; then
+if [ -n "$MERGE_BASE" ]; then
+    BUILD_TIMESTAMP=$(git log --no-show-signature -1 --format=%ct "$MERGE_BASE" 2>/dev/null)
+    echo "Resolved build timestamp to master merge-base $MERGE_BASE: $BUILD_TIMESTAMP"
+else
     BUILD_TIMESTAMP=$(git log --no-show-signature -1 --format=%ct HEAD 2>/dev/null || echo "0")
+    echo "WARNING: Could not determine git merge-base with master! Falling back to HEAD timestamp $BUILD_TIMESTAMP." >&2
 fi
-
-echo "Build timestamp resolved to: $BUILD_TIMESTAMP (from commit: $MERGE_BASE)"
 
 if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
     echo "Master branch build detected. Building fresh image and populating cache in Quay..."
