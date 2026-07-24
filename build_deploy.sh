@@ -65,9 +65,6 @@ fi
 # OUTER CACHE MANAGEMENT
 # ==============================================================================
 
-echo "Purging local compliance-backend images from Podman storage..."
-podman images -q "*compliance-backend*" | xargs -r podman rmi -f || true
-
 CACHE_REPO="quay.io/cloudservices/compliance-backend"
 
 if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
