@@ -2,8 +2,7 @@
 
 # Model for the SupportedProfiles view
 class SupportedProfile < ApplicationRecord
-  # FIXME: clean up after the remodel
-  self.table_name = :supported_profiles
+  # Necessary explicit primary key, since SupportedProfile is backed by a view
   self.primary_key = :id
 
   searchable_by :os_major_version, %i[eq ne]

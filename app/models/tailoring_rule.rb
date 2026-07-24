@@ -2,10 +2,6 @@
 
 # Model link between (Profile) Tailoring and Rule
 class TailoringRule < ApplicationRecord
-  # FIXME: clean up after the remodel
-  self.table_name = :tailoring_rules_v2
-  self.primary_key = :id
-
   belongs_to :tailoring, class_name: 'Tailoring', inverse_of: :tailoring_rules
   belongs_to :rule, class_name: 'Rule'
 

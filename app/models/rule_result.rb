@@ -3,9 +3,6 @@
 # Class representing individual rule results unter a test result
 # rubocop:disable Metrics/ClassLength
 class RuleResult < ApplicationRecord
-  # FIXME: clean up after the remodel
-  self.table_name = :rule_results_v2
-
   belongs_to :test_result, class_name: 'TestResult'
   belongs_to :historical_test_result, class_name: 'HistoricalTestResult', foreign_key: :test_result_id,
                                       inverse_of: :rule_results, optional: true

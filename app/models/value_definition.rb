@@ -3,10 +3,6 @@
 # Stores information about value definitions. This comes from SCAP.
 # Model for Value Definitions
 class ValueDefinition < ApplicationRecord
-  # FIXME: clean up after the remodel
-  self.primary_key = :id
-  self.table_name = :value_definitions_v2
-
   belongs_to :security_guide
 
   sortable_by :title
