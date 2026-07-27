@@ -23,7 +23,7 @@ class RuleResult < ApplicationRecord
   scope :passed, -> { where(result: PASSED) }
   scope :failed, -> { where(result: FAILED) }
 
-  # Eliminates redundant joins to v2_test_results table
+  # Eliminates redundant joins to test_results table
   scope :with_serializer_data, lambda {
     joins(build_rule_join)
       .joins(test_result: [:system, { tailoring: { profile: :security_guide } }])
