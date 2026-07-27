@@ -7,8 +7,4 @@ class ReportSystem < ApplicationRecord
 
   belongs_to :report, class_name: 'Report'
   belongs_to :system, class_name: 'System'
-
-  validates :policy_id, presence: true
-  validates :system_id, presence: true, uniqueness: { scope: :policy_id }
-  validate :system_supported?, on: :create
 end
