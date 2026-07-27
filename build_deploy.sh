@@ -101,7 +101,15 @@ if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
 else
     echo "PR build detected. Using outer layer cache from Quay..."
 
-    # On PRs: build using remote layer cache from Quay
+    # On PRs: build intermediate build stage using remote layer cache from Quay
+    cicd::image_builder::build --layers \
+        --target build \
+        --format oci \
+        --timestamp "$BUILD_TIMESTAMP" \
+        --cache-from "$CACHE_REPO" \
+        --label "quay.expires-after=30d"
+
+    # On PRs: build final image using remote layer cache from Quay
     cicd::image_builder::build_and_push --layers \
         --format oci \
         --timestamp "$BUILD_TIMESTAMP" \
