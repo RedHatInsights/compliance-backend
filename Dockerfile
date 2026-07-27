@@ -1,3 +1,4 @@
+ARG BASE_IMAGE="registry.access.redhat.com/ubi9/ubi-minimal@sha256:2e8edce823a48e51858f1fad3ff4cbf6875ce8a3f86b9eecf298bc2050c8652a"
 ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tzdata"
 ARG devDeps="clang llvm-devel cargo gcc gcc-c++ libstdc++-static gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel rust tar which util-linux xz git"
 ARG extras=""
@@ -5,11 +6,9 @@ ARG prod="true"
 ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-9/mmraka-postgresql-16-epel-9.repo"
 ARG BUNDLE_JOBS="4"
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:2e8edce823a48e51858f1fad3ff4cbf6875ce8a3f86b9eecf298bc2050c8652a AS base
-
 #############################################################
 
-FROM base AS build
+FROM ${BASE_IMAGE} AS build
 
 # Diverge stage 1 immediately to prevent cache tag collisions with final stage
 ENV IS_BUILD_STAGE=true
@@ -57,7 +56,7 @@ ENV prometheus_multiproc_dir=/opt/app-root/src/tmp prometheus_rust_mmaped_file=f
 
 #############################################################
 
-FROM base
+FROM ${BASE_IMAGE}
 
 ARG deps
 ARG devDeps
