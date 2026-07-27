@@ -5,18 +5,9 @@ class ApplicationConsumer < Karafka::BaseConsumer
   attr_reader :message
 
   def consume
-    log_metadata
-
-    messages.each do |message|
-      @message = message
-
-      if attempt > 3
-        logger.error 'Discarded message'
-      else
-        consume_one
-      end
-
-      mark_as_consumed(message)
+    Rails.application.executor.wrap do
+      log_metadata
+      messages.each { |message| process(message) }
     end
   end
 
@@ -27,6 +18,18 @@ class ApplicationConsumer < Karafka::BaseConsumer
   end
 
   private
+
+  def process(message)
+    @message = message
+
+    if attempt > 3
+      logger.error 'Discarded message'
+    else
+      consume_one
+    end
+
+    mark_as_consumed(message)
+  end
 
   def log_metadata
     logger.info "Processing from #{messages.metadata.topic}/#{messages.metadata.partition} " \
