@@ -82,12 +82,21 @@ else
 fi
 
 if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
-    echo "Master branch build detected. Building fresh image and populating cache in Quay..."
+    echo "Master branch build detected. Building image with remote cache and populating Quay..."
 
-    # On master: build fresh layers without using older cache, and populate remote cache in Quay
-    cicd::image_builder::build_and_push --layers --no-cache \
+    # On master: build and populate remote cache for intermediate build stage first
+    cicd::image_builder::build --layers \
+        --target build \
         --format oci \
         --timestamp "$BUILD_TIMESTAMP" \
+        --cache-from "$CACHE_REPO" \
+        --cache-to "$CACHE_REPO"
+
+    # On master: build using remote layer cache from Quay and populate remote cache in Quay for final image
+    cicd::image_builder::build_and_push --layers \
+        --format oci \
+        --timestamp "$BUILD_TIMESTAMP" \
+        --cache-from "$CACHE_REPO" \
         --cache-to "$CACHE_REPO"
 else
     echo "PR build detected. Using outer layer cache from Quay..."
