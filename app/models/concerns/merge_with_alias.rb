@@ -98,6 +98,7 @@ module MergeWithAlias
     alias visit_Arel_Nodes_TableAlias nop
     alias visit_Arel_Nodes_SqlLiteral nop
     alias visit_Arel_Table nop
+    alias visit_Arel_Nodes_In nop
     # rubocop:enable Naming/MethodName
   end
 end

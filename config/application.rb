@@ -31,8 +31,10 @@ module ComplianceBackend
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
-    # Partial inserts are necessary for writing into views with read-only fields
-    config.active_record.partial_inserts = true # FIXME: clean up after the remodel
+    # Partial inserts are necessary for writing through views with INSTEAD OF triggers
+    # (e.g. test_results). Without this, Rails 7+ would include all columns in INSERT
+    # statements, which can conflict with the trigger's column mapping.
+    config.active_record.partial_inserts = true
 
     # Autoload lib/ (excluding Rake tasks) so Exceptions and other lib/
     # constants are available without manual require calls.

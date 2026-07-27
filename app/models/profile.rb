@@ -4,10 +4,6 @@
 class Profile < ApplicationRecord
   include RuleTree
 
-  # FIXME: clean up after the remodel
-  self.table_name = :canonical_profiles_v2
-  self.primary_key = :id
-
   indexable_by :ref_id, &->(scope, value) { scope.find_by!(ref_id: value.try(:gsub, '-', '.')) }
 
   sortable_by :title

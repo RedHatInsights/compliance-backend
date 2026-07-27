@@ -3,8 +3,7 @@
 # Database model representing latest results of compliance scans
 # rubocop:disable Metrics/ClassLength
 class TestResult < ApplicationRecord
-  # FIXME: clean up after the remodel
-  self.table_name = :v2_test_results
+  # Necessary explicit primary key, since TestResult is backed by a view
   self.primary_key = :id
 
   if Rails.env.test? # For testing taggable
@@ -80,10 +79,10 @@ class TestResult < ApplicationRecord
 
   searchable_by :failed_rule_severity, %i[eq in] do |_key, _op, val|
     ids = ::RuleResult.unscoped.joins(:rule)
-                      .where(rules_v2: { severity: val.split(',') }, rule_results_v2: { result: 'fail' })
+                      .where(rules: { severity: val.split(',') }, rule_results: { result: 'fail' })
                       .select(:test_result_id)
 
-    { conditions: "v2_test_results.id IN (#{ids.to_sql})" }
+    { conditions: "test_results.id IN (#{ids.to_sql})" }
   end
 
   scope :with_groups, lambda { |groups, table = System.arel_table, key = :id|
