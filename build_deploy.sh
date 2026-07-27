@@ -67,6 +67,7 @@ fi
 CACHE_REPO="quay.io/cloudservices/compliance-backend"
 
 # Determine merge-base with master to extract a consistent commit timestamp for reproducible layer caching
+git fetch origin master:refs/remotes/origin/master 2>/dev/null || git fetch origin master 2>/dev/null || true
 MERGE_BASE=$(git merge-base HEAD origin/master 2>/dev/null || git merge-base HEAD master 2>/dev/null || echo "")
 BUILD_TIMESTAMP=""
 
@@ -84,15 +85,15 @@ fi
 if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
     echo "Master branch build detected. Building image with remote cache and populating Quay..."
 
-    # On master: build and populate remote cache for intermediate build stage first
-    cicd::image_builder::build --layers \
+    # On master: build and push intermediate build stage to populate remote layer cache in Quay
+    cicd::image_builder::build_and_push --layers \
         --target build \
         --format oci \
         --timestamp "$BUILD_TIMESTAMP" \
         --cache-from "$CACHE_REPO" \
         --cache-to "$CACHE_REPO"
 
-    # On master: build using remote layer cache from Quay and populate remote cache in Quay for final image
+    # On master: build and push final image using remote layer cache from Quay
     cicd::image_builder::build_and_push --layers \
         --format oci \
         --timestamp "$BUILD_TIMESTAMP" \
@@ -101,15 +102,15 @@ if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
 else
     echo "PR build detected. Using outer layer cache from Quay..."
 
-    # On PRs: build intermediate build stage using remote layer cache from Quay
-    cicd::image_builder::build --layers \
+    # On PRs: build and push intermediate build stage using remote layer cache from Quay
+    cicd::image_builder::build_and_push --layers \
         --target build \
         --format oci \
         --timestamp "$BUILD_TIMESTAMP" \
         --cache-from "$CACHE_REPO" \
         --label "quay.expires-after=30d"
 
-    # On PRs: build final image using remote layer cache from Quay
+    # On PRs: build and push final image using remote layer cache from Quay
     cicd::image_builder::build_and_push --layers \
         --format oci \
         --timestamp "$BUILD_TIMESTAMP" \
