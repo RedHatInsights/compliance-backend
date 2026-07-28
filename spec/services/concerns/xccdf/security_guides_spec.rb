@@ -55,7 +55,7 @@ RSpec.describe Xccdf::SecurityGuides do
 
       service.save_security_guide
 
-      expect(existing.reload.updated_at).to eq(previous_timestamp)
+      expect(existing.reload.updated_at.round(6)).to eq(previous_timestamp.round(6))
     end
   end
 
