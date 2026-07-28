@@ -553,8 +553,8 @@ objects:
             memory: ${MEMORY_REQUEST_GOODJOB}
         livenessProbe:
           httpGet:
-            path: /status
-            port: ${{GOOD_JOB_PROBE_PORT}}
+            path: /metrics
+            port: metrics
           initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
