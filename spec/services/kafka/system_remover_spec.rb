@@ -78,6 +78,10 @@ describe Kafka::SystemRemover do
       expect { service.remove_system }.not_to(change { KafkaSystem.count })
       expect(kafka_system.reload.deleted_at).to be_nil
     end
+
+    it 'increments the noop delete counter' do
+      expect { service.remove_system }.to increment_yabeda_counter(Yabeda.compliance_system_delete_noop_total).by(1)
+    end
   end
 
   context 'when an exception occurs' do

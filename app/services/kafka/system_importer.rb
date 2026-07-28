@@ -26,6 +26,7 @@ module Kafka
     def payload_valid_for_import?(payload)
       unless valid_payload?(payload)
         @logger.error('[Kafka::SystemImporter] Ignored invalid message: missing host id or malformed tags')
+        Yabeda.compliance_system_import_invalid_total.increment({})
         return false
       end
       true
@@ -51,10 +52,14 @@ module Kafka
 
     def upsert_system(id, payload, updated)
       attrs = extract_system_attrs(id, payload, updated)
+      result = upsert_kafka_system(attrs)
+      log_upsert_result(result, id)
+    end
 
+    def upsert_kafka_system(attrs)
       # rubocop:disable Rails/SkipsModelValidations
       # rubocop:disable Layout/LineLength
-      result = KafkaSystem.upsert(
+      KafkaSystem.upsert(
         attrs,
         unique_by: :id,
         returning: %w[id],
@@ -62,13 +67,15 @@ module Kafka
       )
       # rubocop:enable Layout/LineLength
       # rubocop:enable Rails/SkipsModelValidations
-
-      log_upsert_result(result, id)
+    rescue ActiveRecord::ActiveRecordError
+      Yabeda.compliance_system_import_failures_total.increment({})
+      raise
     end
 
     def log_upsert_result(result, id)
       if result.rows.empty?
         @logger.info("[Kafka::SystemImporter] Ignored stale message for system #{id}")
+        Yabeda.compliance_system_import_stale_total.increment({})
       else
         @logger.audit_success("[Kafka::SystemImporter] Imported system #{id}")
       end

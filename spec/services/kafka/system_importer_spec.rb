@@ -32,6 +32,10 @@ RSpec.describe Kafka::SystemImporter do
         expect(Karafka.logger).to receive(:error).with(/\[Kafka::SystemImporter\] Ignored invalid message/)
         expect { service.import }.not_to(change { KafkaSystem.count })
       end
+
+      it 'increments the invalid counter' do
+        expect { service.import }.to increment_yabeda_counter(Yabeda.compliance_system_import_invalid_total).by(1)
+      end
     end
 
     context 'when payload is invalid (malformed tags)' do
@@ -40,6 +44,10 @@ RSpec.describe Kafka::SystemImporter do
       it 'ignores the message and logs an error' do
         expect(Karafka.logger).to receive(:error).with(/\[Kafka::SystemImporter\] Ignored invalid message/)
         expect { service.import }.not_to(change { KafkaSystem.count })
+      end
+
+      it 'increments the invalid counter' do
+        expect { service.import }.to increment_yabeda_counter(Yabeda.compliance_system_import_invalid_total).by(1)
       end
     end
 
@@ -86,6 +94,10 @@ RSpec.describe Kafka::SystemImporter do
         system = KafkaSystem.find(message['host']['id'])
         expect(system.display_name).to eq('old-name')
       end
+
+      it 'increments the stale counter' do
+        expect { service.import }.to increment_yabeda_counter(Yabeda.compliance_system_import_stale_total).by(1)
+      end
     end
 
     context 'when message is strictly stale (older than DB)' do
@@ -100,6 +112,10 @@ RSpec.describe Kafka::SystemImporter do
       it 'ignores the stale message' do
         expect(Karafka.logger).to receive(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
         expect { service.import }.not_to(change { KafkaSystem.count })
+      end
+
+      it 'increments the stale counter' do
+        expect { service.import }.to increment_yabeda_counter(Yabeda.compliance_system_import_stale_total).by(1)
       end
     end
 
@@ -179,7 +195,7 @@ RSpec.describe Kafka::SystemImporter do
       end
     end
 
-    context 'when exception occurs' do
+    context 'when a database exception occurs' do
       before do
         allow(KafkaSystem).to receive(:upsert).and_raise(ActiveRecord::ActiveRecordError, 'db down')
       end
@@ -189,6 +205,35 @@ RSpec.describe Kafka::SystemImporter do
           .to receive(:audit_fail)
           .with(/\[Kafka::SystemImporter\] Failed to import system.*db down/)
         expect { service.import }.to raise_error(ActiveRecord::ActiveRecordError, 'db down')
+      end
+
+      it 'increments the failures counter' do
+        expect do
+          service.import
+        rescue ActiveRecord::ActiveRecordError
+          nil
+        end.to increment_yabeda_counter(Yabeda.compliance_system_import_failures_total).by(1)
+      end
+    end
+
+    context 'when a non-database exception occurs' do
+      before do
+        allow(service).to receive(:extract_system_attrs).and_raise(StandardError, 'unexpected')
+      end
+
+      it 'logs error and re-raises it' do
+        expect(Karafka.logger)
+          .to receive(:audit_fail)
+          .with(/\[Kafka::SystemImporter\] Failed to import system.*unexpected/)
+        expect { service.import }.to raise_error(StandardError, 'unexpected')
+      end
+
+      it 'does not increment the failures counter' do
+        expect do
+          service.import
+        rescue StandardError
+          nil
+        end.not_to increment_yabeda_counter(Yabeda.compliance_system_import_failures_total)
       end
     end
 

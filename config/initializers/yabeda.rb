@@ -82,6 +82,18 @@ Yabeda.configure do
         comment: 'Number of unfinished jobs in the GoodJob queue',
         tags: %i[queue]
 
+  counter :compliance_system_import_invalid_total,
+          comment: 'Count of system import messages rejected due to invalid payload or type mismatch'
+
+  counter :compliance_system_import_stale_total,
+          comment: 'Count of system import messages ignored because the DB record is newer'
+
+  counter :compliance_system_import_failures_total,
+          comment: 'Count of system import DB write failures'
+
+  counter :compliance_system_delete_noop_total,
+          comment: 'Count of system delete events where no matching records were found'
+
   collect do
     Compliance::TableSizeCollector.collect
     Compliance::GoodJobQueueDepthCollector.collect
