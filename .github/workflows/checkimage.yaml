@@ -16,9 +16,9 @@ jobs:
         run: sudo apt-get install -y skopeo
       - name: Fetch latest base image digest
         run: |
-          base_name=$(grep -Po '(?<=FROM )[^\s@]+(?=@)' Dockerfile | head -1)
+          base_name=$(grep -Po '(?<=ARG BASE_IMAGE=")[^\s@"]+(?=@)' Dockerfile | head -1)
           new_digest=$(skopeo inspect "docker://$base_name" | jq .Digest --raw-output)
-          sed -i "s|FROM ${base_name}@sha256:[a-f0-9]*|FROM ${base_name}@${new_digest}|g" Dockerfile
+          sed -i "s|ARG BASE_IMAGE=\"${base_name}@sha256:[a-f0-9]*\"|ARG BASE_IMAGE=\"${base_name}@${new_digest}\"|g" Dockerfile
       - name: Open or update pull request if digest changed
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
         with:
