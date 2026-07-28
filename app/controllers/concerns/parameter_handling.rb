@@ -42,7 +42,7 @@ module ParameterHandling
     # Configuring a list of permitted params for a given controller action
     def permitted_params_for_action(action, params)
       self.__permitted_params_for_action ||= {}
-      self.__permitted_params_for_action[action] = params
+      __permitted_params_for_action[action] = params
     end
   end
 
