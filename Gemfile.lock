@@ -202,12 +202,12 @@ GEM
       fugit (>= 1.11.0)
       railties (>= 6.1.0)
       thor (>= 1.0.0)
-    google-protobuf (4.35.0)
+    google-protobuf (4.35.1)
       bigdecimal
       rake (~> 13.3)
     googleapis-common-protos-types (1.23.0)
       google-protobuf (~> 4.26)
-    grpc (1.81.0)
+    grpc (1.83.0)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     hashdiff (1.2.1)
@@ -252,7 +252,7 @@ GEM
     karafka-testing (2.5.5)
       karafka (>= 2.5.0, < 2.6.0)
       waterdrop (>= 2.8.0)
-    kessel-sdk (1.9.1)
+    kessel-sdk (1.11.0)
       grpc (>= 1.73.0)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
@@ -613,7 +613,7 @@ DEPENDENCIES
   jsonapi-serializer
   karafka (>= 2.4.0)
   karafka-testing
-  kessel-sdk (~> 1.9.1)
+  kessel-sdk (~> 1.11.0)
   listen (>= 3.0.5)
   minitest-reporters
   minitest-stub-const
