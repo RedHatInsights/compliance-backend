@@ -53,7 +53,7 @@ class TailoringsController < ApplicationController
   permitted_params_for_action :update, { id: ID_TYPE, **UPDATE_ATTRIBUTES }
 
   def tailoring_file
-    builder = file_builder(params[:format].to_sym)
+    builder = file_builder(params.expect(:format).to_sym)
 
     return if builder.empty? # no-content for empty XMLs
 
