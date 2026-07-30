@@ -5,7 +5,6 @@
 class System < ApplicationRecord
   self.table_name = 'systems'
   self.primary_key = 'id'
-  self.ignored_columns += %w[account]
 
   default_scope { where(deleted_at: nil) }
 

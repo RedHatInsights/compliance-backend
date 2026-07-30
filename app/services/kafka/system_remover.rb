@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Kafka
-  # Service for marking a KafkaSystem as soft-deleted (tombstoned) in the systems table
+  # Service for marking a System as soft-deleted (tombstoned) in the systems table
   class SystemRemover
     def initialize(message, logger)
       @message = message
@@ -14,9 +14,10 @@ module Kafka
     def remove_system
       computed_timestamp = delete_timestamp
       # rubocop:disable Rails/SkipsModelValidations
-      result = KafkaSystem.where(id: @id)
-                          .where('updated IS NULL OR updated < ?', computed_timestamp)
-                          .update_all(deleted_at: computed_timestamp)
+      result = System.unscoped
+                     .where(id: @id)
+                     .where('updated IS NULL OR updated < ?', computed_timestamp)
+                     .update_all(deleted_at: computed_timestamp)
       # rubocop:enable Rails/SkipsModelValidations
 
       if result.zero?
