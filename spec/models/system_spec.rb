@@ -25,7 +25,7 @@ describe System do
 
     describe '#stale_warning_timestamp' do
       it 'returns stale_timestamp + 7 days' do
-        expect(system.stale_warning_timestamp).to eq(stale_time + 7.days)
+        expect(system.stale_warning_timestamp).to eq(system.stale_timestamp + 7.days)
       end
 
       context 'when stale_timestamp is nil' do
@@ -39,7 +39,7 @@ describe System do
 
     describe '#culled_timestamp' do
       it 'returns stale_timestamp + 14 days' do
-        expect(system.culled_timestamp).to eq(stale_time + 14.days)
+        expect(system.culled_timestamp).to eq(system.stale_timestamp + 14.days)
       end
 
       context 'when stale_timestamp is nil' do
@@ -53,7 +53,7 @@ describe System do
 
     describe '#last_check_in' do
       it 'returns stale_timestamp + 8 days' do
-        expect(system.last_check_in).to eq(stale_time + 8.days)
+        expect(system.last_check_in).to eq(system.stale_timestamp + 8.days)
       end
 
       context 'when stale_timestamp is nil' do
