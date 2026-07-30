@@ -67,10 +67,13 @@ describe System do
   end
 
   describe '#readonly?' do
-    let(:system) { FactoryBot.build(:system) }
+    let(:system) { FactoryBot.create(:system) }
 
-    it 'returns false' do
-      expect(system.readonly?).to be false
+    it 'returns false and allows updating persisted records' do
+      reloaded_system = described_class.find(system.id)
+      expect(reloaded_system.readonly?).to be false
+      expect { reloaded_system.update!(display_name: 'updated-name') }.not_to raise_error
+      expect(reloaded_system.reload.display_name).to eq('updated-name')
     end
   end
 
