@@ -11,7 +11,7 @@ class SupportedProfilesController < ApplicationController
   private
 
   def supported_profiles
-    @supported_profiles ||= authorize(fetch_collection)
+    @supported_profiles ||= authorize(resolve_collection)
   end
 
   def resource

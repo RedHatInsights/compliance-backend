@@ -17,7 +17,7 @@ class RuleGroupsController < ApplicationController
   private
 
   def rule_groups
-    @rule_groups ||= authorize(fetch_collection)
+    @rule_groups ||= authorize(resolve_collection)
   end
 
   def rule_group
