@@ -21,7 +21,8 @@ class ApplicationSerializer < Panko::Serializer
     #
     def dependencies(parents, to_one)
       data = filter_from(@derived_attributes, (parents.to_a + to_one).uniq)
-      data[nil] = (_descriptor.attributes.map(&:name).map(&:to_sym) + data[nil].to_a).compact
+      attributes = _descriptor.attributes.map(&:name).map(&:to_sym) - (@derived_attributes&.keys || [])
+      data[nil] = (attributes + data[nil].to_a).compact
       data
     end
 
