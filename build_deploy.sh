@@ -91,6 +91,16 @@ if [[ "$IS_MASTER_BRANCH" == "true" ]]; then
         --timestamp "$BUILD_TIMESTAMP" \
         --cache-from "$CACHE_REPO" \
         --cache-to "$CACHE_REPO"
+
+    # Secondary non-fatal devel layer cache build pass (populates prod=false cache on Quay)
+    echo "Building secondary devel layer cache (target=build, prod=false)..."
+    cicd::image_builder::build_and_push --layers \
+        --format oci \
+        --timestamp "$BUILD_TIMESTAMP" \
+        --target build \
+        --build-arg prod=false \
+        --cache-from "$CACHE_REPO" \
+        --cache-to "$CACHE_REPO" || echo "WARNING: Devel layer cache build failed. Continuing master pipeline."
 else
     echo "PR build detected. Using outer layer cache from Quay..."
 
