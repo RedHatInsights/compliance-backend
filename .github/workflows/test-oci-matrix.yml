@@ -18,9 +18,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Build image with Podman
+    - name: Build image with Podman and Remote Layer Cache
       run: |
         podman build \
+          --layers \
+          --cache-from quay.io/cloudservices/compliance-backend \
           --format ${{ matrix.format }} \
           --build-arg ALT_REPO="https://copr.fedorainfracloud.org/coprs/g/insights/postgresql-16/repo/epel-9/group_insights-postgresql-16-epel-9.repo" \
           -t test-image:${{ matrix.os }}-${{ matrix.format }} .
