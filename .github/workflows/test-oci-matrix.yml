@@ -33,7 +33,7 @@ jobs:
         podman inspect test-image:${{ matrix.os }}-${{ matrix.format }} | jq '.[0] | {Digest: .Digest, ManifestType: .ManifestType, Architecture: .Architecture, Os: .Os}' || true
 
     - name: Generate SBOM with Anchore Syft
-      uses: anchore/syft-action@v0.19.0
+      uses: anchore/sbom-action@v0
       with:
         image: "test-image:${{ matrix.os }}-${{ matrix.format }}"
 
