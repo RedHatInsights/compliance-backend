@@ -24,7 +24,7 @@ The application consists of three main processes:
 
 - **API** (`/api/compliance/v2/`) - Current API using `panko_serializer`
 
-Models are backed by real database tables. The `System` model is an exception — it is a view over the `inventory.hosts` table in a different schema that is read-only.
+Models are backed by real database tables.
 
 #### Auto-join
 
@@ -65,7 +65,7 @@ Notifications sent to Kafka, Remediations service updated
 - **TestResult** - Scan result of a system for a policy
 - **RuleResult** - Individual rule compliance outcome (pass/fail/error/notchecked/notselected)
 - **Report** - Stores aggregated policy statistics
-- **System** - View over `inventory.hosts` in the `inventory` schema (read-only)
+- **System** - System record stored in the `systems` table
 
 ### DB migrations
 
@@ -74,7 +74,7 @@ No AI model should in any case generate or run migrations. This task is potentia
 ### Database Views & Functions
 
 The app uses the `fx` and `scenic` gems for managing PostgreSQL views, functions, and triggers. Views are in `db/views/`, functions in `db/functions/`, triggers in `db/triggers/`.
-Legacy v1 data models are backed by database views. `System` is also view-backed (read-only alias of `inventory.hosts`).
+Legacy v1 data models are backed by database views.
 
 ### Authorization
 
@@ -145,7 +145,7 @@ Producers in `app/producers/` extend `ApplicationProducer`. Use Karafka for publ
 
 ### External Services
 
-- **Inventory** - Read systems from `inventory.hosts` table (via `System` model)
+- **Inventory** - Ingests host events via Kafka into the `systems` table (via `System` model)
 - **RBAC** - `Rbac` service (V1) or `KesselRbac` service (V2)
 - **Object Storage** - Reports downloaded via `SafeDownloader` from signed URLs
 
@@ -161,7 +161,7 @@ Producers in `app/producers/` extend `ApplicationProducer`. Use Karafka for publ
 
 ### Models
 
-Models are backed by real database tables. `System` is an exception — it is a view over the `inventory.hosts` table and is read-only.
+Models are backed by real database tables.
 
 ### Tags Convention
 
