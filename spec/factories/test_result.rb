@@ -55,8 +55,7 @@ FactoryBot.define do
 
     # Used only by dev-env DB seeders (db/seeds.dev.rb).
     # Propagates the :dev_seed trait to the nested system factory so that the
-    # system is written directly to hbi.hosts instead of through the read-only
-    # inventory.hosts view.
+    # system is written directly to hbi.hosts instead of the systems table.
     trait :dev_seed do
       system do
         args = {

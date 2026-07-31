@@ -50,16 +50,12 @@ module Kafka
       full_profile.slice('operating_system', 'owner_id')
     end
 
+    # rubocop:disable Metrics/MethodLength
     def upsert_system(id, payload, updated)
       attrs = extract_system_attrs(id, payload, updated)
-      result = upsert_kafka_system(attrs)
-      log_upsert_result(result, id)
-    end
-
-    def upsert_kafka_system(attrs)
       # rubocop:disable Rails/SkipsModelValidations
       # rubocop:disable Layout/LineLength
-      KafkaSystem.upsert(
+      result = System.upsert(
         attrs,
         unique_by: :id,
         returning: %w[id],
@@ -67,10 +63,12 @@ module Kafka
       )
       # rubocop:enable Layout/LineLength
       # rubocop:enable Rails/SkipsModelValidations
+      log_upsert_result(result, id)
     rescue ActiveRecord::ActiveRecordError
       Yabeda.compliance_system_import_failures_total.increment({})
       raise
     end
+    # rubocop:enable Metrics/MethodLength
 
     def log_upsert_result(result, id)
       if result.rows.empty?

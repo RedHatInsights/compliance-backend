@@ -30,9 +30,7 @@ FactoryBot.define do
       end
     end
 
-    # inventory.hosts is an auto-updatable view; inserts pass through to the
-    # underlying table automatically. Reload after save to populate computed
-    # view columns (culled_timestamp, stale_warning_timestamp, last_check_in).
+    # Reload after save to populate computed columns.
     to_create do |instance|
       instance.save!
       instance.reload

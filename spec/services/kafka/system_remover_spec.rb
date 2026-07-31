@@ -6,7 +6,8 @@ describe Kafka::SystemRemover do
   let(:service) { described_class.new(message, Karafka.logger) }
   let(:system_id) { Faker::Internet.uuid }
   let(:org_id) { Faker::Number.number(digits: 6).to_s }
-  let!(:kafka_system) { FactoryBot.create(:kafka_system, id: system_id, org_id: org_id, updated: 2.days.ago) }
+  let!(:account) { FactoryBot.create(:account, org_id: org_id) }
+  let!(:system_record) { FactoryBot.create(:system, id: system_id, account: account, updated: 2.days.ago) }
 
   context 'with simple delete event' do
     let(:message) do
@@ -16,11 +17,11 @@ describe Kafka::SystemRemover do
       }
     end
 
-    it 'soft-deletes the KafkaSystem by setting deleted_at to current time' do
+    it 'soft-deletes the System by setting deleted_at to current time' do
       expect(Karafka.logger).to receive(:audit_success).with(/Soft-deleted system/)
-      expect { service.remove_system }.to change { KafkaSystem.count }.from(1).to(0)
+      expect { service.remove_system }.to change { System.count }.from(1).to(0)
 
-      system = KafkaSystem.unscoped.find(system_id)
+      system = System.unscoped.find(system_id)
       expect(system.deleted_at).not_to be_nil
     end
   end
@@ -37,7 +38,7 @@ describe Kafka::SystemRemover do
 
     it 'uses the event timestamp for deleted_at' do
       service.remove_system
-      system = KafkaSystem.unscoped.find(system_id)
+      system = System.unscoped.find(system_id)
       expect(system.deleted_at).to eq(Time.zone.parse(event_time))
     end
   end
@@ -54,7 +55,7 @@ describe Kafka::SystemRemover do
     it 'logs a warning and falls back to current time' do
       expect(Karafka.logger).to receive(:warn).with(/Failed to parse timestamp 'invalid-timestamp-string'/)
       service.remove_system
-      system = KafkaSystem.unscoped.find(system_id)
+      system = System.unscoped.find(system_id)
       expect(system.deleted_at).not_to be_nil
     end
   end
@@ -70,13 +71,13 @@ describe Kafka::SystemRemover do
     end
 
     before do
-      kafka_system.update!(updated: Time.current)
+      system_record.update!(updated: Time.current)
     end
 
     it 'ignores the delete message and does not soft-delete the system' do
       expect(Karafka.logger).to receive(:info).with(/Ignored stale delete event/)
-      expect { service.remove_system }.not_to(change { KafkaSystem.count })
-      expect(kafka_system.reload.deleted_at).to be_nil
+      expect { service.remove_system }.not_to(change { System.count })
+      expect(system_record.reload.deleted_at).to be_nil
     end
 
     it 'increments the noop delete counter' do
@@ -93,7 +94,7 @@ describe Kafka::SystemRemover do
     end
 
     before do
-      allow(KafkaSystem).to receive(:where).and_raise(ActiveRecord::ActiveRecordError, 'db error')
+      allow(System).to receive(:unscoped).and_raise(ActiveRecord::ActiveRecordError, 'db error')
     end
 
     it 'logs audit_fail and re-raises the exception' do

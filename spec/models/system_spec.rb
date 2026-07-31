@@ -3,6 +3,80 @@
 require 'rails_helper'
 
 describe System do
+  describe '.table_name' do
+    it 'is systems' do
+      expect(described_class.table_name).to eq('systems')
+    end
+  end
+
+  describe 'default_scope' do
+    let!(:active_system) { FactoryBot.create(:system, deleted_at: nil) }
+    let!(:deleted_system) { FactoryBot.create(:system, deleted_at: Time.current) }
+
+    it 'excludes soft-deleted records' do
+      expect(described_class.all).to include(active_system)
+      expect(described_class.all).not_to include(deleted_system)
+    end
+  end
+
+  describe 'computed timestamps' do
+    let(:stale_time) { Time.current }
+    let(:system) { FactoryBot.build(:system, stale_timestamp: stale_time) }
+
+    describe '#stale_warning_timestamp' do
+      it 'returns stale_timestamp + 7 days' do
+        expect(system.stale_warning_timestamp).to eq(system.stale_timestamp + 7.days)
+      end
+
+      context 'when stale_timestamp is nil' do
+        let(:system) { FactoryBot.build(:system, stale_timestamp: nil) }
+
+        it 'returns nil' do
+          expect(system.stale_warning_timestamp).to be_nil
+        end
+      end
+    end
+
+    describe '#culled_timestamp' do
+      it 'returns stale_timestamp + 14 days' do
+        expect(system.culled_timestamp).to eq(system.stale_timestamp + 14.days)
+      end
+
+      context 'when stale_timestamp is nil' do
+        let(:system) { FactoryBot.build(:system, stale_timestamp: nil) }
+
+        it 'returns nil' do
+          expect(system.culled_timestamp).to be_nil
+        end
+      end
+    end
+
+    describe '#last_check_in' do
+      it 'returns stale_timestamp + 8 days' do
+        expect(system.last_check_in).to eq(system.stale_timestamp + 8.days)
+      end
+
+      context 'when stale_timestamp is nil' do
+        let(:system) { FactoryBot.build(:system, stale_timestamp: nil) }
+
+        it 'returns nil' do
+          expect(system.last_check_in).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#readonly?' do
+    let(:system) { FactoryBot.create(:system) }
+
+    it 'returns false and allows updating persisted records' do
+      reloaded_system = described_class.find(system.id)
+      expect(reloaded_system.readonly?).to be false
+      expect { reloaded_system.update!(display_name: 'updated-name') }.not_to raise_error
+      expect(reloaded_system.reload.display_name).to eq('updated-name')
+    end
+  end
+
   describe '.os_versions' do
     let(:versions) { ['7.1', '7.2', '7.3', '7.4', '7.5', '8.2', '8.10', '9.0', '9.1'] }
 

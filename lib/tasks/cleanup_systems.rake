@@ -172,7 +172,7 @@ class SystemsCleaner
   def delete_systems_in_batches(batch_ids, subtask_name, cutoff_time: nil)
     ActiveRecord::Base.transaction do
       # Re-select and lock candidates in transaction to avoid TOCTOU race conditions (e.g. resurrection)
-      query = KafkaSystem.unscoped.where(id: batch_ids).lock('FOR UPDATE OF systems')
+      query = System.unscoped.where(id: batch_ids).lock('FOR UPDATE OF systems')
 
       query = case subtask_name
               when 'deleted'
@@ -201,7 +201,7 @@ class SystemsCleaner
       policy_systems_count = PolicySystem.where(system_id: eligible_ids).delete_all
 
       # Purge the systems (bypassing default_scope deleted_at: nil)
-      systems_count = KafkaSystem.unscoped.where(id: eligible_ids).delete_all
+      systems_count = System.unscoped.where(id: eligible_ids).delete_all
 
       @logger.info("Deleted batch for #{subtask_name}: #{systems_count} systems, #{results_count} test results, " \
                    "#{policy_systems_count} policy-system associations.")

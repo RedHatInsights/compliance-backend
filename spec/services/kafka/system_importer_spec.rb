@@ -30,7 +30,7 @@ RSpec.describe Kafka::SystemImporter do
 
       it 'ignores the message and logs an error' do
         expect(Karafka.logger).to receive(:error).with(/\[Kafka::SystemImporter\] Ignored invalid message/)
-        expect { service.import }.not_to(change { KafkaSystem.count })
+        expect { service.import }.not_to(change { System.count })
       end
 
       it 'increments the invalid counter' do
@@ -43,7 +43,7 @@ RSpec.describe Kafka::SystemImporter do
 
       it 'ignores the message and logs an error' do
         expect(Karafka.logger).to receive(:error).with(/\[Kafka::SystemImporter\] Ignored invalid message/)
-        expect { service.import }.not_to(change { KafkaSystem.count })
+        expect { service.import }.not_to(change { System.count })
       end
 
       it 'increments the invalid counter' do
@@ -54,14 +54,14 @@ RSpec.describe Kafka::SystemImporter do
     context 'when system is new' do
       it 'upserts system' do
         expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
-        expect { service.import }.to change { KafkaSystem.count }.by(1)
+        expect { service.import }.to change { System.count }.by(1)
       end
     end
 
     context 'when message is an update to an existing system' do
       let!(:existing_system) do
         FactoryBot.create(
-          :kafka_system,
+          :system,
           id: message['host']['id'],
           display_name: 'old-name',
           updated: (Time.zone.parse(updated_time) - 2.days).iso8601
@@ -70,9 +70,9 @@ RSpec.describe Kafka::SystemImporter do
 
       it 'updates the existing system attributes' do
         expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
-        expect { service.import }.not_to(change { KafkaSystem.count })
+        expect { service.import }.not_to(change { System.count })
 
-        system = KafkaSystem.find(message['host']['id'])
+        system = System.find(message['host']['id'])
         expect(system.display_name).to eq(message.dig('host', 'display_name'))
       end
     end
@@ -80,7 +80,7 @@ RSpec.describe Kafka::SystemImporter do
     context 'when message is exactly the same age (repeated message)' do
       let!(:existing_system) do
         FactoryBot.create(
-          :kafka_system,
+          :system,
           id: message['host']['id'],
           display_name: 'old-name',
           updated: updated_time
@@ -89,9 +89,9 @@ RSpec.describe Kafka::SystemImporter do
 
       it 'ignores the repeated message' do
         expect(Karafka.logger).to receive(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
-        expect { service.import }.not_to(change { KafkaSystem.count })
+        expect { service.import }.not_to(change { System.count })
 
-        system = KafkaSystem.find(message['host']['id'])
+        system = System.find(message['host']['id'])
         expect(system.display_name).to eq('old-name')
       end
 
@@ -103,7 +103,7 @@ RSpec.describe Kafka::SystemImporter do
     context 'when message is strictly stale (older than DB)' do
       before do
         FactoryBot.create(
-          :kafka_system,
+          :system,
           id: message['host']['id'],
           updated: (Time.zone.parse(updated_time) + 1.day).iso8601
         )
@@ -111,7 +111,7 @@ RSpec.describe Kafka::SystemImporter do
 
       it 'ignores the stale message' do
         expect(Karafka.logger).to receive(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
-        expect { service.import }.not_to(change { KafkaSystem.count })
+        expect { service.import }.not_to(change { System.count })
       end
 
       it 'increments the stale counter' do
@@ -125,7 +125,7 @@ RSpec.describe Kafka::SystemImporter do
       context 'and incoming message has a newer updated timestamp' do
         before do
           FactoryBot.create(
-            :kafka_system,
+            :system,
             id: system_id,
             display_name: 'old-name',
             updated: (Time.zone.parse(updated_time) - 2.hours).iso8601,
@@ -135,9 +135,9 @@ RSpec.describe Kafka::SystemImporter do
 
         it 'resurrects the system by setting deleted_at to nil' do
           expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
-          expect { service.import }.to change { KafkaSystem.count }.by(1)
+          expect { service.import }.to change { System.count }.by(1)
 
-          system = KafkaSystem.find(system_id)
+          system = System.find(system_id)
           expect(system.deleted_at).to be_nil
           expect(system.display_name).to eq(message.dig('host', 'display_name'))
         end
@@ -146,7 +146,7 @@ RSpec.describe Kafka::SystemImporter do
       context 'and incoming message has an older updated timestamp than deleted_at' do
         before do
           FactoryBot.create(
-            :kafka_system,
+            :system,
             id: system_id,
             display_name: 'old-name',
             updated: (Time.zone.parse(updated_time) - 2.hours).iso8601,
@@ -156,9 +156,9 @@ RSpec.describe Kafka::SystemImporter do
 
         it 'ignores the message as stale' do
           expect(Karafka.logger).to receive(:info).with(/\[Kafka::SystemImporter\] Ignored stale message/)
-          expect { service.import }.not_to(change { KafkaSystem.count })
+          expect { service.import }.not_to(change { System.count })
 
-          system = KafkaSystem.unscoped.find(system_id)
+          system = System.unscoped.find(system_id)
           expect(system.deleted_at).not_to be_nil
           expect(system.display_name).to eq('old-name')
         end
@@ -179,7 +179,7 @@ RSpec.describe Kafka::SystemImporter do
 
       it 'stores only operating_system and owner_id' do
         service.import
-        system = KafkaSystem.find(message['host']['id'])
+        system = System.find(message['host']['id'])
         expect(system.system_profile.keys).to match_array(%w[operating_system owner_id])
         expect(system.system_profile['operating_system']).to eq({ 'major' => 9, 'minor' => 4 })
       end
@@ -190,14 +190,14 @@ RSpec.describe Kafka::SystemImporter do
 
       it 'upserts using fallback defaults' do
         service.import
-        system = KafkaSystem.find(message['host']['id'])
+        system = System.find(message['host']['id'])
         expect(system.groups).to eq([])
       end
     end
 
     context 'when a database exception occurs' do
       before do
-        allow(KafkaSystem).to receive(:upsert).and_raise(ActiveRecord::ActiveRecordError, 'db down')
+        allow(System).to receive(:upsert).and_raise(ActiveRecord::ActiveRecordError, 'db down')
       end
 
       it 'logs error and re-raises it' do

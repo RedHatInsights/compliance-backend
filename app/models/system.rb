@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-# Class representing read-only systems syndicated from the host-based inventory
+# Class representing systems
 # rubocop:disable Metrics/ClassLength
 class System < ApplicationRecord
-  self.table_name = 'inventory.hosts'
+  self.table_name = 'systems'
   self.primary_key = 'id'
-  self.ignored_columns += %w[account]
+
+  default_scope { where(deleted_at: nil) }
 
   belongs_to :account, class_name: 'Account', primary_key: :org_id, foreign_key: :org_id, inverse_of: :systems
 
@@ -120,13 +121,13 @@ class System < ApplicationRecord
     assigned = PolicySystem.select(:system_id)
     scanned = TestResult.select(:system_id)
 
-    { conditions: "inventory.hosts.id IN (#{assigned.to_sql}) OR inventory.hosts.id IN (#{scanned.to_sql})" }
+    { conditions: "systems.id IN (#{assigned.to_sql}) OR systems.id IN (#{scanned.to_sql})" }
   end
 
   searchable_by :never_reported, %i[eq], only_parents: %i[reports] do |_key, _op, _val|
     ids = TestResult.unscoped.select(:system_id, :report_id)
 
-    { conditions: "(inventory.hosts.id, reports.id) NOT IN (#{ids.to_sql})" }
+    { conditions: "(systems.id, reports.id) NOT IN (#{ids.to_sql})" }
   end
 
   [%i[group_name name], %i[group_id id]].each do |field, key|
@@ -141,14 +142,14 @@ class System < ApplicationRecord
     values = val.split(',').map(&:strip)
     ids = ::PolicySystem.unscoped.where(policy_id: values).select(:system_id)
 
-    { conditions: "inventory.hosts.id IN (#{ids.to_sql})" }
+    { conditions: "systems.id IN (#{ids.to_sql})" }
   end
 
   searchable_by :profile_ref_id, %i[neq notin], except_parents: %i[policies reports] do |_key, _op, val|
     values = val.split(',').map(&:strip)
     ids = ::PolicySystem.unscoped.joins(policy: :profile).where(profile: { ref_id: values }).select(:system_id)
 
-    { conditions: "inventory.hosts.id NOT IN (#{ids.to_sql})" }
+    { conditions: "systems.id NOT IN (#{ids.to_sql})" }
   end
 
   scope :with_groups, lambda { |groups, key = :id|
@@ -171,8 +172,16 @@ class System < ApplicationRecord
     true
   end
 
-  def readonly?
-    Rails.env.production?
+  def stale_warning_timestamp
+    stale_timestamp ? stale_timestamp + 7.days : nil
+  end
+
+  def culled_timestamp
+    stale_timestamp ? stale_timestamp + 14.days : nil
+  end
+
+  def last_check_in
+    stale_timestamp ? stale_timestamp + 8.days : nil
   end
 
   def group_ids
