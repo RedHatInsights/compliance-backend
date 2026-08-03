@@ -153,7 +153,7 @@ class System < ApplicationRecord
   end
 
   scope :with_groups, lambda { |groups, key = :id|
-    # Skip the [] representing ungrouped hosts from the array when generating the query
+    # Skip  the [] representing ungrouped hosts from the array when generating the query
     grouped = arel_json_lookup(arel_table[:groups], groups_as_json(groups.flatten, key))
     ungrouped = arel_table[:groups].eq(AN::Quoted.new('[]'))
     # The OR is inside of Arel in order to prevent pollution of already applied scopes
