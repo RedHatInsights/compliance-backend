@@ -179,6 +179,7 @@ GEM
     faraday-retry (2.4.0)
       faraday (~> 2.0)
     ffi (1.17.4)
+    ffi (1.17.4-x86_64-linux-gnu)
     friendly_id (5.2.5)
       activerecord (>= 4.0.0)
     fugit (1.13.0)
@@ -202,9 +203,15 @@ GEM
     google-protobuf (4.35.1)
       bigdecimal
       rake (~> 13.3)
+    google-protobuf (4.35.1-x86_64-linux-gnu)
+      bigdecimal
+      rake (~> 13.3)
     googleapis-common-protos-types (1.23.0)
       google-protobuf (~> 4.26)
     grpc (1.83.0)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.83.0-x86_64-linux-gnu)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     hashdiff (1.2.1)
@@ -241,6 +248,12 @@ GEM
       karafka-rdkafka (>= 0.20.0)
       logger (>= 1.6.0)
     karafka-rdkafka (0.28.0)
+      ffi (~> 1.17.1)
+      json (> 2.0)
+      logger
+      mini_portile2 (~> 2.6)
+      rake (> 12)
+    karafka-rdkafka (0.28.0-x86_64-linux-gnu)
       ffi (~> 1.17.1)
       json (> 2.0)
       logger
@@ -328,11 +341,17 @@ GEM
       racc
     parslet (2.0.0)
     pg (1.6.3)
+    pg (1.6.3-x86_64-linux)
     pp (0.6.4)
       prettyprint
     prettyprint (0.2.0)
     prism (1.9.0)
     prometheus-client-mmap (1.6.0)
+      base64
+      bigdecimal
+      logger
+      rb_sys (~> 0.9.128)
+    prometheus-client-mmap (1.6.0-x86_64-linux-gnu)
       base64
       bigdecimal
       logger
@@ -577,6 +596,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   activerecord-import
