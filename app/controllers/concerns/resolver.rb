@@ -3,6 +3,7 @@
 # Concern for resolving database resources
 module Resolver
   extend ActiveSupport::Concern
+  include JoinBuilder
 
   private
 
@@ -45,12 +46,19 @@ module Resolver
     end
   end
 
-  # Select the 1:1 associations that can be satisfied without any additional WHERE clause,
-  # then join them with the relation.
+  # Join the 1:1 associations required by the serializer using a merged trie of reflection
+  # chains. This is to eliminate redundant intermediate joins that would be generated when the resolver traverses the
+  # same model multiple times.
   def join_associated(relation)
     # Do not join with the already joined parents assumed from the (nested) route
     associations = dependencies.keys.excluding(*permitted_params[:parents]).compact
-    relation.where.associated(*associations)
+    return relation if associations.empty?
+
+    trie = build_join_trie(resource, associations)
+    joined = already_joined(relation).to_set
+    arel_joins = emit_arel_joins(trie, resource, resource.arel_table, joined)
+
+    relation.joins(*arel_joins)
   end
 
   # Self-join with the requested aggregations built using 1:n associations, also select
