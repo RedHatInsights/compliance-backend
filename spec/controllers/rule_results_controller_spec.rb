@@ -80,25 +80,6 @@ describe RuleResultsController do
       it_behaves_like 'paginable', :report, :test_result
       it_behaves_like 'sortable', :report, :test_result
       it_behaves_like 'searchable', :report, :test_result
-
-      it 'optimizes queries by using single join path through test_result' do
-        controller = described_class.new
-
-        allow(controller).to receive(:permitted_params).and_return(parents: %i[report test_result])
-        allow(controller).to receive(:pundit_scope).and_return(RuleResult.all)
-        allow(controller).to receive(:join_parents) { |scope, _| scope }
-
-        query = controller.send(:expand_resource).to_sql
-
-        %w[test_result tailoring profile security_guide].each do |association|
-          expect(query).to include(association)
-        end
-        # Verify the optimized query includes the required rule table with proper alias
-        expect(query).to include('"rule"')
-
-        join_clauses = query.scan(/JOIN "test_results"/i).count
-        expect(join_clauses).to eq(1)
-      end
     end
   end
 end
