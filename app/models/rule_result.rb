@@ -65,7 +65,7 @@ class RuleResult < ApplicationRecord
       when :rule
         Rule.arel_table.alias('rule')
       when :system
-        Arel::Table.new(:hosts, as: 'system')
+        System.arel_table.alias('system')
       when :profile
         Profile.arel_table
       when :security_guide
