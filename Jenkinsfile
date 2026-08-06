@@ -59,7 +59,6 @@ pipeline {
                         curl -s ${CICD_URL}/bootstrap.sh > .cicd_bootstrap.sh
                         source ./.cicd_bootstrap.sh
 
-                        export APP_NAME="host-inventory kessel rbac compliance"
                         export IMAGE_TAG="${GIT_COMMIT:0:7}"
                         export OPTIONAL_DEPS_METHOD="all"
                         export EXTRA_DEPLOY_ARGS="

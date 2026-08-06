@@ -20,6 +20,10 @@ objects:
     - host-inventory
     - ingress
     - rbac
+    optionalDependencies:
+    - kessel-relations
+    - kessel-inventory
+    - kessel-inventory-consumer
     database:
       name: compliance
       version: 16
