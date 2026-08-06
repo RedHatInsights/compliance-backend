@@ -65,7 +65,7 @@ module Collection
       end
 
       tags = parse_tags(permitted_params[:tags])
-      data.where('tags @> ?', tags.to_json)
+      data.where(tags.map { 'tags @> ?' }.join(' OR '), *tags.map { |t| [t].to_json })
     end
 
     # rubocop:disable Metrics/AbcSize

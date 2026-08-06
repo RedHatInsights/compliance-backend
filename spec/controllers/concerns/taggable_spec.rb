@@ -45,15 +45,9 @@ RSpec.shared_examples 'taggable' do |*parents|
   end
 
   context 'looking for multiple tags' do
-    it 'returns systems matching all tags' do
-      selected.map do |s|
-        s.update(
-          tags: [
-            { namespace: 'foo', key: 'bar', value: 'baz' },
-            { namespace: 'one', key: 'two', value: 'three' }
-          ]
-        )
-      end
+    it 'returns systems matching any of the tags' do
+      selected.first.update(tags: [{ namespace: 'foo', key: 'bar', value: 'baz' }])
+      selected.second.update(tags: [{ namespace: 'one', key: 'two', value: 'three' }])
 
       get :index, params: passable_params.merge(parents: parents, tags: ['foo/bar=baz', 'one/two=three'])
       expect(response_body_data).to match_array(selected.map { |item| hash_including('id' => item.id) })
