@@ -20,6 +20,7 @@ objects:
     - host-inventory
     - ingress
     - rbac
+    - kessel
     database:
       name: compliance
       version: 16
