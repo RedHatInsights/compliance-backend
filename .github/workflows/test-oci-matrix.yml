@@ -1,0 +1,46 @@
+name: OCI Spec Version Matrix Test
+
+on:
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  matrix-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+        format: [oci, docker]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build image with Podman and Remote Layer Cache
+      run: |
+        podman build \
+          --layers \
+          --cache-from quay.io/cloudservices/compliance-backend \
+          --format ${{ matrix.format }} \
+          --build-arg ALT_REPO="https://copr.fedorainfracloud.org/coprs/g/insights/postgresql-16/repo/epel-9/group_insights-postgresql-16-epel-9.repo" \
+          -t test-image:${{ matrix.os }}-${{ matrix.format }} .
+
+    - name: Inspect image format & OCI metadata
+      run: |
+        echo "=== Podman Version ==="
+        podman version
+        echo "=== Image Inspect ==="
+        podman inspect test-image:${{ matrix.os }}-${{ matrix.format }} | jq '.[0] | {Digest: .Digest, ManifestType: .ManifestType, Architecture: .Architecture, Os: .Os}' || true
+
+    - name: Generate SBOM with Anchore Syft
+      uses: anchore/sbom-action@v0
+      with:
+        image: "test-image:${{ matrix.os }}-${{ matrix.format }}"
+
+    - name: Scan vulnerability with Anchore Grype
+      uses: anchore/scan-action@v3
+      with:
+        image: "test-image:${{ matrix.os }}-${{ matrix.format }}"
+        fail-build: false
