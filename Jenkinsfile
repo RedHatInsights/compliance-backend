@@ -66,6 +66,7 @@ pipeline {
                             --set-image-tag quay.io/redhat-services-prod/hcc-accessmanagement-tenant/insights-rbac=latest
                             --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory-consumer/inventory-consumer=latest
                             --set-image-tag quay.io/redhat-services-prod/project-kessel-tenant/kessel-inventory/inventory-api=latest
+                            --set-image-tag quay.io/redhat-services-prod/insights-management-tenant/insights-compliance/compliance-ssg=latest
                             -p rbac/NOTIFICATIONS_RH_ENABLED=False
                             -p rbac/V2_MIGRATION_APP_EXCLUDE_LIST=approval
                             -p rbac/ROLE_CREATE_ALLOW_LIST=remediations,inventory,policies,advisor,vulnerability,compliance,automation-analytics,notifications,patch,integrations,ros,staleness,config-manager,idmsvc
