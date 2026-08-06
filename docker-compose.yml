@@ -290,6 +290,8 @@ services:
       args:
         - prod=false
         - extras=$EXTRA_PACKAGES
+      cache_from:
+        - ${CACHE_REPO:-quay.io/cloudservices/compliance-backend}
     image: localhost/compliance-backend-rails
     entrypoint: '/opt/app-root/src/devel.entrypoint.sh'
     command: 'bundle exec rails s -b 0.0.0.0'
