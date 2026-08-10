@@ -39,8 +39,15 @@ RSpec.describe 'tailorings:cleanup_duplicates task' do
   let(:policy) { create(:policy, :for_tailoring, supports_minors: [0], system_count: 1) }
   let(:good_tailoring) { policy.tailorings.find_by(os_minor_version: 0) }
 
+  # Builds a Tailoring bypassing app validations, mirroring how the legacy bugs produced
+  # invalid rows directly at the DB level (no unique index existed to prevent them).
+  # The unique index is dropped inside the example transaction so duplicates can be seeded;
+  # transactional fixtures roll that DROP back after the example.
   # rubocop:disable Rails/SkipsModelValidations
   def build_invalid_tailoring(os_minor_version:, created_at: Time.zone.now)
+    ActiveRecord::Base.connection.execute(
+      'DROP INDEX IF EXISTS index_tailorings_on_policy_id_and_os_minor_version'
+    )
     tailoring = policy.tailorings.build(
       profile: policy.profile, os_minor_version: os_minor_version, value_overrides: {}
     )

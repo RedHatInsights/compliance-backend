@@ -93,6 +93,8 @@ RSpec.describe XccdfReportParser do
     end
 
     context 'when the report contains rules not in the security guide' do
+      before { allow(parser).to receive(:version_mismatched?).and_return(false) }
+
       it 'raises UnknownRuleError' do
         expect { parser.check_for_missing_rules }.to raise_error(described_class::UnknownRuleError)
       end
