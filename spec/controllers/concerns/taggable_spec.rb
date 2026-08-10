@@ -45,7 +45,7 @@ RSpec.shared_examples 'taggable' do |*parents|
   end
 
   context 'looking for multiple tags' do
-    it 'returns systems matching all tags' do
+    it 'ANDs tags with different namespace/key combinations' do
       selected.map do |s|
         s.update(
           tags: [
@@ -57,6 +57,78 @@ RSpec.shared_examples 'taggable' do |*parents|
 
       get :index, params: passable_params.merge(parents: parents, tags: ['foo/bar=baz', 'one/two=three'])
       expect(response_body_data).to match_array(selected.map { |item| hash_including('id' => item.id) })
+    end
+
+    it 'ANDs different keys within the same namespace' do
+      matching, only_location = selected
+      matching.update(
+        tags: [
+          { namespace: 'satellite', key: 'location', value: 'Raleigh' },
+          { namespace: 'satellite', key: 'organization', value: 'HCC-Lab' }
+        ]
+      )
+      only_location.update(
+        tags: [{ namespace: 'satellite', key: 'location', value: 'Raleigh' }]
+      )
+
+      get :index, params: passable_params.merge(
+        parents: parents,
+        tags: ['satellite/location=Raleigh', 'satellite/organization=HCC-Lab']
+      )
+
+      expect(response_body_data).to match_array([hash_including('id' => matching.id)])
+    end
+
+    it 'ORs values that share the same namespace and key' do
+      first, second = selected
+      first.update(
+        tags: [{ namespace: 'insights-client', key: 'Public IPv4', value: '18.116.53.70' }]
+      )
+      second.update(
+        tags: [{ namespace: 'insights-client', key: 'Public IPv4', value: '18.117.167.99' }]
+      )
+
+      get :index, params: passable_params.merge(
+        parents: parents,
+        tags: [
+          'insights-client/Public IPv4=18.116.53.70',
+          'insights-client/Public IPv4=18.117.167.99'
+        ]
+      )
+
+      expect(response_body_data).to match_array(selected.map { |item| hash_including('id' => item.id) })
+    end
+
+    it 'combines AND across keys with OR within the same key' do
+      matching, partial = selected
+      matching.update(
+        tags: [
+          { namespace: 'satellite', key: 'location', value: 'Raleigh' },
+          { namespace: 'satellite', key: 'organization', value: 'HCC-Lab' },
+          { namespace: 'insights-client', key: 'security', value: 'strict' },
+          { namespace: 'insights-client', key: 'Public IPv4', value: '18.116.53.70' }
+        ]
+      )
+      partial.update(
+        tags: [
+          { namespace: 'satellite', key: 'location', value: 'Raleigh' },
+          { namespace: 'satellite', key: 'organization', value: 'HCC-Lab' },
+          { namespace: 'insights-client', key: 'Public IPv4', value: '18.117.167.99' }
+        ]
+      )
+
+      get :index, params: passable_params.merge(
+        parents: parents,
+        tags: [
+          'satellite/location=Raleigh',
+          'satellite/organization=HCC-Lab',
+          'insights-client/security=strict',
+          'insights-client/Public IPv4=18.116.53.70',
+          'insights-client/Public IPv4=18.117.167.99'
+        ]
+      )
+
+      expect(response_body_data).to match_array([hash_including('id' => matching.id)])
     end
   end
 end

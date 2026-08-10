@@ -59,13 +59,23 @@ module Collection
       Rails.application.routes.recognize_path(path)
     end
 
+    # Filter by tags using platform-standardized semantics:
+    # - OR across values that share the same namespace and key
+    # - AND across different namespace/key combinations
     def filter_by_tags(data)
-      unless TagFiltering.tags_supported?(resource) && permitted_params[:tags]&.any?
-        return data
-      end
+      return data unless TagFiltering.tags_supported?(resource) && permitted_params[:tags]&.any?
 
-      tags = parse_tags(permitted_params[:tags])
-      data.where('tags @> ?', tags.to_json)
+      apply_grouped_tag_filters(data, parse_tags(permitted_params[:tags]))
+    end
+
+    def apply_grouped_tag_filters(data, tags)
+      tags.group_by { |tag| [tag[:namespace], tag[:key]] }.each_value do |group|
+        data = data.where(
+          group.map { 'tags @> ?' }.join(' OR '),
+          *group.map { |tag| [tag].to_json }
+        )
+      end
+      data
     end
 
     # rubocop:disable Metrics/AbcSize
