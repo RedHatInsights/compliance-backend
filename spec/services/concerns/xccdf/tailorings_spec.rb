@@ -32,11 +32,63 @@ RSpec.describe Xccdf::Tailorings do
       expect(service.tailoring).to eq(expected)
     end
 
-    context 'when no tailoring exists for the system OS minor version' do
+    context 'when no tailoring exists and the OS minor version is unsupported' do
       let!(:system) { create(:system, account: user.account, os_minor_version: unsupported_os_minor_version) }
 
       it 'returns nil' do
         expect(service.tailoring).to be_nil
+      end
+    end
+
+    context 'when no tailoring exists but the OS minor version is supported by the profile' do
+      let(:upgraded_os_minor_version) { os_minor_version + 1 }
+      let(:policy) do
+        create(:policy, account: user.account, supports_minors: [os_minor_version, upgraded_os_minor_version])
+      end
+      let!(:system) { create(:system, account: user.account, os_minor_version: upgraded_os_minor_version) }
+
+      it 'auto-creates a tailoring for the OS minor version' do
+        expect { service.tailoring }.to change(Tailoring, :count).by(1)
+      end
+
+      it 'returns a persisted tailoring matching the policy and OS minor version' do
+        result = service.tailoring
+
+        expect(result).to be_persisted
+        expect(result.os_minor_version).to eq(upgraded_os_minor_version)
+        expect(result.policy).to eq(policy)
+      end
+
+      it 'assigns the correct profile variant to the new tailoring' do
+        result = service.tailoring
+        expected_profile = policy.profile.variant_for_minor(upgraded_os_minor_version)
+
+        expect(result.profile).to eq(expected_profile)
+      end
+
+      it 'populates the tailoring with rules from the canonical profile' do
+        result = service.tailoring
+
+        expect(result.tailoring_rules.pluck(:rule_id))
+          .to match_array(ProfileRule.where(profile_id: result.profile_id).pluck(:rule_id))
+      end
+
+      it 'logs an audit message after persistence' do
+        allow(Rails.logger).to receive(:audit_success)
+
+        service.tailoring
+
+        expect(Rails.logger).to have_received(:audit_success).with(/Auto-created tailoring/)
+      end
+
+      it 'does not log when the tailoring already exists' do
+        service.tailoring
+
+        allow(Rails.logger).to receive(:audit_success)
+
+        service.class.new(policy: policy, system: system, security_guide: security_guide).tailoring
+
+        expect(Rails.logger).not_to have_received(:audit_success)
       end
     end
   end
@@ -93,6 +145,21 @@ RSpec.describe Xccdf::Tailorings do
       it 'raises OSVersionMismatch instead of NoMethodError' do
         expect { service.tailored_profile }
           .to raise_error(XccdfReportParser::OSVersionMismatch)
+      end
+    end
+
+    context 'when the OS minor version is supported but has no tailoring yet' do
+      let(:upgraded_os_minor_version) { os_minor_version + 1 }
+      let(:policy) do
+        create(:policy, account: user.account, supports_minors: [os_minor_version, upgraded_os_minor_version])
+      end
+      let!(:system) { create(:system, account: user.account, os_minor_version: upgraded_os_minor_version) }
+
+      it 'returns the profile from the auto-created tailoring' do
+        result = service.tailored_profile
+        expected_profile = policy.profile.variant_for_minor(upgraded_os_minor_version)
+
+        expect(result).to eq(expected_profile)
       end
     end
   end
