@@ -21,9 +21,4 @@ class RuleResultsController < ApplicationController
   def serializer
     RuleResultSerializer
   end
-
-  def expand_resource
-    scope = join_parents(pundit_scope, permitted_params[:parents])
-    scope.with_serializer_data
-  end
 end
