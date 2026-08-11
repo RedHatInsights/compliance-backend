@@ -18,7 +18,7 @@ The application consists of three main processes:
 
 1. **Rails API Server** (Puma, port 3000) - REST API
 2. **Karafka Consumer** - Kafka message processor for inventory events (including report parsing)
-3. **Sidekiq Worker** - Background job processor (requires Redis)
+3. **GoodJob Worker** - Background job processor (backed by PostgreSQL)
 
 ### API
 
@@ -49,7 +49,7 @@ Inventory Event → Kafka Topic → InventoryEventsConsumer
   ↓
 Kafka::ReportParser (validates, downloads XCCDF from S3)
   ↓
-ParseReportJob (Sidekiq)
+ParseReportJob (GoodJob)
   ↓
 XccdfReportParser.parse() → TestResult + RuleResults replaced with the newer ones
   ↓

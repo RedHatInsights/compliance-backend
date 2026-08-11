@@ -1,2 +1,0 @@
----
-:concurrency: <%= ENV.fetch("SIDEKIQ_CONCURRENCY", ENV.fetch("POSTGRESQL_MAX_CONNECTIONS", 10)) %>

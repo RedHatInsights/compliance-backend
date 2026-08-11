@@ -9,7 +9,7 @@ gem 'rake'
 gem 'rails', '~> 8.0'
 # Use Puma as the app server
 gem 'puma', '~> 7'
-# Use Redis adapter to connect to Sidekiq
+# Rails cache store in production (redis_cache_store)
 gem 'redis', '~> 4.5'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
@@ -47,10 +47,6 @@ gem 'slack-notifier'
 # Background jobs — GoodJob (PostgreSQL-backed) replaces Sidekiq
 gem 'good_job', '~> 4'
 
-# Sidekiq retained temporarily to drain jobs from Redis
-gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
-gem 'sidekiq', '< 8'
-
 # Faraday to make requests easier
 gem 'faraday'
 gem 'faraday-retry'
@@ -70,7 +66,6 @@ gem 'yabeda'
 gem 'yabeda-prometheus-mmap'
 gem 'yabeda-puma-plugin'
 gem 'yabeda-rails'
-gem 'yabeda-sidekiq'
 gem 'yabeda-activejob', github: 'RoamingNoMaD/yabeda-activejob', branch: 'add-custom-tagging'
 
 # Nokogiri

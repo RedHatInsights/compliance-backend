@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'sidekiq/web'
-
 Rails.application.routes.draw do
   def draw_routes(prefix)
     scope "#{prefix}/#{Settings.app_name}" do
@@ -74,5 +72,4 @@ Rails.application.routes.draw do
   draw_routes(Settings.path_prefix)
   draw_routes(Settings.old_path_prefix)
 
-  mount Sidekiq::Web => '/sidekiq' if Rails.env.development?
 end

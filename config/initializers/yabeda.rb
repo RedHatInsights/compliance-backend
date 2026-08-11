@@ -100,8 +100,8 @@ Yabeda.configure do
   end
 end
 
-# Start the metrics server for sidekiq, karafka, and good_job
-if %w[sidekiq karafka good_job].any? { |p| $PROGRAM_NAME.include?(p) }
+# Start the metrics server for karafka and good_job
+if %w[karafka good_job].any? { |p| $PROGRAM_NAME.include?(p) }
   if ClowderCommonRuby::Config.clowder_enabled?
     ENV['PROMETHEUS_EXPORTER_PORT'] = ClowderCommonRuby::Config.load.metricsPort.to_s
   else
