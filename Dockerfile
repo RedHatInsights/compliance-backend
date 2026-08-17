@@ -1,4 +1,4 @@
-ARG BASE_IMAGE="registry.access.redhat.com/ubi9/ubi-minimal@sha256:7c372902c8d211db2d25c8277ba534a73b92742a334874dced829a63b0f21221"
+ARG BASE_IMAGE="registry.access.redhat.com/ubi9/ubi-minimal@sha256:692953368d8e630f40a3c0a6135163f8824fdafc26e0400b9a6c8d7fac850366"
 ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tzdata"
 ARG devDeps="clang llvm-devel cargo gcc gcc-c++ libstdc++-static gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel rust tar which util-linux xz git"
 ARG extras=""
