@@ -1,5 +1,10 @@
 {
   "dependencyDashboard": true,
+  "gitIgnoredAuthors": [
+    "jvasik@redhat.com",
+    "rblanco@redhat.com",
+    "petrblaho@redhat.com"
+  ],
   "extends": [
     "github>konflux-ci/mintmaker-presets:refresh-rpm-lockfiles"
   ],
