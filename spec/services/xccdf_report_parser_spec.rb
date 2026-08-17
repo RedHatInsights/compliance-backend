@@ -97,6 +97,14 @@ RSpec.describe XccdfReportParser do
         expect { parser.check_for_missing_rules }.to raise_error(described_class::UnknownRuleError)
       end
     end
+
+    context 'when versions are mismatched' do
+      before { allow(parser).to receive(:version_mismatched?).and_return(true) }
+
+      it 'does not raise even if unknown rules exist' do
+        expect { parser.check_for_missing_rules }.not_to raise_error
+      end
+    end
   end
 
   describe '#validate!' do

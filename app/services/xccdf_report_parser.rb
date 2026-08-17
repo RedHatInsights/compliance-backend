@@ -109,6 +109,8 @@ class XccdfReportParser
   end
 
   def check_for_missing_rules
+    return if version_mismatched?
+
     # rubocop:disable Style/GuardClause
     if test_result_rules_unknown.any?
       raise UnknownRuleError,

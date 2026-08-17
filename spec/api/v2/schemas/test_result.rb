@@ -103,6 +103,14 @@ module Api
               readOnly: true,
               description: 'Whether the System is supported or not by a Profile within a given Policy.'
             },
+            mismatched: {
+              type: %w[boolean null],
+              examples: [false, true],
+              readOnly: true,
+              description: 'Whether the SSG version used by the scanner differs from the version ' \
+                           'the Policy Tailoring is based on. When true, the score and rule results ' \
+                           'reflect only the subset of rules common to both versions.'
+            },
             failed_rule_count: {
               type: %w[integer null],
               examples: [3],

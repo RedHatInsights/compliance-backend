@@ -16,6 +16,12 @@ module Xccdf
       @policy.nil?
     end
 
+    def version_mismatched?
+      return false unless tailoring
+
+      security_guide.id != tailoring.profile.security_guide_id
+    end
+
     def tailored_profile
       unless tailoring
         raise ::XccdfReportParser::OSVersionMismatch,
