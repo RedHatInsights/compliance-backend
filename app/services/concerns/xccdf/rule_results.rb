@@ -38,8 +38,9 @@ module Xccdf
     private
 
     def rule_ids
+      guide_id = version_mismatched? ? tailoring.profile.security_guide_id : security_guide.id
       @rule_ids ||= ::Rule.where(
-        security_guide_id: security_guide.id, ref_id: selected_op_rule_results.map(&:id)
+        security_guide_id: guide_id, ref_id: selected_op_rule_results.map(&:id)
       ).pluck(:ref_id, :id).to_h
     end
   end

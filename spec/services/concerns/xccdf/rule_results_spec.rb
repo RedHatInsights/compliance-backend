@@ -8,17 +8,25 @@ RSpec.describe Xccdf::RuleResults do
     Class.new do
       include Xccdf::RuleResults
 
-      def initialize(test_result:, op_rule_results:, security_guide:)
+      def initialize(test_result:, op_rule_results:, security_guide:, tailoring:, version_mismatched: false)
         @test_result = test_result
         @op_rule_results = op_rule_results
         @security_guide = security_guide
+        @tailoring = tailoring
+        @version_mismatched = version_mismatched
       end
 
-      attr_reader :security_guide
+      attr_reader :security_guide, :tailoring
+
+      def version_mismatched?
+        @version_mismatched
+      end
     end.new(
       test_result: test_result,
       op_rule_results: op_rule_results,
-      security_guide: security_guide
+      security_guide: security_guide,
+      tailoring: tailoring,
+      version_mismatched: version_mismatched
     )
   end
 
@@ -26,8 +34,10 @@ RSpec.describe Xccdf::RuleResults do
   let(:policy) { create(:policy, account: user.account, supports_minors: [0]) }
   let(:system) { create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
   let(:test_result) { create(:test_result, system: system, report_id: policy.id) }
-  let(:security_guide) { test_result.tailoring.security_guide }
+  let(:tailoring) { test_result.tailoring }
+  let(:security_guide) { tailoring.security_guide }
   let(:rule) { create(:rule, security_guide: security_guide) }
+  let(:version_mismatched) { false }
 
   let(:op_rule_results) do
     [
@@ -88,6 +98,43 @@ RSpec.describe Xccdf::RuleResults do
     it 'persists only results whose rule ID is known, skipping unknown entries' do
       expect { service.save_rule_results }
         .to change(RuleResult, :count).by(1)
+    end
+  end
+
+  context 'when version is mismatched' do
+    let(:version_mismatched) { true }
+    let(:other_security_guide) { create(:security_guide) }
+    let(:security_guide) { other_security_guide }
+    let(:tailoring_guide) { tailoring.security_guide }
+    let(:matched_rule) { create(:rule, security_guide: tailoring_guide) }
+    let(:unmatched_ref_id) { Faker::Alphanumeric.alphanumeric(number: 16) }
+
+    let(:op_rule_results) do
+      [
+        OpenStruct.new(id: matched_rule.ref_id, result: 'fail'),
+        OpenStruct.new(id: unmatched_ref_id, result: 'pass')
+      ]
+    end
+
+    describe '#rule_results' do
+      it 'resolves rules against the tailoring security guide' do
+        matched = service.rule_results.find { |rr| rr.rule_id == matched_rule.id }
+
+        expect(matched).not_to be_nil
+      end
+    end
+
+    describe '#save_rule_results' do
+      it 'persists only results matching the tailoring security guide' do
+        expect { service.save_rule_results }
+          .to change(RuleResult, :count).by(1)
+      end
+    end
+
+    describe '#test_result_rules_unknown' do
+      it 'reports unmatched rules as unknown' do
+        expect(service.test_result_rules_unknown).to contain_exactly(unmatched_ref_id)
+      end
     end
   end
 

@@ -15,6 +15,7 @@ describe TestResultsController do
       os_minor_version: :os_minor_version,
       compliant: :compliant,
       supported: :supported,
+      mismatched: :mismatched,
       system_id: :system_id,
       score: :score
     }
