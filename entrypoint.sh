@@ -13,8 +13,6 @@ elif [ "$APPLICATION_TYPE" = "compliance-inventory" ]; then
   exec bundle exec karafka server
 elif [ "$APPLICATION_TYPE" = "compliance-goodjob" ]; then
   exec bundle exec good_job start --probe-port="${GOOD_JOB_PROBE_PORT:-7001}"
-elif [ "$APPLICATION_TYPE" = "compliance-sidekiq" ]; then
-  exec bundle exec sidekiq
 elif [ "$APPLICATION_TYPE" = "compliance-import-remediations" ]; then
   exec bundle exec rake import_remediations --trace
 elif [ "$APPLICATION_TYPE" = "compliance-import-ssg" ]; then

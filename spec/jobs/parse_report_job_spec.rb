@@ -25,13 +25,9 @@ describe ParseReportJob, type: :job do
   let(:test_result_file) do
     double(:test_result_file, test_result: double(:test_result, profile_id: profile_ref_id))
   end
-  let(:sidekiq_logger) { instance_double(Logger, error: nil, info: nil) }
   let(:report_blob) { ReportArtifact.pack('<xml/>') }
 
   before do
-    allow(Sidekiq).to receive(:redis).and_return(false)
-    allow(job).to receive(:jid).and_return('1')
-    allow(Sidekiq).to receive(:logger).and_return(sidekiq_logger)
     allow(XccdfReportParser).to receive(:new).and_return(parser)
     allow(parser).to receive(:test_result_file).and_return(test_result_file)
     allow(parser).to receive(:policy).and_return(policy)
@@ -58,12 +54,12 @@ describe ParseReportJob, type: :job do
         expect(PayloadTracker).to receive(:deliver).with(
           account: nil, system_id: system.id,
           request_id: request_id, status: :processing,
-          status_msg: 'Job 1 is now processing', org_id: user.org_id
+          status_msg: "Job #{job.job_id} is now processing", org_id: user.org_id
         )
         expect(PayloadTracker).to receive(:deliver).with(
           account: nil, system_id: system.id,
           request_id: request_id, status: :success,
-          status_msg: 'Job 1 has completed successfully', org_id: user.org_id
+          status_msg: "Job #{job.job_id} has completed successfully", org_id: user.org_id
         )
 
         job.perform(report_blob, msg_value)
@@ -102,7 +98,7 @@ describe ParseReportJob, type: :job do
         expect(PayloadTracker).to receive(:deliver).with(
           account: nil, system_id: system.id,
           request_id: request_id, status: :processing,
-          status_msg: 'Job 1 is now processing', org_id: user.org_id
+          status_msg: "Job #{job.job_id} is now processing", org_id: user.org_id
         )
         expect(PayloadTracker).to receive(:deliver).with(
           account: nil, system_id: system.id,

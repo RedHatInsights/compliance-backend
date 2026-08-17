@@ -24,7 +24,7 @@ This project does two main things:
 The Insights Compliance backend comprises of these components/services:
 
 * Rails web server — serving REST API (port 3000)
-* Sidekiq — job runner connected through Redis (see [app/jobs](app/jobs))
+* GoodJob — background job runner backed by PostgreSQL (see [app/jobs](app/jobs))
 * Inventory Consumer (karafka) — processor of Kafka messages,
   mainly to process and parse reports
 
@@ -34,7 +34,7 @@ Before running the project, these services must be running and acessible:
 
 * Kafka — message broker (default port 29092)
   - set by `SETTINGS__KAFKA__BROKERS` environment variable
-* Redis — Job queue and cache
+* Redis — cache
 * PostgreSQL compatible database
   - `DATABASE_SERVICE_NAME=postgres`
   - conrolled by environment variables `POSTGRES_SERVICE_HOST`,
@@ -164,10 +164,10 @@ note: podman-compose does not support the logs command, so similar to exec,
 it must be run against the container itself, as shown
 
 ```shell
-docker compose logs -f sidekiq
+docker compose logs -f goodjob
 
 # podman
-podman logs -f compliance-backend_sidekiq_1
+podman logs -f compliance-backend_goodjob_1
 ```
 
 ### Building the image

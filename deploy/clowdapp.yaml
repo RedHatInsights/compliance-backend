@@ -633,102 +633,6 @@ objects:
               fieldPath: metadata.namespace
         - name: LOGSTREAM
           value: "${LOGSTREAM_GOODJOB}"
-    - name: sidekiq
-      minReplicas: ${{REPLICAS_SIDEKIQ}}
-      deploymentStrategy:
-        privateStrategy: Recreate
-      podSpec:
-        image: ${IMAGE}:${IMAGE_TAG}
-        initContainers:
-        - command: ["/bin/sh"]
-          args: ["-c", "$HOME/scripts/check_migration_status_and_ssg_synced.sh"]
-          inheritEnv: true
-        resources:
-          limits:
-            cpu: ${CPU_LIMIT_SIDEKIQ}
-            memory: ${MEMORY_LIMIT_SIDEKIQ}
-          requests:
-            cpu: ${CPU_REQUEST_SIDEKIQ}
-            memory: ${MEMORY_REQUEST_SIDEKIQ}
-        livenessProbe:
-          httpGet:
-            path: /metrics
-            port: metrics
-          initialDelaySeconds: 180
-          timeoutSeconds: 5
-          periodSeconds: 30
-        readinessProbe:
-          initialDelaySeconds: 180
-          timeoutSeconds: 15
-          periodSeconds: 30
-          exec:
-            command: ["bash", "-c", "bundle exec rake --trace db:status redis:status"]
-        env:
-        - name: APPLICATION_TYPE
-          value: compliance-sidekiq
-        - name: RAILS_ENV
-          value: "${RAILS_ENV}"
-        - name: RAILS_LOG_TO_STDOUT
-          value: "${RAILS_LOG_TO_STDOUT}"
-        - name: PATH_PREFIX
-          value: "${PATH_PREFIX}"
-        - name: APP_NAME
-          value: "${APP_NAME}"
-        - name: SIDEKIQ_CONCURRENCY
-          value: "${SIDEKIQ_CONCURRENCY}"
-        - name: POSTGRESQL_MAX_CONNECTIONS
-          value: "${POSTGRESQL_MAX_CONNECTIONS}"
-        - name: MALLOC_ARENA_MAX
-          value: '2'
-        - name: RUBY_YJIT_ENABLE
-          value: "${RUBY_YJIT_ENABLE}"
-        - name: SECRET_KEY_BASE
-          valueFrom:
-            secretKeyRef:
-              name: compliance-backend
-              key: secret_key_base
-        - name: SETTINGS__SLACK_WEBHOOK
-          valueFrom:
-            secretKeyRef:
-              name: compliance-backend
-              key: slack_webhook
-              optional: true
-        - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
-          value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
-        - name: MAX_INIT_TIMEOUT_SECONDS
-          value: "${MAX_INIT_TIMEOUT_SECONDS}"
-        - name: PRIMARY_REDIS_AS_CACHE
-          value: "${PRIMARY_REDIS_AS_CACHE}"
-        - name: SETTINGS__REDIS__SSL
-          value: "${REDIS_SSL}"
-        - name: SETTINGS__REDIS__CACHE_HOSTNAME
-          valueFrom:
-            secretKeyRef:
-              name: compliance-rails-cache
-              key: db.endpoint
-              optional: true
-        - name: SETTINGS__REDIS__CACHE_PORT
-          valueFrom:
-            secretKeyRef:
-              name: compliance-rails-cache
-              key: db.port
-              optional: true
-        - name: SETTINGS__REDIS__CACHE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: compliance-rails-cache
-              key: db.auth_token
-              optional: true
-        - name: IMAGE_TAG
-          value: "${IMAGE}:${IMAGE_TAG}"
-        - name: QE_ACCOUNTS
-          value: "${QE_ACCOUNTS}"
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: LOGSTREAM
-          value: "${LOGSTREAM_SIDEKIQ}"
 
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
@@ -874,9 +778,6 @@ parameters:
 - name: REPLICAS_GOODJOB
   description: Replica count for GoodJob worker
   value: "1"
-- name: REPLICAS_SIDEKIQ
-  description: Replica count for sidekiq (drain only)
-  value: "1"
 - name: LINT_ANNOTATION
   value: 'default-lint-annotation-value'
 - name: RAILS_ENV
@@ -916,14 +817,6 @@ parameters:
   value: 1000m
 - name: CPU_REQUEST_GOODJOB
   value: 100m
-- name: MEMORY_LIMIT_SIDEKIQ
-  value: 1000Mi
-- name: MEMORY_REQUEST_SIDEKIQ
-  value: 500Mi
-- name: CPU_LIMIT_SIDEKIQ
-  value: 1000m
-- name: CPU_REQUEST_SIDEKIQ
-  value: 100m
 - name: MEMORY_LIMIT_IMPORT_SSG
   value: 1000Mi
 - name: MEMORY_REQUEST_IMPORT_SSG
@@ -939,8 +832,6 @@ parameters:
   value: "5"
 - name: GOOD_JOB_PROBE_PORT
   value: "7001"
-- name: SIDEKIQ_CONCURRENCY
-  value: "1"
 - name: DISABLE_RBAC
   value: "false"
 - name: PUMA_WORKERS
@@ -1007,7 +898,6 @@ parameters:
   required: false
 - name: LOGSTREAM_SERVICE
 - name: LOGSTREAM_GOODJOB
-- name: LOGSTREAM_SIDEKIQ
 - name: LOGSTREAM_CONSUMER
 - name: LOGSTREAM_IMPORT_SSG
   value: 'compliance-import-ssg'
