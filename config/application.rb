@@ -24,7 +24,7 @@ Bundler.require(*Rails.groups)
 # (Development/Test env only)
 # Load .env* variables before the config (Settings) initializer is
 # being run.
-Dotenv::Rails.load unless Rails.env.production?
+Dotenv::Rails.load if defined?(Dotenv::Rails) && !Rails.env.production?
 
 module ComplianceBackend
   class Application < Rails::Application
