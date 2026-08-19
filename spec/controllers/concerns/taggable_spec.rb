@@ -132,3 +132,100 @@ RSpec.shared_examples 'taggable' do |*parents|
     end
   end
 end
+
+RSpec.shared_examples 'taggable_show' do |*parents|
+  let(:passable_params) { reject_nonscalar(extra_params) }
+
+  context 'when system belongs to a different organization scope' do
+    it 'prevents access via direct ID lookup' do
+      item.update(tags: [{ namespace: 'sat_iam', key: 'scope', value: 'U:"admin"O:"ACME"L:"Default"' }])
+
+      get :show, params: passable_params.merge(
+        parents: parents, tags: ['sat_iam/scope=U:"operator"O:"Globex"L:"Springfield"']
+      )
+
+      expect(response).to have_http_status :not_found
+    end
+  end
+
+  context 'with matching scope tag' do
+    it 'returns the item' do
+      item.update(tags: [{ namespace: 'sat_iam', key: 'scope', value: 'U:"admin"O:"ACME"L:"Default"' }])
+
+      get :show, params: passable_params.merge(parents: parents, tags: ['sat_iam/scope=U:"admin"O:"ACME"L:"Default"'])
+
+      expect(response).to have_http_status :ok
+      expect(response.parsed_body.dig('data', 'id')).to eq(item.id)
+    end
+  end
+
+  context 'with scope tag for a different user in the same organization' do
+    it 'returns not_found' do
+      item.update(tags: [{ namespace: 'sat_iam', key: 'scope', value: 'U:"admin"O:"ACME"L:"Default"' }])
+
+      get :show, params: passable_params.merge(parents: parents, tags: ['sat_iam/scope=U:"viewer"O:"ACME"L:"NYC"'])
+
+      expect(response).to have_http_status :not_found
+    end
+  end
+
+  context 'without tags param' do
+    it 'returns the item without filtering' do
+      get :show, params: passable_params.merge(parents: parents)
+
+      expect(response).to have_http_status :ok
+      expect(response.parsed_body.dig('data', 'id')).to eq(item.id)
+    end
+  end
+
+  context 'with multiple matching tags' do
+    it 'returns the item when all tags match' do
+      item.update(
+        tags: [
+          { namespace: 'insights-client', key: 'environment', value: 'production' },
+          { namespace: 'operations', key: 'team', value: 'platform' }
+        ]
+      )
+
+      get :show, params: passable_params.merge(
+        parents: parents,
+        tags: ['insights-client/environment=production', 'operations/team=platform']
+      )
+
+      expect(response).to have_http_status :ok
+      expect(response.parsed_body.dig('data', 'id')).to eq(item.id)
+    end
+  end
+
+  context 'with partially matching tags' do
+    it 'returns not_found when not all tags match' do
+      item.update(tags: [{ namespace: 'insights-client', key: 'environment', value: 'production' }])
+
+      get :show, params: passable_params.merge(
+        parents: parents,
+        tags: ['insights-client/environment=production', 'operations/team=platform']
+      )
+
+      expect(response).to have_http_status :not_found
+    end
+  end
+
+  context 'with untagged item and tags filter' do
+    it 'returns not_found when item has no matching tags' do
+      item.update(tags: [])
+
+      get :show, params: passable_params.merge(parents: parents, tags: ['sat_iam/scope=U:"admin"O:"ACME"L:"Default"'])
+
+      expect(response).to have_http_status :not_found
+    end
+  end
+
+  context 'with invalid tag format' do
+    it 'returns the item when tag cannot be parsed' do
+      get :show, params: passable_params.merge(parents: parents, tags: ['no-slash-invalid'])
+
+      expect(response).to have_http_status :ok
+      expect(response.parsed_body.dig('data', 'id')).to eq(item.id)
+    end
+  end
+end
