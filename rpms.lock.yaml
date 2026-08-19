@@ -1546,7 +1546,7 @@ arches:
     sourcerpm: libyaml-0.2.5-7.el9.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/repodata/c1e943ed259277271cec3814f18a17a6ad69c07c43f3da0f4bb1c801bc2d820f-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/repodata/64bded7971116ece007d208c4fc20885badff242efda5880535d36c9ecab27cd-modules.yaml.gz
     repoid: ubi-9-for-x86_64-appstream-rpms
-    size: 8062
-    checksum: sha256:c1e943ed259277271cec3814f18a17a6ad69c07c43f3da0f4bb1c801bc2d820f
+    size: 7998
+    checksum: sha256:64bded7971116ece007d208c4fc20885badff242efda5880535d36c9ecab27cd
