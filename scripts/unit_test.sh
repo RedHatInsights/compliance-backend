@@ -133,26 +133,6 @@ if [[ $TEST_RESULT -ne 0 ]]; then
   exit 1
 fi
 
-# setup cyndi
-echo '===================================='
-echo '===       Setting Up Cyndi      ===='
-echo '===================================='
-set +e
-cicd::container::cmd cp "$TEST_CONTAINER_ID":/opt/app-root/src/db/cyndi_setup_test.sql "$WORKSPACE/"
-cicd::container::cmd cp "$WORKSPACE/cyndi_setup_test.sql" "$DB_CONTAINER_ID":/var/lib/pgsql/
-rm "$WORKSPACE/cyndi_setup_test.sql"
-# We want to expand $POSTGRESQL_DATABASE within the container's session
-# shellcheck disable=SC2016
-cicd::container::cmd exec "$DB_CONTAINER_ID" /bin/bash -c 'psql -d $POSTGRESQL_DATABASE < /var/lib/pgsql/cyndi_setup_test.sql'
-TEST_RESULT=$?
-set -e
-if [[ $TEST_RESULT -ne 0 ]]; then
-  echo '====================================='
-  echo '==== ✖ ERROR: CYNDI SETUP FAILED ===='
-  echo '====================================='
-  exit 1
-fi
-
 # unit tests
 echo '===================================='
 echo '===     Running Unit Tests      ===='

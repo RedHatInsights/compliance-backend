@@ -102,7 +102,6 @@ jobs:
         POSTGRESQL_TEST_DATABASE: insights
       run: |
         bin/rails db:setup;
-        bundle exec rails db -p < db/cyndi_setup_test.sql;
     - name: Run zeitwerk check
       env:
         RAILS_ENV: test
@@ -125,7 +124,6 @@ jobs:
         POSTGRESQL_TEST_DATABASE: insights
         SPEC_OPTS: "--color --tty --format documentation"
       run: |
-        bundle exec rails db -p < db/cyndi_setup_test.sql;
         cp swagger/v2/openapi.json openapi.old.json
         bin/rake rswag:specs:swaggerize
         symbols=( '"' '[' '{' )

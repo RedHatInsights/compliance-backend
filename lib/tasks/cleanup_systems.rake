@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Service class for cleaning up stale, deleted, and ineligible systems
+# Service class for cleaning up stale and deleted systems
 # rubocop:disable Metrics/ClassLength
 class SystemsCleaner
   DEFAULT_DELETED_RETENTION_DAYS = 14
@@ -15,6 +15,11 @@ class SystemsCleaner
   def run(subtasks)
     start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
+    unsupported = subtasks - %w[deleted stale]
+    if unsupported.any?
+      @logger.warn("Unsupported subtasks provided: #{unsupported.join(', ')}. Supported subtasks are: deleted, stale.")
+    end
+
     if subtasks.include?('deleted')
       @logger.info("Running subtask 'deleted'...")
       cleanup_deleted_systems
@@ -23,11 +28,6 @@ class SystemsCleaner
     if subtasks.include?('stale')
       @logger.info("Running subtask 'stale'...")
       cleanup_stale_systems
-    end
-
-    if subtasks.include?('filter')
-      @logger.info("Running subtask 'filter'...")
-      cleanup_filtered_systems
     end
 
     elapsed = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time).round(2)
@@ -86,58 +86,6 @@ class SystemsCleaner
   end
   # rubocop:enable Metrics/MethodLength
 
-  # Subtask: Filter (Kafka Filter requirements)
-  # Deletes systems that should not have been imported in the first place in batches.
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-  def cleanup_filtered_systems
-    total = 0
-
-    # Select 1: Invalid or missing Insights ID
-    sql_insights_id = <<~SQL
-      SELECT id FROM systems
-      WHERE deleted_at IS NULL
-        AND (insights_id IS NULL OR insights_id = '00000000-0000-0000-0000-000000000000')
-    SQL
-    each_id_batch(sql_insights_id) do |batch_ids|
-      total += delete_systems_in_batches(batch_ids, 'filter:insights_id')
-    end
-
-    # Select 2: Operating System is CentOS
-    sql_centos = <<~SQL
-      SELECT id FROM systems
-      WHERE deleted_at IS NULL
-        AND system_profile -> 'operating_system' ->> 'name' ILIKE '%centos%'
-    SQL
-    each_id_batch(sql_centos) do |batch_ids|
-      total += delete_systems_in_batches(batch_ids, 'filter:centos')
-    end
-
-    # Select 3: Host type is 'edge' (retrieved from inventory.hosts)
-    sql_edge = <<~SQL
-      SELECT s.id FROM systems s
-      INNER JOIN inventory.hosts h ON s.id = h.id
-      WHERE s.deleted_at IS NULL
-        AND h.system_profile ->> 'host_type' = 'edge'
-    SQL
-    each_id_batch(sql_edge, id_column: 's.id') do |batch_ids|
-      total += delete_systems_in_batches(batch_ids, 'filter:edge')
-    end
-
-    # Select 4: BootC system with booted image digest present (retrieved from inventory.hosts)
-    sql_bootc = <<~SQL
-      SELECT s.id FROM systems s
-      INNER JOIN inventory.hosts h ON s.id = h.id
-      WHERE s.deleted_at IS NULL
-        AND h.system_profile -> 'bootc_status' -> 'booted' ->> 'image_digest' IS NOT NULL
-    SQL
-    each_id_batch(sql_bootc, id_column: 's.id') do |batch_ids|
-      total += delete_systems_in_batches(batch_ids, 'filter:bootc')
-    end
-
-    @logger.info("Completed subtask 'filter'. Total systems cleaned up: #{total}")
-  end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-
   # Keyset-paginates SQL queries and yields batch IDs to prevent out-of-memory errors
   # rubocop:disable Metrics/MethodLength
   def each_id_batch(sql_query, id_column: 'id')
@@ -179,16 +127,6 @@ class SystemsCleaner
                 query.where.not(deleted_at: nil).where(deleted_at: ...cutoff_time)
               when 'stale'
                 query.where(stale_timestamp: ...cutoff_time)
-              when 'filter:insights_id'
-                query.where("insights_id IS NULL OR insights_id = '00000000-0000-0000-0000-000000000000'")
-              when 'filter:centos'
-                query.where("system_profile -> 'operating_system' ->> 'name' ILIKE '%centos%'")
-              when 'filter:edge'
-                query.joins('INNER JOIN inventory.hosts h ON systems.id = h.id')
-                     .where("h.system_profile ->> 'host_type' = 'edge'")
-              when 'filter:bootc'
-                query.joins('INNER JOIN inventory.hosts h ON systems.id = h.id')
-                     .where("h.system_profile -> 'bootc_status' -> 'booted' ->> 'image_digest' IS NOT NULL")
               else
                 query
               end
@@ -223,9 +161,9 @@ end
 # rubocop:enable Metrics/ClassLength
 
 namespace :systems do
-  desc 'Cleanup stale, soft-deleted, and ineligible systems'
+  desc 'Cleanup stale and soft-deleted systems'
   task cleanup: :environment do
-    subtasks = ENV.fetch('SUBTASKS', 'deleted,stale,filter').split(',')
+    subtasks = ENV.fetch('SUBTASKS', 'deleted,stale').split(',')
     batch_size = Integer(ENV.fetch('BATCH_SIZE', '1000'), 10)
     raise ArgumentError, 'BATCH_SIZE must be positive' unless batch_size.positive?
 
