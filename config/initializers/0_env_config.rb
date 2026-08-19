@@ -37,7 +37,8 @@ if !ClowderCommonRuby::Config.clowder_enabled? && defined?(Settings)
         'url' => ENV.fetch('COMPLIANCE_SSG_URL', 'http://compliance-ssg:8088')
       }
     },
-    'disable_rbac' => ENV.fetch('DISABLE_RBAC', 'true')
+    'disable_rbac' => ENV.fetch('DISABLE_RBAC', 'true'),
+    'iod_mode' => ENV.fetch('IOD_MODE', 'false')
   }
 
   Settings.add_source!(config)
