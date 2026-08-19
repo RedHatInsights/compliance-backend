@@ -69,6 +69,53 @@ describe SystemsController do
       let(:extra_params) { { id: item.id } }
 
       it_behaves_like 'individual'
+      it_behaves_like 'taggable_show'
+    end
+
+    describe 'GET os_versions' do
+      let(:tag) { { namespace: Faker::Lorem.word, key: Faker::Lorem.word, value: Faker::Lorem.word } }
+      let(:tag_param) { "#{tag[:namespace]}/#{tag[:key]}=#{tag[:value]}" }
+
+      before do
+        tagged = FactoryBot.create(:system, account: current_user.account, os_major_version: 8, os_minor_version: 1)
+        tagged.update(tags: [tag])
+
+        FactoryBot.create(:system, account: current_user.account, os_major_version: 9, os_minor_version: 2)
+      end
+
+      it 'restricts the available OS versions to tag-matching systems' do
+        get :os_versions, params: { tags: [tag_param] }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to contain_exactly('8.1')
+      end
+
+      it 'accepts a scalar tags value' do
+        get :os_versions, params: { tags: tag_param }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to contain_exactly('8.1')
+      end
+    end
+
+    describe 'GET index in IoD mode' do
+      let(:items) do
+        FactoryBot.create_list(:system, 3, account: current_user.account).map(&:reload).sort_by(&:id)
+      end
+      let(:tag_param) { "#{Faker::Lorem.word}/#{Faker::Lorem.word}=#{Faker::Lorem.word}" }
+
+      before do
+        allow(Settings).to receive(:iod_mode).and_return('true')
+        allow_any_instance_of(Insights::Api::Common::HostInventory)
+          .to receive(:host_ids_by_tags).and_return([items.first.id])
+      end
+
+      it 'scopes systems to the host IDs returned by Host Inventory' do
+        get :index, params: { tags: [tag_param] }
+
+        expect(response).to have_http_status :ok
+        expect(response_body_data).to contain_exactly(hash_including('id' => items.first.id))
+      end
     end
   end
 
@@ -739,6 +786,7 @@ describe SystemsController do
       let(:notfound_params) { extra_params.merge(report_id: FactoryBot.create(:report).id) }
 
       it_behaves_like 'individual', :reports
+      it_behaves_like 'taggable_show', :reports
     end
   end
 end
