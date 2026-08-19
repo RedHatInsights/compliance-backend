@@ -353,7 +353,7 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.5.0)
     racc (1.8.1)
-    rack (2.2.23)
+    rack (2.2.22)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-oauth2 (2.3.0)
