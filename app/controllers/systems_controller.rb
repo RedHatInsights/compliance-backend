@@ -83,19 +83,12 @@ class SystemsController < ApplicationController
     end
   end
 
-  # Candidate systems narrowed by the minor-version rule (see `Policy#supports_minor?` for the hosted
-  # vs IoP semantics). The support decision is loop-invariant for a single policy, so it is resolved
-  # once here instead of per candidate: minor-agnostic (upstream/IoP) content accepts every minor,
-  # while hosted content keeps only the minors the policy actually ships.
   def assignable_systems
     return candidate_systems if SupportedSsg.minor_agnostic?(policy.os_major_version)
 
-    supported_minors = policy.os_minor_versions
-    candidate_systems.select { |system| supported_minors.include?(system.os_minor_version) }
+    candidate_systems.os_minor_versions(policy.os_minor_versions)
   end
 
-  # Systems eligible for assignment before the minor rule is applied: the submitted `ids`, matching
-  # the policy's major version, excluding any already held by a sibling policy.
   def candidate_systems
     pundit_scope.where(id: permitted_params[:ids])
                 .os_major_versions(policy.os_major_version)

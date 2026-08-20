@@ -18,10 +18,12 @@ class Profile < ApplicationRecord
   has_many :rule_groups, through: :security_guide, class_name: 'RuleGroup'
 
   def variant_for_minor(version)
-    profile = find_variant_for_minor(version)
+    os_major = security_guide.os_major_version
+    resolved = SupportedSsg.resolve_minor(os_major, version)
+    profile = find_variant_for_minor(resolved)
     return profile if profile
 
-    raise ::Exceptions::OSMinorVersionNotSupported.new(security_guide.os_major_version, version)
+    raise ::Exceptions::OSMinorVersionNotSupported.new(os_major, version)
   end
 
   def self.from_parser(obj, existing: nil, security_guide_id: nil, value_overrides: nil)
@@ -39,15 +41,14 @@ class Profile < ApplicationRecord
 
   private
 
-  def find_variant_for_minor(version)
-    resolved = SupportedSsg.resolve_minor(security_guide.os_major_version, version)
+  def find_variant_for_minor(resolved_minor)
     self.class.unscoped
         .joins(:security_guide, :os_minor_versions)
         .order(self.class.version_to_array(SecurityGuide.arel_table.alias('security_guide')[:version]).desc)
         .find_by(
           ref_id: ref_id,
           security_guide: { os_major_version: security_guide.os_major_version },
-          os_minor_versions: { os_minor_version: resolved }
+          os_minor_versions: { os_minor_version: resolved_minor }
         )
   end
 end

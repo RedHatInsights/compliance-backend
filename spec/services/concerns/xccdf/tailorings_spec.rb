@@ -95,7 +95,9 @@ RSpec.describe Xccdf::Tailorings do
     context 'when SupportedSsg resolves to fallback minor' do
       before { allow(SupportedSsg).to receive(:resolve_minor).and_return(os_minor_version) }
 
-      let!(:assigned_system) { create(:system, account: user.account, policy_id: policy.id, os_minor_version: os_minor_version) }
+      let!(:assigned_system) do
+        create(:system, account: user.account, policy_id: policy.id, os_minor_version: os_minor_version)
+      end
       let!(:system) { create(:system, account: user.account, os_minor_version: unsupported_os_minor_version) }
 
       it 'finds the tailoring at resolved minor version' do
@@ -173,6 +175,69 @@ RSpec.describe Xccdf::Tailorings do
         expected_profile = policy.profile.variant_for_minor(upgraded_os_minor_version)
 
         expect(result).to eq(expected_profile)
+      end
+    end
+  end
+
+  # SupportedSsg.all is stubbed but resolve_minor runs for real, so minors flow through shipping code.
+  describe '#tailoring across OS minor upgrades and downgrades' do
+    def ssg(major, minor)
+      SupportedSsg.new(os_major_version: major.to_s, os_minor_version: minor.to_s, version: '0.1.70')
+    end
+
+    context 'with per-minor (hosted) content shipping 8.0, 8.1 and two-digit 8.10' do
+      let(:policy) { create(:policy, account: user.account, os_major_version: 8, supports_minors: [1, 10]) }
+
+      before do
+        allow(SupportedSsg).to receive(:all).and_return([ssg(8, 0), ssg(8, 1), ssg(8, 10)])
+        create(:system, account: user.account, policy_id: policy.id, os_major_version: 8, os_minor_version: 1)
+        create(:system, account: user.account, policy_id: policy.id, os_major_version: 8, os_minor_version: 10)
+      end
+
+      context 'when the system runs the two-digit minor 8.10' do
+        let(:system) { create(:system, account: user.account, os_major_version: 8, os_minor_version: 10) }
+
+        it 'resolves to the 8.10 tailoring, never the 8.1 one' do
+          expect(service.tailoring).to eq(Tailoring.find_by!(policy_id: policy.id, os_minor_version: 10))
+          expect(service.tailoring).not_to eq(Tailoring.find_by!(policy_id: policy.id, os_minor_version: 1))
+        end
+      end
+
+      context 'when the system is downgraded from 8.10 to 8.1' do
+        let(:system) { create(:system, account: user.account, os_major_version: 8, os_minor_version: 1) }
+
+        it 'resolves to the 8.1 tailoring' do
+          expect(service.tailoring).to eq(Tailoring.find_by!(policy_id: policy.id, os_minor_version: 1))
+        end
+      end
+    end
+
+    context 'with per-minor (hosted) content when the system is upgraded 9.1 -> 9.5' do
+      let(:policy) { create(:policy, account: user.account, os_major_version: 9, supports_minors: [1]) }
+      let(:system) { create(:system, account: user.account, os_major_version: 9, os_minor_version: 5) }
+
+      before do
+        allow(SupportedSsg).to receive(:all).and_return([ssg(9, 0), ssg(9, 1), ssg(9, 5)])
+        create(:system, account: user.account, policy_id: policy.id, os_major_version: 9, os_minor_version: 1)
+      end
+
+      it 'finds no tailoring for the new minor and re-scan raises OSVersionMismatch' do
+        expect(service.tailoring).to be_nil
+        expect { service.tailored_profile }.to raise_error(XccdfReportParser::OSVersionMismatch)
+      end
+    end
+
+    context 'with minor-agnostic (upstream/IoP) content when the system is upgraded 8.1 -> 8.10' do
+      let(:policy) { create(:policy, account: user.account, os_major_version: 8, supports_minors: [0]) }
+      let(:system) { create(:system, account: user.account, os_major_version: 8, os_minor_version: 10) }
+
+      before do
+        allow(SupportedSsg).to receive(:all).and_return([ssg(8, 0)])
+        create(:system, account: user.account, policy_id: policy.id, os_major_version: 8, os_minor_version: 0)
+      end
+
+      it 'keeps resolving any minor to the single minor-0 tailoring' do
+        expect(service.tailoring).to eq(Tailoring.find_by!(policy_id: policy.id, os_minor_version: 0))
       end
     end
   end

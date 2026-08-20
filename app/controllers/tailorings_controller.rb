@@ -70,9 +70,14 @@ class TailoringsController < ApplicationController
   end
 
   def tailoring
-    @tailoring ||= authorize(
-      expand_resource.find(SupportedSsg.resolve_minor(policy.os_major_version, permitted_params[:id]))
-    )
+    @tailoring ||= authorize(expand_resource.find(resolved_tailoring_id))
+  end
+
+  def resolved_tailoring_id
+    id = permitted_params[:id]
+    return id if UUID.validate(id.to_s)
+
+    SupportedSsg.resolve_minor(policy.os_major_version, id)
   end
 
   def policy

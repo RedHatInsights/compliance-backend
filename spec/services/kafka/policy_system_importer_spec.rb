@@ -11,6 +11,11 @@ describe Kafka::PolicySystemImporter do
   let(:policy_id) { FactoryBot.create(:policy, os_major_version: 8, supports_minors: [0], empty_policy: true).id }
   let(:system_id) { FactoryBot.create(:system, account: user.account).id }
 
+  before do
+    allow(SupportedSsg).to receive(:minor_agnostic?).and_return(false)
+    allow(SupportedSsg).to receive(:resolve_minor) { |_, minor| minor.to_s.to_i }
+  end
+
   let(:type) { 'create' }
   let(:message) do
     {
