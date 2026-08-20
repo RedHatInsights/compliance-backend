@@ -91,6 +91,19 @@ RSpec.describe Xccdf::Tailorings do
         expect(Rails.logger).not_to have_received(:audit_success)
       end
     end
+
+    context 'when SupportedSsg resolves to fallback minor' do
+      before { allow(SupportedSsg).to receive(:resolve_minor).and_return(os_minor_version) }
+
+      let!(:assigned_system) { create(:system, account: user.account, policy_id: policy.id, os_minor_version: os_minor_version) }
+      let!(:system) { create(:system, account: user.account, os_minor_version: unsupported_os_minor_version) }
+
+      it 'finds the tailoring at resolved minor version' do
+        expected = Tailoring.find_by!(policy_id: policy.id, os_minor_version: os_minor_version)
+
+        expect(service.tailoring).to eq(expected)
+      end
+    end
   end
 
   describe '#external_report?' do

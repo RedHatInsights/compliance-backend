@@ -40,13 +40,14 @@ class Profile < ApplicationRecord
   private
 
   def find_variant_for_minor(version)
+    resolved = SupportedSsg.resolve_minor(security_guide.os_major_version, version)
     self.class.unscoped
         .joins(:security_guide, :os_minor_versions)
         .order(self.class.version_to_array(SecurityGuide.arel_table.alias('security_guide')[:version]).desc)
         .find_by(
           ref_id: ref_id,
           security_guide: { os_major_version: security_guide.os_major_version },
-          os_minor_versions: { os_minor_version: version }
+          os_minor_versions: { os_minor_version: resolved }
         )
   end
 end

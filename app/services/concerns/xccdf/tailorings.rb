@@ -31,7 +31,7 @@ module Xccdf
     private
 
     def find_or_create_tailoring
-      os_minor = @system.os_minor_version.to_i
+      os_minor = ::SupportedSsg.resolve_minor(@system.os_major_version, @system.os_minor_version)
 
       tailoring = ::Tailoring.find_or_create_by!(policy: @policy, os_minor_version: os_minor) do |t|
         profile = @policy.profile.variant_for_minor(os_minor)

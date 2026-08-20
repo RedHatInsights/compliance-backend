@@ -95,6 +95,14 @@ class Policy < ApplicationRecord
     SupportedProfile.find_by!(ref_id: ref_id, os_major_version: os_major_version).os_minor_versions
   end
 
+  # A policy supports a system's minor when its SSG content covers that minor. Hosted content ships
+  # per-minor datastreams, so only the minors listed on the policy match. Upstream/IoP content ships
+  # a single minor-0 datastream per major that acts as a wildcard, so every minor of that major is
+  # supported.
+  def supports_minor?(os_minor_version)
+    SupportedSsg.minor_agnostic?(os_major_version) || os_minor_versions.include?(os_minor_version)
+  end
+
   private
 
   def ensure_default_values

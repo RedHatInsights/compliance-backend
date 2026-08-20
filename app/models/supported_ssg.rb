@@ -33,17 +33,35 @@ SupportedSsg = Struct.new(:id, :package, :version, :profiles,
     end
 
     def for_os(os_major_version, os_minor_version)
+      for_major = by_os_major[os_major_version.to_s] || []
+      exact = for_major.select { |ssg| ssg.os_minor_version == os_minor_version.to_s }
+
+      # Fall back to the minor-0 datastream when no exact minor is shipped (upstream/IoP content).
+      exact.any? ? exact : for_major.select { |ssg| ssg.os_minor_version == '0' }
+    end
+
+    def resolve_minor(os_major_version, os_minor_version)
       os_major_version = os_major_version.to_s
       os_minor_version = os_minor_version.to_s
 
-      all.select do |ssg|
+      exact = all.any? do |ssg|
         ssg.os_major_version == os_major_version &&
           ssg.os_minor_version == os_minor_version
       end
+
+      (exact ? os_minor_version : '0').to_i
+    end
+
+    # True when a major ships a single minor-0 datastream that acts as a wildcard for every minor
+    # (upstream/IoP content). Hosted content ships per-minor datastreams, so this is false and only
+    # the minors actually present are supported.
+    def minor_agnostic?(os_major_version)
+      minors = by_os_major[os_major_version.to_s]&.map(&:os_minor_version)&.uniq
+      minors == ['0']
     end
 
     def ssg_versions_for_os(os_major_version, os_minor_version)
-      for_os(os_major_version, os_minor_version).map(&:version)
+      for_os(os_major_version, os_minor_version).map(&:version).uniq
     end
 
     def versions
