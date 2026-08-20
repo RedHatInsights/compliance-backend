@@ -12,6 +12,10 @@ describe XccdfReportExtractor do
       expect(minimal_xml.length).to be < full_xml.length / 4
     end
 
+    it 'preserves namespace declarations' do
+      expect(minimal_xml).to include('xmlns="http://checklists.nist.gov/xccdf/1.2"')
+    end
+
     it 'preserves the Benchmark id attribute' do
       parsed = OpenscapParser::TestResultFile.new(minimal_xml)
       expect(parsed.benchmark.id).to eq('xccdf_org.ssgproject.content_benchmark_RHEL-8')
@@ -89,10 +93,37 @@ describe XccdfReportExtractor do
       end
     end
 
+    context 'when a Benchmark attribute contains XML special characters' do
+      let(:attr_value) do
+        "#{Faker::Alphanumeric.alpha(number: 4)}&\"<>#{Faker::Alphanumeric.alpha(number: 4)}"
+      end
+      let(:full_xml) do
+        <<~XML
+          <Benchmark id="#{CGI.escapeHTML(attr_value)}">
+            <version>#{Faker::App.semantic_version}</version>
+            <TestResult id="#{Faker::Internet.uuid}"/>
+          </Benchmark>
+        XML
+      end
+
+      it 'round-trips the attribute without producing malformed XML' do
+        parsed = Nokogiri::XML(minimal_xml)
+
+        expect(parsed.errors).to be_empty
+        expect(parsed.at('Benchmark')['id']).to eq(attr_value)
+      end
+    end
+
     context 'when version element is missing' do
       let(:benchmark_id) { Faker::Alphanumeric.alphanumeric(number: 10) }
       let(:full_xml) do
-        %(<Benchmark id="#{benchmark_id}"><TestResult id="#{Faker::Internet.uuid}"><score>50</score></TestResult></Benchmark>)
+        <<~XML
+          <Benchmark id="#{benchmark_id}">
+            <TestResult id="#{Faker::Internet.uuid}">
+              <score>#{Faker::Number.between(from: 0, to: 100)}</score>
+            </TestResult>
+          </Benchmark>
+        XML
       end
 
       it 'raises ExtractionError' do

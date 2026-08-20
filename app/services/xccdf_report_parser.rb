@@ -39,8 +39,7 @@ class XccdfReportParser
 
     @account = Account.from_identity_header(Insights::Api::Common::IdentityHeader.new(@b64_identity))
     @system = System.find(message['id'])
-    minimal_xml = XccdfReportExtractor.extract(report_contents)
-    @test_result_file = OpenscapParser::TestResultFile.new(minimal_xml)
+    @test_result_file = parse_test_result_file(report_contents)
     set_openscap_parser_data
 
     @policy = Policy.joins(:systems, :profile)
@@ -140,6 +139,10 @@ class XccdfReportParser
   end
 
   private
+
+  def parse_test_result_file(report_contents)
+    OpenscapParser::TestResultFile.new(XccdfReportExtractor.extract(report_contents))
+  end
 
   def parse_failure_message
     "Report for profile #{@test_result_file.test_result.profile_id} against " \
