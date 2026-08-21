@@ -6,6 +6,18 @@ require 'cgi'
 class XccdfReportExtractor
   class ExtractionError < StandardError; end
 
+  # Quote-aware match for the Benchmark start tag. Used instead of
+  # Reader#attribute_hash / #namespaces, which call xmlTextReaderExpand and
+  # materialize the entire Benchmark subtree (the rest of the report).
+  BENCHMARK_OPEN_TAG = /
+    <((?:[A-Za-z_][\w.-]*:)?Benchmark)
+    \b
+    (?:[^>"']|"[^"]*"|'[^']*')*
+    >
+  /x
+
+  FALLBACK_ATTRS = %w[xmlns xmlns:xsi id resolved style xml:lang].freeze
+
   def self.extract(xml_string)
     new(xml_string).extract
   end
@@ -67,7 +79,7 @@ class XccdfReportExtractor
 
     fragments[:benchmark_depth] = node.depth
     fragments[:benchmark_name] = node.name
-    fragments[:benchmark_tag] = build_benchmark_open_tag(node)
+    fragments[:benchmark_tag] = raw_benchmark_open_tag || fallback_open_tag(node)
   end
 
   def capture_child!(fragments, node)
@@ -79,31 +91,18 @@ class XccdfReportExtractor
     end
   end
 
-  def build_benchmark_open_tag(node)
-    attr_str = serialized_attributes(node)
-    attr_str.empty? ? "<#{node.name}>" : "<#{node.name} #{attr_str}>"
+  def raw_benchmark_open_tag
+    @xml[BENCHMARK_OPEN_TAG]
   end
 
-  def serialized_attributes(node)
-    combined_attributes(node).map do |name, value|
-      %(#{name}="#{escape_xml_attribute(value)}")
+  # Reader#attribute / #namespace_uri do not expand the subtree.
+  def fallback_open_tag(node)
+    attr_str = FALLBACK_ATTRS.filter_map do |name|
+      value = node.attribute(name)
+      %(#{name}="#{escape_xml_attribute(value)}") if value
     end.join(' ')
-  end
 
-  def combined_attributes(node)
-    namespace_attributes(node).merge(node.attribute_hash || {})
-  end
-
-  def namespace_attributes(node)
-    (node.namespaces || {}).each_with_object({}) do |(prefix, uri), attrs|
-      attrs[xmlns_attr_name(prefix)] = uri
-    end
-  end
-
-  def xmlns_attr_name(prefix)
-    return 'xmlns' if [nil, '', 'xmlns'].include?(prefix)
-
-    prefix.start_with?('xmlns:') ? prefix : "xmlns:#{prefix}"
+    attr_str.empty? ? "<#{node.name}>" : "<#{node.name} #{attr_str}>"
   end
 
   def escape_xml_attribute(value)

@@ -16,6 +16,10 @@ describe XccdfReportExtractor do
       expect(minimal_xml).to include('xmlns="http://checklists.nist.gov/xccdf/1.2"')
     end
 
+    it 'preserves xml:lang on Benchmark' do
+      expect(minimal_xml).to include('xml:lang="en-US"')
+    end
+
     it 'preserves the Benchmark id attribute' do
       parsed = OpenscapParser::TestResultFile.new(minimal_xml)
       expect(parsed.benchmark.id).to eq('xccdf_org.ssgproject.content_benchmark_RHEL-8')
@@ -90,6 +94,23 @@ describe XccdfReportExtractor do
         expect { minimal_xml }.to raise_error(
           described_class::ExtractionError, /No <TestResult> element/
         )
+      end
+    end
+
+    context 'when a Benchmark attribute value contains an unescaped >' do
+      let(:benchmark_id) { Faker::Alphanumeric.alphanumeric(number: 10) }
+      let(:full_xml) do
+        <<~XML
+          <Benchmark id="#{benchmark_id}" title="a > b">
+            <version>#{Faker::App.semantic_version}</version>
+            <TestResult id="#{Faker::Internet.uuid}"/>
+          </Benchmark>
+        XML
+      end
+
+      it 'keeps the full open tag' do
+        expect(minimal_xml).to include(%(id="#{benchmark_id}"))
+        expect(minimal_xml).to include('title="a > b"')
       end
     end
 
