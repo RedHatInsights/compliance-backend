@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_29_122250) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_17_143906) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -338,6 +338,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_122250) do
     t.uuid "profile_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.jsonb "value_overrides", default: {}
+    t.index ["policy_id", "os_minor_version"], name: "index_tailorings_on_policy_id_and_os_minor_version", unique: true
     t.index ["policy_id"], name: "index_tailorings_on_policy_id"
     t.index ["profile_id"], name: "index_tailorings_on_profile_id"
   end
