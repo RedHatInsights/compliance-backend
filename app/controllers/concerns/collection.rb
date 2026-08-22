@@ -63,9 +63,29 @@ module Collection
     # - OR across values that share the same namespace and key
     # - AND across different namespace/key combinations
     def filter_by_tags(data)
-      return data unless TagFiltering.tags_supported?(resource) && permitted_params[:tags]&.any?
+      # A single tag may arrive as a scalar (?tags=a/b=c) rather than an array.
+      # Normalize to an array of strings so the downstream .any?/.scan calls are
+      # always safe regardless of how the param was supplied.
+      tags = Array(permitted_params[:tags]).map(&:to_s)
+      return data unless TagFiltering.tags_supported?(resource) && tags.any?
 
-      apply_grouped_tag_filters(data, parse_tags(permitted_params[:tags]))
+      if ActiveModel::Type::Boolean.new.cast(Settings.iod_mode)
+        filter_by_tags_hbi(data, tags)
+      else
+        filter_by_tags_jsonb(data, tags)
+      end
+    end
+
+    def filter_by_tags_hbi(data, tags)
+      host_ids = Insights::Api::Common::HostInventory.new(
+        b64_identity: raw_identity_header
+      ).host_ids_by_tags(tags)
+      column = resource == System ? :id : :system_id
+      data.where(column => host_ids)
+    end
+
+    def filter_by_tags_jsonb(data, tags)
+      apply_grouped_tag_filters(data, parse_tags(tags))
     end
 
     def apply_grouped_tag_filters(data, tags)

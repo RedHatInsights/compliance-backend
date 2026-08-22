@@ -131,6 +131,7 @@ describe TestResultsController do
       let(:notfound_params) { extra_params.merge(report_id: FactoryBot.create(:report).id) }
 
       it_behaves_like 'individual', :report
+      it_behaves_like 'taggable_show', :report
 
       context 'system from an inaccessible inventory group' do
         before do
@@ -158,6 +159,58 @@ describe TestResultsController do
 
           expect(response).to have_http_status :not_found
         end
+      end
+    end
+
+    describe 'GET os_versions' do
+      let(:tag) { { namespace: Faker::Lorem.word, key: Faker::Lorem.word, value: Faker::Lorem.word } }
+      let(:tag_param) { "#{tag[:namespace]}/#{tag[:key]}=#{tag[:value]}" }
+      let(:other_tag_param) { "#{Faker::Lorem.word}/#{Faker::Lorem.word}=#{Faker::Lorem.word}" }
+
+      before do
+        tagged = FactoryBot.create(:system, **sysparams)
+        tagged.update(tags: [tag])
+        FactoryBot.create(:test_result, system: tagged, report_id: parent.id)
+      end
+
+      it 'includes OS versions of tag-matching systems' do
+        get :os_versions, params: { report_id: parent.id, parents: [:report], tags: [tag_param] }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to contain_exactly('8.0')
+      end
+
+      it 'excludes systems that do not match the tags' do
+        get :os_versions, params: { report_id: parent.id, parents: [:report], tags: [other_tag_param] }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to be_empty
+      end
+    end
+
+    describe 'GET security_guide_versions' do
+      let(:tag) { { namespace: Faker::Lorem.word, key: Faker::Lorem.word, value: Faker::Lorem.word } }
+      let(:tag_param) { "#{tag[:namespace]}/#{tag[:key]}=#{tag[:value]}" }
+      let(:other_tag_param) { "#{Faker::Lorem.word}/#{Faker::Lorem.word}=#{Faker::Lorem.word}" }
+
+      before do
+        tagged = FactoryBot.create(:system, **sysparams)
+        tagged.update(tags: [tag])
+        FactoryBot.create(:test_result, system: tagged, report_id: parent.id)
+      end
+
+      it 'includes Security Guide versions of tag-matching systems' do
+        get :security_guide_versions, params: { report_id: parent.id, parents: [:report], tags: [tag_param] }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).not_to be_empty
+      end
+
+      it 'excludes systems that do not match the tags' do
+        get :security_guide_versions, params: { report_id: parent.id, parents: [:report], tags: [other_tag_param] }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to be_empty
       end
     end
   end
