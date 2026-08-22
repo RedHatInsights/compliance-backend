@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_29_122250) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_17_100713) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -141,6 +141,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_122250) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "end_time", precision: nil
     t.integer "failed_rule_count", default: 0, null: false
+    t.boolean "mismatched", default: false, null: false
     t.uuid "report_id", null: false
     t.decimal "score"
     t.datetime "start_time", precision: nil
@@ -414,6 +415,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_122250) do
       historical_test_results.end_time,
       historical_test_results.score,
       historical_test_results.supported,
+      historical_test_results.mismatched,
       historical_test_results.failed_rule_count,
       historical_test_results.created_at,
       historical_test_results.updated_at
@@ -452,6 +454,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_122250) do
             "end_time",
             "score",
             "supported",
+            "mismatched",
             "failed_rule_count",
             "created_at",
             "updated_at"
@@ -463,6 +466,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_122250) do
             NEW."end_time",
             NEW."score",
             COALESCE(NEW."supported", TRUE),
+            COALESCE(NEW."mismatched", FALSE),
             COALESCE(NEW."failed_rule_count", 0),
             COALESCE(NEW."created_at", NOW()),
             COALESCE(NEW."updated_at", NOW())

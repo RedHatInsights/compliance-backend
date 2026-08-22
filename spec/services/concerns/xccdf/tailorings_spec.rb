@@ -7,11 +7,14 @@ RSpec.describe Xccdf::Tailorings do
     Class.new do
       include Xccdf::Tailorings
 
-      def initialize(policy:, system:)
+      def initialize(policy:, system:, security_guide:)
         @policy = policy
         @system = system
+        @security_guide = security_guide
       end
-    end.new(policy: policy, system: system)
+
+      attr_reader :security_guide
+    end.new(policy: policy, system: system, security_guide: security_guide)
   end
 
   let(:os_minor_version) { 0 }
@@ -19,6 +22,8 @@ RSpec.describe Xccdf::Tailorings do
   let(:user) { create(:user) }
   let(:policy) { create(:policy, account: user.account, supports_minors: [os_minor_version]) }
   let!(:system) { create(:system, account: user.account, policy_id: policy.id, os_minor_version: os_minor_version) }
+  let(:tailoring_record) { Tailoring.find_by!(policy_id: policy.id, os_minor_version: os_minor_version) }
+  let(:security_guide) { tailoring_record.security_guide }
 
   describe '#tailoring' do
     it 'finds the tailoring matching the policy and system OS minor version' do
@@ -47,6 +52,30 @@ RSpec.describe Xccdf::Tailorings do
 
       it 'returns true' do
         expect(service.external_report?).to be true
+      end
+    end
+  end
+
+  describe '#version_mismatched?' do
+    context 'when the security guide matches the tailoring profile' do
+      it 'returns false' do
+        expect(service.version_mismatched?).to be false
+      end
+    end
+
+    context 'when the security guide differs from the tailoring profile' do
+      let(:security_guide) { create(:security_guide) }
+
+      it 'returns true' do
+        expect(service.version_mismatched?).to be true
+      end
+    end
+
+    context 'when no tailoring exists' do
+      let!(:system) { create(:system, account: user.account, os_minor_version: unsupported_os_minor_version) }
+
+      it 'returns false' do
+        expect(service.version_mismatched?).to be false
       end
     end
   end
