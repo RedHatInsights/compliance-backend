@@ -19,6 +19,7 @@ class XccdfReportParser
   class UnknownRuleError < StandardError; end
 
   ERRORS = [
+    XccdfReportExtractor::ExtractionError,
     MissingIdError, WrongFormatError, OSVersionMismatch, UnknownProfileError,
     ActiveRecord::RecordInvalid, ExternalReportError, UnknownBenchmarkError, UnknownRuleError
   ].freeze
@@ -38,7 +39,7 @@ class XccdfReportParser
 
     @account = Account.from_identity_header(Insights::Api::Common::IdentityHeader.new(@b64_identity))
     @system = System.find(message['id'])
-    @test_result_file = OpenscapParser::TestResultFile.new(report_contents)
+    @test_result_file = parse_test_result_file(report_contents)
     set_openscap_parser_data
 
     @policy = Policy.joins(:systems, :profile)
@@ -138,6 +139,10 @@ class XccdfReportParser
   end
 
   private
+
+  def parse_test_result_file(report_contents)
+    OpenscapParser::TestResultFile.new(XccdfReportExtractor.extract(report_contents))
+  end
 
   def parse_failure_message
     "Report for profile #{@test_result_file.test_result.profile_id} against " \
