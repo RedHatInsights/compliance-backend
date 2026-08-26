@@ -15,9 +15,16 @@ namespace :redis do
   desc 'Check for available redis connection'
   task status: [:environment] do
     begin
+      if ENV.fetch('PRIMARY_REDIS_AS_CACHE', false) == 'true'
+        redis_url = Settings.redis.url
+        redis_password = Settings.redis.password.presence
+      else
+        redis_url = "redis://#{Settings.redis.cache_hostname}:#{Settings.redis.cache_port}"
+        redis_password = Settings.redis.cache_password.presence
+      end
       Redis.new(
-        url: Settings.redis.url,
-        password: Settings.redis.password.presence,
+        url: redis_url,
+        password: redis_password,
         ssl: ActiveModel::Type::Boolean.new.cast(Settings.redis.ssl)
       ).ping
     rescue Redis::BaseError

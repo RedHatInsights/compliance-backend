@@ -34,7 +34,7 @@ objects:
         partitions: 1
       - topicName: platform.inventory.host-apps
         partitions: 1
-    inMemoryDb: true
+    inMemoryDb: ${{IN_MEMORY_DB}}
     jobs:
     - name: import-ssg
       schedule: ${IMPORT_SSG_SCHEDULE}
@@ -867,6 +867,9 @@ parameters:
 - name: MAX_INIT_TIMEOUT_SECONDS
   description: Number of seconds for timeout init container operation
   value: "120"
+- name: IN_MEMORY_DB
+  description: Provision Clowder Redis. Set true in ephemeral (PRIMARY_REDIS_AS_CACHE fallback). Leave false in stage/prod.
+  value: 'false'
 - name: PRIMARY_REDIS_AS_CACHE
   description: Whether to use the clowder-provided Redis as cache or not
   value: 'false'
