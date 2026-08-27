@@ -16,7 +16,8 @@ if !ClowderCommonRuby::Config.clowder_enabled? && defined?(Settings)
         'payload_status'                 => ENV.fetch('KAFKA_TOPIC_PAYLOAD_STATUS', 'platform.payload-status'),
         'notifications_ingress'          => ENV.fetch('KAFKA_TOPIC_NOTIFICATIONS_INGRESS', 'platform.notifications.ingress'),
         'remediation_updates_compliance' => ENV.fetch('KAFKA_TOPIC_REMEDIATION_UPDATES', 'platform.remediation-updates.compliance'),
-        'inventory_host_apps'            => ENV.fetch('KAFKA_TOPIC_INVENTORY_HOST_APPS', 'platform.inventory.host-apps')
+        'inventory_host_apps'            => ENV.fetch('KAFKA_TOPIC_INVENTORY_HOST_APPS', 'platform.inventory.host-apps'),
+        'compliance_dlq'                 => ENV.fetch('KAFKA_TOPIC_COMPLIANCE_DLQ', 'platform.compliance.dlq')
       }
     },
     'redis' => {

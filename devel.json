@@ -45,6 +45,10 @@
                 "name": "platform.inventory.host-apps"
             },
             {
+                "requestedName": "platform.compliance.dlq",
+                "name": "platform.compliance.dlq"
+            },
+            {
                 "requestedName": "originalName",
                 "name": "someTopic"
             }

@@ -49,7 +49,13 @@ class KarafkaApp < Karafka::App
     consumer_group :'complianceinventory-events-consumer' do
       topic Settings.kafka.topics.inventory_events do
         consumer InventoryEventsConsumer
-        max_messages 1
+        max_messages 100
+        max_wait_time 100
+        dead_letter_queue(
+          topic: Settings.kafka.topics.compliance_dlq,
+          max_retries: 3,
+          independent: true
+        )
       end
     end
   end

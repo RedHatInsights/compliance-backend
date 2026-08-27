@@ -21,13 +21,7 @@ class ApplicationConsumer < Karafka::BaseConsumer
 
   def process(message)
     @message = message
-
-    if attempt > 3
-      logger.error 'Discarded message'
-    else
-      consume_one
-    end
-
+    consume_one
     mark_as_consumed(message)
   end
 
