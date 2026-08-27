@@ -27,7 +27,7 @@ objects:
       - topicName: platform.payload-status
         partitions: 1
       - topicName: platform.inventory.events
-        partitions: 1
+        partitions: 16
       - topicName: platform.remediation-updates.compliance
         partitions: 1
       - topicName: platform.notifications.ingress
