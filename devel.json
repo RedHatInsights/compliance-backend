@@ -54,11 +54,6 @@
             }
         ]
     },
-    "inMemoryDb": {
-        "hostname": "redis",
-        "sslMode": "false",
-        "port": "6379"
-    },
     "database": {
         "name": "compliance_dev",
         "username": "insights",
