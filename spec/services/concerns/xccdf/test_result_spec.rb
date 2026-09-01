@@ -7,12 +7,14 @@ RSpec.describe Xccdf::TestResult do
     Class.new do
       include Xccdf::TestResult
 
-      def initialize(system:, tailoring:, op_test_result:, security_guide:, op_rule_results:)
+      def initialize(system:, tailoring:, op_test_result:, security_guide:, **opts)
         @system = system
         @tailoring = tailoring
         @op_test_result = op_test_result
         @security_guide = security_guide
-        @op_rule_results = op_rule_results
+        @op_rule_results = opts[:op_rule_results] || []
+        @version_mismatched = opts[:version_mismatched] || false
+        @matched_ref_ids = opts[:matched_ref_ids]
       end
 
       attr_reader :tailoring, :security_guide
@@ -20,12 +22,22 @@ RSpec.describe Xccdf::TestResult do
       def selected_op_rule_results
         @op_rule_results
       end
+
+      def version_mismatched?
+        @version_mismatched
+      end
+
+      def rule_ids
+        @matched_ref_ids || {}
+      end
     end.new(
       system: system,
       tailoring: tailoring,
       op_test_result: op_test_result,
       security_guide: security_guide,
-      op_rule_results: op_rule_results
+      op_rule_results: op_rule_results,
+      version_mismatched: version_mismatched,
+      matched_ref_ids: matched_ref_ids
     )
   end
 
@@ -34,7 +46,12 @@ RSpec.describe Xccdf::TestResult do
   let(:system) { create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
   let(:tailoring) { Tailoring.find_by!(policy_id: policy.id, os_minor_version: 0) }
   let(:security_guide) { tailoring.security_guide }
+  let(:rule_ref_a) { Faker::Alphanumeric.alphanumeric(number: 20) }
+  let(:rule_ref_b) { Faker::Alphanumeric.alphanumeric(number: 20) }
+  let(:rule_ref_c) { Faker::Alphanumeric.alphanumeric(number: 20) }
   let(:op_rule_results) { [] }
+  let(:version_mismatched) { false }
+  let(:matched_ref_ids) { nil }
   let(:op_test_result) do
     double(:op_test_result,
            score: 90.0,
@@ -64,6 +81,85 @@ RSpec.describe Xccdf::TestResult do
         expect { service.save_test_result }.not_to change(TestResult, :count)
         expect(TestResult.exists?(old_test_result.id)).to be false
       end
+    end
+  end
+
+  describe '#recomputed_score' do
+    context 'when versions match' do
+      it 'returns the original scanner score' do
+        expect(service.recomputed_score).to eq(90.0)
+      end
+    end
+
+    context 'when versions are mismatched' do
+      let(:version_mismatched) { true }
+      let(:matched_ref_ids) { { rule_ref_a => SecureRandom.uuid, rule_ref_b => SecureRandom.uuid } }
+
+      let(:op_rule_results) do
+        [
+          OpenStruct.new(id: rule_ref_a, result: 'pass'),
+          OpenStruct.new(id: rule_ref_b, result: 'fail'),
+          OpenStruct.new(id: rule_ref_c, result: 'pass')
+        ]
+      end
+
+      it 'computes the score from matched rules only' do
+        expect(service.recomputed_score).to eq(50.0)
+      end
+
+      context 'and no rules match' do
+        let(:matched_ref_ids) { {} }
+
+        it 'returns 0.0' do
+          expect(service.recomputed_score).to eq(Xccdf::TestResult::EMPTY_SCORE)
+        end
+      end
+    end
+  end
+
+  describe '#countable_op_rule_results' do
+    let(:op_rule_results) do
+      [
+        OpenStruct.new(id: rule_ref_a, result: 'pass'),
+        OpenStruct.new(id: rule_ref_b, result: 'fail'),
+        OpenStruct.new(id: rule_ref_c, result: 'pass')
+      ]
+    end
+
+    context 'when versions match' do
+      it 'returns all selected rule results' do
+        expect(service.countable_op_rule_results).to eq(op_rule_results)
+      end
+    end
+
+    context 'when versions are mismatched' do
+      let(:version_mismatched) { true }
+      let(:matched_ref_ids) { { rule_ref_a => SecureRandom.uuid } }
+
+      it 'returns only results whose ref_id is in rule_ids' do
+        expect(service.countable_op_rule_results.map(&:id)).to contain_exactly(rule_ref_a)
+      end
+    end
+  end
+
+  describe '#save_test_result with version mismatch' do
+    let(:version_mismatched) { true }
+    let(:matched_ref_ids) { { rule_ref_a => SecureRandom.uuid } }
+
+    let(:op_rule_results) do
+      [
+        OpenStruct.new(id: rule_ref_a, result: 'pass'),
+        OpenStruct.new(id: rule_ref_b, result: 'fail')
+      ]
+    end
+
+    it 'sets mismatched to true and recomputes score from matched rules' do
+      result = service.save_test_result
+
+      expect(result).to be_persisted
+      expect(result.mismatched).to be true
+      expect(result.score).to eq(100.0)
+      expect(result.failed_rule_count).to eq(0)
     end
   end
 

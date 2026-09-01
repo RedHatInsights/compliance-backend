@@ -2,7 +2,7 @@
 
 # JSON serialization for Test Results
 class TestResultSerializer < ApplicationSerializer
-  attributes :end_time, :failed_rule_count, :supported, :score
+  attributes :end_time, :failed_rule_count, :supported, :mismatched, :score
 
   derived_attribute :display_name, system: [:display_name]
   derived_attribute :groups, system: [:groups]
