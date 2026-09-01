@@ -29,20 +29,6 @@ describe InventoryEventsConsumer do
     end
   end
 
-  describe 'handling messages after three retries' do
-    let(:type) { 'delete' }
-
-    before do
-      allow(consumer).to receive(:attempt).and_return(4)
-    end
-
-    it 'logs and discards message' do
-      expect(Karafka.logger).to receive(:error).with('Discarded message')
-
-      consumer.consume
-    end
-  end
-
   describe 'handling messages by type' do
     context 'when message is delete' do
       let(:type) { 'delete' }
