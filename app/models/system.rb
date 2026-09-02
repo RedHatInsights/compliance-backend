@@ -86,8 +86,8 @@ class System < ApplicationRecord
   )
 
   sortable_by :display_name
-  sortable_by :os_major_version
-  sortable_by :os_minor_version
+  sortable_by :os_major_version, os_major_version.left
+  sortable_by :os_minor_version, os_minor_version.left
   sortable_by :os_version, sortable_os
   sortable_by :groups, first_group_name
 
