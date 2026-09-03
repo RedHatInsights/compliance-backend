@@ -33,10 +33,14 @@ module Kafka
     end
 
     def extract_system_attrs(id, payload, updated)
+      sp = relevant_system_profile(payload)
+      os = sp['operating_system'].is_a?(Hash) ? sp['operating_system'] : {}
+
       {
         id: id, account: payload.dig('account'), org_id: payload.dig('org_id'),
         display_name: payload.dig('display_name'), groups: payload.dig('groups') || [],
-        tags: payload.dig('tags') || [], system_profile: relevant_system_profile(payload),
+        tags: payload.dig('tags') || [], system_profile: sp,
+        os_major_version: os['major'], os_minor_version: os['minor'], owner_id: sp['owner_id'],
         stale_timestamp: payload.dig('stale_timestamp'), created: payload.dig('created'),
         updated: updated, insights_id: payload.dig('insights_id'),
         deleted_at: nil
@@ -59,7 +63,7 @@ module Kafka
         attrs,
         unique_by: :id,
         returning: %w[id],
-        on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, system_profile = EXCLUDED.system_profile, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id, deleted_at = EXCLUDED.deleted_at WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated')
+        on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, system_profile = EXCLUDED.system_profile, os_major_version = EXCLUDED.os_major_version, os_minor_version = EXCLUDED.os_minor_version, owner_id = EXCLUDED.owner_id, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id, deleted_at = EXCLUDED.deleted_at WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated')
       )
       # rubocop:enable Layout/LineLength
       # rubocop:enable Rails/SkipsModelValidations
