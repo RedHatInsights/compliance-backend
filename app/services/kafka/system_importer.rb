@@ -3,6 +3,8 @@
 module Kafka
   # Imports host events from Inventory into the systems table
   class SystemImporter
+    OWNER_ID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
+
     def initialize(message, logger = Rails.logger)
       @message = message
       @logger = logger
@@ -33,14 +35,32 @@ module Kafka
     end
 
     def extract_system_attrs(id, payload, updated)
+      system_profile = relevant_system_profile(payload)
       {
         id: id, account: payload.dig('account'), org_id: payload.dig('org_id'),
         display_name: payload.dig('display_name'), groups: payload.dig('groups') || [],
-        tags: payload.dig('tags') || [], system_profile: relevant_system_profile(payload),
+        tags: payload.dig('tags') || [], system_profile: system_profile,
         stale_timestamp: payload.dig('stale_timestamp'), created: payload.dig('created'),
         updated: updated, insights_id: payload.dig('insights_id'),
         deleted_at: nil
+      }.merge(native_system_profile_attrs(system_profile))
+    end
+
+    def native_system_profile_attrs(system_profile)
+      operating_system = system_profile['operating_system']
+      operating_system = {} unless operating_system.is_a?(Hash)
+      {
+        os_major_version: operating_system['major'],
+        os_minor_version: operating_system['minor'],
+        owner_id: native_owner_id(system_profile['owner_id'])
       }
+    end
+
+    def native_owner_id(owner_id)
+      return owner_id if owner_id.nil? || (owner_id.is_a?(String) && OWNER_ID_FORMAT.match?(owner_id))
+
+      @logger.error("[Kafka::SystemImporter] Malformed owner_id: #{owner_id.inspect}")
+      nil
     end
 
     def relevant_system_profile(payload)
@@ -59,7 +79,7 @@ module Kafka
         attrs,
         unique_by: :id,
         returning: %w[id],
-        on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, system_profile = EXCLUDED.system_profile, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id, deleted_at = EXCLUDED.deleted_at WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated')
+        on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, system_profile = EXCLUDED.system_profile, os_major_version = EXCLUDED.os_major_version, os_minor_version = EXCLUDED.os_minor_version, owner_id = EXCLUDED.owner_id, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id, deleted_at = EXCLUDED.deleted_at WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated')
       )
       # rubocop:enable Layout/LineLength
       # rubocop:enable Rails/SkipsModelValidations

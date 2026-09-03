@@ -13,7 +13,10 @@ RSpec.describe Kafka::SystemImporter do
         'display_name' => Faker::Internet.domain_word,
         'groups' => [],
         'tags' => [],
-        'system_profile' => {},
+        'system_profile' => {
+          'operating_system' => { 'major' => 9, 'minor' => 4 },
+          'owner_id' => SecureRandom.uuid
+        },
         'stale_timestamp' => updated_time,
         'created' => (Time.now.utc - 1.day).iso8601,
         'updated' => updated_time,
@@ -25,6 +28,34 @@ RSpec.describe Kafka::SystemImporter do
   let(:service) { described_class.new(message, Karafka.logger) }
 
   describe '#import' do
+    # rubocop:disable Rails/SkipsModelValidations
+    shared_context 'with an existing owned system' do
+      let(:existing_owner_id) { SecureRandom.uuid }
+      let!(:existing_system) do
+        system = FactoryBot.create(
+          :system,
+          id: message['host']['id'],
+          updated: (Time.zone.parse(updated_time) - 2.days).iso8601,
+          system_profile: { 'owner_id' => existing_owner_id }
+        )
+        system.update_columns(owner_id: existing_owner_id)
+        system
+      end
+    end
+
+    shared_context 'with existing native OS versions' do
+      let!(:existing_system) do
+        system = FactoryBot.create(
+          :system,
+          id: message['host']['id'],
+          updated: (Time.zone.parse(updated_time) - 2.days).iso8601,
+          system_profile: { 'operating_system' => { 'major' => 8, 'minor' => 0 } }
+        )
+        system.update_columns(os_major_version: 8, os_minor_version: 0)
+        system
+      end
+    end
+
     context 'when payload is invalid (missing id)' do
       before { message['host'].delete('id') }
 
@@ -52,28 +83,134 @@ RSpec.describe Kafka::SystemImporter do
     end
 
     context 'when system is new' do
-      it 'upserts system' do
+      it 'upserts the JSONB profile and native fields' do
         expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
         expect { service.import }.to change { System.count }.by(1)
+
+        system = System.find(message['host']['id'])
+        expect(system.system_profile).to eq(message.dig('host', 'system_profile'))
+        expect(system[:os_major_version]).to eq(9)
+        expect(system[:os_minor_version]).to eq(4)
+        expect(system[:owner_id]).to eq(message.dig('host', 'system_profile', 'owner_id'))
       end
     end
 
     context 'when message is an update to an existing system' do
       let!(:existing_system) do
-        FactoryBot.create(
+        system = FactoryBot.create(
           :system,
           id: message['host']['id'],
-          display_name: 'old-name',
-          updated: (Time.zone.parse(updated_time) - 2.days).iso8601
+          display_name: Faker::Internet.domain_word,
+          updated: (Time.zone.parse(updated_time) - 2.days).iso8601,
+          system_profile: {
+            'operating_system' => { 'major' => 8, 'minor' => 0 },
+            'owner_id' => SecureRandom.uuid
+          }
         )
+        system.update_columns(
+          os_major_version: 8,
+          os_minor_version: 0,
+          owner_id: SecureRandom.uuid
+        )
+        system
       end
 
-      it 'updates the existing system attributes' do
+      it 'updates the JSONB profile and native fields' do
         expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
         expect { service.import }.not_to(change { System.count })
 
         system = System.find(message['host']['id'])
         expect(system.display_name).to eq(message.dig('host', 'display_name'))
+        expect(system.system_profile).to eq(message.dig('host', 'system_profile'))
+        expect(system[:os_major_version]).to eq(9)
+        expect(system[:os_minor_version]).to eq(4)
+        expect(system[:owner_id]).to eq(message.dig('host', 'system_profile', 'owner_id'))
+      end
+    end
+
+    context 'when a newer message omits owner_id' do
+      include_context 'with an existing owned system'
+
+      before { message['host']['system_profile'].delete('owner_id') }
+
+      it 'removes owner_id from JSONB and clears the native column' do
+        service.import
+        system = System.find(message['host']['id'])
+        expect(system.system_profile).not_to have_key('owner_id')
+        expect(system[:owner_id]).to be_nil
+      end
+    end
+
+    context 'when a newer message has a null owner_id' do
+      include_context 'with an existing owned system'
+
+      before { message['host']['system_profile']['owner_id'] = nil }
+
+      it 'retains JSON null and clears the native column' do
+        service.import
+        system = System.find(message['host']['id'])
+        expect(system.system_profile).to have_key('owner_id')
+        expect(system.system_profile['owner_id']).to be_nil
+        expect(system[:owner_id]).to be_nil
+      end
+    end
+
+    context 'when owner_id is a malformed UUID string' do
+      before { message['host']['system_profile']['owner_id'] = Faker::Lorem.word }
+
+      it 'logs an error and imports JSONB with a null native owner' do
+        expect(Karafka.logger)
+          .to receive(:error)
+          .with(/\[Kafka::SystemImporter\] Malformed owner_id/)
+
+        expect { service.import }.to change { System.count }.by(1)
+        system = System.find(message['host']['id'])
+        expect(system.system_profile['owner_id']).to eq(message.dig('host', 'system_profile', 'owner_id'))
+        expect(system[:owner_id]).to be_nil
+      end
+    end
+
+    context 'when owner_id is not a string' do
+      before { message['host']['system_profile']['owner_id'] = 1 }
+
+      it 'logs an error and imports JSONB with a null native owner' do
+        expect(Karafka.logger)
+          .to receive(:error)
+          .with(/\[Kafka::SystemImporter\] Malformed owner_id/)
+
+        expect { service.import }.to change { System.count }.by(1)
+        system = System.find(message['host']['id'])
+        expect(system.system_profile['owner_id']).to eq(1)
+        expect(system[:owner_id]).to be_nil
+      end
+    end
+
+    context 'when a newer message omits operating_system' do
+      include_context 'with existing native OS versions'
+
+      before { message['host']['system_profile'].delete('operating_system') }
+
+      it 'removes operating_system from JSONB and clears native OS versions' do
+        service.import
+        system = System.find(message['host']['id'])
+        expect(system.system_profile).not_to have_key('operating_system')
+        expect(system[:os_major_version]).to be_nil
+        expect(system[:os_minor_version]).to be_nil
+      end
+    end
+
+    context 'when a newer message has a non-hash operating_system' do
+      include_context 'with existing native OS versions'
+
+      before { message['host']['system_profile']['operating_system'] = Faker::Lorem.word }
+
+      it 'retains the JSONB value and clears native OS versions' do
+        service.import
+        system = System.find(message['host']['id'])
+        expect(system.system_profile['operating_system'])
+          .to eq(message.dig('host', 'system_profile', 'operating_system'))
+        expect(system[:os_major_version]).to be_nil
+        expect(system[:os_minor_version]).to be_nil
       end
     end
 
@@ -101,12 +238,23 @@ RSpec.describe Kafka::SystemImporter do
     end
 
     context 'when message is strictly stale (older than DB)' do
-      before do
-        FactoryBot.create(
+      let(:existing_owner_id) { SecureRandom.uuid }
+      let!(:existing_system) do
+        system = FactoryBot.create(
           :system,
           id: message['host']['id'],
-          updated: (Time.zone.parse(updated_time) + 1.day).iso8601
+          updated: (Time.zone.parse(updated_time) + 1.day).iso8601,
+          system_profile: {
+            'operating_system' => { 'major' => 8, 'minor' => 0 },
+            'owner_id' => existing_owner_id
+          }
         )
+        system.update_columns(
+          os_major_version: 8,
+          os_minor_version: 0,
+          owner_id: existing_owner_id
+        )
+        system
       end
 
       it 'ignores the stale message' do
@@ -117,7 +265,17 @@ RSpec.describe Kafka::SystemImporter do
       it 'increments the stale counter' do
         expect { service.import }.to increment_yabeda_counter(Yabeda.compliance_system_import_stale_total).by(1)
       end
+
+      it 'preserves the JSONB profile and native fields' do
+        service.import
+        system = System.find(message['host']['id'])
+        expect(system.system_profile).to eq(existing_system.system_profile)
+        expect(system[:os_major_version]).to eq(8)
+        expect(system[:os_minor_version]).to eq(0)
+        expect(system[:owner_id]).to eq(existing_owner_id)
+      end
     end
+    # rubocop:enable Rails/SkipsModelValidations
 
     context 'when existing system is soft-deleted (has deleted_at set)' do
       let(:system_id) { message['host']['id'] }
