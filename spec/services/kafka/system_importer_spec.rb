@@ -13,7 +13,10 @@ RSpec.describe Kafka::SystemImporter do
         'display_name' => Faker::Internet.domain_word,
         'groups' => [],
         'tags' => [],
-        'system_profile' => {},
+        'system_profile' => {
+          'operating_system' => { 'major' => 9, 'minor' => 2 },
+          'owner_id' => SecureRandom.uuid
+        },
         'stale_timestamp' => updated_time,
         'created' => (Time.now.utc - 1.day).iso8601,
         'updated' => updated_time,
@@ -52,9 +55,14 @@ RSpec.describe Kafka::SystemImporter do
     end
 
     context 'when system is new' do
-      it 'upserts system' do
+      it 'upserts system and extracts native columns' do
         expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
         expect { service.import }.to change { System.count }.by(1)
+
+        system = System.find(message['host']['id'])
+        expect(system.os_major_version).to eq(9)
+        expect(system.os_minor_version).to eq(2)
+        expect(system.owner_id).to eq(message.dig('host', 'system_profile', 'owner_id'))
       end
     end
 
@@ -68,12 +76,15 @@ RSpec.describe Kafka::SystemImporter do
         )
       end
 
-      it 'updates the existing system attributes' do
+      it 'updates the existing system attributes and native columns' do
         expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
         expect { service.import }.not_to(change { System.count })
 
         system = System.find(message['host']['id'])
         expect(system.display_name).to eq(message.dig('host', 'display_name'))
+        expect(system.os_major_version).to eq(9)
+        expect(system.os_minor_version).to eq(2)
+        expect(system.owner_id).to eq(message.dig('host', 'system_profile', 'owner_id'))
       end
     end
 
