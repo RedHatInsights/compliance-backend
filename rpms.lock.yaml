@@ -200,13 +200,13 @@ arches:
     name: go-srpm-macros
     evr: 3.8.1-1.el9
     sourcerpm: go-rpm-macros-3.8.1-1.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/Packages/k/kernel-headers-5.14.0-687.42.1.el9_8.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/Packages/k/kernel-headers-5.14.0-687.44.1.el9_8.x86_64.rpm
     repoid: ubi-9-for-x86_64-appstream-rpms
-    size: 2913473
-    checksum: sha256:6a2a1bdb7d755358f35a283de880abb48b359aedd5fdfcd2da80bbe03541688c
+    size: 2917773
+    checksum: sha256:e97b12ed737d41e2e34db2d3f3659a5f250ef940fcc9c4dd97235009c8706e7f
     name: kernel-headers
-    evr: 5.14.0-687.42.1.el9_8
-    sourcerpm: kernel-5.14.0-687.42.1.el9_8.src.rpm
+    evr: 5.14.0-687.44.1.el9_8
+    sourcerpm: kernel-5.14.0-687.44.1.el9_8.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/Packages/k/kernel-srpm-macros-1.0-14.el9.noarch.rpm
     repoid: ubi-9-for-x86_64-appstream-rpms
     size: 14098
@@ -1546,7 +1546,7 @@ arches:
     sourcerpm: libyaml-0.2.5-7.el9.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/repodata/a07e0e543d89a62b642fe1fdbfd6b6e9be3a37b9eb46e592df1dbc8cbdd37edf-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/repodata/d81884380238dcdd13b7bdfcb7fdbf1743d058cc7e9f5c0a51c9f46db489d66e-modules.yaml.gz
     repoid: ubi-9-for-x86_64-appstream-rpms
-    size: 8155
-    checksum: sha256:a07e0e543d89a62b642fe1fdbfd6b6e9be3a37b9eb46e592df1dbc8cbdd37edf
+    size: 8478
+    checksum: sha256:d81884380238dcdd13b7bdfcb7fdbf1743d058cc7e9f5c0a51c9f46db489d66e
