@@ -4,7 +4,6 @@ namespace :db do
   desc 'Reindex the database, including the inventory table'
   task reindex: [:environment] do
     [
-      'REINDEX (VERBOSE, CONCURRENTLY) SCHEMA inventory',
       'REINDEX (VERBOSE, CONCURRENTLY) SCHEMA public',
       'VACUUM (VERBOSE, ANALYZE)'
     ].each do |query|
