@@ -3,8 +3,6 @@
 module Kafka
   # Imports host events from Inventory into the systems table
   class SystemImporter
-    OWNER_ID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
-
     def initialize(message, logger = Rails.logger)
       @message = message
       @logger = logger
@@ -50,14 +48,14 @@ module Kafka
       operating_system = system_profile['operating_system']
       operating_system = {} unless operating_system.is_a?(Hash)
       {
-        os_major_version: operating_system['major'],
-        os_minor_version: operating_system['minor'],
+        os_major_version: System.type_for_attribute(:os_major_version).cast(operating_system['major']),
+        os_minor_version: System.type_for_attribute(:os_minor_version).cast(operating_system['minor']),
         owner_id: native_owner_id(system_profile['owner_id'])
       }
     end
 
     def native_owner_id(owner_id)
-      return owner_id if owner_id.nil? || (owner_id.is_a?(String) && OWNER_ID_FORMAT.match?(owner_id))
+      return owner_id if owner_id.nil? || (owner_id.is_a?(String) && UUID.validate(owner_id))
 
       @logger.error("[Kafka::SystemImporter] Malformed owner_id: #{owner_id.inspect}")
       nil
