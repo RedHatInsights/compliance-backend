@@ -277,83 +277,6 @@ objects:
         livenessProbe:
           exec:
             command: ["pgrep" ,"-f", "rake"]
-    # One-shot via ClowdJobInvocation. No schedule. Default is a dry run.
-    # Bump CLEANUP_DUPLICATE_TAILORINGS_RUN_NUMBER to re-run. Set CONFIRM=true to delete.
-    - name: cleanup-duplicate-tailorings-${CLEANUP_DUPLICATE_TAILORINGS_RUN_NUMBER}
-      restartPolicy: Never
-      podSpec:
-        image: ${IMAGE}:${IMAGE_TAG}
-        initContainers:
-        - command: ["/bin/sh"]
-          args: ["-c", "$HOME/scripts/abort_if_pending_migrations.sh"]
-          inheritEnv: true
-        resources:
-          limits:
-            cpu: ${CPU_LIMIT_SERVICE}
-            memory: ${MEMORY_LIMIT_SERVICE}
-          requests:
-            cpu: ${CPU_REQUEST_SERVICE}
-            memory: ${MEMORY_REQUEST_SERVICE}
-        env:
-        - name: APPLICATION_TYPE
-          value: compliance-cleanup-duplicate-tailorings
-        - name: CONFIRM
-          value: "${CLEANUP_DUPLICATE_TAILORINGS_CONFIRM}"
-        - name: RAILS_ENV
-          value: "${RAILS_ENV}"
-        - name: RAILS_LOG_TO_STDOUT
-          value: "${RAILS_LOG_TO_STDOUT}"
-        - name: PATH_PREFIX
-          value: "${PATH_PREFIX}"
-        - name: RUBY_YJIT_ENABLE
-          value: "${RUBY_YJIT_ENABLE}"
-        - name: APP_NAME
-          value: "${APP_NAME}"
-        - name: SECRET_KEY_BASE
-          valueFrom:
-            secretKeyRef:
-              name: compliance-backend
-              key: secret_key_base
-        - name: SETTINGS__SLACK_WEBHOOK
-          valueFrom:
-            secretKeyRef:
-              name: compliance-backend
-              key: slack_webhook
-              optional: true
-        - name: SETTINGS__REPORT_DOWNLOAD_SSL_ONLY
-          value: ${SETTINGS__REPORT_DOWNLOAD_SSL_ONLY}
-        - name: MAX_INIT_TIMEOUT_SECONDS
-          value: "${MAX_INIT_TIMEOUT_SECONDS}"
-        - name: SETTINGS__REDIS__SSL
-          value: "${REDIS_SSL}"
-        - name: PRIMARY_REDIS_AS_CACHE
-          value: "${PRIMARY_REDIS_AS_CACHE}"
-        - name: SETTINGS__REDIS__CACHE_HOSTNAME
-          valueFrom:
-            secretKeyRef:
-              name: compliance-rails-cache
-              key: db.endpoint
-              optional: true
-        - name: SETTINGS__REDIS__CACHE_PORT
-          valueFrom:
-            secretKeyRef:
-              name: compliance-rails-cache
-              key: db.port
-              optional: true
-        - name: SETTINGS__REDIS__CACHE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: compliance-rails-cache
-              key: db.auth_token
-              optional: true
-        - name: IMAGE_TAG
-          value: "${IMAGE}:${IMAGE_TAG}"
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: LOGSTREAM
-          value: "${LOGSTREAM_CLEANUP_DUPLICATE_TAILORINGS}"
     deployments:
     - name: service
       minReplicas: ${{REPLICAS_BACKEND}}
@@ -690,15 +613,6 @@ objects:
         - name: LOGSTREAM
           value: "${LOGSTREAM_GOODJOB}"
 
-- apiVersion: cloud.redhat.com/v1alpha1
-  kind: ClowdJobInvocation
-  metadata:
-    name: cleanup-duplicate-tailorings-${CLEANUP_DUPLICATE_TAILORINGS_RUN_NUMBER}
-  spec:
-    appName: ${APP_NAME}
-    jobs:
-    - cleanup-duplicate-tailorings-${CLEANUP_DUPLICATE_TAILORINGS_RUN_NUMBER}
-
 - apiVersion: metrics.console.redhat.com/v1alpha1
   kind: FloorPlan
   metadata:
@@ -973,14 +887,6 @@ parameters:
   value: 'compliance-reindex-db'
 - name: LOGSTREAM_CLEANUP_SYSTEMS
   value: 'compliance-cleanup-systems'
-- name: LOGSTREAM_CLEANUP_DUPLICATE_TAILORINGS
-  value: 'compliance-cleanup-duplicate-tailorings'
-- name: CLEANUP_DUPLICATE_TAILORINGS_RUN_NUMBER
-  description: Bump to trigger a new ClowdJobInvocation
-  value: '1'
-- name: CLEANUP_DUPLICATE_TAILORINGS_CONFIRM
-  description: Must be the string true to delete. Default false is a dry run.
-  value: 'false'
 - name: RUBY_YJIT_ENABLE
   value: '0'
 - name: KESSEL_ENABLED
