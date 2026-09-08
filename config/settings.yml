@@ -8,6 +8,11 @@ redis:
   cache_password:
 slack_webhook: 'this is set through a env var in Openshift and not shared for security reasons'
 disable_rbac: false
+# Insights-on-Disconnected mode. When true, the app runs as part of an
+# on-premise (IoP) deployment and resolves tag-based host scoping through
+# Host Inventory directly instead of the locally propagated systems.tags
+# column. Overridden via the IOD_MODE env var in non-Clowder environments.
+iod_mode: false
 async: true
 supported_ssg_ds_config: 'ssg-datastreams.yaml'
 supported_ssg_ansible_tasks_config: 'ssg-ansible-tasks.yaml'

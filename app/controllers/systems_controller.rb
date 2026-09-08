@@ -52,7 +52,10 @@ class SystemsController < ApplicationController
     render json: authorize(fetch_collection(base_scope)).os_versions, status: :ok
   end
   permission_for_action :os_versions, Rbac::SYSTEM_READ
-  permitted_params_for_action :os_versions, { filter: ParamType.string }
+  permitted_params_for_action :os_versions, {
+    filter: ParamType.string,
+    tags: ParamType.array(ParamType.string) | ParamType.string
+  }
 
   private
 
@@ -61,7 +64,7 @@ class SystemsController < ApplicationController
   end
 
   def system
-    @system ||= authorize(expand_resource.find(permitted_params[:id]))
+    @system ||= authorize(filter_by_tags(expand_resource).find(permitted_params[:id]))
   end
 
   def new_policy_system

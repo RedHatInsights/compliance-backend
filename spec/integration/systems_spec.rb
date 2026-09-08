@@ -82,6 +82,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       content_types
       deprecated true
       search_params_v2(System)
+      tags_params
 
       response '200', 'Lists available OS versions' do
         schema(type: :array, items: { type: 'string' })
@@ -102,6 +103,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       description 'Get information about one specific system.'
       operationId 'System'
       content_types
+      tags_params
 
       parameter name: :system_id, in: :path, type: :string, required: true
 
@@ -271,6 +273,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       content_types
       deprecated true
       search_params_v2(System)
+      tags_params
 
       parameter name: :policy_id, in: :path, type: :string, required: true
 
@@ -479,6 +482,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       content_types
       deprecated true
       search_params_v2(System)
+      tags_params
 
       parameter name: :report_id, in: :path, type: :string, required: true
 
@@ -511,6 +515,7 @@ describe 'Systems', swagger_doc: 'v2/openapi.json' do
       description 'Retrieve a specific system from a specific report.'
       operationId 'ReportSystem'
       content_types
+      tags_params
 
       parameter name: :system_id, in: :path, type: :string, required: true
       parameter name: :report_id, in: :path, type: :string, required: true

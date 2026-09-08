@@ -56,7 +56,10 @@ module ParameterHandling
       ids_only: ParamType.boolean
     }
 
-    permitted_params_for_action :show, id: ParamType.string
+    permitted_params_for_action :show, {
+      id: ParamType.string,
+      tags: ParamType.array(ParamType.string) | ParamType.string
+    }
 
     # Use the params[:parents] configured by the route to construct a permit
     # hash containing each ID passed from the parents of a nested resource.

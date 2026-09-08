@@ -122,6 +122,7 @@ describe 'Test Results', swagger_doc: 'v2/openapi.json' do
       content_types
       deprecated true
       search_params_v2(TestResult)
+      tags_params
 
       parameter name: :report_id, in: :path, type: :string, required: true
 
@@ -165,6 +166,7 @@ describe 'Test Results', swagger_doc: 'v2/openapi.json' do
       operationId 'ReportTestResultsSG'
       content_types
       deprecated true
+      tags_params
 
       parameter name: :report_id, in: :path, type: :string, required: true
 
@@ -197,6 +199,7 @@ describe 'Test Results', swagger_doc: 'v2/openapi.json' do
       description 'Retrieve a specific test result for a specific report.'
       operationId 'ReportTestResult'
       content_types
+      tags_params
 
       parameter name: :test_result_id, in: :path, type: :string, required: true
       parameter name: :report_id, in: :path, type: :string, required: true
