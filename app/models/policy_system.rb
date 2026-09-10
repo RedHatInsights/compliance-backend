@@ -13,9 +13,9 @@ class PolicySystem < ApplicationRecord
   validate :system_unique?, on: :create
 
   after_create do
-    Tailoring.find_or_create_by!(policy_id: policy_id, os_minor_version: system.os_minor_version) do |tailoring|
-      # Look up the latest Profile supporting the given OS minor version
-      tailoring.profile = policy.profile.variant_for_minor(system.os_minor_version)
+    minor = SupportedSsg.resolve_minor(system.os_major_version, system.os_minor_version)
+    Tailoring.find_or_create_by!(policy_id: policy_id, os_minor_version: minor) do |tailoring|
+      tailoring.profile = policy.profile.variant_for_minor(minor)
       tailoring.value_overrides = tailoring.profile.value_overrides
     end
   end
@@ -25,7 +25,7 @@ class PolicySystem < ApplicationRecord
   def system_supported?
     if policy.os_major_version != system.os_major_version
       errors.add(:system, 'Unsupported OS major version')
-    elsif policy.os_minor_versions.exclude?(system.os_minor_version)
+    elsif !policy.supports_minor?(system.os_minor_version)
       errors.add(:system, 'Unsupported OS minor version')
     end
   end
