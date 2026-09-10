@@ -343,13 +343,14 @@ RSpec.describe SystemsProfileFieldsBackfiller do
       allow(SystemProfileNativeFields).to receive(:normalize).with(profile).and_return(
         normalized.with(os_major_version: '9')
       )
-      allow_any_instance_of(System).to receive(:update_columns) do |_record, updates| # rubocop:disable RSpec/AnyInstance
-        expect(updates).to eq(os_major_version: 9)
-      end
+      integer_type = instance_double(ActiveModel::Type::Integer)
+      expect(integer_type).to receive(:serialize).with('9').and_return(9)
+      allow(System).to receive(:type_for_attribute).and_call_original
+      expect(System).to receive(:type_for_attribute).with(:os_major_version).and_return(integer_type)
 
       described_class.new(batch_size: 10, max_updates: 10, logger: Logger.new(StringIO.new)).run
 
-      expect(system.reload[:os_major_version]).to be_nil
+      expect(system.reload[:os_major_version]).to eq(9)
     end
 
     it 'returns the number of successfully updated rows and logs scanned rows' do
@@ -455,7 +456,10 @@ RSpec.describe SystemsProfileFieldsBackfiller, :postgresql_concurrency do
   end
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
 
-  after { System.unscoped.where(id: [uuid(1), uuid(2)]).delete_all }
+  after do
+    System.unscoped.where(id: [uuid(1), uuid(2)]).delete_all
+    Account.where(org_id: %w[backfill-1 backfill-2]).delete_all
+  end
 
   it 'preserves a native value committed while the backfill waits for its lock' do
     concurrent_owner = uuid(900)

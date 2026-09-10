@@ -35,7 +35,7 @@ module Kafka
     def extract_system_attrs(id, payload, updated)
       system_profile = relevant_system_profile(payload)
       native_fields = SystemProfileNativeFields.normalize(system_profile)
-      log_malformed_owner(system_profile['owner_id']) if native_fields.malformed_owner_id?
+      log_malformed_owner if native_fields.malformed_owner_id?
       {
         id: id, account: payload.dig('account'), org_id: payload.dig('org_id'),
         display_name: payload.dig('display_name'), groups: payload.dig('groups') || [],
@@ -45,8 +45,8 @@ module Kafka
       }.merge(native_fields.native_attributes)
     end
 
-    def log_malformed_owner(owner_id)
-      @logger.error("[Kafka::SystemImporter] Malformed owner_id: #{owner_id.inspect}")
+    def log_malformed_owner
+      @logger.error('[Kafka::SystemImporter] Malformed owner_id')
     end
 
     def relevant_system_profile(payload)

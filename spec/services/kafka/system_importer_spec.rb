@@ -179,7 +179,7 @@ RSpec.describe Kafka::SystemImporter do
       it 'logs an error and imports JSONB with a null native owner' do
         expect(Karafka.logger)
           .to receive(:error)
-          .with(/\[Kafka::SystemImporter\] Malformed owner_id/)
+          .with('[Kafka::SystemImporter] Malformed owner_id')
 
         expect { service.import }.to change { System.count }.by(1)
         system = System.find(message['host']['id'])
@@ -194,7 +194,7 @@ RSpec.describe Kafka::SystemImporter do
       it 'logs an error and imports JSONB with a null native owner' do
         expect(Karafka.logger)
           .to receive(:error)
-          .with(/\[Kafka::SystemImporter\] Malformed owner_id/)
+          .with('[Kafka::SystemImporter] Malformed owner_id')
 
         expect { service.import }.to change { System.count }.by(1)
         system = System.find(message['host']['id'])

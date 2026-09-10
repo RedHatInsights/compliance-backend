@@ -31,12 +31,12 @@ RSpec.describe SystemProfileNativeFields do
       let(:canonical) { SecureRandom.uuid }
       let(:profile) { { 'owner_id' => owner_id } }
 
-      [
-        ->(uuid) { uuid },
-        ->(uuid) { uuid.upcase },
-        ->(uuid) { uuid.delete('-') }
-      ].each do |transform|
-        context "with transform #{transform.object_id}" do
+      {
+        canonical: ->(uuid) { uuid },
+        uppercase: ->(uuid) { uuid.upcase },
+        unhyphenated: ->(uuid) { uuid.delete('-') }
+      }.each do |label, transform|
+        context "with a #{label} owner_id" do
           let(:owner_id) { transform.call(canonical) }
 
           it 'preserves the accepted, persistence-compatible owner value' do
