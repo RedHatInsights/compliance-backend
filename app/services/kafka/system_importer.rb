@@ -34,31 +34,19 @@ module Kafka
 
     def extract_system_attrs(id, payload, updated)
       system_profile = relevant_system_profile(payload)
+      native_fields = SystemProfileNativeFields.normalize(system_profile)
+      log_malformed_owner if native_fields.malformed_owner_id?
       {
         id: id, account: payload.dig('account'), org_id: payload.dig('org_id'),
         display_name: payload.dig('display_name'), groups: payload.dig('groups') || [],
         tags: payload.dig('tags') || [], system_profile: system_profile,
         stale_timestamp: payload.dig('stale_timestamp'), created: payload.dig('created'),
-        updated: updated, insights_id: payload.dig('insights_id'),
-        deleted_at: nil
-      }.merge(native_system_profile_attrs(system_profile))
+        updated: updated, insights_id: payload.dig('insights_id'), deleted_at: nil
+      }.merge(native_fields.native_attributes)
     end
 
-    def native_system_profile_attrs(system_profile)
-      operating_system = system_profile['operating_system']
-      operating_system = {} unless operating_system.is_a?(Hash)
-      {
-        os_major_version: System.type_for_attribute(:os_major_version).cast(operating_system['major']),
-        os_minor_version: System.type_for_attribute(:os_minor_version).cast(operating_system['minor']),
-        owner_id: native_owner_id(system_profile['owner_id'])
-      }
-    end
-
-    def native_owner_id(owner_id)
-      return owner_id if owner_id.nil? || (owner_id.is_a?(String) && UUID.validate(owner_id))
-
-      @logger.error("[Kafka::SystemImporter] Malformed owner_id: #{owner_id.inspect}")
-      nil
+    def log_malformed_owner
+      @logger.error('[Kafka::SystemImporter] Malformed owner_id')
     end
 
     def relevant_system_profile(payload)

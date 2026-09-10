@@ -94,21 +94,20 @@ RSpec.describe Kafka::SystemImporter do
         expect(system[:owner_id]).to eq(message.dig('host', 'system_profile', 'owner_id'))
       end
 
-      it 'validates owner_id with the shared UUID helper' do
-        owner_id = message.dig('host', 'system_profile', 'owner_id')
-        expect(UUID).to receive(:validate).with(owner_id).and_call_original
-
-        service.import
-      end
-
-      it 'casts native OS versions to their database types' do
-        major_type = instance_double(ActiveModel::Type::Integer, cast: 9)
-        minor_type = instance_double(ActiveModel::Type::Integer, cast: 4)
-        allow(System).to receive(:type_for_attribute).and_call_original
-        expect(System).to receive(:type_for_attribute).with(:os_major_version).and_return(major_type)
-        expect(System).to receive(:type_for_attribute).with(:os_minor_version).and_return(minor_type)
-        expect(major_type).to receive(:cast).with(9)
-        expect(minor_type).to receive(:cast).with(4)
+      it 'uses the shared native-field projection' do
+        result = instance_double(
+          SystemProfileNativeFields::Result,
+          native_attributes: {
+            owner_id: message.dig('host', 'system_profile', 'owner_id'),
+            os_major_version: 9,
+            os_minor_version: 4
+          },
+          malformed_owner_id?: false
+        )
+        expect(SystemProfileNativeFields)
+          .to receive(:normalize)
+          .with(message.dig('host', 'system_profile'))
+          .and_return(result)
 
         service.import
       end
@@ -180,7 +179,7 @@ RSpec.describe Kafka::SystemImporter do
       it 'logs an error and imports JSONB with a null native owner' do
         expect(Karafka.logger)
           .to receive(:error)
-          .with(/\[Kafka::SystemImporter\] Malformed owner_id/)
+          .with('[Kafka::SystemImporter] Malformed owner_id')
 
         expect { service.import }.to change { System.count }.by(1)
         system = System.find(message['host']['id'])
@@ -195,7 +194,7 @@ RSpec.describe Kafka::SystemImporter do
       it 'logs an error and imports JSONB with a null native owner' do
         expect(Karafka.logger)
           .to receive(:error)
-          .with(/\[Kafka::SystemImporter\] Malformed owner_id/)
+          .with('[Kafka::SystemImporter] Malformed owner_id')
 
         expect { service.import }.to change { System.count }.by(1)
         system = System.find(message['host']['id'])
