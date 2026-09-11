@@ -62,7 +62,7 @@ module Collection
     def filter_by_tags(data)
       return data unless TagFiltering.tags_supported?(resource) && requested_tags.any?
 
-      if iod_mode?
+      if iop_mode?
         filter_by_tags_hbi(data, requested_tags)
       else
         filter_by_tags_jsonb(data, requested_tags)
@@ -73,8 +73,8 @@ module Collection
       @requested_tags ||= Array(permitted_params[:tags]).map(&:to_s)
     end
 
-    def iod_mode?
-      ActiveModel::Type::Boolean.new.cast(Settings.iod_mode)
+    def iop_mode?
+      ActiveModel::Type::Boolean.new.cast(Settings.iop_mode)
     end
 
     def filter_by_tags_hbi(data, tags)
