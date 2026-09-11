@@ -105,7 +105,7 @@ describe SystemsController do
       let(:tag_param) { "#{Faker::Lorem.word}/#{Faker::Lorem.word}=#{Faker::Lorem.word}" }
 
       before do
-        allow(Settings).to receive(:iod_mode).and_return('true')
+        allow(Settings).to receive(:iop_mode).and_return('true')
         allow_any_instance_of(Insights::Api::Common::HostInventory)
           .to receive(:host_ids_by_tags).and_return([items.first.id])
       end

@@ -39,7 +39,7 @@ if !ClowderCommonRuby::Config.clowder_enabled? && defined?(Settings)
       }
     },
     'disable_rbac' => ENV.fetch('DISABLE_RBAC', 'true'),
-    'iod_mode' => ENV.fetch('IOD_MODE', 'false')
+    'iop_mode' => ENV.fetch('IOP_MODE', 'false')
   }
 
   Settings.add_source!(config)
