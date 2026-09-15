@@ -32,11 +32,12 @@ class KesselBuilder
     def build_secure_client
       builder = KesselInventoryService::ClientBuilder.new(Settings.kessel.url)
 
-      if Settings.kessel.auth.enabled
-        builder.oauth2_client_authenticated(auth)
-      else
-        builder.authenticated
-      end
+      builder =
+        if Settings.kessel.auth.enabled
+          builder.oauth2_client_authenticated(oauth2_client_credentials: auth)
+        else
+          builder.authenticated
+        end
 
       builder.build
     end
