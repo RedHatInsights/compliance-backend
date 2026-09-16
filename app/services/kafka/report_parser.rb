@@ -32,7 +32,7 @@ module Kafka
       parser = XccdfReportParser.new(xml, metadata)
       parser.validate!
       profile_id = parser.test_result_file.test_result.profile_id
-      job = enqueue_parsing(profile_id, xml)
+      job = enqueue_parsing(profile_id, parser.extracted_xml)
       @enqueued << "#{profile_id}:#{job.job_id}"
       notify_payload_tracker(:received, "File of #{profile_id} is valid. Job #{job.job_id} enqueued")
     rescue *XccdfReportParser::ERRORS => e
