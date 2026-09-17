@@ -4,7 +4,7 @@ This file provides guidance to any and all large language models when working wi
 
 When working in this repository, prioritize readability and following already introduced patterns.
 
-When doing changes, make sure that each time, the changed file has a unit test covering it and that it does pass.
+When changing application code, add a passing unit test for the changed file. This does not apply to manifests or config files.
 
 ## Project Overview
 
