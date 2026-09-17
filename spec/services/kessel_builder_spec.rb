@@ -5,7 +5,11 @@ require 'kessel-sdk'
 
 RSpec.describe KesselBuilder, type: :service do
   describe '.build_client' do
-    let(:mock_builder) { double('client_builder') }
+    # Verifying double (instance_double) rather than a plain double. A plain double
+    # accepts any args/arity, which can lead to unexpected argument bugs.
+    let(:mock_builder) do
+      instance_double(Kessel::Inventory::V1beta2::KesselInventoryService::ClientBuilder)
+    end
     let(:mock_client) { double('kessel_client') }
 
     before do
@@ -53,8 +57,29 @@ RSpec.describe KesselBuilder, type: :service do
       it 'builds secure client with OAuth' do
         result = described_class.build_client
         expect(result).to eq(mock_client)
-        expect(mock_builder).to have_received(:oauth2_client_authenticated).with(mock_auth)
+        expect(mock_builder).to have_received(:oauth2_client_authenticated).with(oauth2_client_credentials: mock_auth)
         expect(mock_builder).to have_received(:build)
+      end
+    end
+
+    context 'when the builder returns a new instance (immutable builder)' do
+      let(:mock_auth) { double('oauth_credentials') }
+      let(:authed_builder) do
+        instance_double(Kessel::Inventory::V1beta2::KesselInventoryService::ClientBuilder)
+      end
+
+      before do
+        allow(Settings.kessel).to receive(:insecure).and_return(false)
+        allow(Settings.kessel.auth).to receive(:enabled).and_return(true)
+        allow(described_class).to receive(:build_oauth_credentials).and_return(mock_auth)
+        allow(mock_builder).to receive(:oauth2_client_authenticated).and_return(authed_builder)
+        allow(authed_builder).to receive(:build).and_return(mock_client)
+      end
+
+      it 'builds from the authenticated builder, not the original' do
+        result = described_class.build_client
+        expect(result).to eq(mock_client)
+        expect(authed_builder).to have_received(:build)
       end
     end
 
