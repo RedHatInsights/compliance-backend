@@ -1,147 +1,78 @@
 # AGENTS.md
 
-This file provides guidance to any and all large language models when working with code in this repository.
-
-When working in this repository, prioritize readability and following already introduced patterns.
-
 When changing application code, add a passing unit test for the changed file. This does not apply to manifests or config files.
 
-## Project Overview
+Rails 8.1 REST API for compliance data. Parses OpenSCAP reports. Kafka for events.
 
-compliance-backend is a Ruby on Rails 8.1 backend. It provides a REST API for compliance data management, parses OpenSCAP reports into a database, and integrates with Kafka for event-driven workflows.
+## Processes
 
-## Architecture
+1. Rails API (Puma, port 3000) — `/api/compliance/v2/`, `panko_serializer`
+2. Karafka consumer — inventory events, including report parsing
+3. GoodJob worker — PostgreSQL-backed jobs
 
-### Core Components
+## Auto-join
 
-The application consists of three main processes:
+Controllers never write explicit `joins` or `select`. Serializers declare dependencies:
 
-1. **Rails API Server** (Puma, port 3000) - REST API
-2. **Karafka Consumer** - Kafka message processor for inventory events (including report parsing)
-3. **GoodJob Worker** - Background job processor (backed by PostgreSQL)
+- `derived_attribute(name, association: [:column])` — 1:1 joined table
+- `aggregated_attribute(name, association, function)` — aggregate over has-many (`COUNT`, `MAX`, …)
 
-### API
+`Resolver` builds SQL at query time:
 
-- **API** (`/api/compliance/v2/`) - Current API using `panko_serializer`
+1. `join_parents` — nested routes scoped by each parent; Pundit per parent
+2. `join_associated` — `derived_attribute` joins with `WHERE associated`
+3. `join_aggregated` — has-many aggregates as `LEFT OUTER JOIN` subquery
+4. `select_fields` — only serializer columns; joined columns aliased `association__column`
 
-Models are backed by real database tables.
+`filters_for` omits derived/aggregated attributes whose associations were not joined.
 
-#### Auto-join
-
-Controllers never write explicit `joins` or `select` calls. Instead, serializers declare their data dependencies using two class-level DSL methods:
-
-- `derived_attribute(name, association: [:column])` — marks a field as coming from a 1:1 joined table.
-- `aggregated_attribute(name, association, function)` — marks a field as an aggregate (e.g. `COUNT`, `MAX`) over a has-many association.
-
-`Resolver` reads those declarations at query time and automatically builds the SQL:
-
-1. **Parent joins** (`join_parents`) — nested routes (e.g. `/policies/:id/reports`) are scoped by joining and filtering on each route parent, with Pundit authorization applied per parent.
-2. **1:1 joins** (`join_associated`) — associations declared via `derived_attribute` are joined with `WHERE associated`, so only records that satisfy the relationship are returned.
-3. **Aggregate subquery joins** (`join_aggregated`) — has-many aggregations are computed in a `LEFT OUTER JOIN` subquery grouped by primary key and self-joined back to the main query.
-4. **Field selection** (`select_fields`) — only the columns required by the serializer are selected; columns from joined tables are aliased as `association__column` to avoid conflicts.
-
-At serialization time, `filters_for` receives the set of actually-joined associations and silently omits any `derived_attribute` or `aggregated_attribute` whose dependency was not joined — preventing errors on partial scopes.
-
-### Data Flow of Report parsing
+## Report parsing
 
 ```
-Inventory Event → Kafka Topic → InventoryEventsConsumer
-  ↓
-Kafka::ReportParser (validates, downloads XCCDF from S3)
-  ↓
-ParseReportJob (GoodJob)
-  ↓
-XccdfReportParser.parse() → TestResult + RuleResults replaced with the newer ones
-  ↓
-Notifications sent to Kafka, Remediations service updated
+Inventory Event → Kafka → InventoryEventsConsumer
+  → Kafka::ReportParser (validate, download XCCDF from S3)
+  → ParseReportJob
+  → XccdfReportParser.parse() → replace TestResult + RuleResults
+  → Kafka notifications, Remediations update
 ```
 
-### Important Models
+## Domain models
 
-- **SecurityGuide** - SCAP benchmark metadata (XCCDF datastreams)
-- **Profile** - Canonical security profile from upstream SSG
-- **Policy** - Compliance policy (references Profile, has many Tailoring)
-- **Tailoring** - Profile customization per OS minor version
-- **TestResult** - Scan result of a system for a policy
-- **RuleResult** - Individual rule compliance outcome (pass/fail/error/notchecked/notselected)
-- **Report** - Stores aggregated policy statistics
-- **System** - System record stored in the `systems` table
+- **SecurityGuide** — SCAP benchmark (XCCDF datastream)
+- **Profile** — canonical SSG profile
+- **Policy** — compliance policy (Profile + many Tailoring)
+- **Tailoring** — profile customization per OS minor
+- **TestResult** — scan of a system for a policy
+- **RuleResult** — rule outcome (pass/fail/error/notchecked/notselected)
+- **Report** — aggregated policy stats
+- **System** — `systems` table; `system_profile` JSONB (`operating_system.major` / `minor`)
 
-### DB migrations
+`tags` columns are Insights jsonb: array of hashes. Filter via query params.
 
-No AI model should in any case generate or run migrations. This task is potentially dangerous and should always be done by a human developer.
+## Database
 
-### Database Views & Functions
+Do not generate or run migrations. A human must do that.
 
-The app uses the `fx` and `scenic` gems for managing PostgreSQL views, functions, and triggers. Views are in `db/views/`, functions in `db/functions/`, triggers in `db/triggers/`.
-Legacy v1 data models are backed by database views.
+`fx` / `scenic` manage views (`db/views/`), functions (`db/functions/`), triggers (`db/triggers/`). Legacy v1 models are views.
 
-### Authorization
+## Auth
 
-Two RBAC systems coexist:
-- **V1 RBAC** - `insights-rbac-api-client` gem, service at Settings.rbac_url
-- **V2 RBAC (Kessel)** - `kessel-sdk` gem, gRPC service with OAuth2 auth
+Two RBAC systems: V1 (`insights-rbac-api-client`, `Settings.rbac_url`) and V2 Kessel (`kessel-sdk`, gRPC + OAuth2). `User.current` comes from identity-header middleware.
 
-Controllers use Pundit policies (`app/policies/`) for authorization. User context set via `User.current` from identity header middleware.
+## Commands
 
-## Development Setup
-
-- Containerized via Dockerfile
-- OpenShift/Kubernetes ready (`deploy/clowdapp.yaml`)
-- Compose file stands up the whole project with containers mocking external platform dependencies
-
-The project does and should support both podman and docker.
-All commands should be ran inside the container context, like so:
+Run Ruby inside compose (`podman` or `docker`):
 
 ```bash
-# For host systems where podman is preferred
 podman-compose exec rails {command}
-
-# For host systems where docker is preferred
 docker-compose exec rails {command}
 ```
 
-### Running Tests
-
-The project uses RSpec (spec/) for testing.
-
 ```bash
-# Run all specs and static analysis (CI validation suite)
-bundle exec rake spec:validate
-
-# Run RSpec tests
+bundle exec rake spec:validate          # specs + static analysis (CI)
 bundle exec rake spec
+bundle exec rake rswag:specs:swaggerize # OpenAPI from request specs
 ```
-
-### OpenAPI Documentation
-
-API documentation is auto-generated from RSpec request specs using [rswag](https://github.com/rswag/rswag):
-
-```bash
-# Update OpenAPI spec after changing the API
-bundle exec rake rswag:specs:swaggerize
-```
-
-## Configuration
-
-Settings managed via `config` gem:
-- `config/settings.yml` - Legacy base configuration.
-- Environment variables override settings (e.g., `SETTINGS__KAFKA__BROKERS`)
-- Clowder integration via `ACG_CONFIG` env var (pointing to a JSON config file). Highest level of config, overrides everything using a Rails engine called [clowder-common-ruby](https://github.com/RedHatInsights/clowder-common-ruby). Locally sourced from `devel.json`.
-
-## Service Integration Patterns
-
-### Kafka Consumers
-
-Consumers in `app/consumers/` extend `ApplicationConsumer`. Routing configured in `karafka.rb`. Message handlers delegate to service classes in `app/services/kafka/` or to jobs in `app/jobs/`.
-
-### Kafka Producers
-
-Producers in `app/producers/` extend `ApplicationProducer`. Use Karafka for publishing. Key producers:
-- `Notification` - Compliance event notifications
-- `ReportValidation` - Report validation results
-- `RemediationUpdates` - Failed rule notifications
-- `InventoryViews` - System related Compliance data publishing
 
 ### External Services
 
@@ -157,35 +88,18 @@ Producers in `app/producers/` extend `ApplicationProducer`. Use Karafka for publ
 - Kafka testing via [karafka-testing](https://github.com/karafka/karafka-testing) gem
 - Never hardcode arbitrary test strings, use the [Faker](https://github.com/faker-ruby/faker) gem.
 
-## Common Patterns
+## Config
 
-### Models
+`config` gem + `config/settings.yml`. Env overrides (`SETTINGS__KAFKA__BROKERS`). Clowder (`ACG_CONFIG`, `clowder-common-ruby`) wins over all. Local Clowder: `devel.json`.
 
-Models are backed by real database tables.
+## Kafka
 
-### Tags Convention
+Consumers: `app/consumers/`, routing in `karafka.rb`. Producers: `app/producers/` (`Notification`, `ReportValidation`, `RemediationUpdates`, `InventoryViews`). Reports from signed URLs via `SafeDownloader`.
 
-Any model with a `tags` column must use `jsonb` type with Insights structured format (array of hashes). Controllers filter by tags via query parameters.
+Filtering uses `scoped_search` (fields on the model, referenced in the serializer).
 
-### JSONB System Profile
+Compliance audit logs: `Rails.logger.audit_success` / `audit_fail` (not the standard logger).
 
-System metadata stored in `system_profile` JSONB column:
-```ruby
-system_profile['operating_system']['major']
-system_profile['operating_system']['minor']
-```
+## Git
 
-### Scoped Search
-
-Models use `scoped_search` gem for filtering. Define searchable fields in model, reference in serializer.
-
-### Audit Logging
-
-Use `Rails.logger.audit_success` and `Rails.logger.audit_fail` for compliance events (not standard Rails logger methods).
-
-## Git Workflow
-
-- Commit messages follow `.commitlint.yml` format
-- PRs require passing CI (rubocop, brakeman, tests, OpenAPI validation)
-- Main branch: `master`
-- Hotfixes to `hotfix` branch
+Commit messages follow `.commitlint.yml`. Default branch: `master`. Hotfixes: `hotfix`.
