@@ -26,7 +26,7 @@ class XccdfReportParser
 
   include ::Xccdf::Util
 
-  attr_reader :test_result_file, :policy, :system
+  attr_reader :test_result_file, :policy, :system, :extracted_xml
 
   BENCHMARK_PREFIX = 'xccdf_org.ssgproject.content_benchmark_'
 
@@ -143,7 +143,8 @@ class XccdfReportParser
   private
 
   def parse_test_result_file(report_contents)
-    OpenscapParser::TestResultFile.new(XccdfReportExtractor.extract(report_contents))
+    @extracted_xml = XccdfReportExtractor.extract(report_contents)
+    OpenscapParser::TestResultFile.new(@extracted_xml)
   end
 
   def parse_failure_message

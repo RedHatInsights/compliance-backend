@@ -15,6 +15,12 @@ RSpec.describe XccdfReportParser do
   end
   let(:parser) { described_class.new(report_contents, message) }
 
+  describe '#extracted_xml' do
+    it 'stores the extracted report used for parsing' do
+      expect(parser.extracted_xml).to eq(XccdfReportExtractor.extract(report_contents))
+    end
+  end
+
   describe '#validate_message_format!' do
     context 'when id is missing' do
       let(:message) { { 'b64_identity' => user.account.identity_header.raw } }
