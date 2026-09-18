@@ -262,6 +262,38 @@ describe SystemsController do
         end
       end
 
+      context 'when the major ships a single minor-0 datastream (IoP)' do
+        before do
+          allow(SupportedSsg).to receive(:minor_agnostic?).and_return(true)
+          allow(SupportedSsg).to receive(:resolve_minor).and_return(0)
+        end
+
+        let(:unsupported_item) do
+          FactoryBot.create(
+            :system,
+            account: current_user.account,
+            os_major_version: parent.os_major_version,
+            os_minor_version: 10
+          )
+        end
+
+        it 'assigns systems of any minor when content is minor-agnostic' do
+          post :create, params: { ids: ids + [unsupported_item.id], policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          expect(parent.systems.map(&:id)).to include(unsupported_item.id)
+        end
+
+        it 'creates a tailoring at resolved minor version 0' do
+          post :create, params: { ids: ids + [unsupported_item.id], policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+          new_tailorings = parent.tailorings.where.not(os_minor_version: 8)
+          expect(new_tailorings.count).to eq(1)
+          expect(new_tailorings.first.os_minor_version).to eq(0)
+        end
+      end
+
       context 'empty list of system IDs' do
         let(:items) { [] }
 
