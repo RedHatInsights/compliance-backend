@@ -109,6 +109,10 @@ module Collection
         raise ActionController::UnpermittedParameters.new(filter: permitted_params[:filter])
       end
 
+      if data.klass.respond_to?(:validate_search_operators!)
+        data.klass.validate_search_operators!(permitted_params[:filter])
+      end
+
       # Pass the parents to the current thread context as there is no other way to access
       # the parents from inside models. This is obviously an antipattern, but we are limited
       # by scoped_search here and I have not found any better option.

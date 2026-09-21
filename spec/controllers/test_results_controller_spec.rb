@@ -82,6 +82,26 @@ describe TestResultsController do
       it_behaves_like 'searchable', :report
       it_behaves_like 'taggable', :report
 
+      context 'filtering failed_rule_severity by an unsupported operator' do
+        it 'rejects the not-equal (!=) operator' do
+          get :index, params: {
+            report_id: parent.id, parents: [:report],
+            filter: '(failed_rule_severity != "unknown")'
+          }
+
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'rejects the not-equal (<>) operator' do
+          get :index, params: {
+            report_id: parent.id, parents: [:report],
+            filter: '(failed_rule_severity <> "unknown")'
+          }
+
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+
       context 'system from an inaccessible inventory group' do
         before do
           stub_rbac_permissions(
