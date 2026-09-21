@@ -3,6 +3,16 @@
 # Karafka configuration
 class KarafkaApp < Karafka::App
   CLIENT_ID = 'compliance_backend'
+  INVENTORY_EVENTS_MAX_MESSAGES_DEFAULT = 100
+  INVENTORY_EVENTS_MAX_WAIT_TIME_DEFAULT = 100
+
+  def self.inventory_events_max_messages
+    ENV.fetch('KARAFKA_MAX_MESSAGES', INVENTORY_EVENTS_MAX_MESSAGES_DEFAULT).to_i
+  end
+
+  def self.inventory_events_max_wait_time
+    ENV.fetch('KARAFKA_MAX_WAIT_TIME', INVENTORY_EVENTS_MAX_WAIT_TIME_DEFAULT).to_i
+  end
 
   # librdkafka config creation
   security_protocol = Settings.kafka.security_protocol.downcase
@@ -49,8 +59,8 @@ class KarafkaApp < Karafka::App
     consumer_group :'complianceinventory-events-consumer' do
       topic Settings.kafka.topics.inventory_events do
         consumer InventoryEventsConsumer
-        max_messages 100
-        max_wait_time 100
+        max_messages KarafkaApp.inventory_events_max_messages
+        max_wait_time KarafkaApp.inventory_events_max_wait_time
         dead_letter_queue(
           topic: Settings.kafka.topics.compliance_dlq,
           max_retries: 3,
