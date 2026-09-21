@@ -42,8 +42,8 @@ services:
         condition: service_started
       createtopics:
         condition: service_completed_successfully
-  minio:
-    image: docker.io/minio/minio
+  silo:
+    image: docker.io/pgsty/silo:latest
     platform: linux/amd64
     command: server /data
     volumes:
@@ -58,18 +58,18 @@ services:
       retries: 5
       start_period: 10s
   createbuckets:
-    image: docker.io/minio/mc
+    image: docker.io/pgsty/mc:latest
     platform: linux/amd64
     depends_on:
-      minio:
+      silo:
         condition: service_healthy
     entrypoint: /bin/sh
     command: -c '
-      /usr/bin/mc alias set myminio http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD >/dev/null;
-      /usr/bin/mc mb myminio/insights-upload-perma;
-      /usr/bin/mc mb myminio/insights-upload-rejected;
-      /usr/bin/mc anonymous set download myminio/insights-upload-perma;
-      /usr/bin/mc anonymous set download myminio/insights-upload-rejected;
+      /usr/bin/mc alias set mysilo http://silo:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD >/dev/null;
+      /usr/bin/mc mb mysilo/insights-upload-perma;
+      /usr/bin/mc mb mysilo/insights-upload-rejected;
+      /usr/bin/mc anonymous set download mysilo/insights-upload-perma;
+      /usr/bin/mc anonymous set download mysilo/insights-upload-rejected;
       exit 0;'
     volumes:
       - /data
@@ -92,7 +92,7 @@ services:
       - INGRESS_MINIODEV=true
       - INGRESS_MINIOACCESSKEY=$MINIO_ROOT_USER
       - INGRESS_MINIOSECRETKEY=$MINIO_ROOT_PASSWORD
-      - INGRESS_MINIOENDPOINT=minio:9000
+      - INGRESS_MINIOENDPOINT=silo:9000
       - INGRESS_MAXSIZE=104857600 # 100 MB
     env_file: .env
     ports:

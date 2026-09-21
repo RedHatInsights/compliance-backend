@@ -40,7 +40,7 @@ Before running the project, these services must be running and acessible:
   - conrolled by environment variables `POSTGRES_SERVICE_HOST`,
     `POSTGRESQL_DATABASE`, `POSTGRESQL_USER`, `POSTGRESQL_PASSWORD`
 * [Insights Ingress](https://github.com/RedHatInsights/insights-ingress-go)
-  (also requires S3/minio)
+  (also requires S3-compatible object storage; local Compose uses [Silo](https://github.com/pgsty/silo))
 * [Insights PUPTOO](https://github.com/RedHatInsights/insights-puptoo)
   — Platform Upload Processor
 * [Insights Host Inventory](https://github.com/RedHatInsights/insights-host-inventory) (MQ service and web service)
