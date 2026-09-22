@@ -43,6 +43,7 @@ describe InventoryEventsConsumer do
 
     context 'when message is created or updated' do
       before do
+        allow(consumer).to receive(:attempt).and_return(1)
         allow_any_instance_of(Kafka::SystemImporter).to receive(:import)
       end
 
@@ -52,7 +53,8 @@ describe InventoryEventsConsumer do
 
           context 'without policy_id and not compliance service' do
             it 'delegates to SystemImporter service only' do
-              expect(Kafka::SystemImporter).to receive(:new).with(message, anything).and_call_original
+              expect(Kafka::SystemImporter)
+                .to receive(:new).with(message, anything, terminal_attempt: false).and_call_original
               expect_any_instance_of(Kafka::SystemImporter).to receive(:import)
 
               expect(Kafka::PolicySystemImporter).not_to receive(:new)
@@ -78,7 +80,8 @@ describe InventoryEventsConsumer do
             end
 
             it 'delegates to SystemImporter and PolicySystemImporter' do
-              expect(Kafka::SystemImporter).to receive(:new).with(message, anything).and_call_original
+              expect(Kafka::SystemImporter)
+                .to receive(:new).with(message, anything, terminal_attempt: false).and_call_original
               expect_any_instance_of(Kafka::SystemImporter).to receive(:import)
 
               expect(Kafka::PolicySystemImporter).to receive(:new).with(message, anything).and_call_original
@@ -102,7 +105,8 @@ describe InventoryEventsConsumer do
             end
 
             it 'delegates to SystemImporter and ReportParser' do
-              expect(Kafka::SystemImporter).to receive(:new).with(message, anything).and_call_original
+              expect(Kafka::SystemImporter)
+                .to receive(:new).with(message, anything, terminal_attempt: false).and_call_original
               expect_any_instance_of(Kafka::SystemImporter).to receive(:import)
 
               expect(Kafka::ReportParser).to receive(:new).with(message, anything).and_call_original
@@ -113,6 +117,19 @@ describe InventoryEventsConsumer do
               consumer.consume
             end
           end
+        end
+      end
+
+      context 'on the terminal retry attempt' do
+        let(:type) { 'created' }
+
+        before { allow(consumer).to receive(:attempt).and_return(described_class::MAX_RETRIES + 1) }
+
+        it 'marks the system import as terminal' do
+          expect(Kafka::SystemImporter)
+            .to receive(:new).with(message, anything, terminal_attempt: true).and_call_original
+
+          consumer.consume
         end
       end
     end

@@ -25,7 +25,8 @@ RSpec.describe Kafka::SystemImporter do
     }
   end
 
-  let(:service) { described_class.new(message, Karafka.logger) }
+  let(:terminal_attempt) { false }
+  let(:service) { described_class.new(message, Karafka.logger, terminal_attempt: terminal_attempt) }
 
   describe '#import' do
     # rubocop:disable Rails/SkipsModelValidations
@@ -383,12 +384,24 @@ RSpec.describe Kafka::SystemImporter do
         expect { service.import }.to raise_error(ActiveRecord::ActiveRecordError, 'db down')
       end
 
-      it 'increments the failures counter' do
+      it 'does not increment the failures counter on an intermediate attempt' do
         expect do
           service.import
         rescue ActiveRecord::ActiveRecordError
           nil
-        end.to increment_yabeda_counter(Yabeda.compliance_system_import_failures_total).by(1)
+        end.not_to increment_yabeda_counter(Yabeda.compliance_system_import_failures_total)
+      end
+
+      context 'on the terminal attempt' do
+        let(:terminal_attempt) { true }
+
+        it 'increments the failures counter' do
+          expect do
+            service.import
+          rescue ActiveRecord::ActiveRecordError
+            nil
+          end.to increment_yabeda_counter(Yabeda.compliance_system_import_failures_total).by(1)
+        end
       end
     end
 

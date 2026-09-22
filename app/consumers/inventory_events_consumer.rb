@@ -3,6 +3,7 @@
 # Receives messages from the Kafka topic, dispatches them to the appropriate service
 class InventoryEventsConsumer < ApplicationConsumer
   NON_INSIGHTS_ID = '00000000-0000-0000-0000-000000000000'
+  MAX_RETRIES = 3
 
   def consume_one
     case message_type
@@ -19,7 +20,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   private
 
   def handle_created_updated
-    Kafka::SystemImporter.new(payload, logger).import if importable_host?
+    Kafka::SystemImporter.new(payload, logger, terminal_attempt: terminal_attempt?).import if importable_host?
     Kafka::PolicySystemImporter.new(payload, logger).import if policy_id
     Kafka::ReportParser.new(payload, logger).parse_reports if service == 'compliance'
   end
@@ -63,5 +64,9 @@ class InventoryEventsConsumer < ApplicationConsumer
 
   def policy_id
     payload.dig('host', 'system_profile', 'image_builder', 'compliance_policy_id')
+  end
+
+  def terminal_attempt?
+    attempt > MAX_RETRIES
   end
 end

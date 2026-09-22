@@ -3,9 +3,10 @@
 module Kafka
   # Imports host events from Inventory into the systems table
   class SystemImporter
-    def initialize(message, logger = Rails.logger)
+    def initialize(message, logger = Rails.logger, terminal_attempt: false)
       @message = message
       @logger = logger
+      @terminal_attempt = terminal_attempt
     end
 
     def import
@@ -71,7 +72,7 @@ module Kafka
       # rubocop:enable Rails/SkipsModelValidations
       log_upsert_result(result, id)
     rescue ActiveRecord::ActiveRecordError
-      Yabeda.compliance_system_import_failures_total.increment({})
+      Yabeda.compliance_system_import_failures_total.increment({}) if @terminal_attempt
       raise
     end
     # rubocop:enable Metrics/MethodLength
