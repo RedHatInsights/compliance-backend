@@ -246,7 +246,7 @@ GEM
     karafka-testing (2.6.0)
       karafka (>= 2.5.0, < 2.6.0)
       waterdrop (>= 2.8.0)
-    kessel-sdk (1.11.0)
+    kessel-sdk (1.12.0)
       grpc (>= 1.73.0)
     language_server-protocol (3.17.0.6)
     lint_roller (1.1.0)
@@ -593,7 +593,7 @@ DEPENDENCIES
   jsonapi-serializer
   karafka (>= 2.4.0)
   karafka-testing
-  kessel-sdk (~> 1.11.0)
+  kessel-sdk (~> 1.12.0)
   listen (>= 3.0.5)
   minitest-reporters
   minitest-stub-const
