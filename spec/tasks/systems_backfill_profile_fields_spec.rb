@@ -90,14 +90,15 @@ RSpec.describe 'systems:backfill_profile_fields task' do
     expect(output).to include('selected_rows=3', 'scanned_rows=3', 'successful_rows=3')
   end
 
-  it 'changes only null native target columns' do
+  it 'preserves JSONB and changes only null native target columns' do
+    original_profile = {
+      'owner_id' => uuid(101),
+      'operating_system' => { 'major' => 9, 'minor' => 4 },
+      'preserved' => { 'value' => Faker::Lorem.word }
+    }
     system = create_backfill_system(
       sequence: 1,
-      profile: {
-        'owner_id' => uuid(101),
-        'operating_system' => { 'major' => 9, 'minor' => 4 },
-        'preserved' => { 'value' => Faker::Lorem.word }
-      },
+      profile: original_profile,
       major: 8,
       display_name: Faker::Internet.domain_name,
       tags: [{ namespace: Faker::Lorem.word, key: Faker::Lorem.word, value: Faker::Lorem.word }],
@@ -109,6 +110,8 @@ RSpec.describe 'systems:backfill_profile_fields task' do
 
     after = System.unscoped.find(system.id).attributes
     targets = %w[owner_id os_major_version os_minor_version]
+    expect(system.reload.system_profile).to eq(original_profile)
+    expect(system.reload.owner_id).to eq(uuid(101))
     expect(after.except(*targets)).to eq(before.except(*targets))
     expect(after.slice(*targets)).to eq(
       'owner_id' => uuid(101),

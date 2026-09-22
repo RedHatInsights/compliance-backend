@@ -84,12 +84,12 @@ RSpec.describe Kafka::SystemImporter do
     end
 
     context 'when system is new' do
-      it 'upserts the JSONB profile and native fields' do
+      it 'upserts native fields without persisting the JSONB profile' do
         expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
         expect { service.import }.to change { System.count }.by(1)
 
         system = System.find(message['host']['id'])
-        expect(system.system_profile).to eq(message.dig('host', 'system_profile'))
+        expect(system.system_profile).to eq({})
         expect(system[:os_major_version]).to eq(9)
         expect(system[:os_minor_version]).to eq(4)
         expect(system[:owner_id]).to eq(message.dig('host', 'system_profile', 'owner_id'))
@@ -119,6 +119,7 @@ RSpec.describe Kafka::SystemImporter do
       end
 
       it 'uses the shared native-field projection' do
+        message['host']['system_profile']['extra'] = Faker::Lorem.word
         result = instance_double(
           SystemProfileNativeFields::Result,
           native_attributes: {
@@ -157,13 +158,19 @@ RSpec.describe Kafka::SystemImporter do
         system
       end
 
-      it 'updates the JSONB profile and native fields' do
+      it 'updates native fields without changing the existing JSONB profile' do
+        existing_profile = {
+          'operating_system' => { 'major' => 8, 'minor' => 0 },
+          'owner_id' => SecureRandom.uuid
+        }
+        existing_system.update_columns(system_profile: existing_profile)
+
         expect(Karafka.logger).to receive(:audit_success).with(/\[Kafka::SystemImporter\] Imported system/)
-        expect { service.import }.not_to(change { System.count })
+        service.import
 
         system = System.find(message['host']['id'])
         expect(system.display_name).to eq(message.dig('host', 'display_name'))
-        expect(system.system_profile).to eq(message.dig('host', 'system_profile'))
+        expect(system.system_profile).to eq(existing_profile)
         expect(system[:os_major_version]).to eq(9)
         expect(system[:os_minor_version]).to eq(4)
         expect(system[:owner_id]).to eq(message.dig('host', 'system_profile', 'owner_id'))
@@ -175,10 +182,11 @@ RSpec.describe Kafka::SystemImporter do
 
       before { message['host']['system_profile'].delete('owner_id') }
 
-      it 'removes owner_id from JSONB and clears the native column' do
+      it 'preserves JSONB and clears the native owner column' do
+        existing_profile = existing_system.system_profile
         service.import
         system = System.find(message['host']['id'])
-        expect(system.system_profile).not_to have_key('owner_id')
+        expect(system.system_profile).to eq(existing_profile)
         expect(system[:owner_id]).to be_nil
       end
     end
@@ -188,11 +196,11 @@ RSpec.describe Kafka::SystemImporter do
 
       before { message['host']['system_profile']['owner_id'] = nil }
 
-      it 'retains JSON null and clears the native column' do
+      it 'preserves the existing JSONB profile and clears the native owner column' do
+        existing_profile = existing_system.system_profile
         service.import
         system = System.find(message['host']['id'])
-        expect(system.system_profile).to have_key('owner_id')
-        expect(system.system_profile['owner_id']).to be_nil
+        expect(system.system_profile).to eq(existing_profile)
         expect(system[:owner_id]).to be_nil
       end
     end
@@ -200,14 +208,14 @@ RSpec.describe Kafka::SystemImporter do
     context 'when owner_id is a malformed UUID string' do
       before { message['host']['system_profile']['owner_id'] = Faker::Lorem.word }
 
-      it 'logs an error and imports JSONB with a null native owner' do
+      it 'logs an error and leaves JSONB empty (the default) with a null native owner' do
         expect(Karafka.logger)
           .to receive(:error)
           .with('[Kafka::SystemImporter] Malformed owner_id')
 
         expect { service.import }.to change { System.count }.by(1)
         system = System.find(message['host']['id'])
-        expect(system.system_profile['owner_id']).to eq(message.dig('host', 'system_profile', 'owner_id'))
+        expect(system.system_profile).to eq({})
         expect(system[:owner_id]).to be_nil
       end
     end
@@ -215,14 +223,14 @@ RSpec.describe Kafka::SystemImporter do
     context 'when owner_id is not a string' do
       before { message['host']['system_profile']['owner_id'] = 1 }
 
-      it 'logs an error and imports JSONB with a null native owner' do
+      it 'logs an error and leaves JSONB empty (the default) with a null native owner' do
         expect(Karafka.logger)
           .to receive(:error)
           .with('[Kafka::SystemImporter] Malformed owner_id')
 
         expect { service.import }.to change { System.count }.by(1)
         system = System.find(message['host']['id'])
-        expect(system.system_profile['owner_id']).to eq(1)
+        expect(system.system_profile).to eq({})
         expect(system[:owner_id]).to be_nil
       end
     end
@@ -232,10 +240,11 @@ RSpec.describe Kafka::SystemImporter do
 
       before { message['host']['system_profile'].delete('operating_system') }
 
-      it 'removes operating_system from JSONB and clears native OS versions' do
+      it 'preserves JSONB and clears native OS versions' do
+        existing_profile = existing_system.system_profile
         service.import
         system = System.find(message['host']['id'])
-        expect(system.system_profile).not_to have_key('operating_system')
+        expect(system.system_profile).to eq(existing_profile)
         expect(system[:os_major_version]).to be_nil
         expect(system[:os_minor_version]).to be_nil
       end
@@ -246,11 +255,11 @@ RSpec.describe Kafka::SystemImporter do
 
       before { message['host']['system_profile']['operating_system'] = Faker::Lorem.word }
 
-      it 'retains the JSONB value and clears native OS versions' do
+      it 'preserves JSONB and clears native OS versions' do
+        existing_profile = existing_system.system_profile
         service.import
         system = System.find(message['host']['id'])
-        expect(system.system_profile['operating_system'])
-          .to eq(message.dig('host', 'system_profile', 'operating_system'))
+        expect(system.system_profile).to eq(existing_profile)
         expect(system[:os_major_version]).to be_nil
         expect(system[:os_minor_version]).to be_nil
       end
@@ -377,11 +386,13 @@ RSpec.describe Kafka::SystemImporter do
         }
       end
 
-      it 'stores only operating_system and owner_id' do
+      it 'upserts native fields without persisting the JSONB profile' do
         service.import
         system = System.find(message['host']['id'])
-        expect(system.system_profile.keys).to match_array(%w[operating_system owner_id])
-        expect(system.system_profile['operating_system']).to eq({ 'major' => 9, 'minor' => 4 })
+        expect(system.system_profile).to eq({})
+        expect(system[:os_major_version]).to eq(9)
+        expect(system[:os_minor_version]).to eq(4)
+        expect(system[:owner_id]).to eq(message.dig('host', 'system_profile', 'owner_id'))
       end
     end
 
