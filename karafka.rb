@@ -63,7 +63,7 @@ class KarafkaApp < Karafka::App
         max_wait_time KarafkaApp.inventory_events_max_wait_time
         dead_letter_queue(
           topic: Settings.kafka.topics.compliance_dlq,
-          max_retries: 3,
+          max_retries: InventoryEventsConsumer::MAX_RETRIES,
           independent: true
         )
       end
