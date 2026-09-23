@@ -143,6 +143,12 @@ class System < ApplicationRecord
     { conditions: "systems.id NOT IN (#{ids.to_sql})" }
   end
 
+  searchable_by :available_for_policy_id, %i[eq], except_parents: %i[policies reports] do |_key, _op, val|
+    { conditions: without_twin_policy(val) }
+  rescue ActiveRecord::RecordNotFound
+    { conditions: 'FALSE' }
+  end
+
   scope :with_groups, lambda { |groups, key = :id|
     # Skip the [] representing ungrouped hosts from the array when generating the query
     grouped = arel_json_lookup(arel_table[:groups], groups_as_json(groups.flatten, key))
@@ -182,5 +188,33 @@ class System < ApplicationRecord
   def self.groups_as_json(groups, key = :id)
     groups.map { |group| [{ key => group }].to_json.dump }
   end
+
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def self.without_twin_policy(policy_id)
+    target_policy = Policy.joins(profile: :security_guide)
+                          .where(account_id: User.current.account_id)
+                          .select('policies.id AS policy_id',
+                                  'profiles.ref_id AS cp_ref_id',
+                                  'security_guides.os_major_version AS sg_os_major_version')
+                          .find(policy_id)
+
+    excluded = PolicySystem.joins(policy: { profile: :security_guide })
+                           .where(
+                             Profile.arel_table[:ref_id].eq(target_policy.cp_ref_id)
+                             .and(
+                               SecurityGuide.arel_table[:os_major_version]
+                                            .eq(target_policy.sg_os_major_version)
+                             )
+                             .and(Policy.arel_table[:id].not_eq(target_policy.policy_id))
+                           )
+                           .where(PolicySystem.arel_table[:system_id].eq(arel_table[:id]))
+                           .arel
+                           .exists
+
+    assigned = arel_table[:id].in(PolicySystem.where(policy_id: policy_id).select(:system_id))
+
+    Arel::Nodes::Not.new(excluded).or(assigned).to_sql
+  end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 end
 # rubocop:enable Metrics/ClassLength

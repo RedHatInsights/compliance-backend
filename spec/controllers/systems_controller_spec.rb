@@ -45,7 +45,28 @@ describe SystemsController do
         end
       end
 
-      let(:extra_params) { { account: current_user.account, **policies } }
+      let(:twin_policy) do
+        FactoryBot.create(
+          :policy,
+          account: current_user.account,
+          os_major_version: 8,
+          supports_minors: [1, 2, 8],
+          profile: policies[:policy_8].profile
+        )
+      end
+
+      let(:foreign_policy) do
+        FactoryBot.create(:policy, os_major_version: 8, supports_minors: [1, 2, 8])
+      end
+
+      let(:extra_params) do
+        {
+          account: current_user.account,
+          twin_policy: twin_policy,
+          foreign_policy: foreign_policy,
+          **policies
+        }
+      end
       let(:item_count) { 2 }
 
       let(:items) do
