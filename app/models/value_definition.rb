@@ -8,7 +8,7 @@ class ValueDefinition < ApplicationRecord
   sortable_by :title
 
   searchable_by :title, %i[like unlike eq ne]
-  searchable_by :ref_id, %i[like unlike]
+  searchable_by :ref_id, %i[eq ne like unlike]
 
   attr_accessor :op_source
 

@@ -7,6 +7,13 @@ require './spec/api/v2/schemas/util'
 
 include Api::V2::Schemas::Util # rubocop:disable Style/MixinUsage
 
+# Maps scoped_search operator symbols to the query-language tokens users type in a `filter`.
+# `ne` and `neq` are both used across models for not-equal.
+SEARCH_OPERATOR_TOKENS = {
+  eq: '=', ne: '!=', neq: '!=', gt: '>', lt: '<', gte: '>=', lte: '<=',
+  in: '^', notin: '!^', like: '~', unlike: '!~'
+}.freeze
+
 RSpec.configure do |config|
   config.openapi_root = Rails.root.to_s + '/swagger'
   # FIXME: https://github.com/rswag/rswag/issues/666
@@ -139,17 +146,30 @@ def search_params
             schema: { type: :string }
 end
 
-def search_params_v2(model = nil, except: [])
-  keys = model.scoped_search.fields.keys.reject { |key| key == :_____ || except.include?(key) }
+def format_search_operators(operators)
+  return if operators.blank?
 
+  operators.filter_map { |op| SEARCH_OPERATOR_TOKENS[op.to_sym] }.uniq.map { |token| "`#{token}`" }.join(', ')
+end
+
+def search_attributes_sentence(model, except)
+  definition = model.scoped_search
+  keys = definition.fields.keys.reject { |key| key == :_____ || except.include?(key) }
+  keys.map do |key|
+    tokens = format_search_operators(definition.fields[key].operators)
+    tokens ? "`#{key}` (#{tokens})" : "`#{key}`"
+  end.to_sentence
+end
+
+def search_params_v2(model = nil, except: [])
   parameter name: :filter, in: :query, required: false,
             description: 'Query string to filter items by their attributes. ' \
               'Compliant with <a href="https://github.com/wvanbergen/scoped_search/wiki/Query-language" ' \
               'target="_blank" title="github.com/wvanbergen/scoped_search">scoped_search query language</a>. ' \
-              'However, only `=` or `!=` (resp. `<>`) operators are supported.<br><br>' \
+              'Only the operators listed next to each attribute are supported.<br><br>' \
               "#{model.name.split('::').first.gsub(/([A-Z])/) { " #{Regexp.last_match(1)}" }.strip.pluralize} " \
-              "are searchable using attributes #{keys.map { |k| "`#{k}`" }.to_sentence}" \
-              '<br><br>(e.g.: `(field_1=something AND field_2!="something else") OR field_3>40`)',
+              "are searchable using attributes #{search_attributes_sentence(model, except)}" \
+              '<br><br>(e.g.: `(field_1=something AND field_2^(a b)) OR field_3>40`)',
             schema: { type: :string }
 end
 

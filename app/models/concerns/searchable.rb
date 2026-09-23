@@ -6,6 +6,8 @@ require 'exceptions'
 module Searchable
   extend ActiveSupport::Concern
 
+  OPERATOR_ALIASES = { neq: :ne }.freeze
+
   # The validator is used to ensure that some fields are not available for searching under certain
   # parent hierarchy combinations. It is expected that the controller passes the parents to the
   # current thread context before calling seach_for.
@@ -44,6 +46,35 @@ module Searchable
 
       validator = ParentValidator.new(except_parents, only_parents)
       scoped_search on: field, operators: operators, validator: validator, only_explicit: true, **args
+    end
+
+    def validate_search_operators!(query)
+      return if query.blank?
+
+      ast = ScopedSearch::QueryLanguage::Compiler.parse(query)
+      each_field_comparison(ast) do |field_name, operator|
+        field = scoped_search.field_by_name(field_name)
+        next if field.nil?
+
+        declared = Array(field.operators).map { |op| OPERATOR_ALIASES.fetch(op, op) }
+        next if declared.empty? || declared.include?(operator)
+
+        raise ScopedSearch::QueryNotSupported, "Operator '#{operator}' is not supported for '#{field_name}'"
+      end
+    end
+
+    private
+
+    def each_field_comparison(node, &block)
+      return unless node.is_a?(ScopedSearch::QueryLanguage::AST::OperatorNode)
+
+      yield node.lhs.value, node.operator if field_comparison?(node)
+      node.children.each { |child| each_field_comparison(child, &block) }
+    end
+
+    def field_comparison?(node)
+      ScopedSearch::QueryLanguage::Parser::COMPARISON_OPERATORS.include?(node.operator) &&
+        node.infix? && node.lhs.is_a?(ScopedSearch::QueryLanguage::AST::LeafNode)
     end
   end
 end
