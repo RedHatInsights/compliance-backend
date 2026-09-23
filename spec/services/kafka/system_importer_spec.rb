@@ -95,22 +95,22 @@ RSpec.describe Kafka::SystemImporter do
         expect(system[:owner_id]).to eq(message.dig('host', 'system_profile', 'owner_id'))
       end
 
-      it 'upserts every profile projection and guards stale messages' do
+      it 'upserts native fields and guards stale messages' do
         allow(System).to receive(:upsert).and_call_original
 
         service.import
 
         expect(System).to have_received(:upsert) do |attributes, options|
           expect(attributes).to include(
-            system_profile: message.dig('host', 'system_profile'),
             owner_id: message.dig('host', 'system_profile', 'owner_id'),
             os_major_version: 9,
             os_minor_version: 4
           )
+          expect(attributes).not_to have_key(:system_profile)
           expect(options).to include(unique_by: :id)
 
           sql = options.fetch(:on_duplicate).to_s
-          expect(sql).to include('system_profile = EXCLUDED.system_profile')
+          expect(sql).not_to include('system_profile = EXCLUDED.system_profile')
           expect(sql).to include('owner_id = EXCLUDED.owner_id')
           expect(sql).to include('os_major_version = EXCLUDED.os_major_version')
           expect(sql).to include('os_minor_version = EXCLUDED.os_minor_version')
