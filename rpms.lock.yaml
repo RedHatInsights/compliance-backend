@@ -844,20 +844,20 @@ arches:
     name: policycoreutils-python-utils
     evr: 3.6-5.el9
     sourcerpm: policycoreutils-3.6-5.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/Packages/p/postgresql-13.23-5.el9_8.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/Packages/p/postgresql-13.23-6.el9_8.x86_64.rpm
     repoid: ubi-9-for-x86_64-appstream-rpms
-    size: 1711246
-    checksum: sha256:5ed5539eea5097987da787e141f233b5d4ce126be516ae74b28c64a190a6ed96
+    size: 1714011
+    checksum: sha256:60eab035b9c60df060c4a8cfc4e12319ff4a0d994fa11511233d2573b43cfc7a
     name: postgresql
-    evr: 13.23-5.el9_8
-    sourcerpm: postgresql-13.23-5.el9_8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/Packages/p/postgresql-private-libs-13.23-5.el9_8.x86_64.rpm
+    evr: 13.23-6.el9_8
+    sourcerpm: postgresql-13.23-6.el9_8.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/Packages/p/postgresql-private-libs-13.23-6.el9_8.x86_64.rpm
     repoid: ubi-9-for-x86_64-appstream-rpms
-    size: 148177
-    checksum: sha256:6e90def333513c2acc0ae35696e7a34ca872294879914b3fff2884eda6e26285
+    size: 148932
+    checksum: sha256:2977ac5cb1dd09518059fac73dce063dadf062917a34546c78588b11a04bd393
     name: postgresql-private-libs
-    evr: 13.23-5.el9_8
-    sourcerpm: postgresql-13.23-5.el9_8.src.rpm
+    evr: 13.23-6.el9_8
+    sourcerpm: postgresql-13.23-6.el9_8.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/Packages/p/pyproject-srpm-macros-1.18.5-1.el9.noarch.rpm
     repoid: ubi-9-for-x86_64-appstream-rpms
     size: 12794
@@ -1546,7 +1546,7 @@ arches:
     sourcerpm: libyaml-0.2.5-7.el9.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/repodata/9d2a7516bfe0fde4a506647780d0b606af85520bed5621c673fe39d50379bd99-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/repodata/160ff8896017c71ee7c98c4f57d6b165fd5f97fcf1a30ec60d5883b347406b85-modules.yaml.gz
     repoid: ubi-9-for-x86_64-appstream-rpms
     size: 8505
-    checksum: sha256:9d2a7516bfe0fde4a506647780d0b606af85520bed5621c673fe39d50379bd99
+    checksum: sha256:160ff8896017c71ee7c98c4f57d6b165fd5f97fcf1a30ec60d5883b347406b85
