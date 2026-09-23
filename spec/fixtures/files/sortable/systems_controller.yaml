@@ -2,6 +2,10 @@
   - :factory: :system
     :display_name: 'aba'
     :os_minor_version: 2
+    :system_profile:
+      operating_system:
+        major: 7
+        minor: 10
     :groups:
       - id: 5
         name: 'aba'
@@ -53,29 +57,59 @@
     :account: ${account}
     :policy_id: ${policy_8.id}
 
+  - :factory: :system
+    :display_name: 'native minor 10'
+    :os_minor_version: 10
+    :system_profile:
+      operating_system:
+        major: 8
+        minor: 2
+    :groups:
+      - id: 6
+        name: 'native minor 10'
+    :account: ${account}
+
 :queries:
   - :sort_by:
       - 'display_name'
-    :result: [[3, 5], 2, 0, 1, 4]
+    :result: [[3, 5], 2, 0, 1, 4, 6]
+    :except_parents:
+      - :policies
+      - :reports
   - :sort_by:
       - 'os_major_version'
-    :result: [[4, 2], [5, 1], [0, 3]]
+    :result: [[4, 2], [1, 6, 5], [0, 3]]
+    :except_parents:
+      - :policies
+      - :reports
+  - :sort_by:
+      - 'os_minor_version:asc'
+    :result: [[2, 3, 5], [0, 4], 1, 6]
+    :except_parents:
+      - :policies
+      - :reports
+  - :sort_by:
+      - 'os_minor_version:desc'
+    :result: [6, 1, [0, 4], [2, 3, 5]]
     :except_parents:
       - :policies
       - :reports
   - :sort_by:
       - 'os_major_version'
       - 'os_minor_version'
-    :result: [2, 4, 5, 1, 3, 0]
+    :result: [2, 4, 5, 1, 6, 3, 0]
     :except_parents:
       - :policies
       - :reports
   - :sort_by:
       - 'os_version'
-    :result: [2, 4, 5, 1, 3, 0]
+    :result: [2, 4, 5, 1, 6, 3, 0]
     :except_parents:
       - :policies
       - :reports
   - :sort_by:
       - 'groups'
     :result: [[3, 5], 2, 0, 1, 4]
+    :only_parents:
+      - :policies
+      - :reports

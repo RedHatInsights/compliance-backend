@@ -57,11 +57,13 @@
     :found:
       - :factory: :test_result
         :os_minor_version: 1
+        :system_profile: { operating_system: { major: 8, minor: 2 } }
         :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :test_result
         :os_minor_version: 2
+        :system_profile: { operating_system: { major: 8, minor: 1 } }
         :report_id: ${policy.id}
         :account: ${account}
   :query: (os_minor_version = 1)
@@ -70,11 +72,13 @@
     :found:
       - :factory: :test_result
         :os_minor_version: 1
+        :system_profile: { operating_system: { major: 8, minor: 2 } }
         :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :test_result
         :os_minor_version: 2
+        :system_profile: { operating_system: { major: 8, minor: 1 } }
         :report_id: ${policy.id}
         :account: ${account}
   :query: (os_minor_version != 2)
@@ -83,16 +87,19 @@
     :found:
       - :factory: :test_result
         :os_minor_version: 0
+        :system_profile: { operating_system: { major: 8, minor: 1 } }
         :account: ${account}
         :report_id: ${policy.id}
       - :factory: :test_result
         :os_minor_version: 2
+        :system_profile: { operating_system: { major: 8, minor: 1 } }
         :account: ${account}
         :report_id: ${policy.id}
     :not_found:
       - :factory: :test_result
         :display_name: not this display_name
         :os_minor_version: 1
+        :system_profile: { operating_system: { major: 8, minor: 0 } }
         :report_id: ${policy.id}
         :account: ${account}
   :query: (os_minor_version ^ (0 2))
@@ -101,17 +108,20 @@
     :found:
       - :factory: :test_result
         :os_minor_version: 1
+        :system_profile: { operating_system: { major: 8, minor: 0 } }
         :report_id: ${policy.id}
         :account: ${account}
     :not_found:
       - :factory: :test_result
         :os_minor_version: 0
+        :system_profile: { operating_system: { major: 8, minor: 1 } }
         :account: ${account}
         :report_id: ${policy.id}
       - :factory: :test_result
         :os_minor_version: 2
-        :account: ${account}
+        :system_profile: { operating_system: { major: 8, minor: 1 } }
         :report_id: ${policy.id}
+        :account: ${account}
   :query: (os_minor_version !^ (0 2))
 
 

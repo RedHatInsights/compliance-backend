@@ -56,7 +56,7 @@ class SystemPolicy < ApplicationPolicy
     end
 
     def resolve_cert_auth
-      base_scope.where(System::OWNER_ID.eq(user.system_owner_id))
+      base_scope.where(owner_id: user.system_owner_id)
     end
 
     def base_scope

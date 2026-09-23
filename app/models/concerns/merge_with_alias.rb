@@ -93,6 +93,7 @@ module MergeWithAlias
     alias visit_Arel_Attributes_Attribute attribute
 
     alias visit_ActiveRecord_Relation_QueryAttribute nop
+    alias visit_Arel_Nodes_Casted nop
     alias visit_Arel_Nodes_NamedFunction nop
     alias visit_Arel_Nodes_Quoted nop
     alias visit_Arel_Nodes_TableAlias nop

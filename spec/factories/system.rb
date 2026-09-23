@@ -8,6 +8,9 @@ FactoryBot.define do
     stale_timestamp { 10.years.since(Time.zone.now) }
     created { Time.zone.now }
     updated { Time.zone.now }
+    owner_id { Faker::Internet.uuid }
+    os_major_version { policy_id ? Policy.find(policy_id).os_major_version : 8 }
+    os_minor_version { 0 }
     system_profile do
       {
         'os_release' => [os_major_version, os_minor_version].join('.'),
@@ -37,12 +40,9 @@ FactoryBot.define do
     end
 
     transient do
-      os_major_version { policy_id ? Policy.find(policy_id).os_major_version : 8 }
-      os_minor_version { 0 }
       group_count { 0 }
       tag_count { 5 }
       policy_id { nil }
-      owner_id { Faker::Internet.uuid }
       with_test_result { nil }
     end
 

@@ -102,6 +102,44 @@ describe SystemPolicy do
       it 'allows access to the system' do
         expect(Pundit.policy_scope(user, System).to_set).to eq(items.to_set)
       end
+
+      it 'uses the native owner_id when JSONB disagrees' do
+        items.first.update!(system_profile: { 'owner_id' => Faker::Internet.uuid })
+
+        expect(Pundit.policy_scope(user, System).to_set).to eq(items.to_set)
+      end
+    end
+
+    context 'with JSONB-only matching owner_id' do
+      let(:items) do
+        FactoryBot.create_list(
+          :system,
+          1,
+          account: user.account,
+          owner_id: Faker::Internet.uuid,
+          system_profile: { 'owner_id' => owner_id }
+        )
+      end
+
+      it 'does not grant access based on the JSONB owner_id' do
+        expect(Pundit.policy_scope(user, System)).to be_empty
+      end
+    end
+
+    context 'with native nil and matching JSONB owner_id' do
+      let(:items) do
+        FactoryBot.create_list(
+          :system,
+          1,
+          account: user.account,
+          owner_id: nil,
+          system_profile: { 'owner_id' => owner_id }
+        )
+      end
+
+      it 'does not fall back to the JSONB owner_id' do
+        expect(Pundit.policy_scope(user, System)).to be_empty
+      end
     end
 
     context 'with mismatching owner_id' do
@@ -111,6 +149,12 @@ describe SystemPolicy do
       it 'restricts access to the system' do
         expect(Pundit.policy_scope(user, System).to_set).to be_empty
       end
+    end
+
+    it 'merges native owner predicates through aliased system joins' do
+      expect do
+        PolicySystem.joins(:system).merge_with_alias(Pundit.policy_scope(user, System)).to_sql
+      end.not_to raise_error
     end
   end
 
