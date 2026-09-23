@@ -183,6 +183,38 @@ describe TestResultsController do
       end
     end
 
+    describe 'native OS versions' do
+      let(:native_system) do
+        FactoryBot.create(
+          :system,
+          **sysparams,
+          os_major_version: 8,
+          os_minor_version: 4,
+          system_profile: { 'operating_system' => { 'major' => 8, 'minor' => 2 } }
+        )
+      end
+      let!(:native_result) { FactoryBot.create(:test_result, system: native_system, report_id: parent.id) }
+
+      it 'serializes native values rather than persisted JSONB values' do
+        get :show, params: { id: native_result.id, report_id: parent.id, parents: [:report] }
+
+        expect(response_body_data).to include(
+          'os_major_version' => 8,
+          'os_minor_version' => 4
+        )
+      end
+
+      it 'filters by native minor version' do
+        get :index, params: {
+          report_id: parent.id,
+          parents: [:report],
+          filter: '(os_minor_version = 4)'
+        }
+
+        expect(response_body_data.map { |item| item['id'] }).to include(native_result.id)
+      end
+    end
+
     describe 'GET os_versions' do
       let(:tag) { { namespace: Faker::Lorem.word, key: Faker::Lorem.word, value: Faker::Lorem.word } }
       let(:tag_param) { "#{tag[:namespace]}/#{tag[:key]}=#{tag[:value]}" }

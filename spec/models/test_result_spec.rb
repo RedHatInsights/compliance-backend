@@ -34,6 +34,49 @@ describe TestResult do
     end
   end
 
+  describe 'OS version readers' do
+    let(:account) { FactoryBot.create(:account) }
+    let(:policy) do
+      FactoryBot.create(:policy, :for_tailoring, account: account, os_major_version: 9, supports_minors: [4])
+    end
+    let(:system) do
+      FactoryBot.create(
+        :system,
+        account: account,
+        policy_id: policy.id,
+        os_major_version: 9,
+        os_minor_version: 4,
+        system_profile: {
+          'operating_system' => { 'major' => 8, 'minor' => 2 }
+        }
+      )
+    end
+    let(:test_result) { FactoryBot.create(:test_result, system: system, report_id: policy.id) }
+
+    it 'uses native system versions when loaded through the association' do
+      expect(test_result.os_major_version).to eq(9)
+      expect(test_result.os_minor_version).to eq(4)
+    end
+
+    it 'uses selected native aliases, including selected NULL values' do
+      selected = described_class.joins(:system).select(
+        'test_results.*', 'systems.os_major_version AS system__os_major_version',
+        'systems.os_minor_version AS system__os_minor_version'
+      ).find(test_result.id)
+
+      expect(selected.os_major_version).to eq(9)
+      expect(selected.os_minor_version).to eq(4)
+
+      selected = described_class.find_by_sql([<<~SQL, test_result.id]).first
+        SELECT test_results.*, NULL AS system__os_major_version, NULL AS system__os_minor_version
+        FROM test_results
+        WHERE test_results.id = ?
+      SQL
+      expect(selected.os_major_version).to be_nil
+      expect(selected.os_minor_version).to be_nil
+    end
+  end
+
   describe '#compliant' do
     let(:account) { FactoryBot.create(:account) }
     let(:policy) do

@@ -47,7 +47,7 @@ class TestResult < ApplicationRecord
     bind = ['IN', 'NOT IN'].include?(op) ? '(?)' : '?'
 
     {
-      conditions: "CAST(system.system_profile->'operating_system'->>'minor' AS int) #{op} #{bind}",
+      conditions: "system.os_minor_version #{op} #{bind}",
       parameter: [val.split(',').map(&:to_i)]
     }
   end
@@ -110,13 +110,15 @@ class TestResult < ApplicationRecord
   end
 
   def os_major_version
-    cached = attributes['system__system_profile']&.dig('operating_system', 'major')
-    cached || try(:system).try(:system_profile)&.dig('operating_system', 'major')
+    return attributes['system__os_major_version'] if attributes.key?('system__os_major_version')
+
+    try(:system)&.os_major_version
   end
 
   def os_minor_version
-    cached = attributes['system__system_profile']&.dig('operating_system', 'minor')
-    cached || try(:system).try(:system_profile)&.dig('operating_system', 'minor')
+    return attributes['system__os_minor_version'] if attributes.key?('system__os_minor_version')
+
+    try(:system)&.os_minor_version
   end
 
   def compliant # rubocop:disable Naming/PredicateMethod

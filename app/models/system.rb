@@ -17,28 +17,16 @@ class System < ApplicationRecord
   has_many :test_results, class_name: 'TestResult', dependent: :destroy, inverse_of: :system
   has_many :rule_results, class_name: 'RuleResult', through: :test_results
 
-  OWNER_ID = AN::InfixOperation.new('->>', arel_table[:system_profile], AN::Quoted.new('owner_id'))
-
-  def self.os_version(table = arel_table)
-    AN::InfixOperation.new('->', table[:system_profile], AN::Quoted.new('operating_system'))
-  end
-
   def self.os_major_version(table = arel_table)
-    AN::InfixOperation.new('->', os_version(table), AN::Quoted.new('major')).as('os_major_version')
+    table[:os_major_version].as('os_major_version')
   end
 
   def self.os_minor_version(table = arel_table)
-    AN::InfixOperation.new('->', os_version(table), AN::Quoted.new('minor')).as('os_minor_version')
+    table[:os_minor_version].as('os_minor_version')
   end
 
   def self.sortable_os(table = arel_table)
-    AN::NamedFunction.new(
-      'ROW',
-      [
-        AN::NamedFunction.new('CAST', [System.os_major_version(table).left.as('int')]),
-        AN::NamedFunction.new('CAST', [System.os_minor_version(table).left.as('int')])
-      ]
-    )
+    AN::NamedFunction.new('ROW', [table[:os_major_version], table[:os_minor_version]])
   end
 
   OS_VERSION = AN::NamedFunction.new(
@@ -94,13 +82,16 @@ class System < ApplicationRecord
   searchable_by :display_name, %i[eq neq like unlike]
 
   searchable_by :os_version, %i[in], except_parents: %i[policies reports] do |_key, _op, val|
-    jsons = val.split(',').each_with_object([]) do |version, obj|
-      major, minor = version.split('.')
+    conditions = val.split(',').filter_map do |version|
+      major, minor = version.split('.', 2)
+      next unless major&.match?(/\A\d+\z/) && minor&.match?(/\A\d+\z/)
 
-      obj << { operating_system: { major: major.to_i, minor: minor.to_i } }.to_json.dump
+      arel_table[:os_major_version].eq(major.to_i)
+                                   .and(arel_table[:os_minor_version].eq(minor.to_i))
     end
+    conditions = conditions.reduce(:or)
 
-    { conditions: arel_json_lookup(arel_table[:system_profile], jsons).to_sql }
+    { conditions: conditions ? conditions.to_sql : '1=0' }
   end
 
   searchable_by :os_major_version, %i[eq neq in notin], except_parents: %i[policies reports] do |_key, op, val|
@@ -161,11 +152,11 @@ class System < ApplicationRecord
   }
 
   scope :os_major_versions, lambda { |version, q = true|
-    where(AN::NamedFunction.new('CAST', [os_major_version.left.as('int')]).send(q ? :in : :not_in, version))
+    where(arel_table[:os_major_version].send(q ? :in : :not_in, version))
   }
 
   scope :os_minor_versions, lambda { |version, q = true|
-    where(AN::NamedFunction.new('CAST', [os_minor_version.left.as('int')]).send(q ? :in : :not_in, version))
+    where(arel_table[:os_minor_version].send(q ? :in : :not_in, version))
   }
 
   def self.taggable?
@@ -186,14 +177,6 @@ class System < ApplicationRecord
 
   def group_ids
     groups.map { |group| group['id'] } || []
-  end
-
-  def os_major_version
-    attributes['os_major_version'] || try(:system_profile)&.dig('operating_system', 'major')
-  end
-
-  def os_minor_version
-    attributes['os_minor_version'] || try(:system_profile)&.dig('operating_system', 'minor')
   end
 
   def self.groups_as_json(groups, key = :id)
