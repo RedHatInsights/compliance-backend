@@ -543,3 +543,39 @@
   :except_parents:
     - :policies
     - :reports
+
+- :name: "equality search by available_for_policy_id"
+  :entities:
+    :found:
+      - :factory: :system
+        :account: ${account}
+        :os_minor_version: 1
+      - :factory: :system
+        :account: ${account}
+        :policy_id: ${policy_8.id}
+        :os_minor_version: 1
+      - :factory: :system
+        :account: ${account}
+        :policy_id: ${policy_7.id}
+        :os_minor_version: 1
+    :not_found:
+      - :factory: :system
+        :account: ${account}
+        :policy_id: ${twin_policy.id}
+        :os_minor_version: 1
+  :query: (available_for_policy_id = ${policy_8.id})
+  :except_parents:
+    - :policies
+    - :reports
+
+- :name: "equality search by available_for_policy_id with foreign policy"
+  :entities:
+    :found: []
+    :not_found:
+      - :factory: :system
+        :account: ${account}
+        :os_minor_version: 1
+  :query: (available_for_policy_id = ${foreign_policy.id})
+  :except_parents:
+    - :policies
+    - :reports
