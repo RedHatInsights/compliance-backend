@@ -11,17 +11,6 @@ FactoryBot.define do
     owner_id { Faker::Internet.uuid }
     os_major_version { policy_id ? Policy.find(policy_id).os_major_version : 8 }
     os_minor_version { 0 }
-    system_profile do
-      {
-        'os_release' => [os_major_version, os_minor_version].join('.'),
-        'operating_system' => {
-          'name' => 'RHEL',
-          'major' => os_major_version,
-          'minor' => os_minor_version
-        },
-        'owner_id' => owner_id
-      }
-    end
     tags do
       tag_count.times.map do
         { namespace: Faker::Hacker.ingverb, key: Faker::Hacker.noun, value: Faker::Hacker.adjective }
@@ -44,6 +33,7 @@ FactoryBot.define do
       tag_count { 5 }
       policy_id { nil }
       with_test_result { nil }
+      system_profile { nil }
     end
 
     after(:create) do |sys, ev|
@@ -94,12 +84,14 @@ FactoryBot.define do
         attrs['reporter'] ||= 'compliance'
         WSystem.create!(attrs.compact)
 
-        sp = instance.system_profile || {}
         WSystemProfileStatic.create!(
           org_id: instance.org_id,
           host_id: instance.id,
-          operating_system: sp['operating_system'] || {},
-          owner_id: sp['owner_id'],
+          operating_system: {
+            'major' => instance.os_major_version,
+            'minor' => instance.os_minor_version
+          },
+          owner_id: instance.owner_id,
           host_type: nil
         )
 
