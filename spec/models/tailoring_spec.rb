@@ -3,6 +3,16 @@
 require 'rails_helper'
 
 describe Tailoring do
+  describe '.for_policy' do
+    let(:policy) { FactoryBot.create(:policy, :for_tailoring, supports_minors: [0]) }
+
+    it 'uses the requested os_minor_version' do
+      tailoring = described_class.for_policy(policy, 0)
+
+      expect(tailoring.os_minor_version).to eq(0)
+    end
+  end
+
   describe '#value_overrides_by_ref_id' do
     subject do
       FactoryBot.create(
