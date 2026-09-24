@@ -22,7 +22,10 @@ class Tailoring < ApplicationRecord
     ]
   )
 
-  indexable_by :os_minor_version, &->(scope, value) { scope.find_by!(os_minor_version: value) }
+  indexable_by :os_minor_version, &lambda { |scope, value|
+    major = scope.joins(profile: :security_guide).pick(SecurityGuide.arel_table[:os_major_version])
+    scope.find_by!(os_minor_version: SupportedSsg.resolve_minor(major, value))
+  }
 
   sortable_by :os_minor_version
 
