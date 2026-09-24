@@ -23,8 +23,7 @@ describe InventoryViews do
           {
             id: system.id,
             data: {
-              policies: system.policies.map { |p| { id: p.id, name: p.title } },
-              last_scan: system.last_check_in
+              policies: system.policies.map { |p| { id: p.id, name: p.title } }
             }
           }
         ]
