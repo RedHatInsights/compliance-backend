@@ -103,3 +103,9 @@ Compliance audit logs: `Rails.logger.audit_success` / `audit_fail` (not the stan
 ## Git
 
 Commit messages follow `.commitlint.yml`. Default branch: `master`. Hotfixes: `hotfix`.
+
+## Pull Requests and Commits
+
+- Use the repository PR template when one exists.
+- PR titles and commit subjects must use the repository's conventional format and must not include Jira keys.
+- Put Jira references in the PR description or commit body only.
