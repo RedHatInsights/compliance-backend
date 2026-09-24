@@ -52,5 +52,22 @@ describe Profile do
         expect { subject.variant_for_minor(0) }.to raise_exception(Exceptions::OSMinorVersionNotSupported)
       end
     end
+
+    context 'when SupportedSsg has no entry for the requested minor' do
+      before { allow(SupportedSsg).to receive(:resolve_minor).and_return(0) }
+
+      let!(:result) do
+        FactoryBot.create(
+          :profile,
+          ref_id: subject.ref_id,
+          supports_minors: [0],
+          security_guide: FactoryBot.create(:security_guide, version: '999.0.0')
+        )
+      end
+
+      it 'falls back to minor 0 via resolve_minor' do
+        expect(subject.variant_for_minor(4)).to eq(result)
+      end
+    end
   end
 end
