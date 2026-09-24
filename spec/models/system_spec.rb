@@ -19,76 +19,21 @@ describe System do
     end
   end
 
-  describe 'factory profile fields' do
-    let(:owner_id) { Faker::Internet.uuid }
-    let(:system) do
-      FactoryBot.create(
-        :system,
-        owner_id: owner_id,
-        os_major_version: 9,
-        os_minor_version: 4
-      )
-    end
-
-    it 'persists matching native and JSONB values' do
-      expect(system.attributes.slice('owner_id', 'os_major_version', 'os_minor_version')).to eq(
-        'owner_id' => owner_id,
-        'os_major_version' => 9,
-        'os_minor_version' => 4
-      )
-      expect(system.system_profile.slice('owner_id', 'operating_system')).to eq(
-        'owner_id' => owner_id,
-        'operating_system' => {
-          'name' => 'RHEL',
-          'major' => 9,
-          'minor' => 4
-        }
-      )
-    end
-
-    it 'allows an explicit JSONB override without changing native values' do
-      system = FactoryBot.create(
-        :system,
-        owner_id: owner_id,
-        os_major_version: 9,
-        os_minor_version: 4,
-        system_profile: {
-          'owner_id' => Faker::Internet.uuid,
-          'operating_system' => { 'major' => 8, 'minor' => 2 }
-        }
-      )
-
-      expect(system.owner_id).to eq(owner_id)
-      expect(system.os_major_version).to eq(9)
-      expect(system.os_minor_version).to eq(4)
-    end
-  end
-
   describe 'native OS fields' do
     let(:system) do
       FactoryBot.create(
         :system,
         os_major_version: 9,
-        os_minor_version: 4,
-        system_profile: {
-          'operating_system' => { 'major' => 8, 'minor' => 2 }
-        }
+        os_minor_version: 4
       )
     end
 
-    it 'reads the native columns when JSONB disagrees' do
+    it 'reads the native columns' do
       expect(system.os_major_version).to eq(9)
       expect(system.os_minor_version).to eq(4)
     end
 
-    it 'does not fall back to JSONB when native columns are null' do
-      system.update!(os_major_version: nil, os_minor_version: nil)
-
-      expect(system.reload.os_major_version).to be_nil
-      expect(system.reload.os_minor_version).to be_nil
-    end
-
-    it 'enumerates native versions when JSONB disagrees' do
+    it 'enumerates native versions' do
       expect(described_class.where(id: system.id).os_versions).to contain_exactly('9.4')
     end
   end

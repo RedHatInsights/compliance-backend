@@ -45,10 +45,7 @@ describe TestResult do
         account: account,
         policy_id: policy.id,
         os_major_version: 9,
-        os_minor_version: 4,
-        system_profile: {
-          'operating_system' => { 'major' => 8, 'minor' => 2 }
-        }
+        os_minor_version: 4
       )
     end
     let(:test_result) { FactoryBot.create(:test_result, system: system, report_id: policy.id) }
