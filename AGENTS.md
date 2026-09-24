@@ -45,7 +45,7 @@ Inventory Event → Kafka → InventoryEventsConsumer
 - **TestResult** — scan of a system for a policy
 - **RuleResult** — rule outcome (pass/fail/error/notchecked/notselected)
 - **Report** — aggregated policy stats
-- **System** — `systems` table; `system_profile` JSONB (`operating_system.major` / `minor`)
+- **System** — `systems` table; native `owner_id`, `os_major_version`, and `os_minor_version` columns
 
 `tags` columns are Insights jsonb: array of hashes. Filter via query params.
 

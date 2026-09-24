@@ -84,13 +84,12 @@ describe SystemsController do
       it_behaves_like 'searchable'
       it_behaves_like 'taggable'
 
-      it 'serializes native OS values when JSONB disagrees' do
+      it 'serializes native OS values' do
         system = FactoryBot.create(
           :system,
           account: current_user.account,
           os_major_version: 9,
-          os_minor_version: 4,
-          system_profile: { 'operating_system' => { 'major' => 8, 'minor' => 2 } }
+          os_minor_version: 4
         )
 
         get :index
@@ -208,9 +207,8 @@ describe SystemsController do
       it_behaves_like 'searchable', :policies
       it_behaves_like 'taggable', :policies
 
-      it 'serializes native OS values when JSONB disagrees' do
+      it 'serializes native OS values' do
         system = items.first
-        system.update!(system_profile: { 'operating_system' => { 'major' => 8, 'minor' => 2 } })
 
         get :index, params: { policy_id: parent.id, parents: [:policies] }
 
@@ -709,13 +707,8 @@ describe SystemsController do
             expect(response).to have_http_status :not_found
           end
 
-          context 'when only JSONB owner_id matches' do
-            before do
-              # Native owner_id is authoritative after the cutover, even when JSONB still contains a matching owner ID.
-              item.update!(system_profile: { 'owner_id' => current_user.system_owner_id })
-            end
-
-            it 'returns not found because native owner_id does not match' do
+          context 'when native owner_id does not match' do
+            it 'returns not found' do
               patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
               expect(response).to have_http_status :not_found
@@ -770,13 +763,8 @@ describe SystemsController do
             expect(response).to have_http_status :not_found
           end
 
-          context 'when only JSONB owner_id matches' do
-            before do
-              # Native owner_id is authoritative after the cutover, even when JSONB still contains a matching owner ID.
-              item.update!(system_profile: { 'owner_id' => current_user.system_owner_id })
-            end
-
-            it 'returns not found because native owner_id does not match' do
+          context 'when native owner_id does not match' do
+            it 'returns not found' do
               delete :destroy, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
 
               expect(response).to have_http_status :not_found
@@ -845,9 +833,8 @@ describe SystemsController do
       it_behaves_like 'searchable', :reports
       it_behaves_like 'taggable', :reports
 
-      it 'serializes native OS values when JSONB disagrees' do
+      it 'serializes native OS values' do
         system = items.first
-        system.update!(system_profile: { 'operating_system' => { 'major' => 8, 'minor' => 2 } })
         FactoryBot.create(:test_result, system: system, report_id: parent.id)
 
         get :index, params: { report_id: parent.id, parents: [:reports] }
