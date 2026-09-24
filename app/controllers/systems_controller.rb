@@ -78,17 +78,21 @@ class SystemsController < ApplicationController
   end
 
   def new_policy_systems
-    @new_policy_systems ||= begin
-      major = policy.os_major_version
-      minors = policy.os_minor_versions
-      # Filter the passed systems based on what OS versions the policy supports
-      # and also drop any system that is assigned to a sibling policy
-      items = pundit_scope.where(id: permitted_params[:ids])
-                          .os_major_versions(major).os_minor_versions(minors)
-                          .where.not(id: systems_with_sibling_policies)
-
-      items.map { |item| PolicySystem.new(policy: policy, system: item) }
+    @new_policy_systems ||= assignable_systems.map do |system|
+      PolicySystem.new(policy: policy, system: system)
     end
+  end
+
+  def assignable_systems
+    return candidate_systems if SupportedSsg.minor_agnostic?(policy.os_major_version)
+
+    candidate_systems.os_minor_versions(policy.os_minor_versions)
+  end
+
+  def candidate_systems
+    pundit_scope.where(id: permitted_params[:ids])
+                .os_major_versions(policy.os_major_version)
+                .where.not(id: systems_with_sibling_policies)
   end
 
   def old_policy_systems
