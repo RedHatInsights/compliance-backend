@@ -22,7 +22,10 @@ class Tailoring < ApplicationRecord
     ]
   )
 
-  indexable_by :os_minor_version, &->(scope, value) { scope.find_by!(os_minor_version: value) }
+  indexable_by :os_minor_version, &lambda { |scope, value|
+    major = scope.joins(profile: :security_guide).pick(SecurityGuide.arel_table[:os_major_version])
+    scope.find_by!(os_minor_version: SupportedSsg.resolve_minor(major, value))
+  }
 
   sortable_by :os_minor_version
 
@@ -54,6 +57,7 @@ class Tailoring < ApplicationRecord
   end
 
   def self.for_policy(policy, os_minor_version)
+    os_minor_version = SupportedSsg.resolve_minor(policy.os_major_version, os_minor_version)
     profile = policy.profile.variant_for_minor(os_minor_version)
     Tailoring.new(policy: policy, os_minor_version: os_minor_version,
                   profile: profile, value_overrides: profile.value_overrides)

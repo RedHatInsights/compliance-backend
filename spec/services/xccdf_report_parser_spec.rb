@@ -157,4 +157,52 @@ RSpec.describe XccdfReportParser do
       expect(parser).to have_received(:save_all_test_result_info)
     end
   end
+
+  describe '#check_for_missing_tailored_profile after an OS minor upgrade' do
+    let(:os_major_version) { 8 }
+    let(:assignment_minor) { 1 }
+    let(:upgraded_minor) { 5 }
+
+    def ssg(major, minor)
+      SupportedSsg.new(os_major_version: major.to_s, os_minor_version: minor.to_s, version: '0.1.40')
+    end
+
+    let(:profile) do
+      create(:profile, ref_id_suffix: 'standard', os_major_version: os_major_version, supports_minors: supported_minors)
+    end
+    let(:policy) { create(:policy, account: user.account, os_major_version: os_major_version, profile: profile) }
+
+    let(:system) do
+      create(:system, account: user.account, policy_id: policy.id,
+                      os_major_version: os_major_version, os_minor_version: assignment_minor).tap do |sys|
+        sys.update!(os_minor_version: upgraded_minor)
+      end
+    end
+
+    context 'with per-minor (hosted) content that ships no tailoring for the new minor' do
+      let(:supported_minors) { [assignment_minor] }
+
+      before do
+        allow(SupportedSsg).to receive(:all)
+          .and_return([ssg(os_major_version, 0), ssg(os_major_version, assignment_minor)])
+      end
+
+      it 'raises OSVersionMismatch reporting the resolved upgraded minor' do
+        expect { parser.check_for_missing_tailored_profile }
+          .to raise_error(described_class::OSVersionMismatch, /resolved to #{upgraded_minor}/)
+      end
+    end
+
+    context 'with minor-agnostic (upstream/IoP) content that ships only the .0 datastream' do
+      let(:supported_minors) { [0] }
+
+      before { allow(SupportedSsg).to receive(:all).and_return([ssg(os_major_version, 0)]) }
+
+      it 'keeps resolving the re-scan to the single .0 tailoring' do
+        expect { parser.check_for_missing_tailored_profile }.not_to raise_error
+        expect(parser.tailored_profile)
+          .to eq(Tailoring.find_by!(policy: policy, os_minor_version: 0).profile)
+      end
+    end
+  end
 end

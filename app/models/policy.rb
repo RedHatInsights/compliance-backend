@@ -95,6 +95,10 @@ class Policy < ApplicationRecord
     SupportedProfile.find_by!(ref_id: ref_id, os_major_version: os_major_version).os_minor_versions
   end
 
+  def supports_minor?(os_minor_version)
+    SupportedSsg.minor_agnostic?(os_major_version) || os_minor_versions.include?(os_minor_version)
+  end
+
   private
 
   def ensure_default_values
