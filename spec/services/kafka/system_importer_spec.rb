@@ -52,6 +52,48 @@ RSpec.describe Kafka::SystemImporter do
         expect(sql).to include('owner_id = EXCLUDED.owner_id')
         expect(sql).to include('os_major_version = EXCLUDED.os_major_version')
         expect(sql).to include('os_minor_version = EXCLUDED.os_minor_version')
+        expect(sql).to include('WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated')
+      end
+    end
+
+    context 'when tags are malformed' do
+      before { message['host']['tags'] = [Faker::Lorem.word] }
+
+      it 'ignores the message and increments the invalid counter' do
+        expect { service.import }
+          .to increment_yabeda_counter(Yabeda.compliance_system_import_invalid_total).by(1)
+      end
+    end
+
+    context 'when a soft-deleted system receives a newer message' do
+      before do
+        FactoryBot.create(
+          :system,
+          id: message['host']['id'],
+          updated: 2.hours.ago,
+          deleted_at: 1.hour.ago
+        )
+      end
+
+      it 'resurrects the system' do
+        service.import
+        expect(System.find(message['host']['id']).deleted_at).to be_nil
+      end
+    end
+
+    context 'when a soft-deleted system receives an older message' do
+      before do
+        FactoryBot.create(
+          :system,
+          id: message['host']['id'],
+          updated: 2.hours.ago,
+          deleted_at: 1.hour.from_now
+        )
+      end
+
+      it 'keeps the system deleted' do
+        service.import
+        expect(System.unscoped.find(message['host']['id']).deleted_at).not_to be_nil
       end
     end
 
@@ -105,6 +147,39 @@ RSpec.describe Kafka::SystemImporter do
       it 'logs and re-raises the error' do
         expect(Karafka.logger).to receive(:audit_fail).with(/Failed to import system.*db down/)
         expect { service.import }.to raise_error(ActiveRecord::ActiveRecordError, 'db down')
+      end
+
+      it 'does not increment failures for an intermediate attempt' do
+        expect do
+          service.import
+        rescue ActiveRecord::ActiveRecordError
+          nil
+        end.not_to increment_yabeda_counter(Yabeda.compliance_system_import_failures_total)
+      end
+
+      context 'on a terminal attempt' do
+        let(:terminal_attempt) { true }
+
+        it 'increments the failures counter' do
+          expect do
+            service.import
+          rescue ActiveRecord::ActiveRecordError
+            nil
+          end.to increment_yabeda_counter(Yabeda.compliance_system_import_failures_total).by(1)
+        end
+      end
+    end
+
+    context 'when a non-database error occurs' do
+      before { allow(service).to receive(:extract_system_attrs).and_raise(StandardError, 'unexpected') }
+
+      it 'logs and re-raises without incrementing failures' do
+        expect(Karafka.logger).to receive(:audit_fail).with(/Failed to import system.*unexpected/)
+        expect do
+          service.import
+        rescue StandardError
+          nil
+        end.not_to increment_yabeda_counter(Yabeda.compliance_system_import_failures_total)
       end
     end
   end
