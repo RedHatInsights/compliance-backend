@@ -166,7 +166,6 @@
 
       - :factory: :system
         :os_minor_version: 1
-        :os_major_version: 8
         :policy_id: ${policy.id}
         :account: ${account}
     :not_found:
