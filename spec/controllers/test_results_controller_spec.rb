@@ -189,8 +189,7 @@ describe TestResultsController do
           :system,
           **sysparams,
           os_major_version: 8,
-          os_minor_version: 4,
-          system_profile: { 'operating_system' => { 'major' => 8, 'minor' => 2 } }
+          os_minor_version: 4
         )
       end
       let!(:native_result) { FactoryBot.create(:test_result, system: native_system, report_id: parent.id) }

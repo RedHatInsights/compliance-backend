@@ -16,7 +16,6 @@ FactoryBot.define do
         policy_id: report_id,
         os_major_version: os_major_version,
         os_minor_version: os_minor_version,
-        system_profile: system_profile,
         groups: groups
       }.compact
       association(:system, account: account, **args)
@@ -37,7 +36,6 @@ FactoryBot.define do
       os_minor_version { nil }
       additional_rule_results { [] }
       groups { nil }
-      system_profile { nil }
     end
 
     after(:create) do |tr, ev|
@@ -65,7 +63,6 @@ FactoryBot.define do
           policy_id: report_id,
           os_major_version: os_major_version,
           os_minor_version: os_minor_version,
-          system_profile: system_profile,
           groups: groups
         }.compact
         association(:system, :dev_seed, account: account, **args)

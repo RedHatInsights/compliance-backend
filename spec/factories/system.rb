@@ -33,7 +33,6 @@ FactoryBot.define do
       tag_count { 5 }
       policy_id { nil }
       with_test_result { nil }
-      system_profile { nil }
     end
 
     after(:create) do |sys, ev|

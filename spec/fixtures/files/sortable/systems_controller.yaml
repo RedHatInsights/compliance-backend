@@ -2,11 +2,8 @@
   - :factory: :system
     :display_name: 'aba'
     :os_minor_version: 2
-    :system_profile:
-      operating_system:
-        major: 7
-        minor: 10
     :groups:
+
       - id: 5
         name: 'aba'
     :account: ${account}
@@ -59,12 +56,10 @@
 
   - :factory: :system
     :display_name: 'native minor 10'
+    :os_major_version: 8
     :os_minor_version: 10
-    :system_profile:
-      operating_system:
-        major: 8
-        minor: 2
     :groups:
+
       - id: 6
         name: 'native minor 10'
     :account: ${account}
