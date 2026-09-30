@@ -17,26 +17,43 @@ module ClowderV2Helpers
   # @return [Hash] with keys :url, :host, :scheme, :ca_certificate, :source
   def resolve_rbac_endpoint
     v2 = v2_endpoint('rbac', 'service')
+    v2&.uri.present? ? v2_rbac_result(v2) : v1_rbac_result
+  end
 
-    if v2&.uri.present?
-      uri = URI.parse(v2.uri)
-      host_str = uri.port == uri.default_port ? uri.host : "#{uri.host}:#{uri.port}"
-      {
-        url: v2.uri,
-        host: host_str,
-        scheme: uri.scheme,
-        ca_certificate: v2.ca_certificate.presence,
-        source: :v2
-      }
-    else
-      {
-        url: Settings.endpoints.rbac.url,
-        host: Settings.endpoints.rbac.host,
-        scheme: Settings.endpoints.rbac.scheme,
-        ca_certificate: nil,
-        source: :v1
-      }
-    end
+  # Build result hash from a V2 DependencyEndpoint.
+  #
+  # @param endpoint [OpenStruct] V2 endpoint with .uri, .ca_certificate
+  # @return [Hash]
+  def v2_rbac_result(endpoint)
+    uri = URI.parse(endpoint.uri)
+    {
+      url: endpoint.uri,
+      host: host_with_port(uri),
+      scheme: uri.scheme,
+      ca_certificate: endpoint.ca_certificate.presence,
+      source: :v2
+    }
+  end
+
+  # Build result hash from V1 Settings populated by the clowder engine.
+  #
+  # @return [Hash]
+  def v1_rbac_result
+    {
+      url: Settings.endpoints.rbac.url,
+      host: Settings.endpoints.rbac.host,
+      scheme: Settings.endpoints.rbac.scheme,
+      ca_certificate: nil,
+      source: :v1
+    }
+  end
+
+  # Format host string, omitting default ports (80/443).
+  #
+  # @param uri [URI] parsed URI
+  # @return [String]
+  def host_with_port(uri)
+    uri.port == uri.default_port ? uri.host : "#{uri.host}:#{uri.port}"
   end
 
   # Look up a V2 DependencyEndpoint from the Clowder ACG config.

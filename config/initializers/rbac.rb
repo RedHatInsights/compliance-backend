@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# Required eagerly because this initializer runs before Zeitwerk activates
+# the lib/ autoloader (same pattern as `require 'insights'` in application.rb).
+require_relative '../../lib/clowder_v2_helpers'
+
 unless ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
   rbac = ClowderV2Helpers.resolve_rbac_endpoint
 
