@@ -9,7 +9,7 @@ namespace :spec do
   end
 end
 
-unless Rails.env.production?
+if Rails.env.local?
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new
 end
