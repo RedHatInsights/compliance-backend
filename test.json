@@ -86,5 +86,14 @@
             "hostname": "compliance-ssg",
             "port": 8088
         }
-    ]
+    ],
+    "dependencyEndpointsV2": {
+        "rbac": {
+            "service": {
+                "uri": "http://rbac:8080",
+                "authenticated": false,
+                "caCertificate": ""
+            }
+        }
+    }
 }
