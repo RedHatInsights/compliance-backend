@@ -27,167 +27,8 @@ describe InventoryEventsConsumer do
 
       consumer.consume
     end
-  end
 
-  describe 'handling messages by type' do
-    context 'when message is delete' do
-      let(:type) { 'delete' }
-
-      it 'delegates to DeletedSystemCleaner service' do
-        expect(Kafka::DeletedSystemCleaner).to receive(:new).with(message, anything).and_call_original
-        expect_any_instance_of(Kafka::DeletedSystemCleaner).to receive(:cleanup_system)
-
-        consumer.consume
-      end
-    end
-
-    context 'when message is created or updated' do
-      before do
-        allow(consumer).to receive(:attempt).and_return(1)
-        allow_any_instance_of(Kafka::SystemImporter).to receive(:import)
-      end
-
-      %w[created updated].each do |msg_type|
-        context "with #{msg_type} message" do
-          let(:type) { msg_type }
-
-          context 'without policy_id and not compliance service' do
-            it 'delegates to SystemImporter service only' do
-              expect(Kafka::SystemImporter)
-                .to receive(:new).with(message, anything, terminal_attempt: false).and_call_original
-              expect_any_instance_of(Kafka::SystemImporter).to receive(:import)
-
-              expect(Kafka::PolicySystemImporter).not_to receive(:new)
-              expect(Kafka::ReportParser).not_to receive(:new)
-
-              consumer.consume
-            end
-          end
-
-          context 'with policy_id' do
-            let(:message) do
-              super().deep_merge(
-                {
-                  'host' => {
-                    'system_profile' => {
-                      'image_builder' => {
-                        'compliance_policy_id' => 'policy_id'
-                      }
-                    }
-                  }
-                }
-              )
-            end
-
-            it 'delegates to SystemImporter and PolicySystemImporter' do
-              expect(Kafka::SystemImporter)
-                .to receive(:new).with(message, anything, terminal_attempt: false).and_call_original
-              expect_any_instance_of(Kafka::SystemImporter).to receive(:import)
-
-              expect(Kafka::PolicySystemImporter).to receive(:new).with(message, anything).and_call_original
-              expect_any_instance_of(Kafka::PolicySystemImporter).to receive(:import)
-
-              expect(Kafka::ReportParser).not_to receive(:new)
-
-              consumer.consume
-            end
-          end
-
-          context 'with compliance service' do
-            let(:message) do
-              super().deep_merge(
-                {
-                  'platform_metadata' => {
-                    'service' => 'compliance'
-                  }
-                }
-              )
-            end
-
-            it 'delegates to SystemImporter and ReportParser' do
-              expect(Kafka::SystemImporter)
-                .to receive(:new).with(message, anything, terminal_attempt: false).and_call_original
-              expect_any_instance_of(Kafka::SystemImporter).to receive(:import)
-
-              expect(Kafka::ReportParser).to receive(:new).with(message, anything).and_call_original
-              expect_any_instance_of(Kafka::ReportParser).to receive(:parse_reports)
-
-              expect(Kafka::PolicySystemImporter).not_to receive(:new)
-
-              consumer.consume
-            end
-          end
-        end
-      end
-
-      context 'on the terminal retry attempt' do
-        let(:type) { 'created' }
-
-        before { allow(consumer).to receive(:attempt).and_return(described_class::MAX_RETRIES + 1) }
-
-        it 'marks the system import as terminal' do
-          expect(Kafka::SystemImporter)
-            .to receive(:new).with(message, anything, terminal_attempt: true).and_call_original
-
-          consumer.consume
-        end
-      end
-    end
-
-    context 'when host is not importable' do
-      let(:type) { 'created' }
-      let(:host_overrides) { {} }
-      let(:message) do
-        {
-          'type' => type,
-          'host' => {
-            'id' => SecureRandom.uuid,
-            'insights_id' => SecureRandom.uuid
-          }.merge(host_overrides)
-        }
-      end
-
-      shared_examples 'skips SystemImporter' do
-        before { allow_any_instance_of(Kafka::SystemImporter).to receive(:import) }
-
-        it 'does not call SystemImporter' do
-          expect(Kafka::SystemImporter).not_to receive(:new)
-          consumer.consume
-        end
-      end
-
-      context 'with blank insights_id' do
-        let(:host_overrides) { { 'insights_id' => nil } }
-        include_examples 'skips SystemImporter'
-      end
-
-      context 'with null UUID insights_id' do
-        let(:host_overrides) { { 'insights_id' => described_class::NON_INSIGHTS_ID } }
-        include_examples 'skips SystemImporter'
-      end
-
-      context 'with edge host_type' do
-        let(:host_overrides) { { 'system_profile' => { 'host_type' => 'edge' } } }
-        include_examples 'skips SystemImporter'
-      end
-
-      context 'with CentOS operating_system' do
-        let(:host_overrides) do
-          { 'system_profile' => { 'operating_system' => { 'name' => 'CentOS Linux' } } }
-        end
-        include_examples 'skips SystemImporter'
-      end
-
-      context 'with bootc image digest' do
-        let(:host_overrides) do
-          { 'system_profile' => { 'bootc_status' => { 'booted' => { 'image_digest' => 'sha256:abc' } } } }
-        end
-        include_examples 'skips SystemImporter'
-      end
-    end
-
-    context 'when message is for compliance service but unknown type' do
-      let(:type) { 'unknown_type' }
+    context 'when message is for compliance service' do
       let(:message) do
         super().deep_merge(
           {
@@ -198,13 +39,49 @@ describe InventoryEventsConsumer do
         )
       end
 
-      it 'delegates to ReportParser and skips SystemImporter' do
+      it 'delegates to ReportParser' do
         expect(Kafka::ReportParser).to receive(:new).with(message, anything).and_call_original
         expect_any_instance_of(Kafka::ReportParser).to receive(:parse_reports)
 
-        expect(Kafka::SystemImporter).not_to receive(:new)
+        consumer.consume
+      end
+    end
+  end
+
+  describe 'handling messages by type' do
+    context 'when message is delete' do
+      let(:type) { 'delete' }
+
+      it 'enqueues SystemDeleteJob' do
+        expect(SystemDeleteJob).to receive(:perform_later).with(message)
 
         consumer.consume
+      end
+
+      it 'propagates enqueue failures' do
+        allow(SystemDeleteJob).to receive(:perform_later).and_raise(StandardError, 'enqueue failed')
+
+        expect { consumer.consume }.to raise_error(StandardError, 'enqueue failed')
+      end
+    end
+
+    context 'when message is created or updated' do
+      %w[created updated].each do |msg_type|
+        context "with #{msg_type} message" do
+          let(:type) { msg_type }
+
+          it 'enqueues SystemImportJob' do
+            expect(SystemImportJob).to receive(:perform_later).with(message)
+
+            consumer.consume
+          end
+
+          it 'propagates enqueue failures' do
+            allow(SystemImportJob).to receive(:perform_later).and_raise(StandardError, 'enqueue failed')
+
+            expect { consumer.consume }.to raise_error(StandardError, 'enqueue failed')
+          end
+        end
       end
     end
   end
