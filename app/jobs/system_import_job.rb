@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Imports a system and its associated compliance data
 class SystemImportJob < ApplicationJob
   queue_as :imports
 

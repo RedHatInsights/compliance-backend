@@ -27,8 +27,9 @@ RSpec.describe SystemImportJob do
 
     job
 
-    expect(Kafka::SystemImporter).to have_received(:new).with(message, Rails.logger,
-                                                               terminal_attempt: false)
+    expect(Kafka::SystemImporter).to have_received(:new).with(
+      message, Rails.logger, terminal_attempt: false
+    )
     expect(importer).to have_received(:import)
     expect(Kafka::PolicySystemImporter).not_to have_received(:new)
     expect(Kafka::ReportParser).not_to have_received(:new)
@@ -65,8 +66,12 @@ RSpec.describe SystemImportJob do
     }
     message['platform_metadata'] = { 'service' => 'compliance' }
     allow(Kafka::SystemImporter).to receive(:new).and_return(instance_double(Kafka::SystemImporter, import: nil))
-    allow(Kafka::PolicySystemImporter).to receive(:new).and_return(instance_double(Kafka::PolicySystemImporter, import: nil))
-    allow(Kafka::ReportParser).to receive(:new).and_return(instance_double(Kafka::ReportParser, parse_reports: nil))
+    allow(Kafka::PolicySystemImporter).to receive(:new).and_return(
+      instance_double(Kafka::PolicySystemImporter, import: nil)
+    )
+    allow(Kafka::ReportParser).to receive(:new).and_return(
+      instance_double(Kafka::ReportParser, parse_reports: nil)
+    )
 
     job
 
