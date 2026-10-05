@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Deletes a system and cleans up its associated data
 class SystemDeleteJob < ApplicationJob
   queue_as :deletes
 
