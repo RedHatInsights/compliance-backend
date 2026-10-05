@@ -64,6 +64,7 @@ RSpec.describe SystemImportJob do
       'image_builder' => { 'compliance_policy_id' => SecureRandom.uuid }
     }
     message['platform_metadata'] = { 'service' => 'compliance' }
+    allow(Kafka::SystemImporter).to receive(:new).and_return(instance_double(Kafka::SystemImporter, import: nil))
     allow(Kafka::PolicySystemImporter).to receive(:new).and_return(instance_double(Kafka::PolicySystemImporter, import: nil))
     allow(Kafka::ReportParser).to receive(:new).and_return(instance_double(Kafka::ReportParser, parse_reports: nil))
 
