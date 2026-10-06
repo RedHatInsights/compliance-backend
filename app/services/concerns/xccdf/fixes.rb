@@ -33,13 +33,13 @@ module Xccdf
         @new_fixes ||= fixes.select(&:new_record?)
       end
 
-      # :nocov:
+      # simplecov:disable
       def old_fixes
         @old_fixes ||= ::Fix.where(
           rule_id: ::Rule.where(security_guide_id: security_guide&.id)
         ).index_by { |fix| fix.rule_id + '__' + fix.system }
       end
-      # :nocov:
+      # simplecov:enable
     end
   end
 end

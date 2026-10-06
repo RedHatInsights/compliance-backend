@@ -18,11 +18,11 @@ class ReportPolicy < ApplicationPolicy
     match_account?
   end
 
-  # :nocov:
+  # simplecov:disable
   def os_versions?
     true
   end
-  # :nocov:
+  # simplecov:enable
 
   # Only show Reports in our user account
   class Scope < ApplicationPolicy::Scope
