@@ -11,6 +11,7 @@ describe Kafka::DeletedSystemCleaner do
   let(:policy) { FactoryBot.create(:policy, account: user.account, supports_minors: [0]) }
   let(:system) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
   let!(:test_result) { FactoryBot.create(:test_result, system: system, report_id: policy.id) }
+  let!(:rule_result) { FactoryBot.create(:rule_result, test_result: test_result) }
   let(:message) do
     {
       'type' => type,
@@ -26,6 +27,7 @@ describe Kafka::DeletedSystemCleaner do
 
     expect { service.cleanup_system }.to(
       change { HistoricalTestResult.where(system_id: system.id).count }.from(1).to(0)
+      .and(change { RuleResult.where(id: rule_result.id).count }.from(1).to(0))
       .and(change { policy.systems.count }.from(1).to(0))
     )
   end
@@ -33,6 +35,7 @@ describe Kafka::DeletedSystemCleaner do
   context 'with multiple systems under a policy' do
     let(:extra_system) { FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0) }
     let!(:extra_test_result) { FactoryBot.create(:test_result, system: extra_system, report_id: policy.id) }
+    let!(:extra_rule_result) { FactoryBot.create(:rule_result, test_result: extra_test_result) }
 
     it 'performs and logs cleanup for the specific system' do
       expect(Karafka.logger).to receive(:audit_success).with(
@@ -45,6 +48,7 @@ describe Kafka::DeletedSystemCleaner do
       )
 
       expect(HistoricalTestResult.where(system_id: extra_system.id).count).to eql(1)
+      expect(RuleResult.where(id: extra_rule_result.id).count).to eql(1)
       expect(System.where(id: extra_system.id).count).to eql(1)
     end
   end

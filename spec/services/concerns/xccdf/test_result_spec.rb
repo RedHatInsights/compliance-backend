@@ -76,10 +76,23 @@ RSpec.describe Xccdf::TestResult do
 
     context 'when a previous test result already exists for the same policy and system' do
       let!(:old_test_result) { create(:test_result, system: system, report_id: policy.id) }
+      let!(:old_rule_result) { create(:rule_result, test_result: old_test_result) }
 
       it 'replaces it with the new one' do
-        expect { service.save_test_result }.not_to change(TestResult, :count)
-        expect(TestResult.exists?(old_test_result.id)).to be false
+        new_result = nil
+
+        expect { new_result = service.save_test_result }
+          .not_to(change { HistoricalTestResult.where(system_id: system.id).count })
+
+        expect(new_result).to be_persisted
+        expect(new_result.id).not_to eq(old_test_result.id)
+        expect(HistoricalTestResult.exists?(old_test_result.id)).to be false
+        expect(TestResult.find_by(system_id: system.id, report_id: policy.id).id).to eq(new_result.id)
+      end
+
+      it 'deletes rule results of the previous test result' do
+        expect { service.save_test_result }
+          .to change { RuleResult.where(id: old_rule_result.id).count }.from(1).to(0)
       end
     end
   end

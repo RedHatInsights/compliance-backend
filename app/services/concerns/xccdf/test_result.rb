@@ -23,16 +23,16 @@ module Xccdf
     end
 
     def delete_old_test_results
-      old_test_results = ::TestResult.left_outer_joins(tailoring: :policy)
-                                     .where(tailorings: { policy_id: @tailoring.policy_id },
-                                            system: @system)
-                                     .where.not(id: @test_result.id)
+      old_test_results = ::HistoricalTestResult.joins(:tailoring)
+                                               .where(tailorings: { policy_id: @tailoring.policy_id },
+                                                      system_id: @system.id)
+                                               .where.not(id: @test_result.id)
 
       old_ids = old_test_results.pluck(:id)
       return if old_ids.empty?
 
       ::RuleResult.where(test_result_id: old_ids).delete_all
-      ::TestResult.where(id: old_ids).delete_all
+      ::HistoricalTestResult.where(id: old_ids).delete_all
     end
 
     def recomputed_score
