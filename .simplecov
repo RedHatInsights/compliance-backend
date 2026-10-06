@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
-SimpleCov.start do
-  add_filter 'config'
-  add_filter 'db'
-  add_filter 'spec'
-  add_filter 'test'
+SimpleCov.skip 'config'
+SimpleCov.skip 'db'
+SimpleCov.skip 'spec'
+SimpleCov.skip 'test'
 
-  add_group 'Consumers', 'app/consumers'
-  add_group 'Controllers', 'app/controllers'
-  add_group 'Jobs', 'app/jobs'
-  add_group 'Models', 'app/models'
-  add_group 'Policies', 'app/policies'
-  add_group 'Serializers', 'app/serializers'
-  add_group 'Services', 'app/services'
-end
+SimpleCov.group 'Consumers', 'app/consumers'
+SimpleCov.group 'Controllers', 'app/controllers'
+SimpleCov.group 'Jobs', 'app/jobs'
+SimpleCov.group 'Models', 'app/models'
+SimpleCov.group 'Policies', 'app/policies'
+SimpleCov.group 'Serializers', 'app/serializers'
+SimpleCov.group 'Services', 'app/services'
