@@ -40,13 +40,13 @@ module ErrorHandling
                    status: :unprocessable_content
     end
 
-    # :nocov:
+    # simplecov:disable
     rescue_from ActiveRecord::RangeError do |error|
       logger.info "#{error.message} (#{error.class})"
       render_error 'Number is not in the supported range',
                    status: :unprocessable_content
     end
-    # :nocov:
+    # simplecov:enable
 
     invalid_parameter_exceptions = [
       ActionDispatch::Http::Parameters::ParseError,

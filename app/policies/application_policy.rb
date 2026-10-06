@@ -11,7 +11,7 @@ class ApplicationPolicy
     @record = record
   end
 
-  # :nocov:
+  # simplecov:disable
   def index?
     false
   end
@@ -31,7 +31,7 @@ class ApplicationPolicy
   def destroy?
     false
   end
-  # :nocov:
+  # simplecov:enable
 
   alias new? create?
   alias edit? update?
