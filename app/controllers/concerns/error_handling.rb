@@ -37,14 +37,14 @@ module ErrorHandling
     rescue_from ActionController::ParameterMissing do |error|
       logger.info "#{error.message} (#{error.class})"
       render_error "Parameter missing: #{error.message}",
-                   status: :unprocessable_entity
+                   status: :unprocessable_content
     end
 
     # :nocov:
     rescue_from ActiveRecord::RangeError do |error|
       logger.info "#{error.message} (#{error.class})"
       render_error 'Number is not in the supported range',
-                   status: :unprocessable_entity
+                   status: :unprocessable_content
     end
     # :nocov:
 
@@ -62,14 +62,14 @@ module ErrorHandling
     rescue_from(*invalid_parameter_exceptions) do |error|
       logger.info "#{error.message} (#{error.class})"
       render_error error.message,
-                   status: :unprocessable_entity
+                   status: :unprocessable_content
     end
 
     rescue_from JSONAPI::Serializer::UnsupportedIncludeError do |error|
       message = "Invalid parameter: #{error.message.sub(/ on .*Serializer$/, '')}"
       logger.info "#{message} (#{StrongerParameters::InvalidParameter})"
       render_error message,
-                   status: :unprocessable_entity
+                   status: :unprocessable_content
     end
 
     rescue_from ScopedSearch::QueryNotSupported do |error|
@@ -78,12 +78,12 @@ module ErrorHandling
       # for these should be adjusted to reflect the actual issue.
       message.sub!(/Value '([^']*)' is not valid for field '([^']+)'/, "Field '\\2' is not searchable in this context")
       logger.info "#{message} (#{ScopedSearch::QueryNotSupported})"
-      render_error message, status: :unprocessable_entity
+      render_error message, status: :unprocessable_content
     end
 
     rescue_from ::Exceptions::OSMinorVersionNotSupported do |error|
       logger.info "#{error.message} (#{error.class})"
-      render_error error.message, status: :unprocessable_entity
+      render_error error.message, status: :unprocessable_content
     end
   end
 end

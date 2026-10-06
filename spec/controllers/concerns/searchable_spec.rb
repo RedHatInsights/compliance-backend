@@ -85,7 +85,7 @@ RSpec.shared_examples 'searchable' do |*parents|
     it 'fails with unprocessble_entity' do
       get :index, params: passable_params.merge(filter: 'foo', parents: parents)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 end
