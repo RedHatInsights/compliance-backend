@@ -18,4 +18,8 @@ unless ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
       config.password = Settings.platform_basic_auth_password
     end
   end
+
+  # When the V2 endpoint is authenticated, Rbac must attach a service-account
+  # Bearer token and X-RH-RBAC-ORG-ID header to every RBAC API call.
+  Rbac.rbac_authenticated = rbac[:authenticated]
 end

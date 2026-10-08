@@ -25,11 +25,18 @@ class Rbac
   class AuthorizationError < StandardError; end
 
   class << self
+    # When the V2 RBAC endpoint is authenticated, all API calls must include
+    # a service-account Bearer token and X-RH-RBAC-ORG-ID header.
+    attr_accessor :rbac_authenticated
+
     def load_user_permissions(identity)
       begin
+        headers = { 'X-RH-IDENTITY': identity }
+        headers.merge!(s2s_auth_headers(identity)) if rbac_authenticated
+
         API_CLIENT.get_principal_access(
           self::APPS,
-          self::OPTS.merge(header_params: { 'X-RH-IDENTITY': identity })
+          self::OPTS.merge(header_params: headers)
         ).data
       rescue RBACApiClient::ApiError => e
         Rails.logger.info(e.message)
@@ -68,6 +75,17 @@ class Rbac
     end
 
     private
+
+    # Build service-to-service auth headers using the Kessel OAuth2 credentials.
+    # Required when the V2 RBAC endpoint has authenticated=true.
+    def s2s_auth_headers(identity)
+      token = KesselBuilder.auth.get_token
+      parsed = Insights::Api::Common::IdentityHeader.new(identity)
+      {
+        'Authorization': "Bearer #{token.access_token}",
+        'X-RH-RBAC-ORG-ID': parsed.org_id
+      }
+    end
 
     def structurize(access_entry)
       app, resource, action = access_entry.split(':')

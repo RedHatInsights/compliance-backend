@@ -14,7 +14,7 @@ module ClowderV2Helpers
   # Resolve the RBAC endpoint using V2 DependencyEndpoint if available,
   # falling back to V1 Settings.endpoints.rbac.
   #
-  # @return [Hash] with keys :url, :host, :scheme, :ca_certificate, :source
+  # @return [Hash] with keys :url, :host, :scheme, :ca_certificate, :authenticated, :source
   def resolve_rbac_endpoint
     v2 = v2_endpoint('rbac', 'service')
     v2&.uri.present? ? v2_rbac_result(v2) : v1_rbac_result
@@ -33,6 +33,7 @@ module ClowderV2Helpers
       host: host_with_port(uri),
       scheme: uri.scheme,
       ca_certificate: endpoint.ca_certificate.presence,
+      authenticated: endpoint.authenticated == true,
       source: :v2
     }
   end
@@ -46,6 +47,7 @@ module ClowderV2Helpers
       host: Settings.endpoints.rbac.host,
       scheme: Settings.endpoints.rbac.scheme,
       ca_certificate: nil,
+      authenticated: false,
       source: :v1
     }
   end

@@ -57,13 +57,14 @@ RSpec.describe ClowderV2Helpers do
         allow(ClowderCommonRuby::Config).to receive(:load).and_return(clowder_config)
       end
 
-      it 'resolves URL, host, scheme, and CA from V2 endpoint' do
+      it 'resolves URL, host, scheme, CA, and authenticated from V2 endpoint' do
         result = described_class.resolve_rbac_endpoint
 
         expect(result[:url]).to eq('http://rbac:8080')
         expect(result[:host]).to eq('rbac:8080')
         expect(result[:scheme]).to eq('http')
         expect(result[:ca_certificate]).to eq('/path/to/ca.crt')
+        expect(result[:authenticated]).to be(false)
         expect(result[:source]).to eq(:v2)
       end
     end
@@ -93,13 +94,14 @@ RSpec.describe ClowderV2Helpers do
         allow(ClowderCommonRuby::Config).to receive(:load).and_return(clowder_config)
       end
 
-      it 'omits default port from host string' do
+      it 'omits default port from host string and propagates authenticated flag' do
         result = described_class.resolve_rbac_endpoint
 
         expect(result[:url]).to eq('https://rbac.example.com')
         expect(result[:host]).to eq('rbac.example.com')
         expect(result[:scheme]).to eq('https')
         expect(result[:ca_certificate]).to eq('/tls/service-ca.crt')
+        expect(result[:authenticated]).to be(true)
         expect(result[:source]).to eq(:v2)
       end
     end
@@ -112,13 +114,14 @@ RSpec.describe ClowderV2Helpers do
         allow(ClowderCommonRuby::Config).to receive(:load).and_return(clowder_config)
       end
 
-      it 'falls back to V1 Settings' do
+      it 'falls back to V1 Settings with authenticated false' do
         result = described_class.resolve_rbac_endpoint
 
         expect(result[:url]).to eq('http://rbac:8080')
         expect(result[:host]).to eq('rbac:8080')
         expect(result[:scheme]).to eq('http')
         expect(result[:ca_certificate]).to be_nil
+        expect(result[:authenticated]).to be(false)
         expect(result[:source]).to eq(:v1)
       end
     end
