@@ -3,6 +3,8 @@
 FactoryBot.define do
   factory :rule_result, class: 'RuleResult' do
     result { %w[fail pass].sample }
+    test_result
+    rule { association :rule, security_guide: test_result.security_guide }
 
     transient do
       title { nil }

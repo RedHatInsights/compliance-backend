@@ -24,22 +24,27 @@ module Kafka
     def remove_related
       ActiveRecord::Base.transaction do
         [
+          remove_related_rule_results,
           remove_related_test_results,
           remove_related_policy_systems
         ].sum
       end
     end
 
+    def remove_related_rule_results
+      RuleResult.where(test_result_id: historical_test_results.select(:id)).delete_all
+    end
+
     def remove_related_test_results
-      to_remove = HistoricalTestResult.where(system_id: @id)
-
-      num_removed = to_remove.delete_all
-
-      num_removed
+      historical_test_results.delete_all
     end
 
     def remove_related_policy_systems
       PolicySystem.where(system_id: @id).delete_all
+    end
+
+    def historical_test_results
+      HistoricalTestResult.where(system_id: @id)
     end
 
     def audit_fail(error)

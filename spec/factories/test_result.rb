@@ -40,16 +40,7 @@ FactoryBot.define do
 
     after(:create) do |tr, ev|
       ev.additional_rule_results.each do |rr|
-        FactoryBot.create(
-          :rule_result,
-          rule: FactoryBot.create(
-            :rule,
-            security_guide: tr.tailoring.security_guide
-          ),
-          test_result_id: tr.id,
-          severity: rr[:severity],
-          result: rr[:result]
-        )
+        FactoryBot.create(:rule_result, test_result: tr, severity: rr[:severity], result: rr[:result])
       end
     end
 
