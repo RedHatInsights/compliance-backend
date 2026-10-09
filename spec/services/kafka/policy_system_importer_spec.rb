@@ -11,6 +11,18 @@ describe Kafka::PolicySystemImporter do
   let(:policy_id) { FactoryBot.create(:policy, os_major_version: 8, supports_minors: [0], empty_policy: true).id }
   let(:system_id) { FactoryBot.create(:system, account: user.account).id }
 
+  # RHEL-8 ships per-minor datastreams here, so SupportedSsg runs for real (not minor-agnostic)
+  # and resolve_minor keeps the requested minor. Stubbing the data instead of the methods keeps
+  # this spec able to catch a wrong-major argument or a minor-agnostic regression.
+  before do
+    allow(SupportedSsg).to receive(:all).and_return(
+      [
+        SupportedSsg.new(os_major_version: '8', os_minor_version: '0', version: '0.1.72'),
+        SupportedSsg.new(os_major_version: '8', os_minor_version: '1', version: '0.1.73')
+      ]
+    )
+  end
+
   let(:type) { 'create' }
   let(:message) do
     {
