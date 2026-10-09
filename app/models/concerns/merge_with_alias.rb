@@ -46,7 +46,7 @@ module MergeWithAlias
 
     private
 
-    # :nocov:
+    # simplecov:disable
     def visit(node, *args)
       node = node.dup if @copy
       super
@@ -54,7 +54,7 @@ module MergeWithAlias
     rescue TypeError => e
       raise [e.message, 'You should implement an alias for the missing method'].join(': ')
     end
-    # :nocov:
+    # simplecov:enable
 
     def nop(_node); end
 

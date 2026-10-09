@@ -126,7 +126,7 @@ class RuleResult < ApplicationRecord
   end
 
   # FIXME: refactor the method under Rule and have it just in one place
-  # :nocov:
+  # simplecov:disable
   def remediation_issue_id
     return nil unless attributes['rule__remediation_available']
 
@@ -138,7 +138,7 @@ class RuleResult < ApplicationRecord
   rescue NameError
     raise ArgumentError, 'Missing security guide or profile on the ActiveRecord result'
   end
-  # :nocov:
+  # simplecov:enable
 
   def self.from_parser(obj, test_result_id: nil, rule_id: nil)
     new(

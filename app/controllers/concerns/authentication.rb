@@ -40,7 +40,7 @@ module Authentication
     User.current
   end
 
-  # :nocov:
+  # simplecov:disable
   def unauthorized(error: 'User is not authorized to view this page')
     render(
       json: { error: "Authorization error: #{error}" },
@@ -48,9 +48,9 @@ module Authentication
     )
     false
   end
-  # :nocov:
+  # simplecov:enable
 
-  # :nocov:
+  # simplecov:disable
   def unauthenticated(error: 'X-RH-IDENTITY header should be provided')
     render(
       json: { error: "Authentication error: #{error}" },
@@ -58,7 +58,7 @@ module Authentication
     )
     false
   end
-  # :nocov:
+  # simplecov:enable
 
   def user
     @user ||= User.new(account: Account.from_identity_header(identity_header))
@@ -76,11 +76,11 @@ module Authentication
     )
   end
 
-  # :nocov:
+  # simplecov:disable
   def any_inventory_hosts?
     Insights::Api::Common::HostInventory.new(b64_identity: raw_identity_header).hosts.dig('results').present?
   end
-  # :nocov:
+  # simplecov:enable
 
   def valid_cert_auth?
     valid_cert_endpoint? && any_inventory_hosts?

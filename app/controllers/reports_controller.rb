@@ -32,11 +32,11 @@ class ReportsController < ApplicationController
   permission_for_action :stats, Rbac::REPORT_READ
   kessel_permission_for_action :stats, KesselRbac::REPORT_VIEW
 
-  # :nocov:
+  # simplecov:disable
   def os_versions
     render json: authorize(fetch_collection(base_scope)).os_versions, status: :ok
   end
-  # :nocov:
+  # simplecov:enable
   permission_for_action :os_versions, Rbac::SYSTEM_READ
   permitted_params_for_action :os_versions, { filter: ParamType.string }
 
