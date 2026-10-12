@@ -136,7 +136,7 @@ describe TailoringsController do
           expect(response.parsed_body['errors']).to include(
             match(/Profile does not support OS version/)
           )
-          expect(response).to have_http_status :unprocessable_entity
+          expect(response).to have_http_status :unprocessable_content
         end
       end
     end

@@ -59,10 +59,10 @@ module Rendering
       end
     end
 
-    # :nocov:
+    # simplecov:disable
     def serializer
       raise NotImplementedError
     end
-    # :nocov:
+    # simplecov:enable
   end
 end

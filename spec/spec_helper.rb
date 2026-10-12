@@ -10,6 +10,11 @@ if Rails.env.test?
     SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
   end
 
+  SimpleCov.start
+
+  require 'json-schema'
+  JSON::Validator.use_multi_json = false
+
   RSpec.configure do |config|
     config.expect_with :rspec do |expectations|
       expectations.include_chain_clauses_in_custom_matcher_descriptions = true

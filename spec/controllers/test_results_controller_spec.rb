@@ -89,7 +89,7 @@ describe TestResultsController do
             filter: '(failed_rule_severity != "unknown")'
           }
 
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
 
         it 'rejects the not-equal (<>) operator' do
@@ -98,7 +98,7 @@ describe TestResultsController do
             filter: '(failed_rule_severity <> "unknown")'
           }
 
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
 
