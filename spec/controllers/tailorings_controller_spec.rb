@@ -75,7 +75,13 @@ describe TailoringsController do
       let(:parent) { FactoryBot.create(:policy, account: current_user.account, profile: canonical_profile) }
 
       let(:item) do
-        FactoryBot.create(:tailoring, :with_mixed_rules, policy: parent, os_minor_version: os_minor_version)
+        FactoryBot.create(
+          :tailoring,
+          :with_mixed_rules,
+          :with_tailored_values,
+          policy: parent,
+          os_minor_version: os_minor_version
+        )
       end
 
       let(:canonical_profile) do
@@ -87,6 +93,85 @@ describe TailoringsController do
 
         expect(response).to have_http_status :ok
         expect(response.parsed_body).not_to be_empty
+      end
+    end
+
+    describe 'GET tailoring_file' do
+      let(:parent) do
+        FactoryBot.create(
+          :policy,
+          :for_tailoring,
+          account: current_user.account,
+          supports_minors: [8]
+        )
+      end
+
+      let(:item) do
+        FactoryBot.create(
+          :tailoring,
+          :with_mixed_rules,
+          :with_tailored_values,
+          policy: parent,
+          profile: canonical_profile,
+          os_minor_version: 8
+        )
+      end
+
+      let(:canonical_profile) do
+        FactoryBot.create(
+          :profile,
+          rule_count: 5,
+          value_count: 5,
+          security_guide: FactoryBot.create(:security_guide, rule_count: 3, os_major_version: 9),
+          os_major_version: 9,
+          ref_id_suffix: 'bar',
+          supports_minors: [8]
+        )
+      end
+
+      it 'does not add queries for additional tailored rules' do
+        request_params = { id: item.id, policy_id: parent.id, format: :xml, parents: %i[policy] }
+        additional_rule = FactoryBot.create(:rule, security_guide: item.security_guide)
+        queries = []
+        subscriber = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload unless payload[:name] == 'SCHEMA' || payload[:cached]
+        end
+
+        ActiveSupport::Notifications.subscribed(subscriber, 'sql.active_record') do
+          ActiveRecord::Base.uncached do
+            get :tailoring_file, params: request_params
+            initial_query_count = queries.length
+            expect(initial_query_count).to be_positive
+
+            queries.clear
+            item.tailoring_rules.create!(rule: additional_rule)
+            queries.clear
+
+            get :tailoring_file, params: request_params
+            expect(queries.length).to eq(initial_query_count)
+
+            queries.clear
+            tailoring = controller.instance_variable_get(:@tailoring)
+            tailoring.rules_added
+            tailoring.rules_removed
+            tailoring.rule_group_ref_ids
+            tailoring.value_overrides_by_ref_id
+            expect(queries).to be_empty
+          end
+        end
+      end
+
+      it 'skips preload for non-tailored files' do
+        non_tailored = FactoryBot.create(
+          :tailoring,
+          policy: parent,
+          profile: canonical_profile,
+          os_minor_version: 8
+        )
+
+        get :tailoring_file, params: { id: non_tailored.id, policy_id: parent.id, format: :xml, parents: %i[policy] }
+
+        expect(response).to have_http_status(:no_content)
       end
     end
 
