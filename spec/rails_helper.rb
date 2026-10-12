@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 ENV['RAILS_ENV'] ||= 'test'
+require_relative 'simplecov_setup'
 require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
 if Rails.env.production?

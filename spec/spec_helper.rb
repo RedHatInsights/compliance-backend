@@ -2,15 +2,6 @@
 
 if Rails.env.test?
   require 'karafka/testing/rspec/helpers'
-  require 'simplecov'
-
-  if ENV['GITHUB_ACTIONS']
-    require 'simplecov-cobertura'
-    SimpleCov.command_name 'spec'
-    SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
-  end
-
-  SimpleCov.start
 
   require 'json-schema'
   JSON::Validator.use_multi_json = false
