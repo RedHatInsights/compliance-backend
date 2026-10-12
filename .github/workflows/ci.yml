@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -29,7 +29,7 @@ jobs:
     #  with:
     #    definition-file: swagger/v2/openapi.json
     - name: Setup Ruby and install gems
-      uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74
+      uses: ruby/setup-ruby@e81a8fa391b11a595c1b7ed84177cc0fe02faf83
       env:
         BUNDLE_JOBS: 4
       with:
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
     - name: Set up the environment
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - name: Set up the environment
@@ -82,11 +82,11 @@ jobs:
         ports: ["5432:5432"]
     steps:
     - name: Checkout code
-      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
     - name: Setup Ruby and install gems
-      uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74
+      uses: ruby/setup-ruby@e81a8fa391b11a595c1b7ed84177cc0fe02faf83
       with:
         bundler-cache: true
         rubygems: latest
@@ -154,7 +154,7 @@ jobs:
         RUBY_YJIT_ENABLE: 1
       run: bin/rake spec
     - name: Upload code coverage from RSpec
-      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
+      uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5
       with:
         fail_ci_if_error: true
         files: ./coverage/coverage.xml
@@ -173,11 +173,11 @@ jobs:
         ports: ["5432:5432"]
     steps:
     - name: Checkout code
-      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
     - name: Setup Ruby and install gems
-      uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74
+      uses: ruby/setup-ruby@e81a8fa391b11a595c1b7ed84177cc0fe02faf83
       with:
         bundler-cache: true
         rubygems: latest
