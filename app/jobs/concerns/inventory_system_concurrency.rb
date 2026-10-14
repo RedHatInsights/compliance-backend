@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Coordinates inventory jobs for the same system.
 module InventorySystemConcurrency
   extend ActiveSupport::Concern
 

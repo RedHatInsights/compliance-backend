@@ -5,7 +5,9 @@ require 'rails_helper'
 RSpec.describe SystemImportJob do
   subject(:job) { described_class.perform_now(message, metadata) }
 
-  let(:metadata) { { 'topic' => 'inventory', 'partition' => 2, 'offset' => 41 } }
+  let(:metadata) do
+    { 'topic' => 'inventory', 'partition' => 2, 'offset' => 41, 'timestamp' => '2026-10-14T10:00:00Z' }
+  end
 
   let(:message) do
     {
@@ -15,6 +17,16 @@ RSpec.describe SystemImportJob do
         'insights_id' => SecureRandom.uuid
       }
     }
+  end
+
+  it 'preserves Kafka metadata in the serialized job arguments' do
+    serialized_arguments = described_class.new(message, metadata).serialize['arguments']
+
+    expect(serialized_arguments.first).to include('type' => message['type'])
+    expect(serialized_arguments.last).to include(
+      'topic' => metadata['topic'], 'partition' => metadata['partition'],
+      'offset' => metadata['offset'], 'timestamp' => metadata['timestamp']
+    )
   end
 
   it 'uses the imports queue' do
@@ -35,6 +47,21 @@ RSpec.describe SystemImportJob do
     expect(importer).to have_received(:import)
     expect(Kafka::PolicySystemImporter).not_to have_received(:new)
     expect(Kafka::ReportParser).not_to have_received(:new)
+  end
+
+  it 'marks the third execution as the terminal import attempt' do
+    importer = instance_double(Kafka::SystemImporter, import: nil)
+    allow(Kafka::SystemImporter).to receive(:new).and_return(importer)
+    allow(Kafka::PolicySystemImporter).to receive(:new)
+    allow(Kafka::ReportParser).to receive(:new)
+    terminal_job = described_class.new(message, metadata)
+    terminal_job.executions = 2
+
+    terminal_job.perform_now
+
+    expect(Kafka::SystemImporter).to have_received(:new).with(
+      message, Rails.logger, terminal_attempt: true
+    )
   end
 
   it 'runs policy import when a policy id is present' do
@@ -87,26 +114,23 @@ RSpec.describe SystemImportJob, 'database idempotency' do
   let(:metadata) { { 'topic' => 'inventory', 'partition' => 2, 'offset' => 41 } }
 
   def inventory_message(system_id:, account:, updated:, display_name: Faker::Internet.domain_name, policy_id: nil)
+    { 'type' => 'updated', 'host' => inventory_host(system_id, account, updated, display_name, policy_id) }
+  end
+
+  def inventory_host(system_id, account, updated, display_name, policy_id)
     {
-      'type' => 'updated',
-      'host' => {
-        'id' => system_id,
-        'account' => account.org_id,
-        'org_id' => account.org_id,
-        'display_name' => display_name,
-        'groups' => [],
-        'tags' => [],
-        'system_profile' => {
-          'operating_system' => { 'major' => 7, 'minor' => 0 },
-          'owner_id' => Faker::Internet.uuid,
-          'image_builder' => { 'compliance_policy_id' => policy_id }
-        }.compact,
-        'stale_timestamp' => updated,
-        'created' => 5.days.ago.iso8601,
-        'updated' => updated,
-        'insights_id' => Faker::Internet.uuid
-      }
+      'id' => system_id, 'account' => account.org_id, 'org_id' => account.org_id,
+      'display_name' => display_name, 'groups' => [], 'tags' => [],
+      'system_profile' => inventory_profile(policy_id), 'stale_timestamp' => updated,
+      'created' => 5.days.ago.iso8601, 'updated' => updated, 'insights_id' => Faker::Internet.uuid
     }
+  end
+
+  def inventory_profile(policy_id)
+    {
+      'operating_system' => { 'major' => 7, 'minor' => 0 }, 'owner_id' => Faker::Internet.uuid,
+      'image_builder' => { 'compliance_policy_id' => policy_id }
+    }.compact
   end
 
   it 'does not duplicate a system or policy association when repeated' do

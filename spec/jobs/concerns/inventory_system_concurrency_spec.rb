@@ -17,7 +17,9 @@ RSpec.describe InventorySystemConcurrency do
   end
 
   it 'limits execution rather than enqueueing later jobs away' do
-    expect(SystemImportJob.good_job_concurrency_config[:perform_limit]).to eq(1)
-    expect(SystemImportJob.good_job_concurrency_config[:total_limit]).to be_nil
+    [SystemImportJob, SystemDeleteJob].each do |job_class|
+      expect(job_class.good_job_concurrency_config[:perform_limit]).to eq(1)
+      expect(job_class.good_job_concurrency_config[:total_limit]).to be_nil
+    end
   end
 end
