@@ -4,7 +4,9 @@
 class SystemImportJob < ApplicationJob
   queue_as :imports
 
-  def perform(message)
+  include InventorySystemConcurrency
+
+  def perform(message, _kafka_metadata)
     Kafka::SystemImporter.new(message, Rails.logger, terminal_attempt: false).import if importable_host?(message)
     Kafka::PolicySystemImporter.new(message, Rails.logger).import if policy_id(message)
     Kafka::ReportParser.new(message, Rails.logger).parse_reports if compliance?(message)

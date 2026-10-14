@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe SystemImportJob do
-  subject(:job) { described_class.perform_now(message) }
+  subject(:job) { described_class.perform_now(message, metadata) }
+
+  let(:metadata) { { 'topic' => 'inventory', 'partition' => 2, 'offset' => 41 } }
 
   let(:message) do
     {
