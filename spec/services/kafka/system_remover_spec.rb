@@ -19,7 +19,8 @@ describe Kafka::SystemRemover do
 
     it 'soft-deletes the System by setting deleted_at to current time' do
       expect(Karafka.logger).to receive(:audit_success).with(/Soft-deleted system/)
-      expect { service.remove_system }.to change { System.count }.from(1).to(0)
+      expect(service.remove_system).to be(true)
+      expect(System.count).to eq(0)
 
       system = System.unscoped.find(system_id)
       expect(system.deleted_at).not_to be_nil
@@ -76,7 +77,7 @@ describe Kafka::SystemRemover do
 
     it 'ignores the delete message and does not soft-delete the system' do
       expect(Karafka.logger).to receive(:info).with(/Ignored stale delete event/)
-      expect { service.remove_system }.not_to(change { System.count })
+      expect(service.remove_system).to be(false)
       expect(system_record.reload.deleted_at).to be_nil
     end
 

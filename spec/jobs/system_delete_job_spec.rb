@@ -25,7 +25,7 @@ RSpec.describe SystemDeleteJob do
     cleaner = instance_double(Kafka::DeletedSystemCleaner)
     allow(Kafka::SystemRemover).to receive(:new).and_return(remover)
     allow(Kafka::DeletedSystemCleaner).to receive(:new).and_return(cleaner)
-    allow(remover).to receive(:remove_system) { calls << :remove }
+    allow(remover).to receive(:remove_system) { calls << :remove; true }
     allow(cleaner).to receive(:cleanup_system) { calls << :cleanup }
 
     job
@@ -33,6 +33,27 @@ RSpec.describe SystemDeleteJob do
     expect(calls).to eq(%i[remove cleanup])
     expect(Kafka::SystemRemover).to have_received(:new).with(message, Rails.logger)
     expect(Kafka::DeletedSystemCleaner).to have_received(:new).with(message, Rails.logger)
+  end
+
+
+  it 'skips cleanup when the delete is stale' do
+    user = FactoryBot.create(:user)
+    policy = FactoryBot.create(:policy, account: user.account, supports_minors: [0])
+    system = FactoryBot.create(:system, account: user.account, policy_id: policy.id, os_minor_version: 0,
+                               updated: Time.current)
+    test_result = FactoryBot.create(:test_result, system: system, report_id: policy.id)
+    stale_message = {
+      'type' => 'delete',
+      'id' => system.id,
+      'org_id' => user.org_id,
+      'updated' => 1.day.ago.utc.iso8601
+    }
+
+    described_class.perform_now(stale_message, metadata)
+
+    expect(system.reload.deleted_at).to be_nil
+    expect(PolicySystem.exists?(system_id: system.id)).to be(true)
+    expect(HistoricalTestResult.exists?(id: test_result.id)).to be(true)
   end
 
   it 'propagates remover failures without running cleanup' do
