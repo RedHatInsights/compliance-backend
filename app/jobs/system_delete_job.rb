@@ -7,7 +7,7 @@ class SystemDeleteJob < ApplicationJob
   include InventorySystemConcurrency
 
   def perform(message, _kafka_metadata)
-    Kafka::SystemRemover.new(message, Rails.logger).remove_system
-    Kafka::DeletedSystemCleaner.new(message, Rails.logger).cleanup_system
+    removed = Kafka::SystemRemover.new(message, Rails.logger).remove_system
+    Kafka::DeletedSystemCleaner.new(message, Rails.logger).cleanup_system if removed
   end
 end
