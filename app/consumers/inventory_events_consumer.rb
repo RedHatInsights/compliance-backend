@@ -8,9 +8,9 @@ class InventoryEventsConsumer < ApplicationConsumer
   def consume_one
     case message_type
     when 'delete'
-      SystemDeleteJob.perform_later(payload)
+      SystemDeleteJob.perform_later(payload, kafka_metadata)
     when 'created', 'updated'
-      SystemImportJob.perform_later(payload)
+      SystemImportJob.perform_later(payload, kafka_metadata)
     else
       handle_other
     end
@@ -36,5 +36,14 @@ class InventoryEventsConsumer < ApplicationConsumer
 
   def message_type
     payload.dig('type')
+  end
+
+  def kafka_metadata
+    {
+      'topic' => @message.topic,
+      'partition' => @message.partition,
+      'offset' => @message.offset,
+      'timestamp' => @message.timestamp
+    }
   end
 end

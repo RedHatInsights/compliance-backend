@@ -5,8 +5,18 @@ require 'rails_helper'
 describe InventoryEventsConsumer do
   subject(:consumer) { karafka.consumer_for(Settings.kafka.topics.inventory_events) }
 
+  let(:kafka_metadata) do
+    {
+      'topic' => 'platform.inventory.hosts',
+      'partition' => 2,
+      'offset' => 41,
+      'timestamp' => '2026-10-14T10:00:00Z'
+    }
+  end
+
   before do
     karafka.produce(message.to_json)
+    allow_any_instance_of(Karafka::Messages::Message).to receive_messages(kafka_metadata)
   end
 
   let(:message) do
@@ -53,7 +63,7 @@ describe InventoryEventsConsumer do
       let(:type) { 'delete' }
 
       it 'enqueues SystemDeleteJob' do
-        expect(SystemDeleteJob).to receive(:perform_later).with(message)
+        expect(SystemDeleteJob).to receive(:perform_later).with(message, kafka_metadata)
 
         consumer.consume
       end
@@ -71,7 +81,7 @@ describe InventoryEventsConsumer do
           let(:type) { msg_type }
 
           it 'enqueues SystemImportJob' do
-            expect(SystemImportJob).to receive(:perform_later).with(message)
+            expect(SystemImportJob).to receive(:perform_later).with(message, kafka_metadata)
 
             consumer.consume
           end
