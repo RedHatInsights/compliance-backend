@@ -12,10 +12,11 @@ ubi.repo:
 rpms.in.yaml: Dockerfile .hermetic_builds/parse_dockerfile.rb
 	ruby .hermetic_builds/parse_dockerfile.rb
 
-# Resolve and lock all RPM dependencies.
-# --image excludes packages already present in the base image from the lockfile.
+# Resolve and lock all RPM dependencies, including packages already present in
+# the base image. Minimal images can contain package metadata without the full
+# package contents required at runtime (for example, tzdata zoneinfo files).
 generate-rpm-lockfile: ubi.repo rpms.in.yaml
-	rpm-lockfile-prototype --image $(BASE_IMAGE) rpms.in.yaml --outfile rpms.lock.yaml
+	rpm-lockfile-prototype --bare rpms.in.yaml --outfile rpms.lock.yaml
 
 # Copy Cargo.toml and Cargo.lock from the prometheus-client-mmap gem into
 # .hermetic_builds/cargo/ so Cachi2 can pre-fetch the required Rust crates.
