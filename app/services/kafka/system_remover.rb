@@ -23,8 +23,10 @@ module Kafka
       if result.zero?
         @logger.info("[Kafka::SystemRemover] Ignored stale delete event or no active system found for ID #{@id}")
         Yabeda.compliance_system_delete_noop_total.increment({})
+        false
       else
         @logger.audit_success("[Kafka::SystemRemover] Soft-deleted system #{@id}")
+        true
       end
     rescue StandardError => e
       @logger.audit_fail("[Kafka::SystemRemover] Failed to soft-delete system #{@id}: #{e.message}")
