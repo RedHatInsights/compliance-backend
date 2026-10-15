@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Helpers for resolving Clowder V2 dependency endpoints for RBAC
 module ClowderV2Helpers
   module_function
 

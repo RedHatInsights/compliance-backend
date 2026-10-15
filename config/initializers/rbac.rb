@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.config.after_initialize do
-  next if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
+  break if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
 
   rbac = ClowderV2Helpers.resolve_rbac_endpoint
 
@@ -18,12 +18,11 @@ Rails.application.config.after_initialize do
       config.password = Settings.platform_basic_auth_password
     end
   end
-
-  Rails.application.config.x.rbac_authenticated = rbac[:authenticated]
 end
 
 Rails.application.config.to_prepare do
-  next if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
+  break if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
 
-  Rbac.rbac_authenticated = Rails.application.config.x.rbac_authenticated
+  Rbac.rbac_authenticated =
+    ClowderV2Helpers.resolve_rbac_endpoint[:authenticated]
 end
