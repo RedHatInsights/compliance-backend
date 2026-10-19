@@ -78,14 +78,8 @@ if ! TEST_CONTAINER_ID=$(cicd::container::cmd run -d \
   -e POSTGRESQL_DATABASE="$DATABASE_NAME" \
   -e RAILS_ENV=test \
   -e CI=true \
-  -e JENKINS_URL="$JENKINS_URL" \
-  -e ghprbSourceBranch="${ghprbSourceBranch:?}" \
   -e GIT_BRANCH="$GIT_BRANCH" \
-  -e ghprbActualCommit="${ghprbActualCommit:?}" \
   -e GIT_COMMIT="$GIT_COMMIT" \
-  -e BUILD_NUMBER="$BUILD_NUMBER" \
-  -e ghprbPullId="${ghprbPullId:?}" \
-  -e BUILD_URL="$BUILD_URL" \
   "${SERVICE_IMAGE}" \
   /bin/bash -c 'sleep infinity'); then
 
@@ -143,10 +137,6 @@ TEST_RESULT=$?
 set -e
 # Copy test reports
 cicd::container::cmd cp "$TEST_CONTAINER_ID":/opt/app-root/src/test/reports/. "$WORKSPACE"/artifacts
-# Prefix name of reports with 'junit-' so jenkins analysis picks them up
-cd "$WORKSPACE/artifacts"
-for FILENAME in TEST-*.xml; do mv "$FILENAME" "junit-$FILENAME"; done
-cd -
 if [[ $TEST_RESULT -ne 0 ]]; then
   echo '====================================='
   echo '====  ✖ ERROR: UNIT TEST FAILED  ===='
