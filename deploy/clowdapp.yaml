@@ -613,14 +613,14 @@ objects:
             memory: ${MEMORY_REQUEST_GOODJOB}
         livenessProbe:
           httpGet:
-            path: /metrics
-            port: metrics
+            path: /status/started
+            port: ${{GOOD_JOB_PROBE_PORT}}
           initialDelaySeconds: 180
           timeoutSeconds: 5
           periodSeconds: 30
         readinessProbe:
           httpGet:
-            path: /status
+            path: /status/connected
             port: ${{GOOD_JOB_PROBE_PORT}}
           initialDelaySeconds: 180
           timeoutSeconds: 5
