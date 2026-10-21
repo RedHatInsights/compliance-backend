@@ -63,8 +63,8 @@ class RulesController < ApplicationController
   def new_tailoring_rule
     @new_tailoring_rule ||= begin
       right = pundit_scope.find(permitted_params[:id])
-      left = pundit_scope(Tailoring).where.not(id: right.tailorings.select(:id))
-                                    .find(permitted_params[:tailoring_id])
+      left = tailoring_scope.where.not(id: right.tailorings.select(:id))
+                            .find(permitted_params[:tailoring_id])
 
       TailoringRule.new(tailoring: left, rule: right)
     end
@@ -85,7 +85,11 @@ class RulesController < ApplicationController
   end
 
   def tailoring
-    @tailoring ||= pundit_scope(Tailoring).find(permitted_params[:tailoring_id])
+    @tailoring ||= tailoring_scope.find(permitted_params[:tailoring_id])
+  end
+
+  def tailoring_scope
+    pundit_scope(Tailoring).where(policy_id: permitted_params[:policy_id])
   end
 
   def lookup_key

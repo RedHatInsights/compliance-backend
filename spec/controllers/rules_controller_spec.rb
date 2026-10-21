@@ -301,6 +301,51 @@ describe RulesController do
         end
       end
 
+      context 'numeric tailoring identifier from another policy' do
+        let(:parent) do
+          FactoryBot.create(
+            :tailoring,
+            policy: FactoryBot.create(
+              :policy,
+              :for_tailoring,
+              account: current_user.account,
+              supports_minors: [10]
+            ),
+            os_minor_version: 10
+          )
+        end
+        let(:foreign_tailoring) do
+          FactoryBot.create(
+            :tailoring,
+            policy: FactoryBot.create(
+              :policy,
+              :for_tailoring,
+              account: current_user.account,
+              supports_minors: [9]
+            ),
+            os_minor_version: 9
+          )
+        end
+        let(:item) { FactoryBot.create(:rule, security_guide: foreign_tailoring.profile.security_guide) }
+
+        let(:params) do
+          {
+            id: item.id,
+            policy_id: parent.policy_id,
+            tailoring_id: foreign_tailoring.os_minor_version,
+            parents: %i[policies tailorings]
+          }
+        end
+
+        before { allow(SupportedSsg).to receive(:resolve_minor).and_return(9) }
+
+        it 'does not resolve tailoring outside the parent policy' do
+          patch :update, params: params
+
+          expect(response).to have_http_status :not_found
+        end
+      end
+
       context 'rule already linked to the tailoring' do
         let(:item) do
           FactoryBot.create(:rule, security_guide: parent.profile.security_guide, tailoring_id: parent.id)
