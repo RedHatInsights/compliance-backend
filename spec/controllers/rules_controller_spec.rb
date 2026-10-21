@@ -268,6 +268,37 @@ describe RulesController do
           end
         end
       end
+
+      context 'when numeric tailoring identifier belongs to another policy' do
+        it 'does not select foreign policy tailoring' do
+          policy_a = FactoryBot.create(:policy, :for_tailoring, account: current_user.account, supports_minors: [10])
+          FactoryBot.create(:tailoring, policy: policy_a, os_minor_version: 10)
+
+          policy_b = FactoryBot.create(:policy, :for_tailoring, account: current_user.account, supports_minors: [11])
+          tailoring_b = FactoryBot.create(:tailoring, policy: policy_b, os_minor_version: 11)
+          FactoryBot.create(
+            :rule,
+            security_guide: tailoring_b.profile.security_guide,
+            tailoring_id: tailoring_b.id
+          )
+          existing_rule_ids_on_b = tailoring_b.rules.pluck(:id)
+
+          new_rule = FactoryBot.create(:rule, security_guide: tailoring_b.profile.security_guide)
+
+          allow(SupportedSsg).to receive(:resolve_minor).and_return(11)
+
+          post :create, params: {
+            ids: [new_rule.id],
+            policy_id: policy_a.id,
+            tailoring_id: 11,
+            parents: %i[policies tailorings]
+          }
+
+          expect(response).to have_http_status :not_found
+          expect(new_rule.reload.tailorings).to be_empty
+          expect(Tailoring.find(tailoring_b.id).rules.pluck(:id)).to match_array(existing_rule_ids_on_b)
+        end
+      end
     end
 
     describe 'PATCH update' do
@@ -298,6 +329,51 @@ describe RulesController do
           patch :update, params: params
 
           expect(response).to have_http_status :not_acceptable
+        end
+      end
+
+      context 'numeric tailoring identifier from another policy' do
+        let(:parent) do
+          FactoryBot.create(
+            :tailoring,
+            policy: FactoryBot.create(
+              :policy,
+              :for_tailoring,
+              account: current_user.account,
+              supports_minors: [10]
+            ),
+            os_minor_version: 10
+          )
+        end
+        let(:foreign_tailoring) do
+          FactoryBot.create(
+            :tailoring,
+            policy: FactoryBot.create(
+              :policy,
+              :for_tailoring,
+              account: current_user.account,
+              supports_minors: [9]
+            ),
+            os_minor_version: 9
+          )
+        end
+        let(:item) { FactoryBot.create(:rule, security_guide: foreign_tailoring.profile.security_guide) }
+
+        let(:params) do
+          {
+            id: item.id,
+            policy_id: parent.policy_id,
+            tailoring_id: foreign_tailoring.os_minor_version,
+            parents: %i[policies tailorings]
+          }
+        end
+
+        before { allow(SupportedSsg).to receive(:resolve_minor).and_return(9) }
+
+        it 'does not resolve tailoring outside the parent policy' do
+          patch :update, params: params
+
+          expect(response).to have_http_status :not_found
         end
       end
 
