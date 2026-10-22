@@ -5,11 +5,14 @@ require 'clowder-common-ruby'
 module Compliance
   class TableSizeCollector
     CACHE_TTL_SECONDS = 10 * 60
+    COLLECTION_MUTEX = Mutex.new
     def self.collect
-      return unless collection_due?
+      COLLECTION_MUTEX.synchronize do
+        return unless collection_due?
 
-      remove_stale_metrics(collect_table_sizes)
-      @last_collection_at = monotonic_time
+        remove_stale_metrics(collect_table_sizes)
+        @last_collection_at = monotonic_time
+      end
     rescue StandardError => e
       Rails.logger.error("Failed to collect DB table size metrics: #{e.full_message}")
     end
