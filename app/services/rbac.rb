@@ -25,16 +25,19 @@ class Rbac
   class AuthorizationError < StandardError; end
 
   class << self
+    attr_accessor :rbac_authenticated
+
     def load_user_permissions(identity)
-      begin
-        API_CLIENT.get_principal_access(
-          self::APPS,
-          self::OPTS.merge(header_params: { 'X-RH-IDENTITY': identity })
-        ).data
-      rescue RBACApiClient::ApiError => e
-        Rails.logger.info(e.message)
-        raise AuthorizationError, e.message
-      end
+      headers = { 'X-RH-IDENTITY': identity }
+      headers.merge!(s2s_auth_headers(identity)) if rbac_authenticated
+
+      API_CLIENT.get_principal_access(
+        self::APPS,
+        self::OPTS.merge(header_params: headers)
+      ).data
+    rescue RBACApiClient::ApiError => e
+      Rails.logger.info(e.message)
+      raise AuthorizationError, e.message
     end
 
     def load_inventory_groups(permissions)
@@ -68,6 +71,15 @@ class Rbac
     end
 
     private
+
+    def s2s_auth_headers(identity)
+      token = KesselBuilder.auth.get_token
+      parsed = Insights::Api::Common::IdentityHeader.new(identity)
+      {
+        'Authorization': "Bearer #{token.access_token}",
+        'X-RH-RBAC-ORG-ID': parsed.org_id
+      }
+    end
 
     def structurize(access_entry)
       app, resource, action = access_entry.split(':')
