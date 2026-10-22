@@ -23,8 +23,6 @@ elif [ "$APPLICATION_TYPE" = "compliance-cleanup-systems" ]; then
   exec bundle exec rake systems:cleanup --trace
 elif [ "$APPLICATION_TYPE" = "compliance-cleanup-duplicate-tailorings" ]; then
   exec bundle exec rake tailorings:cleanup_duplicates --trace
-elif [ "$APPLICATION_TYPE" = "compliance-drop-invalid-indexes" ]; then
-  exec bundle exec rake db:drop_invalid_indexes --trace
 elif [ "$APPLICATION_TYPE" = "sleep" ]; then
   while true; do sleep 60; done
 else
