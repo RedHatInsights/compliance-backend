@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'timeout'
 
 RSpec.describe Compliance::TableSizeCollector do
+  let(:table_sizes) { Yabeda.compliance_db_table_size_bytes }
+
   let(:existing_table_name) { "table_#{Faker::Lorem.unique.word}" }
   let(:dropped_table_name) { "table_#{Faker::Lorem.unique.word}" }
   let(:initial_existing_size) { Faker::Number.between(from: 100, to: 10_000) }
@@ -10,6 +13,8 @@ RSpec.describe Compliance::TableSizeCollector do
   let(:updated_existing_size) { Faker::Number.between(from: 10_001, to: 20_000) }
 
   before do
+    described_class.instance_variable_set(:@last_collection_at, nil)
+
     # Mock connection
     @mock_connection = instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
     allow(ActiveRecord::Base).to receive(:connection).and_return(@mock_connection)
@@ -22,6 +27,84 @@ RSpec.describe Compliance::TableSizeCollector do
 
   after do
     Yabeda.compliance_db_table_size_bytes.values.clear
+    described_class.instance_variable_set(:@last_collection_at, nil)
+  end
+
+  it 'caches table sizes for ten minutes within the process' do
+    first_result = [{ 'table_name' => existing_table_name, 'size_bytes' => initial_existing_size.to_s }]
+    allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(100.0, 101.0)
+    expect(@mock_connection).to receive(:execute).once.and_return(first_result)
+
+    described_class.collect
+    described_class.collect
+
+    tags = { application: 'compliance', qe: 0, source: 'basic', table: existing_table_name }
+    expect(table_sizes.values[tags].value).to eq(initial_existing_size)
+  end
+
+  it 'refreshes table sizes once ten minutes have elapsed' do
+    first_result = [{ 'table_name' => existing_table_name, 'size_bytes' => initial_existing_size.to_s }]
+    later_result = [{ 'table_name' => existing_table_name, 'size_bytes' => updated_existing_size.to_s }]
+    allow(Process).to receive(:clock_gettime)
+      .with(Process::CLOCK_MONOTONIC)
+      .and_return(100.0, 101.0, 700.0, 701.0, 702.0)
+    expect(@mock_connection).to receive(:execute).twice.and_return(first_result, later_result)
+
+    described_class.collect
+    described_class.collect
+    described_class.collect
+
+    tags = { application: 'compliance', qe: 0, source: 'basic', table: existing_table_name }
+    expect(table_sizes.values[tags].value).to eq(updated_existing_size)
+  end
+
+  it 'avoids duplicate queries when collection calls run concurrently' do
+    result = [{ 'table_name' => existing_table_name, 'size_bytes' => initial_existing_size.to_s }]
+    query_started = Queue.new
+    release_query = Queue.new
+    mutex_attempted = Queue.new
+    allow(described_class::COLLECTION_MUTEX).to receive(:synchronize).and_wrap_original do |original, &block|
+      mutex_attempted << true
+      original.call(&block)
+    end
+    allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(100.0)
+    allow(@mock_connection).to receive(:execute) do
+      query_started << true
+      release_query.pop
+      result
+    end
+
+    first_call = Thread.new { described_class.collect }
+    second_call = nil
+
+    begin
+      expect(query_started.pop(timeout: 1)).to be(true)
+      expect(mutex_attempted.pop(timeout: 1)).to be(true)
+      second_call = Thread.new { described_class.collect }
+      expect(mutex_attempted.pop(timeout: 1)).to be(true)
+      Timeout.timeout(1) do
+        Thread.pass until second_call.status == 'sleep' && query_started.empty?
+      end
+    ensure
+      2.times { release_query << true }
+      [first_call, second_call].compact.each(&:join)
+    end
+
+    expect(@mock_connection).to have_received(:execute).once
+  end
+
+  it 'retries table-size collection after a failed query' do
+    result = [{ 'table_name' => existing_table_name, 'size_bytes' => updated_existing_size.to_s }]
+    allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(100.0, 200.0)
+    allow(Rails.logger).to receive(:error)
+    expect(@mock_connection).to receive(:execute).once.ordered.and_raise(ActiveRecord::ConnectionNotEstablished)
+    expect(@mock_connection).to receive(:execute).once.ordered.and_return(result)
+
+    described_class.collect
+    described_class.collect
+
+    tags = { application: 'compliance', qe: 0, source: 'basic', table: existing_table_name }
+    expect(table_sizes.values[tags].value).to eq(updated_existing_size)
   end
 
   it 'removes metrics for tables that no longer exist in the database' do
