@@ -4,19 +4,40 @@ require 'clowder-common-ruby'
 
 module Compliance
   class TableSizeCollector
+    CACHE_TTL_SECONDS = 10 * 60
     def self.collect
-      current_tables = []
+      return unless collection_due?
 
+      remove_stale_metrics(collect_table_sizes)
+      @last_collection_at = monotonic_time
+    rescue StandardError => e
+      Rails.logger.error("Failed to collect DB table size metrics: #{e.full_message}")
+    end
+
+    def self.collection_due?
+      now = monotonic_time
+      !@last_collection_at || now - @last_collection_at >= CACHE_TTL_SECONDS
+    end
+
+    def self.collect_table_sizes
+      current_tables = []
       ActiveRecord::Base.connection.execute(<<~SQL).each do |row|
         SELECT relname AS table_name, pg_total_relation_size(relid) AS size_bytes
         FROM pg_catalog.pg_statio_user_tables
         ORDER BY size_bytes DESC
       SQL
-        table_name = row['table_name']
-        current_tables << table_name
-        Yabeda.compliance_db_table_size_bytes.set({ table: table_name }, row['size_bytes'].to_i)
+        record_table_size(row, current_tables)
       end
+      current_tables
+    end
 
+    def self.record_table_size(row, current_tables)
+      table_name = row['table_name']
+      current_tables << table_name
+      Yabeda.compliance_db_table_size_bytes.set({ table: table_name }, row['size_bytes'].to_i)
+    end
+
+    def self.remove_stale_metrics(current_tables)
       # Remove metrics for tables that no longer exist (best-effort for in-memory adapters)
       #
       # LIMITATION NOTE (Multi-Process / mmap-backed environment):
@@ -34,9 +55,14 @@ module Compliance
           metric.values.delete(tags)
         end
       end
-    rescue StandardError => e
-      Rails.logger.error("Failed to collect DB table size metrics: #{e.full_message}")
     end
+
+    def self.monotonic_time
+      Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    end
+
+    private_class_method :collection_due?, :collect_table_sizes, :record_table_size,
+                         :remove_stale_metrics, :monotonic_time
   end
 
   class GoodJobQueueDepthCollector
