@@ -21,6 +21,8 @@ elif [ "$APPLICATION_TYPE" = "compliance-reindex-db" ]; then
   exec bundle exec rake db:reindex --trace
 elif [ "$APPLICATION_TYPE" = "compliance-cleanup-systems" ]; then
   exec bundle exec rake systems:cleanup --trace
+elif [ "$APPLICATION_TYPE" = "compliance-cleanup-rule-results" ]; then
+  exec bundle exec rake rule_results:cleanup --trace
 elif [ "$APPLICATION_TYPE" = "compliance-cleanup-duplicate-tailorings" ]; then
   exec bundle exec rake tailorings:cleanup_duplicates --trace
 elif [ "$APPLICATION_TYPE" = "sleep" ]; then
