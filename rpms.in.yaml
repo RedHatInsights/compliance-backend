@@ -1,4 +1,6 @@
 ---
+context:
+  bare: true
 contentOrigin:
   repofiles:
   - "./ubi.repo"

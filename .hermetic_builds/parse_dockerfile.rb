@@ -20,6 +20,7 @@ packages = arg_names.flat_map do |key|
 end.sort.uniq
 
 data = {
+  'context' => { 'bare' => true },
   'contentOrigin' => { 'repofiles' => [repofile] },
   'arches' => ['x86_64'],
   'moduleEnable' => module_enable,
