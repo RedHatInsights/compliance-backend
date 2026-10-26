@@ -85,8 +85,8 @@ Commit the updated files alongside `Gemfile.lock`.
 
 - **`HERMETIC` build arg** — `ARG HERMETIC="false"` defaults to off for local
   builds. The Tekton pipeline sets it to `"true"` via `build-args`. When true,
-  two network-dependent steps are skipped in the Dockerfile: the PostgreSQL COPR
-  repo setup and the `rpm -e tzdata` remove-and-reinstall pattern.
+  a network-dependent step is skipped in the Dockerfile: the PostgreSQL COPR
+  repo setup.
 
 - **Bundler** — `gem install bundler` is not run; bundler 2.5.22 is provided by
   the `rubygem-bundler` RPM. Cachi2 sets `BUNDLE_MIRROR__ALL` to a local gem
