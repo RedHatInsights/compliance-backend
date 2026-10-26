@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 # Parses ARG declarations in Dockerfile and writes rpms.in.yaml.
 
 require 'yaml'
@@ -19,10 +21,10 @@ end.sort.uniq
 
 data = {
   'contentOrigin' => { 'repofiles' => [repofile] },
-  'arches'        => ['x86_64'],
-  'moduleEnable'  => module_enable,
-  'packages'      => packages
+  'arches' => ['x86_64'],
+  'moduleEnable' => module_enable,
+  'packages' => packages
 }
 
-File.write(output, "---\n" + data.to_yaml.sub(/\A---\n/, ''))
+File.write(output, "---\n#{data.to_yaml.sub(/\A---\n/, '')}")
 puts "Generated #{output} with #{packages.size} packages"
