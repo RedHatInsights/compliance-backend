@@ -27,6 +27,7 @@
       "datasourceTemplate": "github-releases"
     }
   ],
+  "rpmVulnerabilityAlerts": false,
   "packageRules": [
     {
       "description": "Group all GitHub Actions updates into one PR",
@@ -36,11 +37,37 @@
       "groupName": "GitHub Actions"
     },
     {
-      "description": "Group all Rust (hermetic lockfile) updates into one PR",
+      "description": "Group Rust crate version updates.",
       "matchManagers": [
         "cargo"
       ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch",
+        "pin",
+        "digest",
+        "pinDigest",
+        "rollback",
+        "bump"
+      ],
       "groupName": "Rust dependencies"
+    },
+    {
+      "description": "Group cargo and rpm lock refreshes into one PR",
+      "matchManagers": [
+        "cargo",
+        "rpm-lockfile"
+      ],
+      "matchUpdateTypes": [
+        "lockFileMaintenance"
+      ],
+      "groupName": "lock refresh",
+      "group": {
+        "commitMessageAction": "lock refresh",
+        "commitMessageTopic": null,
+        "commitMessageExtra": null
+      }
     },
     {
       "description": "Pin postgres Docker image to v16",
