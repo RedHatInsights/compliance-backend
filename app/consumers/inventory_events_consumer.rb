@@ -8,7 +8,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   def consume_one
     case message_type
     when 'delete'
-      SystemDeleteJob.perform_later(payload, kafka_metadata)
+      SystemDeleteJob.perform_later(delete_payload, kafka_metadata)
     when 'created', 'updated'
       SystemImportJob.perform_later(import_payload, kafka_metadata)
     else
@@ -55,28 +55,8 @@ class InventoryEventsConsumer < ApplicationConsumer
     metadata.slice('service', 'request_id', 'org_id', 'b64_identity', 'url', 'metadata')
   end
 
-  def project_system_profile(profile)
-    projected = profile.slice('owner_id', 'host_type')
-    project_operating_system(profile, projected)
-    project_bootc_status(profile, projected)
-    project_image_builder(profile, projected)
-
-    projected
-  end
-
-  def project_operating_system(profile, projected)
-    operating_system = profile['operating_system']
-    projected['operating_system'] = operating_system.slice('major', 'minor', 'name') if operating_system
-  end
-
-  def project_bootc_status(profile, projected)
-    booted = profile.dig('bootc_status', 'booted')
-    projected['bootc_status'] = { 'booted' => booted.slice('image_digest') } if booted
-  end
-
-  def project_image_builder(profile, projected)
-    image_builder = profile['image_builder']
-    projected['image_builder'] = image_builder.slice('compliance_policy_id') if image_builder
+  def delete_payload
+    payload.slice('id', 'org_id', 'updated', 'timestamp')
   end
 
   # Keep fields consumed by import eligibility, persistence, and policy association.

@@ -68,11 +68,62 @@ describe InventoryEventsConsumer do
   describe 'handling messages by type' do
     context 'when message is delete' do
       let(:type) { 'delete' }
+      let(:message) do
+        {
+          'type' => type,
+          'id' => SecureRandom.uuid,
+          'org_id' => Faker::Number.number(digits: 6).to_s,
+          'updated' => Time.current.iso8601
+        }
+      end
 
-      it 'enqueues SystemDeleteJob' do
-        expect(SystemDeleteJob).to receive(:perform_later).with(message, kafka_metadata)
+      it 'enqueues SystemDeleteJob with the required delete fields' do
+        delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
+        expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload, kafka_metadata)
 
         consumer.consume
+      end
+
+      context 'with a rich payload' do
+        let(:message) do
+          {
+            'type' => type,
+            'id' => SecureRandom.uuid,
+            'org_id' => Faker::Number.number(digits: 6).to_s,
+            'updated' => 2.minutes.ago.iso8601,
+            'timestamp' => 1.minute.ago.iso8601,
+            'unrelated' => Faker::Lorem.sentence,
+            'host' => { 'id' => SecureRandom.uuid, 'unrelated' => Faker::Lorem.sentence },
+            'platform_metadata' => { 'service' => 'inventory', 'unrelated' => Faker::Lorem.sentence }
+          }
+        end
+
+        it 'projects delete fields and passes through Kafka metadata' do
+          delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
+          expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload, kafka_metadata)
+
+          consumer.consume
+        end
+      end
+
+      context 'when updated is absent' do
+        let(:message) do
+          {
+            'type' => type,
+            'id' => SecureRandom.uuid,
+            'org_id' => Faker::Number.number(digits: 6).to_s,
+            'timestamp' => Time.current.iso8601,
+            'unrelated' => Faker::Lorem.sentence
+          }
+        end
+
+        it 'preserves the timestamp fallback and omits unrelated fields' do
+          expect(SystemDeleteJob).to receive(:perform_later).with(
+            message.slice('id', 'org_id', 'updated', 'timestamp'), kafka_metadata
+          )
+
+          consumer.consume
+        end
       end
 
       it 'propagates enqueue failures' do
