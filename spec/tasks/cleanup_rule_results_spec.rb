@@ -125,18 +125,43 @@ RSpec.describe 'rule_results:cleanup task' do
     expect(RuleResult.exists?(null_rule_result.id)).to be(false)
   end
 
-  it 'deletes every older result with BATCH_SIZE=1 and leaves the latest' do
+  it 'deletes one older result per run when BATCH_SIZE=1 and leaves the latest' do
     additional_older_result = create_test_result(end_time: 2.hours.ago)
     additional_older_rule_result = FactoryBot.create(:rule_result, test_result: additional_older_result)
 
     output = run_cleanup(subtasks: 'older', batch_size: 1)
 
-    expect(output.scan('Older batch').size).to eq(2)
-    expect(HistoricalTestResult.exists?(older_test_result.id)).to be(false)
-    expect(HistoricalTestResult.exists?(additional_older_result.id)).to be(false)
-    expect(RuleResult.exists?(older_rule_result.id)).to be(false)
-    expect(RuleResult.exists?(additional_older_rule_result.id)).to be(false)
+    expect(output.scan('Older batch').size).to eq(1)
+    remaining_older_parents = [older_test_result, additional_older_result].select do |result|
+      HistoricalTestResult.exists?(result.id)
+    end
+    remaining_older_rules = [older_rule_result, additional_older_rule_result].select do |result|
+      RuleResult.exists?(result.id)
+    end
+    expect(remaining_older_parents.size).to eq(1)
+    expect(remaining_older_rules.size).to eq(1)
+    expect(remaining_older_rules.first.test_result_id).to eq(remaining_older_parents.first.id)
     expect(HistoricalTestResult.exists?(latest_test_result.id)).to be(true)
+    expect(RuleResult.exists?(latest_rule_result.id)).to be(true)
+  end
+
+  it 'deletes one orphan per run when BATCH_SIZE=1 and leaves the other' do
+    first_orphan_id, = insert_orphan_rule_result(
+      rule_id: latest_rule_result.rule_id,
+      result: latest_rule_result.result
+    )
+    second_orphan_id, = insert_orphan_rule_result(
+      rule_id: older_rule_result.rule_id,
+      result: older_rule_result.result
+    )
+
+    output = run_cleanup(subtasks: 'orphans', batch_size: 1)
+
+    remaining_orphans = [first_orphan_id, second_orphan_id].select { |id| RuleResult.exists?(id) }
+    expect(output.scan('Orphans batch').size).to eq(1)
+    expect(remaining_orphans.size).to eq(1)
+    expect(RuleResult.exists?(latest_rule_result.id)).to be(true)
+    expect(RuleResult.exists?(older_rule_result.id)).to be(true)
   end
 
   it 'deletes orphan rule results and keeps rows whose parent exists' do
