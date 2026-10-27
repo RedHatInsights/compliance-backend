@@ -45,59 +45,34 @@ class RuleResultsCleaner
 
   private
 
-  # Parent rows define each batch; child rows and eligible parents are deleted
-  # before the transaction commits. Locked children keep their parent for a later run.
+  # One batch per run. Lock children with SKIP LOCKED so we do not wait on
+  # Kafka::DeletedSystemCleaner, which locks rule_results before the parent.
+  # A parent with a locked child stays for the next run.
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def cleanup_older
-    total_rule_results = 0
-    total_historical_test_results = 0
-    last_id = nil
-    batch_number = 0
-
-    loop do
-      parent_ids, rule_results_deleted, historical_test_results_deleted = ActiveRecord::Base.transaction do
-        ids = stale_historical_test_result_ids(last_id)
-        if ids.empty?
-          [ids, 0, 0]
-        else
-          child_ids = RuleResult.where(test_result_id: ids).select(:id).lock('FOR UPDATE SKIP LOCKED')
-          deleted_rule_results = RuleResult.where(id: child_ids).delete_all
-          deleted_historical_test_results = delete_stale_parents_without_children(ids)
-          [ids, deleted_rule_results, deleted_historical_test_results]
-        end
+    parent_ids, rule_results_deleted, historical_test_results_deleted = ActiveRecord::Base.transaction do
+      ids = stale_historical_test_result_ids
+      if ids.empty?
+        [ids, 0, 0]
+      else
+        child_ids = RuleResult.where(test_result_id: ids).select(:id).lock('FOR UPDATE SKIP LOCKED')
+        deleted_rule_results = RuleResult.where(id: child_ids).delete_all
+        deleted_historical_test_results = delete_parents_without_children(ids)
+        [ids, deleted_rule_results, deleted_historical_test_results]
       end
-      break if parent_ids.empty?
+    end
 
-      batch_number += 1
-      last_id = parent_ids.last
-      total_rule_results += rule_results_deleted
-      total_historical_test_results += historical_test_results_deleted
-      @logger.info("Older batch #{batch_number}: #{rule_results_deleted} rule_results, " \
+    if parent_ids.any?
+      @logger.info("Older batch: #{rule_results_deleted} rule_results, " \
                    "#{historical_test_results_deleted} historical_test_results deleted from " \
                    "#{parent_ids.size} locked parents.")
     end
 
-    [total_rule_results, total_historical_test_results]
+    [rule_results_deleted, historical_test_results_deleted]
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-  # rubocop:disable Metrics/MethodLength
-  def stale_historical_test_result_ids(last_id)
-    cursor = "AND htr.id > #{ActiveRecord::Base.connection.quote(last_id)}" if last_id
-
-    ActiveRecord::Base.connection.select_values(<<~SQL)
-      SELECT htr.id
-      FROM historical_test_results htr
-      WHERE #{stale_test_result_condition('htr')}
-        #{cursor}
-      ORDER BY htr.id
-      LIMIT #{@batch_size}
-      FOR UPDATE OF htr SKIP LOCKED
-    SQL
-  end
-  # rubocop:enable Metrics/MethodLength
-
-  def delete_stale_parents_without_children(parent_ids)
+  def delete_parents_without_children(parent_ids)
     HistoricalTestResult.where(id: parent_ids)
                         .where(stale_test_result_condition('historical_test_results'))
                         .where(<<~SQL.squish)
@@ -108,6 +83,17 @@ class RuleResultsCleaner
                           )
                         SQL
                         .delete_all
+  end
+
+  def stale_historical_test_result_ids
+    ActiveRecord::Base.connection.select_values(<<~SQL)
+      SELECT htr.id
+      FROM historical_test_results htr
+      WHERE #{stale_test_result_condition('htr')}
+      ORDER BY htr.id
+      LIMIT #{@batch_size}
+      FOR UPDATE OF htr SKIP LOCKED
+    SQL
   end
 
   # rubocop:disable Metrics/MethodLength
@@ -124,35 +110,23 @@ class RuleResultsCleaner
   end
   # rubocop:enable Metrics/MethodLength
 
-  # Rule-result rows are paginated independently because orphan parents no longer exist.
-  # rubocop:disable Metrics/MethodLength
+  # One batch per run. Deleting rule_results without existing parent historical_test_result rows.
   def cleanup_orphans
-    total = 0
-    last_id = nil
-    batch_number = 0
-
-    loop do
-      deleted_ids = ActiveRecord::Base.transaction do
-        ids = orphan_rule_result_ids(last_id)
-        RuleResult.where(id: ids).delete_all if ids.any?
-        ids
-      end
-      break if deleted_ids.empty?
-
-      batch_number += 1
-      last_id = deleted_ids.last
-      total += deleted_ids.size
-      @logger.info("Orphans batch #{batch_number}: deleted #{deleted_ids.size} rule_results.")
+    deleted_ids = ActiveRecord::Base.transaction do
+      ids = orphan_rule_result_ids
+      RuleResult.where(id: ids).delete_all if ids.any?
+      ids
     end
 
-    total
+    if deleted_ids.any?
+      @logger.info("Orphans batch: deleted #{deleted_ids.size} rule_results.")
+    end
+
+    deleted_ids.size
   end
-  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable Metrics/MethodLength
-  def orphan_rule_result_ids(last_id)
-    cursor = "AND rr.id > #{ActiveRecord::Base.connection.quote(last_id)}" if last_id
-
+  def orphan_rule_result_ids
     ActiveRecord::Base.connection.select_values(<<~SQL)
       SELECT rr.id
       FROM rule_results rr
@@ -161,7 +135,6 @@ class RuleResultsCleaner
         FROM historical_test_results htr
         WHERE htr.id = rr.test_result_id
       )
-        #{cursor}
       ORDER BY rr.id
       LIMIT #{@batch_size}
       FOR UPDATE OF rr SKIP LOCKED
