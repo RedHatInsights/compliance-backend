@@ -31,27 +31,11 @@ describe InventoryEventsConsumer do
 
     it 'logs a debug message and skips processing' do
       expect(Karafka.logger).to receive(:debug).with("Skipped message of type '#{type}'")
+      expect(SystemImportJob).not_to receive(:perform_later)
+      expect(SystemDeleteJob).not_to receive(:perform_later)
+      expect(Kafka::ReportParser).not_to receive(:new)
 
       consumer.consume
-    end
-
-    context 'when message is for compliance service' do
-      let(:message) do
-        super().deep_merge(
-          {
-            'platform_metadata' => {
-              'service' => 'compliance'
-            }
-          }
-        )
-      end
-
-      it 'delegates to ReportParser' do
-        expect(Kafka::ReportParser).to receive(:new).with(message, anything).and_call_original
-        expect_any_instance_of(Kafka::ReportParser).to receive(:parse_reports)
-
-        consumer.consume
-      end
     end
   end
 

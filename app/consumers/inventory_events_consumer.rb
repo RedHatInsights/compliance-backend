@@ -44,19 +44,11 @@ class InventoryEventsConsumer < ApplicationConsumer
     when 'created', 'updated'
       SystemImportJob.perform_later(import_payload) if importable_host?(payload)
     else
-      handle_other
+      logger.debug "Skipped message of type '#{message_type}'"
     end
   end
 
   private
-
-  def handle_other
-    if service == 'compliance'
-      Kafka::ReportParser.new(payload, logger).parse_reports
-    else
-      logger.debug "Skipped message of type '#{message_type}'"
-    end
-  end
 
   def payload
     return @payload if @payload_message.equal?(@message)
@@ -94,10 +86,6 @@ class InventoryEventsConsumer < ApplicationConsumer
     profile['host_type'] == 'edge' ||
       profile.dig('operating_system', 'name')&.match?(/centos/i) ||
       profile.dig('bootc_status', 'booted', 'image_digest').present?
-  end
-
-  def service
-    payload.dig('platform_metadata', 'service')
   end
 
   def message_type
