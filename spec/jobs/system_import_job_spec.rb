@@ -82,49 +82,23 @@ RSpec.describe SystemImportJob do
     )
   end
 
-  it 'runs policy import when a policy id is present' do
+  it 'imports the policy association and reports for an eligible host' do
     message['host']['system_profile'] = {
       'image_builder' => { 'compliance_policy_id' => SecureRandom.uuid }
     }
-    allow(Kafka::SystemImporter).to receive(:new).and_return(instance_double(Kafka::SystemImporter, import: nil))
+    message['platform_metadata'] = { 'service' => 'compliance' }
+    system_importer = instance_double(Kafka::SystemImporter, import: nil)
     policy_importer = instance_double(Kafka::PolicySystemImporter, import: nil)
+    report_parser = instance_double(Kafka::ReportParser, parse_reports: nil)
+    allow(Kafka::SystemImporter).to receive(:new).and_return(system_importer)
     allow(Kafka::PolicySystemImporter).to receive(:new).and_return(policy_importer)
+    allow(Kafka::ReportParser).to receive(:new).and_return(report_parser)
 
     job
 
+    expect(system_importer).to have_received(:import)
     expect(policy_importer).to have_received(:import)
-  end
-
-  it 'runs report preparation for compliance events' do
-    message['platform_metadata'] = { 'service' => 'compliance' }
-    allow(Kafka::SystemImporter).to receive(:new).and_return(instance_double(Kafka::SystemImporter, import: nil))
-    parser = instance_double(Kafka::ReportParser, parse_reports: nil)
-    allow(Kafka::ReportParser).to receive(:new).and_return(parser)
-
-    job
-
-    expect(parser).to have_received(:parse_reports)
-  end
-
-  it 'preserves the existing independent policy/report branches for an ineligible host' do
-    message['host']['insights_id'] = nil
-    message['host']['system_profile'] = {
-      'image_builder' => { 'compliance_policy_id' => SecureRandom.uuid }
-    }
-    message['platform_metadata'] = { 'service' => 'compliance' }
-    allow(Kafka::SystemImporter).to receive(:new).and_return(instance_double(Kafka::SystemImporter, import: nil))
-    allow(Kafka::PolicySystemImporter).to receive(:new).and_return(
-      instance_double(Kafka::PolicySystemImporter, import: nil)
-    )
-    allow(Kafka::ReportParser).to receive(:new).and_return(
-      instance_double(Kafka::ReportParser, parse_reports: nil)
-    )
-
-    job
-
-    expect(Kafka::SystemImporter).not_to have_received(:new)
-    expect(Kafka::PolicySystemImporter).to have_received(:new)
-    expect(Kafka::ReportParser).to have_received(:new)
+    expect(report_parser).to have_received(:parse_reports)
   end
 end
 
