@@ -144,6 +144,24 @@ describe InventoryEventsConsumer do
             consumer.consume
           end
 
+          it 'parses the payload once' do
+            expect(JSON).to receive(:parse).once.and_call_original
+            expect(SystemImportJob).to receive(:perform_later)
+
+            consumer.consume
+          end
+
+          it 'parses each Kafka payload once' do
+            second_message = message.deep_merge(
+              'host' => { 'id' => SecureRandom.uuid, 'insights_id' => SecureRandom.uuid }
+            )
+            karafka.produce(second_message.to_json)
+            expect(JSON).to receive(:parse).twice.and_call_original
+            expect(SystemImportJob).to receive(:perform_later).twice
+
+            consumer.consume
+          end
+
           context 'with a rich payload' do
             let(:org_id) { Faker::Number.number(digits: 6).to_s }
             let(:system_id) { SecureRandom.uuid }
@@ -210,8 +228,7 @@ describe InventoryEventsConsumer do
                     'owner_id' => message.dig('host', 'system_profile', 'owner_id'),
                     'operating_system' => {
                       'major' => '9',
-                      'minor' => '4',
-                      'name' => 'Red Hat Enterprise Linux'
+                      'minor' => '4'
                     },
                     'image_builder' => { 'compliance_policy_id' => policy_id }
                   }
