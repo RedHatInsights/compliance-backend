@@ -15,7 +15,8 @@ class SystemImportJob < ApplicationJob
 
   def perform(message)
     @message = message
-    import_system
+    return unless import_system
+
     import_policy_system if policy_id
     Kafka::ReportParser.new(@message, Rails.logger).parse_reports if compliance?
   end
@@ -24,11 +25,12 @@ class SystemImportJob < ApplicationJob
 
   def import_system
     payload = @message.dig('host')
-    return unless payload_valid_for_import?(payload)
+    return false unless payload_valid_for_import?(payload)
 
     id, updated = payload.values_at('id', 'updated')
 
     upsert_system(id, payload, updated)
+    true
   rescue StandardError => e
     failed_id = id || payload&.dig('id') || 'unknown'
     Rails.logger.audit_fail("[SystemImportJob] Failed to import system #{failed_id}: #{e.message}")

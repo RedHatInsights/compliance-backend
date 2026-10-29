@@ -21,7 +21,7 @@ RSpec.describe SystemImportJob do
 
   it 'imports an eligible host' do
     import_job = described_class.new(message)
-    expect(import_job).to receive(:import_system)
+    expect(import_job).to receive(:import_system).and_return(true)
     expect(import_job).not_to receive(:import_policy_system)
 
     import_job.perform_now
@@ -52,12 +52,25 @@ RSpec.describe SystemImportJob do
     report_parser = instance_double(Kafka::ReportParser, parse_reports: nil)
     allow(Kafka::ReportParser).to receive(:new).and_return(report_parser)
     import_job = described_class.new(message)
-    expect(import_job).to receive(:import_system)
+    expect(import_job).to receive(:import_system).and_return(true)
     expect(import_job).to receive(:import_policy_system)
 
     import_job.perform_now
 
     expect(report_parser).to have_received(:parse_reports)
+  end
+
+  it 'skips policy import and report parsing for an invalid host' do
+    message['host']['tags'] = [Faker::Lorem.word]
+    message['host']['system_profile'] = {
+      'image_builder' => { 'compliance_policy_id' => SecureRandom.uuid }
+    }
+    message['platform_metadata'] = { 'service' => 'compliance' }
+    expect(Kafka::ReportParser).not_to receive(:new)
+
+    expect { described_class.perform_now(message) }
+      .to increment_yabeda_counter(Yabeda.compliance_system_import_invalid_total).by(1)
+    expect(PolicySystem.count).to eq(0)
   end
 
   describe '#import_system' do
@@ -111,8 +124,9 @@ RSpec.describe SystemImportJob do
     it 'ignores invalid tags and increments the invalid counter' do
       message['host']['tags'] = [Faker::Lorem.word]
 
-      expect { job.send(:import_system) }
-        .to increment_yabeda_counter(Yabeda.compliance_system_import_invalid_total).by(1)
+      expect do
+        expect(job.send(:import_system)).to be(false)
+      end.to increment_yabeda_counter(Yabeda.compliance_system_import_invalid_total).by(1)
     end
 
     it 'does not overwrite a newer system' do
@@ -146,7 +160,7 @@ RSpec.describe SystemImportJob do
 
     it 'logs malformed owner IDs and stores nil' do
       message['host']['system_profile']['owner_id'] = Faker::Lorem.word
-      expect(Rails.logger).to receive(:error).with('[Kafka::SystemImporter] Malformed owner_id')
+      expect(Rails.logger).to receive(:error).with('[SystemImportJob] Malformed owner_id')
 
       job.send(:import_system)
 
@@ -157,7 +171,7 @@ RSpec.describe SystemImportJob do
       message['host'].delete('id')
       expect(Rails.logger).to receive(:error).with(/Ignored invalid message/)
 
-      expect { job.send(:import_system) }.not_to change(System, :count)
+      expect { expect(job.send(:import_system)).to be(false) }.not_to change(System, :count)
     end
 
     it 're-raises malformed non-Hash hosts' do
