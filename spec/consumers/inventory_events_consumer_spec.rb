@@ -5,18 +5,8 @@ require 'rails_helper'
 describe InventoryEventsConsumer do
   subject(:consumer) { karafka.consumer_for(Settings.kafka.topics.inventory_events) }
 
-  let(:kafka_metadata) do
-    {
-      'topic' => 'platform.inventory.hosts',
-      'partition' => 2,
-      'offset' => 41,
-      'timestamp' => '2026-10-14T10:00:00Z'
-    }
-  end
-
   before do
     karafka.produce(message.to_json)
-    allow_any_instance_of(Karafka::Messages::Message).to receive_messages(kafka_metadata)
   end
 
   let(:message) do
@@ -79,7 +69,7 @@ describe InventoryEventsConsumer do
 
       it 'enqueues SystemDeleteJob with the required delete fields' do
         delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
-        expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload, kafka_metadata)
+        expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload)
 
         consumer.consume
       end
@@ -98,9 +88,9 @@ describe InventoryEventsConsumer do
           }
         end
 
-        it 'projects delete fields and passes through Kafka metadata' do
+        it 'projects delete fields' do
           delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
-          expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload, kafka_metadata)
+          expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload)
 
           consumer.consume
         end
@@ -118,9 +108,8 @@ describe InventoryEventsConsumer do
         end
 
         it 'preserves the timestamp fallback and omits unrelated fields' do
-          expect(SystemDeleteJob).to receive(:perform_later).with(
-            message.slice('id', 'org_id', 'updated', 'timestamp'), kafka_metadata
-          )
+          delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
+          expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload)
 
           consumer.consume
         end
@@ -139,7 +128,7 @@ describe InventoryEventsConsumer do
           let(:type) { msg_type }
 
           it 'enqueues SystemImportJob' do
-            expect(SystemImportJob).to receive(:perform_later).with(import_payload, kafka_metadata)
+            expect(SystemImportJob).to receive(:perform_later).with(import_payload)
 
             consumer.consume
           end
@@ -244,8 +233,8 @@ describe InventoryEventsConsumer do
               }
             end
 
-            it 'projects import fields and passes through parser metadata and Kafka metadata' do
-              expect(SystemImportJob).to receive(:perform_later).with(import_payload, kafka_metadata)
+            it 'projects import fields and passes through parser metadata' do
+              expect(SystemImportJob).to receive(:perform_later).with(import_payload)
 
               consumer.consume
             end

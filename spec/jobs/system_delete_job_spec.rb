@@ -3,9 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe SystemDeleteJob do
-  subject(:job) { described_class.perform_now(message, metadata) }
-
-  let(:metadata) { { 'topic' => 'inventory', 'partition' => 2, 'offset' => 41 } }
+  subject(:job) { described_class.perform_now(message) }
 
   let(:message) do
     {
@@ -52,7 +50,7 @@ RSpec.describe SystemDeleteJob do
       'updated' => 1.day.ago.utc.iso8601
     }
 
-    described_class.perform_now(stale_message, metadata)
+    described_class.perform_now(stale_message)
 
     expect(system.reload.deleted_at).to be_nil
     expect(PolicySystem.exists?(system_id: system.id)).to be(true)
@@ -73,8 +71,6 @@ RSpec.describe SystemDeleteJob do
 end
 
 RSpec.describe SystemDeleteJob, 'database idempotency' do
-  let(:metadata) { { 'topic' => 'inventory', 'partition' => 2, 'offset' => 41 } }
-
   def delete_message(system_id:, org_id:, updated:)
     { 'type' => 'delete', 'id' => system_id, 'org_id' => org_id, 'updated' => updated }
   end
@@ -108,7 +104,7 @@ RSpec.describe SystemDeleteJob, 'database idempotency' do
     test_result = FactoryBot.create(:test_result, system: system, report_id: policy.id)
 
     described_class.perform_now(delete_message(system_id: system.id, org_id: user.org_id,
-                                               updated: 3.days.ago.iso8601), metadata)
+                                               updated: 3.days.ago.iso8601))
 
     expect(System.where(id: system.id)).to be_empty
     expect(PolicySystem.where(system_id: system.id)).to be_empty
@@ -123,14 +119,13 @@ RSpec.describe SystemDeleteJob, 'database idempotency' do
     policy = FactoryBot.create(:policy, account: user.account, supports_minors: [0], system_id: system.id)
 
     described_class.perform_now(delete_message(system_id: system.id, org_id: user.org_id,
-                                               updated: 3.days.ago.iso8601), metadata)
+                                               updated: 3.days.ago.iso8601))
     SystemImportJob.perform_now(
       inventory_message(system_id: system.id, account: user.account, updated: 2.days.ago.iso8601,
-                        policy_id: policy.id),
-      metadata
+                        policy_id: policy.id)
     )
     described_class.perform_now(delete_message(system_id: system.id, org_id: user.org_id,
-                                               updated: 2.5.days.ago.iso8601), metadata)
+                                               updated: 2.5.days.ago.iso8601))
 
     expect(System.where(id: system.id)).to exist
     expect(PolicySystem.where(system_id: system.id, policy_id: policy.id)).to exist

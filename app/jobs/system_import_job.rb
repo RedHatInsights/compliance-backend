@@ -13,7 +13,7 @@ class SystemImportJob < ApplicationJob
 
   include InventorySystemConcurrency
 
-  def perform(message, _kafka_metadata)
+  def perform(message)
     Kafka::SystemImporter.new(message, Rails.logger, terminal_attempt: terminal_import_attempt?).import
     Kafka::PolicySystemImporter.new(message, Rails.logger).import if policy_id(message)
     Kafka::ReportParser.new(message, Rails.logger).parse_reports if compliance?(message)

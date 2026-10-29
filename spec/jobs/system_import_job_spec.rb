@@ -3,11 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe SystemImportJob do
-  subject(:job) { described_class.perform_now(message, metadata) }
-
-  let(:metadata) do
-    { 'topic' => 'inventory', 'partition' => 2, 'offset' => 41, 'timestamp' => '2026-10-14T10:00:00Z' }
-  end
+  subject(:job) { described_class.perform_now(message) }
 
   let(:message) do
     {
@@ -17,16 +13,6 @@ RSpec.describe SystemImportJob do
         'insights_id' => SecureRandom.uuid
       }
     }
-  end
-
-  it 'preserves Kafka metadata in the serialized job arguments' do
-    serialized_arguments = described_class.new(message, metadata).serialize['arguments']
-
-    expect(serialized_arguments.first).to include('type' => message['type'])
-    expect(serialized_arguments.last).to include(
-      'topic' => metadata['topic'], 'partition' => metadata['partition'],
-      'offset' => metadata['offset'], 'timestamp' => metadata['timestamp']
-    )
   end
 
   it 'uses the imports queue' do
@@ -54,7 +40,7 @@ RSpec.describe SystemImportJob do
     allow(Kafka::SystemImporter).to receive(:new).and_return(importer)
     allow(Kafka::PolicySystemImporter).to receive(:new)
     allow(Kafka::ReportParser).to receive(:new)
-    terminal_job = described_class.new(message, metadata)
+    terminal_job = described_class.new(message)
     terminal_job.exception_executions = { described_class::DATABASE_RETRY_HANDLER => 2 }
 
     terminal_job.perform_now
@@ -69,7 +55,7 @@ RSpec.describe SystemImportJob do
     allow(Kafka::SystemImporter).to receive(:new).and_return(importer)
     allow(Kafka::PolicySystemImporter).to receive(:new)
     allow(Kafka::ReportParser).to receive(:new)
-    concurrency_job = described_class.new(message, metadata)
+    concurrency_job = described_class.new(message)
     concurrency_job.executions = 3
     concurrency_job.exception_executions = {
       'GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError' => 3
@@ -103,8 +89,6 @@ RSpec.describe SystemImportJob do
 end
 
 RSpec.describe SystemImportJob, 'database idempotency' do
-  let(:metadata) { { 'topic' => 'inventory', 'partition' => 2, 'offset' => 41 } }
-
   def inventory_message(system_id:, account:, updated:, display_name: Faker::Internet.domain_name, policy_id: nil)
     { 'type' => 'updated', 'host' => inventory_host(system_id, account, updated, display_name, policy_id) }
   end
@@ -133,8 +117,8 @@ RSpec.describe SystemImportJob, 'database idempotency' do
     message = inventory_message(system_id: system.id, account: account, updated: 1.hour.ago.iso8601,
                                 policy_id: policy.id)
 
-    described_class.perform_now(message, metadata)
-    described_class.perform_now(message, metadata)
+    described_class.perform_now(message)
+    described_class.perform_now(message)
 
     expect(System.unscoped.where(id: system.id).count).to eq(1)
     expect(PolicySystem.where(system_id: system.id, policy_id: policy.id).count).to eq(1)
@@ -148,8 +132,8 @@ RSpec.describe SystemImportJob, 'database idempotency' do
     older_message = inventory_message(system_id: system_id, account: account, updated: 2.hours.ago.iso8601,
                                       display_name: 'older-system')
 
-    described_class.perform_now(newer_message, metadata)
-    described_class.perform_now(older_message, metadata)
+    described_class.perform_now(newer_message)
+    described_class.perform_now(older_message)
 
     expect(System.find(system_id).display_name).to eq('newer-system')
   end
