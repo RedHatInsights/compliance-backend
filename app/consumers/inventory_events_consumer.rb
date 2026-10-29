@@ -10,7 +10,8 @@ class InventoryEventsConsumer < ApplicationConsumer
     when 'delete'
       SystemDeleteJob.perform_later(delete_payload, kafka_metadata)
     when 'created', 'updated'
-      SystemImportJob.perform_later(import_payload, kafka_metadata)
+      message = import_payload
+      SystemImportJob.perform_later(message, kafka_metadata) if importable_host?(message)
     else
       handle_other
     end
@@ -82,6 +83,19 @@ class InventoryEventsConsumer < ApplicationConsumer
   def project_image_builder(profile, projected)
     image_builder = profile['image_builder']
     projected['image_builder'] = image_builder.slice('compliance_policy_id') if image_builder
+  end
+
+  def importable_host?(message)
+    insights_id = message.dig('host', 'insights_id')
+    insights_id.present? && insights_id != NON_INSIGHTS_ID && !excluded_host_type?(message)
+  end
+
+  def excluded_host_type?(message)
+    profile = message.dig('host', 'system_profile') || {}
+
+    profile['host_type'] == 'edge' ||
+      profile.dig('operating_system', 'name')&.match?(/centos/i) ||
+      profile.dig('bootc_status', 'booted', 'image_digest').present?
   end
 
   def service

@@ -172,15 +172,10 @@ describe InventoryEventsConsumer do
                   'updated' => '2026-10-14T10:00:00Z',
                   'system_profile' => {
                     'owner_id' => SecureRandom.uuid,
-                    'host_type' => 'edge',
                     'operating_system' => {
                       'major' => '9',
                       'minor' => '4',
                       'name' => 'Red Hat Enterprise Linux',
-                      'unrelated' => discarded
-                    },
-                    'bootc_status' => {
-                      'booted' => { 'image_digest' => "sha256:#{SecureRandom.hex}", 'unrelated' => discarded },
                       'unrelated' => discarded
                     },
                     'image_builder' => {
@@ -213,18 +208,10 @@ describe InventoryEventsConsumer do
                 ).merge(
                   'system_profile' => {
                     'owner_id' => message.dig('host', 'system_profile', 'owner_id'),
-                    'host_type' => 'edge',
                     'operating_system' => {
                       'major' => '9',
                       'minor' => '4',
                       'name' => 'Red Hat Enterprise Linux'
-                    },
-                    'bootc_status' => {
-                      'booted' => {
-                        'image_digest' => message.dig(
-                          'host', 'system_profile', 'bootc_status', 'booted', 'image_digest'
-                        )
-                      }
                     },
                     'image_builder' => { 'compliance_policy_id' => policy_id }
                   }
@@ -244,6 +231,69 @@ describe InventoryEventsConsumer do
               expect(SystemImportJob).to receive(:perform_later).with(import_payload, kafka_metadata)
 
               consumer.consume
+            end
+          end
+
+          context 'when the host is not importable' do
+            let(:message) { super().deep_merge('host' => excluded_host) }
+
+            shared_examples 'skips the job' do
+              it 'does not enqueue SystemImportJob' do
+                expect(SystemImportJob).not_to receive(:perform_later)
+
+                consumer.consume
+              end
+            end
+
+            context 'without an Insights ID' do
+              let(:message) do
+                {
+                  'type' => type,
+                  'host' => { 'id' => SecureRandom.uuid }
+                }
+              end
+
+              include_examples 'skips the job'
+            end
+
+            context 'with the non-Insights ID' do
+              let(:message) do
+                {
+                  'type' => type,
+                  'host' => {
+                    'id' => SecureRandom.uuid,
+                    'insights_id' => described_class::NON_INSIGHTS_ID
+                  }
+                }
+              end
+
+              include_examples 'skips the job'
+            end
+
+            context 'when it is an edge host' do
+              let(:excluded_host) { { 'system_profile' => { 'host_type' => 'edge' } } }
+
+              include_examples 'skips the job'
+            end
+
+            context 'when it runs CentOS' do
+              let(:excluded_host) do
+                { 'system_profile' => { 'operating_system' => { 'name' => 'CentOS Linux' } } }
+              end
+
+              include_examples 'skips the job'
+            end
+
+            context 'when it is booted from a bootc image' do
+              let(:excluded_host) do
+                {
+                  'system_profile' => {
+                    'bootc_status' => { 'booted' => { 'image_digest' => "sha256:#{SecureRandom.hex}" } }
+                  }
+                }
+              end
+
+              include_examples 'skips the job'
             end
           end
 
