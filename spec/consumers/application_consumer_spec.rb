@@ -18,8 +18,6 @@ describe ApplicationConsumer do
   before { karafka.produce(message.to_json) }
 
   describe '#consume' do
-    before { allow_any_instance_of(Kafka::DeletedSystemCleaner).to receive(:cleanup_system) }
-
     it 'wraps processing in the Rails executor for connection and state management' do
       expect(Rails.application.executor).to receive(:wrap).at_least(:once).and_call_original
       consumer.consume
