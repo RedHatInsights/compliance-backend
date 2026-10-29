@@ -5,33 +5,48 @@ class InventoryEventsConsumer < ApplicationConsumer
   NON_INSIGHTS_ID = '00000000-0000-0000-0000-000000000000'
   MAX_RETRIES = 3
 
-  def consume_one
-    case message_type
-    when 'delete'
-      SystemDeleteJob.perform_later(delete_payload, kafka_metadata)
-    when 'created', 'updated'
-      SystemImportJob.perform_later(import_payload, kafka_metadata)
-    else
-      handle_other
+  def consume
+    Rails.application.executor.wrap do
+      log_metadata
+      grouped_messages.each_value do |group|
+        topic, partition = group.fetch(:key)
+        entries = group.fetch(:messages).map do |kafka_message|
+          payload = JSON.parse(kafka_message.raw_payload)
+          {
+            'type' => payload['type'],
+            'payload' => projected_payload(payload),
+            'metadata' => kafka_metadata(kafka_message)
+          }
+        end
+
+        InventoryEventsBatchJob.perform_later(entries, { 'topic' => topic, 'partition' => partition })
+        group.fetch(:messages).each { |kafka_message| mark_as_consumed(kafka_message) }
+      end
     end
   end
 
   private
 
-  def handle_other
-    if service == 'compliance'
-      Kafka::ReportParser.new(payload, logger).parse_reports
-    else
-      logger.debug "Skipped message of type '#{message_type}'"
+  def grouped_messages
+    messages.each_with_object({}) do |kafka_message, groups|
+      key = [kafka_message.topic, kafka_message.partition]
+      groups[key] ||= { key: key, messages: [] }
+      groups[key][:messages] << kafka_message
     end
   end
 
-  def payload
-    JSON.parse(@message.raw_payload)
+  def projected_payload(event)
+    case event['type']
+    when 'delete'
+      event.slice('id', 'org_id', 'updated', 'timestamp')
+    when 'created', 'updated'
+      import_payload(event)
+    else
+      event
+    end
   end
 
-  def import_payload
-    event = payload
+  def import_payload(event)
     projected = event.slice('type', 'id')
     projected['host'] = project_host(event['host'] || {})
     projected['platform_metadata'] = project_platform_metadata(event['platform_metadata']) if event['platform_metadata']
@@ -53,10 +68,6 @@ class InventoryEventsConsumer < ApplicationConsumer
 
   def project_platform_metadata(metadata)
     metadata.slice('service', 'request_id', 'org_id', 'b64_identity', 'url', 'metadata')
-  end
-
-  def delete_payload
-    payload.slice('id', 'org_id', 'updated', 'timestamp')
   end
 
   # Keep fields consumed by import eligibility, persistence, and policy association.
@@ -84,20 +95,12 @@ class InventoryEventsConsumer < ApplicationConsumer
     projected['image_builder'] = image_builder.slice('compliance_policy_id') if image_builder
   end
 
-  def service
-    payload.dig('platform_metadata', 'service')
-  end
-
-  def message_type
-    payload.dig('type')
-  end
-
-  def kafka_metadata
+  def kafka_metadata(kafka_message)
     {
-      'topic' => @message.topic,
-      'partition' => @message.partition,
-      'offset' => @message.offset,
-      'timestamp' => @message.timestamp
+      'topic' => kafka_message.topic,
+      'partition' => kafka_message.partition,
+      'offset' => kafka_message.offset,
+      'timestamp' => kafka_message.timestamp
     }
   end
 end

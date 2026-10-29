@@ -4,7 +4,7 @@
 class SystemDeleteJob < ApplicationJob
   queue_as :deletes
 
-  include InventorySystemConcurrency
+  include InventoryPartitionConcurrency
 
   def perform(message, _kafka_metadata)
     removed = Kafka::SystemRemover.new(message, Rails.logger).remove_system
