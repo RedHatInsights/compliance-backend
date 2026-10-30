@@ -44,8 +44,16 @@ jobs:
         with:
           bundler-cache: true
           bundler: latest
-      - name: Update Bundler to latest version
-        run: bundle config set frozen false && bundle update --bundler
+      - name: Update Bundler to latest stable version
+        run: |
+          version="$(
+            gem list bundler --exact --remote --all \
+              | ruby -ne 'if $_ =~ /\(([^,\s)]+)/; puts $1; exit; end'
+          )"
+          test -n "${version}"
+          echo "Latest stable Bundler: ${version}"
+          bundle config set frozen false
+          bundle update --bundler="${version}"
       - name: Open or update pull request if Bundler version changed
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
