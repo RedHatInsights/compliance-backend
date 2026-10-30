@@ -67,14 +67,27 @@ class SystemImportJob < ApplicationJob
   def upsert_system(id, payload, updated)
     attrs = extract_system_attrs(id, payload, updated)
     # rubocop:disable Rails/SkipsModelValidations
-    # rubocop:disable Layout/LineLength
     result = System.upsert(
       attrs,
       unique_by: :id,
       returning: %w[id],
-      on_duplicate: Arel.sql('account = EXCLUDED.account, org_id = EXCLUDED.org_id, display_name = EXCLUDED.display_name, groups = EXCLUDED.groups, tags = EXCLUDED.tags, os_major_version = EXCLUDED.os_major_version, os_minor_version = EXCLUDED.os_minor_version, owner_id = EXCLUDED.owner_id, stale_timestamp = EXCLUDED.stale_timestamp, created = EXCLUDED.created, updated = EXCLUDED.updated, insights_id = EXCLUDED.insights_id, deleted_at = EXCLUDED.deleted_at WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated')
+      on_duplicate: Arel.sql(<<~SQL.squish)
+        account = EXCLUDED.account,
+        org_id = EXCLUDED.org_id,
+        display_name = EXCLUDED.display_name,
+        groups = EXCLUDED.groups,
+        tags = EXCLUDED.tags,
+        os_major_version = EXCLUDED.os_major_version,
+        os_minor_version = EXCLUDED.os_minor_version,
+        owner_id = EXCLUDED.owner_id,
+        stale_timestamp = EXCLUDED.stale_timestamp,
+        created = EXCLUDED.created,
+        updated = EXCLUDED.updated,
+        insights_id = EXCLUDED.insights_id,
+        deleted_at = EXCLUDED.deleted_at
+        WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated
+      SQL
     )
-    # rubocop:enable Layout/LineLength
     # rubocop:enable Rails/SkipsModelValidations
     log_upsert_result(result, id)
   rescue ActiveRecord::ActiveRecordError
