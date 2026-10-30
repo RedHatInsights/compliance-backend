@@ -46,7 +46,7 @@ class RuleResultsCleaner
   private
 
   # One batch per run. Lock children with SKIP LOCKED so we do not wait on
-  # Kafka::DeletedSystemCleaner, which locks rule_results before the parent.
+  # SystemDeleteJob, which locks rule_results before the parent.
   # A parent with a locked child stays for the next run.
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def cleanup_older
