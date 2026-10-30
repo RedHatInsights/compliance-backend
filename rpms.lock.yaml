@@ -1152,13 +1152,13 @@ arches:
     name: crypto-policies
     evr: 20260224-1.gitea0f072.el9_8
     sourcerpm: crypto-policies-20260224-1.gitea0f072.el9_8.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/baseos/os/Packages/c/curl-7.76.1-40.el9_8.8.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/baseos/os/Packages/c/curl-7.76.1-40.el9_8.9.x86_64.rpm
     repoid: ubi-9-for-x86_64-baseos-rpms
-    size: 307634
-    checksum: sha256:21ea1af695c0a8cea53ef6403382d4f8be30790dd6a8fe9b46b808e5fd7e0d3c
+    size: 307778
+    checksum: sha256:41f3588e1e68b120c94acc817af08be2f8f021ce534e01f87a1757c497a13515
     name: curl
-    evr: 7.76.1-40.el9_8.8
-    sourcerpm: curl-7.76.1-40.el9_8.8.src.rpm
+    evr: 7.76.1-40.el9_8.9
+    sourcerpm: curl-7.76.1-40.el9_8.9.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/baseos/os/Packages/c/cyrus-sasl-lib-2.1.27-22.el9.x86_64.rpm
     repoid: ubi-9-for-x86_64-baseos-rpms
     size: 786202
@@ -1404,13 +1404,13 @@ arches:
     name: kmod-libs
     evr: 28-11.el9
     sourcerpm: kmod-28-11.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/baseos/os/Packages/k/krb5-libs-1.21.1-10.el9_8.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/baseos/os/Packages/k/krb5-libs-1.21.1-10.el9_8.1.x86_64.rpm
     repoid: ubi-9-for-x86_64-baseos-rpms
-    size: 790743
-    checksum: sha256:8906be9f2d414c5f4e1218db0c94955c2b3394b43a04b7dbcc2ef66c4340ebc6
+    size: 790530
+    checksum: sha256:867bf5fb56f787d3515053cb0f5f14e6aced3ba43999f03f255c2d3f6c0c8f36
     name: krb5-libs
-    evr: 1.21.1-10.el9_8
-    sourcerpm: krb5-1.21.1-10.el9_8.src.rpm
+    evr: 1.21.1-10.el9_8.1
+    sourcerpm: krb5-1.21.1-10.el9_8.1.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/baseos/os/Packages/l/less-590-6.el9.x86_64.rpm
     repoid: ubi-9-for-x86_64-baseos-rpms
     size: 166025
@@ -1488,13 +1488,13 @@ arches:
     name: libcom_err
     evr: 1.46.5-8.el9
     sourcerpm: e2fsprogs-1.46.5-8.el9.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/baseos/os/Packages/l/libcurl-7.76.1-40.el9_8.8.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/baseos/os/Packages/l/libcurl-7.76.1-40.el9_8.9.x86_64.rpm
     repoid: ubi-9-for-x86_64-baseos-rpms
-    size: 297409
-    checksum: sha256:cc12ee8e4fb07d93ad55dc59406ff65a3acbb795b3eca30b32195e51b3a12965
+    size: 298266
+    checksum: sha256:0b196b55b1e358e08c7aed3a3eee2af18009dd66c7a73c4f2efc08f18a6b5c63
     name: libcurl
-    evr: 7.76.1-40.el9_8.8
-    sourcerpm: curl-7.76.1-40.el9_8.8.src.rpm
+    evr: 7.76.1-40.el9_8.9
+    sourcerpm: curl-7.76.1-40.el9_8.9.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/baseos/os/Packages/l/libdb-5.3.28-57.el9_6.x86_64.rpm
     repoid: ubi-9-for-x86_64-baseos-rpms
     size: 755192
@@ -2190,7 +2190,7 @@ arches:
     sourcerpm: libyaml-0.2.5-7.el9.src.rpm
   source: []
   module_metadata:
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/repodata/3ba5b238e7e33858f6ad0490432b7aeb6ae8577bf57ada0b74d8fc300e234688-modules.yaml.gz
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi9/9/x86_64/appstream/os/repodata/33e8448a4e88cbc51ec1bc63ab54152419bfc0fff95a57698f2256d016e4835d-modules.yaml.gz
     repoid: ubi-9-for-x86_64-appstream-rpms
-    size: 8395
-    checksum: sha256:3ba5b238e7e33858f6ad0490432b7aeb6ae8577bf57ada0b74d8fc300e234688
+    size: 8328
+    checksum: sha256:33e8448a4e88cbc51ec1bc63ab54152419bfc0fff95a57698f2256d016e4835d
