@@ -70,6 +70,22 @@ RSpec.describe SystemDeleteJob do
     expect { job }.to raise_error(ActiveRecord::RecordNotFound)
     expect(cleaner).not_to have_received(:cleanup_system)
   end
+
+  it 'enqueues exactly one standalone retry for a transient database failure' do
+    original_adapter = described_class.queue_adapter
+    test_adapter = ActiveJob::QueueAdapters::TestAdapter.new
+    described_class.queue_adapter = test_adapter
+    remover = instance_double(Kafka::SystemRemover)
+    allow(Kafka::SystemRemover).to receive(:new).and_return(remover)
+    allow(Kafka::DeletedSystemCleaner).to receive(:new)
+    expect(remover).to receive(:remove_system).and_raise(ActiveRecord::Deadlocked)
+
+    job
+
+    expect(test_adapter.enqueued_jobs.map { |enqueued| enqueued[:job] }).to eq([described_class])
+  ensure
+    described_class.queue_adapter = original_adapter
+  end
 end
 
 RSpec.describe SystemDeleteJob, 'database idempotency' do
