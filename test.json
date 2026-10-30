@@ -79,6 +79,17 @@
             "port": 8081
         }
     ],
+    "dependencyEndpoints": {
+        "v2": {
+            "rbac": {
+                "service": {
+                    "uri": "http://rbac:8080",
+                    "authenticated": false,
+                    "ca_certificate": ""
+                }
+            }
+        }
+    },
     "privateEndpoints": [
         {
             "name": "service",
