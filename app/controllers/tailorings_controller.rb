@@ -54,7 +54,6 @@ class TailoringsController < ApplicationController
 
   def tailoring_file
     builder = file_builder(params.expect(:format).to_sym)
-
     return if builder.empty? # no-content for empty XMLs
 
     send_data(builder.output, filename: builder.filename, type: builder.mime)
@@ -77,7 +76,20 @@ class TailoringsController < ApplicationController
     pundit_scope(Policy).find(permitted_params[:policy_id])
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def file_builder(format)
+    if tailoring.tailored?
+      ActiveRecord::Associations::Preloader.new(
+        records: [tailoring],
+        associations: {
+          rules: :rule_group,
+          profile: :rules,
+          policy: :profile,
+          security_guide: %i[value_definitions rule_groups]
+        }
+      ).call
+    end
+
     TailoringFile.new(
       profile: tailoring,
       rules: tailoring.rules_added + tailoring.rules_removed,
@@ -86,6 +98,7 @@ class TailoringsController < ApplicationController
       format: format
     )
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def resource
     Tailoring

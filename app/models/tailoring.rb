@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
 # Model for profile tailoring
+# rubocop:disable Metrics/ClassLength
 class Tailoring < ApplicationRecord
+  # Wraps Rule with selected flag for transparent rule delegation.
+  class SelectedRule < SimpleDelegator
+    def initialize(rule, selected)
+      super(rule)
+      @selected = selected
+    end
+
+    attr_reader :selected
+  end
+
   include RuleTree
 
   GROUP_ANCESTRY_IDS = Arel::Nodes::NamedFunction.new(
@@ -78,29 +89,85 @@ class Tailoring < ApplicationRecord
   end
 
   def rule_group_ref_ids
+    return rule_group_ref_ids_query unless rules_association_loaded?
+
+    groups_by_id = security_guide.rule_groups.index_by(&:id)
+    group_ids = collect_group_ancestry_ids
+    group_ids.filter_map { |id| groups_by_id[id]&.ref_id }
+  end
+
+  def rule_group_ref_ids_query
     base = RuleGroup.where(id: rules_added.reselect(:rule_group_id))
     base.or(RuleGroup.where(id: base.select(GROUP_ANCESTRY_IDS)))
         .pluck(:ref_id)
   end
 
+  def collect_group_ancestry_ids
+    rules_added.filter_map(&:rule_group).flat_map do |group|
+      [group.id.to_s, *group.ancestry.to_s.split('/')]
+    end.uniq
+  end
+
   def tailored?
-    (rules_added.except(:select).count + rules_removed.except(:select).count).positive? ||
+    rules_added.any? || rules_removed.any? ||
       value_overrides != profile.value_overrides
   end
 
   def rules_added
+    return rules_added_preloaded if rules_association_loaded?
+
     rules.where.not(id: profile.rules)
          .select(rules.arel_table[Arel.star], AN::True.new.as('selected'))
   end
 
   def rules_removed
+    return rules_removed_preloaded if rules_association_loaded?
+
     profile.rules.where.not(id: rules).select(rules.arel_table[Arel.star], AN::False.new.as('selected'))
   end
 
   def value_overrides_by_ref_id
+    return value_overrides_by_ref_id_preloaded if security_guide.association(:value_definitions).loaded?
+
     ValueDefinition.where(id: value_overrides.keys).to_h do |value_definition|
       [value_definition.ref_id, value_overrides[value_definition.id]]
     end
+  end
+
+  private
+
+  def rules_association_loaded?
+    association(:rules).loaded?
+  end
+
+  def rules_added_preloaded
+    preloaded_rules(rules, profile.rules, true)
+  end
+
+  def rules_removed_preloaded
+    preloaded_rules(profile.rules, rules, false)
+  end
+
+  def preloaded_rules(source, excluded, selected)
+    excluded_ids = excluded.index_by(&:id)
+    source.to_a.filter_map do |rule|
+      next if excluded_ids.key?(rule.id)
+
+      selected_rule(rule, selected)
+    end
+  end
+
+  def value_overrides_by_ref_id_preloaded
+    value_definitions = security_guide.value_definitions.index_by { |definition| definition.id.to_s }
+    value_overrides.each_with_object({}) do |(id, value), result|
+      definition = value_definitions[id.to_s]
+      # Skip stale overrides referencing deleted definitions
+      result[definition.ref_id] = value if definition
+    end
+  end
+
+  def selected_rule(rule, selected)
+    SelectedRule.new(rule, selected)
   end
 
   def value_coherence
@@ -112,3 +179,4 @@ class Tailoring < ApplicationRecord
     errors.add(:value_overrides, 'Incoherent keys or value types specified')
   end
 end
+# rubocop:enable Metrics/ClassLength
