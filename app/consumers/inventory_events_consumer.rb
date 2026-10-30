@@ -8,20 +8,7 @@ class InventoryEventsConsumer < ApplicationConsumer
   def consume
     Rails.application.executor.wrap do
       log_metadata
-      grouped_messages.each_value do |group|
-        topic, partition = group.fetch(:key)
-        entries = group.fetch(:messages).map do |kafka_message|
-          payload = JSON.parse(kafka_message.raw_payload)
-          {
-            'type' => payload['type'],
-            'payload' => projected_payload(payload),
-            'metadata' => kafka_metadata(kafka_message)
-          }
-        end
-
-        InventoryEventsBatchJob.perform_later(entries, { 'topic' => topic, 'partition' => partition })
-        group.fetch(:messages).each { |kafka_message| mark_as_consumed(kafka_message) }
-      end
+      grouped_messages.each_value { |group| enqueue_group(group) }
     end
   end
 
@@ -33,6 +20,23 @@ class InventoryEventsConsumer < ApplicationConsumer
       groups[key] ||= { key: key, messages: [] }
       groups[key][:messages] << kafka_message
     end
+  end
+
+  def enqueue_group(group)
+    topic, partition = group.fetch(:key)
+    entries = group.fetch(:messages).map { |kafka_message| batch_entry(kafka_message) }
+
+    InventoryEventsBatchJob.perform_later(entries, { 'topic' => topic, 'partition' => partition })
+    group.fetch(:messages).each { |kafka_message| mark_as_consumed(kafka_message) }
+  end
+
+  def batch_entry(kafka_message)
+    payload = JSON.parse(kafka_message.raw_payload)
+    {
+      'type' => payload['type'],
+      'payload' => projected_payload(payload),
+      'metadata' => kafka_metadata(kafka_message)
+    }
   end
 
   def projected_payload(event)

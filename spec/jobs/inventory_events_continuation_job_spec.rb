@@ -20,13 +20,13 @@ RSpec.describe InventoryEventsContinuationJob do
   it 'processes work items in order and enqueues nothing when all succeed' do
     processors = entries.map { instance_double(InventoryEventsProcessor, process: nil) }
     expect(InventoryEventsProcessor).to receive(:new).with(entries[0].fetch('entry'), attempt: 1)
-                                                      .ordered.and_return(processors[0])
+                                                     .ordered.and_return(processors[0])
     expect(processors[0]).to receive(:process).ordered
     expect(InventoryEventsProcessor).to receive(:new).with(entries[1].fetch('entry'), attempt: 1)
-                                                      .ordered.and_return(processors[1])
+                                                     .ordered.and_return(processors[1])
     expect(processors[1]).to receive(:process).ordered
     expect(InventoryEventsProcessor).to receive(:new).with(entries[2].fetch('entry'), attempt: 1)
-                                                      .ordered.and_return(processors[2])
+                                                     .ordered.and_return(processors[2])
     expect(processors[2]).to receive(:process).ordered
     expect(described_class).not_to receive(:enqueue)
 
@@ -38,10 +38,10 @@ RSpec.describe InventoryEventsContinuationJob do
     first_processor = instance_double(InventoryEventsProcessor, process: nil)
     second_processor = instance_double(InventoryEventsProcessor)
     expect(InventoryEventsProcessor).to receive(:new).with(first.fetch('entry'), attempt: 1)
-                                                      .ordered.and_return(first_processor)
+                                                     .ordered.and_return(first_processor)
     expect(first_processor).to receive(:process).ordered
     expect(InventoryEventsProcessor).to receive(:new).with(second.fetch('entry'), attempt: 1)
-                                                      .ordered.and_return(second_processor)
+                                                     .ordered.and_return(second_processor)
     expect(second_processor).to receive(:process).ordered.and_raise(StandardError, 'processor failed')
     expect(InventoryEventsProcessor).not_to receive(:new).with(third.fetch('entry'), attempt: 1)
     expect(described_class).to receive(:enqueue).with(
@@ -58,7 +58,7 @@ RSpec.describe InventoryEventsContinuationJob do
     failed_work_item = { 'entry' => entries.first.fetch('entry'), 'next_attempt' => 2 }
     processor = instance_double(InventoryEventsProcessor)
     allow(InventoryEventsProcessor).to receive(:new).with(failed_work_item.fetch('entry'), attempt: 2)
-                                                     .and_return(processor)
+                                                    .and_return(processor)
     allow(processor).to receive(:process).and_raise(StandardError, 'processor failed')
     expect(described_class).to receive(:enqueue).with(
       [{ 'entry' => failed_work_item.fetch('entry'), 'next_attempt' => 3 }], kafka_metadata
@@ -74,7 +74,7 @@ RSpec.describe InventoryEventsContinuationJob do
     ]
     processor = instance_double(InventoryEventsProcessor)
     allow(InventoryEventsProcessor).to receive(:new).with(unresolved.first.fetch('entry'), attempt: 3)
-                                                     .and_return(processor)
+                                                    .and_return(processor)
     allow(processor).to receive(:process).and_raise(ActiveRecord::Deadlocked, 'database failed')
     expect(described_class).not_to receive(:enqueue)
     job = described_class.new(unresolved, kafka_metadata)
@@ -150,7 +150,7 @@ RSpec.describe InventoryEventsContinuationJob do
     ]
     processor = instance_double(InventoryEventsProcessor)
     allow(InventoryEventsProcessor).to receive(:new).with(work_items.first.fetch('entry'), attempt: 1)
-                                                     .and_return(processor)
+                                                    .and_return(processor)
     allow(processor).to receive(:process).and_raise(StandardError, 'processor failed')
     original_error = ActiveRecord::ConnectionFailed.new('database unavailable')
     continuation = [
@@ -170,9 +170,9 @@ RSpec.describe InventoryEventsContinuationJob do
     successful_processor = instance_double(InventoryEventsProcessor, process: nil)
     failed_processor = instance_double(InventoryEventsProcessor)
     allow(InventoryEventsProcessor).to receive(:new).with(work_items[0].fetch('entry'), attempt: 1)
-                                                     .and_return(successful_processor)
+                                                    .and_return(successful_processor)
     allow(InventoryEventsProcessor).to receive(:new).with(work_items[1].fetch('entry'), attempt: 1)
-                                                     .and_return(failed_processor)
+                                                    .and_return(failed_processor)
     allow(failed_processor).to receive(:process).and_raise(StandardError, 'processor failed')
     original_error = ActiveRecord::ConnectionFailed.new('database unavailable')
     continuation = [

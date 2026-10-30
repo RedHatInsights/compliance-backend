@@ -28,23 +28,32 @@ class InventoryEventsContinuationJob < ApplicationJob
 
   def perform(work_items, kafka_metadata)
     work_items.each_with_index do |work_item, index|
-      entry = work_item.fetch('entry')
-      next_attempt = work_item.fetch('next_attempt')
-
-      begin
-        InventoryEventsProcessor.new(entry, attempt: next_attempt).process
-      rescue StandardError => e
-        if next_attempt >= MAX_ATTEMPTS
-          raise AttemptsExhausted, "Inventory event exhausted #{MAX_ATTEMPTS} attempts", cause: e
-        end
-
-        continuation = [
-          { 'entry' => entry, 'next_attempt' => next_attempt + 1 },
-          *work_items.drop(index + 1)
-        ]
-        self.class.enqueue(continuation, kafka_metadata)
-        return
-      end
+      break if process_work_item(work_item, index, work_items, kafka_metadata)
     end
+  end
+
+  private
+
+  def process_work_item(work_item, index, work_items, kafka_metadata)
+    entry = work_item.fetch('entry')
+    next_attempt = work_item.fetch('next_attempt')
+    begin
+      InventoryEventsProcessor.new(entry, attempt: next_attempt).process
+      false
+    rescue StandardError => e
+      handle_failure(work_item, index, work_items, kafka_metadata, e)
+      true
+    end
+  end
+
+  def handle_failure(work_item, index, work_items, kafka_metadata, error)
+    entry = work_item.fetch('entry')
+    next_attempt = work_item.fetch('next_attempt')
+    if next_attempt >= MAX_ATTEMPTS
+      raise AttemptsExhausted, "Inventory event exhausted #{MAX_ATTEMPTS} attempts", cause: error
+    end
+
+    continuation = [{ 'entry' => entry, 'next_attempt' => next_attempt + 1 }, *work_items.drop(index + 1)]
+    self.class.enqueue(continuation, kafka_metadata)
   end
 end

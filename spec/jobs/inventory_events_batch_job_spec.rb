@@ -21,13 +21,13 @@ RSpec.describe InventoryEventsBatchJob do
     report_parser = instance_double(Kafka::ReportParser)
 
     expect(SystemImportJob).to receive(:new).with(import_entry['payload'], import_entry['metadata'])
-      .ordered.and_return(import_runner)
+                                            .ordered.and_return(import_runner)
     expect(import_runner).to receive(:perform).with(import_entry['payload'], import_entry['metadata']).ordered
     expect(SystemDeleteJob).to receive(:new).with(delete_entry['payload'], delete_entry['metadata'])
-      .ordered.and_return(delete_runner)
+                                            .ordered.and_return(delete_runner)
     expect(delete_runner).to receive(:perform).with(delete_entry['payload'], delete_entry['metadata']).ordered
     expect(Kafka::ReportParser).to receive(:new).with(report_entry['payload'], Rails.logger)
-      .ordered.and_return(report_parser)
+                                                .ordered.and_return(report_parser)
     expect(report_parser).to receive(:parse_reports).ordered
 
     described_class.perform_now([import_entry, delete_entry, report_entry], kafka_metadata)
@@ -39,11 +39,11 @@ RSpec.describe InventoryEventsBatchJob do
       'payload' => { 'platform_metadata' => { 'service' => 'inventory' } },
       'metadata' => kafka_metadata.merge('offset' => 42)
     }
-    allow(Rails.logger).to receive(:debug)
+    expect(Rails.logger).to receive(:debug) do |&message|
+      expect(message.call).to eq("Skipped message of type 'unknown'")
+    end
 
     described_class.perform_now([unknown_entry], kafka_metadata)
-
-    expect(Rails.logger).to have_received(:debug).with("Skipped message of type 'unknown'")
   end
 
   it 'routes deletes by entry type and retains their metadata' do
@@ -51,7 +51,7 @@ RSpec.describe InventoryEventsBatchJob do
     delete_entry['payload']['type'] = 'created'
     delete_runner = instance_double(SystemDeleteJob)
     expect(SystemDeleteJob).to receive(:new).with(delete_entry['payload'], delete_entry['metadata'])
-      .and_return(delete_runner)
+                                            .and_return(delete_runner)
     expect(delete_runner).to receive(:perform).with(delete_entry['payload'], delete_entry['metadata'])
 
     described_class.perform_now([delete_entry], kafka_metadata)

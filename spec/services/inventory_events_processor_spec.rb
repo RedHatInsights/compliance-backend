@@ -19,7 +19,7 @@ RSpec.describe InventoryEventsProcessor do
 
     %w[created updated].each do |type|
       expect { described_class.new(entry(type, payload), attempt: 1).process }
-        .to raise_error { |raised| expect(raised).to equal(exception) }
+        .to raise_error(exception.class) { |raised| expect(raised).to equal(exception) }
     end
   end
 
@@ -32,7 +32,7 @@ RSpec.describe InventoryEventsProcessor do
     expect(delete_job).not_to receive(:perform_now)
 
     expect { described_class.new(entry('delete', delete_payload), attempt: 1).process }
-      .to raise_error { |raised| expect(raised).to equal(exception) }
+      .to raise_error(exception.class) { |raised| expect(raised).to equal(exception) }
   end
 
   it 'dispatches compliance reports to the report parser and propagates failures' do
@@ -43,16 +43,16 @@ RSpec.describe InventoryEventsProcessor do
     expect(parser).to receive(:parse_reports).and_raise(exception)
 
     expect { described_class.new(entry('report', report_payload), attempt: 1).process }
-      .to raise_error { |raised| expect(raised).to equal(exception) }
+      .to raise_error(exception.class) { |raised| expect(raised).to equal(exception) }
   end
 
   it 'logs and skips unknown non-compliance events' do
     unknown_payload = { 'platform_metadata' => { 'service' => 'inventory' } }
-    allow(Rails.logger).to receive(:debug)
+    expect(Rails.logger).to receive(:debug) do |&message|
+      expect(message.call).to eq("Skipped message of type 'unknown'")
+    end
 
     described_class.new(entry('unknown', unknown_payload), attempt: 1).process
-
-    expect(Rails.logger).to have_received(:debug).with("Skipped message of type 'unknown'")
   end
 
   it 'resolves system identifiers for import, delete, and compliance report entries' do
@@ -79,7 +79,7 @@ RSpec.describe InventoryEventsProcessor do
     early_jobs = 2.times.map { instance_double(SystemImportJob, perform: nil) }
     terminal_job = instance_double(SystemImportJob, perform: nil)
     expect(SystemImportJob).to receive(:new).with(payload, metadata).exactly(3).times
-      .and_return(*early_jobs, terminal_job)
+                                            .and_return(*early_jobs, terminal_job)
 
     early_jobs.each do |import_job|
       expect(import_job).not_to receive(:exception_executions=)

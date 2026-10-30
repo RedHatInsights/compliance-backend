@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Processes a projected inventory event and resolves the affected system.
 class InventoryEventsProcessor
   def initialize(entry, attempt:)
     @entry = entry
@@ -9,17 +10,11 @@ class InventoryEventsProcessor
   def process
     case @entry.fetch('type')
     when 'delete'
-      SystemDeleteJob.new(payload, metadata).perform(payload, metadata)
+      process_delete
     when 'created', 'updated'
-      job = SystemImportJob.new(payload, metadata)
-      job.exception_executions = { SystemImportJob::DATABASE_RETRY_HANDLER => 2 } if @attempt == 3
-      job.perform(payload, metadata)
+      process_import
     else
-      if payload.dig('platform_metadata', 'service') == 'compliance'
-        Kafka::ReportParser.new(payload, Rails.logger).parse_reports
-      else
-        Rails.logger.debug "Skipped message of type '#{@entry.fetch('type')}'"
-      end
+      process_report_or_skip
     end
   end
 
@@ -34,6 +29,24 @@ class InventoryEventsProcessor
   end
 
   private
+
+  def process_delete
+    SystemDeleteJob.new(payload, metadata).perform(payload, metadata)
+  end
+
+  def process_import
+    job = SystemImportJob.new(payload, metadata)
+    job.exception_executions = { SystemImportJob::DATABASE_RETRY_HANDLER => 2 } if @attempt == 3
+    job.perform(payload, metadata)
+  end
+
+  def process_report_or_skip
+    if payload.dig('platform_metadata', 'service') == 'compliance'
+      Kafka::ReportParser.new(payload, Rails.logger).parse_reports
+    else
+      Rails.logger.debug { "Skipped message of type '#{@entry.fetch('type')}'" }
+    end
+  end
 
   def payload
     @entry.fetch('payload')

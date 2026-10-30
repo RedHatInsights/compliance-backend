@@ -169,7 +169,8 @@ describe InventoryEventsConsumer do
 
     expect(InventoryEventsBatchJob).to receive(:perform_later).with(
       [{ 'type' => 'delete',
-         'payload' => { 'id' => 'delete-id', 'org_id' => 'org-id', 'updated' => 'updated-at', 'timestamp' => 'timestamp-at' },
+         'payload' => { 'id' => 'delete-id', 'org_id' => 'org-id', 'updated' => 'updated-at',
+                        'timestamp' => 'timestamp-at' },
          'metadata' => { 'topic' => topic, 'partition' => partition_two, 'offset' => 20,
                          'timestamp' => '2026-10-14T10:20:00Z' } }],
       { 'topic' => topic, 'partition' => partition_two }
