@@ -5,255 +5,200 @@ require 'rails_helper'
 describe InventoryEventsConsumer do
   subject(:consumer) { karafka.consumer_for(Settings.kafka.topics.inventory_events) }
 
-  let(:kafka_metadata) do
-    {
-      'topic' => 'platform.inventory.hosts',
-      'partition' => 2,
-      'offset' => 41,
-      'timestamp' => '2026-10-14T10:00:00Z'
-    }
+  let(:topic) { 'platform.inventory.hosts' }
+  let(:partition_one) { 1 }
+  let(:partition_two) { 2 }
+  let(:payloads) do
+    [
+      { 'type' => 'created', 'id' => 'created-id', 'host' => { 'id' => 'host-1', 'unrelated' => 'drop' } },
+      { 'type' => 'delete', 'id' => 'delete-id', 'org_id' => 'org-1', 'updated' => 'updated-at' },
+      { 'type' => 'unknown', 'platform_metadata' => { 'service' => 'inventory' }, 'full' => true }
+    ]
+  end
+
+  let(:messages) do
+    [
+      message(payloads[0], partition_one, 10),
+      message(payloads[1], partition_two, 20),
+      message(payloads[2], partition_one, 11)
+    ]
+  end
+
+  def message(payload, partition, offset)
+    instance_double(
+      Karafka::Messages::Message,
+      raw_payload: payload.to_json,
+      topic: topic,
+      partition: partition,
+      offset: offset,
+      timestamp: "2026-10-14T10:#{offset}:00Z"
+    )
   end
 
   before do
-    karafka.produce(message.to_json)
-    allow_any_instance_of(Karafka::Messages::Message).to receive_messages(kafka_metadata)
+    allow(consumer).to receive(:messages).and_return(messages)
+    allow(consumer).to receive(:log_metadata)
+    allow(consumer).to receive(:mark_as_consumed)
   end
 
-  let(:message) do
-    {
-      'type' => type,
+  it 'enqueues one ordered batch per topic-partition and acknowledges after enqueue' do
+    import = { 'type' => 'created', 'id' => 'created-id', 'host' => { 'id' => 'host-1' } }
+    delete = { 'type' => 'delete', 'id' => 'delete-id', 'org_id' => 'org-1', 'updated' => 'updated-at' }
+    unknown = payloads[2]
+
+    expect(InventoryEventsBatchJob).to receive(:perform_later).with(
+      [
+        { 'type' => 'created', 'payload' => import,
+          'metadata' => { 'topic' => topic, 'partition' => partition_one, 'offset' => 10,
+                          'timestamp' => '2026-10-14T10:10:00Z' } },
+        { 'type' => 'unknown', 'payload' => unknown,
+          'metadata' => { 'topic' => topic, 'partition' => partition_one, 'offset' => 11,
+                          'timestamp' => '2026-10-14T10:11:00Z' } }
+      ],
+      { 'topic' => topic, 'partition' => partition_one }
+    ).ordered
+    expect(consumer).to receive(:mark_as_consumed).with(messages[0]).ordered
+    expect(consumer).to receive(:mark_as_consumed).with(messages[2]).ordered
+    expect(InventoryEventsBatchJob).to receive(:perform_later).with(
+      [{ 'type' => 'delete', 'payload' => delete,
+         'metadata' => { 'topic' => topic, 'partition' => partition_two, 'offset' => 20,
+                         'timestamp' => '2026-10-14T10:20:00Z' } }],
+      { 'topic' => topic, 'partition' => partition_two }
+    ).ordered
+    expect(consumer).to receive(:mark_as_consumed).with(messages[1]).ordered
+
+    consumer.consume
+  end
+
+  it 'projects the complete retained import fields from a rich created payload' do
+    payload = {
+      'type' => 'created',
+      'id' => 'system-id',
+      'unrelated' => 'drop-root',
       'host' => {
-        'id' => SecureRandom.uuid,
-        'insights_id' => SecureRandom.uuid
+        'id' => 'host-id',
+        'insights_id' => 'insights-id',
+        'account' => 'account-id',
+        'org_id' => 'org-id',
+        'display_name' => 'host-name',
+        'groups' => ['group-one'],
+        'tags' => [{ 'namespace' => 'insights', 'key' => 'env', 'value' => 'test' }],
+        'stale_timestamp' => '2026-10-14T09:00:00Z',
+        'created' => '2026-10-13T09:00:00Z',
+        'updated' => '2026-10-14T09:00:00Z',
+        'unrelated' => 'drop-host',
+        'system_profile' => {
+          'owner_id' => 'owner-id',
+          'host_type' => 'edge',
+          'unrelated' => 'drop-profile',
+          'operating_system' => {
+            'major' => '9', 'minor' => '4', 'name' => 'Red Hat Enterprise Linux', 'unrelated' => 'drop-os'
+          },
+          'bootc_status' => {
+            'booted' => { 'image_digest' => 'sha256:abc123', 'unrelated' => 'drop-booted' },
+            'unrelated' => 'drop-bootc'
+          },
+          'image_builder' => { 'compliance_policy_id' => 'policy-id', 'unrelated' => 'drop-builder' }
+        }
+      },
+      'platform_metadata' => {
+        'service' => 'compliance',
+        'request_id' => 'request-id',
+        'org_id' => 'org-id',
+        'b64_identity' => 'identity',
+        'url' => 'https://example.test/report',
+        'metadata' => { 'full' => { 'nested' => 'value' } },
+        'unrelated' => 'drop-platform'
       }
     }
-  end
-
-  let(:import_payload) do
-    {
-      'type' => type,
-      'host' => message.fetch('host').slice('id', 'insights_id')
-    }
-  end
-
-  describe 'handling messages with unknown type' do
-    let(:type) { 'somethingelse' }
-
-    it 'logs a debug message and skips processing' do
-      expect(Karafka.logger).to receive(:debug).with("Skipped message of type '#{type}'")
-
-      consumer.consume
-    end
-
-    context 'when message is for compliance service' do
-      let(:message) do
-        super().deep_merge(
-          {
-            'platform_metadata' => {
-              'service' => 'compliance'
-            }
+    import_entry = {
+      'type' => 'created',
+      'payload' => {
+        'type' => 'created',
+        'id' => 'system-id',
+        'host' => {
+          'id' => 'host-id',
+          'insights_id' => 'insights-id',
+          'account' => 'account-id',
+          'org_id' => 'org-id',
+          'display_name' => 'host-name',
+          'groups' => ['group-one'],
+          'tags' => [{ 'namespace' => 'insights', 'key' => 'env', 'value' => 'test' }],
+          'stale_timestamp' => '2026-10-14T09:00:00Z',
+          'created' => '2026-10-13T09:00:00Z',
+          'updated' => '2026-10-14T09:00:00Z',
+          'system_profile' => {
+            'owner_id' => 'owner-id',
+            'host_type' => 'edge',
+            'operating_system' => { 'major' => '9', 'minor' => '4', 'name' => 'Red Hat Enterprise Linux' },
+            'bootc_status' => { 'booted' => { 'image_digest' => 'sha256:abc123' } },
+            'image_builder' => { 'compliance_policy_id' => 'policy-id' }
           }
-        )
-      end
-
-      it 'delegates to ReportParser' do
-        expect(Kafka::ReportParser).to receive(:new).with(message, anything).and_call_original
-        expect_any_instance_of(Kafka::ReportParser).to receive(:parse_reports)
-
-        consumer.consume
-      end
-    end
-  end
-
-  describe 'handling messages by type' do
-    context 'when message is delete' do
-      let(:type) { 'delete' }
-      let(:message) do
-        {
-          'type' => type,
-          'id' => SecureRandom.uuid,
-          'org_id' => Faker::Number.number(digits: 6).to_s,
-          'updated' => Time.current.iso8601
+        },
+        'platform_metadata' => {
+          'service' => 'compliance',
+          'request_id' => 'request-id',
+          'org_id' => 'org-id',
+          'b64_identity' => 'identity',
+          'url' => 'https://example.test/report',
+          'metadata' => { 'full' => { 'nested' => 'value' } }
         }
-      end
+      },
+      'metadata' => {
+        'topic' => topic, 'partition' => partition_one, 'offset' => 10,
+        'timestamp' => '2026-10-14T10:10:00Z'
+      }
+    }
+    allow(consumer).to receive(:messages).and_return([message(payload, partition_one, 10)])
 
-      it 'enqueues SystemDeleteJob with the required delete fields' do
-        delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
-        expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload, kafka_metadata)
+    expect(InventoryEventsBatchJob).to receive(:perform_later).with(
+      [import_entry], { 'topic' => topic, 'partition' => partition_one }
+    )
 
-        consumer.consume
-      end
+    consumer.consume
+  end
 
-      context 'with a rich payload' do
-        let(:message) do
-          {
-            'type' => type,
-            'id' => SecureRandom.uuid,
-            'org_id' => Faker::Number.number(digits: 6).to_s,
-            'updated' => 2.minutes.ago.iso8601,
-            'timestamp' => 1.minute.ago.iso8601,
-            'unrelated' => Faker::Lorem.sentence,
-            'host' => { 'id' => SecureRandom.uuid, 'unrelated' => Faker::Lorem.sentence },
-            'platform_metadata' => { 'service' => 'inventory', 'unrelated' => Faker::Lorem.sentence }
-          }
-        end
+  it 'projects only the retained fields from a rich delete payload' do
+    payload = {
+      'type' => 'delete', 'id' => 'delete-id', 'org_id' => 'org-id', 'updated' => 'updated-at',
+      'timestamp' => 'timestamp-at', 'unrelated' => 'drop-root',
+      'host' => { 'id' => 'host-id', 'unrelated' => 'drop-host' },
+      'platform_metadata' => { 'service' => 'inventory', 'unrelated' => 'drop-platform' }
+    }
+    allow(consumer).to receive(:messages).and_return([message(payload, partition_two, 20)])
 
-        it 'projects delete fields and passes through Kafka metadata' do
-          delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
-          expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload, kafka_metadata)
+    expect(InventoryEventsBatchJob).to receive(:perform_later).with(
+      [{ 'type' => 'delete',
+         'payload' => { 'id' => 'delete-id', 'org_id' => 'org-id', 'updated' => 'updated-at',
+                        'timestamp' => 'timestamp-at' },
+         'metadata' => { 'topic' => topic, 'partition' => partition_two, 'offset' => 20,
+                         'timestamp' => '2026-10-14T10:20:00Z' } }],
+      { 'topic' => topic, 'partition' => partition_two }
+    )
 
-          consumer.consume
-        end
-      end
+    consumer.consume
+  end
 
-      context 'when updated is absent' do
-        let(:message) do
-          {
-            'type' => type,
-            'id' => SecureRandom.uuid,
-            'org_id' => Faker::Number.number(digits: 6).to_s,
-            'timestamp' => Time.current.iso8601,
-            'unrelated' => Faker::Lorem.sentence
-          }
-        end
+  it 'retains the full compliance payload without parsing synchronously' do
+    compliance = payloads[2].merge('platform_metadata' => { 'service' => 'compliance' })
+    compliance_message = message(compliance, partition_one, 10)
+    allow(consumer).to receive(:messages).and_return([compliance_message])
 
-        it 'preserves the timestamp fallback and omits unrelated fields' do
-          expect(SystemDeleteJob).to receive(:perform_later).with(
-            message.slice('id', 'org_id', 'updated', 'timestamp'), kafka_metadata
-          )
+    expect(Kafka::ReportParser).not_to receive(:new)
+    expect(InventoryEventsBatchJob).to receive(:perform_later).with(
+      [{ 'type' => 'unknown', 'payload' => compliance,
+         'metadata' => { 'topic' => topic, 'partition' => partition_one, 'offset' => 10,
+                         'timestamp' => '2026-10-14T10:10:00Z' } }],
+      { 'topic' => topic, 'partition' => partition_one }
+    )
 
-          consumer.consume
-        end
-      end
+    consumer.consume
+  end
 
-      it 'propagates enqueue failures' do
-        allow(SystemDeleteJob).to receive(:perform_later).and_raise(StandardError, 'enqueue failed')
+  it 'does not acknowledge a group when enqueue fails' do
+    allow(InventoryEventsBatchJob).to receive(:perform_later).and_raise(StandardError, 'enqueue failed')
 
-        expect { consumer.consume }.to raise_error(StandardError, 'enqueue failed')
-      end
-    end
-
-    context 'when message is created or updated' do
-      %w[created updated].each do |msg_type|
-        context "with #{msg_type} message" do
-          let(:type) { msg_type }
-
-          it 'enqueues SystemImportJob' do
-            expect(SystemImportJob).to receive(:perform_later).with(import_payload, kafka_metadata)
-
-            consumer.consume
-          end
-
-          context 'with a rich payload' do
-            let(:org_id) { Faker::Number.number(digits: 6).to_s }
-            let(:system_id) { SecureRandom.uuid }
-            let(:host_name) { Faker::Internet.domain_name }
-            let(:policy_id) { SecureRandom.uuid }
-            let(:request_id) { Faker::Alphanumeric.alphanumeric(number: 32) }
-            let(:identity) { Base64.strict_encode64(Faker::Internet.email) }
-            let(:metadata_url) { Faker::Internet.url }
-            let(:discarded) { Faker::Lorem.sentence }
-
-            let(:message) do
-              {
-                'type' => type,
-                'id' => system_id,
-                'unrelated' => discarded,
-                'host' => {
-                  'id' => system_id,
-                  'insights_id' => SecureRandom.uuid,
-                  'account' => org_id,
-                  'org_id' => org_id,
-                  'display_name' => host_name,
-                  'groups' => [Faker::Lorem.word],
-                  'tags' => [{ 'namespace' => 'insights', 'key' => 'env', 'value' => 'test' }],
-                  'stale_timestamp' => '2026-10-14T10:00:00Z',
-                  'created' => '2026-10-13T10:00:00Z',
-                  'updated' => '2026-10-14T10:00:00Z',
-                  'system_profile' => {
-                    'owner_id' => SecureRandom.uuid,
-                    'host_type' => 'edge',
-                    'operating_system' => {
-                      'major' => '9',
-                      'minor' => '4',
-                      'name' => 'Red Hat Enterprise Linux',
-                      'unrelated' => discarded
-                    },
-                    'bootc_status' => {
-                      'booted' => { 'image_digest' => "sha256:#{SecureRandom.hex}", 'unrelated' => discarded },
-                      'unrelated' => discarded
-                    },
-                    'image_builder' => {
-                      'compliance_policy_id' => policy_id,
-                      'unrelated' => discarded
-                    },
-                    'unrelated' => discarded
-                  },
-                  'unrelated' => discarded
-                },
-                'platform_metadata' => {
-                  'service' => 'compliance',
-                  'request_id' => request_id,
-                  'org_id' => org_id,
-                  'b64_identity' => identity,
-                  'url' => metadata_url,
-                  'metadata' => { 'full' => { 'nested' => Faker::Lorem.sentence } },
-                  'unrelated' => discarded
-                }
-              }
-            end
-
-            let(:import_payload) do
-              {
-                'type' => type,
-                'id' => message['id'],
-                'host' => message['host'].slice(
-                  'id', 'insights_id', 'account', 'org_id', 'display_name', 'groups', 'tags',
-                  'stale_timestamp', 'created', 'updated'
-                ).merge(
-                  'system_profile' => {
-                    'owner_id' => message.dig('host', 'system_profile', 'owner_id'),
-                    'host_type' => 'edge',
-                    'operating_system' => {
-                      'major' => '9',
-                      'minor' => '4',
-                      'name' => 'Red Hat Enterprise Linux'
-                    },
-                    'bootc_status' => {
-                      'booted' => {
-                        'image_digest' => message.dig(
-                          'host', 'system_profile', 'bootc_status', 'booted', 'image_digest'
-                        )
-                      }
-                    },
-                    'image_builder' => { 'compliance_policy_id' => policy_id }
-                  }
-                ),
-                'platform_metadata' => {
-                  'service' => 'compliance',
-                  'request_id' => request_id,
-                  'org_id' => org_id,
-                  'b64_identity' => identity,
-                  'url' => metadata_url,
-                  'metadata' => message.dig('platform_metadata', 'metadata')
-                }
-              }
-            end
-
-            it 'projects import fields and passes through parser metadata and Kafka metadata' do
-              expect(SystemImportJob).to receive(:perform_later).with(import_payload, kafka_metadata)
-
-              consumer.consume
-            end
-          end
-
-          it 'propagates enqueue failures' do
-            allow(SystemImportJob).to receive(:perform_later).and_raise(StandardError, 'enqueue failed')
-
-            expect { consumer.consume }.to raise_error(StandardError, 'enqueue failed')
-          end
-        end
-      end
-    end
+    expect { consumer.consume }.to raise_error(StandardError, 'enqueue failed')
+    expect(consumer).not_to have_received(:mark_as_consumed)
   end
 end

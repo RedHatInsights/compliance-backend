@@ -11,7 +11,7 @@ class SystemImportJob < ApplicationJob
 
   queue_as :imports
 
-  include InventorySystemConcurrency
+  include InventoryPartitionConcurrency
 
   def perform(message, _kafka_metadata)
     if importable_host?(message)

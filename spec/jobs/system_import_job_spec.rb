@@ -82,6 +82,23 @@ RSpec.describe SystemImportJob do
     )
   end
 
+  it 'enqueues exactly one standalone retry for a transient database failure' do
+    original_adapter = described_class.queue_adapter
+    test_adapter = ActiveJob::QueueAdapters::TestAdapter.new
+    described_class.queue_adapter = test_adapter
+    importer = instance_double(Kafka::SystemImporter)
+    allow(Kafka::SystemImporter).to receive(:new).and_return(importer)
+    allow(Kafka::PolicySystemImporter).to receive(:new)
+    allow(Kafka::ReportParser).to receive(:new)
+    expect(importer).to receive(:import).and_raise(ActiveRecord::Deadlocked)
+
+    job
+
+    expect(test_adapter.enqueued_jobs.map { |enqueued| enqueued[:job] }).to eq([described_class])
+  ensure
+    described_class.queue_adapter = original_adapter
+  end
+
   it 'runs policy import when a policy id is present' do
     message['host']['system_profile'] = {
       'image_builder' => { 'compliance_policy_id' => SecureRandom.uuid }
