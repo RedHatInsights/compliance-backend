@@ -1,9 +1,8 @@
-ARG BASE_IMAGE="registry.access.redhat.com/ubi9/ubi-minimal@sha256:dfa0eb04abc59221544e74862432496add1f491f915c9b531880f91affc0e12c"
+ARG BASE_IMAGE="registry.access.redhat.com/ubi10/ubi-minimal@sha256:ab67cd02caf8706e34a695a1432ebe965934f6128ec352a6c3f4048b43a4fb5e"
 ARG deps="findutils hostname jq libpq openssl procps-ng ruby shared-mime-info tzdata"
 ARG devDeps="clang llvm-devel cargo gcc gcc-c++ libstdc++-static gzip libffi-devel libyaml-devel make openssl-devel patch postgresql postgresql-devel redhat-rpm-config ruby-devel rust tar which util-linux xz git"
 ARG extras=""
 ARG prod="true"
-ARG pgRepo="https://copr.fedorainfracloud.org/coprs/mmraka/postgresql-16/repo/epel-9/mmraka-postgresql-16-epel-9.repo"
 ARG BUNDLE_JOBS="4"
 ARG HERMETIC="false"
 
@@ -18,7 +17,6 @@ ARG deps
 ARG devDeps
 ARG extras
 ARG prod
-ARG pgRepo
 ARG BUNDLE_JOBS
 ARG HERMETIC
 
@@ -29,15 +27,14 @@ WORKDIR /opt/app-root/src
 # reduce amount of threads for gRPC compilation to prevent CI hangs
 ENV GRPC_RUBY_BUILD_PROCS=4
 ENV MAKEFLAGS="-j4"
+# gRPC's bundled Abseil does not build with RHEL 10's x86-64-v3 BMI2 defaults.
+ENV CFLAGS="-march=x86-64-v2" CXXFLAGS="-march=x86-64-v2"
 
 COPY ./.gemrc.prod /etc/gemrc
 COPY ./Gemfile.lock ./Gemfile /opt/app-root/src/
 COPY ./.hermetic_builds/cargo/config.toml .hermetic_builds/cargo/config.toml
 
-RUN ( [[ $HERMETIC == "true" ]] || microdnf module enable -y postgresql:16 || curl -o /etc/yum.repos.d/postgresql.repo $pgRepo ) && \
-    rpm -e --nodeps tzdata &>/dev/null                                                                                             && \
-    microdnf module enable -y ruby:3.3                                                                    && \
-    microdnf install --nodocs -y $deps $devDeps $extras                                                   && \
+RUN microdnf install --nodocs -y $deps $devDeps $extras                                                   && \
     chmod +t /tmp                                                                                         && \
     ( [[ $HERMETIC == "true" ]] || gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin ) && \
     ( [[ $HERMETIC == "true" ]] || gem install bundler )                                                    && \
@@ -70,9 +67,7 @@ WORKDIR /opt/app-root/src
 
 USER 0
 
-RUN rpm -e --nodeps tzdata &>/dev/null                                                      && \
-    microdnf module enable -y ruby:3.3                                                 && \
-    microdnf install --nodocs -y $deps                                                 && \
+RUN microdnf install --nodocs -y $deps                                                 && \
     chmod +t /tmp                                                                      && \
     ( [[ $HERMETIC == "true" ]] || gem update --system -N --install-dir=/usr/share/gems --bindir /usr/bin ) && \
     microdnf clean all -y                                                              && \
