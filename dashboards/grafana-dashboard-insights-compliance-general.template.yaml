@@ -2382,7 +2382,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "(sum(rate(activejob_runtime_seconds_bucket{application=\"compliance\"}[$interval])) by (activejob))/$qe",
+                "expr": "(sum(rate(activejob_runtime_seconds_sum{application=\"compliance\"}[$interval])) by (activejob) / sum(rate(activejob_runtime_seconds_count{application=\"compliance\"}[$interval])) by (activejob))/$qe",
                 "format": "time_series",
                 "intervalFactor": 1,
                 "legendFormat": "{{activejob}}",
@@ -2392,7 +2392,7 @@ objects:
                 "datasource": {
                   "uid": "$datasource"
                 },
-                "expr": "(sum(rate(activejob_runtime_seconds_bucket{application=\"compliance\",qe!=\"1\"}[$interval])) by (activejob))/(-($qe - 1))",
+                "expr": "(sum(rate(activejob_runtime_seconds_sum{application=\"compliance\",qe!=\"1\"}[$interval])) by (activejob) / sum(rate(activejob_runtime_seconds_count{application=\"compliance\",qe!=\"1\"}[$interval])) by (activejob))/(-($qe - 1))",
                 "format": "time_series",
                 "hide": false,
                 "intervalFactor": 1,
