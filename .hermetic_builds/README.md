@@ -70,7 +70,11 @@ Do not edit `rpms.in.yaml` by hand. Commit `ubi.repo`, `rpms.in.yaml`, and
 
 ## Updating the Rust crate lockfile
 
-If `prometheus-client-mmap` is upgraded in `Gemfile.lock`, run:
+The copied manifest and lockfile must exactly match the version of
+`prometheus-client-mmap` in `Gemfile.lock`. Do not run `cargo update` or allow
+dependency automation to update `.hermetic_builds/cargo/` independently.
+
+When `prometheus-client-mmap` is upgraded in `Gemfile.lock`, run:
 
 ```bash
 bundle install

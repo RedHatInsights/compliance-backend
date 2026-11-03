@@ -37,26 +37,18 @@
       "groupName": "GitHub Actions"
     },
     {
-      "description": "Group Rust crate version updates.",
+      "description": "The Cargo lockfile is copied from the pinned Ruby gem and must not be updated independently.",
       "matchManagers": [
         "cargo"
       ],
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch",
-        "pin",
-        "digest",
-        "pinDigest",
-        "rollback",
-        "bump"
+      "matchFileNames": [
+        ".hermetic_builds/cargo/Cargo.toml"
       ],
-      "groupName": "Rust dependencies"
+      "enabled": false
     },
     {
-      "description": "Group cargo and rpm lock refreshes into one PR",
+      "description": "Group RPM lock refreshes into one PR",
       "matchManagers": [
-        "cargo",
         "rpm-lockfile"
       ],
       "matchUpdateTypes": [
