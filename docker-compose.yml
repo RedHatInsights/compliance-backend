@@ -4,11 +4,12 @@ services:
     image: docker.io/confluentinc/cp-kafka
     platform: linux/amd64
     ports:
-      - 29092:29092
+      - target: 9092
+        published: "${KAFKA_HOST_PORT:-29092}"
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
-      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:${KAFKA_HOST_PORT:-29092}"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -49,7 +50,8 @@ services:
     volumes:
       - /data
     ports:
-      - 9000:9000
+      - target: 9000
+        published: "${SILO_HOST_PORT:-0}"
     env_file: .env
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
@@ -96,7 +98,8 @@ services:
       - INGRESS_MAXSIZE=104857600 # 100 MB
     env_file: .env
     ports:
-      - 8080:8080
+      - target: 8080
+        published: "${INGRESS_HOST_PORT:-0}"
     depends_on:
       kafka:
         condition: service_started
@@ -117,7 +120,8 @@ services:
       POSTGRES_USER: insights
       POSTGRES_DB: insights
     ports:
-      - 5432:5432
+      - target: 5432
+        published: "${DB_HOST_PORT:-0}"
     volumes:
       - /var/lib/postgresql/data
   rbac:
@@ -144,7 +148,8 @@ services:
       redis:
         condition: service_started
     ports:
-      - 9002:8080
+      - target: 8080
+        published: "${RBAC_HOST_PORT:-0}"
     volumes:
       - ./config/devel/rbac/definitions:/opt/rbac/rbac/management/role/definitions
       - ./config/devel/rbac/permissions:/opt/rbac/rbac/management/role/permissions
@@ -215,7 +220,8 @@ services:
       - KAFKA_SECONDARY_TOPIC_ENABLED=True
       - LISTEN_PORT=8081
     ports:
-      - 8081:8081
+      - target: 8081
+        published: "${INVENTORY_WEB_HOST_PORT:-0}"
     depends_on:
       inventory-migrator:
         condition: service_completed_successfully
@@ -226,7 +232,8 @@ services:
     environment:
       - NGINX_PORT=8088
     ports:
-      - 8088:8088
+      - target: 8088
+        published: "${COMPLIANCE_SSG_HOST_PORT:-0}"
   #
   # NOTE: The following two 'services' are only required for a new DB
   # Feel free to comment them out for subsequent use
@@ -302,7 +309,8 @@ services:
       - SWAGGER_DRY_RUN=0
       - RUBY_YJIT_ENABLE=1
     ports:
-      - 3000:3000
+      - target: 3000
+        published: "${RAILS_HOST_PORT:-0}"
     tmpfs:
       - /opt/app-root/src/log
       - /opt/app-root/src/tmp
@@ -369,4 +377,5 @@ services:
     image: registry.redhat.io/rhel9/redis-7:latest
     platform: linux/amd64
     ports:
-      - 6379:6379
+      - target: 6379
+        published: "${REDIS_HOST_PORT:-0}"
