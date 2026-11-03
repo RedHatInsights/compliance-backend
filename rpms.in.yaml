@@ -6,8 +6,6 @@ contentOrigin:
   - "./ubi.repo"
 arches:
 - x86_64
-moduleEnable:
-- ruby:3.3
 packages:
 - cargo
 - clang
