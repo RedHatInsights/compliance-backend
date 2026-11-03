@@ -51,7 +51,7 @@ services:
       - /data
     ports:
       - target: 9000
-        published: "${SILO_HOST_PORT:-0}"
+        published: "${SILO_HOST_PORT:-}"
     env_file: .env
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
@@ -99,7 +99,7 @@ services:
     env_file: .env
     ports:
       - target: 8080
-        published: "${INGRESS_HOST_PORT:-0}"
+        published: "${INGRESS_HOST_PORT:-}"
     depends_on:
       kafka:
         condition: service_started
@@ -121,7 +121,7 @@ services:
       POSTGRES_DB: insights
     ports:
       - target: 5432
-        published: "${DB_HOST_PORT:-0}"
+        published: "${DB_HOST_PORT:-}"
     volumes:
       - /var/lib/postgresql/data
   rbac:
@@ -149,7 +149,7 @@ services:
         condition: service_started
     ports:
       - target: 8080
-        published: "${RBAC_HOST_PORT:-0}"
+        published: "${RBAC_HOST_PORT:-}"
     volumes:
       - ./config/devel/rbac/definitions:/opt/rbac/rbac/management/role/definitions
       - ./config/devel/rbac/permissions:/opt/rbac/rbac/management/role/permissions
@@ -221,7 +221,7 @@ services:
       - LISTEN_PORT=8081
     ports:
       - target: 8081
-        published: "${INVENTORY_WEB_HOST_PORT:-0}"
+        published: "${INVENTORY_WEB_HOST_PORT:-}"
     depends_on:
       inventory-migrator:
         condition: service_completed_successfully
@@ -233,7 +233,7 @@ services:
       - NGINX_PORT=8088
     ports:
       - target: 8088
-        published: "${COMPLIANCE_SSG_HOST_PORT:-0}"
+        published: "${COMPLIANCE_SSG_HOST_PORT:-}"
   #
   # NOTE: The following two 'services' are only required for a new DB
   # Feel free to comment them out for subsequent use
@@ -310,7 +310,7 @@ services:
       - RUBY_YJIT_ENABLE=1
     ports:
       - target: 3000
-        published: "${RAILS_HOST_PORT:-0}"
+        published: "${RAILS_HOST_PORT:-}"
     tmpfs:
       - /opt/app-root/src/log
       - /opt/app-root/src/tmp
@@ -378,4 +378,4 @@ services:
     platform: linux/amd64
     ports:
       - target: 6379
-        published: "${REDIS_HOST_PORT:-0}"
+        published: "${REDIS_HOST_PORT:-}"
