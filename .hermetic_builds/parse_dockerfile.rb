@@ -7,7 +7,6 @@ require 'yaml'
 
 output         = 'rpms.in.yaml'
 repofile       = './ubi.repo'
-module_enable  = ['ruby:3.3']
 arg_names      = %w[deps devDeps extras]
 
 content = File.read('Dockerfile')
@@ -23,7 +22,6 @@ data = {
   'context' => { 'bare' => true },
   'contentOrigin' => { 'repofiles' => [repofile] },
   'arches' => ['x86_64'],
-  'moduleEnable' => module_enable,
   'packages' => packages
 }
 
