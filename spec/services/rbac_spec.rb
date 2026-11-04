@@ -25,30 +25,23 @@ RSpec.describe Rbac do
         allow(Rbac::API_CLIENT).to receive(:get_principal_access).and_return(mock_response)
       end
 
-      it 'sends only X-RH-IDENTITY header' do
+      it 'sends only X-RH-IDENTITY with debug auth names disabled' do
         described_class.load_user_permissions(identity)
 
-        expect(Rbac::API_CLIENT).to have_received(:get_principal_access).with(
-          Rbac::APPS,
-          hash_including(header_params: hash_including('X-RH-IDENTITY': identity))
-        )
-      end
-
-      it 'does not include Authorization header' do
-        described_class.load_user_permissions(identity)
-
-        expect(Rbac::API_CLIENT).to have_received(:get_principal_access) do |_apps, opts|
-          expect(opts[:header_params]).not_to have_key(:Authorization)
+        expect(Rbac::API_CLIENT).to have_received(:get_principal_access) do |apps, opts|
+          expect(apps).to eq(Rbac::APPS)
+          expect(opts[:header_params]).to eq('X-RH-IDENTITY': identity)
+          expect(opts[:debug_auth_names]).to eq([])
         end
       end
 
-      it 'does not request a service token or disable basic auth' do
+      it 'does not request a service token' do
         expect(KesselBuilder).not_to receive(:auth)
 
         described_class.load_user_permissions(identity)
 
         expect(Rbac::API_CLIENT).to have_received(:get_principal_access) do |_apps, opts|
-          expect(opts).not_to have_key(:debug_auth_names)
+          expect(opts[:debug_auth_names]).to eq([])
         end
       end
     end
@@ -68,8 +61,10 @@ RSpec.describe Rbac do
 
         expect(Rbac::API_CLIENT).to have_received(:get_principal_access) do |_apps, opts|
           headers = opts[:header_params]
-          expect(headers[:'X-RH-IDENTITY']).to eq(identity)
-          expect(headers[:Authorization]).to eq('Bearer test-bearer-token')
+          expect(headers).to eq(
+            'X-RH-IDENTITY': identity,
+            Authorization: 'Bearer test-bearer-token'
+          )
           expect(opts[:debug_auth_names]).to eq([])
         end
       end

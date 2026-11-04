@@ -6,7 +6,7 @@ require 'insights-rbac-api-client'
 class Rbac
   API_CLIENT = RBACApiClient::AccessApi.new
   APPS = 'compliance,inventory'
-  OPTS = { limit: 1000 }.freeze
+  OPTS = { limit: 1000, debug_auth_names: [] }.freeze
   ANY = '*'
 
   INVENTORY_UNGROUPED_ENTRIES = [].freeze
@@ -32,7 +32,6 @@ class Rbac
       opts = OPTS.merge(header_params: headers)
       if rbac_authenticated
         headers.merge!(s2s_auth_headers)
-        opts[:debug_auth_names] = []
       end
 
       API_CLIENT.get_principal_access(
