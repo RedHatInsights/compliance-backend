@@ -6,7 +6,7 @@ require 'insights-rbac-api-client'
 class Rbac
   API_CLIENT = RBACApiClient::AccessApi.new
   APPS = 'compliance,inventory'
-  OPTS = { limit: 1000, debug_auth_names: [] }.freeze
+  OPTS = { limit: 1000 }.freeze
   ANY = '*'
 
   INVENTORY_UNGROUPED_ENTRIES = [].freeze
@@ -29,11 +29,15 @@ class Rbac
 
     def load_user_permissions(identity)
       headers = { 'X-RH-IDENTITY': identity }
-      headers.merge!(s2s_auth_headers) if rbac_authenticated
+      opts = OPTS.merge(header_params: headers)
+      if rbac_authenticated
+        headers.merge!(s2s_auth_headers)
+        opts[:debug_auth_names] = []
+      end
 
       API_CLIENT.get_principal_access(
         self::APPS,
-        self::OPTS.merge(header_params: headers)
+        opts
       ).data
     rescue RBACApiClient::ApiError => e
       Rails.logger.info(e.message)

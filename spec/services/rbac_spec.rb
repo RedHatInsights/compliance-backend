@@ -41,6 +41,16 @@ RSpec.describe Rbac do
           expect(opts[:header_params]).not_to have_key(:Authorization)
         end
       end
+
+      it 'does not request a service token or disable basic auth' do
+        expect(KesselBuilder).not_to receive(:auth)
+
+        described_class.load_user_permissions(identity)
+
+        expect(Rbac::API_CLIENT).to have_received(:get_principal_access) do |_apps, opts|
+          expect(opts).not_to have_key(:debug_auth_names)
+        end
+      end
     end
 
     context 'when rbac_authenticated is true' do
@@ -60,12 +70,20 @@ RSpec.describe Rbac do
           headers = opts[:header_params]
           expect(headers[:'X-RH-IDENTITY']).to eq(identity)
           expect(headers[:Authorization]).to eq('Bearer test-bearer-token')
+          expect(opts[:debug_auth_names]).to eq([])
         end
       end
 
       it 'obtains the token from KesselBuilder.auth' do
         described_class.load_user_permissions(identity)
         expect(KesselBuilder).to have_received(:auth)
+      end
+
+      it 'does not call RBAC when token acquisition fails' do
+        allow(mock_auth).to receive(:get_token).and_raise(StandardError, 'token failure')
+
+        expect(Rbac::API_CLIENT).not_to receive(:get_principal_access)
+        expect { described_class.load_user_permissions(identity) }.to raise_error(StandardError, 'token failure')
       end
     end
   end
