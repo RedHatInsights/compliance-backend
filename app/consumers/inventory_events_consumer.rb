@@ -20,10 +20,7 @@ class InventoryEventsConsumer < ApplicationConsumer
       'updated' => nil,
       'system_profile' => {
         'owner_id' => nil,
-        'operating_system' => {
-          'major' => nil,
-          'minor' => nil
-        },
+        'operating_system' => { 'major' => nil, 'minor' => nil },
         'image_builder' => { 'compliance_policy_id' => nil }
       }
     },
@@ -37,58 +34,87 @@ class InventoryEventsConsumer < ApplicationConsumer
     }
   }.freeze
 
-  def consume_one
-    case message_type
-    when 'delete'
-      SystemDeleteJob.perform_later(delete_payload)
-    when 'created', 'updated'
-      SystemImportJob.perform_later(import_payload) if importable_host?(payload)
-    else
-      logger.debug "Skipped message of type '#{message_type}'"
+  def consume
+    Rails.application.executor.wrap do
+      log_metadata
+      delivery = messages
+      entries = delivery.filter_map { |message| entry_for(message) }
+      enqueue_batch(entries)
+      delivery.each { |message| mark_as_consumed(message) }
     end
   end
 
   private
 
-  def payload
-    return @payload if @payload_message.equal?(@message)
+  def enqueue_batch(entries)
+    return if entries.empty?
 
-    @payload_message = @message
-    @payload = JSON.parse(@message.raw_payload)
+    enqueued = InventoryEventsBatchJob.perform_later(entries)
+    raise ActiveJob::EnqueueError, 'Failed to enqueue inventory events batch' unless enqueued
   end
 
-  def import_payload
-    project(payload, IMPORT_PAYLOAD_FIELDS)
+  def entry_for(message)
+    event = payload(message)
+    type = event['type']
+    projected_payload = projected_payload_for(type, event)
+    return unless projected_payload
+
+    { 'type' => type, 'payload' => projected_payload, 'metadata' => kafka_metadata(message) }
   end
 
-  def delete_payload
-    payload.slice('id', 'org_id', 'updated', 'timestamp')
+  def projected_payload_for(type, event)
+    return delete_payload(event) if type == 'delete'
+
+    if %w[created updated].include?(type)
+      return import_payload(event) if importable_host?(event)
+
+      logger.debug "Skipped ineligible host for event type '#{type}'"
+      return
+    end
+
+    logger.debug "Skipped message of type '#{type}'"
+    nil
+  end
+
+  def payload(message)
+    JSON.parse(message.raw_payload)
+  end
+
+  def import_payload(event)
+    project(event, IMPORT_PAYLOAD_FIELDS)
   end
 
   def project(value, fields)
-    fields.each_with_object({}) do |(key, nested_fields), projected|
-      if nested_fields
-        projected[key] = project(value[key], nested_fields) if value[key]
+    fields.each_with_object({}) do |(key, nested), result|
+      if nested
+        result[key] = project(value[key], nested) if value[key]
       elsif value.key?(key)
-        projected[key] = value[key]
+        result[key] = value[key]
       end
     end
   end
 
-  def importable_host?(message)
-    insights_id = message.dig('host', 'insights_id')
-    insights_id.present? && insights_id != NON_INSIGHTS_ID && !excluded_host_type?(message)
+  def delete_payload(event)
+    event.slice('id', 'org_id', 'updated', 'timestamp')
   end
 
-  def excluded_host_type?(message)
-    profile = message.dig('host', 'system_profile') || {}
+  def kafka_metadata(message)
+    {
+      'topic' => message.topic,
+      'partition' => message.partition,
+      'offset' => message.offset,
+      'timestamp' => message.timestamp
+    }
+  end
 
-    profile['host_type'] == 'edge' ||
-      profile.dig('operating_system', 'name')&.match?(/centos/i) ||
+  def importable_host?(event)
+    insights_id = event.dig('host', 'insights_id')
+    insights_id.present? && insights_id != NON_INSIGHTS_ID && !excluded_host_type?(event)
+  end
+
+  def excluded_host_type?(event)
+    profile = event.dig('host', 'system_profile') || {}
+    profile['host_type'] == 'edge' || profile.dig('operating_system', 'name')&.match?(/centos/i) ||
       profile.dig('bootc_status', 'booted', 'image_digest').present?
-  end
-
-  def message_type
-    payload.dig('type')
   end
 end

@@ -42,12 +42,52 @@ describe ParseReportJob, type: :job do
   end
 
   describe '#perform' do
+    context 'when the system is tombstoned' do
+      before { system.update!(deleted_at: Time.current) }
+
+      it 'does not parse or notify for a tombstoned system' do
+        expect(parser).not_to receive(:persist!)
+        expect(PayloadTracker).not_to receive(:deliver)
+
+        job.perform(report_blob, msg_value)
+      end
+    end
+
     context 'when parsing succeeds' do
       before do
         allow(parser).to receive(:persist!)
         allow(job).to receive(:remediation_issue_ids).and_return([issue_id])
         allow(PayloadTracker).to receive(:deliver)
         allow(RemediationUpdates).to receive(:deliver)
+      end
+
+      it 'sends external notifications after the persistence transaction ends' do
+        transaction_open = false
+        allow(ActiveRecord::Base).to receive(:transaction).and_wrap_original do |original, &block|
+          original.call do
+            transaction_open = true
+            begin
+              block.call
+            ensure
+              transaction_open = false
+            end
+          end
+        end
+        allow(PayloadTracker).to receive(:deliver) do
+          expect(transaction_open).to be(false)
+        end
+        allow(RemediationUpdates).to receive(:deliver) do
+          expect(transaction_open).to be(false)
+        end
+        allow(job).to receive(:remediation_issue_ids) do
+          expect(transaction_open).to be(true)
+          [issue_id]
+        end
+        allow(SystemNonCompliant).to receive(:deliver) do
+          expect(transaction_open).to be(false)
+        end
+
+        job.perform(report_blob, msg_value)
       end
 
       it 'notifies payload tracker about processing start and success' do
@@ -200,6 +240,7 @@ describe ParseReportJob, type: :job do
       allow(parser).to receive(:score).and_return(70) # below threshold of 80
       allow(job).to receive(:notify_payload_tracker)
       allow(job).to receive(:notify_remediation)
+      allow(job).to receive(:remediation_issue_ids).and_return([])
       allow(job).to receive(:audit_success)
     end
 

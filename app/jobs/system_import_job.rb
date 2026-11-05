@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
 # Imports a system and its associated compliance data
+# rubocop:disable Metrics/ClassLength
 class SystemImportJob < ApplicationJob
+  include InventorySystemLock
+
+  class PolicyAssociationError < StandardError; end
+
   DATABASE_RETRY_HANDLER = [
     ActiveRecord::Deadlocked,
     ActiveRecord::ConnectionFailed,
@@ -11,15 +16,24 @@ class SystemImportJob < ApplicationJob
 
   queue_as :imports
 
-  include InventorySystemConcurrency
-
+  # rubocop:disable Metrics/MethodLength
   def perform(message)
     @message = message
-    return unless import_system
+    @system_updated = true
+    imported = ActiveRecord::Base.transaction do
+      lock_system
+      next false unless import_system
 
-    import_policy_system if policy_id
-    Kafka::ReportParser.new(@message, Rails.logger).parse_reports if compliance?
+      if policy_id && @system_updated && !import_policy_system
+        raise PolicyAssociationError, 'Failed to import policy association'
+      end
+
+      true
+    end
+
+    Kafka::ReportParser.new(@message, Rails.logger).parse_reports if imported && compliance?
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 
@@ -30,11 +44,14 @@ class SystemImportJob < ApplicationJob
     id, updated = payload.values_at('id', 'updated')
 
     upsert_system(id, payload, updated)
-    true
   rescue StandardError => e
     failed_id = id || payload&.dig('id') || 'unknown'
     Rails.logger.audit_fail("[SystemImportJob] Failed to import system #{failed_id}: #{e.message}")
     raise e
+  end
+
+  def lock_system
+    lock_inventory_system(@message.dig('host', 'id'))
   end
 
   def payload_valid_for_import?(payload)
@@ -90,6 +107,8 @@ class SystemImportJob < ApplicationJob
     )
     # rubocop:enable Rails/SkipsModelValidations
     log_upsert_result(result, id)
+    @system_updated = result.rows.present?
+    true
   rescue ActiveRecord::ActiveRecordError
     Yabeda.compliance_system_import_failures_total.increment({}) if terminal_import_attempt?
     raise
@@ -118,6 +137,7 @@ class SystemImportJob < ApplicationJob
   end
 
   # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def import_policy_system
     @policy_id = @message.dig('host', 'system_profile', 'image_builder', 'compliance_policy_id')
     @system_id = @message.dig('host', 'id')
@@ -125,17 +145,20 @@ class SystemImportJob < ApplicationJob
     @msg_type = @message.dig('type')
     @request_id = @message.dig('platform_metadata', 'request_id')
     return unless sources_exist?
+    return true if PolicySystem.exists?(policy_id: @policy_id, system_id: @system_id)
 
     policy_system = PolicySystem.new(policy_id: @policy_id, system_id: @system_id, request_id: @request_id)
     if policy_system.save
       Rails.logger.audit_success(
         "[#{@org_id}] Imported PolicySystem for System #{@system_id} from #{@msg_type} message"
       )
+      true
     else
       audit_policy_system_failure(policy_system.errors.full_messages.join(', ').to_s)
+      false
     end
   end
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def sources_exist?
     valid_resource_exists?(System, @system_id, 'System', raise_on_missing: true) &&
@@ -167,3 +190,5 @@ class SystemImportJob < ApplicationJob
     @message.dig('platform_metadata', 'service') == 'compliance'
   end
 end
+
+# rubocop:enable Metrics/ClassLength

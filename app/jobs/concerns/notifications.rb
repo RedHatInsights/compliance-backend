@@ -7,13 +7,11 @@ module Notifications
   included do
     private
 
-    def compliance_notification_wrapper
-      # Store the notification preconditions before saving the report
-      preconditions = policy_previously_compliant? || policy_untested?
+    def compliance_notification_preconditions?
+      policy_previously_compliant? || policy_untested?
+    end
 
-      yield
-
-      # Produce a notification if preconditions are met and the new score is below threshold
+    def notify_non_compliant_if_needed(preconditions)
       return unless parser.supported? && preconditions && parser.score < parser.policy.compliance_threshold
 
       notify_non_compliant!

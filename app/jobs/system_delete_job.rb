@@ -2,21 +2,28 @@
 
 # Deletes a system and cleans up its associated data
 class SystemDeleteJob < ApplicationJob
-  queue_as :deletes
+  include InventorySystemLock
 
-  include InventorySystemConcurrency
+  queue_as :deletes
 
   def perform(message)
     @message = message
     @id = @message.dig('id')
     @org_id = @message.dig('org_id')
 
-    cleanup_system_relations if soft_delete_system
+    ActiveRecord::Base.transaction do
+      lock_system
+      cleanup_system_relations if soft_delete_system
+    end
   end
 
   private
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def lock_system
+    lock_inventory_system(@id)
+  end
+
   def soft_delete_system
     computed_timestamp = delete_timestamp
     # rubocop:disable Rails/SkipsModelValidations

@@ -17,6 +17,10 @@ RSpec.describe SystemDeleteJob do
     expect(described_class.queue_name).to eq('deletes')
   end
 
+  it 'does not configure per-system GoodJob concurrency' do
+    expect(described_class).not_to respond_to(:good_job_concurrency_config)
+  end
+
   it 'runs the remover before the cleaner' do
     delete_job = described_class.new(message)
     expect(delete_job).to receive(:soft_delete_system).ordered.and_return(true)
@@ -179,6 +183,16 @@ RSpec.describe SystemDeleteJob do
       )
 
       expect { job.send(:cleanup_system_relations) }.to raise_error(StandardError)
+    end
+
+    it 'rolls back the tombstone when relation cleanup fails' do
+      allow(job).to receive(:remove_related).and_raise(StandardError)
+      expect(Rails.logger).to receive(:audit_fail).with(
+        "[#{user.org_id}] Failed to delete related records for System #{system.id}: StandardError"
+      )
+
+      expect { job.perform(message) }.to raise_error(StandardError)
+      expect(System.unscoped.find(system.id).deleted_at).to be_nil
     end
   end
 end
