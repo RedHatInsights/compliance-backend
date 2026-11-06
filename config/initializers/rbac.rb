@@ -1,13 +1,24 @@
 # frozen_string_literal: true
 
-unless ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
+Rails.application.config.after_initialize do
+  next if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
+
+  rbac = ClowderV2Helpers.resolve_rbac_endpoint
+
   RBACApiClient.configure do |config|
-    config.host = Settings.endpoints.rbac.host
-    config.scheme = Settings.endpoints.rbac.scheme
-    config.ssl_ca_cert = ENV['SSL_CERT_FILE'].presence
-    if Settings.platform_basic_auth_username.present?
-      config.username = Settings.platform_basic_auth_username
-      config.password = Settings.platform_basic_auth_password
+    config.host = rbac[:host]
+    config.scheme = rbac[:scheme]
+    if rbac[:source] == :v2
+      config.ssl_ca_cert = rbac[:ca_certificate]
+    else
+      config.ssl_ca_cert = ENV['SSL_CERT_FILE'].presence
     end
   end
+end
+
+Rails.application.config.to_prepare do
+  next if ActiveModel::Type::Boolean.new.cast(Settings.disable_rbac)
+
+  Rbac.rbac_authenticated =
+    ClowderV2Helpers.resolve_rbac_endpoint[:authenticated]
 end

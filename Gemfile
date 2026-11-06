@@ -88,7 +88,7 @@ gem 'openid_connect', '~> 2.0'  # Required for Kessel OAuth authentication
 gem 'stronger_parameters'
 
 # Clowder config
-gem 'clowder-common-ruby'
+gem 'clowder-common-ruby', '>= 0.5.8'
 
 # Support for per request thread-local variables
 gem 'request_store'

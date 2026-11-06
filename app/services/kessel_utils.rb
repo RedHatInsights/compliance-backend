@@ -15,12 +15,18 @@ class KesselUtils
 
       return @workspace_cache[cache_key] if @workspace_cache&.key?(cache_key)
 
-      workspace = fetch_default_workspace(Settings.endpoints.rbac.url, org_id, auth: oauth2_auth_request(auth),
-                                                                               http_client: nil)
+      workspace = fetch_default_workspace(rbac_url, org_id, auth: oauth2_auth_request(auth),
+                                                            http_client: nil)
       @workspace_cache ||= {}
       @workspace_cache[cache_key] = workspace.id
 
       workspace.id
+    end
+
+    private
+
+    def rbac_url
+      @rbac_url ||= ClowderV2Helpers.resolve_rbac_endpoint[:url]
     end
   end
 end
