@@ -30,6 +30,22 @@ describe Kafka::ReportParser do
   let(:system) { FactoryBot.create(:system, account: current_user.account) }
   let(:policy) { FactoryBot.create(:policy, account: current_user.account) }
 
+  context 'when the system is tombstoned' do
+    before { system.update!(deleted_at: Time.current) }
+
+    it 'logs an intentional skip without downloading or reporting a failure' do
+      expect(SafeDownloader).not_to receive(:download_reports)
+      expect(Karafka.logger).to receive(:info).with(
+        a_string_matching(/tombstoned system #{system.id}/)
+      )
+      expect(Karafka.logger).not_to receive(:audit_fail)
+      expect(ReportUploadFailed).not_to receive(:deliver)
+      expect(ReportValidation).not_to receive(:deliver)
+
+      service.parse_reports
+    end
+  end
+
   context 'with invalid identity' do
     let(:message) do
       {
@@ -136,6 +152,56 @@ describe Kafka::ReportParser do
       allow(XccdfReportParser).to receive(:new).and_return(parser)
     end
 
+    it 'downloads reports outside the system lock transaction' do
+      transaction_open = false
+      allow(ActiveRecord::Base).to receive(:transaction).and_wrap_original do |original, &block|
+        original.call do
+          transaction_open = true
+          begin
+            block.call
+          ensure
+            transaction_open = false
+          end
+        end
+      end
+      allow(SafeDownloader).to receive(:download_reports).and_wrap_original do
+        expect(transaction_open).to be(false)
+        [xml]
+      end
+
+      service.parse_reports
+    end
+
+    it 'enqueues reports inside a short system lock transaction' do
+      transaction_open = false
+      allow(ActiveRecord::Base).to receive(:transaction).and_wrap_original do |original, &block|
+        original.call do
+          transaction_open = true
+          begin
+            block.call
+          ensure
+            transaction_open = false
+          end
+        end
+      end
+      allow(ParseReportJob).to receive(:perform_later).and_wrap_original do |original, *args|
+        expect(transaction_open).to be(true)
+        original.call(*args)
+      end
+
+      service.parse_reports
+    end
+
+    it 'does not report failure when a system is tombstoned before enqueue' do
+      allow(service).to receive(:enqueue_parsing_job).and_return([nil, true])
+      expect(ReportUploadFailed).not_to receive(:deliver)
+      expect(Karafka.logger).not_to receive(:audit_fail)
+
+      service.parse_reports
+
+      expect(enqueued_jobs).to be_empty
+    end
+
     it 'validates each report and enqueues it as a packed payload' do
       expect(parser).to receive(:validate!).once
 
@@ -152,6 +218,17 @@ describe Kafka::ReportParser do
       expect(enqueued_jobs.size).to eq(1)
       expect(ReportArtifact.unpack(enqueued_jobs.first[:args].first)).to eq(extracted_xml)
       expect(extracted_xml.length).to be < xml.length
+    end
+
+    it 'resets the enqueued reports when the parser is reused' do
+      expect(Karafka.logger).to receive(:audit_success).with(
+        a_string_matching(/Enqueued 1 report\(s\) from request #{request_id}: #{profile_id}:\S+\z/)
+      ).twice
+
+      service.parse_reports
+      service.parse_reports
+
+      expect(enqueued_jobs.size).to eq(2)
     end
   end
 end

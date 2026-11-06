@@ -2,6 +2,7 @@
 
 # Saves all of the information we can parse from a Xccdf report into db
 class ParseReportJob < ApplicationJob
+  include InventorySystemLock
   include Notifications
 
   self.log_arguments = false
@@ -13,6 +14,8 @@ class ParseReportJob < ApplicationJob
 
   def perform(report_blob, message)
     @msg_value = message
+    return if tombstoned_system?
+
     Rails.logger.info(
       "Parsing report for account #{@msg_value['org_id']}, " \
       "system #{@msg_value['id']}"
@@ -39,14 +42,40 @@ class ParseReportJob < ApplicationJob
     nil
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def parse_and_save_report
+    eligible = false
+    preconditions = nil
+    remediation_ids = []
+    persisted = ActiveRecord::Base.transaction do
+      lock_system
+      next false if tombstoned_system?
+
+      eligible = true
+      preconditions = compliance_notification_preconditions?
+      parser.persist!
+      remediation_ids = remediation_issue_ids
+      true
+    end
+    return unless persisted
+
     notify_payload_tracker(:processing, "Job #{job_id} is now processing")
-    compliance_notification_wrapper { parser.persist! }
-    notify_remediation
+    notify_non_compliant_if_needed(preconditions)
+    notify_remediation(remediation_ids)
     audit_success
     notify_payload_tracker(:success, "Job #{job_id} has completed successfully")
   rescue *XccdfReportParser::ERRORS => e
+    notify_payload_tracker(:processing, "Job #{job_id} is now processing") if eligible
     handle_error(e)
+  end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def lock_system
+    lock_inventory_system(@msg_value['id'])
+  end
+
+  def tombstoned_system?
+    System.unscoped.where(id: @msg_value['id']).pick(:deleted_at).present?
   end
 
   def parser
@@ -90,10 +119,10 @@ class ParseReportJob < ApplicationJob
     )
   end
 
-  def notify_remediation
+  def notify_remediation(issue_ids = remediation_issue_ids)
     RemediationUpdates.deliver(
       system_id: @msg_value['id'],
-      issue_ids: remediation_issue_ids
+      issue_ids: issue_ids
     )
   end
 

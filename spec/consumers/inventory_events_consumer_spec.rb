@@ -5,295 +5,258 @@ require 'rails_helper'
 describe InventoryEventsConsumer do
   subject(:consumer) { karafka.consumer_for(Settings.kafka.topics.inventory_events) }
 
-  before do
-    karafka.produce(message.to_json)
+  let(:metadata) do
+    {
+      'topic' => 'platform.inventory.hosts',
+      'partition' => partition,
+      'offset' => offset,
+      'timestamp' => '2026-10-14T10:00:00Z'
+    }
+  end
+  let(:partition) { 2 }
+  let(:offset) { 41 }
+  let(:message) { kafka_message({ 'type' => 'somethingelse' }) }
+  let(:importable_message) { kafka_message(importable_event) }
+  let(:importable_event) do
+    {
+      'type' => 'created',
+      'host' => { 'id' => SecureRandom.uuid, 'insights_id' => SecureRandom.uuid }
+    }
   end
 
-  let(:message) do
-    {
-      'type' => type,
+  def kafka_message(payload, message_metadata = metadata)
+    instance_double(
+      Karafka::Messages::Message,
+      raw_payload: payload.to_json,
+      topic: message_metadata['topic'],
+      partition: message_metadata['partition'],
+      offset: message_metadata['offset'],
+      timestamp: message_metadata['timestamp']
+    )
+  end
+
+  before do
+    allow(consumer).to receive(:messages).and_return([message])
+    allow(consumer).to receive(:log_metadata)
+    allow(consumer).to receive(:mark_as_consumed)
+  end
+
+  it 'enqueues one ordered batch with projected payloads and per-message metadata' do
+    created = {
+      'type' => 'created',
+      'id' => SecureRandom.uuid,
       'host' => {
         'id' => SecureRandom.uuid,
-        'insights_id' => SecureRandom.uuid
+        'insights_id' => SecureRandom.uuid,
+        'display_name' => Faker::Internet.domain_name,
+        'unrelated' => Faker::Lorem.word
       }
     }
-  end
-
-  let(:import_payload) do
-    {
-      'type' => type,
-      'host' => message.fetch('host').slice('id', 'insights_id')
+    deleted = {
+      'type' => 'delete',
+      'id' => SecureRandom.uuid,
+      'org_id' => Faker::Number.number(digits: 6).to_s,
+      'updated' => Time.current.iso8601,
+      'unrelated' => Faker::Lorem.word
     }
+    unknown = {
+      'type' => 'somethingelse',
+      'platform_metadata' => { 'service' => 'inventory' },
+      'unrelated' => Faker::Lorem.word
+    }
+    ineligible = created.merge('type' => 'updated', 'host' => created['host'].merge('insights_id' => nil))
+    messages = [
+      kafka_message(created, metadata.merge('partition' => 1, 'offset' => 10)),
+      kafka_message(deleted, metadata.merge('partition' => 2, 'offset' => 11)),
+      kafka_message(unknown, metadata.merge('partition' => 3, 'offset' => 12)),
+      kafka_message(ineligible, metadata.merge('partition' => 4, 'offset' => 13))
+    ]
+    allow(consumer).to receive(:messages).and_return(messages)
+
+    expected_entries = [
+      {
+        'type' => 'created',
+        'payload' => created.slice('type', 'id').merge(
+          'host' => created['host'].slice('id', 'insights_id', 'display_name')
+        ),
+        'metadata' => metadata.merge('partition' => 1, 'offset' => 10)
+      },
+      {
+        'type' => 'delete',
+        'payload' => deleted.slice('id', 'org_id', 'updated', 'timestamp'),
+        'metadata' => metadata.merge('partition' => 2, 'offset' => 11)
+      }
+    ]
+
+    expect(InventoryEventsBatchJob).to receive(:perform_later).with(expected_entries).and_return(true).ordered
+    expect(consumer).to receive(:mark_as_consumed).with(messages[0]).ordered
+    expect(consumer).to receive(:mark_as_consumed).with(messages[1]).ordered
+    expect(consumer).to receive(:mark_as_consumed).with(messages[2]).ordered
+    expect(consumer).to receive(:mark_as_consumed).with(messages[3]).ordered
+
+    consumer.consume
   end
 
-  describe 'handling messages with unknown type' do
-    let(:type) { 'somethingelse' }
+  it 'logs and acknowledges an unknown event without batching or parsing reports' do
+    expect(consumer).to receive(:messages).once.and_return([message])
+    expect(consumer).to receive(:logger).and_return(Rails.logger)
+    expect(Rails.logger).to receive(:debug).with("Skipped message of type 'somethingelse'")
+    expect(InventoryEventsBatchJob).not_to receive(:perform_later)
+    expect(Kafka::ReportParser).not_to receive(:new)
+    expect(consumer).to receive(:mark_as_consumed).with(message)
 
-    it 'logs a debug message and skips processing' do
-      expect(Karafka.logger).to receive(:debug).with("Skipped message of type '#{type}'")
-      expect(SystemImportJob).not_to receive(:perform_later)
-      expect(SystemDeleteJob).not_to receive(:perform_later)
-      expect(Kafka::ReportParser).not_to receive(:new)
+    consumer.consume
+  end
 
-      consumer.consume
+  describe 'ineligible import hosts' do
+    let(:event) do
+      {
+        'type' => 'created',
+        'host' => { 'id' => SecureRandom.uuid }.merge(host_attributes)
+      }
     end
-  end
+    let(:host_attributes) { {} }
+    let(:ineligible_message) { kafka_message(event) }
 
-  describe 'handling messages by type' do
-    context 'when message is delete' do
-      let(:type) { 'delete' }
-      let(:message) do
+    shared_examples 'an ineligible host' do
+      it 'does not include the host in a batch and acknowledges the message' do
+        expect(InventoryEventsBatchJob).not_to receive(:perform_later)
+        expect(consumer).to receive(:mark_as_consumed).with(ineligible_message)
+
+        allow(consumer).to receive(:messages).and_return([ineligible_message])
+        consumer.consume
+      end
+    end
+
+    context 'without an Insights ID' do
+      include_examples 'an ineligible host'
+    end
+
+    context 'with the NON_INSIGHTS_ID sentinel' do
+      let(:host_attributes) { { 'insights_id' => described_class::NON_INSIGHTS_ID } }
+
+      include_examples 'an ineligible host'
+    end
+
+    context 'when the host is edge' do
+      let(:host_attributes) do
+        { 'insights_id' => SecureRandom.uuid, 'system_profile' => { 'host_type' => 'edge' } }
+      end
+
+      include_examples 'an ineligible host'
+    end
+
+    context 'when the operating system is CentOS' do
+      let(:host_attributes) do
         {
-          'type' => type,
-          'id' => SecureRandom.uuid,
-          'org_id' => Faker::Number.number(digits: 6).to_s,
-          'updated' => Time.current.iso8601
+          'insights_id' => SecureRandom.uuid,
+          'system_profile' => { 'operating_system' => { 'name' => 'CentOS Linux' } }
         }
       end
 
-      it 'enqueues SystemDeleteJob with the required delete fields' do
-        delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
-        expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload)
-
-        consumer.consume
-      end
-
-      context 'with a rich payload' do
-        let(:message) do
-          {
-            'type' => type,
-            'id' => SecureRandom.uuid,
-            'org_id' => Faker::Number.number(digits: 6).to_s,
-            'updated' => 2.minutes.ago.iso8601,
-            'timestamp' => 1.minute.ago.iso8601,
-            'unrelated' => Faker::Lorem.sentence,
-            'host' => { 'id' => SecureRandom.uuid, 'unrelated' => Faker::Lorem.sentence },
-            'platform_metadata' => { 'service' => 'inventory', 'unrelated' => Faker::Lorem.sentence }
-          }
-        end
-
-        it 'projects delete fields' do
-          delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
-          expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload)
-
-          consumer.consume
-        end
-      end
-
-      context 'when updated is absent' do
-        let(:message) do
-          {
-            'type' => type,
-            'id' => SecureRandom.uuid,
-            'org_id' => Faker::Number.number(digits: 6).to_s,
-            'timestamp' => Time.current.iso8601,
-            'unrelated' => Faker::Lorem.sentence
-          }
-        end
-
-        it 'preserves the timestamp fallback and omits unrelated fields' do
-          delete_payload = message.slice('id', 'org_id', 'updated', 'timestamp')
-          expect(SystemDeleteJob).to receive(:perform_later).with(delete_payload)
-
-          consumer.consume
-        end
-      end
-
-      it 'propagates enqueue failures' do
-        allow(SystemDeleteJob).to receive(:perform_later).and_raise(StandardError, 'enqueue failed')
-
-        expect { consumer.consume }.to raise_error(StandardError, 'enqueue failed')
-      end
+      include_examples 'an ineligible host'
     end
 
-    context 'when message is created or updated' do
-      %w[created updated].each do |msg_type|
-        context "with #{msg_type} message" do
-          let(:type) { msg_type }
-
-          it 'enqueues SystemImportJob' do
-            expect(SystemImportJob).to receive(:perform_later).with(import_payload)
-
-            consumer.consume
-          end
-
-          it 'parses the payload once' do
-            expect(JSON).to receive(:parse).once.and_call_original
-            expect(SystemImportJob).to receive(:perform_later)
-
-            consumer.consume
-          end
-
-          it 'parses each Kafka payload once' do
-            second_message = message.deep_merge(
-              'host' => { 'id' => SecureRandom.uuid, 'insights_id' => SecureRandom.uuid }
-            )
-            karafka.produce(second_message.to_json)
-            expect(JSON).to receive(:parse).twice.and_call_original
-            expect(SystemImportJob).to receive(:perform_later).twice
-
-            consumer.consume
-          end
-
-          context 'with a rich payload' do
-            let(:org_id) { Faker::Number.number(digits: 6).to_s }
-            let(:system_id) { SecureRandom.uuid }
-            let(:host_name) { Faker::Internet.domain_name }
-            let(:policy_id) { SecureRandom.uuid }
-            let(:request_id) { Faker::Alphanumeric.alphanumeric(number: 32) }
-            let(:identity) { Base64.strict_encode64(Faker::Internet.email) }
-            let(:metadata_url) { Faker::Internet.url }
-            let(:discarded) { Faker::Lorem.sentence }
-
-            let(:message) do
-              {
-                'type' => type,
-                'id' => system_id,
-                'unrelated' => discarded,
-                'host' => {
-                  'id' => system_id,
-                  'insights_id' => SecureRandom.uuid,
-                  'account' => org_id,
-                  'org_id' => org_id,
-                  'display_name' => host_name,
-                  'groups' => [Faker::Lorem.word],
-                  'tags' => [{ 'namespace' => 'insights', 'key' => 'env', 'value' => 'test' }],
-                  'stale_timestamp' => '2026-10-14T10:00:00Z',
-                  'created' => '2026-10-13T10:00:00Z',
-                  'updated' => '2026-10-14T10:00:00Z',
-                  'system_profile' => {
-                    'owner_id' => SecureRandom.uuid,
-                    'operating_system' => {
-                      'major' => '9',
-                      'minor' => '4',
-                      'name' => 'Red Hat Enterprise Linux',
-                      'unrelated' => discarded
-                    },
-                    'image_builder' => {
-                      'compliance_policy_id' => policy_id,
-                      'unrelated' => discarded
-                    },
-                    'unrelated' => discarded
-                  },
-                  'unrelated' => discarded
-                },
-                'platform_metadata' => {
-                  'service' => 'compliance',
-                  'request_id' => request_id,
-                  'org_id' => org_id,
-                  'b64_identity' => identity,
-                  'url' => metadata_url,
-                  'metadata' => { 'full' => { 'nested' => Faker::Lorem.sentence } },
-                  'unrelated' => discarded
-                }
-              }
-            end
-
-            let(:import_payload) do
-              {
-                'type' => type,
-                'id' => message['id'],
-                'host' => message['host'].slice(
-                  'id', 'insights_id', 'account', 'org_id', 'display_name', 'groups', 'tags',
-                  'stale_timestamp', 'created', 'updated'
-                ).merge(
-                  'system_profile' => {
-                    'owner_id' => message.dig('host', 'system_profile', 'owner_id'),
-                    'operating_system' => {
-                      'major' => '9',
-                      'minor' => '4'
-                    },
-                    'image_builder' => { 'compliance_policy_id' => policy_id }
-                  }
-                ),
-                'platform_metadata' => {
-                  'service' => 'compliance',
-                  'request_id' => request_id,
-                  'org_id' => org_id,
-                  'b64_identity' => identity,
-                  'url' => metadata_url,
-                  'metadata' => message.dig('platform_metadata', 'metadata')
-                }
-              }
-            end
-
-            it 'projects import fields and passes through parser metadata' do
-              expect(SystemImportJob).to receive(:perform_later).with(import_payload)
-
-              consumer.consume
-            end
-          end
-
-          context 'when the host is not importable' do
-            let(:message) { super().deep_merge('host' => excluded_host) }
-
-            shared_examples 'skips the job' do
-              it 'does not enqueue SystemImportJob' do
-                expect(SystemImportJob).not_to receive(:perform_later)
-
-                consumer.consume
-              end
-            end
-
-            context 'without an Insights ID' do
-              let(:message) do
-                {
-                  'type' => type,
-                  'host' => { 'id' => SecureRandom.uuid }
-                }
-              end
-
-              include_examples 'skips the job'
-            end
-
-            context 'with the non-Insights ID' do
-              let(:message) do
-                {
-                  'type' => type,
-                  'host' => {
-                    'id' => SecureRandom.uuid,
-                    'insights_id' => described_class::NON_INSIGHTS_ID
-                  }
-                }
-              end
-
-              include_examples 'skips the job'
-            end
-
-            context 'when it is an edge host' do
-              let(:excluded_host) { { 'system_profile' => { 'host_type' => 'edge' } } }
-
-              include_examples 'skips the job'
-            end
-
-            context 'when it runs CentOS' do
-              let(:excluded_host) do
-                { 'system_profile' => { 'operating_system' => { 'name' => 'CentOS Linux' } } }
-              end
-
-              include_examples 'skips the job'
-            end
-
-            context 'when it is booted from a bootc image' do
-              let(:excluded_host) do
-                {
-                  'system_profile' => {
-                    'bootc_status' => { 'booted' => { 'image_digest' => "sha256:#{SecureRandom.hex}" } }
-                  }
-                }
-              end
-
-              include_examples 'skips the job'
-            end
-          end
-
-          it 'propagates enqueue failures' do
-            allow(SystemImportJob).to receive(:perform_later).and_raise(StandardError, 'enqueue failed')
-
-            expect { consumer.consume }.to raise_error(StandardError, 'enqueue failed')
-          end
-        end
+    context 'when the host is booted from a bootc image' do
+      let(:host_attributes) do
+        {
+          'insights_id' => SecureRandom.uuid,
+          'system_profile' => { 'bootc_status' => { 'booted' => { 'image_digest' => "sha256:#{SecureRandom.hex}" } } }
+        }
       end
+
+      include_examples 'an ineligible host'
     end
+  end
+
+  it 'parses each delivered Kafka payload exactly once' do
+    first_event = { 'type' => 'created', 'host' => { 'id' => SecureRandom.uuid, 'insights_id' => SecureRandom.uuid } }
+    second_event = { 'type' => 'updated', 'host' => { 'id' => SecureRandom.uuid } }
+    messages = [kafka_message(first_event), kafka_message(second_event)]
+    allow(consumer).to receive(:messages).and_return(messages)
+    messages.each do |delivered_message|
+      expect(JSON).to receive(:parse).with(delivered_message.raw_payload).once.and_call_original
+    end
+    expect(InventoryEventsBatchJob).to receive(:perform_later).with(
+      [{ 'type' => 'created', 'payload' => first_event, 'metadata' => metadata }]
+    ).and_return(true)
+
+    consumer.consume
+  end
+
+  it 'preserves rich import and delete projections' do
+    event = {
+      'type' => 'updated', 'id' => SecureRandom.uuid,
+      'host' => {
+        'id' => SecureRandom.uuid, 'insights_id' => SecureRandom.uuid, 'account' => '123',
+        'display_name' => 'host.example.com', 'system_profile' => {
+          'owner_id' => SecureRandom.uuid,
+          'operating_system' => { 'major' => '9', 'minor' => '4', 'name' => 'RHEL', 'extra' => true },
+          'image_builder' => { 'compliance_policy_id' => SecureRandom.uuid, 'extra' => true }
+        }, 'irrelevant' => 'omit-me'
+      },
+      'platform_metadata' => {
+        'service' => 'compliance', 'request_id' => SecureRandom.uuid,
+        'metadata' => { 'full' => { 'nested' => 'value' } }, 'extra' => true
+      }, 'irrelevant' => 'omit-me'
+    }
+    allow(consumer).to receive(:messages).and_return([kafka_message(event)])
+    expected_payload = {
+      'type' => 'updated', 'id' => event['id'],
+      'host' => {
+        'id' => event['host']['id'], 'insights_id' => event['host']['insights_id'],
+        'account' => '123', 'display_name' => 'host.example.com',
+        'system_profile' => {
+          'owner_id' => event['host']['system_profile']['owner_id'],
+          'operating_system' => { 'major' => '9', 'minor' => '4' },
+          'image_builder' => {
+            'compliance_policy_id' => event['host']['system_profile']['image_builder']['compliance_policy_id']
+          }
+        }
+      },
+      'platform_metadata' => {
+        'service' => 'compliance', 'request_id' => event['platform_metadata']['request_id'],
+        'metadata' => { 'full' => { 'nested' => 'value' } }
+      }
+    }
+    expect(InventoryEventsBatchJob).to receive(:perform_later).with(
+      [{ 'type' => 'updated', 'payload' => expected_payload, 'metadata' => metadata }]
+    ).and_return(true)
+
+    consumer.consume
+  end
+
+  it 'propagates enqueue failures without acknowledging messages' do
+    allow(consumer).to receive(:messages).and_return([importable_message])
+    allow(InventoryEventsBatchJob).to receive(:perform_later).and_raise(StandardError, 'enqueue failed')
+
+    expect { consumer.consume }.to raise_error(StandardError, 'enqueue failed')
+    expect(consumer).not_to have_received(:mark_as_consumed)
+  end
+
+  it 'raises when enqueue returns false without acknowledging messages' do
+    allow(consumer).to receive(:messages).and_return([importable_message])
+    allow(InventoryEventsBatchJob).to receive(:perform_later).and_return(false)
+
+    expect { consumer.consume }.to raise_error(ActiveJob::EnqueueError, /Failed to enqueue/)
+    expect(consumer).not_to have_received(:mark_as_consumed)
+  end
+
+  it 'acknowledges a delivery without processable entries' do
+    allow(consumer).to receive(:messages).and_return([message])
+
+    expect(InventoryEventsBatchJob).not_to receive(:perform_later)
+    expect(consumer).to receive(:mark_as_consumed).with(message)
+
+    consumer.consume
+  end
+
+  it 'does not enqueue or acknowledge an empty delivery' do
+    allow(consumer).to receive(:messages).and_return([])
+
+    expect(InventoryEventsBatchJob).not_to receive(:perform_later)
+    consumer.consume
+
+    expect(consumer).not_to have_received(:mark_as_consumed)
   end
 end

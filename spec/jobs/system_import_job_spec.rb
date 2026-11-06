@@ -19,6 +19,10 @@ RSpec.describe SystemImportJob do
     expect(described_class.queue_name).to eq('imports')
   end
 
+  it 'does not configure per-system GoodJob concurrency' do
+    expect(described_class).not_to respond_to(:good_job_concurrency_config)
+  end
+
   it 'imports an eligible host' do
     import_job = described_class.new(message)
     expect(import_job).to receive(:import_system).and_return(true)
@@ -53,7 +57,7 @@ RSpec.describe SystemImportJob do
     allow(Kafka::ReportParser).to receive(:new).and_return(report_parser)
     import_job = described_class.new(message)
     expect(import_job).to receive(:import_system).and_return(true)
-    expect(import_job).to receive(:import_policy_system)
+    expect(import_job).to receive(:import_policy_system).and_return(true)
 
     import_job.perform_now
 
@@ -140,6 +144,29 @@ RSpec.describe SystemImportJob do
       expect(attributes.slice('os_major_version', 'os_minor_version')).to eq(
         'os_major_version' => 8, 'os_minor_version' => 1
       )
+    end
+
+    it 'parses compliance reports when a stale import changes no system row' do
+      FactoryBot.create(:system, id: message['host']['id'], updated: 1.day.from_now)
+      message['platform_metadata'] = { 'service' => 'compliance' }
+      report_parser = instance_double(Kafka::ReportParser, parse_reports: nil)
+      allow(Kafka::ReportParser).to receive(:new).and_return(report_parser)
+
+      described_class.perform_now(message)
+
+      expect(report_parser).to have_received(:parse_reports)
+    end
+
+    it 'does not import policy associations for a stale system event' do
+      system = FactoryBot.create(:system, id: message['host']['id'], updated: 1.day.from_now)
+      policy = FactoryBot.create(
+        :policy, account: system.account, os_major_version: 9, supports_minors: [4], empty_policy: true
+      )
+      message['host']['org_id'] = system.org_id
+      message['host']['system_profile']['operating_system'] = { 'major' => 9, 'minor' => 4 }
+      message['host']['system_profile']['image_builder'] = { 'compliance_policy_id' => policy.id }
+
+      expect { described_class.perform_now(message) }.not_to change(PolicySystem, :count)
     end
 
     it 'resurrects a soft-deleted system when the event is newer' do
@@ -285,11 +312,8 @@ RSpec.describe SystemImportJob do
       expect { job.send(:import_policy_system) }.not_to change(PolicySystem, :count)
     end
 
-    it 'does not duplicate an existing policy association' do
+    it 'treats an existing policy association as idempotent' do
       FactoryBot.create(:policy_system, policy_id: policy_id, system_id: system_id)
-      expect(Rails.logger).to receive(:audit_fail).with(
-        a_string_including("[#{user.org_id}] Failed to import PolicySystem: System has already been taken")
-      )
 
       expect { job.send(:import_policy_system) }.not_to change(PolicySystem, :count)
     end
@@ -344,5 +368,22 @@ RSpec.describe SystemImportJob, 'database idempotency' do
     described_class.perform_now(older_message)
 
     expect(System.find(system_id).display_name).to eq('newer-system')
+  end
+
+  it 'rolls back system changes when policy association fails' do
+    account = FactoryBot.create(:account)
+    system_id = Faker::Internet.uuid
+    policy = FactoryBot.create(
+      :policy, account: account, os_major_version: 8, supports_minors: [0], empty_policy: true
+    )
+    FactoryBot.create(:system, id: system_id, account: account, display_name: 'old-name', updated: 2.days.ago,
+                               os_major_version: 7, os_minor_version: 0)
+    message = inventory_message(system_id: system_id, account: account, updated: 1.day.ago.iso8601,
+                                display_name: 'new-name', policy_id: policy.id)
+
+    expect { described_class.perform_now(message) }
+      .to raise_error(described_class::PolicyAssociationError)
+
+    expect(System.find(system_id).display_name).to eq('old-name')
   end
 end

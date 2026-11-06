@@ -2,7 +2,10 @@
 
 module Kafka
   # Consumer concerns related to report parsing
+  # rubocop:disable Metrics/ClassLength
   class ReportParser
+    include InventorySystemLock
+
     # Raise an error if entitlement is not available
     class EntitlementError < StandardError; end
     # Raise an error if parsing report is not possible
@@ -13,9 +16,12 @@ module Kafka
       @logger = logger
     end
 
+    # rubocop:disable Metrics/MethodLength
     def parse_reports
       @enqueued = []
       @failed = false
+      return if tombstoned_system?
+
       downloaded_reports.each { |xml| validate_and_enqueue(xml) }
       notify_enqueued_reports
       produce_validation_message('success') unless @failed
@@ -25,24 +31,58 @@ module Kafka
       parse_error(e)
       raise
     end
+    # rubocop:enable Metrics/MethodLength
 
     private
 
+    # rubocop:disable Metrics/MethodLength
     def validate_and_enqueue(xml)
+      return if tombstoned_system?
+
       parser = XccdfReportParser.new(xml, metadata)
       parser.validate!
       profile_id = parser.test_result_file.test_result.profile_id
       job = enqueue_parsing(profile_id, parser.extracted_xml)
+      return unless job
+
       @enqueued << "#{profile_id}:#{job.job_id}"
       notify_payload_tracker(:received, "File of #{profile_id} is valid. Job #{job.job_id} enqueued")
     rescue *XccdfReportParser::ERRORS => e
       @failed = true
       parse_error(e, notify_tracker: true)
     end
+    # rubocop:enable Metrics/MethodLength
 
     def enqueue_parsing(profile_id, xml)
-      ParseReportJob.perform_later(ReportArtifact.pack(xml), metadata) or
-        raise ReportParseError, "Failed to enqueue parsing of #{profile_id}"
+      job, skipped = enqueue_parsing_job(xml)
+      return if skipped
+
+      job || raise(ReportParseError, "Failed to enqueue parsing of #{profile_id}")
+    end
+
+    # rubocop:disable Metrics/MethodLength
+    def enqueue_parsing_job(xml)
+      job = nil
+      skipped = false
+      ActiveRecord::Base.transaction do
+        lock_inventory_system(id)
+        if System.unscoped.where(id: id).pick(:deleted_at)
+          skipped = true
+        else
+          job = ParseReportJob.perform_later(ReportArtifact.pack(xml), metadata)
+        end
+      end
+      [job, skipped]
+    end
+    # rubocop:enable Metrics/MethodLength
+
+    def tombstoned_system?
+      deleted_at = ActiveRecord::Base.transaction do
+        lock_inventory_system(id)
+        System.unscoped.where(id: id).pick(:deleted_at)
+      end
+      @logger.info("Skip tombstoned system #{id}") if deleted_at
+      deleted_at.present?
     end
 
     def downloaded_reports
@@ -53,7 +93,7 @@ module Kafka
     end
 
     def notify_enqueued_reports
-      return if @enqueued.empty?
+      return if @enqueued.blank?
 
       msg = "Enqueued #{@enqueued.size} report(s) from request #{request_id}: #{@enqueued.join(', ')}"
       @logger.audit_success("[#{org_id}] #{msg}")
@@ -143,4 +183,5 @@ module Kafka
       end
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
