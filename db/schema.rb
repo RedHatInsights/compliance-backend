@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_24_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_04_150001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "dblink"
   enable_extension "pgcrypto"
@@ -311,6 +311,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_170000) do
     t.integer "os_minor_version"
     t.uuid "owner_id"
     t.datetime "stale_timestamp", null: false
+    t.uuid "subscription_manager_id"
     t.jsonb "tags", default: [], null: false
     t.datetime "updated", null: false
     t.index ["deleted_at"], name: "index_systems_on_deleted_at_partial", where: "(deleted_at IS NOT NULL)"
@@ -321,6 +322,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_24_170000) do
     t.index ["org_id", "id"], name: "index_systems_on_org_id_and_id_partial", where: "(deleted_at IS NULL)"
     t.index ["org_id", "os_major_version", "os_minor_version"], name: "index_systems_on_org_id_and_os_versions", where: "(deleted_at IS NULL)"
     t.index ["owner_id"], name: "index_systems_on_owner_id", where: "(deleted_at IS NULL)"
+    t.index ["subscription_manager_id"], name: "index_systems_on_subscription_manager_id", where: "(deleted_at IS NULL)"
     t.index ["tags"], name: "index_systems_on_tags_gin_partial", opclass: :jsonb_path_ops, where: "(deleted_at IS NULL)", using: :gin
   end
 

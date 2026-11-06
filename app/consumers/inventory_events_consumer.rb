@@ -18,6 +18,7 @@ class InventoryEventsConsumer < ApplicationConsumer
       'stale_timestamp' => nil,
       'created' => nil,
       'updated' => nil,
+      'subscription_manager_id' => nil,
       'system_profile' => {
         'owner_id' => nil,
         'operating_system' => {

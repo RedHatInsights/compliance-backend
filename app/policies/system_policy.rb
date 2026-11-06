@@ -56,7 +56,14 @@ class SystemPolicy < ApplicationPolicy
     end
 
     def resolve_cert_auth
-      base_scope.where(owner_id: user.system_owner_id)
+      scoped = base_scope.where(owner_id: user.system_owner_id)
+      return scoped unless satellite_host_scope?
+
+      scoped.where(subscription_manager_id: user.forwarded_subscription_manager_id)
+    end
+
+    def satellite_host_scope?
+      user.satellite_system? && user.forwarded_subscription_manager_id.present?
     end
 
     def base_scope

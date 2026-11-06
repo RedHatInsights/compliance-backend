@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Imports a system and its associated compliance data
+# rubocop:disable Metrics/ClassLength
 class SystemImportJob < ApplicationJob
   DATABASE_RETRY_HANDLER = [
     ActiveRecord::Deadlocked,
@@ -55,8 +56,16 @@ class SystemImportJob < ApplicationJob
       display_name: payload.dig('display_name'), groups: payload.dig('groups') || [],
       tags: payload.dig('tags') || [], stale_timestamp: payload.dig('stale_timestamp'),
       created: payload.dig('created'), updated: updated,
-      insights_id: payload.dig('insights_id'), deleted_at: nil
+      insights_id: payload.dig('insights_id'), deleted_at: nil,
+      subscription_manager_id: subscription_manager_id_for(payload)
     }.merge(native_fields.native_attributes)
+  end
+
+  def subscription_manager_id_for(payload)
+    SubscriptionManagerId.for_import(payload['subscription_manager_id'])
+  rescue SubscriptionManagerId::Malformed
+    Rails.logger.error('[SystemImportJob] Malformed subscription_manager_id')
+    nil
   end
 
   def log_malformed_owner
@@ -80,6 +89,7 @@ class SystemImportJob < ApplicationJob
         os_major_version = EXCLUDED.os_major_version,
         os_minor_version = EXCLUDED.os_minor_version,
         owner_id = EXCLUDED.owner_id,
+        subscription_manager_id = EXCLUDED.subscription_manager_id,
         stale_timestamp = EXCLUDED.stale_timestamp,
         created = EXCLUDED.created,
         updated = EXCLUDED.updated,
@@ -167,3 +177,4 @@ class SystemImportJob < ApplicationJob
     @message.dig('platform_metadata', 'service') == 'compliance'
   end
 end
+# rubocop:enable Metrics/ClassLength
