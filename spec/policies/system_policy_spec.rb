@@ -120,6 +120,95 @@ describe SystemPolicy do
     end
   end
 
+  context 'satellite cert_auth' do
+    let(:owner_id) { Faker::Internet.uuid }
+    let(:subscription_manager_id) { Faker::Internet.uuid }
+    let(:forwarded_subscription_manager_id) { subscription_manager_id }
+    let(:user) do
+      FactoryBot.create(
+        :user,
+        :with_cert_auth,
+        system_owner_id: owner_id,
+        cert_type: 'satellite',
+        identity_type: 'System'
+      ).tap do |created|
+        created.account.forwarded_subscription_manager_id = forwarded_subscription_manager_id
+      end
+    end
+    let!(:matching_system) do
+      FactoryBot.create(
+        :system,
+        account: user.account,
+        owner_id: owner_id,
+        subscription_manager_id: subscription_manager_id
+      )
+    end
+    let!(:same_owner_system) do
+      FactoryBot.create(
+        :system,
+        account: user.account,
+        owner_id: owner_id,
+        subscription_manager_id: Faker::Internet.uuid
+      )
+    end
+    let!(:other_owner_system) do
+      FactoryBot.create(
+        :system,
+        account: user.account,
+        owner_id: Faker::Internet.uuid,
+        subscription_manager_id: subscription_manager_id
+      )
+    end
+
+    it 'scopes to that subscription_manager_id' do
+      expect(Pundit.policy_scope(user, System).to_set).to eq([matching_system].to_set)
+    end
+
+    context 'when the forwarded header is absent' do
+      let(:forwarded_subscription_manager_id) { nil }
+
+      it 'returns all owner_id matches' do
+        expect(Pundit.policy_scope(user, System).to_set).to eq([matching_system, same_owner_system].to_set)
+      end
+    end
+  end
+
+  context 'non-satellite cert_auth' do
+    let(:owner_id) { Faker::Internet.uuid }
+    let(:subscription_manager_id) { Faker::Internet.uuid }
+    let(:user) do
+      FactoryBot.create(
+        :user,
+        :with_cert_auth,
+        system_owner_id: owner_id,
+        cert_type: 'system',
+        identity_type: 'System'
+      ).tap do |created|
+        created.account.forwarded_subscription_manager_id = subscription_manager_id
+      end
+    end
+    let!(:owner_systems) do
+      [
+        FactoryBot.create(
+          :system,
+          account: user.account,
+          owner_id: owner_id,
+          subscription_manager_id: subscription_manager_id
+        ),
+        FactoryBot.create(
+          :system,
+          account: user.account,
+          owner_id: owner_id,
+          subscription_manager_id: Faker::Internet.uuid
+        )
+      ]
+    end
+
+    it 'ignores the forwarded header' do
+      expect(Pundit.policy_scope(user, System).to_set).to eq(owner_systems.to_set)
+    end
+  end
+
   context 'no permissions' do
     before do
       allow(user).to receive(:inventory_groups).and_return([])
