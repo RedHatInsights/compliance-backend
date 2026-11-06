@@ -26,7 +26,7 @@ module Authentication
       return unauthenticated(error: 'Error parsing the X-RH-IDENTITY header')
     end
     return unauthenticated unless identity_header.valid?
-    return unauthorized unless rbac_allowed?
+    return unauthorized(error: authorization_error) unless authorized_request?
 
     return if performed?
 
@@ -88,6 +88,32 @@ module Authentication
     Rails.logger.error(e.full_message)
 
     false
+  end
+
+  def authorized_request?
+    @forwarded_identity_state = prepare_forwarded_identity
+    return false if @forwarded_identity_state == :invalid
+
+    rbac_allowed?
+  end
+
+  def authorization_error
+    return 'Invalid X-Forwarded-Identity header' if @forwarded_identity_state == :invalid
+
+    'User is not authorized to view this page'
+  end
+
+  def prepare_forwarded_identity
+    return :ok unless user.satellite_system?
+
+    header = request.headers['X-Forwarded-Identity']
+    return :ok if SubscriptionManagerId.absent?(header)
+
+    canonical = SubscriptionManagerId.canonical(header)
+    return :invalid if canonical.nil?
+
+    user.account.forwarded_subscription_manager_id = canonical
+    :ok
   end
 
   def raw_identity_header

@@ -6,9 +6,18 @@ FactoryBot.define do
     account { association :account }
 
     trait :with_cert_auth do
-      transient { system_owner_id { Faker::Internet.uuid } }
+      transient do
+        system_owner_id { Faker::Internet.uuid }
+        cert_type { nil }
+        identity_type { 'User' }
+      end
 
-      account { association :account, :with_cert_auth, system_owner_id: system_owner_id }
+      account do
+        association :account, :with_cert_auth,
+                    system_owner_id: system_owner_id,
+                    cert_type: cert_type,
+                    identity_type: identity_type
+      end
     end
 
     trait :with_service_account_type do

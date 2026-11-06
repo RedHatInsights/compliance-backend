@@ -7,7 +7,8 @@ class User < ApplicationRecord
 
   belongs_to :account
 
-  delegate :org_id, :system_owner_id, :cert_authenticated?, to: :account
+  delegate :org_id, :system_owner_id, :cert_authenticated?, :satellite_system?,
+           :forwarded_subscription_manager_id, to: :account
 
   def kessel_authorized_to?(permission)
     return true unless KesselRbac.enabled?

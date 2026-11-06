@@ -40,6 +40,10 @@ module Insights
           identity['system']['cn']
         end
 
+        def cert_type
+          identity&.dig('system', 'cert_type')
+        end
+
         def raw
           @b64_identity
         end

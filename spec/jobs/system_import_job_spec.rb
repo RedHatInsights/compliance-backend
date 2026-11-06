@@ -76,6 +76,7 @@ RSpec.describe SystemImportJob do
   describe '#import_system' do
     let(:updated_time) { Time.current.iso8601 }
     let(:owner_id) { Faker::Internet.uuid }
+    let(:subscription_manager_id) { Faker::Internet.uuid }
     let(:job) { described_class.new }
     let(:message) do
       {
@@ -85,6 +86,7 @@ RSpec.describe SystemImportJob do
           'org_id' => Faker::Number.number(digits: 6).to_s,
           'display_name' => Faker::Internet.domain_word,
           'groups' => [], 'tags' => [],
+          'subscription_manager_id' => subscription_manager_id,
           'system_profile' => { 'operating_system' => { 'major' => 9, 'minor' => 4 }, 'owner_id' => owner_id },
           'stale_timestamp' => updated_time, 'created' => 1.day.ago.iso8601, 'updated' => updated_time,
           'insights_id' => Faker::Internet.uuid
@@ -100,8 +102,14 @@ RSpec.describe SystemImportJob do
       expect { job.send(:import_system) }.to change(System, :count).by(1)
 
       system = System.find(message['host']['id'])
-      expect(system.attributes.slice('owner_id', 'os_major_version', 'os_minor_version')).to eq(
-        'owner_id' => owner_id, 'os_major_version' => 9, 'os_minor_version' => 4
+      stored = system.attributes.slice(
+        'owner_id', 'subscription_manager_id', 'os_major_version', 'os_minor_version'
+      )
+      expect(stored).to eq(
+        'owner_id' => owner_id,
+        'subscription_manager_id' => subscription_manager_id,
+        'os_major_version' => 9,
+        'os_minor_version' => 4
       )
     end
 
@@ -115,6 +123,7 @@ RSpec.describe SystemImportJob do
         expect(attributes.keys).not_to include(:system_profile)
         expect(sql).not_to include('system_profile')
         expect(sql).to include('owner_id = EXCLUDED.owner_id')
+        expect(sql).to include('subscription_manager_id = EXCLUDED.subscription_manager_id')
         expect(sql).to include('os_major_version = EXCLUDED.os_major_version')
         expect(sql).to include('os_minor_version = EXCLUDED.os_minor_version')
         expect(sql).to include('WHERE COALESCE(systems.deleted_at, systems.updated) < EXCLUDED.updated')
@@ -156,6 +165,23 @@ RSpec.describe SystemImportJob do
       job.send(:import_system)
 
       expect(System.unscoped.find(message['host']['id']).deleted_at).not_to be_nil
+    end
+
+    it 'stores nil when subscription_manager_id is malformed' do
+      message['host']['subscription_manager_id'] = Faker::Lorem.word
+      expect(Rails.logger).to receive(:error).with('[SystemImportJob] Malformed subscription_manager_id')
+
+      expect { job.send(:import_system) }.not_to raise_error
+      expect(System.find(message['host']['id']).subscription_manager_id).to be_nil
+    end
+
+    it 'stores nil when subscription_manager_id is blank' do
+      message['host']['subscription_manager_id'] = '   '
+      expect(Rails.logger).not_to receive(:error).with('[SystemImportJob] Malformed subscription_manager_id')
+
+      job.send(:import_system)
+
+      expect(System.find(message['host']['id']).subscription_manager_id).to be_nil
     end
 
     it 'logs malformed owner IDs and stores nil' do

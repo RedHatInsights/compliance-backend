@@ -730,6 +730,14 @@ describe SystemsController do
 
         include_examples 'assign to policy'
 
+        it 'ignores a malformed X-Forwarded-Identity header' do
+          request.headers['X-Forwarded-Identity'] = Faker::Lorem.word
+
+          patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+          expect(response).to have_http_status :accepted
+        end
+
         context 'system owner_id mismatch' do
           let(:current_user) { FactoryBot.create(:user, :with_cert_auth, system_owner_id: Faker::Internet.uuid) }
 
@@ -745,6 +753,45 @@ describe SystemsController do
 
               expect(response).to have_http_status :not_found
             end
+          end
+        end
+
+        context 'with a satellite identity' do
+          let(:current_user) do
+            FactoryBot.create(
+              :user,
+              :with_cert_auth,
+              system_owner_id: owner_id,
+              cert_type: 'satellite',
+              identity_type: 'System'
+            )
+          end
+
+          it 'returns forbidden when X-Forwarded-Identity is not a UUID' do
+            request.headers['X-Forwarded-Identity'] = Faker::Lorem.word
+
+            patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+            expect(response).to have_http_status :forbidden
+            expect(response.parsed_body['error']).to include('Invalid X-Forwarded-Identity')
+          end
+
+          it 'keeps owner scoping when X-Forwarded-Identity is blank' do
+            request.headers['X-Forwarded-Identity'] = '   '
+
+            patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+            expect(response).to have_http_status :accepted
+          end
+
+          it 'scopes the system to the forwarded subscription_manager_id' do
+            forwarded_id = Faker::Internet.uuid
+            item.update!(subscription_manager_id: Faker::Internet.uuid)
+            request.headers['X-Forwarded-Identity'] = forwarded_id
+
+            patch :update, params: { id: item.id, policy_id: parent.id, parents: [:policies] }
+
+            expect(response).to have_http_status :not_found
           end
         end
       end
