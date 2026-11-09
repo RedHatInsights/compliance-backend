@@ -11,7 +11,7 @@ class Account < ApplicationRecord
 
   validates :org_id, presence: true, allow_blank: false
 
-  attr_accessor :identity_header
+  attr_accessor :identity_header, :forwarded_subscription_manager_id
 
   class << self
     def from_identity_header(identity_header)
@@ -32,6 +32,12 @@ class Account < ApplicationRecord
 
   def system_owner_id
     identity_header.owner_id
+  end
+
+  delegate :cert_type, to: :identity_header
+
+  def satellite_system?
+    cert_authenticated? && identity_header.identity&.dig('type') == 'System' && cert_type == 'satellite'
   end
 
   # rubocop:disable Metrics/MethodLength

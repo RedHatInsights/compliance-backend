@@ -161,6 +161,7 @@ describe InventoryEventsConsumer do
                   'stale_timestamp' => '2026-10-14T10:00:00Z',
                   'created' => '2026-10-13T10:00:00Z',
                   'updated' => '2026-10-14T10:00:00Z',
+                  'subscription_manager_id' => SecureRandom.uuid,
                   'system_profile' => {
                     'owner_id' => SecureRandom.uuid,
                     'operating_system' => {
@@ -195,7 +196,7 @@ describe InventoryEventsConsumer do
                 'id' => message['id'],
                 'host' => message['host'].slice(
                   'id', 'insights_id', 'account', 'org_id', 'display_name', 'groups', 'tags',
-                  'stale_timestamp', 'created', 'updated'
+                  'stale_timestamp', 'created', 'updated', 'subscription_manager_id'
                 ).merge(
                   'system_profile' => {
                     'owner_id' => message.dig('host', 'system_profile', 'owner_id'),

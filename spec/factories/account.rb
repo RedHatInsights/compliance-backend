@@ -8,9 +8,9 @@ FactoryBot.define do
         Base64.encode64({
           identity: {
             org_id: org_id,
-            type: 'User',
+            type: identity_type,
             auth_type: auth_type,
-            system: system_owner_id ? { cn: system_owner_id } : nil
+            system: { cn: system_owner_id, cert_type: cert_type }.compact.presence
           }.compact,
           entitlements: {
             insights: {
@@ -24,6 +24,8 @@ FactoryBot.define do
     transient do
       auth_type { nil }
       system_owner_id { nil }
+      cert_type { nil }
+      identity_type { 'User' }
     end
 
     trait :with_cert_auth do
