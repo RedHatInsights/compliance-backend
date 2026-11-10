@@ -13,6 +13,9 @@ objects:
     deployments:
     - name: service
       minReplicas: ${{MIN_REPLICAS}}
+      metadata:
+        annotations:
+          ignore-check.kube-linter.io/minimum-three-replicas: "minimum three replicas not required"
       deploymentStrategy:
         privateStrategy: RollingUpdate
       webServices:
@@ -21,9 +24,6 @@ objects:
       podSpec:
         imagePullPolicy: Always
         image: ${IMAGE}:${IMAGE_TAG}
-        metadata:
-          annotations:
-            ignore-check.kube-linter.io/minimum-three-replicas : "minimum three replicas not required"
         livenessProbe:
           failureThreshold: 3
           httpGet:
