@@ -4,8 +4,6 @@
 class SystemDeleteJob < ApplicationJob
   queue_as :deletes
 
-  include InventorySystemConcurrency
-
   def perform(message)
     @message = message
     @id = @message.dig('id')

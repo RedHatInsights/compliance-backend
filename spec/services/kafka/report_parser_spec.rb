@@ -59,6 +59,19 @@ describe Kafka::ReportParser do
     end
   end
 
+  context 'with a tombstoned system' do
+    before { system.update!(deleted_at: Time.current) }
+
+    it 'skips the download and does not enqueue jobs' do
+      expect(SafeDownloader).not_to receive(:download_reports)
+      expect(Karafka.logger).to receive(:info).with("Skip tombstoned system #{system.id}")
+
+      service.parse_reports
+
+      expect(enqueued_jobs).to be_empty
+    end
+  end
+
   context 'when report is failing to download' do
     before do
       allow(SafeDownloader).to receive(:download_reports)

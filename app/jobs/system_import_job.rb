@@ -12,8 +12,6 @@ class SystemImportJob < ApplicationJob
 
   queue_as :imports
 
-  include InventorySystemConcurrency
-
   def perform(message)
     @message = message
     return unless import_system
