@@ -2,6 +2,7 @@
 
 module Kafka
   # Consumer concerns related to report parsing
+  # rubocop:disable Metrics/ClassLength
   class ReportParser
     # Raise an error if entitlement is not available
     class EntitlementError < StandardError; end
@@ -13,7 +14,10 @@ module Kafka
       @logger = logger
     end
 
+    # rubocop:disable Metrics/MethodLength
     def parse_reports
+      return if tombstoned_system?
+
       @enqueued = []
       @failed = false
       downloaded_reports.each { |xml| validate_and_enqueue(xml) }
@@ -25,8 +29,15 @@ module Kafka
       parse_error(e)
       raise
     end
+    # rubocop:enable Metrics/MethodLength
 
     private
+
+    def tombstoned_system?
+      deleted_at = System.unscoped.where(id: id).pick(:deleted_at)
+      @logger.info("Skip tombstoned system #{id}") if deleted_at
+      deleted_at.present?
+    end
 
     def validate_and_enqueue(xml)
       parser = XccdfReportParser.new(xml, metadata)
@@ -143,4 +154,5 @@ module Kafka
       end
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

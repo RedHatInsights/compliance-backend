@@ -24,7 +24,7 @@ describe ApplicationConsumer do
     end
 
     context 'when an error is raised during message processing' do
-      before { allow(consumer).to receive(:consume_one).and_raise(StandardError) }
+      before { allow(InventoryEventsBatchJob).to receive(:perform_later).and_raise(StandardError) }
 
       it 'propagates the error outside the executor wrap' do
         expect(Rails.application.executor).to receive(:wrap).and_call_original
