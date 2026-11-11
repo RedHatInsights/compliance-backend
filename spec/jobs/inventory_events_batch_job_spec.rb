@@ -49,6 +49,7 @@ RSpec.describe InventoryEventsBatchJob do
           end
         end
       end
+      allow(described_class).to receive(:set).and_return(described_class)
       allow(described_class).to receive(:perform_later) do |batch|
         events << [:enqueue, batch]
         true
@@ -75,6 +76,15 @@ RSpec.describe InventoryEventsBatchJob do
 
       expect(events.map(&:first)).to eq(%i[process process process enqueue])
       expect(described_class).to have_received(:perform_later).once
+    end
+
+    it 'delays retry batches using the failed entries retry count' do
+      fail_entries(first_entry)
+      retry_job = instance_double(ActiveJob::ConfiguredJob)
+      expect(described_class).to receive(:set).with(wait: 1.minute).and_return(retry_job)
+      expect(retry_job).to receive(:perform_later).with([first_entry.merge('retry_count' => 1)]).and_return(true)
+
+      described_class.perform_now([first_entry])
     end
 
     it 'preserves entry data and increments retry_count' do

@@ -5,6 +5,7 @@
 # Failed entries are collected during the pass and re-enqueued once as a new batch.
 class InventoryEventsBatchJob < ApplicationJob
   MAX_RETRIES = 2
+  RETRY_DELAY = 1.minute
 
   queue_as :inventory
 
@@ -37,7 +38,9 @@ class InventoryEventsBatchJob < ApplicationJob
   end
 
   def enqueue_retry(failed_entries)
-    return if self.class.perform_later(failed_entries)
+    retry_count = failed_entries.map { |entry| entry.fetch('retry_count', 1) }.max
+    enqueued = self.class.set(wait: RETRY_DELAY * retry_count).perform_later(failed_entries)
+    return if enqueued
 
     raise ActiveJob::EnqueueError, 'Failed to enqueue inventory events retry batch'
   end
