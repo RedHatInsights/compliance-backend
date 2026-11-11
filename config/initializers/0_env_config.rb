@@ -28,9 +28,12 @@ if !ClowderCommonRuby::Config.clowder_enabled? && defined?(Settings)
       'cache_port'     => ENV.fetch('REDIS_CACHE_PORT', '6379'),
       'cache_password' => ENV['REDIS_CACHE_PASSWORD']
     },
-    'endpoints' => {
+    'v2_endpoints' => {
       'host_inventory' => {
-        'url' => ENV.fetch('HOST_INVENTORY_URL', 'http://inventory-web:8081')
+        'service' => {
+          'url' => ENV.fetch('HOST_INVENTORY_URL', 'http://inventory-web:8081'),
+          'authenticated' => false
+        }
       }
     },
     'private_endpoints' => {

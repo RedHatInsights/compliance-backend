@@ -14,7 +14,7 @@ module Insights
         # it logs a warning rather than truncating silently.
         MAX_PAGES = 100
 
-        def initialize(account: nil, url: Settings.endpoints.host_inventory.url,
+        def initialize(account: nil, url: Settings.v2_endpoints.host_inventory.service.url,
                        b64_identity: nil)
           @url = "#{URI.parse(url)}#{Settings.path_prefix}/inventory/v1/hosts"
           @account = account
@@ -57,8 +57,15 @@ module Insights
           get("?#{query}").dig('results') || []
         end
 
-        def get(path = '', params: {}, headers: { 'X-RH-IDENTITY': @b64_identity })
+        def get(path = '', params: {}, headers: request_headers)
           JSON.parse(Platform.connection.get("#{@url}#{path}", params, headers).body)
+        end
+
+        def request_headers
+          headers = { 'X-RH-IDENTITY': @b64_identity }
+          return headers unless Settings.v2_endpoints.host_inventory.service.authenticated
+
+          headers.merge(KesselBuilder.bearer_header)
         end
       end
     end

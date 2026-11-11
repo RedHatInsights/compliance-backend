@@ -25,6 +25,7 @@ class PlaybookDownloader
       end
     end
 
+    # shortcut: compliance-ssg has no Clowder V2 entry yet, stays on V1 until Clowder writes one
     def playbook_list_url(os_major_version)
       [
         Settings.private_endpoints.compliance_ssg.url,
