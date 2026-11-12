@@ -172,21 +172,8 @@ podman logs -f compliance-backend_goodjob_1
 
 ### Building the image
 
-This project uses `build_deploy.sh` to build and push this image to a remote registry.
-You must set the required variables to provide authentication to the required registries.
-You must set at least the Red Hat Registry credentials to be able to pull the base image.
-
-Example:
-```
-LOCAL_BUILD=true RH_REGISTRY_USER=guybrush RH_REGISTRY_TOKEN=M0nk3y ./build_deploy.sh
-```
-
-Optionally, if you want to push to the remote registry you must set the remote registry credentials as well (LOCAL_BUILD defaults to `false`)
-
-Example:
-```
-LOCAL_BUILD=true RH_REGISTRY_USER=guybrush RH_REGISTRY_TOKEN=monkey QUAY_USER=lechuck QUAY_TOKEN=Ela1ne ./build_deploy.sh
-```
+Production images are built and published by Konflux. For personal image builds and pushes, use your
+own registry repositories.
 
 ## Development notes
 
