@@ -31,7 +31,7 @@ services:
                        kafka-topics --create --if-not-exists --topic platform.inventory.host-ingress --bootstrap-server kafka:29092 && \
                        kafka-topics --create --if-not-exists --topic platform.inventory.events --bootstrap-server kafka:29092'"
   puptoo:
-    image: quay.io/cloudservices/insights-puptoo:latest
+    image: quay.io/redhat-services-prod/insights-management-tenant/insights-puptoo:latest
     platform: linux/amd64
     environment:
       - REJECTION_TOPIC=platform.upload.validation
@@ -75,7 +75,7 @@ services:
       - /data
     env_file: .env
   ingress:
-    image: quay.io/cloudservices/insights-ingress:latest
+    image: quay.io/redhat-services-prod/insights-management-tenant/insights-ingress:latest
     platform: linux/amd64
     environment:
       - AWS_ACCESS_KEY_ID=$MINIO_ROOT_USER
@@ -121,7 +121,7 @@ services:
     volumes:
       - /var/lib/postgresql/data
   rbac:
-    image: quay.io/cloudservices/rbac:latest
+    image: quay.io/redhat-services-prod/insights-management-tenant/rbac:latest
     platform: linux/amd64
     restart: on-failure
     environment:
@@ -149,7 +149,7 @@ services:
       - ./config/devel/rbac/definitions:/opt/rbac/rbac/management/role/definitions
       - ./config/devel/rbac/permissions:/opt/rbac/rbac/management/role/permissions
   build-rbac-db:
-    image: quay.io/cloudservices/rbac:latest
+    image: quay.io/redhat-services-prod/insights-management-tenant/rbac:latest
     platform: linux/amd64
     environment:
       - REDIS_PORT=6379
@@ -174,7 +174,7 @@ services:
     entrypoint: /bin/sh
     command: -c './rbac/manage.py migrate ; ./rbac/manage.py seeds'
   inventory-migrator:
-    image: quay.io/cloudservices/insights-inventory:latest
+    image: quay.io/redhat-services-prod/insights-management-tenant/insights-inventory:latest
     platform: linux/amd64
     command: bash -c 'make upgrade_db'
     entrypoint: ''
@@ -188,7 +188,7 @@ services:
       createtopics:
         condition: service_completed_successfully # Make sure topics are ready
   inventory:
-    image: quay.io/cloudservices/insights-inventory:latest
+    image: quay.io/redhat-services-prod/insights-management-tenant/insights-inventory:latest
     platform: linux/amd64
     command: bash -c 'make run_inv_mq_service'
     entrypoint: ''
@@ -202,7 +202,7 @@ services:
         condition: service_completed_successfully
     restart: on-failure
   inventory-web:
-    image: quay.io/cloudservices/insights-inventory:latest
+    image: quay.io/redhat-services-prod/insights-management-tenant/insights-inventory:latest
     platform: linux/amd64
     command: bash -c 'python run_gunicorn.py'
     entrypoint: ''
@@ -220,7 +220,7 @@ services:
       inventory-migrator:
         condition: service_completed_successfully
   compliance-ssg:
-    image: quay.io/cloudservices/compliance-ssg
+    image: quay.io/redhat-services-prod/insights-management-tenant/compliance-ssg
     platform: linux/amd64
     restart: on-failure
     environment:
@@ -287,7 +287,7 @@ services:
         - prod=false
         - extras=$EXTRA_PACKAGES
       cache_from:
-        - ${CACHE_REPO:-quay.io/cloudservices/compliance-backend}
+        - ${CACHE_REPO:-quay.io/redhat-services-prod/insights-management-tenant/compliance-backend}
     image: localhost/compliance-backend-rails
     entrypoint: '/opt/app-root/src/devel.entrypoint.sh'
     command: 'bundle exec rails s -b 0.0.0.0'
