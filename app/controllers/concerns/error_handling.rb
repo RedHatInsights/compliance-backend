@@ -19,6 +19,10 @@ module ErrorHandling
       render_error error.message, status: :forbidden
     end
 
+    rescue_from KesselBuilder::TokenError do |error|
+      render_error error.message, status: :bad_gateway
+    end
+
     rescue_from ActiveRecord::RecordNotFound do |error|
       logger.info "#{error.message} (#{error.class})"
       render_error "#{error.model} not found with ID #{error.id}",

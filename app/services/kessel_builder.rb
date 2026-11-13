@@ -5,6 +5,7 @@ require 'kessel-sdk'
 # Utility functions to build a Kessel client from the current Settings
 class KesselBuilder
   class ConfigurationError < StandardError; end
+  class TokenError < StandardError; end
   class << self
     include Kessel::Inventory::V1beta2
     include Kessel::GRPC
@@ -12,6 +13,14 @@ class KesselBuilder
 
     def auth
       @auth ||= build_oauth_credentials
+    end
+
+    # Bearer for Clowder V2 endpoints marked authenticated; raises rather than sending the call unauthenticated
+    def bearer_header
+      { Authorization: "Bearer #{auth.get_token.access_token}" }
+    rescue StandardError => e
+      Rails.logger.error("Failed to fetch service token: #{e.message}")
+      raise TokenError, "Failed to fetch service token: #{e.message}"
     end
 
     def build_client

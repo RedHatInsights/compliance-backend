@@ -137,4 +137,41 @@ describe Insights::Api::Common::HostInventory do
       end
     end
   end
+
+  describe '#hosts' do
+    let(:bearer) { { Authorization: "Bearer #{Faker::Alphanumeric.alphanumeric(number: 32)}" } }
+    let(:authenticated) { false }
+
+    before do
+      allow(connection).to receive(:get).and_return(instance_double(Faraday::Response, body: '{}'))
+      allow(Settings.v2_endpoints.host_inventory.service).to receive(:authenticated).and_return(authenticated)
+      allow(KesselBuilder).to receive(:bearer_header).and_return(bearer)
+    end
+
+    context 'when the V2 endpoint is not authenticated' do
+      let(:authenticated) { false }
+
+      it 'sends only X-RH-IDENTITY' do
+        inventory.hosts
+        expect(connection).to have_received(:get).with(host_url, {}, { 'X-RH-IDENTITY': b64_identity })
+        expect(KesselBuilder).not_to have_received(:bearer_header)
+      end
+    end
+
+    context 'when the V2 endpoint is authenticated' do
+      let(:authenticated) { true }
+
+      it 'sends X-RH-IDENTITY and the bearer' do
+        inventory.hosts
+        expect(connection).to have_received(:get).with(host_url, {}, { 'X-RH-IDENTITY': b64_identity }.merge(bearer))
+      end
+    end
+
+    it 'defaults to the V2 endpoint URL' do
+      described_class.new(b64_identity: b64_identity).hosts
+      expect(connection).to have_received(:get).with(
+        "#{Settings.v2_endpoints.host_inventory.service.url}#{Settings.path_prefix}/inventory/v1/hosts", any_args
+      )
+    end
+  end
 end
