@@ -4,6 +4,9 @@ require 'kessel-sdk'
 
 # Utilities used by Kessel
 class KesselUtils
+  WORKSPACE_CACHE_PREFIX = 'compliance/kessel/workspace_default'
+  WORKSPACE_CACHE_EXPIRY = 1.day
+
   class << self
     include Kessel::RBAC::V2
     include Kessel::Auth
@@ -11,16 +14,25 @@ class KesselUtils
     def get_default_workspace_id(auth, identity_header)
       parsed_identity = Insights::Api::Common::IdentityHeader.new(identity_header)
       org_id = parsed_identity.org_id
-      cache_key = "workspace_default_#{org_id}"
 
-      return @workspace_cache[cache_key] if @workspace_cache&.key?(cache_key)
+      Rails.cache.fetch(workspace_cache_key(org_id), expires_in: WORKSPACE_CACHE_EXPIRY) do
+        fetch_workspace_id(auth, org_id)
+      end
+    end
 
-      workspace = fetch_default_workspace(Settings.endpoints.rbac.url, org_id, auth: oauth2_auth_request(auth),
-                                                                               http_client: nil)
-      @workspace_cache ||= {}
-      @workspace_cache[cache_key] = workspace.id
+    private
 
-      workspace.id
+    def workspace_cache_key(org_id)
+      "#{WORKSPACE_CACHE_PREFIX}/#{org_id}"
+    end
+
+    def fetch_workspace_id(auth, org_id)
+      fetch_default_workspace(
+        Settings.endpoints.rbac.url,
+        org_id,
+        auth: oauth2_auth_request(auth),
+        http_client: nil
+      ).id
     end
   end
 end
