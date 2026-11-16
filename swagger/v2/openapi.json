@@ -15929,6 +15929,106 @@
         }
       }
     },
+    "/reports/{report_id}/test_results/{test_result_id}/rule_tree": {
+      "get": {
+        "summary": "Request the Rule Tree of a Test Result",
+        "parameters": [
+          {
+            "name": "X-RH-IDENTITY",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "For internal use only"
+          },
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "test_result_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Reports"
+        ],
+        "description": "Returns the rule tree for the tailoring used by a test result.",
+        "operationId": "ReportTestResultRuleTree",
+        "responses": {
+          "200": {
+            "description": "Returns the Rule Tree of a Test Result",
+            "content": {
+              "application/vnd.api+json": {
+                "examples": {
+                  "Returns the Rule Tree of a Test Result": {
+                    "value": [
+                      {
+                        "id": "c020ca59-a268-48ad-a0e8-b7af18ec7230",
+                        "type": "rule_group",
+                        "children": [
+                          {
+                            "id": "bd1efef1-0f75-49df-abb2-43c251abf1e8",
+                            "type": "rule_group",
+                            "children": [
+                              {
+                                "id": "89deacc6-efa6-4ecd-b69b-c0cfe85c6e48",
+                                "type": "rule"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "summary": "",
+                    "description": ""
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/rule_tree"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Returns with Forbidden when report access is denied",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returns with Not Found for a non-existing test result or one under another report",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/security_guides/{security_guide_id}/value_definitions": {
       "get": {
         "summary": "Request Value Definitions",
