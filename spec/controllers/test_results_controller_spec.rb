@@ -183,6 +183,39 @@ describe TestResultsController do
       end
     end
 
+    describe 'GET rule_tree' do
+      let(:item) do
+        FactoryBot.create(:tailoring, policy: Policy.find(parent.id), os_minor_version: 0)
+        FactoryBot.create(
+          :system,
+          **sysparams,
+          with_test_result: true
+        ).test_results.first
+      end
+
+      it 'returns the rule tree for the test result tailoring' do
+        get :rule_tree, params: { report_id: parent.id, id: item.id, parents: [:report] }
+
+        expect(response).to have_http_status :ok
+        expect(response.parsed_body).to eq(item.tailoring.rule_tree.as_json)
+      end
+
+      it 'does not expose a test result scoped under a different report' do
+        other_report = FactoryBot.create(:report, account: current_user.account, assigned_system_count: 0)
+        FactoryBot.create(:tailoring, policy: Policy.find(other_report.id), os_minor_version: 0)
+        other_item = FactoryBot.create(
+          :system,
+          account: current_user.account,
+          policy_id: other_report.id,
+          with_test_result: true
+        ).test_results.first
+
+        get :rule_tree, params: { report_id: parent.id, id: other_item.id, parents: [:report] }
+
+        expect(response).to have_http_status :not_found
+      end
+    end
+
     describe 'native OS versions' do
       let(:native_system) do
         FactoryBot.create(
