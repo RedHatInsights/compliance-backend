@@ -15,6 +15,22 @@ RSpec.describe XccdfReportParser do
   end
   let(:parser) { described_class.new(report_contents, message) }
 
+  describe 'initialization' do
+    it 'normalizes a missing or soft-deleted system lookup to SystemUnavailableError' do
+      expect(System).to receive(:find).with(system.id).and_raise(ActiveRecord::RecordNotFound)
+
+      expect { described_class.new(report_contents, message) }
+        .to raise_error(described_class::SystemUnavailableError)
+    end
+
+    it 'does not normalize unrelated system lookup errors' do
+      expect(System).to receive(:find).with(system.id).and_raise(ActiveRecord::StatementInvalid)
+
+      expect { described_class.new(report_contents, message) }
+        .to raise_error(ActiveRecord::StatementInvalid)
+    end
+  end
+
   describe '#extracted_xml' do
     it 'stores the extracted report used for parsing' do
       expect(parser.extracted_xml).to eq(XccdfReportExtractor.extract(report_contents))
@@ -145,17 +161,62 @@ RSpec.describe XccdfReportParser do
   end
 
   describe '#persist!' do
+    let(:system_relation) { double(:system_relation) }
+    let(:locked_system) { system }
+
     before do
       allow(parser).to receive(:save_all_test_result_info)
-      allow(System).to receive(:transaction).and_yield
+      allow(System).to receive(:unscoped).and_return(system_relation)
+      allow(system_relation).to receive(:where).with(id: system.id, deleted_at: nil).and_return(system_relation)
+      allow(system_relation).to receive(:lock).with('FOR UPDATE OF systems').and_return(system_relation)
+      allow(system_relation).to receive(:first).and_return(locked_system)
     end
 
-    it 'saves the test result info inside a transaction' do
+    it 'locks the live system row before saving test result info in a transaction' do
+      transaction_active = false
+      expect(System).to receive(:transaction).and_wrap_original do |original, *args, &block|
+        transaction_active = true
+        original.call(*args, &block)
+      ensure
+        transaction_active = false
+      end
+      expect(system_relation).to receive(:lock).with('FOR UPDATE OF systems').and_return(system_relation)
+      expect(system_relation).to receive(:first).ordered do
+        expect(transaction_active).to be(true)
+        locked_system
+      end
+      expect(parser).to receive(:save_all_test_result_info).ordered do
+        expect(transaction_active).to be(true)
+      end
+
       parser.persist!
 
-      expect(System).to have_received(:transaction)
-      expect(parser).to have_received(:save_all_test_result_info)
+      expect(system_relation).to have_received(:where).with(id: system.id, deleted_at: nil)
     end
+
+    context 'when the system has been deleted' do
+      let(:locked_system) { nil }
+
+      it 'raises SystemUnavailableError without saving report rows' do
+        expect(parser).not_to receive(:save_all_test_result_info)
+
+        expect { parser.persist! }.to raise_error(described_class::SystemUnavailableError)
+      end
+    end
+
+    context 'when the system no longer exists' do
+      let(:locked_system) { nil }
+
+      it 'raises SystemUnavailableError without saving report rows' do
+        expect(parser).not_to receive(:save_all_test_result_info)
+
+        expect { parser.persist! }.to raise_error(described_class::SystemUnavailableError)
+      end
+    end
+  end
+
+  it 'includes SystemUnavailableError in the errors handled by ParseReportJob' do
+    expect(described_class::ERRORS).to include(described_class::SystemUnavailableError)
   end
 
   describe '#check_for_missing_tailored_profile after an OS minor upgrade' do
