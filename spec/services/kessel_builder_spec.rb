@@ -135,4 +135,23 @@ RSpec.describe KesselBuilder, type: :service do
       )
     end
   end
+
+  describe '.bearer_header' do
+    let(:credentials) { double('oauth_credentials') }
+
+    before { allow(described_class).to receive(:auth).and_return(credentials) }
+
+    it 'returns a bearer Authorization header' do
+      token = Faker::Alphanumeric.alphanumeric(number: 32)
+      allow(credentials).to receive(:get_token).and_return(double('token', access_token: token))
+
+      expect(described_class.bearer_header).to eq(Authorization: "Bearer #{token}")
+    end
+
+    it 'raises TokenError when the token cannot be fetched' do
+      allow(credentials).to receive(:get_token).and_raise(StandardError, Faker::Lorem.sentence)
+
+      expect { described_class.bearer_header }.to raise_error(KesselBuilder::TokenError)
+    end
+  end
 end
