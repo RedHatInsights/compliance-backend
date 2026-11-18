@@ -153,6 +153,29 @@ describe ParseReportJob, type: :job do
       end
     end
 
+    context 'when the system becomes unavailable before the report is persisted' do
+      before do
+        allow(parser).to receive(:persist!).and_raise(
+          XccdfReportParser::SystemUnavailableError, 'System is missing or deleted'
+        )
+        allow(PayloadTracker).to receive(:deliver)
+        allow(ReportUploadFailed).to receive(:deliver)
+      end
+
+      it 'reports failure without sending remediation or success notifications' do
+        expect(PayloadTracker).to receive(:deliver).with(hash_including(status: :error))
+        expect(PayloadTracker).not_to receive(:deliver).with(hash_including(status: :success))
+        expect(ReportUploadFailed).to receive(:deliver)
+        expect(RemediationUpdates).not_to receive(:deliver)
+        expect(Rails.logger).not_to receive(:audit_success)
+        expect(Rails.logger).to receive(:audit_fail).with(
+          a_string_matching(/XccdfReportParser::SystemUnavailableError/)
+        )
+
+        job.perform(report_blob, msg_value)
+      end
+    end
+
     context 'when XccdfReportParser cannot be instantiated' do
       before do
         allow(XccdfReportParser).to receive(:new).and_raise(XccdfReportParser::WrongFormatError)

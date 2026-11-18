@@ -17,11 +17,14 @@ class XccdfReportParser
   class UnknownProfileError < StandardError; end
   # Error to raise if the incoming report contains an unknown rule
   class UnknownRuleError < StandardError; end
+  # Error to raise if the system is missing or deleted before report persistence
+  class SystemUnavailableError < StandardError; end
 
   ERRORS = [
     XccdfReportExtractor::ExtractionError,
     MissingIdError, WrongFormatError, OSVersionMismatch, UnknownProfileError,
-    ActiveRecord::RecordInvalid, ExternalReportError, UnknownBenchmarkError, UnknownRuleError
+    ActiveRecord::RecordInvalid, ExternalReportError, UnknownBenchmarkError, UnknownRuleError,
+    SystemUnavailableError
   ].freeze
 
   include ::Xccdf::Util
@@ -38,7 +41,7 @@ class XccdfReportParser
     validate_message_format!
 
     @account = Account.from_identity_header(Insights::Api::Common::IdentityHeader.new(@b64_identity))
-    @system = System.find(message['id'])
+    @system = find_system!
     @test_result_file = parse_test_result_file(report_contents)
     set_openscap_parser_data
 
@@ -136,6 +139,10 @@ class XccdfReportParser
 
   def persist!
     System.transaction do
+      system_query = System.unscoped.where(id: @system.id, deleted_at: nil)
+      locked_system = system_query.lock('FOR UPDATE OF systems').first
+      raise SystemUnavailableError, "System #{@system.id} is missing or deleted" unless locked_system
+
       save_all_test_result_info
     end
   end
@@ -145,6 +152,12 @@ class XccdfReportParser
   def parse_test_result_file(report_contents)
     @extracted_xml = XccdfReportExtractor.extract(report_contents)
     OpenscapParser::TestResultFile.new(@extracted_xml)
+  end
+
+  def find_system!
+    System.find(@id)
+  rescue ActiveRecord::RecordNotFound => e
+    raise SystemUnavailableError, "System #{@id} is missing or deleted", cause: e
   end
 
   def parse_failure_message

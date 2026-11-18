@@ -135,6 +135,9 @@ class SystemsCleaner
       return 0 if eligible_ids.empty?
 
       # Purge related records
+      rule_results_count = RuleResult.where(
+        test_result_id: HistoricalTestResult.where(system_id: eligible_ids).select(:id)
+      ).delete_all
       results_count = HistoricalTestResult.where(system_id: eligible_ids).delete_all
       policy_systems_count = PolicySystem.where(system_id: eligible_ids).delete_all
 
@@ -142,6 +145,7 @@ class SystemsCleaner
       systems_count = System.unscoped.where(id: eligible_ids).delete_all
 
       @logger.info("Deleted batch for #{subtask_name}: #{systems_count} systems, #{results_count} test results, " \
+                   "#{rule_results_count} rule results, " \
                    "#{policy_systems_count} policy-system associations.")
       systems_count
     end
