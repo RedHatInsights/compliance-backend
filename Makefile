@@ -5,8 +5,8 @@ BASE_IMAGE ?= $(shell sed -n 's/^ARG BASE_IMAGE="\(.*\)"/\1/p' Dockerfile)
 # Extract the UBI repo configuration from the base image
 ubi.repo:
 	podman run --rm $(BASE_IMAGE) bash -c 'cat /etc/yum.repos.d/ubi.repo' > ubi.repo
-	sed -i 's/ubi-9-codeready-builder/codeready-builder-for-ubi-9-$$basearch/' ubi.repo
-	sed -i 's/\[ubi-9/[ubi-9-for-$$basearch/' ubi.repo
+	sed -i 's/ubi-10-codeready-builder/codeready-builder-for-ubi-10-$$basearch/' ubi.repo
+	sed -i 's/\[ubi-10/[ubi-10-for-$$basearch/' ubi.repo
 
 # Parse Dockerfile ARG declarations and generate rpms.in.yaml
 rpms.in.yaml: Dockerfile .hermetic_builds/parse_dockerfile.rb
