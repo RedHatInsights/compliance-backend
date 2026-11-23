@@ -177,6 +177,28 @@
         :tailoring_id: ${tailoring_id}
   :query: rule_group_id = ${rule_group.id}
 
+- :name: "in search by rule_group_id"
+  :entities:
+    :found:
+      - :factory: :rule
+        :security_guide_id: ${security_guide_id}
+        :parent_count: 0
+        :rule_group: ${rule_group}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+      - :factory: :rule
+        :security_guide_id: ${security_guide_id}
+        :parent_count: 0
+        :rule_group: ${another_rule_group}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+    :not_found:
+      - :factory: :rule
+        :security_guide_id: ${security_guide_id}
+        :profile_id: ${profile_id}
+        :tailoring_id: ${tailoring_id}
+  :query: rule_group_id ^ (${rule_group.id} ${another_rule_group.id})
+
 - :name: "equality search by identifier_label"
   :entities:
     :found:

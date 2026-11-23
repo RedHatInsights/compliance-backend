@@ -7,6 +7,7 @@ describe Searchable do
     it 'allows operators declared for a plain field' do
       expect { Rule.validate_search_operators!('severity = high') }.not_to raise_error
       expect { Rule.validate_search_operators!('severity != high') }.not_to raise_error
+      expect { Rule.validate_search_operators!('rule_group_id ^ (one two)') }.not_to raise_error
     end
 
     it 'rejects operators not declared for a plain field' do
