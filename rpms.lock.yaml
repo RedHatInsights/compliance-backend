@@ -382,13 +382,13 @@ arches:
     name: package-notes-srpm-macros
     evr: 0.5-13.el10
     sourcerpm: package-notes-0.5-13.el10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/p/patch-2.7.6-26.el10.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/p/patch-2.7.6-26.el10_3.1.x86_64.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 137658
-    checksum: sha256:8fa7346dfe7b2844b4ec3510107950533472c5286bb550311ddd5ac143bcff82
+    size: 137060
+    checksum: sha256:0aa23bbe60437e2be978296e60a787be3ce7acd6c75da2a68e9aad4d5fadb56a
     name: patch
-    evr: 2.7.6-26.el10
-    sourcerpm: patch-2.7.6-26.el10.src.rpm
+    evr: 2.7.6-26.el10_3.1
+    sourcerpm: patch-2.7.6-26.el10_3.1.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/p/perl-AutoLoader-5.74-515.el10_2.noarch.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
     size: 26422
@@ -886,83 +886,83 @@ arches:
     name: redhat-rpm-config
     evr: 296-1.el10
     sourcerpm: redhat-rpm-config-296-1.el10.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/ruby-3.3.13-16.el10_2.x86_64.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/ruby-3.3.14-17.el10_3.x86_64.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 45346
-    checksum: sha256:a9684ccb3091cd52f69158cb81e88d9412be731ea26c4b340dd1639f8612bf4b
+    size: 45430
+    checksum: sha256:5dcdb4df45bc3b2bdfcdc3824362f5a500c53cac818e07bdba79f9078e65f627
     name: ruby
-    evr: 3.3.13-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/ruby-default-gems-3.3.13-16.el10_2.noarch.rpm
+    evr: 3.3.14-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/ruby-default-gems-3.3.14-17.el10_3.noarch.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 55520
-    checksum: sha256:84749246adcfba51bbcbe391baee61c695e7bf068b4b06dd3621187e0648a5ae
+    size: 55605
+    checksum: sha256:a70f6b92750b33c86daa5b4003d5f85a9b28a0c2d79f0e4f30f7ac1060988749
     name: ruby-default-gems
-    evr: 3.3.13-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/ruby-devel-3.3.13-16.el10_2.x86_64.rpm
+    evr: 3.3.14-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/ruby-devel-3.3.14-17.el10_3.x86_64.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 348164
-    checksum: sha256:1471931b30b752ec894353118f06ed55c96bfcd9c51ab4c176788600a25d3fe7
+    size: 348409
+    checksum: sha256:8ff1d525578140904db19a7ebbb2e02a46810593bb47fd495bc1b8c9ee0be790
     name: ruby-devel
-    evr: 3.3.13-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/ruby-libs-3.3.13-16.el10_2.x86_64.rpm
+    evr: 3.3.14-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/ruby-libs-3.3.14-17.el10_3.x86_64.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 4348558
-    checksum: sha256:48e7b48f05bd03ab56a5871a1649ca49f1acbbadb4fe44fe74bd8140ede2f4d8
+    size: 4335410
+    checksum: sha256:103092a91cee1a6aaa1b0438ee8fd48b187c3a2249c94e2d866ba63ba3936888
     name: ruby-libs
-    evr: 3.3.13-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-bigdecimal-3.1.5-16.el10_2.x86_64.rpm
+    evr: 3.3.14-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-bigdecimal-3.1.5-17.el10_3.x86_64.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 76849
-    checksum: sha256:4e3c431d06fab98384f50f79f3e081aea5c2fbfc6ca4e1a4f31e4577e5fafe0e
+    size: 76943
+    checksum: sha256:b2bd31041d081132dfb4519ffcb37065c6f24d642fd0d4a6e54ae4ccef4de743
     name: rubygem-bigdecimal
-    evr: 3.1.5-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-bundler-2.5.22-16.el10_2.noarch.rpm
+    evr: 3.1.5-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-bundler-2.5.22-17.el10_3.noarch.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 508132
-    checksum: sha256:e20081b5a10cc9e90b07e8104a4ace669216c8be85082da790043dc14b28a4c3
+    size: 508310
+    checksum: sha256:7ac80fc545d97f1e5767a27067f983a278bbd48700e7ad05caa8efb92afae92d
     name: rubygem-bundler
-    evr: 2.5.22-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-io-console-0.7.1-16.el10_2.x86_64.rpm
+    evr: 2.5.22-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-io-console-0.7.1-17.el10_3.x86_64.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 30551
-    checksum: sha256:d13eae74a90b586cafcd8dd65188c2019a77c78f4d8e321fc84ad8922bffe472
+    size: 30642
+    checksum: sha256:6e88d6ea1790c59c0aab9ad1f8a496444d328534e73243f93d6a62355f3733a8
     name: rubygem-io-console
-    evr: 0.7.1-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-json-2.7.2-16.el10_2.x86_64.rpm
+    evr: 0.7.1-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-json-2.7.2-17.el10_3.x86_64.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 65975
-    checksum: sha256:657c67697e65e8f9383578180a395c0def674aadef433fb3041ef860ad023e92
+    size: 65742
+    checksum: sha256:f2cb376c8d1dc2789b1694f00fd5099963a6d7ecd7ef6bcf701eb1c132ed99f2
     name: rubygem-json
-    evr: 2.7.2-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-psych-5.1.2-16.el10_2.x86_64.rpm
+    evr: 2.7.2-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-psych-5.1.2-17.el10_3.x86_64.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 66297
-    checksum: sha256:67857c9ed04e9bd789fc6a1c726ebc37f34300f2d60af64bebd48b06e0525c11
+    size: 66380
+    checksum: sha256:776ecad8f58af1524503108c43a22aa474b33e509300d46b6f34af1fe40b5222
     name: rubygem-psych
-    evr: 5.1.2-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-rdoc-6.6.3.1-16.el10_2.noarch.rpm
+    evr: 5.1.2-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygem-rdoc-6.6.3.1-17.el10_3.noarch.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 521509
-    checksum: sha256:b961ba3c7dfc42c6f73a2fbfa29e340db9f917d620090cb798f5ee5a2f690039
+    size: 521617
+    checksum: sha256:c8c0a2cf78d5a85d505a4d87f35a2b355ac03285fd26d7e1b909aec5ebc81c5f
     name: rubygem-rdoc
-    evr: 6.6.3.1-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
-  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygems-3.5.22-16.el10_2.noarch.rpm
+    evr: 6.6.3.1-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
+  - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rubygems-3.5.22-17.el10_3.noarch.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
-    size: 439189
-    checksum: sha256:c7fff5e03fc7732e288a85d8c6f03d00bd17f228686743141b1aadcbee89b2a9
+    size: 439415
+    checksum: sha256:6410cb7ac3d214a7a43d662d021ee580045a07387e6646390cf77f8a48ebba8c
     name: rubygems
-    evr: 3.5.22-16.el10_2
-    sourcerpm: ruby-3.3.13-16.el10_2.src.rpm
+    evr: 3.5.22-17.el10_3
+    sourcerpm: ruby-3.3.14-17.el10_3.src.rpm
   - url: https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi10/10/x86_64/appstream/os/Packages/r/rust-1.97.1-5.el10_3.x86_64.rpm
     repoid: ubi-10-for-x86_64-appstream-rpms
     size: 32344474
