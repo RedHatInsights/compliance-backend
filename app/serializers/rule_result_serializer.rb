@@ -18,4 +18,5 @@ class RuleResultSerializer < ApplicationSerializer
 
   derived_attribute :remediation_issue_id,
                     rule: %i[remediation_available ref_id], profile: [:ref_id], security_guide: %i[ref_id version]
+  derived_attribute :value_checks, rule: [:value_checks]
 end
