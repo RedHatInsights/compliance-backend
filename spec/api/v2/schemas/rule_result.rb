@@ -93,6 +93,16 @@ module Api
               readOnly: true,
               description: 'The idenfitier of the remediation associated to this rule, only available ' \
                            'under profiles.'
+            },
+            value_checks: {
+              type: :array,
+              items: {
+                type: :string,
+                format: :uuid,
+                examples: ['ac0475d7-043c-439b-abef-606f02531e10']
+              },
+              readOnly: true,
+              description: "Value Definition UUIDs used by this rule's XCCDF checks for remediation."
             }
           }
         }.freeze

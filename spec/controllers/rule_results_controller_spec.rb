@@ -17,7 +17,8 @@ describe RuleResultsController do
       precedence: :precedence,
       identifier: :identifier,
       references: :references,
-      remediation_issue_id: :remediation_issue_id
+      remediation_issue_id: :remediation_issue_id,
+      value_checks: :value_checks
     }
   end
 
