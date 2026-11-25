@@ -57,7 +57,7 @@ class Rule < ApplicationRecord
   searchable_by :title, %i[like unlike eq ne]
   searchable_by :severity, %i[eq ne in notin]
   searchable_by :remediation_available, %i[eq]
-  searchable_by :rule_group_id, %i[eq]
+  searchable_by :rule_group_id, %i[eq in]
   searchable_by :identifier_label, %i[eq neq like unlike] do |_key, op, val|
     val = "%#{val}%" if ['ILIKE', 'NOT ILIKE'].include?(op)
 
