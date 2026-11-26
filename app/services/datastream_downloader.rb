@@ -31,6 +31,7 @@ class DatastreamDownloader
     end
   end
 
+  # shortcut: compliance-ssg has no Clowder V2 entry yet, stays on V1 until Clowder writes one
   def datastream_url(ssg)
     [
       Settings.private_endpoints.compliance_ssg.url,

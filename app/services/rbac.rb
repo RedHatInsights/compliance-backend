@@ -6,7 +6,7 @@ require 'insights-rbac-api-client'
 class Rbac
   API_CLIENT = RBACApiClient::AccessApi.new
   APPS = 'compliance,inventory'
-  OPTS = { limit: 1000, auth_names: '' }.freeze
+  OPTS = { limit: 1000, debug_auth_names: [] }.freeze
   ANY = '*'
 
   INVENTORY_UNGROUPED_ENTRIES = [].freeze
@@ -26,15 +26,16 @@ class Rbac
 
   class << self
     def load_user_permissions(identity)
-      begin
-        API_CLIENT.get_principal_access(
-          self::APPS,
-          self::OPTS.merge(header_params: { 'X-RH-IDENTITY': identity })
-        ).data
-      rescue RBACApiClient::ApiError => e
-        Rails.logger.info(e.message)
-        raise AuthorizationError, e.message
-      end
+      headers = { 'X-RH-IDENTITY': identity }
+      headers.merge!(KesselBuilder.bearer_header) if Settings.v2_endpoints.rbac.service.authenticated
+
+      API_CLIENT.get_principal_access(
+        self::APPS,
+        self::OPTS.merge(header_params: headers)
+      ).data
+    rescue RBACApiClient::ApiError => e
+      Rails.logger.info(e.message)
+      raise AuthorizationError, e.message
     end
 
     def load_inventory_groups(permissions)
