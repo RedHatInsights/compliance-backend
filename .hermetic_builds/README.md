@@ -1,8 +1,9 @@
 # Hermetic Builds
 
 The existing Konflux pipelines (`.tekton/compliance-backend-*.yaml`) run with
-`hermetic: true`, meaning Cachi2 pre-fetches all dependencies before the build
-starts and network access is blocked during the build itself.
+`hermetic: true`, meaning Hermeto (formerly Cachi2) pre-fetches all
+dependencies before the build starts and network access is blocked during the
+build itself.
 
 ## Prerequisites
 
@@ -36,7 +37,7 @@ Cargo must be told to use those vendored crates instead of reaching
 replace-with = "vendored-sources"
 
 [source.vendored-sources]
-directory = "/cachi2/output/deps/cargo"
+directory = "/prefetch/output/deps/cargo"
 ```
 
 This file is stored at `.hermetic_builds/cargo/config.toml` and copied
@@ -44,6 +45,11 @@ unconditionally into the build stage. When `HERMETIC == "true"`, the `RUN`
 instruction copies it to `.cargo/config.toml` where cargo reads it.
 Non-hermetic builds carry the file in the image but cargo never sees it at
 that path.
+
+The vendored-sources directory is the mount point where the Konflux prefetch
+tasks expose fetched content during hermetic builds. It was renamed from
+`/cachi2/output` to `/prefetch/output` as part of the Cachi2 to Hermeto
+rebrand; both paths are served during the transition.
 
 ## Regenerating the RPM lock file
 
@@ -93,7 +99,7 @@ Commit the updated files alongside `Gemfile.lock`.
   repo setup.
 
 - **Bundler** — `gem install bundler` is not run; bundler 2.5.22 is provided by
-  the `rubygem-bundler` RPM. Cachi2 sets `BUNDLE_MIRROR__ALL` to a local gem
+  the `rubygem-bundler` RPM. Hermeto sets `BUNDLE_MIRROR__ALL` to a local gem
   mirror so the auto-switch to the version in `BUNDLED WITH` resolves without
   network access.
 
