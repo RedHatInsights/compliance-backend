@@ -71,6 +71,9 @@ RSpec.describe 'systems:cleanup task' do
     # rubocop:enable Rails/SkipsModelValidations
 
     let!(:test_result) { FactoryBot.create(:test_result, system: stale_tombstone, report_id: policy.id) }
+    let!(:rule_result) { FactoryBot.create(:rule_result, test_result: test_result) }
+    let!(:fresh_test_result) { FactoryBot.create(:test_result, system: fresh_tombstone, report_id: policy.id) }
+    let!(:fresh_rule_result) { FactoryBot.create(:rule_result, test_result: fresh_test_result) }
 
     it 'purges old soft-deleted tombstones and related records but preserves fresh ones' do
       expect(System.unscoped.count).to eq(2)
@@ -84,11 +87,13 @@ RSpec.describe 'systems:cleanup task' do
           Rake::Task['systems:cleanup'].invoke
         end
       end.to change { System.unscoped.count }.by(-1)
-                                             .and(change { HistoricalTestResult.where(system_id: stale_id).count }
-                                                    .from(1).to(0))
-                                             .and(change { policy.policy_systems.count }.from(1).to(0))
 
+      expect(HistoricalTestResult.where(system_id: stale_id)).to be_empty
+      expect(RuleResult.where(test_result_id: test_result.id)).to be_empty
+      expect(policy.policy_systems).to be_empty
       expect(System.unscoped.find_by(id: fresh_tombstone.id)).not_to be_nil
+      expect(HistoricalTestResult.exists?(fresh_test_result.id)).to be(true)
+      expect(RuleResult.exists?(fresh_rule_result.id)).to be(true)
       expect(System.unscoped.find_by(id: stale_tombstone.id)).to be_nil
     end
   end
